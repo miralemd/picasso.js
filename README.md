@@ -1,2 +1,2 @@
 # picasso.js
-A charting library streamlined for building visualizations for on Qlik Sense Analytics platform.
+A charting library streamlined for building visualizations for the Qlik Sense Analytics platform.
