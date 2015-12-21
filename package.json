@@ -1,0 +1,28 @@
+{
+  "name": "@qlik/picasso",
+  "version": "0.1.0",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "private": true,
+  "scripts": {
+    "build": "webpack",
+    "build:watch": "webpack --watch",
+    "lint": "eslint src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com:qlik-trial/picasso.js.git"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "/dist"
+  ],
+  "devDependencies": {
+    "babel": "^5.8.21",
+    "babel-core": "^5.8.25",
+    "babel-loader": "^5.3.2",
+    "eslint": "^1.8.0",
+    "webpack": "^1.12.2"
+  }
+}
