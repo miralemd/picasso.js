@@ -1,7 +1,16 @@
 import LinearScale from "../../src/scales/linear";
 
 describe( "LinearScale", () => {
-	let lin;
+	let lin,
+		ticker;
+
+	before( () => {
+		ticker = {
+			generateTicks: sinon.stub()
+		};
+		ticker.generateTicks.returns( [1, 2, 3, 4] );
+	} );
+
 	beforeEach( () => {
 		lin = new LinearScale();
 	} );
@@ -29,5 +38,35 @@ describe( "LinearScale", () => {
 		expect( lin.get( -10 ) ).to.equal( 10 );
 		expect( lin.get( 10 ) ).to.equal( 20 );
 		expect( lin.get( 0 ) ).to.equal( 15 );
+	} );
+
+	it( "should return a linearly interpolated value", () => {
+		lin.from( [-10, 10] ).to( [10, 20] );
+		expect( lin.get( -10 ) ).to.equal( 10 );
+		expect( lin.get( 10 ) ).to.equal( 20 );
+		expect( lin.get( 0 ) ).to.equal( 15 );
+	} );
+
+	it( "should generate nice ticks when a ticker is provided", () => {
+		ticker = {
+			generateTicks: sinon.stub()
+		};
+		ticker.generateTicks.returns( [1, 2, 3, 4] );
+
+		lin = new LinearScale( [10, 20], [40, 60], ticker );
+		expect( ticker.generateTicks ).to.have.been.calledWithExactly( 10, 20, 6 );
+		expect( lin.min ).to.equal( 1 );
+		expect( lin.max ).to.equal( 4 );
+	} );
+
+	it( "should recalculate ticks when changing input range", () => {
+		lin.ticker = {
+			generateTicks: sinon.stub()
+		};
+		lin.ticker.generateTicks.returns( [-1, 0, 1, 2] );
+		lin.from( [-4, 5] );
+		expect( lin.ticker.generateTicks ).to.have.been.calledWithExactly( -4, 5, 6 );
+		expect( lin.min ).to.equal( -1 );
+		expect( lin.max ).to.equal( 2 );
 	} );
 } );
