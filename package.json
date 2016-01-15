@@ -8,7 +8,7 @@
   "scripts": {
     "build": "webpack",
     "build:watch": "webpack --watch",
-    "lint": "eslint src",
+    "lint": "eslint src test",
     "test": "aw-test-runner ./test",
     "test:watch": "aw-test-runner ./test -w",
     "test:coverage": "aw-test-coverage ./test"

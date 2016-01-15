@@ -1,4 +1,4 @@
-import Nominal from "../scales/nominal";
+// import Nominal from "../scales/nominal";
 import Range from "../layouts/range";
 
 export default class BarArea {
@@ -19,7 +19,7 @@ export default class BarArea {
 			staticWidth = 1,
 			rangeLayout,
 			lin = this.measureScale,
-			nom = new Nominal(),
+			nom = this.dimensionScale,
 			series = [];
 
 		data.forEach( function( row ) {
@@ -30,7 +30,7 @@ export default class BarArea {
 			}
 		} );
 
-		nom.setData( dimValues, {separation: options.separation} );
+		nom.from( dimValues, {separation: options.separation} );
 
 		series = measures.map( ( m, i ) => ( {start: 0, end: String( i ) } ) );
 

@@ -1,4 +1,5 @@
 import Linear from "../../scales/linear";
+import Nominal from "../../scales/nominal";
 import ticker from "../../scales/ticks";
 import LayoutEngine from "../../chart-components/layout-engine";
 import BarArea from "../../chart-components/bararea";
@@ -14,8 +15,11 @@ export default class BarChart {
 		this.measureAxis = new Axis();
 		this.barArea = new BarArea();
 
-		this.scale = new Linear( [0, 1], [0, 1], ticker );
-		this.measureAxis.scale = this.barArea.measureScale = this.scale;
+		this.measureScale = new Linear( [0, 1], [0, 1], ticker );
+		this.dimensionScale = new Nominal();
+
+		this.measureAxis.scale = this.barArea.measureScale = this.measureScale;
+		this.barArea.dimensionScale = this.dimensionScale;
 
 		this.components = [this.measureAxis, this.barArea];
 
@@ -28,8 +32,7 @@ export default class BarChart {
 			min = Math.min.apply( null, [0].concat( meta.filter( c => c.type === "numeric" ).map( c => c.min ) ) ),
 			max = Math.max.apply( null, [0].concat( meta.filter( c => c.type === "numeric" ).map( c => c.max ) ) );
 
-		this.scale.from( [min, max] );
-		this.scale.
+		this.measureScale.from( [min, max] );
 
 		this.layoutEngine.layout( this.rect );
 		this.components.forEach( c => {

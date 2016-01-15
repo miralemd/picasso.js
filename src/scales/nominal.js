@@ -1,50 +1,67 @@
-export default class Nominal {
-	constructor() {
-		this.levels = [];
-		this.output = [0, 1];
+function getLabelsMeta( data, options ) {
+	let levels = [],
+		groupDiff = options.separation,
+		units = 0;
+	function traverse( arr, depth = 0 ) {
+
+		let level = levels[depth] = levels[depth] || [];
+		arr.forEach( (node, i, a) => {
+
+			if ( typeof node === "string" ) {
+				level.push( {
+					name: node,
+					idx: units
+				} );
+			}
+			else {
+				level.push( {
+					name: node.name,
+					idx: units
+				} );
+
+				if ( node.children && node.children.length ) {
+					traverse( node.children, depth + 1 );
+				}
+			}
+			if ( node.children && node.children.length && i < a.length - 1 ) {
+				units += groupDiff;
+			}
+			else {
+				units++;
+			}
+
+		} );
 	}
 
-	setData( data = [], options = {} ) {
-		this.data = data;
+	traverse( data );
 
-		let levels = [],
-			groupDiff = options.separation || 0.5,
-			idx = 0;
-		function traverse( arr, depth = 0 ) {
+	return { levels, units };
+}
 
-			let level = levels[depth] = levels[depth] || [];
-			arr.forEach( (node, i, a) => {
+function getUnitSize( min, max, units, levels ) {
+	return Math.abs( max - min ) / (units - (levels.length > 1 ? 1 : 0) || 1);
+}
 
-				if ( typeof node === "string" ) {
-					level.push( {
-						name: node,
-						idx: idx
-					} );
-				}
-				else {
-					level.push( {
-						name: node.name,
-						idx: idx
-					} );
+export default class Nominal {
+	constructor( from = [], to = [0, 1], options = {} ) {
+		this.groupSeparation = options.groupSeparation || 0.5;
+		this.output = to;
+		this.from( from );
+	}
 
-					if ( node.children && node.children.length ) {
-						traverse( node.children, depth + 1 );
-					}
-				}
-				if ( node.children && node.children.length && i < a.length - 1 ) {
-					idx += groupDiff;
-				}
-				else {
-					idx++;
-				}
-
-			} );
-		}
-
-		traverse( data );
+	from( values ) {
+		this.domain = values;
+		let {levels, units} = getLabelsMeta( values, {separation: this.groupSeparation} );
 
 		this.levels = levels;
-		this.unitSize = Math.abs(this.output[0] - this.output[1]) / (idx - (this.levels.length > 1 ? 1 : 0) || 1);
+		this.units = units;
+		this.unitSize = getUnitSize( this.output[1], this.output[0], this.units, this.levels );
+		return this;
+	}
+
+	to( values ) {
+		this.output = values;
+		this.unitSize = getUnitSize( this.output[1], this.output[0], this.units, this.levels );
 		return this;
 	}
 
