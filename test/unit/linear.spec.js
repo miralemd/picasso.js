@@ -1,16 +1,7 @@
 import LinearScale from "../../src/scales/linear";
 
 describe( "LinearScale", () => {
-	let lin,
-		ticker;
-
-	before( () => {
-		ticker = {
-			generateTicks: sinon.stub()
-		};
-		ticker.generateTicks.returns( [1, 2, 3, 4] );
-	} );
-
+	let lin;
 	beforeEach( () => {
 		lin = new LinearScale();
 	} );
@@ -48,7 +39,7 @@ describe( "LinearScale", () => {
 	} );
 
 	it( "should generate nice ticks when a ticker is provided", () => {
-		ticker = {
+		let ticker = {
 			generateTicks: sinon.stub()
 		};
 		ticker.generateTicks.returns( [1, 2, 3, 4] );
