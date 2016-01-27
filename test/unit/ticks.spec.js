@@ -44,8 +44,8 @@ describe( "Ticks", () => {
 	} );
 
 	it( "produce nice ticks", () => {
-		expect( ticks.generateTicks( 0, 1 ) ).to.deep.equal( [0, 1] );
-		expect( ticks.generateTicks( -1.2, 5, 4 ) ).to.deep.equal( [-5, 0, 5] );
-		expect( ticks.generateTicks( -1.2, 5, 4, true ) ).to.deep.equal( [-2, 0, 2, 4, 6] );
+		expect( ticks.generateTicks( 0, 1 ) ).to.deep.equal( {min: 0, max: 1, ticks: [0, 1], nfrac: 0} );
+		expect( ticks.generateTicks( -1.2, 5, 4 ) ).to.deep.equal( {min: -5, max: 5, ticks: [-5, 0, 5], nfrac: 0} );
+		expect( ticks.generateTicks( -1.2, 5, 4, true ) ).to.deep.equal( {min: -2, max: 6, ticks: [-2, 0, 2, 4, 6], nfrac: 0} );
 	} );
 } );

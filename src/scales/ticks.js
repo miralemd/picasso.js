@@ -28,9 +28,8 @@ export default {
 		}
 		return sign * nf * Math.pow( 10, exp );
 	},
-
 	generateTicks( min, max, nTicks = 2, round = false ) {
-		let //nfrac,
+		let nfrac,
 			d,
 			graphmin,
 			graphmax,
@@ -41,10 +40,15 @@ export default {
 		d = this.niceNum( range / Math.max( 1, (nTicks - 1) ), true);
 		graphmin = Math.floor( min / d ) * d;
 		graphmax = Math.ceil( max / d ) * d;
-		//nfrac = Math.max( -Math.floor( Math.log( d ) / Math.log( 10 ) ), 0);
+		nfrac = Math.max( -Math.floor( Math.log( d ) / Math.log( 10 ) ), 0);
 		for( let v = graphmin; v < graphmax + 0.5 * d; v += d ) {
 			ticks.push( v );
 		}
-		return ticks;
+		return {
+			min: graphmin,
+			max: graphmax,
+			nfrac,
+			ticks
+		};
 	}
 };

@@ -4,14 +4,9 @@ export default class LinearScale {
 		this.output = to;
 
 		this.span = this.domain[1] - this.domain[0];
-		this.minValue = this.domain[0];
-		this.maxValue = this.domain[1];
 		this.ticker = ticker;
-		if( this.ticker ) {
-			this.ticks = this.ticker.generateTicks( this.minValue, this.maxValue, 6 );
-			this.minValue = this.ticks[0];
-			this.maxValue = this.ticks[this.ticks.length - 1];
-		}
+		this.nTicks = 2;
+		this.update();
 	}
 
 	/**
@@ -21,13 +16,7 @@ export default class LinearScale {
 	 */
 	from( values ) {
 		this.domain = values;
-		this.minValue = this.domain[0];
-		this.maxValue = this.domain[1];
-		if( this.ticker ) {
-			this.ticks = this.ticker.generateTicks( this.minValue, this.maxValue, 6 );
-			this.minValue = this.ticks[0];
-			this.maxValue = this.ticks[this.ticks.length - 1];
-		}
+		this.update();
 		return this;
 	}
 
@@ -36,6 +25,17 @@ export default class LinearScale {
 		return this;
 	}
 
+	update() {
+		this.minValue = this.domain[0];
+		this.maxValue = this.domain[1];
+		if( this.ticker ) {
+			let v = this.ticker.generateTicks( this.minValue, this.maxValue, this.nTicks );
+			this.ticks = v.ticks;
+			this.minValue = v.min;
+			this.maxValue = v.max;
+		}
+		return this;
+	}
 	/**
 	 *
 	 * @param {Number} value

@@ -11,8 +11,8 @@ describe( "NominalScale", () => {
 	it( "should handle string values as input", () => {
 		nom = new Nominal( ["a", "b"] );
 		expect( nom.getLevels() ).to.deep.equal( [[
-			{name: "a", idx: 0},
-			{name: "b", idx: 1}
+			{name: "a", idx: 0, span: 1},
+			{name: "b", idx: 1, span: 1}
 		]] );
 
 		expect( nom.getUnitSize() ).to.equal( 0.5 );
@@ -25,8 +25,8 @@ describe( "NominalScale", () => {
 		] );
 
 		expect( nom.getLevels() ).to.deep.equal( [[
-			{name: "a", idx: 0},
-			{name: "b", idx: 1}
+			{name: "a", idx: 0, span: 1},
+			{name: "b", idx: 1, span: 1}
 		]] );
 
 		expect( nom.getUnitSize() ).to.equal( 0.5 );
@@ -40,14 +40,14 @@ describe( "NominalScale", () => {
 
 		expect( nom.getLevels() ).to.deep.equal( [
 			[
-				{name: "a", idx: 0},
-				{name: "b", idx: 2.5}
+				{name: "a", idx: 0, span: 2},
+				{name: "b", idx: 2.5, span: 2}
 			],
 			[
-				{name: "aa", idx: 0},
-				{name: "ab", idx: 1},
-				{name: "ba", idx: 2.5},
-				{name: "bb", idx: 3.5}
+				{name: "aa", idx: 0, span: 1},
+				{name: "ab", idx: 1, span: 1},
+				{name: "ba", idx: 2.5, span: 1},
+				{name: "bb", idx: 3.5, span: 1}
 			]
 		] );
 		expect( nom.getUnitSize().toPrecision( 5 ) ).to.equal( (1 / 4.5).toPrecision( 5 ) ); // 4 units + 0.5 separation between groups

@@ -10,19 +10,13 @@ export default class BarArea {
 		this.dimensionScale = undefined;
 	}
 
-	update( data, options = {} ) {
-		let {width, height} = this.rect,
-			wRatio = options.width || 1,
-			dimValues = [],
+	data( data, options = {} ) {
+		let dimValues = [],
 			measures = [],
-			rects = [],
-			staticWidth = 1,
-			rangeLayout,
-			lin = this.measureScale,
-			nom = this.dimensionScale,
-			series = [];
+			nom = this.dimensionScale;
 
 		data.forEach( function( row ) {
+			//dimValues.push( row[0] );
 			dimValues.push( row.length <= 2 ? row[0] : {name: row[0], children: row.slice( 1 ).map( ( m, i ) => "M" + i )} );
 			for( let c = 1; c < row.length; c++ ) {
 				measures[c - 1] = measures[c - 1] || [];
@@ -32,27 +26,35 @@ export default class BarArea {
 
 		nom.from( dimValues, {separation: options.separation} );
 
-		series = measures.map( ( m, i ) => ( {start: 0, end: String( i ) } ) );
+		this.series = measures.map( ( m, i ) => ( {start: 0, end: String( i ) } ) );
+		this.measures = measures;
+	}
 
-		rangeLayout = new Range().layout( {
-			data: measures,
-			series: series,
-			measureScale: lin,
-			dimensionScale: nom,
-			orientation: "vertical"
-		} );
+	update( ) {
+		let {width, height} = this.rect,
+			rects = [],
+			staticWidth,
+			wRatio = 0.8,
+			series = this.series,
+			rangeLayout = new Range().layout( {
+				data: this.measures,
+				series: this.series,
+				measureScale: this.measureScale,
+				dimensionScale: this.dimensionScale,
+				orientation: "vertical"
+			} );
 
-		staticWidth = nom.getUnitSize() * wRatio;
+		staticWidth = this.dimensionScale.getUnitSize() * wRatio;
 
 		rangeLayout.series.forEach( (serie, i) => {
 			serie.forEach( bar => {
 				rects.push( {
-					type: "rect",
 					fill: "hsl(" + (i * 360 / series.length) + ", 60%, 60%)",
+					type: "rect",
 					x: width * (bar.x.start + (bar.x.end - bar.x.start) * 0.5 * ( 1 - wRatio ) ),
-					y: height - height * bar.y.end,
+					y: Math.min( height - height * bar.y.end, height - height * bar.y.start),
 					width: width * staticWidth,
-					height: height * (bar.y.end - bar.y.start)
+					height: Math.abs(height * (bar.y.end - bar.y.start))
 				} );
 			} );
 		} );

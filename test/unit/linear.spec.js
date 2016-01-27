@@ -42,22 +42,23 @@ describe( "LinearScale", () => {
 		let ticker = {
 			generateTicks: sinon.stub()
 		};
-		ticker.generateTicks.returns( [1, 2, 3, 4] );
+		ticker.generateTicks.returns( {min: 1, max: 6, ticks: [1, 2, 3, 4] });
 
 		lin = new LinearScale( [10, 20], [40, 60], ticker );
-		expect( ticker.generateTicks ).to.have.been.calledWithExactly( 10, 20, 6 );
+		expect( ticker.generateTicks ).to.have.been.calledWithExactly( 10, 20, 2 );
 		expect( lin.min ).to.equal( 1 );
-		expect( lin.max ).to.equal( 4 );
+		expect( lin.max ).to.equal( 6 );
 	} );
 
 	it( "should recalculate ticks when changing input range", () => {
 		lin.ticker = {
 			generateTicks: sinon.stub()
 		};
-		lin.ticker.generateTicks.returns( [-1, 0, 1, 2] );
+		lin.ticker.generateTicks.returns( {min: -3, max: 5, ticks: [-1, 0, 1, 2]} );
+		lin.nTicks = 7;
 		lin.from( [-4, 5] );
-		expect( lin.ticker.generateTicks ).to.have.been.calledWithExactly( -4, 5, 6 );
-		expect( lin.min ).to.equal( -1 );
-		expect( lin.max ).to.equal( 2 );
+		expect( lin.ticker.generateTicks ).to.have.been.calledWithExactly( -4, 5, 7 );
+		expect( lin.min ).to.equal( -3 );
+		expect( lin.max ).to.equal( 5 );
 	} );
 } );

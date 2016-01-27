@@ -6,23 +6,19 @@ function getLabelsMeta( data, options ) {
 
 		let level = levels[depth] = levels[depth] || [];
 		arr.forEach( (node, i, a) => {
+			let spanStart = units,
+				obj = {
+					name: typeof node === "string" ? node : node.name,
+					idx: units,
+					span: 1
+				};
 
-			if ( typeof node === "string" ) {
-				level.push( {
-					name: node,
-					idx: units
-				} );
+			level.push( obj );
+			if ( node.children && node.children.length ) {
+				traverse( node.children, depth + 1 );
+				obj.span = units - spanStart;
 			}
-			else {
-				level.push( {
-					name: node.name,
-					idx: units
-				} );
 
-				if ( node.children && node.children.length ) {
-					traverse( node.children, depth + 1 );
-				}
-			}
 			if ( node.children && node.children.length && i < a.length - 1 ) {
 				units += groupDiff;
 			}
@@ -47,6 +43,8 @@ export default class Nominal {
 		this.groupSeparation = options.groupSeparation || 0.5;
 		this.output = to;
 		this.from( from );
+		this.ticks = [];
+		this.isDiscrete = true;
 	}
 
 	from( values ) {
@@ -65,12 +63,27 @@ export default class Nominal {
 		return this;
 	}
 
+	update() {
+		this.ticks = !this.levels || !this.levels.length ? [] : this.levels[this.levels.length - 1].map( (a, i) => i);
+	}
+
 	getLevels() {
 		return this.levels;
 	}
 
 	getUnitSize() {
 		return this.unitSize;
+	}
+
+	getRange( idx, level = this.levels.length - 1 ) {
+		let lev = this.levels[level],
+			range = lev[idx].span,
+			start = lev[idx].idx;
+
+		return {
+			start: start * this.unitSize, // - this.unitSize * range * 0.5,
+			end: start * this.unitSize + this.unitSize * range
+		};
 	}
 
 	get( idx, level = this.levels.length - 1 ) {
