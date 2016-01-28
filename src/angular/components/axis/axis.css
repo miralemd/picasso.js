@@ -1,0 +1,51 @@
+.pic-axis--vertical .pic-axis__line {
+	position: absolute;
+	height: 100%;
+	right: 8px;
+	border-right: 0px solid #ddd;
+}
+
+.pic-axis--vertical .pic-axis__tick {
+	position: absolute;
+	right: 8px;
+}
+
+.pic-axis--vertical .pic-axis__tick__label {
+	position: absolute;
+	right: 12px;
+	top: -0.5em;
+}
+
+.pic-axis--vertical .pic-axis__tick__tick {
+	border-top: 1px solid #ddd;
+	position: absolute;
+	right: 0;
+	width: 8px;
+}
+
+.pic-axis--horizontal .pic-axis__line {
+	position: absolute;
+	width: 100%;
+	top: 8px;
+	border-top: 0px solid #ddd;
+}
+
+.pic-axis--horizontal .pic-axis__tick {
+	position: absolute;
+	top: 8px;
+	display: flex;
+	justify-content: center
+}
+
+.pic-axis--horizontal .pic-axis__tick__label {
+	/*position: absolute;*/
+	top: 12px;
+}
+
+.pic-axis--horizontal .pic-axis__tick__tick {
+	/*position: absolute;*/
+	height: 8px;
+	width: 0px;
+	border-left: 1px solid #ddd;
+
+}
