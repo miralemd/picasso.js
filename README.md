@@ -10,9 +10,9 @@ $ npm install
 $ npm run build
 ```
 
-This will generate a UMD package in `/dist/index.js`.
+This will generate UMD packages for `picasso` and `picasso-angular` in the `/dist` folder.
 
-To watch for changes and regenerate the package run `npm run build:watch`.
+To watch for changes and regenerate the packages run `npm run build:watch`.
 
 ## How to run tests
 
