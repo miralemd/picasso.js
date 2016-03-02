@@ -1,5 +1,6 @@
 *.rej
 *.tmp
+*.log
 .idea/
 node_modules/
 dist/

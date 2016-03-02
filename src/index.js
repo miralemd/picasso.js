@@ -6,6 +6,8 @@ import LayoutEngine from "./chart-components/layout-engine";
 import {default as ticker} from "./scales/ticks";
 import dataMatrix from "./data/data-matrix";
 
+import color from "./colors/color";
+
 export default {
 	charts: {
 		BarChart
@@ -23,5 +25,6 @@ export default {
 	},
 	data: {
 		dataMatrix
-	}
+	},
+	color
 };
