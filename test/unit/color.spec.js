@@ -52,14 +52,6 @@ describe( "Colors", () => {
 			expect( c ).to.deep.equal( {r: 255, g: 255, b: 255, a: 1} );
 		} );
 
-		it( "should allow mixing numerial and percentage values", () => {
-			var c = color( "rgba(30,303%,99%,1)" );
-			expect( c ).to.deep.equal( { r: 30, g: 255, b: 252, a: 1 } );
-
-			c = color( "rgb(30,303%,99%)" );
-			expect( c ).to.deep.equal( { r: 30, g: 255, b: 252, a: 1 } );
-		} );
-
 		it( "should handle numerical boundry values", () => {
 			var c = color( "rgb(255,255,255)" );
 			expect( c ).to.deep.equal( {r: 255, g: 255, b: 255, a: 1} );
@@ -84,9 +76,9 @@ describe( "Colors", () => {
 			expect( c ).to.deep.equal( {r: 255, g: 255, b: 255, a: 1} );
 		} );
 
-		it( "should not allow negative alpha values", () => {
+		it( "should clip negative alpha values", () => {
 			var c = color( "rgba(255,255,255,-1)" );
-			expect( c ).to.deep.equal( undefined );
+			expect( c ).to.deep.equal( {r: 255, g: 255, b: 255, a: 0} );
 		} );
 
 		it( "should not allow non-digit characters", () => {
@@ -94,6 +86,14 @@ describe( "Colors", () => {
 			expect( c ).to.deep.equal( undefined );
 
 			c = color( "rgb(a,b,c)" );
+			expect( c ).to.deep.equal( undefined );
+		} );
+
+		it( "should not allow mixing numerial and percentage values", () => {
+			var c = color( "rgba(255,10%,123,1)" );
+			expect( c ).to.deep.equal( undefined );
+
+			c = color( "rgb(123,55%,90%)" );
 			expect( c ).to.deep.equal( undefined );
 		} );
 	} )
