@@ -1,5 +1,6 @@
 import hex from "./hex";
 import rgb from "./rgb";
+import hsl from "./hsl";
 import palette from "./color-palette";
 
 let creators = [];
@@ -33,4 +34,5 @@ color.register = ( test, fn ) => {
 
 color.register( hex.test, hex );
 color.register( rgb.test, rgb );
+color.register( hsl.test, hsl );
 color.register( palette.test, palette );

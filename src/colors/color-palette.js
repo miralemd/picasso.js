@@ -1,3 +1,5 @@
+import RgbaColor from "./rgba-color";
+
 let colorStruct = {
 		"aliceblue": { r: 240, g: 248, b: 255 },
 		"antiquewhite": { r: 250, g: 235, b: 215 },
@@ -148,27 +150,18 @@ let colorStruct = {
 		"yellowgreen": { r: 154, g: 205, b: 50 }
 };
 
-export class ColorPalette {
-	constructor( name ) {
-		let rgb = colorStruct[name.toLowerCase().trim()];
-		this.r = rgb.r;
-		this.g = rgb.g;
-		this.b = rgb.b;
-		this.a = 1;
-	}
-	toString() {
-		return `rgba(${this.r}, ${this.g}, ${this.b}, ${this.a})`;
-	}
-}
-
 export default function colorPalette( ...s ) {
-	return new ColorPalette( ...s );
+	let key = s[0].toLowerCase().trim();
+	let rgb = colorStruct[key];
+
+	return new RgbaColor( rgb.r, rgb.g, rgb.b, 1 );
 }
 
 colorPalette.test = (...a) => {
 	if( a[0] === null || a[0] === undefined ) {
 		return false;
 	} else {
-		return colorStruct.hasOwnProperty(a[0].toString().toLowerCase().trim())
+		let key = a[0].toString().toLowerCase().trim();
+		return colorStruct.hasOwnProperty(key)
 	}
 };
