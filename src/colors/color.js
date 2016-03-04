@@ -1,4 +1,6 @@
+import hex from "./hex";
 import rgb from "./rgb";
+import palette from "./color-palette";
 
 let creators = [];
 export default function color( ...a ) {
@@ -29,4 +31,6 @@ color.register = ( test, fn ) => {
 	creators.push( {test, fn} );
 };
 
+color.register( hex.test, hex );
 color.register( rgb.test, rgb );
+color.register( palette.test, palette );
