@@ -5,8 +5,14 @@ import palette from "./color-palette";
 
 let creators = [];
 export default function color( ...a ) {
-	let cr = creators.filter( c => c.test( ...a ) )[0];
-	return cr ? cr.fn( ...a ) : undefined;
+
+	for ( let i = 0; i < creators.length; i++ ) {
+		if ( creators[i].test( ...a ) ) {
+			return creators[i].fn( ...a );
+		}
+	}
+
+	return undefined;
 }
 
 /**

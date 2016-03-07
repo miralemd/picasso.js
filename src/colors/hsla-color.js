@@ -1,9 +1,13 @@
+function toPercentage(val) {
+	return val * 100;
+}
+
 export default class HslaColor {
-	constructor( ...hsla ) {
-		this.h = hsla[0];
-		this.s = hsla[1];
-		this.l = hsla[2];
-		this.a = hsla[3];
+	constructor( h, s, l, a = 1) {
+		this.h = h;
+		this.s = s;
+		this.l = l;
+		this.a = a;
 	}
 
 	/**
@@ -41,6 +45,6 @@ export default class HslaColor {
 	}
 
 	toString() {
-		return `hsla(${this.h}, ${this.s}%, ${this.l}%, ${this.a})`;
+		return `hsla(${this.h}, ${toPercentage(this.s)}%, ${toPercentage(this.l)}%, ${this.a})`;
 	}
 }

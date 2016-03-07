@@ -51,6 +51,14 @@ describe( "Colors", () => {
 			c = color( "hsl(18, 1 , 1)" );
 			expect( c ).to.deep.equal( undefined );
 		} );
+
+		it( "should use percentage in string output", () => {
+			let c = color( "hsl(230, 100% ,50%)" ).toString();
+			expect( c ).to.equal( "hsla(230, 100%, 50%, 1)" );
+
+			c = color( "hsla(230, 100% ,50%, 0.5)" ).toString();
+			expect( c ).to.equal( "hsla(230, 100%, 50%, 0.5)" );
+		} );
 	} );
 
 	describe( "RGB", () => {

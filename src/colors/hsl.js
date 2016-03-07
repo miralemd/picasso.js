@@ -27,7 +27,7 @@ export default function hsl( ...str ) {
 		}
 	} );
 
-	return new HslaColor( h, s, l, a === undefined ? 1 : a );
+	return new HslaColor( h, s, l, a );
 }
 
 hsl.test = (...a) => rHsl.test( a[0] ) || rHsla.test( a[0] );

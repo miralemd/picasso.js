@@ -33,7 +33,7 @@ export default function rgb( ...s ) {
 		return val;
 	} );
 
-	return new RgbaColor( r, g, b, a === undefined ? 1 : a );
+	return new RgbaColor( r, g, b, a );
 }
 
 rgb.test = (...a) => rRgb.test( a[0] ) || rRgbPer.test( a[0] ) || rRgba.test( a[0] ) || rRgbaPer.test( a[0] );

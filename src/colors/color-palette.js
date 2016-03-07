@@ -162,6 +162,6 @@ colorPalette.test = (...a) => {
 		return false;
 	} else {
 		let key = a[0].toString().toLowerCase().trim();
-		return colorStruct.hasOwnProperty(key)
+		return colorStruct.hasOwnProperty(key);
 	}
 };

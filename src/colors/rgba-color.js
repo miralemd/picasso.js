@@ -1,9 +1,9 @@
 export default class RgbaColor {
-    constructor( ...rgba ) {
-        this.r = rgba[0];
-        this.g = rgba[1];
-        this.b = rgba[2];
-        this.a = rgba[3];
+    constructor( r, g, b, a = 1 ) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
     }
 
     /**
