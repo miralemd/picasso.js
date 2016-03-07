@@ -6,9 +6,9 @@ describe( "LinearScale", () => {
 		lin = new LinearScale();
 	} );
 
-	it( "should have 0 as defaults", () => {
+	it( "should have 0-1 as defaults", () => {
 		expect( lin.min ).to.equal( 0 );
-		expect( lin.max ).to.equal( 0 );
+		expect( lin.max ).to.equal( 1 );
 	} );
 
 	it( "should accept domain and output parameters", () => {
@@ -24,11 +24,16 @@ describe( "LinearScale", () => {
 		expect( lin.max ).to.equal( 17 );
 	} );
 
-	it( "should return a linearly interpolated value", () => {
-		lin.from( [-10, 10] ).to( [10, 20] );
-		expect( lin.get( -10 ) ).to.equal( 10 );
-		expect( lin.get( 10 ) ).to.equal( 20 );
-		expect( lin.get( 0 ) ).to.equal( 15 );
+	it( "should have start/end depend on domain", () => {
+		lin.from( [-10, 5, 0, 1] ).to( [1, 2, 3, 4] );
+		expect( lin.start ).to.equal( -10 );
+		expect( lin.end ).to.equal( 1 );
+	} );
+
+	it( "should have start/end depend on extended domain", () => {
+		lin.from( [-10, 5, 0, 1] ).to( [1, 2, 3, 4] );
+		expect( lin.start ).to.equal( -10 );
+		expect( lin.end ).to.equal( 1 );
 	} );
 
 	it( "should return a linearly interpolated value", () => {
@@ -36,25 +41,56 @@ describe( "LinearScale", () => {
 		expect( lin.get( -10 ) ).to.equal( 10 );
 		expect( lin.get( 10 ) ).to.equal( 20 );
 		expect( lin.get( 0 ) ).to.equal( 15 );
+	} );
+
+	it( "should return a linearly interpolated value with negative range", () => {
+		lin.from( [10, -10] ).to( [100, 200] );
+		expect( lin.get( 10 ) ).to.equal( 100 );
+		expect( lin.get( -10 ) ).to.equal( 200 );
+		expect( lin.get( 2 ) ).to.equal( 140 );
+	} );
+
+	it( "should support piecewise linear values", () => {
+		lin.from( [5, 10, 20] ).to( [1, 0, -5] );
+		expect( lin.get( 5 ) ).to.equal( 1 );
+		expect( lin.get( 10 ) ).to.equal( 0 );
+		expect( lin.get( 20 ) ).to.equal( -5 );
+
+		expect( lin.get( 0 ) ).to.equal( 2 );
+		expect( lin.get( 30 ) ).to.equal( -10 );
+	} );
+
+	it( "should support piecewise linear values with negative range", () => {
+		lin.from( [10, 5, 0, -1] ).to( [100, 200, 300, 400] );
+		expect( lin.get( 10 ) ).to.equal( 100 );
+		expect( lin.get( 6 ) ).to.equal( 180 );
+		expect( lin.get( 4 ) ).to.equal( 220 );
+		expect( lin.get( -0.5 ) ).to.equal( 350 );
+
+		expect( lin.get( 15 ) ).to.equal( 0 );
+		expect( lin.get( -2 ) ).to.equal( 500 );
 	} );
 
 	it( "should generate nice ticks when a ticker is provided", () => {
 		let ticker = {
 			generateTicks: sinon.stub()
 		};
-		ticker.generateTicks.returns( {min: 1, max: 6, ticks: [1, 2, 3, 4] });
+		ticker.generateTicks.returns( {start: 6, end: 1, ticks: [4, 3, 2, 1] });
 
-		lin = new LinearScale( [10, 20], [40, 60], ticker );
-		expect( ticker.generateTicks ).to.have.been.calledWithExactly( 10, 20, 2 );
+		lin = new LinearScale( [20, 10], [60, 40], ticker );
+		expect( ticker.generateTicks ).to.have.been.calledWithExactly( 20, 10, 2 );
 		expect( lin.min ).to.equal( 1 );
 		expect( lin.max ).to.equal( 6 );
+
+		expect( lin.start ).to.equal( 6 );
+		expect( lin.end ).to.equal( 1 );
 	} );
 
 	it( "should recalculate ticks when changing input range", () => {
 		lin.ticker = {
 			generateTicks: sinon.stub()
 		};
-		lin.ticker.generateTicks.returns( {min: -3, max: 5, ticks: [-1, 0, 1, 2]} );
+		lin.ticker.generateTicks.returns( {start: -3, end: 5, ticks: [-1, 0, 1, 2]} );
 		lin.nTicks = 7;
 		lin.from( [-4, 5] );
 		expect( lin.ticker.generateTicks ).to.have.been.calledWithExactly( -4, 5, 7 );

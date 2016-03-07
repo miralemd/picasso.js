@@ -1,9 +1,38 @@
+function linear( v, from, to ) {
+	let t = ( v - from[0]) / ( from[1] - from[0] );
+	return to[0] * (1 - t) + to[1] * t;
+}
+function piecewise( v, from, to ) {
+	let i,
+		asc = from[0] < from[1],
+		arr = asc ? from : from.slice().reverse();
+
+	if( v <= arr[0] ) {
+		i = 0;
+	} else if( v > arr[arr.length - 1] ) {
+		i = arr.length - 2;
+	} else {
+		for( i = 0; i < arr.length - 1; i++ ) {
+			if( arr[i] <= v && v <= arr[i + 1] ) {
+				break;
+			}
+		}
+		if( typeof i === "undefined" ) {
+			return NaN;
+		}
+	}
+	return linear(
+		v,
+		asc ? arr.slice( i, i + 2 ) : arr.slice( i, i + 2 ).reverse(),
+		asc ? to.slice( i, i + 2 ) : to.slice( -i - 2 )
+	);
+}
+
 export default class LinearScale {
-	constructor( from = [0, 0], to = [0, 0], ticker ) {
-		this.domain = from;
+	constructor( from = [0, 1], to = [0, 1], ticker ) {
+		this.inputDomain = from;
 		this.output = to;
 
-		this.span = this.domain[1] - this.domain[0];
 		this.ticker = ticker;
 		this.nTicks = 2;
 		this.update();
@@ -15,25 +44,32 @@ export default class LinearScale {
 	 * @returns {LinearScale}
 	 */
 	from( values ) {
-		this.domain = values;
+		this.inputDomain = values;
 		this.update();
 		return this;
 	}
 
 	to( values ) {
 		this.output = values;
+		this.update();
 		return this;
 	}
 
 	update() {
+		this.domain = this.inputDomain.slice();
+		this.domain.length = Math.min( this.inputDomain.length, this.output.length );
 		this.minValue = this.domain[0];
-		this.maxValue = this.domain[1];
+		this.maxValue = this.domain[this.domain.length - 1];
+
 		if( this.ticker ) {
 			let v = this.ticker.generateTicks( this.minValue, this.maxValue, this.nTicks );
 			this.ticks = v.ticks;
-			this.minValue = v.min;
-			this.maxValue = v.max;
+			this.minValue = Math.min( v.start, v.end );
+			this.maxValue = Math.max( v.start, v.end );
+			this.domain[0] = v.start;
+			this.domain[this.domain.length - 1] = v.end;
 		}
+		this.s = this.domain.length <= 2 ? linear : piecewise;
 		return this;
 	}
 	/**
@@ -42,10 +78,16 @@ export default class LinearScale {
 	 * @returns {Number}
 	 */
 	get( value ) {
-		let t = ( value - this.minValue) / ( this.maxValue - this.minValue );
-		return this.output[0] + t * (this.output[1] - this.output[0] );
+		return this.s( value, this.domain, this.output );
 	}
 
+	get start() {
+		return this.domain[0];
+	}
+
+	get end() {
+		return this.domain[this.domain.length - 1];
+	}
 	get min() {
 		return this.minValue;
 	}

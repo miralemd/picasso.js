@@ -28,12 +28,14 @@ export default {
 		}
 		return sign * nf * Math.pow( 10, exp );
 	},
-	generateTicks( min, max, nTicks = 2, round = false ) {
+	generateTicks( start, end, nTicks = 2, round = false ) {
 		let nfrac,
 			d,
 			graphmin,
 			graphmax,
 			range,
+			max = Math.max( start, end ),
+			min = Math.min( start, end ),
 			ticks = [];
 
 		range = this.niceNum( max - min, round );
@@ -44,9 +46,13 @@ export default {
 		for( let v = graphmin; v < graphmax + 0.5 * d; v += d ) {
 			ticks.push( v );
 		}
+		if( start > end ) {
+			[graphmin, graphmax] = [graphmax, graphmin];
+			ticks.reverse();
+		}
 		return {
-			min: graphmin,
-			max: graphmax,
+			start: graphmin,
+			end: graphmax,
 			nfrac,
 			ticks
 		};
