@@ -1,0 +1,8 @@
+dependencies:
+    override:
+        - curl -u${ARTIFACTORY_USER}:${ARTIFACTORY_PWD} "https://qliktech.artifactoryonline.com/qliktech/api/npm/npm-local/auth/qlik" > ./.npmrc
+        - npm install
+
+test:
+    post:
+        - npm run lint
