@@ -19,7 +19,7 @@ export default function hsl( ...str ) {
 			case 3:
 				returnVal = returnVal > 100 ? 100 : returnVal;
 				returnVal = returnVal < 0 ? 0 : returnVal;
-				return Math.round(returnVal);
+				return Math.round( returnVal ) / 100;
 			default:
 				returnVal = returnVal > 1 ? 1 : returnVal;
 				returnVal = returnVal < 0 ? 0 : returnVal;

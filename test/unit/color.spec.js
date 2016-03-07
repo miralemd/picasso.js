@@ -5,25 +5,25 @@ describe( "Colors", () => {
 	describe( "HSL", () => {
 		it( "should handle hsl values", () => {
 			let c = color( "hsl(180,100%,50%)" );
-			expect( c ).to.deep.equal( {h: 180, s: 100, l: 50, a: 1} );
+			expect( c ).to.deep.equal( {h: 180, s: 1, l: 0.5, a: 1} );
 		} );
 
 		it( "should handle hsla values", () => {
 			let c = color( "hsla(180, 100% ,50%, 0.5)" );
-			expect( c ).to.deep.equal( {h: 180, s: 100, l: 50, a: 0.5} );
+			expect( c ).to.deep.equal( {h: 180, s: 1, l: 0.5, a: 0.5} );
 		} );
 
 		it( "should normalize angle values", () => {
 			let c = color( "hsla(-120, 100% ,50%, 0.5)" );
-			expect( c ).to.deep.equal( {h: 240, s: 100, l: 50, a: 0.5} );
+			expect( c ).to.deep.equal( {h: 240, s: 1, l: 0.5, a: 0.5} );
 
 			c = color( "hsla(480, 100% ,50%, 0.5)" );
-			expect( c ).to.deep.equal( {h: 120, s: 100, l: 50, a: 0.5} );
+			expect( c ).to.deep.equal( {h: 120, s: 1, l: 0.5, a: 0.5} );
 		} );
 
 		it( "should clip percentage values", () => {
 			let c = color( "hsla(180, 101% ,101%, 1)" );
-			expect( c ).to.deep.equal( {h: 180, s: 100, l: 100, a: 1} );
+			expect( c ).to.deep.equal( {h: 180, s: 1, l: 1, a: 1} );
 		} );
 
 		it( "should clip negative percentage values", () => {
@@ -33,26 +33,18 @@ describe( "Colors", () => {
 
 		it( "should clip alpha value", () => {
 			let c = color( "hsla(255, 100%, 50%, 10.10)" );
-			expect( c ).to.deep.equal( {h: 255, s: 100, l: 50, a: 1} );
+			expect( c ).to.deep.equal( {h: 255, s: 1, l: 0.5, a: 1} );
 		} );
 
-		it( "should not allow decimal values", () => {
-			let c = color( "hsla(18.0, 11.0% , 19.0%, 1)" );
-			expect( c ).to.deep.equal( undefined );
-
-			c = color( "hsl(18.0, 11.0% , 19.0%)" );
-			expect( c ).to.deep.equal( undefined );
-		} );
-
-		it( "should allow decimal values", () => {
+		it( "should allow decimal values and round to nearest integer", () => {
 			let c = color( "hsla(180.6, 11.6% , 19.6%, 1)" );
-			expect( c ).to.deep.equal( {h: 181, s: 12, l: 20, a: 1} );
+			expect( c ).to.deep.equal( {h: 181, s: 0.12, l: 0.2, a: 1} );
 
 			c = color( "hsl(180.6, 11.6% , 19.6%)" );
-			expect( c ).to.deep.equal( {h: 181, s: 12, l: 20, a: 1} );
+			expect( c ).to.deep.equal( {h: 181, s: 0.12, l: 0.2, a: 1} );
 		} );
 
-		it( "should not allow saturation and lightness values without percentage character", () => {
+		it( "should not allow saturation and lightness values without a percentage character", () => {
 			let c = color( "hsla(18, 1 , 0.5, 1)" );
 			expect( c ).to.deep.equal( undefined );
 

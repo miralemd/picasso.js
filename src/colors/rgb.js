@@ -11,6 +11,7 @@ export default function rgb( ...s ) {
 
 	let [r, g, b, a] = ary.slice( 1, 5 ).map( val => {
 
+		// Last value is the Alpha which may or may not be present
 		if ( ary.indexOf( val ) === 4 ) {
 			val = parseFloat( val );
 			val = val > 1 ? 1 : val;
@@ -19,7 +20,7 @@ export default function rgb( ...s ) {
 		}
 
 		if ( val.includes( "%" ) ) {
-			val = parseInt( val.replace( "%", "" ) );
+			val = parseFloat( val );
 			val = val > 100 ? 100 : val;
 			val = val < 0 ? 0 : val;
 			val = Math.round( 255 * ( val / 100 ) );

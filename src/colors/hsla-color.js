@@ -41,6 +41,6 @@ export default class HslaColor {
 	}
 
 	toString() {
-		return `hsla(${this.h}, ${this.s}, ${this.l}, ${this.a})`;
+		return `hsla(${this.h}, ${this.s}%, ${this.l}%, ${this.a})`;
 	}
 }
