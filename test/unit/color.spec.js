@@ -59,6 +59,22 @@ describe( "Colors", () => {
 			c = color( "hsla(230, 100% ,50%, 0.5)" ).toString();
 			expect( c ).to.equal( "hsla(230, 100%, 50%, 0.5)" );
 		} );
+
+		it( "should not allow non-digit characters", () => {
+			let c = color( "hsla(a,b,c,d)" );
+			expect( c ).to.equal( undefined );
+
+			c = color( "hsl(a,b,c)" );
+			expect( c ).to.equal( undefined );
+		} );
+
+		it( "should handle whitespace", () => {
+			let c = color( " hsla( 120 , 100% , 50% , 0.5 ) " );
+			expect( c ).to.deep.equal( {h: 120, s: 1, l: 0.5, a: 0.5} );
+
+			c = color( " hsla( 80 , 100% , 50% , 0.5 ) " );
+			expect( c ).to.deep.equal( {h: 80, s: 1, l: 0.5, a: 0.5} );
+		} );
 	} );
 
 	describe( "RGB", () => {
