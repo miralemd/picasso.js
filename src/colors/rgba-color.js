@@ -49,24 +49,6 @@ export default class RgbaColor {
 	}
 
 	/**
-	 * Return the color components in hsv space using "hexcone" model for value (lightness)
-	 * @param {Color|string} c
-	 * @returns {object} The color components in hsv space {h:0-360, s:0-100, v:0-100}
-	 */
-	toHSV() {
-
-	}
-
-	/**
-	 * Return the color components in hsv space using "hexcone" model for value (lightness)
-	 * @param {Color|string} c
-	 * @returns {object} The color components in hsv space {h:0-360, s:0-100, v:0-100}
-	 */
-	toHSVComponents() {
-
-	}
-
-	/**
 	 * Returns a uint representation of this color
 	 * @return {number}
 	 */
