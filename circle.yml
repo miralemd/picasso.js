@@ -1,0 +1,16 @@
+general:
+    artifacts:
+        - "coverage/"
+        - "dist/"
+
+dependencies:
+    override:
+        - curl -u${ARTIFACTORY_USER}:${ARTIFACTORY_PWD} "https://qliktech.artifactoryonline.com/qliktech/api/npm/npm-local/auth/qlik" > ./.npmrc
+        - npm install
+    post:
+        - npm run build
+
+test:
+    override:
+        - npm run test:coverage
+        - npm run lint
