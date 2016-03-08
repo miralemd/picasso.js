@@ -1,8 +1,11 @@
-function linear( v, from, to ) {
+import numeric from "./interpolators/numeric";
+
+function linear( v, from, to, interp ) {
 	let t = ( v - from[0]) / ( from[1] - from[0] );
-	return to[0] * (1 - t) + to[1] * t;
+	return interp.interpolate( to[0], to[1], t );
 }
-function piecewise( v, from, to ) {
+
+function piecewise( v, from, to, interp ) {
 	let i,
 		asc = from[0] < from[1],
 		arr = asc ? from : from.slice().reverse();
@@ -24,7 +27,8 @@ function piecewise( v, from, to ) {
 	return linear(
 		v,
 		asc ? arr.slice( i, i + 2 ) : arr.slice( i, i + 2 ).reverse(),
-		asc ? to.slice( i, i + 2 ) : to.slice( -i - 2 )
+		asc ? to.slice( i, i + 2 ) : to.slice( -i - 2 ),
+		interp
 	);
 }
 
@@ -35,6 +39,7 @@ export default class LinearScale {
 
 		this.ticker = ticker;
 		this.nTicks = 2;
+		this.interpolator = numeric;
 		this.update();
 	}
 
@@ -78,13 +83,11 @@ export default class LinearScale {
 	 * @returns {Number}
 	 */
 	get( value ) {
-		return this.s( value, this.domain, this.output );
+		return this.s( value, this.domain, this.output, this.interpolator );
 	}
-
 	get start() {
 		return this.domain[0];
 	}
-
 	get end() {
 		return this.domain[this.domain.length - 1];
 	}
