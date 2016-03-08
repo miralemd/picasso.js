@@ -1,6 +1,7 @@
-artifacts:
-    - "coverage/"
-    - "dist/"
+general:
+    artifacts:
+        - "coverage/"
+        - "dist/"
 
 dependencies:
     override:
