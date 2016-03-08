@@ -275,4 +275,59 @@ describe( "Colors", () => {
 			expect( c ).to.equal( undefined );
 		} );
 	} );
+
+	describe( "Color convertions", () => {
+
+		it( "should convert HSL to RGB", () => {
+			let c = color( "hsl(180, 100%, 50%)" );
+			expect( c.toRGB() ).to.equal( "rgb(0, 255, 255)" );
+		} );
+
+		it( "should convert HSL to RGB, s=0%", () => {
+			let c = color( "hsl(180, 0%, 50%)" );
+			expect( c.toRGB() ).to.equal( "rgb(128, 128, 128)" );
+		} );
+
+		it( "should convert HSLA to RGBA", () => {
+			let c = color( "hsla(480, 100% ,50%, 0.8)" );
+			expect( c.toRGBA() ).to.equal( "rgba(0, 255, 0, 0.8)" );
+		} );
+
+		it( "should convert HSLA to HSL", () => {
+			let c = color( "hsla(180, 100%, 50%, 0.5)" );
+			expect( c.toHSL() ).to.equal( "hsl(180, 100%, 50%)" );
+		} );
+
+		it( "should convert HSLA to HSLA", () => {
+			let c = color( "hsla(180, 100%, 50%, 0.5)" );
+			expect( c.toHSLA() ).to.equal( "hsla(180, 100%, 50%, 0.5)" );
+		} );
+
+
+		it( "should convert RGB to HSL", () => {
+			let c = color( "rgb(3, 33, 99)" );
+			expect( c.toHSL() ).to.equal( "hsl(221, 94, 20)" );
+		} );
+
+		it( "should convert RGBA to HSLA", () => {
+			let c = color( "rgba(3, 33, 99, 0.1)" );
+			expect( c.toHSLA() ).to.equal( "hsla(221, 94, 20, 0.1)" );
+		} );
+
+		it( "should convert RGB to HSLA", () => {
+			let c = color( "rgba(3, 33, 99, 0.1)" );
+			expect( c.toHSLA() ).to.equal( "hsla(221, 94, 20, 0.1)" );
+		} );
+
+		it( "should convert RGBA to RGB", () => {
+			let c = color( "rgba(255,255,255, 0.9)" );
+			expect( c.toRGB() ).to.equal( "rgb(255, 255, 255)" );
+		} );
+
+		it( "should convert RGBA to RGBA", () => {
+			let c = color( "rgba(255,255,255, 0.9)" );
+			expect( c.toRGBA() ).to.equal( "rgba(255, 255, 255, 0.9)" );
+		} );
+	} );
+
 });
