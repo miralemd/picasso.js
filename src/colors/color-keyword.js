@@ -150,14 +150,14 @@ let colorStruct = {
 		"yellowgreen": { r: 154, g: 205, b: 50 }
 };
 
-export default function colorPalette( ...s ) {
+export default function colorKeyWord( ...s ) {
 	let key = s[0].toLowerCase().trim();
 	let rgb = colorStruct[key];
 
 	return new RgbaColor( rgb.r, rgb.g, rgb.b, 1 );
 }
 
-colorPalette.test = (...a) => {
+colorKeyWord.test = (...a) => {
 	if( a[0] === null || a[0] === undefined ) {
 		return false;
 	} else {

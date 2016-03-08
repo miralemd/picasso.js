@@ -9,7 +9,7 @@ export default function hsl( ...str ) {
 
 	let [h, s, l, a] = match.slice( 1 ).map( v => {
 
-		let returnVal = parseFloat( v.replace( "%", "" ) );
+		let returnVal = parseFloat( v );
 
 		switch ( match.indexOf( v ) ) {
 			case 1:

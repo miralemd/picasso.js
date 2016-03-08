@@ -1,7 +1,7 @@
 import hex from "./hex";
 import rgb from "./rgb";
 import hsl from "./hsl";
-import palette from "./color-palette";
+import colorKeyWord from "./color-keyword";
 
 let creators = [];
 export default function color( ...a ) {
@@ -11,8 +11,6 @@ export default function color( ...a ) {
 			return creators[i].fn( ...a );
 		}
 	}
-
-	return undefined;
 }
 
 /**
@@ -41,4 +39,4 @@ color.register = ( test, fn ) => {
 color.register( hex.test, hex );
 color.register( rgb.test, rgb );
 color.register( hsl.test, hsl );
-color.register( palette.test, palette );
+color.register( colorKeyWord.test, colorKeyWord );
