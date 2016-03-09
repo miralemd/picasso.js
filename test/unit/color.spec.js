@@ -306,17 +306,17 @@ describe( "Colors", () => {
 
 		it( "should convert RGB to HSL", () => {
 			let c = color( "rgb(3, 33, 99)" );
-			expect( c.toHSL() ).to.equal( "hsl(221, 94, 20)" );
+			expect( c.toHSL() ).to.equal( "hsl(221, 94%, 20%)" );
 		} );
 
 		it( "should convert RGBA to HSLA", () => {
 			let c = color( "rgba(3, 33, 99, 0.1)" );
-			expect( c.toHSLA() ).to.equal( "hsla(221, 94, 20, 0.1)" );
+			expect( c.toHSLA() ).to.equal( "hsla(221, 94%, 20%, 0.1)" );
 		} );
 
 		it( "should convert RGB to HSLA", () => {
 			let c = color( "rgba(3, 33, 99, 0.1)" );
-			expect( c.toHSLA() ).to.equal( "hsla(221, 94, 20, 0.1)" );
+			expect( c.toHSLA() ).to.equal( "hsla(221, 94%, 20%, 0.1)" );
 		} );
 
 		it( "should convert RGBA to RGB", () => {
@@ -328,6 +328,22 @@ describe( "Colors", () => {
 			let c = color( "rgba(255,255,255, 0.9)" );
 			expect( c.toRGBA() ).to.equal( "rgba(255, 255, 255, 0.9)" );
 		} );
+
+		it( "should convert RGBA to HEX", () => {
+			let c = color( "rgba(255,255,0,1)" );
+			expect( c.toHex() ).to.equal( "#ffff00" );
+		} );
+
+		it( "should calculate luminance for RGBA color", () => {
+			let c = color( "rgba(255,255,0,1)" );
+			expect( c.getLuminance() ).to.equal( 0.94 );
+		} );
+
+		//it( "should blend RGBA colors", () => {
+		//	let c1 = color( "rgba(52,247,247,1)" );
+		//	let c2 = color( "rgba(24,24,255,1)" );
+		//	expect( c1.blend( c2 ) ).to.equal( "rgb(72, 161, 251)" );
+		//} );
 	} );
 
 });
