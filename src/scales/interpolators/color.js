@@ -1,4 +1,4 @@
-import {default as color} from "../colors/color";
+import {default as color} from "../../colors/color";
 import {default as numeric} from "./numeric";
 
 
@@ -15,11 +15,7 @@ export default {
 	interpolate: function( from, to, t ) {
 		let c1 = typeof from === "string" ? this.color( from ) : from,
 			c2 = typeof to === "string" ? this.color( to ) : to;
-		return this.color(
-			this.numeric( c1.r, c2.r, t ),
-			this.numeric( c1.g, c2.g, t ),
-			this.numeric( c1.b, c2.b, t ),
-			this.numeric( c1.a, c2.a, t )
+		return this.color(`rgba(${Math.round(this.numeric.interpolate( c1.r, c2.r, t ))}, ${Math.round(this.numeric.interpolate( c1.g, c2.g, t ))},	${Math.round(this.numeric.interpolate( c1.b, c2.b, t ))}, ${Math.round(this.numeric.interpolate( c1.a, c2.a, t ))})`
 		);
 	}
 };

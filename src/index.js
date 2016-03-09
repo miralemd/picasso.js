@@ -5,7 +5,7 @@ import LinearScale from "./scales/linear";
 import LayoutEngine from "./chart-components/layout-engine";
 import {default as ticker} from "./scales/ticks";
 import dataMatrix from "./data/data-matrix";
-
+import colorLerp from "./scales/interpolators/color";
 import color from "./colors/color";
 
 export default {
@@ -26,5 +26,6 @@ export default {
 	data: {
 		dataMatrix
 	},
-	color
+	color,
+	colorLerp
 };
