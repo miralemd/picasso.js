@@ -158,10 +158,10 @@ export default function colorKeyWord( ...s ) {
 }
 
 colorKeyWord.test = (...a) => {
-	if( a[0] === null || a[0] === undefined ) {
+	if( a[0] === null || a[0] === undefined || typeof a[0] !== "string" ) {
 		return false;
 	} else {
-		let key = a[0].toString().toLowerCase().trim();
+		let key = a[0].toLowerCase().trim();
 		return colorStruct.hasOwnProperty(key);
 	}
 };

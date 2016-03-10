@@ -36,4 +36,4 @@ export default function rgb( ...s ) {
 	return new RgbaColor( r, g, b, a );
 }
 
-rgb.test = (...a) => rRgb.test( a[0] ) || rRgba.test( a[0] ) || rRgbPer.test( a[0] ) || rRgbaPer.test( a[0] );
+rgb.test = (...a) => typeof a[0] === "string" && ( rRgb.test( a[0] ) || rRgba.test( a[0] ) || rRgbPer.test( a[0] ) || rRgbaPer.test( a[0] ) );

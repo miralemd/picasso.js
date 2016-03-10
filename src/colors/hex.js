@@ -12,4 +12,4 @@ export default function hex( ...s ) {
 	return new RgbaColor( r, g, b, 1 );
 }
 
-hex.test = (...a) => rHex.test( a[0] ) || rHexShort.test( a[0] );
+hex.test = (...a) => typeof a[0] === "string" && ( rHex.test( a[0] ) || rHexShort.test( a[0] ) );

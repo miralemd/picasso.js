@@ -24,9 +24,9 @@ colorObject.test = ( ...a ) => {
 };
 
 colorObject.getColorType = ( obj ) => {
-	if ( obj.hasOwnProperty("r") && obj.hasOwnProperty("g") && obj.hasOwnProperty("b") ) {
+	if ( typeof obj === "object" && obj.hasOwnProperty("r") && obj.hasOwnProperty("g") && obj.hasOwnProperty("b") ) {
 		return "rgb";
-	} else if ( obj.hasOwnProperty("h") && obj.hasOwnProperty("s") && obj.hasOwnProperty("l") ) {
+	} else if ( typeof obj === "object" && obj.hasOwnProperty("h") && obj.hasOwnProperty("s") && obj.hasOwnProperty("l") ) {
 		return "hsl";
 	}
 };
