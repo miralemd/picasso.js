@@ -303,16 +303,95 @@ describe( "Colors", () => {
 		} );
 	} );
 
-	describe( "Color convertions", () => {
+	describe("RGBA color", () => {
+		it( "should convert RGB to HSL", () => {
+			let c1 = color( "rgb(3, 33, 99)" );
+			let c2 = color( "rgb(0, 0, 0)" );
+			let c3 = color( "rgb(255, 255, 255)" );
 
-		it( "should convert HSL to RGB", () => {
-			let c = color( "hsl(180, 100%, 50%)" );
-			expect( c.toRGB() ).to.equal( "rgb(0, 255, 255)" );
+			expect( c1.toHSL() ).to.equal( "hsl(221, 94%, 20%)" );
+			expect( c2.toHSL() ).to.equal( "hsl(0, 0%, 0%)" );
+			expect( c3.toHSL() ).to.equal( "hsl(0, 0%, 100%)" );
+
 		} );
 
-		it( "should convert HSL to RGB, s=0%", () => {
-			let c = color( "hsl(180, 0%, 50%)" );
-			expect( c.toRGB() ).to.equal( "rgb(128, 128, 128)" );
+
+	} );
+
+	describe( "Conversions from RGBA", () => {
+
+		it( "should convert RGB to HSL", () => {
+			let c1 = color( "rgb(3, 33, 99)" ),
+				c2 = color( "rgb(0, 0, 0)" ),
+				c3 = color( "rgb(255, 255, 255)" );
+
+			expect( c1.toHSL() ).to.equal( "hsl(221, 94%, 20%)" );
+			expect( c2.toHSL() ).to.equal( "hsl(0, 0%, 0%)" );
+			expect( c3.toHSL() ).to.equal( "hsl(0, 0%, 100%)" );
+
+		} );
+
+		it( "should convert RGBA to HSLA", () => {
+			let c = color( "rgba(3, 33, 99, 0.1)" );
+			expect( c.toHSLA() ).to.equal( "hsla(221, 94%, 20%, 0.1)" );
+		} );
+
+		it( "should convert RGBA to RGB", () => {
+			let c = color( "rgba(255,255,255, 0.9)" );
+			expect( c.toRGB() ).to.equal( "rgb(255, 255, 255)" );
+		} );
+
+		it( "should convert RGBA to RGBA", () => {
+			let c = color( "rgba(255,255,255, 0.9)" );
+			expect( c.toRGBA() ).to.equal( "rgba(255, 255, 255, 0.9)" );
+		} );
+
+		it( "should convert RGB to HEX", () => {
+			let c = color( "rgb(255,255,0)" );
+			expect( c.toHex() ).to.equal( "#ffff00" );
+		} );
+
+		it( "should convert RGBA to number", () => {
+			let c = color( "rgb(100, 128, 200)" );
+			expect( c.toNumber() ).to.equal( 6586568 );
+		} );
+
+		it( "should convert RGBA to string", () => {
+			let c = color( "rgba(50, 50, 50, 0.6)" );
+			expect( c.toString() ).to.equal( "rgba(50, 50, 50, 0.6)" );
+		} );
+
+		it( "should compare 2 RGBA colors, return true", () => {
+			let c1 = color( "rgba(50, 50, 50, 0.6)" );
+			let c2 = color( "rgba(50, 50, 50, 0.6)" );
+			expect( c1.isEqual( c2 ) ).to.deep.equal( true );
+		} );
+
+		it( "should compare 2 RGBA colors, return false", () => {
+			let c1 = color( "rgba(50, 50, 50, 0.6)" ),
+				c2 = color( "rgba(50, 50, 50, 1)" );
+			expect( c1.isEqual( c2 ) ).to.deep.equal( false );
+
+			let c3 = color( "rgba(50, 50, 50, 0.6)" ),
+				c4 = color( "rgba(50, 51, 50, 0.6)" );
+			expect( c3.isEqual( c4 ) ).to.deep.equal( false );
+
+		} );
+
+	} );
+
+	describe( "Conversions from HSLA", () => {
+
+		it( "should convert HSL to RGB", () => {
+			let c1 = color( "hsl(0, 100%, 100%)" ),
+				c2 = color( "hsl(0, 0%, 0%)" ),
+				c3 = color( "hsl(359, 60%, 50%)" ),
+				c4 = color( "hsl(128, 50%, 33%)" );
+
+			expect( c1.toRGB() ).to.equal( "rgb(255, 255, 255)" );
+			expect( c2.toRGB() ).to.equal( "rgb(0, 0, 0)" );
+			expect( c3.toRGB() ).to.equal( "rgb(204, 51, 54)" );
+			expect( c4.toRGB() ).to.equal( "rgb(42, 126, 53)" );
 		} );
 
 		it( "should convert HSLA to RGBA", () => {
@@ -330,47 +409,142 @@ describe( "Colors", () => {
 			expect( c.toHSLA() ).to.equal( "hsla(180, 100%, 50%, 0.5)" );
 		} );
 
-
-		it( "should convert RGB to HSL", () => {
-			let c = color( "rgb(3, 33, 99)" );
-			expect( c.toHSL() ).to.equal( "hsl(221, 94%, 20%)" );
-		} );
-
-		it( "should convert RGBA to HSLA", () => {
-			let c = color( "rgba(3, 33, 99, 0.1)" );
-			expect( c.toHSLA() ).to.equal( "hsla(221, 94%, 20%, 0.1)" );
-		} );
-
-		it( "should convert RGB to HSLA", () => {
-			let c = color( "rgba(3, 33, 99, 0.1)" );
-			expect( c.toHSLA() ).to.equal( "hsla(221, 94%, 20%, 0.1)" );
-		} );
-
-		it( "should convert RGBA to RGB", () => {
-			let c = color( "rgba(255,255,255, 0.9)" );
-			expect( c.toRGB() ).to.equal( "rgb(255, 255, 255)" );
-		} );
-
-		it( "should convert RGBA to RGBA", () => {
-			let c = color( "rgba(255,255,255, 0.9)" );
-			expect( c.toRGBA() ).to.equal( "rgba(255, 255, 255, 0.9)" );
-		} );
-
-		it( "should convert RGBA to HEX", () => {
-			let c = color( "rgba(255,255,0,1)" );
+		it( "should convert HSL to HEX", () => {
+			let c = color( "hsl(60, 100%, 50%)" );
 			expect( c.toHex() ).to.equal( "#ffff00" );
 		} );
 
-		it( "should calculate luminance for RGBA color", () => {
-			let c = color( "rgba(255,255,0,1)" );
-			expect( c.getLuminance() ).to.equal( 0.94 );
+		it( "should convert HSL to 24 bit number", () => {
+			let c = color( "hsl(359, 100%, 100%)" );
+			expect( c.toNumber() ).to.equal( 0xffffff );
 		} );
 
-		//it( "should blend RGBA colors", () => {
-		//	let c1 = color( "rgba(52,247,247,1)" );
-		//	let c2 = color( "rgba(24,24,255,1)" );
-		//	expect( c1.blend( c2 ) ).to.equal( "rgb(72, 161, 251)" );
-		//} );
+		it( "should convert HSLA to string", () => {
+			let c = color( "hsl(359, 100%, 100%)" );
+			expect( c.toString() ).to.equal( "hsla(359, 100%, 100%, 1)" );
+		} );
+
+		it( "should compare 2 HSLA colors, return true", () => {
+			let c1 = color( "hsla(180, 80%, 50%, 0.6)" );
+			let c2 = color( "hsla(180, 80%, 50%, 0.6)" );
+			expect( c1.isEqual( c2 ) ).to.deep.equal( true );
+		} );
+
+		it( "should compare 2 HSLA colors, return false", () => {
+			let c1 = color( "hsla(180, 80%, 50%, 0.6)" );
+			let c2 = color( "hsl(180, 80%, 50%)" );
+			expect( c1.isEqual( c2 ) ).to.deep.equal( false );
+
+			let c3 = color( "hsla(180, 80%, 50%, 0.6)" );
+			let c4 = color( "hsla(181, 80%, 50%, 0.6)" );
+			expect( c3.isEqual( c4 ) ).to.deep.equal( false );
+
+		} );
+
 	} );
 
-});
+	describe( "Color luminance", () => {
+
+		it( "should calculate luminance of RGBA color", () => {
+			let c1 = color( "yellow" ),
+				c2 = color( "white" ),
+				c3 = color( "black" ),
+				c4 = color( "blue" );
+			expect( c1.getLuminance() ).to.equal( 0.9412757300600073 );
+			expect( c2.getLuminance() ).to.equal( 0.9999999999999999 );
+			expect( c3.getLuminance() ).to.equal( 0 );
+			expect( c4.getLuminance() ).to.equal( 0.33763886032268264 );
+		} );
+
+		it( "should calculate luminance of HSLA color", () => {
+			let c1 = color( "hsl(60,100%,50%)" ),
+				c2 = color( "hsl(0,0%,100%)" ),
+				c3 = color( "hsl(0,0%,0%)" ),
+				c4 = color( "hsl(309,85%,51%)" );
+
+			expect( c1.getLuminance() ).to.equal( 0.9412757300600073 );
+			expect( c2.getLuminance() ).to.equal( 0.9999999999999999 );
+			expect( c3.getLuminance() ).to.equal( 0 );
+			expect( c4.getLuminance() ).to.equal( 0.5781546696097349 );
+
+		} );
+
+		it( "should calculate if the color is dark", () => {
+			let c1 = color( "black" ),
+				c2 = color( "white" ),
+				c3 = color( "hsl(240, 100%, 50%)" ),
+				c4 = color( "lightblue" );
+
+			expect( c1.isDark() ).to.equal( true );
+			expect( c2.isDark() ).to.equal( false );
+			expect( c3.isDark() ).to.equal( true );
+			expect( c4.isDark() ).to.equal( false );
+
+		} );
+
+	} );
+
+	describe( "Color contrast", () => {
+
+		it( "should calculate contrast of two RGBA colors", () => {
+			let c1 = color( "white" ),
+				c2 = color( "navy" ),
+				c3 = color( "yellow" );
+
+			expect( c1.getContrast( c2 ) ).to.equal( 4.7840030125136686 );
+			expect( c1.getContrast( c3 ) ).to.equal( 1.059241105334474 );
+
+		} );
+
+		it( "should calculate contrast of two HSLA colors", () => {
+			let c1 = color( "hsl(0, 0%, 100%)" ),
+				c2 = color( "hsl(240, 100%, 25%)" ),
+				c3 = color( "hsl(60, 100%, 50%)" );
+
+			expect( c1.getContrast( c2 ) ).to.equal( 4.7840030125136686 );
+			expect( c1.getContrast( c3 ) ).to.equal( 1.059241105334474 );
+
+		} );
+
+		it( "should calculate contrast between RGB and HSL colors", () => {
+			let c1 = color( "white" ),
+				c2 = color( "hsl(60, 100%, 50%)" );
+
+			expect( c1.getContrast( c2 ) ).to.equal( 1.059241105334474 );
+
+		} );
+
+		it( "should select one of two RGB colors with the highest contrast to the current RGB color", () => {
+
+			let c1 = color( "green" ),
+				c2 = color( "red" ),
+				c3 = color( "darkgreen" );
+
+			expect( c2.getMostContrastColor( c1, c3 ) ).to.deep.equal( c3 );
+		} );
+
+		it( "should select one of two HSL colors with the highest contrast to the current HSL color", () => {
+
+			let c1 = color( "hsl(120, 100%, 25%)" ),
+				c2 = color( "hsl(0, 100%, 50%)" ),
+				c3 = color( "hsl(120, 100%, 20%)" );
+
+			expect( c2.getMostContrastColor( c1, c3 ) ).to.deep.equal( c3 );
+		} );
+
+		it( "should select one of two RGB and HSL colors with the highest contrast to the current HSL color", () => {
+
+			let c1 = color( "hsl(120, 100%, 25%)" ),
+				c2 = color( "hsl(0, 100%, 50%)" ),
+				c3 = color( "darkgreen" );
+
+			expect( c2.getMostContrastColor( c1, c3 ) ).to.deep.equal( c3 );
+		} );
+	} );
+
+} );
+
+
+
+
+

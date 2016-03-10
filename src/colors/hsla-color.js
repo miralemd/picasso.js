@@ -1,15 +1,17 @@
-function toPercentage(val) {
+import {isDark, getContrast, getMostContrastColor} from "./color-type-extend.js";
+
+const toPercentage = (val) => {
 	return val * 100;
-}
+};
 
 /**
- *
+ * Converts HSL to RGB.
  * @param h - The hue
  * @param s - The saturation
  * @param l - The lightness
- * @returns {*[]} - r, g, b in set [0,255]
+ * @returns {string} - In format 0, 0, 0
  */
-function toRGB( h, s, l ) {
+const toRgb = ( h, s, l ) => {
 	let r, g, b;
 
 	h = h / 360;
@@ -34,12 +36,20 @@ function toRGB( h, s, l ) {
 		b = hue2rgb( p, q, h - 1 / 3 );
 	}
 
-	r = Math.round( r * 255 );
-	g = Math.round( g * 255 );
-	b = Math.round( b * 255 );
+	return {
+		r: Math.round( r * 255 ),
+		g: Math.round( g * 255 ),
+		b: Math.round( b * 255 )
+	};
+};
 
-	return `${r}, ${g}, ${b}`;
-}
+const toByte = ( h, s, l ) => {
+	return {
+		h: parseInt( h * 255 / 359 ) & 0xFF,
+		s: parseInt( s * 255 ) & 0xFF,
+		l: parseInt( l * 255 ) & 0xFF
+	};
+};
 
 export default class HslaColor {
 	constructor( h, s, l, a = 1) {
@@ -50,16 +60,16 @@ export default class HslaColor {
 	}
 
 	/**
-	* Returns a hsl string representation of this color using "bi-hexcone" model for lightness
-	* @return {string} In format hsl(0,0,0)
+	* Returns a hsl string representation of this color.
+	* @returns {string} - In format hsl(0, 0%, 0%)
 	*/
 	toHSL() {
 		return `hsl(${this.h}, ${toPercentage(this.s)}%, ${toPercentage(this.l)}%)`;
 	}
 
 	/**
-	 * Returns a hsla string representation of this color using "bi-hexcone" model for lightness
-	 * @return {string} In format hsla(0,0,0,0)
+	 * Returns a hsla string representation of this color.
+	 * @return {string} - In format hsla(0, 0%, 0%, 0)
 	 */
 	toHSLA() {
 		return this.toString();
@@ -67,25 +77,101 @@ export default class HslaColor {
 
 	/**
 	 * Returns an rgb string representation of this color.
-	 * @return {string} An rgb string representation of this color
+	 * @return {string} - In format rgb(0, 0, 0)
 	 */
 	toRGB() {
-		let rgb = toRGB( this.h, this.s, this.l );
-		return `rgb(${rgb})`;
+		let rgb = toRgb( this.h, this.s, this.l );
+		return `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
 	}
 
 	/**
 	 * Returns an rgba string representation of this color.
-	 * @return {string} An rgba string representation of this color.
+	 * @return {string} - In format rgba(0, 0, 0, 0)
 	 */
 	toRGBA() {
-		let rgba = toRGB( this.h, this.s, this.l );
-		return `rgba(${rgba}, ${this.a})`;
+		let rgb = toRgb( this.h, this.s, this.l );
+		return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${this.a})`;
 	}
 
+	/**
+	 * Returns a hex string representation of this color.
+	 * @return {string} - In format #000000
+	 */
+	toHex() {
+
+		let rgb = toRgb( this.h, this.s, this.l );
+
+		let componentToHex = ( c ) => {
+			var hex = c.toString( 16 );
+			return hex.length === 1 ? "0" + hex : hex;
+		};
+		return "#" + componentToHex( rgb.r ) + componentToHex( rgb.g ) + componentToHex( rgb.b );
+	}
+
+	/**
+	 * Returns an number representation of the color
+	 * @return {number} - Unsigned 24 bt integer in the range 0-16 777 216
+	 */
+	toNumber() {
+
+		let hex = toByte( this.h, this.s, this.l );
+
+		return ( hex.h << 16 ) + ( hex.s << 8 ) + hex.l;
+	}
+
+	/**
+	 * Returns a string representation of this color.
+	 * @returns {string} - In format hsla(0, 0%, 0%, 0)
+	 */
 	toString() {
 		return `hsla(${this.h}, ${toPercentage(this.s)}%, ${toPercentage(this.l)}%, ${this.a})`;
 	}
+
+	/**
+	 * Compares two colors.
+	 * @param {HslaColor} c The color to compare with.
+	 * @return {boolean} True if the hsl channels are the same, false otherwise
+	 */
+	isEqual( c ) {
+		return ( ( this.h === c.h ) && ( this.s === c.s ) && ( this.l === c.l ) && ( this.a === c.a ));
+	}
+
+	/**
+	 * Calculates the perceived luminance of the color.
+	 * @return {number} - A value in the range 0-1 where a low value is considered dark and vice versa.
+	 */
+	getLuminance() {
+		let rgb = toRgb( this.h, this.s, this.l ),
+			luminance = Math.sqrt( 0.299 * Math.pow( rgb.r, 2 ) + 0.587 * Math.pow( rgb.g, 2 ) + 0.114 * Math.pow( rgb.b, 2 ) );
+
+		return luminance / 255;
+	}
+
+	/**
+	 * Returns the contrast ratio between two colors.
+	 * According to the Web Content Accessibility Guidelines the contrast between background and small text should be at least 4.5 : 1.
+	 * @param c - Color
+	 * @return {number} - contrast ratio between two colors.
+	 */
+	getContrast ( c ) {
+		return getContrast( this, c);
+	}
+
+	/**
+	 * Returns one of two colors with the highest contrast to the current color
+	 * @param c1 - Color
+	 * @param c2 - Color
+	 * @returns {Color}
+	 */
+	getMostContrastColor ( c1, c2 ) {
+		return getMostContrastColor( this, c1, c2);
+	}
+
+	/**
+	 * Checks if this color is perceived as dark.
+	 * @return {boolean} True if the luminance is below 125, false otherwise.
+	 */
+	isDark () {
+		return isDark( this );
+	}
 }
-
-

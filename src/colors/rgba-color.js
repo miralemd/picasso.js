@@ -1,4 +1,14 @@
-function toHSL( r, g, b ) {
+import {isDark, getContrast, getMostContrastColor} from "./color-type-extend.js";
+
+
+/**
+ * Converts RGB to HSL.
+ * @param r - Red
+ * @param g - Green
+ * @param b - Blue
+ * @returns {string} - In format 0, 0%, 0%
+ */
+const toHSL = ( r, g, b ) => {
 	r = r / 255;
 	g = g / 255;
 	b = b / 255;
@@ -27,7 +37,7 @@ function toHSL( r, g, b ) {
 	}
 
 	return `${Math.round( h * 360)}, ${Math.round( s * 100)}%, ${Math.round( l * 100)}%`;
-}
+};
 
 export default class RgbaColor {
     constructor( r, g, b, a = 1 ) {
@@ -37,17 +47,35 @@ export default class RgbaColor {
         this.a = a;
     }
 
-    /**
-	 * Returns an rgb string representation of this color.
-	 * @return {string} An rgb string representation of this color
+	/**
+	 * Returns a hsla string representation of this color.
+	 * @return {string} = In format hsl(0,0,0)
 	 */
+	toHSL() {
+		let value = toHSL( this.r, this.g, this.b);
+		return `hsl(${value})`;
+	}
+
+	/**
+	 * Returns a hsla string representation of this color
+	 * @return {string} - In format hsla(0,0,0,0)
+	 */
+	toHSLA() {
+		let value = toHSL( this.r, this.g, this.b);
+		return `hsla(${value}, ${this.a})`;
+	}
+
+	/**
+	 * Returns an rgb string representation of this color.
+	 * @return {string} - In format rgb(0, 0, 0)
+*/
 	toRGB() {
         return `rgb(${this.r}, ${this.g}, ${this.b})`;
 	}
 
 	/**
 	 * Returns an rgba string representation of this color.
-	 * @return {string} An rgba string representation of this color.
+	 * @return {string} - In format rgb(0, 0, 0, 0)
 	 */
 	toRGBA() {
         return this.toString();
@@ -55,7 +83,7 @@ export default class RgbaColor {
 
     /**
 	 * Returns a hex string representation of this color.
-	 * @return {string}
+	 * @return {string} - In format #000000
 	 */
 	toHex() {
 		let componentToHex = ( c ) => {
@@ -66,105 +94,71 @@ export default class RgbaColor {
 	}
 
 	/**
-	 * Returns a hsla string representation of this color using "bi-hexcone" model for lightness
-	 * @return {string} In format hsl(0,0,0)
-	 */
-	toHSL() {
-		let value = toHSL( this.r, this.g, this.b);
-		return `hsl(${value})`;
-	}
-
-	/**
-	 * Returns a hsla string representation of this color
-	 * @return {string} In format hsla(0,0,0,0)
-	 */
-	toHSLA() {
-		let value = toHSL( this.r, this.g, this.b);
-		return `hsla(${value}, ${this.a})`;
-	}
-
-	/**
-	 * Returns a 32-bit uint representation of this color
-	 * @return {number}
+	 * Returns an number representation of the color
+	 * @return {number} Unsigned integer in the range 0-16 777 216
 	 */
 	toNumber() {
-		var r = this.r & 0xFF;
-		var g = this.g & 0xFF;
-		var b = this.b & 0xFF;
-		var a = this.a & 0xFF;
+		let r = this.r & 0xFF,
+			g = this.g & 0xFF,
+			b = this.b & 0xFF,
 
-		var rgb = (r << 24) + (g << 16) + (b << 8) + (a);
+			rgb = (r << 16) + (g << 8) + (b);
 		return rgb;
 	}
 
-    /**
-     * Checks if this color is perceived as dark.
-     * @return {boolean} True if the luminance is below 125, false otherwise.
-     */
-    isDark() {
-		return this.getLuminance() < 125;
-    }
-
-    /**
-	 * Calculates the perceived luminance of the color.
-	 * @return {number} A value in the range 0-1 where a low value is considered dark and vice versa.
+	/**
+	 * Compares two colors.
+	 * @param {RgbaColor} c The color to compare with.
+	 * @return {boolean} True if the rgb channels are the same, false otherwise
 	 */
-	getLuminance() {
-
-		let luminance1 = Math.sqrt(0.299 * Math.pow(this.r, 2) + 0.587 * Math.pow(this.g, 2) + 0.114 * Math.pow(this.b, 2)); // Using Weighted Euclidean Distance in 3D RGB Space
-		//let luminance2 = 0.2126 * this.r + 0.7152 * this.g + 0.0722 * this.b; // sRGB Luma
-
-		return Math.round( ( luminance1 / 255 ) * 100 ) / 100;
+	isEqual( c ) {
+		return ( ( this.r === c.r ) && ( this.g === c.g ) && ( this.b === c.b ) && ( this.a === c.a ));
 	}
 
 	/**
-	 * Shifts the color towards a lighter or darker shade
-	 * @param {number} value - A value in the range -100-100 to shift the color with along the HSL lightness.
-	 * @return {string} The shifted color as hsla string.
+	 * convert rgba color to string
+	 * @returns {string}
 	 */
-	shiftLuminance() {
-
-	}
-
-	/**
-     * Linearly interpolates each channel of two colors.
-     * @param {rgb color} c The other color.
-     * @param {number} t The interpolation value in the range (0-1).
-     * @return {string} The blend as an rgb string.
-     */
-    blend( c, t ) {
-		let
-			r = this.r + ( c.r - this.r ) * t,
-			g = this.g + ( c.g - this.g ) * t,
-			b = this.b + ( c.b - this.b ) * t;
-
-		return `rgb(${r}, ${g}, ${b})`;
-    }
-
-    getContrast ( c ) {
-		var l1 = this.getLuminance() / 100,
-			l2 = c.getLuminance() / 100;
-
-		if ( l1 > l2 ) {
-			return ( l1 + 0.05 ) / ( l2 + 0.05 );
-		}
-		else {
-			return ( l2 + 0.05 ) / ( l1 + 0.05 );
-		}
-	}
-
-	/**
-     * Compares two colors.
-     * @param {Color} c The color to compare with.
-     * @return {boolean} True if the rgb channels are the same, false otherwise
-     */
-    isEqual() {
-
-    }
-
-    toString() {
+	toString() {
 		return `rgba(${this.r}, ${this.g}, ${this.b}, ${this.a})`;
 	}
 
+	/**
+	 * Calculates the perceived luminance of the color.
+	 * @return {number} - A value in the range 0-1 where a low value is considered dark and vice versa.
+	 */
+	getLuminance() {
+
+		let luminance = Math.sqrt( 0.299 * Math.pow( this.r, 2 ) + 0.587 * Math.pow( this.g, 2 ) + 0.114 * Math.pow( this.b, 2 ) ); // Using Weighted Euclidean Distance in 3D RGB Space
+		return luminance / 255;
+	}
+
+	/**
+	 * Returns the contrast ratio between two colors.
+	 * According to the Web Content Accessibility Guidelines the contrast between background and small text should be at least 4.5 : 1.
+	 * @param c - Color
+	 * @return {number} - contrast ratio between two colors.
+	 */
+	getContrast ( c ) {
+		return getContrast( this, c);
+	}
+
+	/**
+	 * Returns one of two colors with the highest contrast to the current color
+	 * @param c1 - Color
+	 * @param c2 - Color
+	 * @returns {Color}
+	 */
+	getMostContrastColor ( c1, c2 ) {
+		return getMostContrastColor( this, c1, c2);
+	}
+
+	/**
+	 * Checks if this color is perceived as dark.
+	 * @return {boolean} True if the luminance is below 125, false otherwise.
+	 */
+	isDark () {
+		return isDark( this );
+	}
 
 }
