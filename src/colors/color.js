@@ -120,3 +120,4 @@ color.divergingPalette = {
 		return line;
 	}
 };
+
