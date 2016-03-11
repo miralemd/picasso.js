@@ -97,4 +97,27 @@ export default class LinearScale {
 	get max() {
 		return this.maxValue;
 	}
+
+	classify( interval ) {
+		let from = this.inputDomain;
+		let minFrom = from[0];
+		let maxFrom = from[from.length - 1];
+		let rangeInterval = ( maxFrom - minFrom ) / interval;
+		let newFrom = [minFrom];
+		let newTo = [this.output[0]];
+
+		for (var i = 0; i < interval; i++) {
+			let tmp = newFrom[newFrom.length - 1] + rangeInterval;
+			newFrom.push( tmp );
+			newFrom.push( tmp );
+			newTo.push( this.get( tmp - rangeInterval) );
+			newTo.push( this.get( tmp ) );
+		}
+		newFrom.pop();
+		newTo.pop();
+		this.from(newFrom);
+		this.to(newTo);
+
+		return this;
+	}
 }

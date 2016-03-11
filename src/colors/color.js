@@ -45,7 +45,6 @@ color.register( hsl.test, hsl );
 color.register( colorKeyWord.test, colorKeyWord );
 color.register( colorObject.test, colorObject );
 
-
 /**
  * Interpolate two colors
  * @param  {object} from The color to interpolate from
@@ -63,14 +62,20 @@ color.interpolate = ( from, to, t ) => {
 		let targetType = colorObject.getColorType( toC );
 
 		if ( targetType === "rgb" ) {
-			fromC = color( fromC.toRGB() );
+			if ( colorObject.getColorType( fromC ) === "hsl" ) {
+				fromC = color( fromC.toRGB() );
+			}
+
 			colorObj = {
 				r: Math.round( numeric.interpolate( fromC.r, toC.r, t ) ),
 				g: Math.round( numeric.interpolate( fromC.g, toC.g, t ) ),
 				b: Math.round( numeric.interpolate( fromC.b, toC.b, t ) )
 			};
 		} else if ( targetType === "hsl" ) {
-			fromC = color( fromC.toHSL() );
+			if ( colorObject.getColorType( fromC ) === "rgb" ) {
+				fromC = color( fromC.toHSL() );
+			}
+
 			colorObj = {
 				h: Math.round( numeric.interpolate( fromC.h, toC.h, t ) ),
 				s: ( numeric.interpolate( fromC.s, toC.s, t ) ),
@@ -82,18 +87,18 @@ color.interpolate = ( from, to, t ) => {
 	return color(colorObj);
 };
 
-color.diverging = ( c1, c2, c3 ) => {
-	return color.linearScale( c1, c2, c3 ).from( [0, 0.5, 1] );
+color.diverging = ( c1, c2, c3, valueSpace = [0, 0.5, 1] ) => {
+	return color.linearScale( [c1, c2, c3], valueSpace );
 };
 
-color.sequential = ( c1, c2 ) => {
-	return color.linearScale( c1, c2 );
+color.sequential = ( c1, c2, valueSpace = [0, 1] ) => {
+	return color.linearScale( [c1, c2], valueSpace );
 };
 
-color.linearScale = ( ...colors ) => {
+color.linearScale = ( colors, valueSpace ) => {
 	let line = new LinearScale();
 	line.interpolator = { interpolate: color.interpolate };
-	line.from( [0, 1] ).to( colors.map( c => { return color(c); } ) );
+	line.from( valueSpace ).to( colors.map( c => { return color(c); } ) );
 	return line;
 };
 
