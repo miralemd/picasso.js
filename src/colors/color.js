@@ -1,7 +1,7 @@
 import hex from "./hex";
 import rgb from "./rgb";
 import hsl from "./hsl";
-import colorUtils from "./utils";
+import ColourUtils from "./utils";
 
 import colorKeyWord from "./color-keyword";
 import colorObject from "./color-object";
@@ -176,9 +176,9 @@ color.palettes = {
 		line.from(from).to(colorPalette);
 		return line;
 	}
-}
+};
 
-color.utils = new colorUtils();
+color.utils = new ColourUtils();
 
 
 	// multiHue1: () => {

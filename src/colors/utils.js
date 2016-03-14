@@ -1,4 +1,4 @@
-export default class colorUtils {
+export default class ColourUtils {
 
 	linearGradient(linearScale) {
 
