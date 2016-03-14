@@ -1,4 +1,4 @@
-import RgbaColor from "./rgba-color";
+import RgbaColor from "../rgba-color";
 
 let colorStruct = {
 		"aliceblue": { r: 240, g: 248, b: 255 },

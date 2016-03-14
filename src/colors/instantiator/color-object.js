@@ -1,5 +1,5 @@
-import RgbaColor from "./rgba-color";
-import HslaColor from "./hsla-color";
+import RgbaColor from "../rgba-color";
+import HslaColor from "../hsla-color";
 
 export default function colorObject( ...s ) {
 	let colorObj = s[0];

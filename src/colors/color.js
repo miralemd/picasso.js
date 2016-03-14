@@ -1,12 +1,24 @@
-import hex from "./hex";
-import rgb from "./rgb";
-import hsl from "./hsl";
+import hex from "./instantiator/hex";
+import rgb from "./instantiator/rgb";
+import hsl from "./instantiator/hsl";
+import colorKeyWord from "./instantiator/color-keyword";
+import colorObject from "./instantiator/color-object";
 import ColourUtils from "./utils";
-
-import colorKeyWord from "./color-keyword";
-import colorObject from "./color-object";
 import {default as numeric} from "../scales/interpolators/numeric";
 import LinearScale from "../scales/linear";
+
+let rangeCal = ( min, max, colors ) => {
+	let from = [min];
+	let incrementor = ( max - min ) / ( colors.length - 1 );
+
+	for (var i = 0; i < colors.length - 2; i++) {
+		from.push( from[i] + incrementor );
+	}
+
+	from.push( max );
+
+	return from;
+};
 
 let creators = [];
 export default function color( ...a ) {
@@ -156,35 +168,23 @@ color.linearScale = ( colors, valueSpace ) => {
 
 color.palettes = {
 	scientific: (min, max) => {
-		let colorPalette = ["#3d52a1", "#3d52a1", "#3a89c9", "#3a89c9", "#77b7e5", "#77b7e5", "#b4ddf7", "#b4ddf7", "#e6f5fe", "#e6f5fe",
-			"#ffe3aa", "#ffe3aa", "#f9bd7e", "#f9bd7e", "#ed875e", "#ed875e", "#d24d3e", "#d24d3e", "#ae1c3e", "#ae1c3e"].map((c) => {
+		let colorPalette = ["#3d52a1", "#3a89c9", "#77b7e5", "#b4ddf7", "#e6f5fe", "#ffe3aa", "#f9bd7e", "#ed875e", "#d24d3e", "#ae1c3e"].map((c) => {
 			return color(c);
 		});
-		let from = [];
-		let incrementor = ( max - min ) / ( colorPalette.length - 1 );
-		colorPalette.forEach(function (item, index) {
-			from.push(incrementor * index);
-		});
 
-		let line = new LinearScale();
-		line.interpolator = {interpolate: color.interpolate};
-		line.from(from).to(colorPalette);
-		return line;
+		let from = rangeCal( min, max, colorPalette );
+
+		return color.linearScale( colorPalette, from );
 	},
-	multiHue: ( min, max ) => {
-		let colorPalette = ["#fee391", "#fee391", "#fec44f", "#fec44f", "#fb9a29", "#fb9a29", "#ec7014", "#ec7014", "#cc4c02", "#cc4c02", "#993404", "#993404", "#662506", "#662506"].map( ( c ) => {
+
+	multiHue1: ( min, max ) => {
+		let colorPalette = ["#fee391", "#fec44f", "#fb9a29", "#ec7014", "#cc4c02", "#993404", "#662506"].map( ( c ) => {
 			return color(c);
 		});
-		let from = [];
-		let incrementor = ( max - min ) / ( colorPalette.length - 1 );
-		colorPalette.forEach( function ( item, index ) {
-			from.push( incrementor * index );
-		});
 
-		let line = new LinearScale();
-		line.interpolator = { interpolate: color.interpolate };
-		line.from( from ).to( colorPalette );
-		return line;
+		let from = rangeCal( min, max, colorPalette );
+
+		return color.linearScale( colorPalette, from );
 	}
 };
 

@@ -1,4 +1,4 @@
-import RgbaColor from "./rgba-color";
+import RgbaColor from "../rgba-color";
 
 let rHex = /^\s*#([A-Fa-f0-9]{2})([A-f0-A-Fa-f0-9]{2})([A-Fa-f0-9]{2})\s*$/i,
 	rHexShort = /^\s*#([A-Fa-f0-9])([A-Fa-f0-9])([A-Fa-f0-9])\s*$/i;
