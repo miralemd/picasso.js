@@ -28,21 +28,22 @@
 	<div ng-controller="singleHueCtrl">
         <h3>Single Hue</h3>
         <table class="fixed">
-    		<tr ng-repeat="item in data" style="height: 100%; width: 100%; position: relative; overflow: auto;">
-    			<td ng-repeat="c in getNumber(item)" ng-style="{ 'background-color' : color( item, $index ) }">{{$index}}</td>
+    		<tr style="height: 100%; width: 100%; position: relative; overflow: auto;">
+    			<td ng-repeat="item in data" ng-style="{ 'background-color' : color( item, item ) }"></td>
     		</tr>
     	</table>
 
     	<form ng-submit="setHue()">
        		<input type="text" ng-model="hueM" />
+            <input type="text" ng-model="classesM" />
     	</form>
 	</div>
 
-    <h3>Sequential - Classes</h3>
+    <h3>Multi-hue - Classes</h3>
     <div ng-controller="sequential">
         <table class="fixed">
             <tr style="height: 100%; width: 100%; position: relative; overflow: auto;">
-                <td ng-repeat="item in data" ng-style="{ 'background-color' : color(item) }">{{item}}</td>
+                <td ng-repeat="item in data" ng-style="{ 'background-color' : color(item) }"></td>
             </tr>
         </table>
 
@@ -51,7 +52,7 @@
     	</form>
     </div>
 
-    <h3>Sequential - Gradient</h3>
+    <h3>Multi-hue - Gradient</h3>
     <div ng-controller="sequential-gradient">
         <div class="sequential gradient" ng-style="{ 'background' : color(item) }"></div>
 
@@ -64,7 +65,7 @@
     <div ng-controller="diverging">
         <table class="fixed">
             <tr style="height: 100%; width: 100%; position: relative; overflow: auto;">
-                <td ng-repeat="item in data" ng-style="{ 'background-color' : color(item) }">{{item}}</td>
+                <td ng-repeat="item in data" ng-style="{ 'background-color' : color(item) }"></td>
             </tr>
         </table>
 
@@ -82,7 +83,7 @@
     	</form>
     </div>
 
-    <h3>Diverging scientific - Gradient</h3>
+    <h3>Scientific - Gradient</h3>
     <div ng-controller="diverging-scientific">
         <div class="diverging gradient" ng-style="{ 'background' : color(item) }"></div>
     </div>
@@ -99,57 +100,50 @@
     <script>
 		var app = angular.module('myApp', [])
 		.controller('singleHueCtrl', ['$scope', function($scope) {
-			$scope.hueM = "hsl(123,15%,85%); hsl(123,90%,10%)";
-
+			$scope.hueM = "hsl(123,15%,85%)";
+            $scope.classesM = "6";
 			$scope.data = [1,2,3,4,5,6,7,8,9,10,11,12];
 			$scope.color = function(item, num) {
-                var color = $scope.hueM.split( ";" );
-				return picasso.color.sequential( color[0], color[1] ).from( [0, item ] ).classify(3).get( num + 1);
+                var color = $scope.hueM;
+				return picasso.color.sequentialHue( color ).from( [1, 12 ] ).classify($scope.classesM).get( num );
 
 			}
-			$scope.getNumber = function(num) {
-				var ary = [];
-				for (var i = 0; i < num; i++) {
-					ary.push(i);
-				}
-    			return ary;
-			};
 		}]);
 
         app.controller('sequential', ['$scope', function($scope) {
 			$scope.data = [0, 0.1 ,0.2 ,0.3 ,0.4 ,0.5 ,0.6 ,0.7 ,0.8 ,0.9 , 1];
-            $scope.colorM = "green; red";
+            $scope.colorM = "#ffffd9;#41b6c4; #081d58";
 
 			$scope.color = function( num ) {
                 var color = $scope.colorM.split( ";" );
 				//return picasso.color.sequential(color[0], color[1]).get( num );
-                return picasso.color.linearScale([color[0], color[1]], [0, 1]).classify(5).get( num );
+                return picasso.color.linearScale(color, [0, 0.5, 1]).classify(5).get( num );
 			}
 		}]);
 
         app.controller('sequential-gradient', ['$scope', function($scope) {
-            $scope.colorM = "orange; red";
+            $scope.colorM = "#ffffd9;#41b6c4; #081d58";
 
 			$scope.color = function() {
                 var color = $scope.colorM.split(";");
-                var cAry = picasso.color.sequential(color[0], color[1]);
-				return `linear-gradient(to right, ${cAry.get(0)}, ${cAry.get(1)})`;
+                var cAry = picasso.color.linearScale(color, [0, 0.5, 1]);
+				return `linear-gradient(to right, ${cAry.get(0)}, ${cAry.get(0.5)}, ${cAry.get(1)})`;
 			}
 		}]);
 
         app.controller('diverging', ['$scope', function($scope) {
 			$scope.data = [0, 0.1 ,0.2 ,0.3 ,0.4 ,0.5 ,0.6 ,0.7 ,0.8 ,0.9 , 1];
-            $scope.data = $scope.data.map( d => { return Math.random();})
-            $scope.colorDivM = "blue; green; yellow";
+            //$scope.data = $scope.data.map( d => { return Math.random();})
+            $scope.colorDivM = "#c51b7d; #f7f7f7; #4d9221";
 
 			$scope.color = function( num ) {
                 var color = $scope.colorDivM.split( ";" );
-				return picasso.color.diverging( color[0], color[1], color[2] ).from( [0, 0.5, 1] ).get( num );
+				return picasso.color.diverging( color[0], color[1], color[2] ).from( [0, 0.5, 1] ).classify(11).get( num );
 			}
 		}]);
 
         app.controller('diverging-gradient', ['$scope', function($scope) {
-            $scope.colorM = "blue; green; yellow";
+            $scope.colorM = "#c51b7d; #f7f7f7; #4d9221";
 
 			$scope.color = function() {
                 var color = $scope.colorM.split(";");
@@ -162,7 +156,7 @@
             $scope.data = [0, 0.1 ,0.2 ,0.3 ,0.4 ,0.5 ,0.6 ];
 
 			$scope.color = function() {
-                var colors = picasso.color.divergingPalette.scientific( 0, 0.6 );
+                var colors = picasso.color.palettes.scientific( 0, 0.6 );
                 var cssColors = $scope.data.map( ( d ) => {
                     return colors.get( d );
                 }).join();

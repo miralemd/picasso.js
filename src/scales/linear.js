@@ -99,22 +99,31 @@ export default class LinearScale {
 	}
 
 	classify( interval ) {
-		let from = this.inputDomain;
-		let minFrom = from[0];
-		let maxFrom = from[from.length - 1];
-		let rangeInterval = ( maxFrom - minFrom ) / interval;
-		let newFrom = [minFrom];
-		let newTo = [this.output[0]];
+		let from = this.inputDomain,
+			minFrom = from[0],
+			maxFrom = from[from.length - 1],
+			rangeInterval = ( maxFrom - minFrom ) / interval,
+			newFrom = [minFrom],
+			newTo = [],
+			samplePos = rangeInterval / 2;
 
-		for (var i = 0; i < interval; i++) {
-			let tmp = newFrom[newFrom.length - 1] + rangeInterval;
+		for ( let i = 0; i < interval; i++ ) {
+			let m = newFrom[newFrom.length - 1] || 0,
+				tmp = m + rangeInterval;
 			newFrom.push( tmp );
 			newFrom.push( tmp );
-			newTo.push( this.get( tmp - rangeInterval) );
-			newTo.push( this.get( tmp ) );
+
+			if ( i === 0 ) {
+				newTo.push( this.get( samplePos ) );
+				newTo.push( this.get( samplePos ) );
+			} else {
+				newTo.push( this.get( samplePos + ( rangeInterval * i ) ) );
+				newTo.push( this.get( samplePos + ( rangeInterval * i ) ) );
+			}
 		}
 		newFrom.pop();
-		newTo.pop();
+		// newTo.pop();
+		// newTo.push( this.output[this.output.length - 1] );
 		this.from(newFrom);
 		this.to(newTo);
 
