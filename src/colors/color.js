@@ -1,6 +1,8 @@
 import hex from "./hex";
 import rgb from "./rgb";
 import hsl from "./hsl";
+import colorUtils from "./utils";
+
 import colorKeyWord from "./color-keyword";
 import colorObject from "./color-object";
 import {default as numeric} from "../scales/interpolators/numeric";
@@ -158,22 +160,26 @@ color.linearScale = ( colors, valueSpace ) => {
 };
 
 color.palettes = {
-	scientific: ( min, max ) => {
+	scientific: (min, max) => {
 		let colorPalette = ["#3d52a1", "#3d52a1", "#3a89c9", "#3a89c9", "#77b7e5", "#77b7e5", "#b4ddf7", "#b4ddf7", "#e6f5fe", "#e6f5fe",
-			"#ffe3aa", "#ffe3aa", "#f9bd7e", "#f9bd7e", "#ed875e", "#ed875e", "#d24d3e", "#d24d3e", "#ae1c3e", "#ae1c3e"].map( ( c ) => {
+			"#ffe3aa", "#ffe3aa", "#f9bd7e", "#f9bd7e", "#ed875e", "#ed875e", "#d24d3e", "#d24d3e", "#ae1c3e", "#ae1c3e"].map((c) => {
 			return color(c);
 		});
 		let from = [];
 		let incrementor = ( max - min ) / ( colorPalette.length - 1 );
-		colorPalette.forEach( function ( item, index ) {
-			from.push( incrementor * index );
+		colorPalette.forEach(function (item, index) {
+			from.push(incrementor * index);
 		});
 
 		let line = new LinearScale();
-		line.interpolator = { interpolate: color.interpolate };
-		line.from( from ).to( colorPalette );
+		line.interpolator = {interpolate: color.interpolate};
+		line.from(from).to(colorPalette);
 		return line;
 	}
+}
+
+color.utils = new colorUtils();
+
 
 	// multiHue1: () => {
 	//
@@ -186,4 +192,4 @@ color.palettes = {
 	// 100colors: () => {
 	//
 	// }
-};
+

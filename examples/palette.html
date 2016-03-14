@@ -127,7 +127,7 @@
 			$scope.color = function() {
                 var color = $scope.colorM.split(";");
                 var cAry = picasso.color.linearScale(color, [0, 0.5, 1]);
-				return `linear-gradient(to right, ${cAry.get(0)}, ${cAry.get(0.5)}, ${cAry.get(1)})`;
+				return picasso.color.utils.linearGradient(cAry);
 			}
 		}]);
 
@@ -148,7 +148,7 @@
 			$scope.color = function() {
                 var color = $scope.colorM.split(";");
                 var cAry = picasso.color.diverging( color[0], color[1], color[2] );
-				return `linear-gradient(to right, ${cAry.get(0)}, ${cAry.get(0.5)}, ${cAry.get(1)})`;
+				return picasso.color.utils.linearGradient(cAry);
 			}
 		}]);
 
@@ -157,11 +157,7 @@
 
 			$scope.color = function() {
                 var colors = picasso.color.palettes.scientific( 0, 0.6 );
-                var cssColors = $scope.data.map( ( d ) => {
-                    return colors.get( d );
-                }).join();
-
-				return `linear-gradient(to right, ${cssColors})`;
+				return picasso.color.utils.linearGradient(colors);
 			}
 		}]);
 
@@ -169,9 +165,16 @@
             $scope.colorM = "#ffffcc; #ffeda0; #fed976; #feb24c; #fd8d3c; #fc4e2a; #e31a1c; #bd0026; #800026";
 
 			$scope.color = function() {
-                // var color = $scope.colorM.split(";");
-                // var cAry = picasso.color.linearScale( color ).from([0,1]);
-				// return picasso.color.toLinearGradientCss( 0, 1, 8, cAry );
+				var color = $scope.colorM.split(";");
+				var from = [];
+				var incrementor = ( 1 ) / ( color.length - 1 );
+				color.forEach(function (item, index) {
+					from.push( incrementor * index );
+				});
+
+				var cAry = picasso.color.linearScale( color, from );
+
+				return picasso.color.utils.linearGradient(cAry);
 			}
 		}]);
     </script>
