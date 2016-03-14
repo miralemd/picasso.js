@@ -126,20 +126,15 @@ color.sequentialHue = ( c1, valueSpace = [0, 1] ) => {
 	let line = new LinearScale();
 	line.interpolator = { interpolate: color.singleHueInterpolator };
 	let c2 = color( color( c1 ).toHSL() ),
-		s2 = c2.s,
 		l2 = c2.l;
 
 	c1 = color( color( c1 ).toHSL() );
-	let s1 = c1.s,
-		l1 = c1.l;
+	let l1 = c1.l;
 
 	line.from( valueSpace ).to( [c1, c2] );
 
 	var classify = line.classify;
 	line.classify = function( numIntervals ) {
-		// c2.s = Math.min( s2 + 0.20 * Math.round(numIntervals / 2), 1 );
-		// c1.s = Math.max( s1 - 0.20 * Math.round(numIntervals / 2), 0.1 );
-		// c.s = Math.max( c.s, 0.2 );
 		if ( numIntervals > 1 ) {
 			c2.l = Math.max( Math.min( l2, 0.9 ) - 0.20 * Math.round(numIntervals / 2), 0.1 );
 			c1.l = Math.min( Math.max( l1, 0.1 ) + 0.20 * Math.round(numIntervals / 2), 0.9 );
@@ -175,21 +170,22 @@ color.palettes = {
 		line.interpolator = {interpolate: color.interpolate};
 		line.from(from).to(colorPalette);
 		return line;
+	},
+	multiHue: ( min, max ) => {
+		let colorPalette = ["#fee391", "#fee391", "#fec44f", "#fec44f", "#fb9a29", "#fb9a29", "#ec7014", "#ec7014", "#cc4c02", "#cc4c02", "#993404", "#993404", "#662506", "#662506"].map( ( c ) => {
+			return color(c);
+		});
+		let from = [];
+		let incrementor = ( max - min ) / ( colorPalette.length - 1 );
+		colorPalette.forEach( function ( item, index ) {
+			from.push( incrementor * index );
+		});
+
+		let line = new LinearScale();
+		line.interpolator = { interpolate: color.interpolate };
+		line.from( from ).to( colorPalette );
+		return line;
 	}
 };
 
 color.utils = new ColourUtils();
-
-
-	// multiHue1: () => {
-	//
-	// }
-
-	// 12colors: () => {
-	// 	return "";
-	// }
-	//
-	// 100colors: () => {
-	//
-	// }
-
