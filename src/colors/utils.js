@@ -1,12 +1,12 @@
 export default class ColourUtils {
 
-	linearGradient(linearScale) {
+	linearGradient( linearScale ) {
 
 		let inputDomain = linearScale.inputDomain;
 
-		let cssColors = inputDomain.map((d) => {
-			return linearScale.get(d);
-		}).join();
+		let cssColors = inputDomain.map( ( d ) => {
+			return linearScale.get( d );
+		} ).join();
 
 		return `linear-gradient(to right, ${cssColors})`;
 	}
