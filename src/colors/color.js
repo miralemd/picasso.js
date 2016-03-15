@@ -4,8 +4,7 @@ import hsl from "./instantiator/hsl";
 import colorKeyWord from "./instantiator/color-keyword";
 import colorObject from "./instantiator/color-object";
 import {default as colourUtils} from "./utils";
-import {default as numeric} from "../scales/interpolators/numeric";
-import LinearScale from "../scales/linear";
+import scale from "./color-scale";
 
 let rangeCal = ( min, max, colors ) => {
 	let from = [min];
@@ -60,112 +59,8 @@ color.register( hsl.test, hsl );
 color.register( colorKeyWord.test, colorKeyWord );
 color.register( colorObject.test, colorObject );
 
-/**
- * Interpolate two colors
- * @param  {object} from The color to interpolate from
- * @param  {object} to   The color to interpolate to
- * @param  {Number} t    A number between [0-1]
- * @return {object}      The interpolated color
- */
-color.interpolate = ( from, to, t ) => {
-	let fromC = color( from ),
-		toC = color( to ),
-		colorObj = {};
-
-	if ( typeof fromC === "object" && typeof toC === "object" ) {
-
-		let targetType = colorObject.getColorType( toC );
-
-		if ( targetType === "rgb" ) {
-			if ( colorObject.getColorType( fromC ) === "hsl" ) {
-				fromC = color( fromC.toRGB() );
-			}
-
-			colorObj = {
-				r: Math.round( numeric.interpolate( fromC.r, toC.r, t ) ),
-				g: Math.round( numeric.interpolate( fromC.g, toC.g, t ) ),
-				b: Math.round( numeric.interpolate( fromC.b, toC.b, t ) )
-			};
-		} else if ( targetType === "hsl" ) {
-			if ( colorObject.getColorType( fromC ) === "rgb" ) {
-				fromC = color( fromC.toHSL() );
-			}
-
-			colorObj = {
-				h: Math.round( numeric.interpolate( fromC.h, toC.h, t ) ),
-				s: ( numeric.interpolate( fromC.s, toC.s, t ) ),
-				l: ( numeric.interpolate( fromC.l, toC.l, t ) )
-			};
-		}
-	}
-
-	return color(colorObj);
-};
-
-color.singleHueInterpolator = ( from, to, t ) => {
-	let fromC = color( from ),
-		toC = color( to ),
-		colorObj = {};
-
-	if ( typeof fromC === "object" && typeof toC === "object" ) {
-
-		if ( colorObject.getColorType( fromC ) === "rgb" ) {
-			fromC = color( fromC.toHSL() );
-		}
-
-		if ( colorObject.getColorType( toC ) === "rgb" ) {
-			toC = color( toC.toHSL() );
-		}
-
-		colorObj = {
-			h: toC.h,
-			s: ( numeric.interpolate( fromC.s, toC.s, t ) ),
-			l: ( numeric.interpolate( fromC.l, toC.l, t ) )
-		};
-	}
-
-	return color(colorObj);
-};
-
-color.diverging = ( c1, c2, c3, valueSpace = [0, 0.5, 1] ) => {
-	return color.linearScale( [c1, c2, c3], valueSpace );
-};
-
-color.sequential = ( c1, c2, valueSpace = [0, 1] ) => {
-	return color.linearScale( [c1, c2], valueSpace );
-};
-
-color.sequentialHue = ( c1, valueSpace = [0, 1] ) => {
-	let line = new LinearScale();
-	line.interpolator = { interpolate: color.singleHueInterpolator };
-	let c2 = color( color( c1 ).toHSL() ),
-		l2 = c2.l;
-
-	c1 = color( color( c1 ).toHSL() );
-	let l1 = c1.l;
-
-	line.from( valueSpace ).to( [c1, c2] );
-
-	var classify = line.classify;
-	line.classify = function( numIntervals ) {
-		if ( numIntervals > 1 ) {
-			c2.l = Math.max( Math.min( l2, 0.9 ) - 0.20 * Math.round(numIntervals / 2), 0.1 );
-			c1.l = Math.min( Math.max( l1, 0.1 ) + 0.20 * Math.round(numIntervals / 2), 0.9 );
-		}
-
-		classify.call( line, numIntervals );
-		return this;
-	};
-
-	return line;
-};
-
-color.linearScale = ( colors, valueSpace ) => {
-	let line = new LinearScale();
-	line.interpolator = { interpolate: color.interpolate };
-	line.from( valueSpace ).to( colors.map( c => { return color(c); } ) );
-	return line;
-};
+color.scale = scale;
+color.scale.color = color;
 
 color.palettes = {
 	scientific: (min, max) => {
@@ -175,7 +70,7 @@ color.palettes = {
 
 		let from = rangeCal( min, max, colorPalette );
 
-		return color.linearScale( colorPalette, from );
+		return color.scale( colorPalette, from );
 	},
 
 	multiHue1: ( min, max ) => {
@@ -185,7 +80,7 @@ color.palettes = {
 
 		let from = rangeCal( min, max, colorPalette );
 
-		return color.linearScale( colorPalette, from );
+		return color.scale( colorPalette, from );
 	},
 
 	colors12: () => {

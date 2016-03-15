@@ -9,6 +9,6 @@ export default {
 	 * @return {object}      The interpolated color
 	 */
 	interpolate: function( from, to, t ) {
-		return color.interpolate(from, to, t);
+		return color.scale.interpolate(from, to, t);
 	}
 };
