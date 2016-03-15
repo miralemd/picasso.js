@@ -491,8 +491,8 @@ describe( "Colors", () => {
 				c2 = color( "navy" ),
 				c3 = color( "yellow" );
 
-			expect( c1.getContrast( c2 ) ).to.equal( 4.7840030125136686 );
-			expect( c1.getContrast( c3 ) ).to.equal( 1.059241105334474 );
+			expect( color.getContrast( c1, c2 ) ).to.equal( 4.7840030125136686 );
+			expect( color.getContrast( c1, c3 ) ).to.equal( 1.059241105334474 );
 
 		} );
 
@@ -501,8 +501,8 @@ describe( "Colors", () => {
 				c2 = color( "hsl(240, 100%, 25%)" ),
 				c3 = color( "hsl(60, 100%, 50%)" );
 
-			expect( c1.getContrast( c2 ) ).to.equal( 4.7840030125136686 );
-			expect( c1.getContrast( c3 ) ).to.equal( 1.059241105334474 );
+			expect( color.getContrast( c1, c2 ) ).to.equal( 4.7840030125136686 );
+			expect( color.getContrast( c1, c3 ) ).to.equal( 1.059241105334474 );
 
 		} );
 
@@ -510,36 +510,10 @@ describe( "Colors", () => {
 			let c1 = color( "white" ),
 				c2 = color( "hsl(60, 100%, 50%)" );
 
-			expect( c1.getContrast( c2 ) ).to.equal( 1.059241105334474 );
+			expect( color.getContrast( c1, c2 ) ).to.equal( 1.059241105334474 );
 
 		} );
 
-		it( "should select one of two RGB colors with the highest contrast to the current RGB color", () => {
-
-			let c1 = color( "green" ),
-				c2 = color( "red" ),
-				c3 = color( "darkgreen" );
-
-			expect( c2.getMostContrastColor( c1, c3 ) ).to.deep.equal( c3 );
-		} );
-
-		it( "should select one of two HSL colors with the highest contrast to the current HSL color", () => {
-
-			let c1 = color( "hsl(120, 100%, 25%)" ),
-				c2 = color( "hsl(0, 100%, 50%)" ),
-				c3 = color( "hsl(120, 100%, 20%)" );
-
-			expect( c2.getMostContrastColor( c1, c3 ) ).to.deep.equal( c3 );
-		} );
-
-		it( "should select one of two RGB and HSL colors with the highest contrast to the current HSL color", () => {
-
-			let c1 = color( "hsl(120, 100%, 25%)" ),
-				c2 = color( "hsl(0, 100%, 50%)" ),
-				c3 = color( "darkgreen" );
-
-			expect( c2.getMostContrastColor( c1, c3 ) ).to.deep.equal( c3 );
-		} );
 	} );
 
 } );
