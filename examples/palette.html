@@ -109,6 +109,20 @@
     	</form>
     </div>
 
+
+	<h3>12 colors</h3>
+	<div ng-controller="colors12">
+		<div class="diverging gradient" ng-style="{ 'background' : colorGradient(item) }"></div>
+		<h3>12 colors palette applied to 24 values </h3>
+		<div class="diverging gradient" ng-style="{ 'background' : colorGradientMany(item) }"></div>
+	</div>
+
+
+	<h3>100 colors</h3>
+	<div ng-controller="colors100">
+		<div class="diverging gradient" ng-style="{ 'background' : colorGradient(item) }"></div>
+	</div>
+
     <script>
 		var app = angular.module('myApp', [])
 		.controller('singleHueCtrl', ['$scope', function($scope) {
@@ -134,7 +148,7 @@
             $scope.colorGradient = function() {
                 var color = $scope.colorM.split(";");
                 var cAry = picasso.color.linearScale(color, [0, 0.5, 1]);
-				return picasso.color.utils.linearGradient(cAry);
+				return picasso.color.utils.linearGradient( "right", cAry );
 			}
 		}]);
 
@@ -150,7 +164,7 @@
             $scope.colorGradient = function() {
                 var color = $scope.colorDivM.split(";");
                 var cAry = picasso.color.diverging( color[0], color[1], color[2] );
-				return picasso.color.utils.linearGradient(cAry);
+				return picasso.color.utils.linearGradient( "right", cAry );
 			}
 		}]);
 
@@ -164,7 +178,7 @@
 
             $scope.colorGradient = function() {
                 var colors = picasso.color.palettes.scientific( 0, 9 );
-				return picasso.color.utils.linearGradient(colors);
+				return picasso.color.utils.linearGradient( "right", colors );
 			}
 		}]);
 
@@ -178,7 +192,40 @@
 
             $scope.colorGradient = function() {
                 var colors = picasso.color.palettes.multiHue1( 0, 9 );
-				return picasso.color.utils.linearGradient(colors);
+				return picasso.color.utils.linearGradient( "right", colors );
+			}
+		}]);
+
+
+		app.controller('colors12', ['$scope', function( $scope ) {
+
+			$scope.data = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 ];
+
+			$scope.colorGradientMany = function() {
+				var colors = picasso.color.palettes.colors12();
+
+				let res = [];
+				for ( let i = 0; i < $scope.data.length; i++ ) {
+					res[ i ] = colors[ i % 12 ];
+				}
+
+				return picasso.color.utils.linearGradient( "right", res, true );
+			}
+
+			$scope.colorGradient = function() {
+				var colors = picasso.color.palettes.colors12();
+
+				return picasso.color.utils.linearGradient( "right", colors, true );
+			}
+
+
+		}]);
+
+		app.controller('colors100', ['$scope', function( $scope ) {
+
+			$scope.colorGradient = function() {
+				var colors = picasso.color.palettes.colors100();
+				return picasso.color.utils.linearGradient( "right", colors, true );
 			}
 		}]);
 
@@ -195,7 +242,7 @@
 
 				var cAry = picasso.color.linearScale( color, from );
 
-				return picasso.color.utils.linearGradient(cAry);
+				return picasso.color.utils.linearGradient("right", cAry);
 			}
 		}]);
     </script>
