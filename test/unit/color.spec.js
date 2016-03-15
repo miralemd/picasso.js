@@ -4,22 +4,22 @@ describe( "Colors", () => {
 
 	describe( "Interpolate", () => {
 		it( "should interpolate two rgb colors", () => {
-			let c = color.interpolate( "red", "blue", 0.5 );
+			let c = color.scale.interpolate( "red", "blue", 0.5 );
 			expect( c ).to.deep.equal( {r: 128, g: 0, b: 128, a: 1} );
 		} );
 
 		it( "should interpolate two hsl colors", () => {
-			let c = color.interpolate( "hsl(120,50%,10%)", "hsl(360,100%,50%)", 0.5 );
+			let c = color.scale.interpolate( "hsl(120,50%,10%)", "hsl(360,100%,50%)", 0.5 );
 			expect( c ).to.deep.equal( {h: 60, s: 0.75, l: 0.3, a: 1} );
 		} );
 
 		it( "should interpolate rgb color to a hsl color", () => {
-			let c = color.interpolate( "blue", "hsl(360,100%,50%)", 0.5 );
+			let c = color.scale.interpolate( "blue", "hsl(360,100%,50%)", 0.5 );
 			expect( c ).to.deep.equal( {h: 120, s: 1, l: 0.5, a: 1} );
 		} );
 
 		it( "should interpolate hsl color to a rgb color", () => {
-			let c = color.interpolate( "hsl(360,100%,50%)", "blue", 0.5 );
+			let c = color.scale.interpolate( "hsl(360,100%,50%)", "blue", 0.5 );
 			expect( c ).to.deep.equal( {r: 128, g: 0, b: 128, a: 1} );
 		} );
 	} );
@@ -543,8 +543,3 @@ describe( "Colors", () => {
 	} );
 
 } );
-
-
-
-
-
