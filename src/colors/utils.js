@@ -27,11 +27,11 @@ export default {
 
 			let result = "",
 				interval = 100 / colors.length,
-				percentage = 0;
+				percent = 0;
 
 			for ( let i = 0; i < cssColors.length; i++ ) {
-				result += `${cssColors[i]} ${percentage}%, ${cssColors[i]} ${percentage + interval}%, `;
-				percentage = percentage + interval;
+				result += `${cssColors[i]} ${percent}%, ${cssColors[i]} ${percent + interval}%, `;
+				percent = percent + interval;
 			}
 
 			cssColors = result.slice( 0, -2 );
@@ -39,6 +39,6 @@ export default {
 
 		return `linear-gradient(to ${direction}, ${cssColors})`;
 	}
-}
+};
 
 
