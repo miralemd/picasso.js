@@ -1,6 +1,6 @@
 import RgbaColor from "../rgba-color";
 
-let colorStruct = {
+const colorStruct = {
 		"aliceblue": { r: 240, g: 248, b: 255 },
 		"antiquewhite": { r: 250, g: 235, b: 215 },
 		"aqua": { r: 0, g: 255, b: 255 },

@@ -9,7 +9,7 @@ export default function scale( colors, valueSpace ){
     return line;
 }
 
-let singleHueInterpolator = ( from, to, t ) => {
+const singleHueInterpolator = ( from, to, t ) => {
     let fromC = scale.color( from ),
         toC = scale.color( to ),
         colorObj = {};
