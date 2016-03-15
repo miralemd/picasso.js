@@ -125,8 +125,8 @@ color.palettes = {
  */
 color.getContrast = ( c1, c2 ) => {
 
-	c1 = new color( c1 );
-	c2 = new color( c2 );
+	c1 = color( c1 );
+	c2 = color( c2 );
 
 	let l1 = c1.getLuminance(),
 		l2 = c2.getLuminance();
