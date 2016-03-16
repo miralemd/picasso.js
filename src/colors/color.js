@@ -64,9 +64,7 @@ color.scale.color = color;
 
 color.palettes = {
 	scientific: (min, max) => {
-		let colorPalette = ["#3d52a1", "#3a89c9", "#77b7e5", "#b4ddf7", "#e6f5fe", "#ffe3aa", "#f9bd7e", "#ed875e", "#d24d3e", "#ae1c3e"].map((c) => {
-			return color(c);
-		});
+		const colorPalette = ["#3d52a1", "#3a89c9", "#77b7e5", "#b4ddf7", "#e6f5fe", "#ffe3aa", "#f9bd7e", "#ed875e", "#d24d3e", "#ae1c3e"].map( color );
 
 		let from = rangeCal( min, max, colorPalette );
 
@@ -74,9 +72,7 @@ color.palettes = {
 	},
 
 	multiHue1: ( min, max ) => {
-		let colorPalette = ["#fee391", "#fec44f", "#fb9a29", "#ec7014", "#cc4c02", "#993404", "#662506"].map( ( c ) => {
-			return color( c );
-		});
+		const colorPalette = ["#fee391", "#fec44f", "#fb9a29", "#ec7014", "#cc4c02", "#993404", "#662506"].map( color );
 
 		let from = rangeCal( min, max, colorPalette );
 
@@ -85,19 +81,17 @@ color.palettes = {
 
 	colors12: () => {
 
-		let colorPalette = [
+		const colorPalette = [
 			"#332288", "#6699cc", "#88ccee", "#44aa99", "#117733", "#999933",
 			"#ddcc77", "#661100", "#cc6677", "#aa4466", "#882255", "#aa4499"
-		].map( ( c ) => {
-			return color( c );
-		});
+		].map( color );
 
 		return colorPalette;
 
 	},
 
 	colors100: () => {
-		let colorPalette = [
+		const colorPalette = [
 			"#99c867", "#e43cd0", "#e2402a", "#66a8db", "#3f1a20", "#e5aa87", "#3c6b59", "#aa2a6b", "#e9b02e", "#7864dd",
 			"#65e93c", "#5ce4ba", "#d0e0da", "#d796dd", "#64487b", "#e4e72b", "#6f7330", "#932834", "#ae6c7d", "#986717",
 			"#e3cb70", "#408c1d", "#dd325f", "#533d1c", "#2a3c54", "#db7127", "#72e3e2", "#e2c1da", "#d47555", "#7d7f81",
@@ -108,9 +102,7 @@ color.palettes = {
 			"#bbabe4", "#e33f92", "#d0607d", "#759f79", "#9d6b5e", "#8574ae", "#7e304c", "#ad8fac", "#4b77de", "#647e17",
 			"#b9c379", "#8da8b0", "#b972d9", "#786279", "#7ec07d", "#916436", "#2d274f", "#dce680", "#759748", "#dae65a",
 			"#459c49", "#b7934a", "#51c671", "#9ead3f", "#969a5c", "#b9976a", "#46531a", "#c0f084", "#76c146", "#bad0ad"
-		].map( ( c ) => {
-			return color( c );
-		});
+		].map( color );
 
 		return colorPalette;
 	}
