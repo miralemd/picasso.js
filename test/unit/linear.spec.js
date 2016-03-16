@@ -115,10 +115,10 @@ describe( "LinearScale", () => {
 	} );
 
 	it( "should support grouping a negative value range", () => {
-		lin.from( [10, -10] ).to( [100, -100] ).classify( 2 );
+		lin.from( [10, -10] ).to( [-100, 100] ).classify( 2 );
 		expect( lin.inputDomain.length ).to.equal( 4 );
 		expect( lin.output.length ).to.equal( 4 );
-		expect( lin.get( 10 ) ).to.equal( 50 );
-		expect( lin.get( -10 ) ).to.equal( -50 );
+		expect( lin.get( 10 ) ).to.equal( -50 );
+		expect( lin.get( -10 ) ).to.equal( 50 );
 	} );
 } );

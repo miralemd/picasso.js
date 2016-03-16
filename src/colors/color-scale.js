@@ -76,6 +76,12 @@ scale.interpolate = ( from, to, t ) => {
     return scale.color(colorObj);
 };
 
+/**
+ * Interpolate a single color over lightness
+ * @param  {[string]} c1            The color to interpolate from
+ * @param  {[number]} valueSpace    The value range
+ * @return {object}                 A linear scale
+ */
 scale.singleHue = ( c1, valueSpace = [0, 1] ) => {
     let line = new LinearScale();
     line.interpolator = { interpolate: singleHueInterpolator };
@@ -84,6 +90,9 @@ scale.singleHue = ( c1, valueSpace = [0, 1] ) => {
 
     c1 = scale.color( scale.color( c1 ).toHSL() );
     let l1 = c1.l;
+
+    c2.l = 0.1;
+    c1.l = 0.9;
 
     line.from( valueSpace ).to( [c1, c2] );
 
