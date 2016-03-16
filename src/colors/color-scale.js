@@ -91,8 +91,14 @@ scale.singleHue = ( c1, valueSpace = [0, 1] ) => {
     c1 = scale.color( scale.color( c1 ).toHSL() );
     let l1 = c1.l;
 
-    c2.l = 0.1;
-    c1.l = 0.9;
+    // Set default values for lightness interpolation
+    if ( l1 > 0.5 ) {
+        c2.l = Math.max( Math.min( l2, 0.9 ) - 0.40, 0.1 );
+        //c1.l = Math.min( Math.max( l1, 0.1 ) + 0.10, 0.9 );
+    } else {
+        c1.l = Math.min( Math.max( l1, 0.1 ) + 0.40, 0.9 );
+        //c2.l = Math.max( Math.min( l2, 0.9 ) - 0.10, 0.1 );
+    }
 
     line.from( valueSpace ).to( [c1, c2] );
 
