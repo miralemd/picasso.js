@@ -1,8 +1,7 @@
 import RgbaColor from "../rgba-color";
 import HslaColor from "../hsla-color";
 
-export default function colorObject( ...s ) {
-	let colorObj = s[0];
+export default function colorObject( colorObj ) {
 	let colorType = colorObject.getColorType( colorObj );
 
 	switch ( colorType ) {
@@ -13,11 +12,10 @@ export default function colorObject( ...s ) {
 	}
 }
 
-colorObject.test = ( ...a ) => {
-	if( a[0] === null || a[0] === undefined || typeof a[0] !== "object" ) {
+colorObject.test = ( obj ) => {
+	if( obj === null || obj === undefined || typeof obj !== "object" ) {
 		return false;
 	} else {
-		let obj = a[0];
     // Doesnt really work out well if any of the proparties have invalid values
 		return colorObject.getColorType( obj ) !== undefined;
 	}

@@ -3,9 +3,9 @@ import HslaColor from "./../hsla-color";
 const rHsl = /^\s*hsl\(\s*(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*%{1})\s*,\s*(-?\d+\.?\d*%{1})\s*\)$/i,
 	rHsla = /^\s*hsla\(\s*(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*%{1})\s*,\s*(-?\d+\.?\d*%{1})\s*,\s*(-?\d+\.?\d*)\s*\)\s*$/i;
 
-export default function hsl( ...str ) {
+export default function hsl( colStr ) {
 
-	let match = ( rHsl.exec( str[0] ) || rHsla.exec( str[0] ) || [] );
+	let match = ( rHsl.exec( colStr ) || rHsla.exec( colStr ) || [] );
 
 	let [h, s, l, a] = match.slice( 1 ).map( v => {
 
@@ -30,4 +30,4 @@ export default function hsl( ...str ) {
 	return new HslaColor( h, s, l, a );
 }
 
-hsl.test = (...a) => typeof a[0] === "string" && ( rHsl.test( a[0] ) || rHsla.test( a[0] ) );
+hsl.test = ( colStr ) => typeof colStr === "string" && ( rHsl.test( colStr ) || rHsla.test( colStr ) );

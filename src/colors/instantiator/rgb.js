@@ -5,9 +5,9 @@ const rRgb = /^\s*rgb\(\s*(-?\d{1,3})\s*,\s*(-?\d{1,3})\s*,\s*(-?\d{1,3})\s*\)\s
 	rRgba = /^\s*rgba\(\s*(-?\d{1,3})\s*,\s*(-?\d{1,3})\s*,\s*(-?\d{1,3})\s*,\s*(-?\d+\.?\d*?)\s*\)\s*$/i,
 	rRgbaPer = /^\s*rgba\(\s*(-?\d{1,3}%{1})\s*,\s*(-?\d{1,3}%{1})\s*,\s*(-?\d{1,3}%{1})\s*,\s*(-?\d+\.?\d*?)\s*\)\s*$/i;
 
-export default function rgb( ...s ) {
+export default function rgb( colStr ) {
 
-	let ary = (rRgb.exec( s[0] ) || rRgba.exec( s[0] ) || rRgbPer.exec( s[0] ) || rRgbaPer.exec( s[0] ) || []);
+	let ary = (rRgb.exec( colStr ) || rRgba.exec( colStr ) || rRgbPer.exec( colStr ) || rRgbaPer.exec( colStr ) || []);
 
 	let [r, g, b, a] = ary.slice( 1, 5 ).map( val => {
 
@@ -36,4 +36,4 @@ export default function rgb( ...s ) {
 	return new RgbaColor( r, g, b, a );
 }
 
-rgb.test = (...a) => typeof a[0] === "string" && ( rRgb.test( a[0] ) || rRgba.test( a[0] ) || rRgbPer.test( a[0] ) || rRgbaPer.test( a[0] ) );
+rgb.test = ( colStr ) => typeof colStr === "string" && ( rRgb.test( colStr ) || rRgba.test( colStr ) || rRgbPer.test( colStr ) || rRgbaPer.test( colStr ) );

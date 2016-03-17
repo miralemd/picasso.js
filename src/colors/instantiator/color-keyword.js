@@ -150,18 +150,18 @@ const colorStruct = {
 		"yellowgreen": { r: 154, g: 205, b: 50 }
 };
 
-export default function colorKeyWord( ...s ) {
-	let key = s[0].toLowerCase().trim();
+export default function colorKeyWord( colStr ) {
+	let key = colStr.toLowerCase().trim();
 	let rgb = colorStruct[key];
 
 	return new RgbaColor( rgb.r, rgb.g, rgb.b, 1 );
 }
 
-colorKeyWord.test = (...a) => {
-	if( a[0] === null || a[0] === undefined || typeof a[0] !== "string" ) {
+colorKeyWord.test = ( colStr ) => {
+	if( colStr === null || colStr === undefined || typeof colStr !== "string" ) {
 		return false;
 	} else {
-		let key = a[0].toLowerCase().trim();
+		let key = colStr.toLowerCase().trim();
 		return colorStruct.hasOwnProperty(key);
 	}
 };
