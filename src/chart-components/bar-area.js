@@ -62,3 +62,7 @@ export default class BarArea {
 		this.rects = rects;
 	}
 }
+
+export function bararea( ...a ) {
+	return new BarArea( ...a );
+}

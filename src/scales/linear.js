@@ -1,6 +1,6 @@
 import numeric from "./interpolators/numeric";
 
-function linear( v, from, to, interp ) {
+function lerp( v, from, to, interp ) {
 	let t = ( v - from[0]) / ( from[1] - from[0] );
 	return interp.interpolate( to[0], to[1], t );
 }
@@ -24,7 +24,7 @@ function piecewise( v, from, to, interp ) {
 			return NaN;
 		}
 	}
-	return linear(
+	return lerp(
 		v,
 		asc ? arr.slice( i, i + 2 ) : arr.slice( i, i + 2 ).reverse(),
 		asc ? to.slice( i, i + 2 ) : to.slice( -i - 2 ),
@@ -74,7 +74,7 @@ export default class LinearScale {
 			this.domain[0] = v.start;
 			this.domain[this.domain.length - 1] = v.end;
 		}
-		this.s = this.domain.length <= 2 ? linear : piecewise;
+		this.s = this.domain.length <= 2 ? lerp : piecewise;
 		return this;
 	}
 	/**
@@ -97,4 +97,9 @@ export default class LinearScale {
 	get max() {
 		return this.maxValue;
 	}
+}
+
+
+export function linear( ...a ) {
+	return new LinearScale( ...a );
 }

@@ -1,27 +1,26 @@
-import BarChart from "./charts/barchart/barchart";
-import BarArea from "./chart-components/bararea";
-import Axis from "./chart-components/axis";
-import LinearScale from "./scales/linear";
-import LayoutEngine from "./chart-components/layout-engine";
-import {default as ticker} from "./scales/ticks";
-import dataMatrix from "./data/data-matrix";
-
-import color from "./colors/color";
+import { barChart } from "./charts/barchart/barchart";
+import { barArea } from "./chart-components/bar-area";
+import { axis } from "./chart-components/axis";
+import { linear } from "./scales/linear";
+import { dockLayout } from "./chart-components/dock-layout";
+import { default as ticker } from "./scales/ticks";
+import { dataMatrix } from "./data/data-matrix";
+import { color } from "./colors/color";
 
 export default {
 	charts: {
-		BarChart
+		barChart
 	},
 	components: {
-		Axis,
-		BarArea
+		axis,
+		barArea
 	},
 	scales: {
-		LinearScale,
+		linear,
 		ticker
 	},
 	utils: {
-		LayoutEngine
+		dockLayout
 	},
 	data: {
 		dataMatrix

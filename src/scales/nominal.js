@@ -93,3 +93,7 @@ export default class Nominal {
 		return start * this.unitSize + this.unitSize * 0.5;
 	}
 }
+
+export function nominal( ...a ) {
+	return new Nominal( ...a );
+}

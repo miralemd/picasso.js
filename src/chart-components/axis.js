@@ -57,3 +57,7 @@ export default class Axis {
 		}
 	}
 }
+
+export function axis( ...a ) {
+	return new Axis( ...a );
+}

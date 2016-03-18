@@ -1,8 +1,8 @@
 import Linear from "../../scales/linear";
 import Nominal from "../../scales/nominal";
 import ticker from "../../scales/ticks";
-import LayoutEngine from "../../chart-components/layout-engine";
-import BarArea from "../../chart-components/bararea";
+import DockLayout from "../../chart-components/dock-layout";
+import BarArea from "../../chart-components/bar-area";
 import Axis from "../../chart-components/axis";
 import dataMatrix from "../../data/data-matrix";
 
@@ -10,7 +10,7 @@ export default class BarChart {
 	constructor() {
 		this.rect = {x: 0, y: 0, width: 0, height: 0};
 
-		this.layoutEngine = new LayoutEngine();
+		this.layoutEngine = new DockLayout();
 
 		this.measureAxis = new Axis();
 		this.dimensionAxis = new Axis();
@@ -50,4 +50,8 @@ export default class BarChart {
 			c.update();
 		} );
 	}
+}
+
+export function barChart() {
+	return new BarChart();
 }
