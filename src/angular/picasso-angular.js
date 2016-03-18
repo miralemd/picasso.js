@@ -1,4 +1,4 @@
-import "./components/component.css";
+import "./css/picasso.less";
 import { registerComponents } from "./components";
 
 // auto register components

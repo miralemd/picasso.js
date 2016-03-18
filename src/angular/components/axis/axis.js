@@ -1,4 +1,3 @@
-import "./axis.css";
 import { addComponent } from "../../components";
 
 addComponent( "picAxis", {

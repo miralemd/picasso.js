@@ -15,6 +15,8 @@ First, follow the instructions on [How to build](../README.md) to generate the r
 	<script src="../dist/picasso.js"></script>
 	<script src="../dist/picasso-angular.js"></script>
 	<script src="../node_modules/angular/angular.js"></script>
+
+	<link href="../dist/picasso-angular.css" rel="stylesheet"/>
 </head>
 <body>
 	<chart></chart>
