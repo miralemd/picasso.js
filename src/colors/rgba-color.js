@@ -1,3 +1,8 @@
+function componentToHex( c ) {
+	let hex = c.toString(16);
+	return hex.length === 1 ? "0" + hex : hex;
+}
+
 
 /**
  * Converts RGB to HSL.
@@ -6,7 +11,7 @@
  * @param b - Blue
  * @returns {string} - In format 0, 0%, 0%
  */
-const toHSL = ( r, g, b ) => {
+function toHSL( r, g, b ) {
 	r = r / 255;
 	g = g / 255;
 	b = b / 255;
@@ -35,7 +40,7 @@ const toHSL = ( r, g, b ) => {
 	}
 
 	return `${Math.round( h * 360)}, ${Math.round( s * 100)}%, ${Math.round( l * 100)}%`;
-};
+}
 
 export default class RgbaColor {
     constructor( r, g, b, a = 1 ) {
@@ -84,10 +89,6 @@ export default class RgbaColor {
 	 * @return {string} - In format #000000
 	 */
 	toHex() {
-		let componentToHex = ( c ) => {
-			var hex = c.toString(16);
-			return hex.length === 1 ? "0" + hex : hex;
-		};
 		return "#" + componentToHex( this.r ) + componentToHex( this.g ) + componentToHex( this.b );
 	}
 

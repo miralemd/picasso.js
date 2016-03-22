@@ -1,6 +1,11 @@
-const toPercentage = (val) => {
+function toPercentage (val) {
 	return val * 100;
-};
+}
+
+function componentToHex( c ) {
+	let hex = c.toString( 16 );
+	return hex.length === 1 ? "0" + hex : hex;
+}
 
 /**
  * Converts HSL to RGB.
@@ -9,7 +14,7 @@ const toPercentage = (val) => {
  * @param l - The lightness
  * @returns {string} - In format 0, 0, 0
  */
-const toRgb = ( h, s, l ) => {
+function toRgb( h, s, l ) {
 	let r, g, b;
 
 	h = h / 360;
@@ -27,8 +32,8 @@ const toRgb = ( h, s, l ) => {
 			return p;
 		};
 
-		var q = l < 0.5 ? l * ( 1 + s ) : l + s - l * s;
-		var p = 2 * l - q;
+		let q = l < 0.5 ? l * ( 1 + s ) : l + s - l * s;
+		let p = 2 * l - q;
 		r = hue2rgb( p, q, h + 1 / 3 );
 		g = hue2rgb( p, q, h );
 		b = hue2rgb( p, q, h - 1 / 3 );
@@ -39,15 +44,15 @@ const toRgb = ( h, s, l ) => {
 		g: Math.round( g * 255 ),
 		b: Math.round( b * 255 )
 	};
-};
+}
 
-const toByte = ( h, s, l ) => {
+function toByte( h, s, l ) {
 	return {
 		h: parseInt( h * 255 / 359 ) & 0xFF,
 		s: parseInt( s * 255 ) & 0xFF,
 		l: parseInt( l * 255 ) & 0xFF
 	};
-};
+}
 
 export default class HslaColor {
 	constructor( h, s, l, a = 1) {
@@ -96,13 +101,7 @@ export default class HslaColor {
 	 * @return {string} - In format #000000
 	 */
 	toHex() {
-
 		let rgb = toRgb( this.h, this.s, this.l );
-
-		let componentToHex = ( c ) => {
-			var hex = c.toString( 16 );
-			return hex.length === 1 ? "0" + hex : hex;
-		};
 		return "#" + componentToHex( rgb.r ) + componentToHex( rgb.g ) + componentToHex( rgb.b );
 	}
 
