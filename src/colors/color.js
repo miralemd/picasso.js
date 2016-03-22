@@ -21,7 +21,7 @@ let rangeCal = ( min, max, colors ) => {
 };
 
 let creators = [];
-export default function color( ...a ) {
+export function color( ...a ) {
 
 	for ( let i = 0; i < creators.length; i++ ) {
 		if ( creators[i].test( ...a ) ) {

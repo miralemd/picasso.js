@@ -14,11 +14,11 @@ export default function scale( colors, valueSpace ){
     let line = new LinearScale();
     interpolator.interpolate = scale.interpolate;
     line.interpolator = interpolator;
-    line.from( valueSpace ).to( colors.map( c => { return scale.color( c ); } ) );
+    line.from( valueSpace ).to( colors.map( scale.color ) );
     return line;
 }
 
-const singleHueInterpolator = ( from, to, t ) => {
+function singleHueInterpolator( from, to, t ) {
     let fromC = scale.color( from ),
         toC = scale.color( to ),
         colorObj = {};
@@ -41,7 +41,7 @@ const singleHueInterpolator = ( from, to, t ) => {
     }
 
     return scale.color(colorObj);
-};
+}
 
 /**
 * Interpolate two colors
@@ -113,13 +113,13 @@ scale.singleHue = ( c1, valueSpace = [0, 1] ) => {
     line.from( valueSpace ).to( [c1, c2] );
 
     var classify = line.classify;
-    line.classify = function( numIntervals ) {
-        if ( numIntervals > 1 ) {
-            c2.l = Math.max( Math.min( l2, 0.9 ) - 0.20 * Math.round(numIntervals / 2), 0.1 );
-            c1.l = Math.min( Math.max( l1, 0.1 ) + 0.20 * Math.round(numIntervals / 2), 0.9 );
+    line.classify = function( intervals ) {
+        if ( intervals > 1 ) {
+            c2.l = Math.max( Math.min( l2, 0.9 ) - 0.20 * Math.round( intervals / 2 ), 0.1 );
+            c1.l = Math.min( Math.max( l1, 0.1 ) + 0.20 * Math.round( intervals / 2 ), 0.9 );
         }
 
-        classify.call( line, numIntervals );
+        classify.call( line, intervals );
         return this;
     };
 

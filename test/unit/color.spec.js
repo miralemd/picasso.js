@@ -1,4 +1,4 @@
-import { default as color } from "../../src/colors/color";
+import { color } from "../../src/colors/color";
 
 describe( "Colors", () => {
 
