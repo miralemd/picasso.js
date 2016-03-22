@@ -123,10 +123,10 @@ color.getContrast = ( c1, c2 ) => {
 	let l1 = c1.getLuminance(),
 		l2 = c2.getLuminance();
 
-	if (l1 > l2) {
-		return (l1 + 0.05) / (l2 + 0.05);
+	if ( l1 > l2 ) {
+		return ( l1 + 0.05 ) / ( l2 + 0.05 );
 	} else {
-		return (l2 + 0.05) / (l1 + 0.05);
+		return ( l2 + 0.05 ) / ( l1 + 0.05 );
 	}
 };
 
