@@ -1,24 +1,23 @@
 import picasso from "picasso";
+import { addComponent } from "../../components";
 
-export default function barchartDirective() {
-	return {
-		scope: {},
-		bindToController: {
+addComponent( "picBarChart", {
+		bindings: {
 			data: "="
 		},
-		replace: true,
 		template: `
-			<div class="pic-chart">
+			<!--<div class="pic-chart">-->
 				<pic-axis model="ctrl.barchart.measureAxis"></pic-axis>
 				<pic-axis model="ctrl.barchart.dimensionAxis"></pic-axis>
-				<pic-bararea model="ctrl.barchart.barArea"></pic-bararea>
-			</div>
+				<pic-bar-area model="ctrl.barchart.barArea"></pic-bar-area>
+			<!--</div>-->
 		`,
 		controller: function( $element ) {
+			$element.addClass("pic-chart");
 			let vm = this,
 				w = $element[0].clientWidth,
 				h = $element[0].clientHeight,
-				barchart = new picasso.charts.BarChart();
+				barchart = picasso.charts.barChart();
 
 			vm.barchart = barchart;
 			barchart.rect.width = w;
@@ -28,5 +27,4 @@ export default function barchartDirective() {
 			barchart.resize();
 		},
 		controllerAs: "ctrl"
-	};
-}
+} );

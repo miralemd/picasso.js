@@ -3,6 +3,8 @@
 var path = require( "path" );
 var srcDir = path.resolve( __dirname, "src" );
 
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+
 module.exports = {
 	entry: {
 		"picasso": path.resolve( srcDir, "index" ),
@@ -26,9 +28,12 @@ module.exports = {
 				loader: "babel-loader"
 			},
 			{
-				test: /.css$/,
-				loader: "style!css"
+				test: /\.less$/,
+				loader: ExtractTextPlugin.extract( "css!less" )
 			}
 		]
-	}
+	},
+	plugins: [
+		new ExtractTextPlugin("[name].css")
+	]
 };

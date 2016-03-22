@@ -1,4 +1,4 @@
-export default class LayoutEngine {
+export default class DockLayout {
 	constructor() {
 		this.components = [];
 	}
@@ -21,8 +21,8 @@ export default class LayoutEngine {
 	}
 
 	layout( rect ) {
-		var reduced = LayoutEngine.reduceLayoutRect( this.components, rect );
-		LayoutEngine.positionComponents( this.components, reduced );
+		var reduced = DockLayout.reduceLayoutRect( this.components, rect );
+		DockLayout.positionComponents( this.components, reduced );
 	}
 
 	static reduceLayoutRect( components, rect ) {
@@ -109,4 +109,8 @@ export default class LayoutEngine {
 			}
 		} );
 	}
+}
+
+export function dockLayout() {
+	return new DockLayout();
 }
