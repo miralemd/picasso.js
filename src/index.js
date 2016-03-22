@@ -25,5 +25,5 @@ export default {
 	data: {
 		dataMatrix
 	},
-	color,
+	color
 };
