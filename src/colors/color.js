@@ -6,7 +6,7 @@ import colorObject from "./instantiator/color-object";
 import {default as colourUtils} from "./utils";
 import scale from "./color-scale";
 
-let rangeCal = ( min, max, colors ) => {
+function rangeCal ( min, max, colors ) {
 	let from = [min];
 
 	let incrementor = ( max - min ) / ( colors.length - 1 );
@@ -18,7 +18,7 @@ let rangeCal = ( min, max, colors ) => {
 	from.push( max );
 
 	return from;
-};
+}
 
 let creators = [];
 export function color( ...a ) {
