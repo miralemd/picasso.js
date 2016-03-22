@@ -2,6 +2,8 @@ import { default as numeric } from "../scales/interpolators/numeric";
 import LinearScale from "../scales/linear";
 import colorObject from "./instantiator/color-object";
 
+const interpolator = {};
+
 /**
  * Instansiates a new linear color scale
  * @param  {[string]} colors     An array of colors
@@ -10,7 +12,8 @@ import colorObject from "./instantiator/color-object";
  */
 export default function scale( colors, valueSpace ){
     let line = new LinearScale();
-    line.interpolator = { interpolate: scale.interpolate };
+    interpolator.interpolate = scale.interpolate;
+    line.interpolator = interpolator;
     line.from( valueSpace ).to( colors.map( c => { return scale.color( c ); } ) );
     return line;
 }
@@ -90,7 +93,8 @@ scale.interpolate = ( from, to, t ) => {
  */
 scale.singleHue = ( c1, valueSpace = [0, 1] ) => {
     let line = new LinearScale();
-    line.interpolator = { interpolate: singleHueInterpolator };
+    interpolator.interpolate = singleHueInterpolator;
+    line.interpolator = interpolator;
     let c2 = scale.color( scale.color( c1 ).toHSL() ),
         l2 = c2.l;
 
