@@ -98,11 +98,11 @@ export default class LinearScale {
 		return this.maxValue;
 	}
 
-/**
- * Creates an interval scale for the given data range
- * @param  {number} intervals 		The number of interval points
- * @return {object}                	LinearScale
- */
+	/**
+	 * Creates an interval scale for the given data range
+	 * @param  {number} intervals 		The number of interval points
+	 * @return {object}                	LinearScale
+	 */
 	classify( intervals ) {
 		let valueRange = ( this.maxValue - this.minValue ) / intervals,
 			newFrom = [this.minValue],
