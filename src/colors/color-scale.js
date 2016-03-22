@@ -2,6 +2,12 @@ import { default as numeric } from "../scales/interpolators/numeric";
 import LinearScale from "../scales/linear";
 import colorObject from "./instantiator/color-object";
 
+/**
+ * Instansiates a new linear color scale
+ * @param  {[string]} colors     An array of colors
+ * @param  {[number]} valueSpace An array of corresponding value ranges
+ * @return {object}            A LinearScale object
+ */
 export default function scale( colors, valueSpace ){
     let line = new LinearScale();
     line.interpolator = { interpolate: scale.interpolate };
