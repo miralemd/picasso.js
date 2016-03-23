@@ -5,9 +5,9 @@ import colorObject from "./instantiator/color-object";
 const interpolator = {};
 
 /**
- * Instansiates a new linear color scale
- * @param  {[string]} colors     An array of colors
- * @param  {[number]} valueSpace An array of corresponding value ranges
+ * Instantiates a new linear color scale
+ * @param  {string} colors     An array of colors
+ * @param  {number} valueSpace An array of corresponding value ranges
  * @return {object}            A LinearScale object
  */
 export default function scale( colors, valueSpace ){
@@ -82,8 +82,8 @@ scale.interpolate = ( from, to, t ) => {
 
 /**
  * Interpolate a single color over lightness
- * @param  {[string]} c1            The color to interpolate from
- * @param  {[number]} valueSpace    The value range
+ * @param  {string} c1            The color to interpolate from
+ * @param  {number} valueSpace    The value range
  * @return {object}                 A linear scale
  */
 scale.singleHue = ( c1, valueSpace = [0, 1] ) => {
