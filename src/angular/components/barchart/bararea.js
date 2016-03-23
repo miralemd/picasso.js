@@ -1,22 +1,17 @@
 import { addComponent } from "../../components";
 
-addComponent( "picBarArea", {
-	bindings: {
-		model: "="
-	},
-	template: `
-		<div class="pic-bararea pic-chart-component"
-			ng-style="{left: ctrl.bararea.rect.x + 'px', top: ctrl.bararea.rect.y + 'px', width: ctrl.bararea.rect.width + 'px', height: ctrl.bararea.rect.height + 'px'}">
-			<div ng-repeat="r in ctrl.rects" ng-style="r.style" style="position:absolute;"></rect>
-		</div>
-	`,
-	controller: function( $scope ) {
+class BarAreaController {
+	constructor( $scope ) {
+		this.$scope = $scope;
+	}
+
+	$onInit() {
 		var vm = this,
 			bararea = vm.model;
 
 		vm.bararea = bararea;
 		vm.rects = [];
-		$scope.$watch( "ctrl.bararea.rects", () => {
+		this.$scope.$watch( "ctrl.bararea.rects", () => {
 			vm.rects = vm.bararea.rects ? vm.bararea.rects.map( b => {
 				return {
 					style: {
@@ -29,6 +24,21 @@ addComponent( "picBarArea", {
 				};
 			} ) : [];
 		} );
+	}
+}
+
+BarAreaController.$inject = ["$scope"];
+
+addComponent( "picBarArea", {
+	bindings: {
+		model: "="
 	},
+	template: `
+		<div class="pic-bararea pic-chart-component"
+			ng-style="{left: ctrl.bararea.rect.x + 'px', top: ctrl.bararea.rect.y + 'px', width: ctrl.bararea.rect.width + 'px', height: ctrl.bararea.rect.height + 'px'}">
+			<div ng-repeat="r in ctrl.rects" ng-style="r.style" style="position:absolute;"></rect>
+		</div>
+	`,
+	controller: BarAreaController,
 	controllerAs: "ctrl"
 } );

@@ -1,12 +1,45 @@
+.ellips {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
 .pic-chart {
 	font-family: "Arial";
-	font-size: 12px;
+	font-size: 13px;
 	color: #999;
 	position: absolute;
 	top: 10px;
 	left: 10px;
 	bottom: 10px;
 	right: 10px;
+	display: flex;
+	flex-direction: column;
+
+	&__title {
+		font-size: 24px;
+		flex: 0 1;
+		margin-bottom: 6px;
+		.ellips;
+	}
+
+	&__subtitle {
+		font-style: italic;
+		flex: 0 1;
+		margin-bottom: 6px;
+		.ellips;
+	}
+
+	&__content {
+		flex: 1 0;
+		position: relative;
+		> * {
+			position: absolute;
+			top: 10px;
+			left: 10px;
+			right: 10px;
+			bottom: 10px;
+		}
+	}
 }
 
 .pic-chart-component {

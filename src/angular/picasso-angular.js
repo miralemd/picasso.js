@@ -1,31 +1,31 @@
 import "./css/picasso.less";
-import { registerComponents } from "./components";
+import pic from "./picasso-angular-core";
 
 // auto register components
 import "./components/axis/axis";
 import "./components/barchart/barchart";
 import "./components/barchart/bararea";
 
+import "./chart";
+
 export default {
-	module: undefined,
 	/**
 	 * Initiate picasso angular module
 	 * @param  {Object} [window.angular] angular
 	 */
 	init( angular = window.angular ) {
-		this.module = angular.module( "picasso", [] );
-
-		registerComponents( this.module );
+		pic.init( angular );
+		return pic.module;
 	},
 
 	/**
-	 * Bootstrap picasso module
+	 * Bootstrap angular with the picasso module
 	 * @param  {Object} [window.angular] angular
 	 */
 	boot( angular = window.angular ) {
-		if( !this.module ) {
+		if( !pic.module ) {
 			this.init( angular );
 		}
-		angular.bootstrap( document, [this.module.name] );
+		angular.bootstrap( document, [pic.module.name] );
 	}
 };

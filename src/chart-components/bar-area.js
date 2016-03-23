@@ -34,7 +34,7 @@ export default class BarArea {
 		let {width, height} = this.rect,
 			rects = [],
 			staticWidth,
-			wRatio = 0.8,
+			wRatio = 0.6,
 			series = this.series,
 			rangeLayout = new Range().layout( {
 				data: this.measures,
@@ -53,7 +53,7 @@ export default class BarArea {
 					type: "rect",
 					x: width * (bar.x.start + (bar.x.end - bar.x.start) * 0.5 * ( 1 - wRatio ) ),
 					y: Math.min( height - height * bar.y.end, height - height * bar.y.start),
-					width: width * staticWidth,
+					width: Math.max(1, width * staticWidth),
 					height: Math.abs(height * (bar.y.end - bar.y.start))
 				} );
 			} );
