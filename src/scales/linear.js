@@ -97,6 +97,35 @@ export default class LinearScale {
 	get max() {
 		return this.maxValue;
 	}
+
+	/**
+	 * Creates an interval scale for the given data range
+	 * @param  {number} intervals 		The number of interval points
+	 * @return {object}                	LinearScale
+	 */
+	classify( intervals ) {
+		let valueRange = ( this.maxValue - this.minValue ) / intervals,
+			newFrom = [this.minValue],
+			newTo = [],
+			samplePos = valueRange / 2;
+
+		for ( let i = 0; i < intervals; i++ ) {
+			let lastVal = newFrom[newFrom.length - 1] || 0,
+				calIntervalPos = lastVal + valueRange,
+				calSamplePos = lastVal + samplePos,
+				sampleColValue = this.get( calSamplePos );
+
+			newFrom.push( calIntervalPos );
+			newFrom.push( calIntervalPos );
+			newTo.push( sampleColValue );
+			newTo.push( sampleColValue );
+		}
+		newFrom.pop();
+		this.from(newFrom);
+		this.to(newTo);
+
+		return this;
+	}
 }
 
 

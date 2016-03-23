@@ -97,4 +97,28 @@ describe( "LinearScale", () => {
 		expect( lin.min ).to.equal( -3 );
 		expect( lin.max ).to.equal( 5 );
 	} );
+
+	it( "should support grouping values", () => {
+		lin.from( [-10, 10] ).to( [-100, 100] ).classify( 5 );
+		expect( lin.inputDomain.length ).to.equal( 10 );
+		expect( lin.output.length ).to.equal( 10 );
+		expect( lin.get( -10 ) ).to.equal( -80 );
+		expect( lin.get( 10 ) ).to.equal( 80 );
+	} );
+
+	it( "should support grouping negative values", () => {
+		lin.from( [-20, -10] ).to( [-200, -100] ).classify( 2 );
+		expect( lin.inputDomain.length ).to.equal( 4 );
+		expect( lin.output.length ).to.equal( 4 );
+		expect( lin.get( -20 ) ).to.equal( -175 );
+		expect( lin.get( -10 ) ).to.equal( -125 );
+	} );
+
+	it( "should support grouping a negative value range", () => {
+		lin.from( [10, -10] ).to( [-100, 100] ).classify( 2 );
+		expect( lin.inputDomain.length ).to.equal( 4 );
+		expect( lin.output.length ).to.equal( 4 );
+		expect( lin.get( 10 ) ).to.equal( -50 );
+		expect( lin.get( -10 ) ).to.equal( 50 );
+	} );
 } );

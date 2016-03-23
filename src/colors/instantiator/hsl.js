@@ -1,0 +1,33 @@
+import HslaColor from "./../hsla-color";
+
+const rHsl = /^\s*hsl\(\s*(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*%{1})\s*,\s*(-?\d+\.?\d*%{1})\s*\)$/i,
+	rHsla = /^\s*hsla\(\s*(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*%{1})\s*,\s*(-?\d+\.?\d*%{1})\s*,\s*(-?\d+\.?\d*)\s*\)\s*$/i;
+
+export default function hsl( colStr ) {
+
+	let match = ( rHsl.exec( colStr ) || rHsla.exec( colStr ) || [] );
+
+	let [h, s, l, a] = match.slice( 1 ).map( v => {
+
+		let returnVal = parseFloat( v );
+
+		switch ( match.indexOf( v ) ) {
+			case 1:
+				returnVal = (((returnVal % 360) + 360) % 360);
+				return Math.round(returnVal);
+			case 2:
+			case 3:
+				returnVal = returnVal > 100 ? 100 : returnVal;
+				returnVal = returnVal < 0 ? 0 : returnVal;
+				return Math.round( returnVal ) / 100;
+			default:
+				returnVal = returnVal > 1 ? 1 : returnVal;
+				returnVal = returnVal < 0 ? 0 : returnVal;
+				return returnVal;
+		}
+	} );
+
+	return new HslaColor( h, s, l, a );
+}
+
+hsl.test = ( colStr ) => typeof colStr === "string" && ( rHsl.test( colStr ) || rHsla.test( colStr ) );
