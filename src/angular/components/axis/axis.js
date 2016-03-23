@@ -1,13 +1,9 @@
 import { addComponent } from "../../components";
 
 class AxisController {
-	constructor( $scope ) {
-		this.$scope = $scope;
-	}
-
 	$onInit() {
 		let vm = this;
-		this.$scope.$watch( "ctrl.model.ticks", () => {
+		vm.model.on( "changed", () => {
 			vm.rect = this.model.rect;
 			vm.isVertical = this.model.isVertical;
 			vm.ticks = this.model.ticks[0];
@@ -15,8 +11,6 @@ class AxisController {
 		} );
 	}
 }
-
-AxisController.$inject = ["$scope"];
 
 addComponent( "picAxis", {
 	bindings: {

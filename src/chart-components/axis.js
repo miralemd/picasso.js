@@ -1,5 +1,4 @@
-// import Linear from "../scales/linear";
- //import ticker from "../scales/ticks";
+import Events from "../utils/event-emitter";
 
 export default class Axis {
 	constructor() {
@@ -55,8 +54,12 @@ export default class Axis {
 				} );
 			}
 		}
+
+		this.emit( "changed" );
 	}
 }
+
+Events.mixin( Axis.prototype );
 
 export function axis( ...a ) {
 	return new Axis( ...a );

@@ -1,4 +1,4 @@
-// import Nominal from "../scales/nominal";
+import Events from "../utils/event-emitter";
 import Range from "../layouts/range";
 
 export default class BarArea {
@@ -60,8 +60,11 @@ export default class BarArea {
 		} );
 
 		this.rects = rects;
+		this.emit( "changed", rects );
 	}
 }
+
+Events.mixin( BarArea.prototype );
 
 export function bararea( ...a ) {
 	return new BarArea( ...a );
