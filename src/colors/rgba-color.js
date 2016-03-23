@@ -51,7 +51,7 @@ export default class RgbaColor {
     }
 
 	/**
-	 * Returns a hsla string representation of this color.
+	 * Returns a hsl string representation of this color.
 	 * @return {string} = In format hsl(0,0,0)
 	 */
 	toHSL() {

@@ -513,8 +513,8 @@ describe( "Colors", () => {
 				c2 = color( "navy" ),
 				c3 = color( "yellow" );
 
-			expect( color.getContrast( c1, c2 ) ).to.equal( 4.7840030125136686 );
-			expect( color.getContrast( c1, c3 ) ).to.equal( 1.059241105334474 );
+			expect( color.utils.getContrast( c1, c2 ) ).to.equal( 4.7840030125136686 );
+			expect( color.utils.getContrast( c1, c3 ) ).to.equal( 1.059241105334474 );
 
 		} );
 
@@ -523,8 +523,8 @@ describe( "Colors", () => {
 				c2 = color( "hsl(240, 100%, 25%)" ),
 				c3 = color( "hsl(60, 100%, 50%)" );
 
-			expect( color.getContrast( c1, c2 ) ).to.equal( 4.7840030125136686 );
-			expect( color.getContrast( c1, c3 ) ).to.equal( 1.059241105334474 );
+			expect( color.utils.getContrast( c1, c2 ) ).to.equal( 4.7840030125136686 );
+			expect( color.utils.getContrast( c1, c3 ) ).to.equal( 1.059241105334474 );
 
 		} );
 
@@ -532,7 +532,7 @@ describe( "Colors", () => {
 			let c1 = color( "white" ),
 				c2 = color( "hsl(60, 100%, 50%)" );
 
-			expect( color.getContrast( c1, c2 ) ).to.equal( 1.059241105334474 );
+			expect( color.utils.getContrast( c1, c2 ) ).to.equal( 1.059241105334474 );
 
 		} );
 
