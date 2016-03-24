@@ -19,13 +19,12 @@ module.exports = {
 	externals: {
 		"picasso": "picasso"
 	},
-	debug: true,
-	devtool: "source-map",
 	module: {
 		loaders: [
 			{
 				test: /\.js$/,
-				loader: "babel-loader"
+				loader: "babel-loader",
+				exclude: /node_modules/
 			},
 			{
 				test: /\.less$/,

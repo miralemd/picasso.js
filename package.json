@@ -6,8 +6,9 @@
   "license": "ISC",
   "private": true,
   "scripts": {
-    "build": "webpack",
-    "build:watch": "webpack --watch",
+    "build": "webpack -p --output-filename [name].min.js",
+    "build:debug": "webpack -d",
+    "build:watch": "webpack -d --watch",
     "docs": "rimraf ./docs/api && jsdoc -r ./src -d ./docs/api",
     "lint": "eslint src test",
     "test": "aw-test-runner ./test",
@@ -18,7 +19,6 @@
     "type": "git",
     "url": "ssh://git@github.com:qlik-trial/picasso.js.git"
   },
-  "main": "dist/index.js",
   "files": [
     "/dist"
   ],
