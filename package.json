@@ -8,6 +8,7 @@
   "scripts": {
     "build": "webpack",
     "build:watch": "webpack --watch",
+    "docs": "rimraf ./docs/api && jsdoc -r ./src -d ./docs/api",
     "lint": "eslint src test",
     "test": "aw-test-runner ./test",
     "test:watch": "aw-test-runner ./test -w",
@@ -29,8 +30,10 @@
     "css-loader": "^0.23.1",
     "eslint": "^1.8.0",
     "extract-text-webpack-plugin": "^1.0.1",
+    "jsdoc": "^3.4.0",
     "less": "^2.6.1",
     "less-loader": "^2.2.2",
+    "rimraf": "^2.5.2",
     "style-loader": "^0.13.0",
     "webpack": "^1.12.2"
   },
