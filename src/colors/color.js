@@ -1,16 +1,35 @@
-import hex from "./instantiator/hex";
-import rgb from "./instantiator/rgb";
-import hsl from "./instantiator/hsl";
-import colorKeyWord from "./instantiator/color-keyword";
-import colorObject from "./instantiator/color-object";
-import {default as colourUtils} from "./utils";
-import scale from "./color-scale";
-import colorRegister from "./color-register";
-import palettes from "./palettes";
+let creators = [];
+export default function color( ...a ) {
 
-export function color( ...a ) {
-	return colorRegister( ...a );
+	for ( let i = 0; i < creators.length; i++ ) {
+		if ( creators[i].test( ...a ) ) {
+			return creators[i].fn( ...a );
+		}
+	}
 }
+
+/**
+ * Register a color instantiator
+ * @param  {Function} test [description]
+ * @param  {Function} fn   [description]
+ * @return {object}        [description]
+ * @example
+ * let fn = () => {
+ * 	return {
+ * 		r: Math.floor(Math.random()*255),
+ * 		g: Math.floor(Math.random()*255),
+ * 		b: Math.floor(Math.random()*255)
+ * 		};
+ * };
+ *
+ * let fnTest = c => c === "surprise";
+ * color.register( fnTest, fn )
+ *
+ * let someColor = color("surprise");
+ */
+color.register = ( test, fn ) => {
+	creators.push( {test, fn} );
+};
 
 /**
  * Extend the color instance with new methods
@@ -18,18 +37,8 @@ export function color( ...a ) {
  * @param  {object} obj  	Object to extend with
  */
 color.extend = ( name, obj ) => {
-	if ( color.hasOwnProperty( name ) ) {
-		// TODO Do something here
+	if ( color[ name ] !== undefined ) {
+		throw "Property already exist with name: " + name;
 	}
-	color[name] = obj;
+	color[ name ] = obj;
 };
-
-colorRegister.register( hex.test, hex );
-colorRegister.register( rgb.test, rgb );
-colorRegister.register( hsl.test, hsl );
-colorRegister.register( colorKeyWord.test, colorKeyWord );
-colorRegister.register( colorObject.test, colorObject );
-
-color.extend( "scale", scale );
-color.extend( "palettes", palettes );
-color.extend( "utils", colourUtils );

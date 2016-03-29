@@ -1,6 +1,6 @@
 import LinearScale from "../scales/linear";
 import interpolators from "./interpolators";
-import colorRegister from "./color-register";
+import color from "./color";
 
 /**
  * Instansiates a new linear color scale
@@ -11,7 +11,7 @@ import colorRegister from "./color-register";
 export default function scale( colors, valueSpace ) {
     let line = new LinearScale();
     line.interpolator = interpolators;
-    line.from( valueSpace ).to( colors.map( colorRegister ) );
+    line.from( valueSpace ).to( colors.map( color ) );
     return line;
 }
 
@@ -23,13 +23,13 @@ export default function scale( colors, valueSpace ) {
  */
 scale.singleHue = ( c1, valueSpace = [0, 1] ) => {
     let line = new LinearScale(),
-    orgCol = colorRegister( c1 );
+    orgCol = color( c1 );
     line.interpolator = interpolators;
 
-    let c2 = colorRegister( orgCol.toHSL() ),
+    let c2 = color( orgCol.toHSL() ),
         l2 = c2.l;
 
-    c1 = colorRegister( orgCol.toHSL() );
+    c1 = color( orgCol.toHSL() );
     let l1 = c1.l;
 
     // Set default values for lightness interpolation

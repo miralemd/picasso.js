@@ -1,6 +1,6 @@
 import { default as numeric } from "../scales/interpolators/numeric";
 import colorObject from "./instantiator/color-object";
-import colorRegister from "./color-register";
+import color from "./color";
 
 export default {
 	/**
@@ -11,8 +11,8 @@ export default {
 	* @return {object}	  The interpolated color
 	*/
 	interpolate: ( from, to, t ) => {
-		let fromC = colorRegister( from ),
-			toC = colorRegister( to ),
+		let fromC = color( from ),
+			toC = color( to ),
 			colorObj = {};
 
 		if ( typeof fromC === "object" && typeof toC === "object" ) {
@@ -21,7 +21,7 @@ export default {
 
 			if ( targetType === "rgb" ) {
 				if ( colorObject.getColorType( fromC ) === "hsl" ) {
-					fromC = colorRegister( fromC.toRGB() );
+					fromC = color( fromC.toRGB() );
 				}
 
 				colorObj.r = Math.round( numeric.interpolate( fromC.r, toC.r, t ) );
@@ -30,7 +30,7 @@ export default {
 
 			} else if ( targetType === "hsl" ) {
 				if ( colorObject.getColorType( fromC ) === "rgb" ) {
-					fromC = colorRegister( fromC.toHSL() );
+					fromC = color( fromC.toHSL() );
 				}
 
 				colorObj.h = Math.round( numeric.interpolate( fromC.h, toC.h, t ) );
@@ -39,6 +39,6 @@ export default {
 			}
 		}
 
-		return colorRegister( colorObj );
+		return color( colorObj );
 	}
 };

@@ -1,4 +1,4 @@
-import colorRegister from "./color-register";
+import color from "./color";
 
 export default {
 
@@ -51,8 +51,8 @@ export default {
 	 */
 	getContrast: ( c1, c2 ) => {
 
-		c1 = colorRegister( c1 );
-		c2 = colorRegister( c2 );
+		c1 = color( c1 );
+		c2 = color( c2 );
 
 		let l1 = c1.getLuminance(),
 			l2 = c2.getLuminance();

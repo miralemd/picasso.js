@@ -1,5 +1,5 @@
 import scale from "./color-scale";
-import colorRegister from "./color-register";
+import color from "./color";
 
 function rangeCal ( min, max, colors ) {
 	let from = [min];
@@ -17,7 +17,7 @@ function rangeCal ( min, max, colors ) {
 
 export default {
 	scientific: (min, max) => {
-		const colorPalette = ["#3d52a1", "#3a89c9", "#77b7e5", "#b4ddf7", "#e6f5fe", "#ffe3aa", "#f9bd7e", "#ed875e", "#d24d3e", "#ae1c3e"].map( colorRegister );
+		const colorPalette = ["#3d52a1", "#3a89c9", "#77b7e5", "#b4ddf7", "#e6f5fe", "#ffe3aa", "#f9bd7e", "#ed875e", "#d24d3e", "#ae1c3e"].map( color );
 
 		let from = rangeCal( min, max, colorPalette );
 
@@ -25,7 +25,7 @@ export default {
 	},
 
 	multiHue1: ( min, max ) => {
-		const colorPalette = ["#fee391", "#fec44f", "#fb9a29", "#ec7014", "#cc4c02", "#993404", "#662506"].map( colorRegister );
+		const colorPalette = ["#fee391", "#fec44f", "#fb9a29", "#ec7014", "#cc4c02", "#993404", "#662506"].map( color );
 
 		let from = rangeCal( min, max, colorPalette );
 
@@ -37,7 +37,7 @@ export default {
 		const colorPalette = [
 			"#332288", "#6699cc", "#88ccee", "#44aa99", "#117733", "#999933",
 			"#ddcc77", "#661100", "#cc6677", "#aa4466", "#882255", "#aa4499"
-		].map( colorRegister );
+		].map( color );
 
 		return colorPalette;
 
@@ -55,7 +55,7 @@ export default {
 			"#bbabe4", "#e33f92", "#d0607d", "#759f79", "#9d6b5e", "#8574ae", "#7e304c", "#ad8fac", "#4b77de", "#647e17",
 			"#b9c379", "#8da8b0", "#b972d9", "#786279", "#7ec07d", "#916436", "#2d274f", "#dce680", "#759748", "#dae65a",
 			"#459c49", "#b7934a", "#51c671", "#9ead3f", "#969a5c", "#b9976a", "#46531a", "#c0f084", "#76c146", "#bad0ad"
-		].map( colorRegister );
+		].map( color );
 
 		return colorPalette;
 	}
