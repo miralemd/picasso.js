@@ -1,4 +1,4 @@
-import {default as color} from "../../colors/color";
+import interpolators from "../../colors/interpolators";
 
 export default {
 	/**
@@ -9,6 +9,6 @@ export default {
 	 * @return {object}      The interpolated color
 	 */
 	interpolate: function( from, to, t ) {
-		return color.scale.interpolate(from, to, t);
+		return interpolators.interpolate( from, to, t );
 	}
 };

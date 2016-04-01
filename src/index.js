@@ -5,7 +5,7 @@ import { linear } from "./scales/linear";
 import { dockLayout } from "./chart-components/dock-layout";
 import { default as ticker } from "./scales/ticks";
 import { dataMatrix } from "./data/data-matrix";
-import { color } from "./colors/color";
+import { default as color } from "./colors/index";
 
 export default {
 	charts: {

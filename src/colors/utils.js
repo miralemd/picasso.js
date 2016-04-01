@@ -1,3 +1,5 @@
+import color from "./color";
+
 export default {
 
 	/**
@@ -7,7 +9,7 @@ export default {
 	 * @param percentage - Boolean.
      * @returns {string}
      */
-	linearGradient( direction, colors, percentage ) {
+	linearGradient: ( direction, colors, percentage ) => {
 
 		let cssColors;
 
@@ -38,7 +40,27 @@ export default {
 		}
 
 		return `linear-gradient(to ${direction}, ${cssColors})`;
+	},
+
+	/**
+	 * Returns the contrast ratio between two colors.
+	 * According to the Web Content Accessibility Guidelines the contrast between background and small text should be at least 4.5 : 1.
+	 * @param c1 - Color
+	 * @param c2 - Color
+	 * @return {number} - contrast ratio between two colors.
+	 */
+	getContrast: ( c1, c2 ) => {
+
+		c1 = color( c1 );
+		c2 = color( c2 );
+
+		let l1 = c1.getLuminance(),
+			l2 = c2.getLuminance();
+
+		if ( l1 > l2 ) {
+			return ( l1 + 0.05 ) / ( l2 + 0.05 );
+		} else {
+			return ( l2 + 0.05 ) / ( l1 + 0.05 );
+		}
 	}
 };
-
-
