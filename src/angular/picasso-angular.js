@@ -1,4 +1,3 @@
-import "./css/picasso.less";
 import pic from "./picasso-angular-core";
 
 // auto register components

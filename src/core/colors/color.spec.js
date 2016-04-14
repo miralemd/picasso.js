@@ -1,4 +1,4 @@
-import { default as color } from "../../src/colors/index";
+import { default as color } from "./index";
 
 describe( "Colors", () => {
 

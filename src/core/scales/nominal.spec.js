@@ -1,4 +1,4 @@
-import Nominal from "../../src/scales/nominal";
+import Nominal from "./nominal";
 
 describe( "NominalScale", () => {
 	let nom;
