@@ -1,11 +1,13 @@
-import { barChart } from "./charts/barchart/barchart";
-import { barArea } from "./chart-components/bar-area";
-import { axis } from "./chart-components/axis";
-import { linear } from "./scales/linear";
-import { dockLayout } from "./chart-components/dock-layout";
-import { default as ticker } from "./scales/ticks";
-import { dataMatrix } from "./data/data-matrix";
-import { default as color } from "./colors/index";
+import "./web/css/picasso.less";
+
+import { barChart } from "./core/charts/barchart/barchart";
+import { barArea } from "./core/chart-components/bar-area";
+import { axis } from "./core/chart-components/axis";
+import { linear } from "./core/scales/linear";
+import { dockLayout } from "./core/chart-components/dock-layout";
+import { default as ticker } from "./core/scales/ticks";
+import { dataMatrix } from "./core/data/data-matrix";
+import { default as color } from "./core/colors/index";
 
 export default {
 	charts: {
