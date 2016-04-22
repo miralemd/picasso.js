@@ -8,6 +8,7 @@ import { dockLayout } from "./core/chart-components/dock-layout";
 import { default as ticker } from "./core/scales/ticks";
 import { dataMatrix } from "./core/data/data-matrix";
 import { default as color } from "./core/colors/index";
+import { default as svg } from "./web/renderer/svg-renderer/svg-renderer";
 
 export default {
 	charts: {
@@ -27,5 +28,8 @@ export default {
 	data: {
 		dataMatrix
 	},
-	color
+	color,
+	renderers: {
+		svg
+	}
 };
