@@ -10,11 +10,11 @@ function diff( from, to ) {
 		nodeMapper = ( node, i ) => {
 			return {
 				content: node,
-				id: (typeof node === "object" ? "id" in node ? node.id : i : node) + "__" + (node.type || '')
+				id: (typeof node === "object" ? "id" in node ? node.id : i : node) + "__" + (node.type || "")
 			};
 		};
 
-	if( !from.__tree ) {
+	if( !from.isTree ) {
 		from = from.map( nodeMapper );
 	}
 
@@ -49,7 +49,7 @@ function diff( from, to ) {
 
 	for( let i = 0, len = added.length; i < len; i++ ) {
 		if( added[i].content.children ) {
-			added[i].diff = diff( [], a.content.children );
+			added[i].diff = diff( [], added[i].content.children );
 			added[i].children = added[i].diff.updatedNew.concat( added[i].diff.added );
 		}
 	}
@@ -62,11 +62,11 @@ function diff( from, to ) {
 
 	items = updatedNew.concat( added );
 
-	added.__tree = true;
-	removed.__tree = true;
-	updatedNew.__tree = true;
-	updatedOld.__tree = true;
-	items.__tree = true;
+	added.isTree = true;
+	removed.isTree = true;
+	updatedNew.isTree = true;
+	updatedOld.isTree = true;
+	items.isTree = true;
 
 	return {
 		added,
@@ -75,6 +75,21 @@ function diff( from, to ) {
 		removed,
 		items
 	};
+}
+
+function createNodes( nodes, parent, create) {
+	for( let i = 0, len = nodes.length; i < len; i++ ) {
+		nodes[i].object = create( nodes[i].content.type, parent );
+	}
+}
+
+function destroyNodes( nodes, destroy ) {
+	for( let i = 0, len = nodes.length; i < len; i++ ) {
+		if( nodes[i].object !== null && typeof nodes[i].object !== "undefined" ) {
+			destroy( nodes[i].object );
+			nodes[i].object = null;
+		}
+	}
 }
 
 function updateNodes( nodes, creator, maintainer, destroyer ) {
@@ -89,21 +104,6 @@ function updateNodes( nodes, creator, maintainer, destroyer ) {
 				updateNodes( item.diff.items, creator, maintainer, destroyer );
 			}
 		}
-	};
-}
-
-function destroyNodes( nodes, destroy ) {
-	for( let i = 0, len = nodes.length; i < len; i++ ) {
-		if( nodes[i].object !== null && typeof nodes[i].object !== "undefined" ) {
-			destroy( nodes[i].object );
-			nodes[i].object = null;
-		}
-	}
-}
-
-function createNodes( nodes, parent, create) {
-	for( let i = 0, len = nodes.length; i < len; i++ ) {
-		nodes[i].object = create( nodes[i].content.type, parent );
 	}
 }
 
@@ -123,4 +123,4 @@ export {
 	destroyNodes,
 	createNodes,
 	updateNodes
-}
+};
