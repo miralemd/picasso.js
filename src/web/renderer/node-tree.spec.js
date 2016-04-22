@@ -4,7 +4,7 @@ function getContent( arr ) {
 	return arr.map( a => a.content );
 }
 
-describe.only( "node-tree", () => {
+describe( "node-tree", () => {
 
 	describe( "createNodes", () => {
 		it( "should call factory function with type and parent params", () => {
