@@ -3,7 +3,7 @@ import element from "../../../../test/mocks/element-mock";
 
 
 describe( "SVGRenderer", () => {
-	let creator, maintainer, destroyer, ns, svg, sandbox, treeCreator;
+	let creator, maintainer, destroyer, svg, sandbox, treeCreator;
 
 	beforeEach( () => {
 		sandbox = sinon.sandbox.create();
@@ -96,17 +96,15 @@ describe( "SVGRenderer", () => {
 			expect( svg.root.parentNode ).to.equal( parent );
 			svg.destroy();
 
-			expect( svg.root ).to.be.null;
+			expect( svg.root ).to.equal( null );
 			expect( parent.children.length ).to.equal( 0 );
 		} );
 
 		it( "should not throw error if root does not have parent", () => {
-			let parent = element( "div" );
 			svg.root = element( "svg" );
 			let fn = () => {
 				svg.destroy();
-			}
-
+			};
 			expect( fn ).to.not.throw();
 		} );
 	} );

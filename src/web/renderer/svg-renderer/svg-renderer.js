@@ -74,6 +74,10 @@ export default class SVGRenderer {
 	}
 }
 
+export function renderer() {
+	return new SVGRenderer( createTree, creator, maintainer, destroyer );
+}
+
 /**
  * Create an SVGElement and attach to parent.
  * @callback SVGCreator
