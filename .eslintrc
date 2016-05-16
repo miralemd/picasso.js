@@ -73,6 +73,7 @@
 		"strict": ["error", "function"],
 		"yoda": ["error", "never"],
 		"space-in-parens": ["error", "always"],
-		"object-curly-spacing": ["error", "always"]
+		"object-curly-spacing": ["error", "always"],
+		"no-mixed-spaces-and-tabs": ["error", "smart-tabs"]
 	}
 }
