@@ -162,6 +162,6 @@ colorKeyWord.test = ( colStr ) => {
 		return false;
 	} else {
 		let key = colStr.toLowerCase().trim();
-		return colorStruct.hasOwnProperty(key);
+		return colorStruct.hasOwnProperty( key );
 	}
 };

@@ -39,10 +39,10 @@ export default {
 			ticks = [];
 
 		range = this.niceNum( max - min, round );
-		d = this.niceNum( range / Math.max( 1, (nTicks - 1) ), true);
+		d = this.niceNum( range / Math.max( 1, ( nTicks - 1 ) ), true );
 		graphmin = Math.floor( min / d ) * d;
 		graphmax = Math.ceil( max / d ) * d;
-		nfrac = Math.max( -Math.floor( Math.log( d ) / Math.log( 10 ) ), 0);
+		nfrac = Math.max( -Math.floor( Math.log( d ) / Math.log( 10 ) ), 0 );
 		for ( let v = graphmin; v < graphmax + 0.5 * d; v += d ) {
 			ticks.push( v );
 		}

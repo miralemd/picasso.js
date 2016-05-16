@@ -5,7 +5,7 @@ const rHex = /^\s*#([A-Fa-f0-9]{2})([A-f0-A-Fa-f0-9]{2})([A-Fa-f0-9]{2})\s*$/i,
 
 export default function hex( colStr ) {
 
-	let [r, g, b] = (rHex.exec( colStr ) || rHexShort.exec( colStr ) || []).slice( 1 ).map( v => {
+	let [r, g, b] = ( rHex.exec( colStr ) || rHexShort.exec( colStr ) || [] ).slice( 1 ).map( v => {
 		return parseInt( v.length === 1 ? v + v : v, 16 );
 	} );
 

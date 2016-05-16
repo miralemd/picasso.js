@@ -40,11 +40,11 @@ export default class CanvasRenderer {
 	}
 }
 
-CanvasRenderer.registerShape( "rect", (s, g, fill, stroke) => {
+CanvasRenderer.registerShape( "rect", ( s, g, fill, stroke ) => {
 	if ( fill ) {
 		g.fillRect( s.x, s.y, s.width, s.height );
 	}
 	if ( stroke ) {
-		g.strokeRect( s.x, s.y, s.width, s.height);
+		g.strokeRect( s.x, s.y, s.width, s.height );
 	}
 } );

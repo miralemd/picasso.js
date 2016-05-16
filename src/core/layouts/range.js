@@ -32,7 +32,7 @@ export default class Range {
 
 				for ( let p in series[i] ) {
 					m[p] = typeof series[i][p] === "number" ? measureScale.get( series[i][p] ) :
-						measureScale.get( data[Number( series[i][p])][j] );
+						measureScale.get( data[Number( series[i][p] )][j] );
 				}
 				ut.push( v );
 			}

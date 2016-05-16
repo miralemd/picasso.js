@@ -46,15 +46,15 @@ export default class BarArea {
 
 		staticWidth = this.dimensionScale.getUnitSize() * wRatio;
 
-		rangeLayout.series.forEach( (serie, i) => {
+		rangeLayout.series.forEach( ( serie, i ) => {
 			serie.forEach( bar => {
 				rects.push( {
-					fill: "hsl(" + (i * 360 / series.length) + ", 60%, 60%)",
+					fill: "hsl(" + ( i * 360 / series.length ) + ", 60%, 60%)",
 					type: "rect",
-					x: width * (bar.x.start + (bar.x.end - bar.x.start) * 0.5 * ( 1 - wRatio ) ),
-					y: Math.min( height - height * bar.y.end, height - height * bar.y.start),
-					width: Math.max(1, width * staticWidth),
-					height: Math.abs(height * (bar.y.end - bar.y.start))
+					x: width * ( bar.x.start + ( bar.x.end - bar.x.start ) * 0.5 * ( 1 - wRatio ) ),
+					y: Math.min( height - height * bar.y.end, height - height * bar.y.start ),
+					width: Math.max( 1, width * staticWidth ),
+					height: Math.abs( height * ( bar.y.end - bar.y.start ) )
 				} );
 			} );
 		} );

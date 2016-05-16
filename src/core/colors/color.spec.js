@@ -303,7 +303,7 @@ describe( "Colors", () => {
 		} );
 	} );
 
-	describe("Input handling", () => {
+	describe( "Input handling", () => {
 		it( "should handle null", () => {
 			let c = color( null );
 			expect( c ).to.equal( undefined );
@@ -325,7 +325,7 @@ describe( "Colors", () => {
 		} );
 	} );
 
-	describe("RGBA color", () => {
+	describe( "RGBA color", () => {
 		it( "should convert RGB to HSL", () => {
 			let c1 = color( "rgb(3, 33, 99)" );
 			let c2 = color( "rgb(0, 0, 0)" );

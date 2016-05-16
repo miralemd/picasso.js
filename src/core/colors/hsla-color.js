@@ -1,4 +1,4 @@
-function toPercentage (val) {
+function toPercentage ( val ) {
 	return val * 100;
 }
 
@@ -12,7 +12,7 @@ function hue2rgb( p, q, t ) {
 	if ( t > 1 ) { t -= 1; }
 	if ( t < 1 / 6 ) { return p + ( q - p ) * 6 * t; }
 	if ( t < 1 / 2 ) { return q; }
-	if ( t < 2 / 3 ) { return p + ( q - p ) * (2 / 3 - t ) * 6; }
+	if ( t < 2 / 3 ) { return p + ( q - p ) * ( 2 / 3 - t ) * 6; }
 	return p;
 }
 
@@ -55,7 +55,7 @@ function toByte( h, s, l ) {
 }
 
 export default class HslaColor {
-	constructor( h, s, l, a = 1) {
+	constructor( h, s, l, a = 1 ) {
 		this.h = h;
 		this.s = s;
 		this.l = l;
@@ -67,7 +67,7 @@ export default class HslaColor {
 	* @returns {string} - In format hsl(0, 0%, 0%)
 	*/
 	toHSL() {
-		return `hsl(${this.h}, ${toPercentage(this.s)}%, ${toPercentage(this.l)}%)`;
+		return `hsl(${this.h}, ${toPercentage( this.s )}%, ${toPercentage( this.l )}%)`;
 	}
 
 	/**
@@ -121,7 +121,7 @@ export default class HslaColor {
 	 * @returns {string} - In format hsla(0, 0%, 0%, 0)
 	 */
 	toString() {
-		return `hsla(${this.h}, ${toPercentage(this.s)}%, ${toPercentage(this.l)}%, ${this.a})`;
+		return `hsla(${this.h}, ${toPercentage( this.s )}%, ${toPercentage( this.l )}%, ${this.a})`;
 	}
 
 	/**
@@ -130,7 +130,7 @@ export default class HslaColor {
 	 * @return {boolean} True if the hsl channels are the same, false otherwise
 	 */
 	isEqual( c ) {
-		return ( ( this.h === c.h ) && ( this.s === c.s ) && ( this.l === c.l ) && ( this.a === c.a ));
+		return ( ( this.h === c.h ) && ( this.s === c.s ) && ( this.l === c.l ) && ( this.a === c.a ) );
 	}
 
 	/**

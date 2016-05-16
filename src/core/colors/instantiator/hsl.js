@@ -13,8 +13,8 @@ export default function hsl( colStr ) {
 
 		switch ( match.indexOf( v ) ) {
 			case 1:
-				returnVal = (((returnVal % 360) + 360) % 360);
-				return Math.round(returnVal);
+				returnVal = ( ( ( returnVal % 360 ) + 360 ) % 360 );
+				return Math.round( returnVal );
 			case 2:
 			case 3:
 				returnVal = returnVal > 100 ? 100 : returnVal;

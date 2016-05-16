@@ -1,7 +1,7 @@
 import numeric from "./interpolators/numeric";
 
 function lerp( v, from, to, interp ) {
-	let t = ( v - from[0]) / ( from[1] - from[0] );
+	let t = ( v - from[0] ) / ( from[1] - from[0] );
 	return interp.interpolate( to[0], to[1], t );
 }
 
@@ -121,8 +121,8 @@ export default class LinearScale {
 			newTo.push( sampleColValue );
 		}
 		newFrom.pop();
-		this.from(newFrom);
-		this.to(newTo);
+		this.from( newFrom );
+		this.to( newTo );
 
 		return this;
 	}

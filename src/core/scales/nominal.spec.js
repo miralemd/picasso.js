@@ -50,7 +50,7 @@ describe( "NominalScale", () => {
 				{name: "bb", idx: 3.5, span: 1}
 			]
 		] );
-		expect( nom.getUnitSize().toPrecision( 5 ) ).to.equal( (1 / 4.5).toPrecision( 5 ) ); // 4 units + 0.5 separation between groups
+		expect( nom.getUnitSize().toPrecision( 5 ) ).to.equal( ( 1 / 4.5 ).toPrecision( 5 ) ); // 4 units + 0.5 separation between groups
 	} );
 
 	it( "should update the unitSize when changing output range", () => {

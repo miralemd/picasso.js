@@ -7,7 +7,7 @@ const rRgb = /^\s*rgb\(\s*(-?\d{1,3})\s*,\s*(-?\d{1,3})\s*,\s*(-?\d{1,3})\s*\)\s
 
 export default function rgb( colStr ) {
 
-	let ary = (rRgb.exec( colStr ) || rRgba.exec( colStr ) || rRgbPer.exec( colStr ) || rRgbaPer.exec( colStr ) || []);
+	let ary = ( rRgb.exec( colStr ) || rRgba.exec( colStr ) || rRgbPer.exec( colStr ) || rRgbaPer.exec( colStr ) || [] );
 
 	let [r, g, b, a] = ary.slice( 1, 5 ).map( val => {
 

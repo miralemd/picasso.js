@@ -6,7 +6,7 @@ function rangeCal ( min, max, colors ) {
 
 	let incrementor = ( max - min ) / ( colors.length - 1 );
 
-	for (var i = 0; i < colors.length - 2; i++) {
+	for ( var i = 0; i < colors.length - 2; i++ ) {
 		from.push( from[i] + incrementor );
 	}
 
@@ -16,7 +16,7 @@ function rangeCal ( min, max, colors ) {
 }
 
 export default {
-	scientific: (min, max) => {
+	scientific: ( min, max ) => {
 		const colorPalette = ["#3d52a1", "#3a89c9", "#77b7e5", "#b4ddf7", "#e6f5fe", "#ffe3aa", "#f9bd7e", "#ed875e", "#d24d3e", "#ae1c3e"].map( color );
 
 		let from = rangeCal( min, max, colorPalette );

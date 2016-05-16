@@ -27,15 +27,15 @@ export default class Axis {
 
 			if ( this.scale.isDiscrete ) {
 				//let unitSize = this.scale.getUnitSize();
-				this.labels = !this.scale.levels || !this.scale.levels.length ? [] : this.scale.levels.map( (level, idx) => level.map( (a, i) => {
+				this.labels = !this.scale.levels || !this.scale.levels.length ? [] : this.scale.levels.map( ( level, idx ) => level.map( ( a, i ) => {
 					let range = this.scale.getRange( i, idx );
 					return {
 						label: a.name,
-						position: 0.5 * (range.end - range.start),
+						position: 0.5 * ( range.end - range.start ),
 						start: range.start,
 						end: range.end
 					};
-				}));
+				} ) );
 			} else {
 				this.ticks.push( [] );
 				this.labels.push( [] );

@@ -64,9 +64,9 @@ export default class DockLayout {
 			hRect = {x: rect.x, y: rect.y, width: rect.width, height: rect.height};
 
 
-		components.sort( (a, b) => a.order - b.order ).forEach( c => {
+		components.sort( ( a, b ) => a.order - b.order ).forEach( c => {
 
-			switch (c.dock) {
+			switch ( c.dock ) {
 				case "top":
 					c.rect.height = c.relevantSize;
 					c.rect.width = vRect.width;
