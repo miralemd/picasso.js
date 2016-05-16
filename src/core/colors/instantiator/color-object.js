@@ -9,6 +9,8 @@ export default function colorObject( colorObj ) {
 			return new RgbaColor( colorObj.r, colorObj.g, colorObj.b, colorObj.a );
 		case "hsl":
 			return new HslaColor( colorObj.h, colorObj.s, colorObj.l, colorObj.a );
+		default:
+			return undefined;
 	}
 }
 
@@ -27,4 +29,5 @@ colorObject.getColorType = ( obj ) => {
 	} else if ( typeof obj === "object" && obj.hasOwnProperty("h") && obj.hasOwnProperty("s") && obj.hasOwnProperty("l") ) {
 		return "hsl";
 	}
+	return undefined;
 };

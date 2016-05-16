@@ -6,6 +6,8 @@ export default function color( ...a ) {
 			return creators[i].fn( ...a );
 		}
 	}
+
+	return undefined;
 }
 
 /**
