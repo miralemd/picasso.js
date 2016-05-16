@@ -61,6 +61,7 @@
 		"no-extra-parens": [2, "functions"],
 		"eqeqeq": 2,
 		"key-spacing": [2, { "beforeColon": false, "afterColon": true }],
+        "keyword-spacing": [2, { "before": true, "after": true }],
 		"new-cap": 2,
 		"new-parens": 2,
 		"quotes": [2, "double"],

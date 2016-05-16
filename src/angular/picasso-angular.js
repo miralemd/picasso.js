@@ -22,7 +22,7 @@ export default {
 	 * @param  {Object} [window.angular] angular
 	 */
 	boot( angular = window.angular ) {
-		if( !pic.module ) {
+		if ( !pic.module ) {
 			this.init( angular );
 		}
 		angular.bootstrap( document, [pic.module.name] );
