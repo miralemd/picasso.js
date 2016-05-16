@@ -52,6 +52,7 @@
 		"no-unused-expressions": "error",
 		"no-use-before-define": "error",
 		"no-with": "error",
+		"no-var": "error",
 		"camelcase": "error",
 		"comma-spacing": "error",
 		"consistent-return": "error",

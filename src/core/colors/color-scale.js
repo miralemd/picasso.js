@@ -43,7 +43,7 @@ scale.singleHue = ( c1, valueSpace = [0, 1] ) => {
 
     line.from( valueSpace ).to( [c1, c2] );
 
-    var classify = line.classify;
+    let classify = line.classify;
     line.classify = function( intervals ) {
         if ( intervals > 1 ) {
             c2.l = Math.max( Math.min( l2, 0.9 ) - 0.20 * Math.round( intervals / 2 ), 0.1 );

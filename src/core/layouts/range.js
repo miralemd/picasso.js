@@ -8,7 +8,7 @@ export default class Range {
 	 * @param options
 	 */
 	layout( options ) {
-		var data = options.data,
+		let data = options.data,
 			series = options.series,
 			measureScale = options.measureScale,
 			dimensionScale = options.dimensionScale,

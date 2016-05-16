@@ -6,7 +6,7 @@ function rangeCal ( min, max, colors ) {
 
 	let incrementor = ( max - min ) / ( colors.length - 1 );
 
-	for ( var i = 0; i < colors.length - 2; i++ ) {
+	for ( let i = 0; i < colors.length - 2; i++ ) {
 		from.push( from[i] + incrementor );
 	}
 
