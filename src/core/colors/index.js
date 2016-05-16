@@ -3,7 +3,7 @@ import rgb from "./instantiator/rgb";
 import hsl from "./instantiator/hsl";
 import colorKeyWord from "./instantiator/color-keyword";
 import colorObject from "./instantiator/color-object";
-import {default as colourUtils} from "./utils";
+import { default as colourUtils } from "./utils";
 import scale from "./color-scale";
 import color from "./color";
 import palettes from "./palettes";

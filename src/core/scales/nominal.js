@@ -49,7 +49,7 @@ export default class Nominal {
 
 	from( values ) {
 		this.domain = values;
-		let {levels, units} = getLabelsMeta( values, {separation: this.groupSeparation} );
+		let { levels, units } = getLabelsMeta( values, { separation: this.groupSeparation } );
 
 		this.levels = levels;
 		this.units = units;

@@ -60,8 +60,8 @@ export default class DockLayout {
 
 	static positionComponents( components, rect ) {
 
-		var vRect = {x: rect.x, y: rect.y, width: rect.width, height: rect.height},
-			hRect = {x: rect.x, y: rect.y, width: rect.width, height: rect.height};
+		var vRect = { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
+			hRect = { x: rect.x, y: rect.y, width: rect.width, height: rect.height };
 
 
 		components.sort( ( a, b ) => a.order - b.order ).forEach( c => {

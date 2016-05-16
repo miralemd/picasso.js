@@ -3,7 +3,7 @@ import Events from "../utils/event-emitter";
 export default class Axis {
 	constructor() {
 		this.dock = "left";
-		this.rect = {width: 0, height: 0, x: 0, y: 0};
+		this.rect = { width: 0, height: 0, x: 0, y: 0 };
 
 		this.scale = undefined;
 		this.ticks = [];

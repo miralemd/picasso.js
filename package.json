@@ -11,6 +11,7 @@
     "build:watch": "webpack -d --watch",
     "docs": "rimraf ./docs/api && jsdoc -r ./src -d ./docs/api",
     "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
     "test": "aw-test-runner ./src/**/*.spec.js",
     "test:watch": "aw-test-runner ./src/**/*.spec.js -w",
     "test:coverage": "aw-test-coverage ./src/**/*.spec.js"

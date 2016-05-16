@@ -23,10 +23,10 @@ export default class Range {
 			let ut = [];
 			output.push( ut );
 			for ( let j = 0; j < len; j++ ) {
-				let v = {[attrD]: {
+				let v = { [attrD]: {
 					start: dimensionScale.get( j, 0 ) - unitSize / 2 + unitSize * i,
 					end: dimensionScale.get( j, 0 ) + unitSize / 2 + unitSize * i
-				}};
+				} };
 
 				let m = v[attrM] = {};
 

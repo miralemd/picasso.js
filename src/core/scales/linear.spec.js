@@ -75,7 +75,7 @@ describe( "LinearScale", () => {
 		let ticker = {
 			generateTicks: sinon.stub()
 		};
-		ticker.generateTicks.returns( {start: 6, end: 1, ticks: [4, 3, 2, 1] } );
+		ticker.generateTicks.returns( { start: 6, end: 1, ticks: [4, 3, 2, 1] } );
 
 		lin = new LinearScale( [20, 10], [60, 40], ticker );
 		expect( ticker.generateTicks ).to.have.been.calledWithExactly( 20, 10, 2 );
@@ -90,7 +90,7 @@ describe( "LinearScale", () => {
 		lin.ticker = {
 			generateTicks: sinon.stub()
 		};
-		lin.ticker.generateTicks.returns( {start: -3, end: 5, ticks: [-1, 0, 1, 2]} );
+		lin.ticker.generateTicks.returns( { start: -3, end: 5, ticks: [-1, 0, 1, 2] } );
 		lin.nTicks = 7;
 		lin.from( [-4, 5] );
 		expect( lin.ticker.generateTicks ).to.have.been.calledWithExactly( -4, 5, 7 );

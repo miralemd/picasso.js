@@ -8,7 +8,7 @@ import dataMatrix from "../../data/data-matrix";
 
 export default class BarChart {
 	constructor() {
-		this.rect = {x: 0, y: 0, width: 0, height: 0};
+		this.rect = { x: 0, y: 0, width: 0, height: 0 };
 
 		this.layoutEngine = new DockLayout();
 
