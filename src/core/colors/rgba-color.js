@@ -20,12 +20,12 @@ function toHSL( r, g, b ) {
 	let min = Math.min( r, g, b );
 	let h, s, l = ( max + min ) / 2;
 
-	if( max === min ){
+	if ( max === min ){
 		h = s = 0;
 	} else {
 		let d = max - min;
 		s = l > 0.5 ? d / ( 2 - max - min ) : d / ( max + min );
-		switch( max ) {
+		switch ( max ) {
 			case r:
 				h = ( g - b ) / d + ( g < b ? 6 : 0 );
 				break;

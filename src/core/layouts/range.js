@@ -30,7 +30,7 @@ export default class Range {
 
 				let m = v[attrM] = {};
 
-				for( let p in series[i] ) {
+				for ( let p in series[i] ) {
 					m[p] = typeof series[i][p] === "number" ? measureScale.get( series[i][p] ) :
 						measureScale.get( data[Number( series[i][p])][j] );
 				}

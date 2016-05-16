@@ -18,7 +18,7 @@ export default class BarArea {
 		data.forEach( function( row ) {
 			//dimValues.push( row[0] );
 			dimValues.push( row.length <= 2 ? row[0] : {name: row[0], children: row.slice( 1 ).map( ( m, i ) => "M" + i )} );
-			for( let c = 1; c < row.length; c++ ) {
+			for ( let c = 1; c < row.length; c++ ) {
 				measures[c - 1] = measures[c - 1] || [];
 				measures[c - 1].push( row[c] );
 			}

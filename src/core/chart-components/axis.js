@@ -21,11 +21,11 @@ export default class Axis {
 
 		this.ticks = [];
 		this.labels = [];
-		if( this.scale ) {
+		if ( this.scale ) {
 			this.scale.nTicks = Math.max( 2, Math.round( this.rect.height / 48 ) );
 			this.scale.update();
 
-			if( this.scale.isDiscrete ) {
+			if ( this.scale.isDiscrete ) {
 				//let unitSize = this.scale.getUnitSize();
 				this.labels = !this.scale.levels || !this.scale.levels.length ? [] : this.scale.levels.map( (level, idx) => level.map( (a, i) => {
 					let range = this.scale.getRange( i, idx );

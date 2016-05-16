@@ -5,22 +5,22 @@ export default {
 			f = Math.abs( v ) / Math.pow( 10, exp ),
 			nf = 1;
 
-		if( round ) {
-			if( f < 1.5 ) {
+		if ( round ) {
+			if ( f < 1.5 ) {
 				nf = 1;
-			} else if( f < 3 ) {
+			} else if ( f < 3 ) {
 				nf = 2;
-			} else if( f < 7 ) {
+			} else if ( f < 7 ) {
 				nf = 5;
 			} else {
 				nf = 10;
 			}
 		} else {
-			if( f <= 1 ) {
+			if ( f <= 1 ) {
 				nf = 1;
-			} else if( f <= 2 ) {
+			} else if ( f <= 2 ) {
 				nf = 2;
-			} else if( f <= 5 ) {
+			} else if ( f <= 5 ) {
 				nf = 5;
 			} else {
 				nf = 10;
@@ -43,10 +43,10 @@ export default {
 		graphmin = Math.floor( min / d ) * d;
 		graphmax = Math.ceil( max / d ) * d;
 		nfrac = Math.max( -Math.floor( Math.log( d ) / Math.log( 10 ) ), 0);
-		for( let v = graphmin; v < graphmax + 0.5 * d; v += d ) {
+		for ( let v = graphmin; v < graphmax + 0.5 * d; v += d ) {
 			ticks.push( v );
 		}
-		if( start > end ) {
+		if ( start > end ) {
 			[graphmin, graphmax] = [graphmax, graphmin];
 			ticks.reverse();
 		}

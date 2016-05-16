@@ -28,7 +28,7 @@ function toRgb( h, s, l ) {
 
 	h = h / 360;
 
-	if( s === 0 ){
+	if ( s === 0 ){
 		r = g = b = l;
 	}
 	else {

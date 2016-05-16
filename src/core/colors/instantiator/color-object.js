@@ -15,7 +15,7 @@ export default function colorObject( colorObj ) {
 }
 
 colorObject.test = ( obj ) => {
-	if( obj === null || obj === undefined || typeof obj !== "object" ) {
+	if ( obj === null || obj === undefined || typeof obj !== "object" ) {
 		return false;
 	} else {
     // Doesnt really work out well if any of the proparties have invalid values

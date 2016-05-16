@@ -2,7 +2,7 @@ let registry = {};
 
 function renderShapes ( shapes, g ) {
 	shapes.forEach( s => {
-		if( "fill" in s && g.fill !== s.fill ) {
+		if ( "fill" in s && g.fill !== s.fill ) {
 			g.fillStyle = s.fill;
 		}
 		if ( registry[s.type] ) {

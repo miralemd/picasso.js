@@ -10,17 +10,17 @@ function piecewise( v, from, to, interp ) {
 		asc = from[0] < from[1],
 		arr = asc ? from : from.slice().reverse();
 
-	if( v <= arr[0] ) {
+	if ( v <= arr[0] ) {
 		i = 0;
-	} else if( v > arr[arr.length - 1] ) {
+	} else if ( v > arr[arr.length - 1] ) {
 		i = arr.length - 2;
 	} else {
-		for( i = 0; i < arr.length - 1; i++ ) {
-			if( arr[i] <= v && v <= arr[i + 1] ) {
+		for ( i = 0; i < arr.length - 1; i++ ) {
+			if ( arr[i] <= v && v <= arr[i + 1] ) {
 				break;
 			}
 		}
-		if( typeof i === "undefined" ) {
+		if ( typeof i === "undefined" ) {
 			return NaN;
 		}
 	}
@@ -66,7 +66,7 @@ export default class LinearScale {
 		this.minValue = this.domain[0];
 		this.maxValue = this.domain[this.domain.length - 1];
 
-		if( this.ticker ) {
+		if ( this.ticker ) {
 			let v = this.ticker.generateTicks( this.minValue, this.maxValue, this.nTicks );
 			this.ticks = v.ticks;
 			this.minValue = Math.min( v.start, v.end );
