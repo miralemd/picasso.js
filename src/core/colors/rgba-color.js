@@ -1,5 +1,5 @@
 function componentToHex( c ) {
-	let hex = c.toString(16);
+	let hex = c.toString( 16 );
 	return hex.length === 1 ? "0" + hex : hex;
 }
 
@@ -20,12 +20,12 @@ function toHSL( r, g, b ) {
 	let min = Math.min( r, g, b );
 	let h, s, l = ( max + min ) / 2;
 
-	if( max === min ){
+	if ( max === min ){
 		h = s = 0;
 	} else {
 		let d = max - min;
 		s = l > 0.5 ? d / ( 2 - max - min ) : d / ( max + min );
-		switch( max ) {
+		switch ( max ) {
 			case r:
 				h = ( g - b ) / d + ( g < b ? 6 : 0 );
 				break;
@@ -55,7 +55,7 @@ export default class RgbaColor {
 	 * @return {string} = In format hsl(0,0,0)
 	 */
 	toHSL() {
-		let value = toHSL( this.r, this.g, this.b);
+		let value = toHSL( this.r, this.g, this.b );
 		return `hsl(${value})`;
 	}
 
@@ -64,7 +64,7 @@ export default class RgbaColor {
 	 * @return {string} - In format hsla(0,0,0,0)
 	 */
 	toHSLA() {
-		let value = toHSL( this.r, this.g, this.b);
+		let value = toHSL( this.r, this.g, this.b );
 		return `hsla(${value}, ${this.a})`;
 	}
 
@@ -101,7 +101,7 @@ export default class RgbaColor {
 			g = this.g & 0xFF,
 			b = this.b & 0xFF,
 
-			rgb = (r << 16) + (g << 8) + (b);
+			rgb = ( r << 16 ) + ( g << 8 ) + ( b );
 		return rgb;
 	}
 
@@ -111,7 +111,7 @@ export default class RgbaColor {
 	 * @return {boolean} True if the rgb channels are the same, false otherwise
 	 */
 	isEqual( c ) {
-		return ( ( this.r === c.r ) && ( this.g === c.g ) && ( this.b === c.b ) && ( this.a === c.a ));
+		return ( ( this.r === c.r ) && ( this.g === c.g ) && ( this.b === c.b ) && ( this.a === c.a ) );
 	}
 
 	/**

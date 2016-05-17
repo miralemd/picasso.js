@@ -2,7 +2,7 @@ let registry = {};
 
 function renderShapes ( shapes, g ) {
 	shapes.forEach( s => {
-		if( "fill" in s && g.fill !== s.fill ) {
+		if ( "fill" in s && g.fill !== s.fill ) {
 			g.fillStyle = s.fill;
 		}
 		if ( registry[s.type] ) {
@@ -40,11 +40,11 @@ export default class CanvasRenderer {
 	}
 }
 
-CanvasRenderer.registerShape( "rect", (s, g, fill, stroke) => {
+CanvasRenderer.registerShape( "rect", ( s, g, fill, stroke ) => {
 	if ( fill ) {
 		g.fillRect( s.x, s.y, s.width, s.height );
 	}
 	if ( stroke ) {
-		g.strokeRect( s.x, s.y, s.width, s.height);
+		g.strokeRect( s.x, s.y, s.width, s.height );
 	}
 } );

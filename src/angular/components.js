@@ -10,10 +10,10 @@ export function addComponent( name, component ) {
 	if ( !name ) {
 		throw new Error( `Component name is undefined: ${name}` );
 	}
-	if( !component ) {
+	if ( !component ) {
 		throw new Error( "Component is undefined" );
 	}
-	if( components[name] ) {
+	if ( components[name] ) {
 		throw new Error( `Component exists: ${name}` );
 	}
 
@@ -29,10 +29,10 @@ export function addDirective( name, directive ) {
 	if ( !name ) {
 		throw new Error( `Directive name is undefined: ${name}` );
 	}
-	if( !directive ) {
+	if ( !directive ) {
 		throw new Error( "Directive is undefined" );
 	}
-	if( directives[name] ) {
+	if ( directives[name] ) {
 		throw new Error( `Directive exists: ${name}` );
 	}
 	directives[name] = directive;

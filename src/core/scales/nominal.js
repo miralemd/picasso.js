@@ -5,7 +5,7 @@ function getLabelsMeta( data, options ) {
 	function traverse( arr, depth = 0 ) {
 
 		let level = levels[depth] = levels[depth] || [];
-		arr.forEach( (node, i, a) => {
+		arr.forEach( ( node, i, a ) => {
 			let spanStart = units,
 				obj = {
 					name: typeof node === "string" ? node : node.name,
@@ -35,7 +35,7 @@ function getLabelsMeta( data, options ) {
 }
 
 function getUnitSize( min, max, units, levels ) {
-	return Math.abs( max - min ) / (units - (levels.length > 1 ? 1 : 0) || 1);
+	return Math.abs( max - min ) / ( units - ( levels.length > 1 ? 1 : 0 ) || 1 );
 }
 
 export default class Nominal {
@@ -49,7 +49,7 @@ export default class Nominal {
 
 	from( values ) {
 		this.domain = values;
-		let {levels, units} = getLabelsMeta( values, {separation: this.groupSeparation} );
+		let { levels, units } = getLabelsMeta( values, { separation: this.groupSeparation } );
 
 		this.levels = levels;
 		this.units = units;
@@ -64,7 +64,7 @@ export default class Nominal {
 	}
 
 	update() {
-		this.ticks = !this.levels || !this.levels.length ? [] : this.levels[this.levels.length - 1].map( (a, i) => i);
+		this.ticks = !this.levels || !this.levels.length ? [] : this.levels[this.levels.length - 1].map( ( a, i ) => i );
 	}
 
 	getLevels() {

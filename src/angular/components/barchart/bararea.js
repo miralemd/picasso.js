@@ -2,7 +2,7 @@ import { addComponent } from "../../components";
 
 class BarAreaController {
 	$onInit() {
-		var vm = this;
+		let vm = this;
 
 		vm.rects = [];
 		vm.rect = vm.model.rect;

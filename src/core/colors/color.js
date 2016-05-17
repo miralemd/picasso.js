@@ -6,6 +6,8 @@ export default function color( ...a ) {
 			return creators[i].fn( ...a );
 		}
 	}
+
+	return undefined;
 }
 
 /**
@@ -28,7 +30,7 @@ export default function color( ...a ) {
  * let someColor = color("surprise");
  */
 color.register = ( test, fn ) => {
-	creators.push( {test, fn} );
+	creators.push( { test, fn } );
 };
 
 /**

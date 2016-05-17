@@ -11,6 +11,7 @@
     "build:watch": "webpack -d --watch",
     "docs": "rimraf ./docs/api && jsdoc -r ./src -d ./docs/api",
     "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
     "test": "aw-test-runner ./src/**/*.spec.js",
     "test:watch": "aw-test-runner ./src/**/*.spec.js -w",
     "test:coverage": "aw-test-coverage ./src/**/*.spec.js"
@@ -28,7 +29,7 @@
     "babel-core": "^5.8.25",
     "babel-loader": "^5.3.2",
     "css-loader": "^0.23.1",
-    "eslint": "^1.8.0",
+    "eslint": "^2.0.0",
     "extract-text-webpack-plugin": "^1.0.1",
     "jsdoc": "^3.4.0",
     "less": "^2.6.1",

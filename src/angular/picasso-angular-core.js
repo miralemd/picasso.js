@@ -15,7 +15,7 @@ export default {
 	 * @param  {object} angular The angular object to create the module from
 	 */
 	init: function( angular ) {
-		if( pic ) {
+		if ( pic ) {
 			throw new Error( "Picasso module already initiated" );
 		}
 
@@ -40,7 +40,7 @@ export default {
 	 * @param  {object} component The component definition
 	 */
 	component: function( name, component ) {
-		if( !pic ) {
+		if ( !pic ) {
 			addComponent( name, component );
 			return;
 		}
@@ -53,7 +53,7 @@ export default {
 	 * @param  {Function} fn   The directive constructor function
 	 */
 	directive: function( name, fn ) {
-		if( !pic ) {
+		if ( !pic ) {
 			addDirective( name, fn );
 			return;
 		}

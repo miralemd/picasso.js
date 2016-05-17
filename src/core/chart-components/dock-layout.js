@@ -14,20 +14,20 @@ export default class DockLayout {
 	}
 
 	removeComponent( component ) {
-		var idx = this.components.indexOf( component );
+		let idx = this.components.indexOf( component );
 		if ( idx > -1 ) {
 			this.components.splice( idx, 1 );
 		}
 	}
 
 	layout( rect ) {
-		var reduced = DockLayout.reduceLayoutRect( this.components, rect );
+		let reduced = DockLayout.reduceLayoutRect( this.components, rect );
 		DockLayout.positionComponents( this.components, reduced );
 	}
 
 	static reduceLayoutRect( components, rect ) {
 
-		var reducedRect = {
+		let reducedRect = {
 			x: rect.x,
 			y: rect.y,
 			width: rect.width,
@@ -60,13 +60,13 @@ export default class DockLayout {
 
 	static positionComponents( components, rect ) {
 
-		var vRect = {x: rect.x, y: rect.y, width: rect.width, height: rect.height},
-			hRect = {x: rect.x, y: rect.y, width: rect.width, height: rect.height};
+		let vRect = { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
+			hRect = { x: rect.x, y: rect.y, width: rect.width, height: rect.height };
 
 
-		components.sort( (a, b) => a.order - b.order ).forEach( c => {
+		components.sort( ( a, b ) => a.order - b.order ).forEach( c => {
 
-			switch (c.dock) {
+			switch ( c.dock ) {
 				case "top":
 					c.rect.height = c.relevantSize;
 					c.rect.width = vRect.width;

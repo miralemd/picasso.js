@@ -8,7 +8,7 @@ export default class Range {
 	 * @param options
 	 */
 	layout( options ) {
-		var data = options.data,
+		let data = options.data,
 			series = options.series,
 			measureScale = options.measureScale,
 			dimensionScale = options.dimensionScale,
@@ -23,16 +23,16 @@ export default class Range {
 			let ut = [];
 			output.push( ut );
 			for ( let j = 0; j < len; j++ ) {
-				let v = {[attrD]: {
+				let v = { [attrD]: {
 					start: dimensionScale.get( j, 0 ) - unitSize / 2 + unitSize * i,
 					end: dimensionScale.get( j, 0 ) + unitSize / 2 + unitSize * i
-				}};
+				} };
 
 				let m = v[attrM] = {};
 
-				for( let p in series[i] ) {
+				for ( let p in series[i] ) {
 					m[p] = typeof series[i][p] === "number" ? measureScale.get( series[i][p] ) :
-						measureScale.get( data[Number( series[i][p])][j] );
+						measureScale.get( data[Number( series[i][p] )][j] );
 				}
 				ut.push( v );
 			}
