@@ -2,6 +2,7 @@
 *.tmp
 *.log
 .idea/
+.vscode/
 node_modules/
 dist/
 coverage/
