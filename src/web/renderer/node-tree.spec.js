@@ -10,7 +10,7 @@ describe( "node-tree", () => {
 		it( "should call factory function with type and parent params", () => {
 			let fn = sinon.sandbox.spy(),
 				p = {},
-				nodes = [{content: {type: "a"}}, {content: {type: "b"}}];
+				nodes = [{ content: { type: "a" } }, { content: { type: "b" } }];
 			createNodes( nodes, p, fn );
 			expect( fn.firstCall ).to.have.been.calledWithExactly( "a", p );
 			expect( fn.secondCall ).to.have.been.calledWithExactly( "b", p );
@@ -19,7 +19,7 @@ describe( "node-tree", () => {
 		it( "should store created objects", () => {
 			let fn = s => "step " + s,
 				p = {},
-				nodes = [{content: {type: "1"}}, {content: {type: "2"}}];
+				nodes = [{ content: { type: "1" } }, { content: { type: "2" } }];
 
 			createNodes( nodes, p, fn );
 			expect( nodes[0].object ).to.equal( "step 1" );
@@ -30,7 +30,7 @@ describe( "node-tree", () => {
 	describe( "destroyNodes", () => {
 		it( "should call factory function with object instance", () => {
 			let fn = sinon.sandbox.spy(),
-				nodes = [{object: "a"}, {object: "b"}, {}, {object: null}];
+				nodes = [{ object: "a" }, { object: "b" }, {}, { object: null }];
 			destroyNodes( nodes, fn );
 			expect( fn.callCount ).to.equal( 2 );
 			expect( fn.firstCall ).to.have.been.calledWithExactly( "a" );
@@ -39,16 +39,16 @@ describe( "node-tree", () => {
 
 		it( "should nullify node object", () => {
 			let fn = () => {},
-				nodes = [{object: "a"}, {object: "b"}];
+				nodes = [{ object: "a" }, { object: "b" }];
 			destroyNodes( nodes, fn );
-			expect( nodes ).to.deep.equal( [{object: null}, {object: null}] );
+			expect( nodes ).to.deep.equal( [{ object: null }, { object: null }] );
 		} );
 	} );
 
 	describe( "updateNodes", () => {
 		it( "should call maintainer function with object instance and content", () => {
 			let fn = sinon.sandbox.spy(),
-				nodes = [{object: "a", content: "foo"}, {object: "b", content: false}, {}, {object: null}];
+				nodes = [{ object: "a", content: "foo" }, { object: "b", content: false }, {}, { object: null }];
 			updateNodes( nodes, null, fn );
 			expect( fn.callCount ).to.equal( 2 );
 			expect( fn.firstCall ).to.have.been.calledWithExactly( "a", "foo" );
@@ -101,34 +101,34 @@ describe( "node-tree", () => {
 		describe( "by id", () => {
 			describe( "added", () => {
 				it( "should contain new items", () => {
-					let added = getContent( diff( [{id: 4}], [{id: 1}, {id: 4}, {id: 3}] ).added );
-					expect( added ).to.deep.equal( [{id: 1}, {id: 3}] );
+					let added = getContent( diff( [{ id: 4 }], [{ id: 1 }, { id: 4 }, { id: 3 }] ).added );
+					expect( added ).to.deep.equal( [{ id: 1 }, { id: 3 }] );
 				} );
 				it( "should be empty when new items are not added", () => {
-					let added = getContent( diff( [{id: 1}, {id: 2}], [{id: 2}] ).added );
+					let added = getContent( diff( [{ id: 1 }, { id: 2 }], [{ id: 2 }] ).added );
 					expect( added ).to.deep.equal( [] );
 				} );
 			} );
 
 			describe( "updated", () => {
 				it( "should be empty when items are unique", () => {
-					let updated = getContent( diff( [{id: 1}], [{id: 2}, {id: 0}] ).updatedNew );
+					let updated = getContent( diff( [{ id: 1 }], [{ id: 2 }, { id: 0 }] ).updatedNew );
 					expect( updated ).to.deep.equal( [] );
 				} );
 				it( "should contain shared items", () => {
-					let updated = getContent( diff( [{id: 1}, {id: 2}], [{id: 2}, {id: 5}] ).updatedNew );
-					expect( updated ).to.deep.equal( [{id: 2}] );
+					let updated = getContent( diff( [{ id: 1 }, { id: 2 }], [{ id: 2 }, { id: 5 }] ).updatedNew );
+					expect( updated ).to.deep.equal( [{ id: 2 }] );
 				} );
 			} );
 
 			describe( "removed", () => {
 				it( "should be empty when old items are not removed", () => {
-					let removed = getContent( diff( [{id: 1}], [{id: 1}, {id: 2}, {id: 3}] ).removed );
+					let removed = getContent( diff( [{ id: 1 }], [{ id: 1 }, { id: 2 }, { id: 3 }] ).removed );
 					expect( removed ).to.deep.equal( [] );
 				} );
 				it( "should contain removed items", () => {
-					let removed = getContent( diff( [{id: 1}, {id: 2}, {id: 3}], [{id: 3}] ).removed );
-					expect( removed ).to.deep.equal( [{id: 1}, {id: 2}] );
+					let removed = getContent( diff( [{ id: 1 }, { id: 2 }, { id: 3 }], [{ id: 3 }] ).removed );
+					expect( removed ).to.deep.equal( [{ id: 1 }, { id: 2 }] );
 				} );
 			} );
 		} );

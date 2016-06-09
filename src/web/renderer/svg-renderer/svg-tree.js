@@ -1,12 +1,12 @@
 import { createTree } from "../node-tree";
-import { svgNs, creator, maintainer, destroyer } from "./svg-nodes";
+import { creator, maintainer, destroyer } from "./svg-nodes";
 
 export default class TreeItemRenderer {
-	constructor( createTree, creator, maintainer, destroyer ) {
-		this.create = createTree;
-		this.nodeCreator = creator;
-		this.nodeMaintainer = maintainer;
-		this.nodeDestroyer = destroyer;
+	constructor( treeCreator, nodeCreator, nodeMaintainer, nodeDestroyer ) {
+		this.create = treeCreator;
+		this.nodeCreator = nodeCreator;
+		this.nodeMaintainer = nodeMaintainer;
+		this.nodeDestroyer = nodeDestroyer;
 	}
 
 	render( oldItems, newItems, root ) {

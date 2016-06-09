@@ -9,12 +9,12 @@ export default class SVGRenderer {
 	 * @param  {SVGMaintainer} nodeMaintainer - Function used to update nodes.
 	 * @param  {SVGDestroyer} nodeDestroyer - Function used to destroy nodes.
 	 */
-	constructor( tree, ns ) {
+	constructor( treeFn, ns ) {
 		this.ns = ns;
-		this.tree = tree();
+		this.tree = treeFn();
 
 		this.items = [];
-		this.rect = {x: 0, y: 0, width: 0, height: 0};
+		this.rect = { x: 0, y: 0, width: 0, height: 0 };
 	}
 
 	/**
@@ -22,7 +22,7 @@ export default class SVGRenderer {
 	 * @param  {HTMLElement} element - The element to append the svg renderer to.
 	 */
 	appendTo( element ) {
-		if( !this.root ) {
+		if ( !this.root ) {
 			this.root = element.ownerDocument.createElementNS( this.ns, "svg" );
 			this.root.setAttribute( "xmlns", this.ns );
 			this.g = element.ownerDocument.createElementNS( this.ns, "g" );
@@ -62,7 +62,7 @@ export default class SVGRenderer {
 	 * Clear all content and detach renderer from DOM.
 	 */
 	destroy () {
-		if( this.root && this.root.parentNode ) {
+		if ( this.root && this.root.parentNode ) {
 			this.root.parentNode.removeChild( this.root );
 		}
 		this.root = null;

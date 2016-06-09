@@ -10,11 +10,11 @@ function diff( from, to ) {
 		nodeMapper = ( node, i ) => {
 			return {
 				content: node,
-				id: (typeof node === "object" ? "id" in node ? node.id : i : node) + "__" + (node.type || "")
+				id: ( typeof node === "object" ? "id" in node ? node.id : i : node ) + "__" + ( node.type || "" )
 			};
 		};
 
-	if( !from.isTree ) {
+	if ( !from.isTree ) {
 		from = from.map( nodeMapper );
 	}
 
@@ -31,7 +31,7 @@ function diff( from, to ) {
 
 	for ( let i = 0, len = to.length; i < len; i++ ) {
 		let idx = fromIds.indexOf( to[i].id );
-		if( idx === -1 ) {
+		if ( idx === -1 ) {
 			added.push( to[i] );
 		} else {
 			updatedNew.push( to[i] );
@@ -40,22 +40,22 @@ function diff( from, to ) {
 
 	for ( let i = 0, len = from.length; i < len; i++ ) {
 		let idx = toIds.indexOf( from[i].id );
-		if( idx === -1 ) {
+		if ( idx === -1 ) {
 			removed.push( from[i] );
 		} else {
 			updatedOld.push( from[i] );
 		}
 	}
 
-	for( let i = 0, len = added.length; i < len; i++ ) {
-		if( added[i].content.children ) {
+	for ( let i = 0, len = added.length; i < len; i++ ) {
+		if ( added[i].content.children ) {
 			added[i].diff = diff( [], added[i].content.children );
 			added[i].children = added[i].diff.updatedNew.concat( added[i].diff.added );
 			added[i].children.isTree = true;
 		}
 	}
 
-	for( let i = 0, len = updatedNew.length; i < len; i++ ) {
+	for ( let i = 0, len = updatedNew.length; i < len; i++ ) {
 		updatedNew[i].diff = diff( updatedOld[i].children || [], updatedNew[i].content.children || [] );
 		updatedNew[i].object = updatedOld[i].object;
 		updatedNew[i].children = updatedNew[i].diff.items;
@@ -78,15 +78,15 @@ function diff( from, to ) {
 	};
 }
 
-function createNodes( nodes, parent, create) {
-	for( let i = 0, len = nodes.length; i < len; i++ ) {
+function createNodes( nodes, parent, create ) {
+	for ( let i = 0, len = nodes.length; i < len; i++ ) {
 		nodes[i].object = create( nodes[i].content.type, parent );
 	}
 }
 
 function destroyNodes( nodes, destroy ) {
-	for( let i = 0, len = nodes.length; i < len; i++ ) {
-		if( nodes[i].object !== null && typeof nodes[i].object !== "undefined" ) {
+	for ( let i = 0, len = nodes.length; i < len; i++ ) {
+		if ( nodes[i].object !== null && typeof nodes[i].object !== "undefined" ) {
 			destroy( nodes[i].object );
 			nodes[i].object = null;
 		}
@@ -95,11 +95,11 @@ function destroyNodes( nodes, destroy ) {
 
 function updateNodes( nodes, creator, maintainer, destroyer ) {
 	let item;
-	for( let i = 0, len = nodes.length; i < len; i++ ) {
+	for ( let i = 0, len = nodes.length; i < len; i++ ) {
 		item = nodes[i];
-		if( item.object !== null && typeof item.object !== "undefined" ) {
+		if ( item.object !== null && typeof item.object !== "undefined" ) {
 			maintainer( item.object, item.content );
-			if( item.diff ) {
+			if ( item.diff ) {
 				createNodes( item.diff.added, item.object, creator );
 				destroyNodes( item.diff.removed, destroyer );
 				updateNodes( item.diff.items, creator, maintainer, destroyer );

@@ -42,7 +42,7 @@ describe( "SVGRenderer", () => {
 		} );
 
 		it( "should not create new root if it already exists", () => {
-			let dummy = {name: "dummy"};
+			let dummy = { name: "dummy" };
 			let el = element( "div" );
 			svg.root = dummy;
 			svg.appendTo( el );
@@ -72,8 +72,8 @@ describe( "SVGRenderer", () => {
 			svg.g = element( "node" );
 			svg.root.appendChild( svg.g );
 
-			svg.g.appendChild( element("circle") );
-			svg.g.appendChild( element("rect") );
+			svg.g.appendChild( element( "circle" ) );
+			svg.g.appendChild( element( "rect" ) );
 			expect( svg.g.children.length ).to.equal( 2 );
 
 			svg.clear();
