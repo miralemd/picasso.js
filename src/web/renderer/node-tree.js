@@ -51,6 +51,7 @@ function diff( from, to ) {
 		if( added[i].content.children ) {
 			added[i].diff = diff( [], added[i].content.children );
 			added[i].children = added[i].diff.updatedNew.concat( added[i].diff.added );
+			added[i].children.isTree = true;
 		}
 	}
 

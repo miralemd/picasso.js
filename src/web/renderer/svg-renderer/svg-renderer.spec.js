@@ -3,15 +3,16 @@ import element from "../../../../test/mocks/element-mock";
 
 
 describe( "SVGRenderer", () => {
-	let creator, maintainer, destroyer, svg, sandbox, treeCreator;
+	let sandbox, tree, ns, treeRenderer, svg;
 
 	beforeEach( () => {
 		sandbox = sinon.sandbox.create();
-		treeCreator = sandbox.spy();
-		creator = sandbox.spy();
-		maintainer = sandbox.spy();
-		destroyer = sandbox.spy();
-		svg = new SVGRenderer( treeCreator, creator, maintainer, destroyer );
+		treeRenderer = {
+			render: sandbox.spy()
+		};
+		tree = sandbox.stub().returns( treeRenderer );
+		ns = "namespace";
+		svg = new SVGRenderer( tree, ns );
 	} );
 
 	afterEach( () => {
@@ -24,18 +25,13 @@ describe( "SVGRenderer", () => {
 		} );
 
 		it( "should set dependencies as properties", () => {
-			expect( svg.treeCreator ).to.equal( treeCreator );
-			expect( svg.creator ).to.equal( creator );
-			expect( svg.maintainer ).to.equal( maintainer );
-			expect( svg.destroyer ).to.equal( destroyer );
-
-			expect( svg.ns ).to.equal( "http://www.w3.org/2000/svg" );
+			expect( svg.tree ).to.equal( treeRenderer );
+			expect( svg.ns ).to.equal( "namespace" );
 		} );
 	} );
 
 	describe( "appendTo", () => {
 		it( "should append root node to element", () => {
-			svg.ns = "namespace";
 			let el = element( "div" );
 			svg.appendTo( el );
 
@@ -65,7 +61,7 @@ describe( "SVGRenderer", () => {
 			let items = ["a"];
 			svg.items = "b";
 			svg.render( items );
-			expect( treeCreator ).to.have.been.calledWith( "b", items, svg.g, creator, maintainer, destroyer );
+			expect( treeRenderer.render ).to.have.been.calledWith( "b", items, svg.g );
 		} );
 	} );
 

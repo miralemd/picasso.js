@@ -1,5 +1,5 @@
-import { createTree } from "../node-tree";
-import { svgNs, creator, maintainer, destroyer } from "./svg-nodes";
+import { tree } from "./svg-tree";
+import { svgNs } from "./svg-nodes";
 
 export default class SVGRenderer {
 	/**
@@ -9,12 +9,9 @@ export default class SVGRenderer {
 	 * @param  {SVGMaintainer} nodeMaintainer - Function used to update nodes.
 	 * @param  {SVGDestroyer} nodeDestroyer - Function used to destroy nodes.
 	 */
-	constructor( treeCreator, nodeCreator, nodeMaintainer, nodeDestroyer ) {
-		this.ns = svgNs;
-		this.treeCreator = treeCreator;
-		this.creator = nodeCreator;
-		this.maintainer = nodeMaintainer;
-		this.destroyer = nodeDestroyer;
+	constructor( tree, ns ) {
+		this.ns = ns;
+		this.tree = tree();
 
 		this.items = [];
 		this.rect = {x: 0, y: 0, width: 0, height: 0};
@@ -48,7 +45,7 @@ export default class SVGRenderer {
 		this.root.setAttribute( "width", this.rect.width );
 		this.root.setAttribute( "height", this.rect.height );
 
-		this.items = this.treeCreator( this.items, items, this.g, this.creator, this.maintainer, this.destroyer );
+		this.items = this.tree.render( this.items, items, this.g );
 	}
 
 	/**
@@ -75,7 +72,7 @@ export default class SVGRenderer {
 }
 
 export function renderer() {
-	return new SVGRenderer( createTree, creator, maintainer, destroyer );
+	return new SVGRenderer( tree, svgNs );
 }
 
 /**
