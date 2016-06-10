@@ -5,12 +5,12 @@ describe( "Registry", () => {
 	beforeEach( () => {
 		reg = new Registry();
 	} );
-	
+
 	describe( "registry", () => {
 		it( "should instantiate a new registry", () => {
 			expect( registry() ).to.be.an.instanceof( Registry );
 		} );
-	})
+	} );
 
 	describe( "register", () => {
 		it( "should register a function", () => {
