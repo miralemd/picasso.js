@@ -7,17 +7,13 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
 	entry: {
-		"picasso": path.resolve( srcDir, "index" ),
-		"picasso-angular": path.resolve( srcDir, "angular", "picasso-angular")
+		"picasso": path.resolve( srcDir, "index" )
 	},
 	output: {
 		path: path.resolve( __dirname, "dist" ),
 		filename: "[name].js",
 		library: "[name]",
 		libraryTarget: "umd"
-	},
-	externals: {
-		"picasso": "picasso"
 	},
 	module: {
 		loaders: [
