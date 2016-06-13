@@ -1,7 +1,11 @@
+machine:
+    node:
+        version: 4.3.1
 general:
     artifacts:
         - "coverage/"
         - "dist/"
+        - "test/component/artifacts/"
 
 dependencies:
     override:
