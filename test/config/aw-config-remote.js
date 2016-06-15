@@ -15,5 +15,4 @@ var repoConfig = {
 baseConfig.config.multiCapabilities = [];
 
 var merged = extend( true, baseConfig, repoConfig );
-console.log(merged.config);
 exports.config = merged.config;
