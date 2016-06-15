@@ -1,4 +1,3 @@
-/*global browser*/
 var extend = require( "extend" );
 var baseConfig = require( "@qlik/after-work/dist/config/client.conf.dev.js" );
 var httpServer = require( "@qlik/after-work/dist/utils" ).httpServer;
@@ -21,11 +20,6 @@ var repoConfig = {
 				args: ["--disable-gpu"]
 			}
 		},
-		// onPrepare: function() {
-		// 	browser.artifactsPath = "test/component/artifacts";
-		// 	browser.manage().timeouts().pageLoadTimeout( 40000 );
-		// 	browser.manage().timeouts().implicitlyWait( 25000 );
-		// },
 		plugins: [{ path: "../../node_modules/\@qlik/after-work/dist/plugins/screenshoter/index.js" }]
 	}
 };
