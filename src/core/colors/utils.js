@@ -13,8 +13,8 @@ export default {
 
 		let cssColors;
 
-		if ( typeof colors === "object" && colors.hasOwnProperty( "inputDomain" ) ) {
-				let inputDomain = colors.inputDomain;
+		if ( typeof colors === "object" && colors.constructor.name === "LinearScale" ) {
+				let inputDomain = colors.domain();
 
 				cssColors = inputDomain.map( ( d ) => {
 					return colors.get( d );
