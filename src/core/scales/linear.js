@@ -1,101 +1,142 @@
-import numeric from "./interpolators/numeric";
-
-function lerp( v, from, to, interp ) {
-	let t = ( v - from[0] ) / ( from[1] - from[0] );
-	return interp.interpolate( to[0], to[1], t );
-}
-
-function piecewise( v, from, to, interp ) {
-	let i,
-		asc = from[0] < from[1],
-		arr = asc ? from : from.slice().reverse();
-
-	if ( v <= arr[0] ) {
-		i = 0;
-	} else if ( v > arr[arr.length - 1] ) {
-		i = arr.length - 2;
-	} else {
-		for ( i = 0; i < arr.length - 1; i++ ) {
-			if ( arr[i] <= v && v <= arr[i + 1] ) {
-				break;
-			}
-		}
-		if ( typeof i === "undefined" ) {
-			return NaN;
-		}
-	}
-	return lerp(
-		v,
-		asc ? arr.slice( i, i + 2 ) : arr.slice( i, i + 2 ).reverse(),
-		asc ? to.slice( i, i + 2 ) : to.slice( -i - 2 ),
-		interp
-	);
-}
+import { scaleLinear } from "d3-scale";
+import Events from "../utils/event-emitter";
 
 export default class LinearScale {
-	constructor( from = [0, 1], to = [0, 1], ticker ) {
-		this.inputDomain = from;
-		this.output = to;
-
-		this.ticker = ticker;
-		this.nTicks = 2;
-		this.interpolator = numeric;
-		this.update();
+	constructor( domain = [0, 1], range = [0, 1] ) {
+		this._scale = scaleLinear();
+		this.domain( domain );
+		this.range( range );
 	}
 
 	/**
-	 *
-	 * @param {Number[]} values
-	 * @returns {LinearScale}
+	 * https://github.com/d3/d3-scale#continuous_invert
+	 * @param {Number} value The inverted value
+	 * @return {Number}
 	 */
-	from( values ) {
-		this.inputDomain = values;
-		this.update();
-		return this;
+	invert( value ) {
+		return this._scale.invert( value );
 	}
 
-	to( values ) {
-		this.output = values;
-		this.update();
-		return this;
-	}
-
-	update() {
-		this.domain = this.inputDomain.slice();
-		this.domain.length = Math.min( this.inputDomain.length, this.output.length );
-		this.minValue = this.domain[0];
-		this.maxValue = this.domain[this.domain.length - 1];
-
-		if ( this.ticker ) {
-			let v = this.ticker.generateTicks( this.minValue, this.maxValue, this.nTicks );
-			this.ticks = v.ticks;
-			this.minValue = Math.min( v.start, v.end );
-			this.maxValue = Math.max( v.start, v.end );
-			this.domain[0] = v.start;
-			this.domain[this.domain.length - 1] = v.end;
-		}
-		this.s = this.domain.length <= 2 ? lerp : piecewise;
-		return this;
-	}
 	/**
-	 *
+	 * https://github.com/d3/d3-scale#continuous_rangeRound
+	 * @param {Array} values Range values
+	 * @return {LinearScale}
+	 */
+	rangeRound( values ) {
+		if ( arguments.length ) {
+			this._scale.rangeRound( values );
+			this.emit( "changed" );
+			return this;
+		}
+		return this._scale.rangeRound();
+	}
+
+	/**
+	 * https://github.com/d3/d3-scale#continuous_clamp
+	 * @param {boolean} value True if clamp should be enabled
+	 * @return {LinearScale}
+	 */
+	clamp( value ) {
+		this._scale.clamp( value );
+		this.emit( "changed" );
+		return this;
+	}
+
+	/**
+	 * https://github.com/d3/d3-scale#continuous_ticks
+	 * @param {Number} count Number of ticks to generate
+	 * @return {Array} Array of ticks
+	 */
+	ticks( count ) {
+		return this._scale.ticks( count );
+	}
+
+	/**
+	 * https://github.com/d3/d3-scale#continuous_nice
+	 * @param {Number} count
+	 * @return {LinearScale}
+	 */
+	nice( count ) {
+		this._scale.nice( count );
+		this.emit( "changed" );
+		return this;
+	}
+
+	// TODO Support this?
+	ticksFormat( count, format ) {
+		return this._scale.ticksFormat( count, format );
+	}
+
+	// TODO Support this?
+	interpolate( fn ) {
+		this._scale.interpolate( fn );
+	}
+
+	/**
+	 * @param {Number[]} Domain values
+	 * @return {LinearScale}
+	 */
+	domain( values ) {
+		if ( arguments.length ) {
+			this._scale.domain( values );
+			this.emit( "changed" );
+			return this;
+		}
+		return this._scale.domain();
+	}
+
+	/**
+	 * @param {Number[]} Range values
+	 * @return {LinearScale}
+	 */
+	range( values ) {
+		if ( arguments.length ) {
+			this._scale.range( values );
+			this.emit( "changed" );
+			return this;
+		}
+		return this._scale.range();
+	}
+
+	/**
+	 * https://github.com/d3/d3-scale#_continuous
 	 * @param {Number} value
-	 * @returns {Number}
+	 * @return {Number}
 	 */
 	get( value ) {
-		return this.s( value, this.domain, this.output, this.interpolator );
+		return this._scale( value );
 	}
+
+	/**
+	 * Get the first value of the domain
+	 * @return {Number}
+	 */
 	get start() {
-		return this.domain[0];
+		return this.domain()[0];
 	}
+
+	/**
+	 * Get the last value of the domain
+	 * @return {Number}
+	 */
 	get end() {
-		return this.domain[this.domain.length - 1];
+		return this.domain()[this.domain().length - 1];
 	}
+
+	/**
+	 * Get the min value of the domain
+	 * @return {Number}
+	 */
 	get min() {
-		return this.minValue;
+		return Math.min( this.start, this.end );
 	}
+
+	/**
+	 * Get the max value of the domain
+	 * @return {Number}
+	 */
 	get max() {
-		return this.maxValue;
+		return Math.max( this.start, this.end );
 	}
 
 	/**
@@ -104,30 +145,29 @@ export default class LinearScale {
 	 * @return {object}                	LinearScale
 	 */
 	classify( intervals ) {
-		let valueRange = ( this.maxValue - this.minValue ) / intervals,
-			newFrom = [this.minValue],
-			newTo = [],
+		let valueRange = ( this.start - this.end ) / intervals,
+			domain = [this.end],
+			range = [],
 			samplePos = valueRange / 2;
 
 		for ( let i = 0; i < intervals; i++ ) {
-			let lastVal = newFrom[newFrom.length - 1] || 0,
+			let lastVal = domain[domain.length - 1] || 0,
 				calIntervalPos = lastVal + valueRange,
 				calSamplePos = lastVal + samplePos,
 				sampleColValue = this.get( calSamplePos );
 
-			newFrom.push( calIntervalPos );
-			newFrom.push( calIntervalPos );
-			newTo.push( sampleColValue );
-			newTo.push( sampleColValue );
+			domain.push.apply( domain, [calIntervalPos, calIntervalPos] );
+			range.push.apply( range, [sampleColValue, sampleColValue] );
 		}
-		newFrom.pop();
-		this.from( newFrom );
-		this.to( newTo );
+		domain.pop();
+		this.domain( domain );
+		this.range( range );
 
 		return this;
 	}
 }
 
+Events.mixin( LinearScale.prototype );
 
 export function linear( ...a ) {
 	return new LinearScale( ...a );

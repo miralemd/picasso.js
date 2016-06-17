@@ -1,4 +1,4 @@
-import scale from "./color-scale";
+import { linear } from "../scales/linear";
 import color from "./color";
 
 function rangeCal ( min, max, colors ) {
@@ -21,7 +21,7 @@ export default {
 
 		let from = rangeCal( min, max, colorPalette );
 
-		return scale( colorPalette, from );
+		return linear().domain( from ).range( colorPalette );
 	},
 
 	multiHue1: ( min, max ) => {
@@ -29,7 +29,7 @@ export default {
 
 		let from = rangeCal( min, max, colorPalette );
 
-		return scale( colorPalette, from );
+		return linear().domain( from ).range( colorPalette );
 	},
 
 	colors12: () => {
