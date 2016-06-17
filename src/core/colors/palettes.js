@@ -17,7 +17,7 @@ function rangeCal ( min, max, colors ) {
 
 export default {
 	scientific: ( min, max ) => {
-		const colorPalette = ["#3d52a1", "#3a89c9", "#77b7e5", "#b4ddf7", "#e6f5fe", "#ffe3aa", "#f9bd7e", "#ed875e", "#d24d3e", "#ae1c3e"].map( color );
+		const colorPalette = ["#3d52a1", "#3a89c9", "#77b7e5", "#b4ddf7", "#e6f5fe", "#ffe3aa", "#f9bd7e", "#ed875e", "#d24d3e", "#ae1c3e"];
 
 		let from = rangeCal( min, max, colorPalette );
 
@@ -25,7 +25,7 @@ export default {
 	},
 
 	multiHue1: ( min, max ) => {
-		const colorPalette = ["#fee391", "#fec44f", "#fb9a29", "#ec7014", "#cc4c02", "#993404", "#662506"].map( color );
+		const colorPalette = ["#fee391", "#fec44f", "#fb9a29", "#ec7014", "#cc4c02", "#993404", "#662506"];
 
 		let from = rangeCal( min, max, colorPalette );
 
