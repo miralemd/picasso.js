@@ -1,20 +1,12 @@
-import { registry } from "../utils/registry";
-import { components } from "../chart-components/index";
+import { composer } from "./composer/composer";
 
-let reg = registry();
-
-reg.register( "components", components );
 
 export default class Chart {
-	constructor( element, data, settings ) {
+	constructor( element, d, settings ) {
 		this.element = element;
-		this.data = data;
-		this.settings = settings;
 
-		this.parts = reg.build( settings, {
-			element,
-			data
-		} );
+		this.composer = composer();
+		this.composer.build( element, d, settings );
 	}
 }
 

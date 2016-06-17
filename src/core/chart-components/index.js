@@ -5,6 +5,6 @@ let reg = registry();
 
 reg.register( "markers", create );
 
-export function components( obj, options ) {
-	return reg.build( obj, options );
+export function components( obj, composer ) {
+	return reg.build( obj, composer );
 }
