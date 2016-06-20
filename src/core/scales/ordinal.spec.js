@@ -24,7 +24,7 @@ describe( "OrdinalScale", () => {
 		expect( scale.unknown() ).to.deep.equal( "unk" );
 	} );
 
-	it( " should follow string coersion for domain matching", () => {
+	it( "should follow string coersion for domain matching", () => {
 		let x = { y: 1 };
 		scale.domain( [1, 0.2, "str", [1, 2], -0, NaN, x, undefined, null, Infinity, -Infinity, true, false, -1, []] )
 			 .range( ["Q1", "Q2", "Q3", "Q4", "Q5", "Q6", "Q7", "Q8", "Q9", "Q10", "Q11", "Q12", "Q13", "Q14", "Q15"] );
