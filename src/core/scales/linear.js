@@ -23,12 +23,9 @@ export default class LinearScale {
 	 * @return {LinearScale}
 	 */
 	rangeRound( values ) {
-		if ( arguments.length ) {
-			this._scale.rangeRound( values );
-			this.emit( "changed" );
-			return this;
-		}
-		return this._scale.rangeRound();
+		this._scale.rangeRound( values );
+		this.emit( "changed" );
+		return this;
 	}
 
 	/**
