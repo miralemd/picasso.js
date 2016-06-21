@@ -8,12 +8,12 @@ import HslaColor from "../hsla-color";
 /**
  * Instanciate a new color object
  * @param { Object } colorObj Color object
- * @property { Number } colorObj.h Required for an HSL object
- * @property { Number } colorObj.s Required for an HSL object
- * @property { Number } colorObj.l Required for an HSL object
- * @property { Number } colorObj.r Required for an RGB object
- * @property { Number } colorObj.g Required for an RGB object
- * @property { Number } colorObj.b Required for an RGB object
+ * @param { Number } colorObj.h Required for an HSL object
+ * @param { Number } colorObj.s Required for an HSL object
+ * @param { Number } colorObj.l Required for an HSL object
+ * @param { Number } colorObj.r Required for an RGB object
+ * @param { Number } colorObj.g Required for an RGB object
+ * @param { Number } colorObj.b Required for an RGB object
  * @return { HslaColor | RgbaColor } Color instance, the type returned depends on the color input
  * @example
  * colorObject( { r:255, g: 123, b: 123 } );
