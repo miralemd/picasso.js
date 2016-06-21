@@ -182,9 +182,13 @@ describe( "LinearScale", () => {
 		it( "should scale a single color over lightness when using classify", () => {
 			lin.domain( [0, 1] ).range( ["hsl(0, 100%, 20%)", "hsl(0, 100%, 80%)"] ).classify( 4 );
 			expect( lin.get( 0 ) ).to.equal( "rgb(121, 19, 19)" ); // First interval
+			expect( lin.get( 0.2 ) ).to.equal( "rgb(121, 19, 19)" );
 			expect( lin.get( 0.5 ) ).to.equal( "rgb(198, 96, 96)" ); // Second interval
+			expect( lin.get( 0.6 ) ).to.equal( "rgb(198, 96, 96)" );
 			expect( lin.get( 0.75 ) ).to.equal( "rgb(236, 134, 134)" ); // Thrid interval
-			expect( lin.get( 1 ) ).to.equal( "rgb(236, 134, 134)" ); // Fourth interval
+			expect( lin.get( 0.85 ) ).to.equal( "rgb(236, 134, 134)" );
+			expect( lin.get( 0.90 ) ).to.equal( "rgb(236, 134, 134)" ); // Fourth interval
+			expect( lin.get( 1 ) ).to.equal( "rgb(236, 134, 134)" );
 		} );
 	} );
 } );

@@ -2,6 +2,11 @@ import { scaleOrdinal } from "d3-scale";
 import Events from "../utils/event-emitter";
 
 export default class OrdinalScale {
+	/**
+	 * Class representing a OrdinalScale
+	 * @param { Object[] } [ domain=[] ] The domain values
+	 * @param { Object[] } [ range=[] ] The range values
+	 */
 	constructor( domain = [], range = [] ) {
 		this._scale = scaleOrdinal();
 		this.domain( domain );
@@ -9,8 +14,8 @@ export default class OrdinalScale {
 	}
 
 	/**
-	 * @param {Array} Domain values
-	 * @return {OrdinalScale}
+	 * @param { Object[] } [values] Set or Get domain values
+	 * @return { OrdinalScale | Object[] } The instance this method was called on if a parameter is provided, otherwise the current domain is returned
 	 */
 	domain( values ) {
 		if ( arguments.length ) {
@@ -22,8 +27,8 @@ export default class OrdinalScale {
 	}
 
 	/**
-	 * @param {Array} Range values
-	 * @return {OrdinalScale}
+	 * @param { Object[] } [values] Set or Get range values
+	 * @return { OrdinalScale | Object[] } The instance this method was called on if a parameter is provided, otherwise the current range is returned
 	 */
 	range( values ) {
 		if ( arguments.length ) {
@@ -35,9 +40,9 @@ export default class OrdinalScale {
 	}
 
 	/**
-	 * https://github.com/d3/d3-scale#ordinal_unknown
-	 * @param {Number} value
-	 * @return {Number}
+	 * {@link https://github.com/d3/d3-scale#ordinal_unknown }
+	 * @param { Number } value
+	 * @return { Number }
 	 */
 	unknown( value ) {
 		if ( arguments.length ) {
@@ -49,9 +54,9 @@ export default class OrdinalScale {
 	}
 
 	/**
-	 * https://github.com/d3/d3-scale#_ordinal
-	 * @param {Number} value
-	 * @return {Number}
+	 * {@link https://github.com/d3/d3-scale#_ordinal }
+	 * @param { Number } value
+	 * @return { Number }
 	 */
 	get( value ) {
 		return this._scale( value );
@@ -59,7 +64,7 @@ export default class OrdinalScale {
 
 	/**
 	 * Get the first value of the domain
-	 * @return {Number}
+	 * @return { Number }
 	 */
 	get start() {
 		return this.domain()[0];
@@ -67,7 +72,7 @@ export default class OrdinalScale {
 
 	/**
 	 * Get the last value of the domain
-	 * @return {Number}
+	 * @return { Number }
 	 */
 	get end() {
 		return this.domain()[this.domain().length - 1];
@@ -76,6 +81,12 @@ export default class OrdinalScale {
 
 Events.mixin( OrdinalScale.prototype );
 
+/**
+ * OrdinalScale instantiator
+ * @param { Object[] } [ domain=[] ] The domain values
+ * @param { Object[] } [ range=[] ] The range values
+ * @return { OrdinalScale } OrdinalScale instance
+ */
 export function ordinal( ...a ) {
 	return new OrdinalScale( ...a );
 }
