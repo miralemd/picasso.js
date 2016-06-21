@@ -1,3 +1,5 @@
+/** @module web/renderer/svg-renderer/svg-nodes */
+
 const svgNs = "http://www.w3.org/2000/svg";
 
 const creator = ( type, parent ) => {

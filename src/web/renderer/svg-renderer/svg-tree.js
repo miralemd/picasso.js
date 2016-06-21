@@ -1,7 +1,7 @@
+/** @module web/renderer/svg-renderer/svg-tree */
+
 import { createTree } from "../node-tree";
 import { creator, maintainer, destroyer } from "./svg-nodes";
-
-/** @module web/renderer/svg-renderer */
 
 export default class TreeItemRenderer {
 	/**
