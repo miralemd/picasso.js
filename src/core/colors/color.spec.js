@@ -428,10 +428,10 @@ describe( "Colors", () => {
 				c2 = color( "white" ),
 				c3 = color( "black" ),
 				c4 = color( "blue" );
-			expect( c1.getLuminance() ).to.equal( 0.9412757300600073 );
-			expect( c2.getLuminance() ).to.equal( 0.9999999999999999 );
-			expect( c3.getLuminance() ).to.equal( 0 );
-			expect( c4.getLuminance() ).to.equal( 0.33763886032268264 );
+			expect( c1.luminance() ).to.equal( 0.9412757300600073 );
+			expect( c2.luminance() ).to.equal( 0.9999999999999999 );
+			expect( c3.luminance() ).to.equal( 0 );
+			expect( c4.luminance() ).to.equal( 0.33763886032268264 );
 		} );
 
 		it( "should calculate luminance of HSLA color", () => {
@@ -440,10 +440,10 @@ describe( "Colors", () => {
 				c3 = color( "hsl(0,0%,0%)" ),
 				c4 = color( "hsl(309,85%,51%)" );
 
-			expect( c1.getLuminance() ).to.equal( 0.9412757300600073 );
-			expect( c2.getLuminance() ).to.equal( 0.9999999999999999 );
-			expect( c3.getLuminance() ).to.equal( 0 );
-			expect( c4.getLuminance() ).to.equal( 0.5781546696097349 );
+			expect( c1.luminance() ).to.equal( 0.9412757300600073 );
+			expect( c2.luminance() ).to.equal( 0.9999999999999999 );
+			expect( c3.luminance() ).to.equal( 0 );
+			expect( c4.luminance() ).to.equal( 0.5781546696097349 );
 
 		} );
 

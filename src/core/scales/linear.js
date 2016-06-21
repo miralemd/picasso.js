@@ -113,7 +113,7 @@ export default class LinearScale {
 	 * Get the first value of the domain
 	 * @return { Number }
 	 */
-	get start() {
+	start() {
 		return this.domain()[0];
 	}
 
@@ -121,7 +121,7 @@ export default class LinearScale {
 	 * Get the last value of the domain
 	 * @return { Number }
 	 */
-	get end() {
+	end() {
 		return this.domain()[this.domain().length - 1];
 	}
 
@@ -129,16 +129,16 @@ export default class LinearScale {
 	 * Get the minimum value of the domain
 	 * @return { Number }
 	 */
-	get min() {
-		return Math.min( this.start, this.end );
+	min() {
+		return Math.min( this.start(), this.end() );
 	}
 
 	/**
 	 * Get the maximum value of the domain
 	 * @return { Number }
 	 */
-	get max() {
-		return Math.max( this.start, this.end );
+	max() {
+		return Math.max( this.start(), this.end() );
 	}
 
 	/**
@@ -147,8 +147,8 @@ export default class LinearScale {
 	 * @return { LinearScale } The instance this method was called on
 	 */
 	classify( segments ) {
-		let valueRange = ( this.start - this.end ) / segments,
-			domain = [this.end],
+		let valueRange = ( this.start() - this.end() ) / segments,
+			domain = [this.end()],
 			range = [],
 			samplePos = valueRange / 2;
 

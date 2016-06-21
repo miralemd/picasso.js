@@ -19,22 +19,22 @@ describe( "LinearScale", () => {
 
 	it( "should have min/max depend on domain", () => {
 		lin.domain( [-13, 17] );
-		expect( lin.min ).to.equal( -13 );
-		expect( lin.max ).to.equal( 17 );
+		expect( lin.min() ).to.equal( -13 );
+		expect( lin.max() ).to.equal( 17 );
 
 		lin.domain( [17, -13] );
-		expect( lin.min ).to.equal( -13 );
-		expect( lin.max ).to.equal( 17 );
+		expect( lin.min() ).to.equal( -13 );
+		expect( lin.max() ).to.equal( 17 );
 	} );
 
 	it( "should have start/end depend on domain", () => {
 		lin.domain( [-10, 0, 1, 5] ).range( [1, 2, 3, 4] );
-		expect( lin.start ).to.equal( -10 );
-		expect( lin.end ).to.equal( 5 );
+		expect( lin.start() ).to.equal( -10 );
+		expect( lin.end() ).to.equal( 5 );
 
 		lin.domain( [5, 1, 0, -10] ).range( [1, 2, 3, 4] );
-		expect( lin.start ).to.equal( 5 );
-		expect( lin.end ).to.equal( -10 );
+		expect( lin.start() ).to.equal( 5 );
+		expect( lin.end() ).to.equal( -10 );
 	} );
 
 	it( "should return a linearly interpolated value", () => {
@@ -60,8 +60,8 @@ describe( "LinearScale", () => {
 
 	it( "should support a nice domain start/end value", () => {
 		lin.domain( [0.201479, 0.996679] ).nice( 10 );
-		expect( lin.start ).to.equal( 0.2 );
-		expect( lin.end ).to.equal( 1 );
+		expect( lin.start() ).to.equal( 0.2 );
+		expect( lin.end() ).to.equal( 1 );
 	} );
 
 	it( "should return a linearly interpolated value with negative range", () => {

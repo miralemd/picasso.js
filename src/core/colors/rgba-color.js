@@ -131,20 +131,19 @@ export default class RgbaColor {
 	}
 
 	/**
-	 * Calculates the perceived luminance of the color.
-	 * @return { Number } A value in the range 0-1 where a low value is considered dark and vice versa.
-	 */
-	getLuminance() {
-		let luminance = Math.sqrt( 0.299 * Math.pow( this.r, 2 ) + 0.587 * Math.pow( this.g, 2 ) + 0.114 * Math.pow( this.b, 2 ) ); // Using Weighted Euclidean Distance in 3D RGB Space
-		return luminance / 255;
-	}
-
-	/**
 	 * Checks if this color is perceived as dark.
 	 * @return { Boolean } True if the luminance is below 125, false otherwise.
 	 */
 	isDark () {
-		return this.getLuminance() < 0.49;
+		return this.luminance() < 0.49;
 	}
 
+	/**
+	 * Calculates the perceived luminance of the color.
+	 * @return { Number } A value in the range 0-1 where a low value is considered dark and vice versa.
+	 */
+	luminance() {
+		let luminance = Math.sqrt( 0.299 * Math.pow( this.r, 2 ) + 0.587 * Math.pow( this.g, 2 ) + 0.114 * Math.pow( this.b, 2 ) ); // Using Weighted Euclidean Distance in 3D RGB Space
+		return luminance / 255;
+	}
 }

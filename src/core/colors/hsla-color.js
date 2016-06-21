@@ -142,21 +142,21 @@ export default class HslaColor {
 	}
 
 	/**
-	 * Calculates the perceived luminance of the color.
-	 * @return { Number } A value in the range 0-1 where a low value is considered dark and vice versa.
-	 */
-	getLuminance() {
-		let rgb = toRgb( this.h, this.s, this.l ),
-			luminance = Math.sqrt( 0.299 * Math.pow( rgb.r, 2 ) + 0.587 * Math.pow( rgb.g, 2 ) + 0.114 * Math.pow( rgb.b, 2 ) );
-
-		return luminance / 255;
-	}
-
-	/**
 	 * Checks if this color is perceived as dark.
 	 * @return { Boolean } True if the luminance is below 125, false otherwise.
 	 */
 	isDark () {
-		return this.getLuminance() < 0.49;
+		return this.luminance() < 0.49;
+	}
+
+	/**
+	 * Calculates the perceived luminance of the color.
+	 * @return { Number } A value in the range 0-1 where a low value is considered dark and vice versa.
+	 */
+	luminance() {
+		let rgb = toRgb( this.h, this.s, this.l ),
+			luminance = Math.sqrt( 0.299 * Math.pow( rgb.r, 2 ) + 0.587 * Math.pow( rgb.g, 2 ) + 0.114 * Math.pow( rgb.b, 2 ) );
+
+		return luminance / 255;
 	}
 }

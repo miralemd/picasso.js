@@ -57,8 +57,8 @@ export default {
 		c1 = color( c1 );
 		c2 = color( c2 );
 
-		let l1 = c1.getLuminance(),
-			l2 = c2.getLuminance();
+		let l1 = c1.luminance(),
+			l2 = c2.luminance();
 
 		if ( l1 > l2 ) {
 			return ( l1 + 0.05 ) / ( l2 + 0.05 );
