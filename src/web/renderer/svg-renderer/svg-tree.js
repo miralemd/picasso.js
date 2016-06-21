@@ -1,6 +1,8 @@
 import { createTree } from "../node-tree";
 import { creator, maintainer, destroyer } from "./svg-nodes";
 
+/** @module web/renderer/svg-renderer */
+
 export default class TreeItemRenderer {
 	/**
 	 * Constructor
@@ -30,7 +32,7 @@ export function tree() {
  * @callback SVGCreator
  * @param {String} type - The type of element to create.
  * @param {SVGElement} parent - The parent element to append the new element to.
- * @returns {SVGElement} The created element
+ * @return {SVGElement} The created element
  */
 
 /**

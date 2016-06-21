@@ -5,11 +5,12 @@ function componentToHex( c ) {
 
 
 /**
- * Converts RGB to HSL.
- * @param r - Red
- * @param g - Green
- * @param b - Blue
- * @returns {string} - In format 0, 0%, 0%
+ * Converts RGB to HSL
+ * @private
+ * @param r Red
+ * @param g Green
+ * @param b Blue
+ * @return { String } In format 0, 0%, 0%
  */
 function toHSL( r, g, b ) {
 	r = r / 255;
@@ -43,6 +44,13 @@ function toHSL( r, g, b ) {
 }
 
 export default class RgbaColor {
+	/**
+	 * Class representing a RGBA Color
+	 * @param { Number } r The red value
+	 * @param { Number } g The green value
+	 * @param { Number } b The blue value
+	 * @param { Number } [ a=1 ] The alpha value
+	 */
     constructor( r, g, b, a = 1 ) {
         this.r = r;
         this.g = g;
@@ -52,7 +60,7 @@ export default class RgbaColor {
 
 	/**
 	 * Returns a hsl string representation of this color.
-	 * @return {string} = In format hsl(0,0,0)
+	 * @return { String } In format hsl(0,0,0)
 	 */
 	toHSL() {
 		let value = toHSL( this.r, this.g, this.b );
@@ -61,7 +69,7 @@ export default class RgbaColor {
 
 	/**
 	 * Returns a hsla string representation of this color
-	 * @return {string} - In format hsla(0,0,0,0)
+	 * @return { String } In format hsla(0,0,0,0)
 	 */
 	toHSLA() {
 		let value = toHSL( this.r, this.g, this.b );
@@ -70,7 +78,7 @@ export default class RgbaColor {
 
 	/**
 	 * Returns an rgb string representation of this color.
-	 * @return {string} - In format rgb(0, 0, 0)
+	 * @return { String } In format rgb(0, 0, 0)
 */
 	toRGB() {
         return `rgb(${this.r}, ${this.g}, ${this.b})`;
@@ -78,7 +86,7 @@ export default class RgbaColor {
 
 	/**
 	 * Returns an rgba string representation of this color.
-	 * @return {string} - In format rgb(0, 0, 0, 0)
+	 * @return { String } In format rgb(0, 0, 0, 0)
 	 */
 	toRGBA() {
         return this.toString();
@@ -86,7 +94,7 @@ export default class RgbaColor {
 
     /**
 	 * Returns a hex string representation of this color.
-	 * @return {string} - In format #000000
+	 * @return { String } In format #000000
 	 */
 	toHex() {
 		return "#" + componentToHex( this.r ) + componentToHex( this.g ) + componentToHex( this.b );
@@ -94,7 +102,7 @@ export default class RgbaColor {
 
 	/**
 	 * Returns an number representation of the color
-	 * @return {number} Unsigned integer in the range 0-16 777 216
+	 * @return { Number } Unsigned integer in the range 0-16 777 216
 	 */
 	toNumber() {
 		let r = this.r & 0xFF,
@@ -107,8 +115,8 @@ export default class RgbaColor {
 
 	/**
 	 * Compares two colors.
-	 * @param {RgbaColor} c The color to compare with.
-	 * @return {boolean} True if the rgb channels are the same, false otherwise
+	 * @param { RgbaColor } c The color to compare with.
+	 * @return { Boolean } True if the rgb channels are the same, false otherwise
 	 */
 	isEqual( c ) {
 		return ( ( this.r === c.r ) && ( this.g === c.g ) && ( this.b === c.b ) && ( this.a === c.a ) );
@@ -116,7 +124,7 @@ export default class RgbaColor {
 
 	/**
 	 * convert rgba color to string
-	 * @returns {string}
+	 * @returns { String } In format rgba(0, 0, 0, 0)
 	 */
 	toString() {
 		return `rgba(${this.r}, ${this.g}, ${this.b}, ${this.a})`;
@@ -124,7 +132,7 @@ export default class RgbaColor {
 
 	/**
 	 * Calculates the perceived luminance of the color.
-	 * @return {number} - A value in the range 0-1 where a low value is considered dark and vice versa.
+	 * @return { Number } A value in the range 0-1 where a low value is considered dark and vice versa.
 	 */
 	getLuminance() {
 		let luminance = Math.sqrt( 0.299 * Math.pow( this.r, 2 ) + 0.587 * Math.pow( this.g, 2 ) + 0.114 * Math.pow( this.b, 2 ) ); // Using Weighted Euclidean Distance in 3D RGB Space
@@ -133,7 +141,7 @@ export default class RgbaColor {
 
 	/**
 	 * Checks if this color is perceived as dark.
-	 * @return {boolean} True if the luminance is below 125, false otherwise.
+	 * @return { Boolean } True if the luminance is below 125, false otherwise.
 	 */
 	isDark () {
 		return this.getLuminance() < 0.49;

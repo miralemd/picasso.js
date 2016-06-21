@@ -1,8 +1,21 @@
+/**
+ * @module core/colors/instantiator/hsl
+ */
+
 import HslaColor from "./../hsla-color";
 
 const rHsl = /^\s*hsl\(\s*(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*%{1})\s*,\s*(-?\d+\.?\d*%{1})\s*\)$/i,
 	rHsla = /^\s*hsla\(\s*(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*%{1})\s*,\s*(-?\d+\.?\d*%{1})\s*,\s*(-?\d+\.?\d*)\s*\)\s*$/i;
 
+/**
+ * Instanciate a new color object
+ * @param { String } colStr HSL representation of a Color.
+ * Supports HSL and HSLA defintion at {@link https://www.w3.org/TR/css3-color/#svg-color}
+ * @return { HslaColor } Color instance
+ * @example
+ * hsl( "hsl(120, 50%, 50%)" );
+ * hsl( "hsla(120, 50%, 50%, 0.5)" );
+*/
 export default function hsl( colStr ) {
 
 	let match = ( rHsl.exec( colStr ) || rHsla.exec( colStr ) || [] );
@@ -30,4 +43,12 @@ export default function hsl( colStr ) {
 	return new HslaColor( h, s, l, a );
 }
 
+/**
+ * Test if the object is a color instance
+ * @function test
+ * @param  { String } colStr HSL representation of a Color.
+ * @return { Boolean } TRUE if colrStr matches HSL and HSLA notation defined at {@link https://www.w3.org/TR/css3-color/#svg-color}
+ * @example
+ * hsl.test( "hsl(120, 50%, 50%)" );
+ */
 hsl.test = ( colStr ) => typeof colStr === "string" && ( rHsl.test( colStr ) || rHsla.test( colStr ) );
