@@ -1,134 +1,187 @@
-import numeric from "./interpolators/numeric";
-
-function lerp( v, from, to, interp ) {
-	let t = ( v - from[0] ) / ( from[1] - from[0] );
-	return interp.interpolate( to[0], to[1], t );
-}
-
-function piecewise( v, from, to, interp ) {
-	let i,
-		asc = from[0] < from[1],
-		arr = asc ? from : from.slice().reverse();
-
-	if ( v <= arr[0] ) {
-		i = 0;
-	} else if ( v > arr[arr.length - 1] ) {
-		i = arr.length - 2;
-	} else {
-		for ( i = 0; i < arr.length - 1; i++ ) {
-			if ( arr[i] <= v && v <= arr[i + 1] ) {
-				break;
-			}
-		}
-		if ( typeof i === "undefined" ) {
-			return NaN;
-		}
-	}
-	return lerp(
-		v,
-		asc ? arr.slice( i, i + 2 ) : arr.slice( i, i + 2 ).reverse(),
-		asc ? to.slice( i, i + 2 ) : to.slice( -i - 2 ),
-		interp
-	);
-}
+import { scaleLinear } from "d3-scale";
+import Events from "../utils/event-emitter";
 
 export default class LinearScale {
-	constructor( from = [0, 1], to = [0, 1], ticker ) {
-		this.inputDomain = from;
-		this.output = to;
-
-		this.ticker = ticker;
-		this.nTicks = 2;
-		this.interpolator = numeric;
-		this.update();
-	}
-
 	/**
-	 *
-	 * @param {Number[]} values
-	 * @returns {LinearScale}
+	 * Class representing a linear scale
+	 * @param { Number[] } [ domain=[0,1] ] The domain values
+	 * @param { Number[] } [ range=[0,1] ] The range values
 	 */
-	from( values ) {
-		this.inputDomain = values;
-		this.update();
-		return this;
+	constructor( domain = [0, 1], range = [0, 1] ) {
+		this._scale = scaleLinear();
+		this.domain( domain );
+		this.range( range );
 	}
 
-	to( values ) {
-		this.output = values;
-		this.update();
-		return this;
-	}
-
-	update() {
-		this.domain = this.inputDomain.slice();
-		this.domain.length = Math.min( this.inputDomain.length, this.output.length );
-		this.minValue = this.domain[0];
-		this.maxValue = this.domain[this.domain.length - 1];
-
-		if ( this.ticker ) {
-			let v = this.ticker.generateTicks( this.minValue, this.maxValue, this.nTicks );
-			this.ticks = v.ticks;
-			this.minValue = Math.min( v.start, v.end );
-			this.maxValue = Math.max( v.start, v.end );
-			this.domain[0] = v.start;
-			this.domain[this.domain.length - 1] = v.end;
-		}
-		this.s = this.domain.length <= 2 ? lerp : piecewise;
-		return this;
-	}
 	/**
-	 *
-	 * @param {Number} value
-	 * @returns {Number}
+	 * {@link https://github.com/d3/d3-scale#continuous_invert }
+	 * @param { Number } value The inverted value
+	 * @return { Number } The inverted value
+	 */
+	invert( value ) {
+		return this._scale.invert( value );
+	}
+
+	/**
+	 * {@link https://github.com/d3/d3-scale#continuous_rangeRound }
+	 * @param { Number[] } values Range values
+	 * @return { LinearScale } The instance this method was called on
+	 */
+	rangeRound( values ) {
+		this._scale.rangeRound( values );
+		this.emit( "changed" );
+		return this;
+	}
+
+	/**
+	 * {@link https://github.com/d3/d3-scale#continuous_clamp }
+	 * @param { Boolean } [ value=true ] TRUE if clamping should be enabled
+	 * @return { LinearScale } The instance this method was called on
+	 */
+	clamp( value = true ) {
+		this._scale.clamp( value );
+		this.emit( "changed" );
+		return this;
+	}
+
+	/**
+	 * {@link https://github.com/d3/d3-scale#continuous_ticks }
+	 * @param { Number } count Number of ticks to generate
+	 * @return { Number[] } Array of ticks
+	 */
+	ticks( count ) {
+		return this._scale.ticks( count );
+	}
+
+	/**
+	 * {@link https://github.com/d3/d3-scale#continuous_nice }
+	 * @param { Number } count
+	 * @return { LinearScale } The instance this method was called on
+	 */
+	nice( count ) {
+		this._scale.nice( count );
+		this.emit( "changed" );
+		return this;
+	}
+
+	// TODO Support this?
+	ticksFormat( count, format ) {
+		return this._scale.ticksFormat( count, format );
+	}
+
+	// TODO Support this?
+	interpolate( fn ) {
+		this._scale.interpolate( fn );
+	}
+
+	/**
+	 * @param { Number[] } [values] Set or Get domain values
+	 * @return { LinearScale | Number[] } The instance this method was called on if a parameter is provided, otherwise the current domain is returned
+	 */
+	domain( values ) {
+		if ( arguments.length ) {
+			this._scale.domain( values );
+			this.emit( "changed" );
+			return this;
+		}
+		return this._scale.domain();
+	}
+
+	/**
+	 * @param { Number[] } [values] Set or Get range values
+	 * @return { LinearScale | Number[] } The instance this method was called on if a parameter is provided, otherwise the current range is returned
+	 */
+	range( values ) {
+		if ( arguments.length ) {
+			this._scale.range( values );
+			this.emit( "changed" );
+			return this;
+		}
+		return this._scale.range();
+	}
+
+	/**
+	 * {@link https://github.com/d3/d3-scale#_continuous }
+	 * @param { Number } value A value within the domain value span
+	 * @return { Number } Interpolated from the range
 	 */
 	get( value ) {
-		return this.s( value, this.domain, this.output, this.interpolator );
-	}
-	get start() {
-		return this.domain[0];
-	}
-	get end() {
-		return this.domain[this.domain.length - 1];
-	}
-	get min() {
-		return this.minValue;
-	}
-	get max() {
-		return this.maxValue;
+		return this._scale( value );
 	}
 
 	/**
-	 * Creates an interval scale for the given data range
-	 * @param  {number} intervals 		The number of interval points
-	 * @return {object}                	LinearScale
+	 * Get the first value of the domain
+	 * @return { Number }
 	 */
-	classify( intervals ) {
-		let valueRange = ( this.maxValue - this.minValue ) / intervals,
-			newFrom = [this.minValue],
-			newTo = [],
+	start() {
+		return this.domain()[0];
+	}
+
+	/**
+	 * Get the last value of the domain
+	 * @return { Number }
+	 */
+	end() {
+		return this.domain()[this.domain().length - 1];
+	}
+
+	/**
+	 * Get the minimum value of the domain
+	 * @return { Number }
+	 */
+	min() {
+		return Math.min( this.start(), this.end() );
+	}
+
+	/**
+	 * Get the maximum value of the domain
+	 * @return { Number }
+	 */
+	max() {
+		return Math.max( this.start(), this.end() );
+	}
+
+	/**
+	 * Divides the domain and range into uniform segments, based on start and end value
+	 * @param  { Number } segments The number of segments
+	 * @return { LinearScale } The instance this method was called on
+	 * @example
+	 * let s = new LinearScale( [0, 10], [0, 1] );
+	 * s.classify( 2 );
+	 * s.domain(); // [10, 5, 5, 0]
+	 * s.range(); // [0.75, 0.75, 0.25, 0.25]
+	 */
+	classify( segments ) {
+		let valueRange = ( this.start() - this.end() ) / segments,
+			domain = [this.end()],
+			range = [],
 			samplePos = valueRange / 2;
 
-		for ( let i = 0; i < intervals; i++ ) {
-			let lastVal = newFrom[newFrom.length - 1] || 0,
+		for ( let i = 0; i < segments; i++ ) {
+			let lastVal = domain[domain.length - 1] || 0,
 				calIntervalPos = lastVal + valueRange,
 				calSamplePos = lastVal + samplePos,
 				sampleColValue = this.get( calSamplePos );
 
-			newFrom.push( calIntervalPos );
-			newFrom.push( calIntervalPos );
-			newTo.push( sampleColValue );
-			newTo.push( sampleColValue );
+			domain.push( ...[calIntervalPos, calIntervalPos] );
+			range.push( ...[sampleColValue, sampleColValue] );
 		}
-		newFrom.pop();
-		this.from( newFrom );
-		this.to( newTo );
+		domain.pop();
+		this.domain( domain );
+		this.range( range );
 
 		return this;
 	}
 }
 
+Events.mixin( LinearScale.prototype );
 
+/**
+ * LinearScale instantiator
+ * @param { Number[] } [ domain=[0,1] ] The domain values
+ * @param { Number[] } [ range=[0,1] ] The range values
+ * @return { LinearScale } LinearScale instance
+ */
 export function linear( ...a ) {
 	return new LinearScale( ...a );
 }

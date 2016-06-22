@@ -1,3 +1,5 @@
+/** @module web/renderer/svg-renderer/svg-renderer */
+
 import { tree } from "./svg-tree";
 import { svgNs } from "./svg-nodes";
 
@@ -68,4 +70,3 @@ export default class SVGRenderer {
 export function renderer() {
 	return new SVGRenderer( tree, svgNs );
 }
-

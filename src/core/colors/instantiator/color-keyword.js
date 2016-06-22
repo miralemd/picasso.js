@@ -1,3 +1,7 @@
+/**
+ * @module core/colors/instantiator/color-keyword
+ */
+
 import RgbaColor from "../rgba-color";
 
 const colorStruct = {
@@ -150,6 +154,14 @@ const colorStruct = {
 		"yellowgreen": { r: 154, g: 205, b: 50 }
 };
 
+/**
+ * Instanciate a new color object
+ * @param { String } colStr Keyword representation of a Color.
+ * Support basic and extended keywords defined at {@link https://www.w3.org/TR/css3-color/#svg-color}
+ * @return { RgbaColor } Color instance
+ * @example
+ * colorKeyWord( "yellow" );
+ */
 export default function colorKeyWord( colStr ) {
 	let key = colStr.toLowerCase().trim();
 	let rgb = colorStruct[key];
@@ -157,6 +169,14 @@ export default function colorKeyWord( colStr ) {
 	return new RgbaColor( rgb.r, rgb.g, rgb.b, 1 );
 }
 
+/**
+ * Test if the object is a color instance
+ * @function test
+ * @param  { String } colStr Keyword representation of a Color.
+ * @return { Boolean } TRUE if colrStr matches on of the basic and extended keywords defined at {@link https://www.w3.org/TR/css3-color/#svg-color}
+ * @example
+ * colorKeyWord.test( "yellowgreen" );
+ */
 colorKeyWord.test = ( colStr ) => {
 	if ( colStr === null || colStr === undefined || typeof colStr !== "string" ) {
 		return false;

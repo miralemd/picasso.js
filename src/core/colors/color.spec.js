@@ -2,50 +2,6 @@ import { default as color } from "./index";
 
 describe( "Colors", () => {
 
-	describe( "Scale", () => {
-		it( "should scale two rgb colors", () => {
-			let c = color.scale( ["red", "blue"], [0, 1] ).get( 0.5 );
-			expect( c ).to.deep.equal( { r: 128, g: 0, b: 128, a: 1 } );
-		} );
-
-		it( "should scale two hsl colors", () => {
-			let c = color.scale( ["hsl(120,50%,10%)", "hsl(360,100%,50%)"], [0, 1] ).get( 0.5 );
-			expect( c ).to.deep.equal( { h: 60, s: 0.75, l: 0.3, a: 1 } );
-		} );
-
-		it( "should scale rgb color to a hsl color", () => {
-			let c = color.scale( ["blue", "hsl(360,100%,50%)"], [0, 1] ).get( 0.5 );
-			expect( c ).to.deep.equal( { h: 120, s: 1, l: 0.5, a: 1 } );
-		} );
-
-		it( "should scale hsl color to a rgb color", () => {
-			let c = color.scale( ["hsl(360,100%,50%)", "blue"], [0, 1] ).get( 0.5 );
-			expect( c ).to.deep.equal( { r: 128, g: 0, b: 128, a: 1 } );
-		} );
-
-		it( "should scale a single color over lightness", () => {
-			let lin = color.scale.singleHue( "hsl(0, 100%, 50%)", [0, 1] );
-			expect( lin.get( 0 ) ).to.deep.equal( { h: 0, s: 1, l: 0.9, a: 1 } );
-			expect( lin.get( 1 ) ).to.deep.equal( { h: 0, s: 1, l: 0.5, a: 1 } );
-		} );
-
-		it( "should scale a single color over lightness when using classify", () => {
-			let lin = color.scale.singleHue( "hsl(0, 100%, 50%)", [0, 1] ).classify( 4 );
-			expect( lin.get( 0 ) ).to.deep.equal( { h: 0, s: 1, l: 0.7999999999999999, a: 1 } ); // First interval
-			expect( lin.get( 0.5 ) ).to.deep.equal( { h: 0, s: 1, l: 0.6, a: 1 } ); // Second interval
-			expect( lin.get( 0.75 ) ).to.deep.equal( { h: 0, s: 1, l: 0.4, a: 1 } ); // Thrid interval
-			expect( lin.get( 1 ) ).to.deep.equal( { h: 0, s: 1, l: 0.2, a: 1 } ); // Fourth interval
-		} );
-
-		it( "should have a max/min lightness interpolation when using classify on a single color", () => {
-			let lin = color.scale.singleHue( "hsl(0, 100%, 10%)", [0, 1] ).classify( 12 );
-
-			// Min value is 0.1 and max 0.9 but because of how the color sampler works, the min/max values arent really ever returned.
-			expect( lin.get( 1 ) ).to.deep.equal( { h: 0, s: 1, l: 0.1333333333333333, a: 1 } );
-			expect( lin.get( 0 ) ).to.deep.equal( { h: 0, s: 1, l: 0.8666666666666667, a: 1 } );
-		} );
-	} );
-
 	describe( "HSL", () => {
 		it( "should handle hsl values", () => {
 			let c = color( "hsl(180,100%,50%)" );
@@ -472,10 +428,10 @@ describe( "Colors", () => {
 				c2 = color( "white" ),
 				c3 = color( "black" ),
 				c4 = color( "blue" );
-			expect( c1.getLuminance() ).to.equal( 0.9412757300600073 );
-			expect( c2.getLuminance() ).to.equal( 0.9999999999999999 );
-			expect( c3.getLuminance() ).to.equal( 0 );
-			expect( c4.getLuminance() ).to.equal( 0.33763886032268264 );
+			expect( c1.luminance() ).to.equal( 0.9412757300600073 );
+			expect( c2.luminance() ).to.equal( 0.9999999999999999 );
+			expect( c3.luminance() ).to.equal( 0 );
+			expect( c4.luminance() ).to.equal( 0.33763886032268264 );
 		} );
 
 		it( "should calculate luminance of HSLA color", () => {
@@ -484,10 +440,10 @@ describe( "Colors", () => {
 				c3 = color( "hsl(0,0%,0%)" ),
 				c4 = color( "hsl(309,85%,51%)" );
 
-			expect( c1.getLuminance() ).to.equal( 0.9412757300600073 );
-			expect( c2.getLuminance() ).to.equal( 0.9999999999999999 );
-			expect( c3.getLuminance() ).to.equal( 0 );
-			expect( c4.getLuminance() ).to.equal( 0.5781546696097349 );
+			expect( c1.luminance() ).to.equal( 0.9412757300600073 );
+			expect( c2.luminance() ).to.equal( 0.9999999999999999 );
+			expect( c3.luminance() ).to.equal( 0 );
+			expect( c4.luminance() ).to.equal( 0.5781546696097349 );
 
 		} );
 
@@ -506,7 +462,7 @@ describe( "Colors", () => {
 
 	} );
 
-	describe( "Color contrast", () => {
+	describe( "Color utils", () => {
 
 		it( "should calculate contrast of two RGBA colors", () => {
 			let c1 = color( "white" ),
@@ -536,6 +492,21 @@ describe( "Colors", () => {
 
 		} );
 
+		it( "should generate a linear gradient css string from a scale object", () => {
+			let colorScale = color.palettes.scientific( 0, 1 );
+
+			expect( color.utils.linearGradient( "right", colorScale ) ).to.equal( "linear-gradient(to right, rgb(61, 82, 161),rgb(58, 137, 201),rgb(119, 183, 229),rgb(180, 221, 247),rgb(230, 245, 254),rgb(255, 227, 170),rgb(249, 189, 126),rgb(237, 135, 94),rgb(210, 77, 62),rgb(174, 28, 62))" );
+		} );
+
+		it( "should generate a linear gradient css string from an array of color objects", () => {
+			let colorAry = ["red", "blue"].map( color );
+			expect( color.utils.linearGradient( "right", colorAry ) ).to.equal( "linear-gradient(to right, rgba(255, 0, 0, 1),rgba(0, 0, 255, 1))" );
+		} );
+
+		it( "should generate a linear gradient css string from an array of color strings", () => {
+			let colorAry = ["red", "blue"];
+			expect( color.utils.linearGradient( "right", colorAry ) ).to.equal( "linear-gradient(to right, red,blue)" );
+		} );
 	} );
 
 } );

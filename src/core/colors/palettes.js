@@ -1,4 +1,6 @@
-import scale from "./color-scale";
+/** @module core/colors/palettes */
+
+import { linear } from "../scales/linear";
 import color from "./color";
 
 function rangeCal ( min, max, colors ) {
@@ -16,22 +18,38 @@ function rangeCal ( min, max, colors ) {
 }
 
 export default {
+	/**
+	 * Palettet for Cold to Warm colors
+	 * @param { Number } min Minimum value of the domain
+	 * @param { Number } max Maximum value of the domain
+	 * @return { LinearScale } Color scale where the domain is calucated base on min/max and range is a predefined set of colors
+	 */
 	scientific: ( min, max ) => {
-		const colorPalette = ["#3d52a1", "#3a89c9", "#77b7e5", "#b4ddf7", "#e6f5fe", "#ffe3aa", "#f9bd7e", "#ed875e", "#d24d3e", "#ae1c3e"].map( color );
+		const colorPalette = ["#3d52a1", "#3a89c9", "#77b7e5", "#b4ddf7", "#e6f5fe", "#ffe3aa", "#f9bd7e", "#ed875e", "#d24d3e", "#ae1c3e"];
 
 		let from = rangeCal( min, max, colorPalette );
 
-		return scale( colorPalette, from );
+		return linear().domain( from ).range( colorPalette );
 	},
 
+	/**
+	 * Palettet for single hue color
+	 * @param { Number } min Minimum value of the domain
+	 * @param { Number } max Maximum value of the domain
+	 * @return { LinearScale } Color scale where the domain is calucated base on min/max and range is a predefined set of colors
+	 */
 	multiHue1: ( min, max ) => {
-		const colorPalette = ["#fee391", "#fec44f", "#fb9a29", "#ec7014", "#cc4c02", "#993404", "#662506"].map( color );
+		const colorPalette = ["#fee391", "#fec44f", "#fb9a29", "#ec7014", "#cc4c02", "#993404", "#662506"];
 
 		let from = rangeCal( min, max, colorPalette );
 
-		return scale( colorPalette, from );
+		return linear().domain( from ).range( colorPalette );
 	},
 
+	/**
+	 * Palettet for 12 colors
+	 * @return { RgbaColor[] } A collection of 12 colors
+	 */
 	colors12: () => {
 
 		const colorPalette = [
@@ -43,6 +61,10 @@ export default {
 
 	},
 
+	/**
+	 * Palettet for 100 colors
+	 * @return { RgbaColor[] } A collection of 100 colors
+	 */
 	colors100: () => {
 		const colorPalette = [
 			"#99c867", "#e43cd0", "#e2402a", "#66a8db", "#3f1a20", "#e5aa87", "#3c6b59", "#aa2a6b", "#e9b02e", "#7864dd",
