@@ -145,6 +145,11 @@ export default class LinearScale {
 	 * Divides the domain and range into uniform segments, based on start and end value
 	 * @param  { Number } segments The number of segments
 	 * @return { LinearScale } The instance this method was called on
+	 * @example
+	 * let s = new LinearScale( [0, 10], [0, 1] );
+	 * s.classify( 2 );
+	 * s.domain(); // [10, 5, 5, 0]
+	 * s.range(); // [0.75, 0.75, 0.25, 0.25]
 	 */
 	classify( segments ) {
 		let valueRange = ( this.start() - this.end() ) / segments,
@@ -158,8 +163,8 @@ export default class LinearScale {
 				calSamplePos = lastVal + samplePos,
 				sampleColValue = this.get( calSamplePos );
 
-			domain.push.apply( domain, [calIntervalPos, calIntervalPos] );
-			range.push.apply( range, [sampleColValue, sampleColValue] );
+			domain.push( ...[calIntervalPos, calIntervalPos] );
+			range.push( ...[sampleColValue, sampleColValue] );
 		}
 		domain.pop();
 		this.domain( domain );
