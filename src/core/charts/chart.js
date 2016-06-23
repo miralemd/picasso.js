@@ -5,6 +5,8 @@ export default class Chart {
 	constructor( element, d, settings ) {
 		this.element = element;
 
+		this.element.innerHTML = "";
+
 		this.composer = composer();
 		this.composer.build( element, d, settings );
 	}
@@ -17,10 +19,27 @@ export default class Chart {
  * @param settings
  * @returns {Chart}
  * @example
- * chart( element, data, {
+ * chart( element, {
+ * 	type: "q",
+ * 	data: {
+ * 		layout: {...}
+ * 	}
+ * }, {
+ * 	scales: {
+ * 		x: {
+ * 			source: "/qHyperCube/qMeasureInfo/0"
+ * 		},
+ * 		y: {
+ * 			source: "/qHyperCube/qDimensionInfo/0"
+ * 		}
+ * 	},
  * 	components: {
  * 		markers: [
- * 			{ type: "point", settings: {...} }
+ * 			{ type: "point", settings: {
+ * 				x: {scale: "x" },
+ * 				y: {scale: "y" },
+ * 				fill: 'red'
+ * 			} }
  * 	    ]
  * 	}
  * } );

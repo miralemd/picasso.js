@@ -22,6 +22,7 @@ export default class Composer {
 
 	onMeta( meta, settings ) {
 		this.data = data( meta );
+		this.data.layout( meta.data.layout );
 		this.scales = regScales.build( settings, this ).scales;
 		this.components = regComps.build( settings, this );
 	}

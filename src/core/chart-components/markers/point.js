@@ -9,35 +9,55 @@ export default class Point {
 
 		this.settings = obj.settings;
 		this.data = composer.data;
+		this.obj = obj;
 
-		this.x = composer.scales[this.settings.x.scale];
-		this.y = composer.scales[this.settings.y.scale];
-		this.size = composer.scales[this.settings.size.scale];
+		this.x = this.settings.x ? composer.scales[this.settings.x.scale] : null;
+		this.y = this.settings.y ? composer.scales[this.settings.y.scale] : null;
+		this.size = this.settings.size ? composer.scales[this.settings.size.scale] : null;
 
 		this.onData();
 	}
 
 	onData() {
 		this.points = [];
-		for ( let i = 0; i < 10; i++ ) {
-			this.points.push( {
-				x: this.x.get( Math.random() ),
-				y: this.y.get( Math.random() ),
-				size: this.size.get( Math.random() ),
-				fill: this.settings.fill || "#aaa"
-			} );
-		}
-		this.resize();
+
+		this.data.dataPages().then( ( pages ) => {
+			pages.forEach( ( page, i ) => {
+				let x = this.x ? this.data.fromSource( this.x.source, i ) : null;
+				let y = this.y ? this.data.fromSource( this.y.source, i ) : null;
+				let size = this.size ? this.data.fromSource( this.size.source, i ) : null;
+				this.data.fromSource( this.obj.data.source, i ).forEach( ( value, row ) => {
+					this.points.push( {
+						x: x ? this.x.toValue( x, row ) : 0.5,
+						y: y ? ( 1 - this.y.toValue( y, row ) ) : 0.5,
+						size: size ? this.size.toValue( size, row ) : 0.5,
+						fill: this.settings.fill || "#aaa"
+					} );
+				} );
+			}, this );
+			this.resize();
+		} ).catch( () => {
+			this.resize();
+		} );
 	}
 
 	render( points ) {
-		let { width, height } = this.renderer.rect,
-			displayPoints = points.map( p => {
+		let size = 5,
+			{ width, height } = this.renderer.rect,
+			margin = {
+				left: size,
+				right: size,
+				top: size,
+				bottom: size
+			},
+			displayPoints = points.filter( p => {
+				return !isNaN( p.x + p.y + p.size );
+			} ).map( p => {
 				return {
 					type: "circle",
-					cx: p.x * width,
-					cy: p.y * height,
-					r: p.size * 20,
+					cx: margin.left + p.x * ( width - margin.left - margin.right ),
+					cy: margin.top + p.y * ( height - margin.top - margin.bottom ),
+					r: 5 + 0.5 * p.size * ( size - 5 ),
 					fill: p.fill
 				};
 			} );
