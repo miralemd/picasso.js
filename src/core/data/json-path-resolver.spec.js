@@ -1,6 +1,6 @@
 import { resolve } from "./json-path-resolver";
 
-describe.only( "JSON Path resolver", () => {
+describe( "JSON Path resolver", () => {
 	it( "should resolve basic path", () => {
 		let p = "/path/to/paradise",
 			obj = {
