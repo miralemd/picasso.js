@@ -14,6 +14,9 @@
 		"sinon": true,
 		"expect": true
 	},
+	"plugins": [
+		"mocha"
+	],
 	"extends": "eslint:recommended",
 	"rules": {
 		"no-alert": "error",
@@ -74,6 +77,8 @@
 		"space-in-parens": ["error", "always"],
 		"object-curly-spacing": ["error", "always"],
 		"no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
-		"no-implicit-globals": "error"
+		"no-implicit-globals": "error",
+
+		"mocha/no-exclusive-tests": "error"
 	}
 }
