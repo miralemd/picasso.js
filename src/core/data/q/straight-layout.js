@@ -17,12 +17,14 @@ function normalizeMeta( obj ) {
 }
 
 export default class StraightLayout {
-	constructor( Promise ) {
+	constructor( Promise, resolver, metaToData ) {
 		this.Promise = Promise;
+		this.resolve = resolver;
+		this.metaToData = metaToData;
 	}
 
 	metaOf( path ) {
-		return normalizeMeta( resolve( path, this._layout ) );
+		return normalizeMeta( this.resolve( path, this._layout ) );
 	}
 
 	layout( value ) {
@@ -42,13 +44,13 @@ export default class StraightLayout {
 
 	fromSource( source, pageIdx ) {
 		let fn = s => {
-			let path = metaToDataPath( s, this._layout );
-			return resolve( path.replace( "qDataPages/", "qDataPages/" + pageIdx ), this._layout );
+			let path = this.metaToData( s, this._layout );
+			return this.resolve( path.replace( "qDataPages/", "qDataPages/" + pageIdx ), this._layout );
 		};
 		return Array.isArray( source ) ? source.map( fn ) : fn( source );
 	}
 }
 
 export function create() {
-	return new StraightLayout( Promise );
+	return new StraightLayout( Promise, resolve, metaToDataPath );
 }

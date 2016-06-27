@@ -32,7 +32,7 @@ export function metaToDataPath( path, meta ) {
 			continue;
 		}
 		if ( metaToData[i].pre ) {
-			p = metaToData[i].pre( p, meta || {} );
+			p = metaToData[i].pre( p, meta );
 		}
 		p = p.replace( metaToData[i].pattern, metaToData[i].data );
 	}
