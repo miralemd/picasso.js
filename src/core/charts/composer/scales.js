@@ -1,13 +1,7 @@
-function linear() {
-	return {
-		domain: function( d ){ this.d = d;},
-		range: function(){},
-		get: function( x ) {
-			return ( x - this.d[0] ) / ( this.d[1] - this.d[0] );
-		}
-	};
-}
+import { linear } from "../../scales/linear";
+import { ordinal } from "../../scales/ordinal";
 
+/*
 function ordinal() {
 	return {
 		domain: function( d ){ this.d = d;},
@@ -19,6 +13,7 @@ function ordinal() {
 		}
 	};
 }
+*/
 
 function getTypeFromMeta( meta ) {
 	return "count" in meta ? "ordinal" : "linear";
@@ -31,11 +26,18 @@ function range( num ) {
 function create( options, data ) {
 	let meta = data.metaOf( options.source ),
 		source = options.source,
-		type = options.type || getTypeFromMeta( meta ),
+		type = options.type ? options.type :
+			options.colors ? "color" : getTypeFromMeta( meta ),
 		s;
-	if ( type === "ordinal" ) {
+	if ( type === "color" ) {
+		s = linear();
+		s.domain( [meta.min, meta.max] );
+		s.range( options.colors );
+	}
+	else if ( type === "ordinal" ) {
 		s = ordinal();
 		s.domain( range( meta.count ) );
+		s.range( range( meta.count ).map( v => v / ( meta.count - 1 ) ) );
 	} else {
 		s = linear();
 		s.domain( [meta.min, meta.max] );
@@ -49,25 +51,6 @@ function create( options, data ) {
 			return s.get( arr[idx].qNum );
 		},
 		source: source
-		/*
-		source: function( cell ) {
-			let metaSource = null;
-			for ( let i = 0; i < cell.sources.length; i++ ){
-				if ( cell.sources[i].source === source ) {
-					metaSource = cell.sources[i];
-					break;
-				}
-			}
-
-			if ( metaSource === null ) {
-				return null;
-			}
-
-			if ( type === "ordinal" ) {
-				return s.get( metaSource.localIdx );
-			}
-			return s.get( cell.value.num );
-		}*/
 	};
 }
 

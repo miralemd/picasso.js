@@ -1,5 +1,7 @@
 import { renderer } from "../../../web/renderer/svg-renderer/svg-renderer";
 
+const DEFAULT_FILL = "#999";
+
 export default class Point {
 	constructor( obj, composer ) {
 		this.element = composer.element;
@@ -14,6 +16,7 @@ export default class Point {
 		this.x = this.settings.x ? composer.scales[this.settings.x.scale] : null;
 		this.y = this.settings.y ? composer.scales[this.settings.y.scale] : null;
 		this.size = this.settings.size ? composer.scales[this.settings.size.scale] : null;
+		this.fill = typeof this.settings.fill === "string" ? this.settings.fill : this.settings.fill ? composer.scales[this.settings.fill.scale] : null;
 
 		this.onData();
 	}
@@ -23,15 +26,17 @@ export default class Point {
 
 		this.data.dataPages().then( ( pages ) => {
 			pages.forEach( ( page, i ) => {
-				let x = this.x ? this.data.fromSource( this.x.source, i ) : null;
-				let y = this.y ? this.data.fromSource( this.y.source, i ) : null;
-				let size = this.size ? this.data.fromSource( this.size.source, i ) : null;
+				const x = this.x ? this.data.fromSource( this.x.source, i ) : null,
+					y = this.y ? this.data.fromSource( this.y.source, i ) : null,
+					size = this.size ? this.data.fromSource( this.size.source, i ) : null,
+					color = typeof this.fill === "string" ? this.fill : ( this.fill ? this.data.fromSource( this.fill.source, i ) : null );
+
 				this.data.fromSource( this.obj.data.source, i ).forEach( ( value, row ) => {
 					this.points.push( {
 						x: x ? this.x.toValue( x, row ) : 0.5,
 						y: y ? ( 1 - this.y.toValue( y, row ) ) : 0.5,
 						size: size ? this.size.toValue( size, row ) : 0.5,
-						fill: this.settings.fill || "#aaa"
+						fill: typeof this.fill === "string" ? this.fill : ( color ? this.fill.toValue( color, row ) : DEFAULT_FILL )
 					} );
 				} );
 			}, this );
@@ -42,13 +47,13 @@ export default class Point {
 	}
 
 	render( points ) {
-		let size = 5,
+		const size = [5, 20],
 			{ width, height } = this.renderer.rect,
 			margin = {
-				left: size,
-				right: size,
-				top: size,
-				bottom: size
+				left: size[1],
+				right: size[1],
+				top: size[1],
+				bottom: size[1]
 			},
 			displayPoints = points.filter( p => {
 				return !isNaN( p.x + p.y + p.size );
@@ -57,7 +62,7 @@ export default class Point {
 					type: "circle",
 					cx: margin.left + p.x * ( width - margin.left - margin.right ),
 					cy: margin.top + p.y * ( height - margin.top - margin.bottom ),
-					r: 5 + 0.5 * p.size * ( size - 5 ),
+					r: size[0] + 0.5 * p.size * ( size[1] - size[0] ),
 					fill: p.fill
 				};
 			} );
