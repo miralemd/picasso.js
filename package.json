@@ -1,10 +1,16 @@
 {
   "name": "@qlik/picasso",
   "version": "0.1.0",
-  "description": "",
-  "author": "",
+  "description": "A charting library streamlined for building visualizations for the Qlik Sense Analytics platform.",
   "license": "ISC",
   "private": true,
+  "publishConfig": {
+    "registry": "https://qliktech.artifactoryonline.com/qliktech/api/npm/npm-local/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com:qlik-trial/picasso.js.git"
+  },
   "scripts": {
     "build": "webpack -p --output-filename [name].min.js",
     "build:debug": "webpack -d",
@@ -17,10 +23,6 @@
     "test:coverage": "aw-test-coverage ./src/**/*.spec.js",
     "test:component:local": "node node_modules/@qlik/after-work/node_modules/protractor/bin/webdriver-manager update --standalone false && aw-webdriver-test-runner ./test/config/aw-config.js --specs ./src/**/*.comp.js",
     "test:component:remote": "aw-webdriver-test-runner ./test/config/aw-config-remote.js --specs src/**/*.comp.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "ssh://git@github.com:qlik-trial/picasso.js.git"
   },
   "files": [
     "/dist"
