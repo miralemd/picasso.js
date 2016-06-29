@@ -1,19 +1,6 @@
+import { interpolateViridis } from "d3-scale";
 import { linear } from "../../scales/linear";
 import { ordinal } from "../../scales/ordinal";
-
-/*
-function ordinal() {
-	return {
-		domain: function( d ){ this.d = d;},
-		range: function(){},
-		get: function( x ) {
-			let idx = this.d.indexOf( x ),
-				t = ( idx ) / this.d.length;
-			return t;
-		}
-	};
-}
-*/
 
 function getTypeFromMeta( meta ) {
 	return "count" in meta ? "ordinal" : "linear";
@@ -28,28 +15,49 @@ function create( options, data ) {
 		source = options.source,
 		type = options.type ? options.type :
 			options.colors ? "color" : getTypeFromMeta( meta ),
+		values = [],
+		valueIds = [],
 		s;
 	if ( type === "color" ) {
 		s = linear();
 		s.domain( [meta.min, meta.max] );
-		s.range( options.colors );
+		s.range( [1, 0] );
 	}
 	else if ( type === "ordinal" ) {
 		s = ordinal();
 		s.domain( range( meta.count ) );
-		s.range( range( meta.count ).map( v => v / ( meta.count - 1 ) ) );
+		s.range( meta.count <= 1 ? [0.5] : range( meta.count ).map( v => v / ( meta.count - 1 ) ) );
 	} else {
 		s = linear();
 		s.domain( [meta.min, meta.max] );
 	}
 	return {
 		scale: s,
-		toValue: function( arr, idx ) {
+		type,
+		update: () => {
+			values = data.fromSource( source );
 			if ( type === "ordinal" ) {
-				return s.get( idx );
+				let ids = [];
+				values = values.filter( v => {
+					if ( ids.indexOf( v.qElemNumber ) !== -1 ) {
+						return false;
+					}
+					ids.push( v.qElemNumber );
+					return true;
+				} );
+				valueIds = ids;
 			}
-			return s.get( arr[idx].qNum );
 		},
+		toValue: type === "ordinal" ?
+			( arr, idx ) => {
+				let i = valueIds.indexOf( arr[idx].qElemNumber );
+				return s.get( i );
+			} :
+			type === "color" ?
+			( arr, idx ) => {
+				return interpolateViridis( s.get( arr[idx].qNum ) );
+			} :
+			( arr, idx ) => s.get( arr[idx].qNum ),
 		source: source
 	};
 }

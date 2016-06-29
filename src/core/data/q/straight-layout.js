@@ -42,7 +42,7 @@ export default class StraightLayout {
 		return this.Promise.resolve( this._layout.qHyperCube.qDataPages );
 	}
 
-	fromSource( source, pageIdx ) {
+	fromSource( source, pageIdx = 0 ) {
 		let fn = s => {
 			let path = this.metaToData( s, this._layout );
 			return this.resolve( path.replace( "qDataPages/", "qDataPages/" + pageIdx ), this._layout );
