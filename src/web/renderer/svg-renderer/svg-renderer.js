@@ -20,6 +20,9 @@ export default class SVGRenderer {
 	appendTo( element ) {
 		if ( !this.root ) {
 			this.root = element.ownerDocument.createElementNS( this.ns, "svg" );
+			this.root.style.position = "absolute";
+			this.root.style.left = 0;
+			this.root.style.top = 0;
 			this.root.setAttribute( "xmlns", this.ns );
 			this.g = element.ownerDocument.createElementNS( this.ns, "g" );
 			this.root.appendChild( this.g );

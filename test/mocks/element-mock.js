@@ -2,19 +2,20 @@ function element( name ) {
 	return {
 		name,
 		attributes: {},
+		style: {},
 		children: [],
 		parentNode: null,
 		ownerDocument: {
-			createElementNS: function( ns, name ) {
-				return element( `${ns}:${name}` );
+			createElementNS: function( ns, tag ) {
+				return element( `${ns}:${tag}` );
 			},
-			createElement: function( name ) {
-				return element( name );
+			createElement: function( tag ) {
+				return element( tag );
 			}
 		},
 		cloneNode: function( b ) {
-			var ret = element( this.name );
-			if( b ) {
+			let ret = element( this.name );
+			if ( b ) {
 				ret.children = b.children.slice();
 			}
 			return ret;
@@ -22,8 +23,8 @@ function element( name ) {
 		replaceChild: function( add, remove ) {
 			this.children.splice( this.children.indexOf( remove ), 1, add );
 		},
-		setAttribute: function( name, value) {
-			this.attributes[name] = value;
+		setAttribute: function( attr, value ) {
+			this.attributes[attr] = value;
 		},
 		appendChild: function( el ) {
 			this.children.push( el );
