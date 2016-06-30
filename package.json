@@ -42,7 +42,7 @@
     "extend": "^3.0.0"
   },
   "dependencies": {
-    "d3-scale": "^0.9.1",
+    "d3-scale": "^1.0.0",
     "node-event-emitter": "0.0.1"
   }
 }
