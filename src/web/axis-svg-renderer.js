@@ -1,218 +1,144 @@
 import { renderer } from "./renderer/svg-renderer/svg-renderer";
 import { linear } from "../core/scales/linear";
-import { axisContinuous } from "../core/chart-components/axis-continuous";
+import { axisContinuous } from "../core/chart-components/axis/axis-continuous";
 
-function innerRepresentationTop( axis, count, index, tick ) {
-	const rV = axis.scale.get( tick );
-	const x1 = rV * axis.rect.width;
-	const x2 = rV * axis.rect.width;
-	const y1 = 0;
-	const y2 = -axis.__innerSize;
-	return {
-		type: "line",
-		"stroke-width": 1,
-		x1: x1,
-		x2: x2,
-		y1: y1,
-		y2: y2,
-		stroke: axis.__color
-	};
+function adjustTickForDock( dock, tick, tickSize, rect ) {
+	let line = { type: "line", "stroke-width": 1, x1: 0, x2: 0,	y1: 0, y2: 0, stroke: "#999" };
+
+	if ( dock === "top" || dock === "bottom" ) {
+		line.x1 = tick.position * rect.width;
+		line.x2 = tick.position * rect.width;
+		line.y1 = 0;
+
+		if ( dock === "top" ) {
+			line.y2 = -tickSize;
+		} else {
+			line.y2 = tickSize;
+		}
+	} else {
+		line.x1 = 0;
+		line.y1 = ( 1 - tick.position ) * rect.height;
+		line.y2 = ( 1 - tick.position ) * rect.height;
+
+		if ( dock === "left" ) {
+			line.x2 = -tickSize;
+		} else {
+			line.x2 = tickSize;
+		}
+	}
+
+	return line;
 }
 
-function innerRepresentationBottom( axis, count, index, tick ) {
-	const rV = axis.scale.get( tick );
-	const x1 = rV * axis.rect.width;
-	const x2 = rV * axis.rect.width;
-	const y1 = 0;
-	const y2 = axis.__innerSize;
-	return {
-		type: "line",
-		"stroke-width": 1,
-		x1: x1,
-		x2: x2,
-		y1: y1,
-		y2: y2,
-		stroke: axis.__color
-	};
+function adjustLabelForDock( dock, tick, padding, rect ) {
+	let label = { type: "text", text: tick.label, x: 0,	y: 0, fill: "#999",	"font-family": "Arial",	"font-size": 13	};
+
+	if ( dock === "top" || dock === "bottom" ) {
+		label.x = ( tick.position * rect.width ); //+ ( tick.index === 0 ? 11 : 5 );
+
+		if ( dock === "top" ) {
+			label.y = -padding;
+		} else {
+			label.y = padding;
+		}
+	} else {
+		label.y = ( ( 1 - tick.position ) * rect.height ); //+ ( tick.index === 0 ? 11 : 5 );
+
+		if ( dock === "left" ) {
+			label.x = -padding;
+		} else {
+			label.x = padding;
+		}
+	}
+
+	return label;
 }
 
-function innerRepresentationLeft( axis, count, index, tick ) {
-	const rV = axis.scale.get( tick );
-	const x1 = 0;
-	const x2 = -axis.__innerSize;
-	const y1 = rV * axis.rect.height;
-	const y2 = rV * axis.rect.height;
-	return {
-		type: "line",
-		"stroke-width": 1,
-		x1: x1,
-		x2: x2,
-		y1: y1,
-		y2: y2,
-		stroke: axis.__color
-	};
-}
+function adjustDomainForDock( dock, rect ) {
+	let line = { type: "line", "stroke-width": 1, x1: 0, x2: 0, y1: 0, y2: 0, stroke: "#999" };
+	if ( dock === "top" || dock === "bottom" ) {
+		line.x2 = rect.width;
+	} else {
+		line.y2 = rect.height;
+	}
 
-function innerRepresentationRight( axis, count, index, tick ) {
-	const rV = axis.scale.get( tick );
-	const x1 = 0;
-	const x2 = axis.__innerSize;
-	const y1 = rV * axis.rect.height;
-	const y2 = rV * axis.rect.height;
-	return {
-		type: "line",
-		"stroke-width": 1,
-		x1: x1,
-		x2: x2,
-		y1: y1,
-		y2: y2,
-		stroke: axis.__color
-	};
-}
-
-function outerRepresentationLeft( axis, count, index, tick ) {
-	const rV = axis.scale.get( tick );
-	const formatter = axis.scale.tickFormat( count, "s" );
-	const ticksFormatted = axis._ticks.map( formatter );
-	const x = -axis.__outerPadding;
-	const y = ( rV * axis.rect.height ) + ( index === 0 ? 11 : 5 );
-	return {
-		type: "text",
-		text: ticksFormatted[index],
-		x: x,
-		y: y,
-		fill: axis.__color,
-		"font-family": "Arial",
-		"font-size": 13
-	};
-}
-
-function outerRepresentationRight( axis, count, index, tick ) {
-	const rV = axis.scale.get( tick );
-	const formatter = axis.scale.tickFormat( count, "s" );
-	const ticksFormatted = axis._ticks.map( formatter );
-	const x = axis.__outerPadding;
-	const y = ( rV * axis.rect.height ) + ( index === 0 ? 11 : 5 );
-	return {
-		type: "text",
-		text: ticksFormatted[index],
-		x: x,
-		y: y,
-		fill: axis.__color,
-		"font-family": "Arial",
-		"font-size": 13
-	};
-}
-
-function outerRepresentationBottom( axis, count, index, tick ) {
-	const rV = axis.scale.get( tick );
-	const formatter = axis.scale.tickFormat( count, "s" );
-	const ticksFormatted = axis._ticks.map( formatter );
-	const x = ( rV * axis.rect.width ) + ( index === 0 ? 5 : 0 );
-	const y = axis.__outerPadding;
-	return {
-		type: "text",
-		text: ticksFormatted[index],
-		x: x,
-		y: y,
-		fill: axis.__color,
-		"font-family": "Arial",
-		"font-size": 13
-	};
-}
-
-function outerRepresentationTop( axis, count, index, tick ) {
-	const rV = axis.scale.get( tick );
-	const formatter = axis.scale.tickFormat( count, "s" );
-	const ticksFormatted = axis._ticks.map( formatter );
-	const x = ( rV * axis.rect.width ) + ( index === 0 ? 10 : 0 );
-	const y = -axis.__outerPadding;
-	return {
-		type: "text",
-		text: ticksFormatted[index],
-		x: x,
-		y: y,
-		fill: axis.__color,
-		"font-family": "Arial",
-		"font-size": 13
-	};
-}
-
-function domainRepresentationLeft( axis ) {
-	return {
-		type: "line",
-		"stroke-width": 1,
-		x1: 0,
-		x2: 0,
-		y1: 0,
-		y2: axis.rect.height,
-		stroke: axis.__color
-	};
-}
-
-function domainRepresentationBottom( axis ) {
-	return {
-		type: "line",
-		"stroke-width": 1,
-		x1: 0,
-		x2: axis.rect.width,
-		y1: 0,
-		y2: 0,
-		stroke: axis.__color
-	};
+	return line;
 }
 
 export class Axis {
 	constructor( element, scale ) {
+		this.rect = { width: 0, height: 0, x: 0, y: 0 };
 		this.axis = axisContinuous( scale );
 		this.renderer = renderer();
 		this.renderer.rect.width = element.getBoundingClientRect().width;
 		this.renderer.rect.height = element.getBoundingClientRect().height;
 		this.renderer.appendTo( element );
-		this.color = "#999";
-		this.axis.__color = this.color;
+		this.size( this.renderer.rect.width, this.renderer.rect.height );
 		this.elements = [];
 		this._allYourBasesBelongToUs = linear().clamp();
+		this.format();
+		this.ticks( 5 );
 	}
 
-	size( height, width ) {
-		this.axis.rect.height = height;
-		this.axis.rect.width = width;
+	dock( value = "left" ) {
+		if ( value === "left" ) {
+			this.renderer.g.setAttribute( "text-anchor", "end" );
+			this.renderer.g.setAttribute( "transform", `translate(${this.renderer.rect.width}, 0)` );
+			this._allYourBasesBelongToUs.range( [5, 25] );
+		} else if ( value === "right" ) {
+			this.renderer.g.setAttribute( "text-anchor", "start" );
+			this.renderer.g.setAttribute( "transform", "translate(0, 0)" );
+			this._allYourBasesBelongToUs.range( [5, 25] );
+		} else if ( value === "bottom" ) {
+			this.renderer.g.setAttribute( "text-anchor", "middle" );
+			this.renderer.g.setAttribute( "transform", "translate(0, 0)" );
+			this._allYourBasesBelongToUs.range( [20, 40] );
+		} else if ( value === "top" ){
+			this.renderer.g.setAttribute( "text-anchor", "middle" );
+			this.renderer.g.setAttribute( "transform", `translate(0, ${this.renderer.rect.height})` );
+			this._allYourBasesBelongToUs.range( [10, 25] );
+		}
+
+		this._dock = value;
+		this.padding();
+		this.tickSize();
+		return this;
+	}
+
+	size( width, height ) {
+		this.rect.height = height;
+		this.rect.width = width;
 		return this;
 	}
 
 	// value [0-1]
 	padding( value = 0.5 ) {
-		this.axis.__outerPadding = this._allYourBasesBelongToUs.invert( value );
+		this._outerPadding = this._allYourBasesBelongToUs.get( value );
 		return this;
 	}
 
 	// value [0-1]
 	tickSize( value = 0.5 ) {
-		this._allYourBasesBelongToUs.domain( [5, 15] );
-		this.axis.__innerSize = this._allYourBasesBelongToUs.invert( value );
+		this._allYourBasesBelongToUs.range( [5, 15] );
+		this._tickSize = this._allYourBasesBelongToUs.get( value );
 		return this;
 	}
 
-	ticks( count, nice = true ) {
-		const ticks = this.axis.ticks( count, nice );
-		ticks.forEach( ( tick ) => {
-			this.elements.push( ...[tick.inner, tick.outer] );
+	format( formatter = "s" ) {
+		if ( arguments.length <= 0 ) {
+			return this._formatter;
+		}
+		this._formatter = formatter;
+		return this;
+	}
 
-			// tick.minor.forEach( ( m ) => {
-			// 	const minor = {
-			// 		type: "line",
-			// 		"stroke-width": 1,
-			// 		x1: m.rect.x,
-			// 		x2: this.axis.isVertical ? -m.rect.x - ( this._innerSize / 2 ) : m.rect.x,
-			// 		y1: m.rect.y,
-			// 		y2: !this.axis.isVertical ? m.rect.y + ( this._innerSize / 2 ) : m.rect.y,
-			// 		stroke: this.color
-			// 	};
-			// 	this.elements.push( minor );
-			// } );
-		} );
+	nice( count = 10 ) {
+		this.axis.nice( count );
+		return this;
+	}
 
+	ticks( count ) {
+		this._ticks = this.axis.ticks( count );
 		return this;
 	}
 
@@ -222,104 +148,21 @@ export class Axis {
 	}
 
 	render() {
-		this.elements.push( this.axis.domain() );
+		this._ticks.forEach( tick => {
+			this.elements.push( adjustTickForDock( this._dock, tick, this._tickSize, this.rect ) );
+			this.elements.push( adjustLabelForDock( this._dock, tick, this._outerPadding, this.rect ) );
+
+			tick.minor.forEach( minor => {
+				this.elements.push( adjustTickForDock( this._dock, minor, 3, this.rect ) );
+			} );
+		} );
+
+		this.elements.push( adjustDomainForDock( this._dock, this.rect ) );
 
 		this.renderer.render( this.elements );
 	}
 }
 
-export class AxisLeft extends Axis {
-	constructor( element, scale ) {
-		super( element, scale );
-		this.axis.innerRepresentation( innerRepresentationLeft );
-		this.axis.outerRepresentation( outerRepresentationLeft );
-		this.axis.domainRepresentation( domainRepresentationLeft );
-		this.renderer.g.setAttribute( "text-anchor", "end" );
-		this.renderer.g.setAttribute( "transform", `translate(${this.renderer.rect.width}, 0)` );
-		this.padding();
-		this.tickSize();
-	}
-
-	padding( value = 0.5 ){
-		this._allYourBasesBelongToUs.domain( [5, 25] );
-		super.padding( value );
-		return this;
-	}
+export function axis( ...a ) {
+	return new Axis( ...a );
 }
-
-export class AxisRight extends Axis {
-	constructor( element, scale ) {
-		super( element, scale );
-		this.axis.innerRepresentation( innerRepresentationRight );
-		this.axis.outerRepresentation( outerRepresentationRight );
-		this.axis.domainRepresentation( domainRepresentationLeft );
-		this.renderer.g.setAttribute( "text-anchor", "start" );
-		this.renderer.g.setAttribute( "transform", "translate(0, 0)" );
-		this.padding();
-		this.tickSize();
-	}
-
-	padding( value = 0.5 ){
-		this._allYourBasesBelongToUs.domain( [5, 25] );
-		super.padding( value );
-		return this;
-	}
-}
-
-export class AxisBottom extends Axis {
-	constructor( element, scale ) {
-		super( element, scale );
-		this.axis.innerRepresentation( innerRepresentationBottom );
-		this.axis.outerRepresentation( outerRepresentationBottom );
-		this.axis.domainRepresentation( domainRepresentationBottom );
-		this.renderer.g.setAttribute( "text-anchor", "middle" );
-		this.renderer.g.setAttribute( "transform", "translate(0, 0)" );
-		this.padding();
-		this.tickSize();
-	}
-
-	padding( value = 0.5 ) {
-		this._allYourBasesBelongToUs.domain( [20, 40] );
-		super.padding( value );
-		return this;
-	}
-}
-
-export class AxisTop extends Axis {
-	constructor( element, scale ) {
-		super( element, scale );
-		this.axis.innerRepresentation( innerRepresentationTop );
-		this.axis.outerRepresentation( outerRepresentationTop );
-		this.axis.domainRepresentation( domainRepresentationBottom );
-		this.renderer.g.setAttribute( "text-anchor", "middle" );
-		this.renderer.g.setAttribute( "transform", `translate(0, ${this.renderer.rect.height})` );
-		this.padding();
-		this.tickSize();
-	}
-
-	padding( value = 0.5 ) {
-		this._allYourBasesBelongToUs.domain( [10, 25] );
-		super.padding( value );
-		return this;
-	}
-}
-
-export function axis() {
-	return {};
-}
-
-axis.left = ( ...a ) => {
-	return new AxisLeft( ...a );
-};
-
-axis.right = ( ...a ) => {
-	return new AxisRight( ...a );
-};
-
-axis.bottom = ( ...a ) => {
-	return new AxisBottom( ...a );
-};
-
-axis.top = ( ...a ) => {
-	return new AxisTop( ...a );
-};

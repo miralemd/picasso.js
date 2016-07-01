@@ -40,7 +40,7 @@ export default class Point {
 						x: x ? this.x.toValue( x, row ) : 0.5,
 						y: y ? ( 1 - this.y.toValue( y, row ) ) : 0.5,
 						size: size ? this.size.toValue( size, row ) : 0.5,
-						title: value.qText,
+						// title:  `${value.qText} x:${x[row].qNum} y:${y[row].qNum}`,
 						fill: typeof this.fill === "string" ? this.fill : ( color ? this.fill.toValue( color, row ) : DEFAULT_FILL )
 					} );
 				} );
@@ -70,7 +70,7 @@ export default class Point {
 					cx: margin.left + p.x * ( width - margin.left - margin.right ),
 					cy: margin.top + p.y * ( height - margin.top - margin.bottom ),
 					r: size[0] + 0.5 * p.size * ( size[1] - size[0] ),
-					//title: p.title,
+					title: p.title,
 					opacity: 0.8,
 					fill: p.fill
 				};

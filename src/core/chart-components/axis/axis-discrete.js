@@ -1,5 +1,3 @@
-import { default as Label } from "./label";
-
 export default class AxisDiscrete {
 	constructor( scale ) {
 		this.scale = scale;
@@ -11,15 +9,16 @@ export default class AxisDiscrete {
 		// TODO Range must be continuous and numeric?
 	}
 
-	labels() {
-		const labelList = [];
-		this.scale.domain().forEach( ( d ) => {
-			const label = new Label( d );
-			const coord = this.orientation === "vertical" ? "y" : "x";
-			label.rect[coord] = this.scale.get( d );
-			labelList.push( label );
+	ticks() {
+		return this.scale.domain().map( ( d, i ) => {
+			return {
+				start: 0,
+				end: 1,
+				position: this.scale.get( d ),
+				label: d,
+				index: i
+			};
 		} );
-		return labelList;
 	}
 
 	domain() {
