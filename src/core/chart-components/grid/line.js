@@ -30,8 +30,10 @@ export default class Line {
 		/*eslint no-unused-expressions: 0*/
 		this.x && this.x.update();
 		this.y && this.y.update();
-		this.y.scale.nice( 1 );
-		this.x.scale.nice( 1 );
+
+		this.y.scale.nice( this.settings.style.ticks );
+		this.x.scale.nice( this.settings.style.ticks );
+
 		this.lines.x = this.x.scale.ticks( this.settings.style.ticks );
 		this.lines.y = this.y.scale.ticks( this.settings.style.ticks );
 
