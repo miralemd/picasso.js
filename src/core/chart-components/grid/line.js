@@ -14,13 +14,6 @@ export default class Line {
 		this.x = this.settings.x ? composer.scales[this.settings.x.scale] : null;
 		this.y = this.settings.y ? composer.scales[this.settings.y.scale] : null;
 
-		this.settings.style = Object.assign( {}, {
-			color: "rgb(225, 225, 225)",
-			sparsity: 1,
-			ticks: 10,
-			linewidth: 1
-		}, this.settings.style );
-
 		this.onData();
 	}
 
@@ -31,11 +24,11 @@ export default class Line {
 		this.x && this.x.update();
 		this.y && this.y.update();
 
-		this.y.scale.nice( this.settings.style.ticks );
-		this.x.scale.nice( this.settings.style.ticks );
+		this.y.scale.nice( this.settings.ticks );
+		this.x.scale.nice( this.settings.ticks );
 
-		this.lines.x = this.x.scale.ticks( this.settings.style.ticks );
-		this.lines.y = this.y.scale.ticks( this.settings.style.ticks );
+		this.lines.x = this.x.scale.ticks( this.settings.ticks );
+		this.lines.y = this.y.scale.ticks( this.settings.ticks );
 
 		this.resize();
 	}
@@ -49,33 +42,49 @@ export default class Line {
 	render( lines ) {
 		const { width, height } = this.renderer.rect;
 
-		let i = 0;
-		const displayLinesX = lines.x.filter( () => {
+		if ( !Object.keys( this.settings.styles )[0] ) {
+			return;
+		}
+
+		let highestSparsity = Math.max( ...Object.keys( this.settings.styles ) );
+		let lowestSparsity = Math.min( ...Object.keys( this.settings.styles ) );
+		let style = {};
+
+		let i = 1;
+		const displayLinesX = lines.x.map( p => {
+			if ( i >= highestSparsity ) {
+				i = 1;
+			}
 			i++;
-			return i % this.settings.style.sparsity === 0;
-		} ).map( p => {
+
+			style = this.settings.styles[i] || this.settings.styles[lowestSparsity];
+
 			return {
 				type: "line",
 				x1: this.x.scale.get( p ) * width,
 				y1: 0,
 				x2: this.x.scale.get( p ) * width,
 				y2: height,
-				style: `stroke: ${this.settings.style.color}; stroke-width: ${this.settings.style.linewidth}`
+				style: `stroke: ${style.color}; stroke-width: ${style.lineWidth}`
 			};
 		} );
 
-		i = 0;
-		const displayLinesY = lines.y.filter( () => {
+		i = 1;
+		const displayLinesY = lines.y.map( p => {
+			if ( i >= highestSparsity ) {
+				i = 1;
+			}
 			i++;
-			return i % this.settings.style.sparsity === 0;
-		} ).map( p => {
+
+			style = this.settings.styles[i] || this.settings.styles[lowestSparsity];
+
 			return {
 				type: "line",
 				x1: 0,
 				y1: this.y.scale.get( p ) * height,
 				x2: width,
 				y2: this.y.scale.get( p ) * height,
-				style: `stroke: ${this.settings.style.color}; stroke-width: ${this.settings.style.linewidth}`
+				style: `stroke: ${style.color}; stroke-width: ${style.lineWidth}`
 			};
 		} );
 

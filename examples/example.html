@@ -403,25 +403,16 @@
                     settings: {
                         x: { scale: "x" }, // map x value of point to "x" scale
                         y: { scale: "y" }, // y value to "y" scale
-                        style: {
-                          color: "rgb(235, 235, 235)",
-                          sparsity: 1,
-                          ticks: 20,
-                          linewidth: 1
-                        }
-                    }
-                },
-                {
-                    type: "line",
-                    data: { source: "/qHyperCube/qDimensionInfo/0" }, // loop over dimension values
-                    settings: {
-                        x: { scale: "x" }, // map x value of point to "x" scale
-                        y: { scale: "y" }, // y value to "y" scale
-                        style: {
-                          color: "rgb(225, 225, 225)",
-                          sparsity: 4,
-                          ticks: 20,
-                          linewidth: 2
+                        ticks: 25,
+                        styles: {
+                          1: {
+                            color: "rgb(235, 235, 235)",
+                            lineWidth: 1
+                          },
+                          4: {
+                            color: "rgb(225, 225, 225)",
+                            lineWidth: 1.5
+                          }
                         }
                     }
                 }
