@@ -1,4 +1,4 @@
-import { renderer } from "../../../web/renderer/svg-renderer/svg-renderer";
+import { renderer } from "../../renderer";
 
 const DEFAULT_FILL = "#999";
 
@@ -54,7 +54,7 @@ export default class Point {
 	render( points ) {
 		const numYValues = this.y && this.y.type === "ordinal" ? this.y.scale.domain().length : -1,
 			//numXValues = this.x && this.x.type === "ordinal" ? this.x.scale.domain().length : -1,
-			{ width, height } = this.renderer.rect,
+			{ width, height } = this.renderer.size(),
 			size = numYValues === -1 ? [5, 20] : [Math.max( 1, Math.min( 5, 0.4 * height / numYValues ) ), Math.max( 1, Math.min( 20, 0.4 * height / numYValues ) ) ],
 			margin = {
 				left: size[1],
@@ -80,8 +80,6 @@ export default class Point {
 	}
 
 	resize() {
-		this.renderer.rect.width = this.element.clientWidth;
-		this.renderer.rect.height = this.element.clientHeight;
 		this.render( this.points );
 	}
 }

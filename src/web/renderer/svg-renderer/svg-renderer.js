@@ -27,7 +27,7 @@ export default class SVGRenderer {
 			this.g = element.ownerDocument.createElementNS( this.ns, "g" );
 			this.root.appendChild( this.g );
 		}
-
+		this.container = element;
 		element.appendChild( this.root );
 	}
 
@@ -41,6 +41,8 @@ export default class SVGRenderer {
 	 * ] );
 	 */
 	render( items ) {
+		this.rect.width = this.container.clientWidth;
+		this.rect.height = this.container.clientHeight;
 		this.root.setAttribute( "width", this.rect.width );
 		this.root.setAttribute( "height", this.rect.height );
 
@@ -67,6 +69,13 @@ export default class SVGRenderer {
 		this.root = null;
 		this.g = null;
 		this.items = [];
+	}
+
+	size () {
+		return {
+			width: this.container.clientWidth,
+			height: this.container.clientHeight
+		};
 	}
 }
 
