@@ -12,3 +12,4 @@ test/component/artifacts/regression/
 test/component/artifacts/screenshots/
 test/component/artifacts/*.html
 test/component/artifacts/*.json
+.DS_Store
