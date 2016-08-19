@@ -41,7 +41,7 @@ export default class AxisDiscrete extends Axis {
 				show: true,
 				padding: 0,
 				style: {
-					size: 8, // TODO unify format for size
+					size: 4, // TODO unify format for size
 					color: "#999",
 					thickness: 1
 				}
