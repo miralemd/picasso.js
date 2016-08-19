@@ -47,7 +47,9 @@ export class Axis {
 
 	generateLine() {
 		this._settings.line.dock = this._dock;
-		this.elements.push( AxisStructs.line( this._settings.line, this.rect ) );
+		if ( this._settings.line.show ) {
+			this.elements.push( AxisStructs.line( this._settings.line, this.rect ) );
+		}
 	}
 
 	generateTicks() {
