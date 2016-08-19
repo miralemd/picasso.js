@@ -1,28 +1,23 @@
-// import { registry } from "../../utils/registry";
-// import { axisContinuous } from "./axis-continuous";
-// import { axisDiscrete } from "./axis-discrete";
-import { axis } from "../../../web/axis-svg-renderer";
+import AxisContinuous from "./axis-continuous";
+import AxisDiscrete from "./axis-discrete";
+import { renderer } from "../../../web/renderer/svg-renderer/svg-renderer";
 
-// let reg = registry();
-
-export function axisFactory( ary, composer ) {
-	return ary.map( ( a ) => {
-		const scale = composer.scales[a.scale];
-		const elm = document.getElementById( a.parent );
+export function axisFactory( axes, composer ) {
+	return axes.map( ( axisConfig ) => {
+		const scale = composer.scales[axisConfig.scale];
+		// const elm = document.getElementById( config.parent );
 		let ax;
 		if ( scale.type === "ordinal" ) {
-			// Init
+			ax = new AxisDiscrete( axisConfig, composer, renderer );
 		} else {
-			ax = axis( elm, scale.scale ).dock( a.dock );
+			ax = new AxisContinuous( axisConfig, composer, renderer );
 		}
 
-		for ( let setting in a.settings ) {
-			if ( a.settings.hasOwnProperty( setting ) ) {
-				ax[setting]( a.settings[setting] );
-			}
-		}
-
-		ax.render();
+		ax.dock( axisConfig.dock )
+			.settings( axisConfig.settings )
+			// .transform( ax.rect.x, 50 )
+			// .size( ax.rect.width, ax.rect.height - 50 )
+			.render();
 		return ax;
 	} );
 }
