@@ -1,5 +1,6 @@
 import { Axis } from "./axis";
 import { linear } from "../../scales/linear";
+import { AxisHelpers as helpers } from "./axis-helpers";
 
 function generateMinorTicks( axis, start, end, count ) {
 	if ( count <= 0 ) {
@@ -17,17 +18,82 @@ function generateMinorTicks( axis, start, end, count ) {
 			isMinor: true
 		} );
 	}
+
 	return ticks.filter( t => {
-		return t.position <= end;
+		return t.position >= 0 && t.position <= 1;
 	} );
 }
 
 export default class AxisContinuous extends Axis {
 	constructor( config, composer, renderer ) {
 		super( config, composer, renderer );
-		// this.scale = scale;  // Copy scale instead? muteable issues?
 		this._minorTicksCount = 4; // Should be set by renderer based on amount of space available and/or use config to toggle on of as option
 		this._ticksCountScale = linear().domain( [0, 100] ).range( [0, 1] );
+	}
+
+	settings( opt ) {
+		this._settings = {
+			direction: "ltl",
+			title: {
+				value: "Fake title asdaadasd asda das das das das dasd as dasdasdasd",
+				show: true,
+				style: {
+					font: "Arial",
+					size: 15,
+					color: "#999"
+				},
+				padding: 15
+			},
+			labels: {
+				show: true,
+				tilted: false,
+				style: {
+					font: "Arial",
+					size: 13,
+					color: "#999"
+				},
+				format: "s",
+				padding: 4
+			},
+			line: {
+				show: true,
+				style: {
+					size: 1,
+					color: "#999"
+				}
+			},
+			ticks: {
+				show: true,
+				auto: true,
+				padding: 0,
+				// max: 0, // Set max value on axis, modifies domain end
+				// min: 0, // Set min value on axis, modifies domain start
+				// count: 10, // overrides auto
+				// clamp: true, // if start and end should always have a tick, use nice?
+				// values: [0, 1, 2], // overrides count and auto
+				style: {
+					// auto: true, // if size of thicks should be scaled with available draw rect
+					size: 8, // TODO unify format for size
+					color: "#999",
+					thickness: 1
+					// length: 1
+				}
+			},
+			minorTicks: {
+				show: true,
+				auto: true,
+				padding: 0,
+				style: {
+					// auto: true,
+					size: 3,
+					color: "#999",
+					thickness: 1
+				},
+				count: 3
+			}
+		};
+		helpers.applyData( this._settings, opt );
+		return this;
 	}
 
 	format( formatter = "s" ) {
@@ -90,7 +156,10 @@ export default class AxisContinuous extends Axis {
 		const tSet = this._settings.ticks;
 		let count = 5;
 
-		if ( tSet.clamp ) {
+		if ( Number.isInteger( tSet.min ) || Number.isInteger( tSet.max ) ) {
+			const d = [ Number.isInteger( tSet.min ) ? tSet.min : this.scale.start(), Number.isInteger( tSet.max ) ? tSet.max : this.scale.end() ];
+			this.scale.domain( d );
+		} else if ( tSet.clamp ) {
 			this.scale.nice( 5 ); // TODO scale with data granularity
 		}
 
@@ -104,7 +173,10 @@ export default class AxisContinuous extends Axis {
 				const last = tSet.values[tSet.values.length - 1];
 				this.scale.domain( [first, last] );
 			}
-			return this.ticksValue( tSet.values );
+
+			this._ticks = this.ticksValue( tSet.values );
+			return this;
+
 		} else if ( tSet.count ) {
 			count = tSet.count;
 		} else if ( tSet.auto ) {
