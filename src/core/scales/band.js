@@ -57,6 +57,16 @@ export default class BandScale {
 		return this;
 	}
 
+	align( align ) {
+		this._scale.align( align );
+		this.emit( "changed" );
+		return this;
+	}
+
+	bandWidth() {
+		return this._scale.bandWidt();
+	}
+
 	/**
 	 * {@link https://github.com/d3/d3-scale#_band }
 	 * @param { Object } value
