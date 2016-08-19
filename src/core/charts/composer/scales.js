@@ -1,6 +1,7 @@
 import { interpolateViridis } from "d3-scale";
 import { linear } from "../../scales/linear";
-import { ordinal } from "../../scales/ordinal";
+// import { ordinal } from "../../scales/ordinal";
+import { band } from "../../scales/band";
 
 function getTypeFromMeta( meta ) {
 	return "count" in meta ? "ordinal" : "linear";
@@ -24,9 +25,12 @@ function create( options, data ) {
 		s.range( [1, 0] );
 	}
 	else if ( type === "ordinal" ) {
-		s = ordinal();
+		s = band();
 		s.domain( range( meta.count ) );
-		s.range( meta.count <= 1 ? [0.5] : range( meta.count ).map( v => v / ( meta.count - 1 ) ) );
+		s.range( [0, 1] );
+		s.paddingOuter( 0.5 ); // TODO hard-coded
+		s.paddingInner( 1 ); // TODO hard-coded
+		s.align( 0.5 ); // TODO hard-coded
 	} else {
 		s = linear();
 		s.domain( [meta.min, meta.max] );
