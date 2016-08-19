@@ -51,7 +51,7 @@ export class Axis {
 				style: {
 					font: "Arial",
 					size: 13,
-					color: "#999",
+					color: "#999"
 				},
 				format: "s",
 				padding: 4
@@ -76,9 +76,9 @@ export class Axis {
 					// auto: true, // if size of thicks should be scaled with available draw rect
 					size: 8, // TODO unify format for size
 					color: "#999",
-					thickness: 1,
+					thickness: 1
 					// length: 1
-				},
+				}
 			},
 			minorTicks: {
 				show: true,

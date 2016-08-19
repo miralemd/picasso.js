@@ -26,7 +26,7 @@ export default class AxisDiscrete extends Axis {
 				style: {
 					font: "Arial",
 					size: 13,
-					color: "#999",
+					color: "#999"
 				},
 				padding: 4
 			},
@@ -43,8 +43,8 @@ export default class AxisDiscrete extends Axis {
 				style: {
 					size: 8, // TODO unify format for size
 					color: "#999",
-					thickness: 1,
-				},
+					thickness: 1
+				}
 			}
 		};
 		helpers.applyData( this._settings, opt );
@@ -55,7 +55,7 @@ export default class AxisDiscrete extends Axis {
 		this._ticks = this.scale.domain().map( ( d, i ) => {
 			return {
 				position: this.scale.get( d, i ),
-				label: this.data.fromSource( this.source, 0 )[i].qText,
+				label: this.data.fromSource( this.source, 0 )[i].qText
 			};
 		} );
 
