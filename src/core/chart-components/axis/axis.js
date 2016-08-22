@@ -2,7 +2,6 @@ import { default as svgText } from "../../../web/renderer/svg-renderer/svg-text-
 import { AxisHelpers as helpers, AxisStructs } from "./axis-helpers";
 
 export class Axis {
-	// constructor( renderer, element, scale ) {
 	constructor( axisConfig, composer, renderer ) {
 		this.rect = { width: 0, height: 0, x: 0, y: 0 };
 		this.scale = composer.scales[axisConfig.scale].scale;
@@ -57,7 +56,7 @@ export class Axis {
 		this._settings.ticks.spacing = helpers.tickSpacing( this._settings );
 
 		this._ticks.forEach( tick => {
-			if ( this._settings.ticks.show ) {
+			if ( this._settings.ticks.show && !tick.isMinor ) {
 				this.elements.push( AxisStructs.tick( tick, this._settings.ticks, this.rect ) );
 			}
 		} );
@@ -70,9 +69,9 @@ export class Axis {
 		this._ticks.forEach( tick => {
 			if ( this._settings.ticks.show ) {
 				if ( this._settings.minorTicks.show ) {
-					tick.minor.forEach( minor => {
-						this.elements.push( AxisStructs.tick( minor, this._settings.minorTicks, this.rect ) );
-					} );
+					if ( tick.isMinor ) {
+						this.elements.push( AxisStructs.tick( tick, this._settings.minorTicks, this.rect ) );
+					}
 				}
 			}
 		} );
@@ -84,7 +83,7 @@ export class Axis {
 		this._settings.labels.spacing = helpers.labelsSpacing( this._settings );
 		this._settings.labels.bandWidth = helpers.labelsBandwidth( this._dock, this._settings.labels, this._ticks, this.rect );
 		this._ticks.forEach( ( tick ) => {
-			if ( this._settings.labels.show ) {
+			if ( this._settings.labels.show && !tick.isMinor ) {
 				tick.label = svgText.ellipsis( 3, this._settings.labels.bandWidth.width, tick.label, this._settings.labels.style.size, this._settings.labels.style.font );
 				this.elements.push( AxisStructs.label( tick, this._settings.labels, this.rect, this.renderer.rect ) );
 			}

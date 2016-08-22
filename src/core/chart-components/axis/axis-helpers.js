@@ -180,6 +180,8 @@ export class AxisHelpers {
 	static labelsBandwidth( dock, settings, ticks, rect ) {
 		const innerPadding = 0.75;
 		const bandWidth = { width: 0, height: 0 };
+		ticks = ticks.filter( ( t ) => !t.isMinor );
+
 		bandWidth.height = ( rect.height / ticks.length ) * innerPadding;
 		if ( dock === "left" || dock === "right" ) {
 			bandWidth.width = ( rect.width - settings.spacing ) * innerPadding;
