@@ -68,11 +68,9 @@ export class AxisStructs {
 
 			const textWidth = rendererHelper.measureText( struct.text ).width;
 			if ( ( struct.x + rect.x ) <= textWidth ) {
-				// this.svg.x = label.x + textWidth / 2;
 				struct.x = ( textWidth / 2 ) - rect.x;
 			} else if ( struct.x >= rendererRect.width - rect.x - textWidth ) {
-				// this.svg.x = label.x - textWidth / 2;
-				struct.x -= ( textWidth / 2 );
+				struct.x = rect.width - ( textWidth / 2 );
 			}
 
 			struct.y = settings.dock === "top" ? -settings.spacing : settings.spacing + settings.style.size;
@@ -83,8 +81,6 @@ export class AxisStructs {
 			const textHeight = settings.style.size;
 			if ( struct.y + rect.y <= textHeight ) {
 				struct.y = textHeight - rect.y;
-			// } else if ( struct.y >= rendererRect.height - rect.y ) {
-			// 	struct.y = struct.y; // - textHeight / 4;
 			} else if ( struct.y !== rendererRect.height - rect.y && struct.y <= rendererRect.height - rect.y ) {
 				struct.y += textHeight / 3;
 			}
@@ -138,7 +134,7 @@ export class AxisStructs {
 			"text-anchor": "middle"
 		};
 
-		const ellipsOpt = { reduce: 3, width: 0, text: struct.text, fontSize: settings.style.size, font: settings.style.font };
+		const ellipsOpt = { width: 0, text: struct.text, fontSize: settings.style.size, font: settings.style.font };
 
 		if ( settings.dock === "top" || settings.dock === "bottom" ) {
 			struct.x = ( rect.width ) / 2;

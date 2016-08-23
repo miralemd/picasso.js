@@ -12,10 +12,13 @@ export default {
 	},
 
 	ellipsis( opt ) {
+		opt.reduce = opt.reduce ? opt.reduce : 3;
+		opt.reduceChars = opt.reduceChars ? opt.reduceChars : "...";
+
 		let textLength = this.measureText( opt.text, opt.fontSize, opt.font ).width;
 		if ( textLength > opt.width && opt.text !== "..." ) {
 			opt.text = opt.text.substr( 0, opt.text.length - opt.reduce );
-			opt.text += "...";
+			opt.text += opt.reduceChars;
 			opt.reduce = 4;
 			return this.ellipsis( opt );
 		}
