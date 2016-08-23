@@ -1,6 +1,13 @@
 import { default as svgText } from "../../../web/renderer/svg-renderer/svg-text-helpers";
 
+let rendererHelper = svgText;
+
 export class AxisStructs {
+	// TODO find a better solution..
+	static setRenderer( r ) {
+		rendererHelper = r;
+	}
+
 	static tick( tick, settings, rect ) {
 		const struct = { type: "line", "stroke-width": settings.style.thickness, x1: 0, x2: 0,	y1: 0, y2: 0, stroke: settings.style.color };
 
@@ -59,13 +66,13 @@ export class AxisStructs {
 			struct.x = ( tick.position * rect.width );
 			struct["text-anchor"] = "middle";
 
-			const textWidth = svgText.measureText( struct.text ).width;
+			const textWidth = rendererHelper.measureText( struct.text ).width;
 			if ( ( struct.x + rect.x ) <= textWidth ) {
 				// this.svg.x = label.x + textWidth / 2;
 				struct.x = ( textWidth / 2 ) - rect.x;
 			} else if ( struct.x >= rendererRect.width - rect.x - textWidth ) {
 				// this.svg.x = label.x - textWidth / 2;
-				struct.x = rect.width - ( textWidth / 2 );
+				struct.x -= ( textWidth / 2 );
 			}
 
 			struct.y = settings.dock === "top" ? -settings.spacing : settings.spacing + settings.style.size;
@@ -145,7 +152,7 @@ export class AxisStructs {
 			ellipsOpt.width = rect.height / 1.5;
 		}
 
-		struct.text = svgText.ellipsis( ellipsOpt );
+		struct.text = rendererHelper.ellipsis( ellipsOpt );
 
 		return struct;
 	}
