@@ -959,6 +959,11 @@
             layout: qLayout
         }
     };
+    var baseStyle = {
+      "stroke":       "rgb(0, 0, 0)",
+      "stroke-width": 1,
+      "fill":         "rgb(255, 255, 255)"
+    }
     var settings = {
         scales: {
             x: { source: "/qHyperCube/qMeasureInfo/0" }, // create scale from first measure
@@ -968,37 +973,22 @@
             y: { source: "/qHyperCube/qMeasureInfo/4" }, // second measure
         },
         components: {
-            grid: [
-                {
-                    type: "line",
-                    data: { source: "/qHyperCube/qDimensionInfo/0" }, // loop over dimension values
-                    settings: {
-                        x: { scale: "x" }, // map x value of point to "x" scale
-                        y: { scale: "y" }, // y value to "y" scale
-                        ticks: 25,
-                        styles: {
-                          1: {
-                            color: "rgb(235, 235, 235)",
-                            lineWidth: 1
-                          },
-                          4: {
-                            color: "rgb(225, 225, 225)",
-                            lineWidth: 1.5
-                          }
-                        }
-                    }
-                }
-            ],
             box: [
                 {
                     type: "box",
                     data: { source: "/qHyperCube/qDimensionInfo/0" }, // loop over dimension values
                     settings: {
                         min: { scale: "x" }, // map x value of point to "x" scale
-                        max: { scale: "y" }, // y value to "y" scale
-                        q2: { scale: "q2" }, // y value to "y" scale
-                        q3: { scale: "q3" }, // y value to "y" scale
-                        med: { scale: "med" }, // y value to "y" scale
+                        q2: { scale: "q2" }, // q2 value to "q2" scale
+                        med: { scale: "med" }, // med value to "med" scale
+                        q3: { scale: "q3" }, // q3 value to "q3" scale
+                        max: { scale: "y" }, // max value to "y" scale
+                        styles: {
+                          low: Object.assign( {}, baseStyle, { stroke: "rgb(255, 0, 0)" } ),
+                          box: Object.assign( {}, baseStyle, { } ),
+                          high: Object.assign( {}, baseStyle, { stroke: "rgb(0, 255, 0)" } ),
+                          med: baseStyle
+                        }
                     }
                 }
             ]

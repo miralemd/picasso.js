@@ -17,6 +17,12 @@ export default class Box {
 		this.q3 = this.settings.q3 ? composer.scales[this.settings.q3.scale] : null;
 		this.med = this.settings.med ? composer.scales[this.settings.med.scale] : null;
 
+		//this.scales = this.settings.scales.map( s => composer.scales[s.scale] );
+
+		Object.keys( this.settings.styles ).forEach( key => {
+			this.settings.styles[key].compiled = this.compileStyle( this.settings.styles[key] );
+		} );
+
 		this.onData();
 	}
 
@@ -24,9 +30,6 @@ export default class Box {
 		this.boxes = [];
 
 		this.data.dataPages().then( ( pages ) => {
-			/*eslint no-unused-expressions: 0*/
-			this.min && this.min.update();
-			this.max && this.max.update();
 
 			pages.forEach( ( page, i ) => {
 				const min = this.min ? this.data.fromSource( this.min.source, i ) : null,
@@ -37,16 +40,17 @@ export default class Box {
 
 				this.data.fromSource( this.obj.data.source, i ).forEach( ( value, row ) => {
 					this.boxes.push( {
-						min: min ? this.min.toValue( min, row ) : 0.5,
-						max: max ? ( this.max.toValue( max, row ) ) : 0.5,
-						q2: q2 ? ( this.q2.toValue( q2, row ) ) : 0.5,
-						q3: q3 ? ( this.q3.toValue( q3, row ) ) : 0.5,
-						med: med ? ( this.med.toValue( med, row ) ) : 0.5,
+						min: min ? ( 1 - this.min.toValue( min, row ) ) : 0.5,
+						max: max ? ( 1 - this.max.toValue( max, row ) ) : 0.5,
+						q2: q2 ? ( 1 - this.q2.toValue( q2, row ) ) : 0.5,
+						q3: q3 ? ( 1 - this.q3.toValue( q3, row ) ) : 0.5,
+						med: med ? ( 1 - this.med.toValue( med, row ) ) : 0.5,
 					} );
 				} );
 
-				//console.log( this.boxes );
+				//this.boxes.length = Math.ceil( Math.random() * ( this.boxes.length ) );
 			}, this );
+
 			this.resize();
 		} ).catch( () => {
 			this.resize();
@@ -54,61 +58,98 @@ export default class Box {
 	}
 
 	render( boxes ) {
-
 		const { width, height } = this.renderer.rect;
+
 		let displayBoxes = boxes.filter( item => {
-				return !isNaN( item.min + item.max );
+				return [ item.min, item.q2, item.q3, item.max ].filter( v => Number.isNaN( v ) ).length !== 4;
 			} );
 
 		let draw = [];
+		let boxWidth = this.settings.styles.box.width || ( width / displayBoxes.length ) * 0.75;
+
 		let i = -0.5;
 		displayBoxes.forEach( item => {
 			i++;
+			let vals = [ item.min, item.q2, item.q3, item.max ];
 
-			// Draw the line min - q2
-			draw.push( {
-				type: "line",
-				y1: item.q2 * height,
-				x1: i / displayBoxes.length * width,
-				y2: Math.min( item.min * height, item.q2 * height - 1 ),
-				x2: i / displayBoxes.length * width,
-				style: "stroke: rgb(0, 0, 0); stroke-width: 2"
-			} );
+			// Don't draw anything without enough data
+			if ( vals.filter( v => Number.isNaN( v ) ).length > 1 )
+			{
+				return;
+			}
 
-			// Draw the line q3 - max
-			draw.push( {
-				type: "line",
-				y1: item.max * height,
-				x1: i / displayBoxes.length * width,
-				y2: Math.min( item.q3 * height, item.max * height - 1 ),
-				x2: i / displayBoxes.length * width,
-				style: "stroke: rgb(0, 0, 0); stroke-width: 2"
-			} );
+			// Draw a speculative indication box of the highest and lowest values
+			if ( vals.filter( v => Number.isNaN( v ) ).length )
+			{
+				let lowest = Math.min( ...vals.filter( v => !Number.isNaN( v ) ) );
+				let highest = Math.max( ...vals.filter( v => !Number.isNaN( v ) ) );
 
-			// Draw the box
-			draw.push( {
-				type: "rect",
-				y: item.q2 * height,
-				height: ( item.q3 - item.q2 ) * height,
-				x: i / displayBoxes.length * width - 10,
-				width: 20,
-				fill: "rgb(255, 255, 255)",
-				style: "stroke-width: 2; stroke: rgb(0, 0, 0)"
-			} );
+				// Draw the box
+				draw.push( {
+					type: "rect",
+					y: lowest * height,
+					height: ( highest - lowest ) * height,
+					x: i / displayBoxes.length * width - ( boxWidth / 2 ),
+					width: boxWidth,
+					style: this.settings.styles.box.compiled
+				} );
+			}
+			else
+			{
+				// Normal rendering
 
-			// Draw the line for med
-			draw.push( {
-				type: "line",
-				y1: item.med * height,
-				x1: i / displayBoxes.length * width - 10,
-				y2: item.med * height,
-				x2: i / displayBoxes.length * width + 10,
-				style: "stroke: rgb(0, 0, 0); stroke-width: 2"
-			} );
+				// Draw the line min - q2
+				draw.push( {
+					type: "line",
+					y1: item.q2 * height,
+					x1: i / displayBoxes.length * width,
+					y2: item.min * height,
+					x2: i / displayBoxes.length * width,
+					style: this.settings.styles.low.compiled
+				} );
+
+				// Draw the box
+				draw.push( {
+					type: "rect",
+					y: item.q3 * height,
+					height: ( item.q2 - item.q3 ) * height,
+					x: i / displayBoxes.length * width - ( boxWidth / 2 ),
+					width: boxWidth,
+					style: this.settings.styles.box.compiled
+				} );
+
+				// Draw the line q3 - max (high)
+				draw.push( {
+					type: "line",
+					y1: item.max * height,
+					x1: i / displayBoxes.length * width,
+					y2: item.q3 * height,
+					x2: i / displayBoxes.length * width,
+					style: this.settings.styles.high.compiled
+				} );
+			}
+
+			// The median line is drawn separately, and only if it's data exists
+			if ( !Number.isNaN( item.med ) ) {
+				draw.push( {
+					type: "line",
+					y1: item.med * height,
+					x1: i / displayBoxes.length * width - ( boxWidth / 2 ),
+					y2: item.med * height,
+					x2: i / displayBoxes.length * width + ( boxWidth / 2 ),
+					style: this.settings.styles.med.compiled
+				} );
+			}
 
 		} );
 
 		this.renderer.render( draw );
+	}
+
+	compileStyle( props ) {
+		return Object.keys( props ).map( key => {
+			return key + ": " + props[key];
+		} ).join( "; " );
 	}
 
 	resize() {
