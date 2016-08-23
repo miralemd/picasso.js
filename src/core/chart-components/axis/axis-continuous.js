@@ -2,7 +2,7 @@ import { Axis } from "./axis";
 import { linear } from "../../scales/linear";
 import { AxisHelpers as helpers } from "./axis-helpers";
 
-export default class AxisContinuous2 extends Axis {
+export default class AxisContinuous extends Axis {
 	constructor( config, composer, renderer ) {
 		super( config, composer, renderer );
 		this._minorTicksCount = 5; // Should be set by renderer based on amount of space available and/or use config to toggle on of as option
@@ -141,5 +141,5 @@ export default class AxisContinuous2 extends Axis {
 }
 
 export function axisContinuous( ...a ) {
-	return new AxisContinuous2( ...a );
+	return new AxisContinuous( ...a );
 }

@@ -1,5 +1,6 @@
 import { default as svgText } from "../../../web/renderer/svg-renderer/svg-text-helpers";
-import { AxisHelpers as helpers, AxisStructs } from "./axis-helpers";
+import { AxisHelpers as helpers } from "./axis-helpers";
+import { AxisStructs } from "./axis-structs";
 
 export class Axis {
 	constructor( axisConfig, composer, renderer ) {
@@ -38,7 +39,7 @@ export class Axis {
 	}
 
 	transform( x, y ) {
-		this.renderer.g.setAttribute( "transform", `translate(${x}, ${y})` );
+		this.renderer.g.setAttribute( "transform", `translate(${x}, ${y})` ); // TODO svg render specific code
 		this.rect.x = x;
 		this.rect.y = y;
 		return this;
@@ -82,9 +83,18 @@ export class Axis {
 		this._settings.labels.direction = this._settings.direction;
 		this._settings.labels.spacing = helpers.labelsSpacing( this._settings );
 		this._settings.labels.bandWidth = helpers.labelsBandwidth( this._dock, this._settings.labels, this._ticks, this.rect );
+		const ellipsOpt = {
+			reduce: 3,
+			width: this._settings.labels.bandWidth.width,
+			text: "",
+			fontSize: this._settings.labels.style.size,
+			font: this._settings.labels.style.font
+		};
+
 		this._ticks.forEach( ( tick ) => {
 			if ( this._settings.labels.show && !tick.isMinor ) {
-				tick.label = svgText.ellipsis( 3, this._settings.labels.bandWidth.width, tick.label, this._settings.labels.style.size, this._settings.labels.style.font );
+				ellipsOpt.text = tick.label;
+				tick.label = svgText.ellipsis( ellipsOpt );
 				this.elements.push( AxisStructs.label( tick, this._settings.labels, this.rect, this.renderer.rect ) );
 			}
 		 } );

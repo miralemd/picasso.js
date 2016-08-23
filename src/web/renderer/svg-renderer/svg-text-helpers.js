@@ -11,13 +11,14 @@ export default {
 		return textSize;
 	},
 
-	ellipsis( reduce, width, text, fontSize = 13, font = "Arial" ) {
-		let textLength = this.measureText( text, fontSize, font ).width;
-		if ( textLength > width && text !== "..." ) {
-			let ellipsedText = text.substr( 0, text.length - reduce );
-			ellipsedText += "...";
-			return this.ellipsis( 4, width, ellipsedText, fontSize, font );
+	ellipsis( opt ) {
+		let textLength = this.measureText( opt.text, opt.fontSize, opt.font ).width;
+		if ( textLength > opt.width && opt.text !== "..." ) {
+			opt.text = opt.text.substr( 0, opt.text.length - opt.reduce );
+			opt.text += "...";
+			opt.reduce = 4;
+			return this.ellipsis( opt );
 		}
-		return text;
+		return opt.text;
 	}
 };
