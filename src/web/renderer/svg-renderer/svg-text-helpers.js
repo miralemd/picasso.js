@@ -3,20 +3,20 @@
 import { renderer } from "./svg-renderer";
 
 export default {
-	getBoundingClientRect( textStruct ) {
+	getComputedRect( textStruct ) {
 		const tmpDiv = document.createElement( "div" );
 		document.body.insertAdjacentElement( "beforeend", tmpDiv );
 		const rend = renderer();
 		rend.appendTo( tmpDiv );
 		rend.render( [textStruct] );
-		const rect = tmpDiv.getElementsByTagName( "text" )[0].getBoundingClientRect();
+		const rect = tmpDiv.getElementsByTagName( "text" )[0].getBBox();
 		document.body.removeChild( tmpDiv );
 		return rect;
 	},
 
 	getComputedTextLength( text, fontSize, font ) {
 		const struct = { type: "text", text: text, x: 0, y: 0, "font-family": font,	"font-size": fontSize, fill: "white" };
-		return this.getBoundingClientRect( struct ).width;
+		return this.getComputedRect( struct ).width;
 	},
 
 	ellipsis( opt ) {

@@ -19,7 +19,7 @@ export class AxisStructs {
 			struct.y1 = 0;
 
 			struct.y1 = settings.dock === "top" ? -settings.spacing : settings.spacing;
-			struct.y2 = settings.dock === "top" ? -settings.style.size - settings.spacing : settings.style.size + settings.spacing;
+			struct.y2 = settings.dock === "top" ? struct.y1 - settings.style.size : struct.y1 + settings.style.size;
 
 			// make sure the whole line is rendered
 			if ( struct.x1 === rect.width ) { // outer end tick
@@ -35,7 +35,7 @@ export class AxisStructs {
 			struct.y2 = ( 1 - tick.position ) * rect.height;
 
 			struct.x1 = settings.dock === "left" ? -settings.spacing : settings.spacing;
-			struct.x2 = settings.dock === "left" ? -settings.style.size - settings.spacing : settings.style.size + settings.spacing;
+			struct.x2 = settings.dock === "left" ? struct.x1 - settings.style.size : struct.x1 + settings.style.size;
 
 			// make sure the whole line is rendered
 			if ( struct.y1 === rect.height ) {
@@ -71,7 +71,7 @@ export class AxisStructs {
 			struct.x = ( tick.position * rect.width );
 			struct["text-anchor"] = "middle";
 
-			const textWidth = rendererHelper.getBoundingClientRect( struct ).width;
+			const textWidth = rendererHelper.getComputedRect( struct ).width;
 			if ( ( struct.x + rect.x ) <= textWidth ) {
 				struct.x = ( textWidth / 2 ) - rect.x;
 			} else if ( struct.x >= rendererRect.width - rect.x - textWidth ) {
@@ -83,7 +83,7 @@ export class AxisStructs {
 			struct.y = ( ( 1 - tick.position ) * rect.height );
 			struct["text-anchor"] = settings.dock === "left" ? "end" : "start";
 
-			const textHeight = rendererHelper.getBoundingClientRect( struct ).height;
+			const textHeight = rendererHelper.getComputedRect( struct ).height;
 			if ( struct.y + rect.y <= textHeight ) {
 				struct.y = textHeight - rect.y;
 			} else if ( struct.y !== rendererRect.height - rect.y && struct.y <= rendererRect.height - rect.y ) {
