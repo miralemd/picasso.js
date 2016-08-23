@@ -19,13 +19,13 @@ export class Axis {
 
 	dock( value = "left" ) {
 		if ( value === "left" ) {
-			this.transform( this.renderer.rect.width, 0 );
+			this.transform( this.rect.width, 0 );
 		} else if ( value === "right" ) {
 			this.transform( 0, 0 );
 		} else if ( value === "bottom" ) {
 			this.transform( 0, 0 );
 		} else if ( value === "top" ) {
-			this.transform( 0, this.renderer.rect.height );
+			this.transform( 0, this.rect.height );
 		}
 
 		this._dock = value;
@@ -83,28 +83,43 @@ export class Axis {
 		this._settings.labels.direction = this._settings.direction;
 		this._settings.labels.spacing = helpers.labelsSpacing( this._settings );
 		this._settings.labels.bandWidth = helpers.labelsBandwidth( this._dock, this._settings.labels, this._ticks, this.rect );
+
 		const ellipsOpt = {
-			reduce: 3,
 			width: this._settings.labels.bandWidth.width,
 			text: "",
 			fontSize: this._settings.labels.style.size,
 			font: this._settings.labels.style.font
 		};
 
-		this._ticks.forEach( ( tick ) => {
-			if ( this._settings.labels.show && !tick.isMinor ) {
-				ellipsOpt.text = tick.label;
-				tick.label = svgText.ellipsis( ellipsOpt );
-				this.elements.push( AxisStructs.label( tick, this._settings.labels, this.rect, this.renderer.rect ) );
-			}
-		 } );
+		if ( this._settings.labels.bandWidth.width < ( this.rect.width / 15 ) ) {
+			this._ticks.forEach( ( tick, i ) => {
+				this._settings.labels.spacing = i % 2 === 0 ? helpers.labelsSpacing( this._settings ) : helpers.labelsSpacing( this._settings ) + ( this._settings.labels.style.size * 1.5 );
+
+				if ( this._settings.labels.show && !tick.isMinor ) {
+					ellipsOpt.text = tick.label;
+					ellipsOpt.width = this._settings.labels.bandWidth.width * 2;
+					tick.label = svgText.ellipsis( ellipsOpt );
+					this.elements.push( AxisStructs.label( tick, this._settings.labels, this.rect, this.renderer.rect ) );
+				}
+			 } );
+		} else {
+			this._ticks.forEach( ( tick ) => {
+				if ( this._settings.labels.show && !tick.isMinor ) {
+					ellipsOpt.text = tick.label;
+					tick.label = svgText.ellipsis( ellipsOpt );
+					this.elements.push( AxisStructs.label( tick, this._settings.labels, this.rect, this.renderer.rect ) );
+				}
+			 } );
+		}
 	}
 
 	generateTitle() {
-		this._settings.title.dock = this._dock;
-		this._settings.title.direction = this._settings.direction;
-		this._settings.title.spacing = helpers.titleSpacing( this._settings, this._ticks, this._dock );
-		this.elements.push( AxisStructs.title( this._settings.title, this.rect ) );
+		if ( this._settings.title.show ) {
+			this._settings.title.dock = this._dock;
+			this._settings.title.direction = this._settings.direction;
+			this._settings.title.spacing = helpers.titleSpacing( this._settings, this._ticks, this._dock );
+			this.elements.push( AxisStructs.title( this._settings.title, this.rect ) );
+		}
 	}
 
 	render( ) {

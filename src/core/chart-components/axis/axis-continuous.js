@@ -5,7 +5,7 @@ import { AxisHelpers as helpers } from "./axis-helpers";
 export default class AxisContinuous extends Axis {
 	constructor( config, composer, renderer ) {
 		super( config, composer, renderer );
-		this._minorTicksCount = 5; // Should be set by renderer based on amount of space available and/or use config to toggle on of as option
+		this._minorTicksCount = 0; // Should be set by renderer based on amount of space available and/or use config to toggle on of as option
 		this._ticksCountScale = linear().domain( [0, 100] ).range( [0, 1] );
 	}
 

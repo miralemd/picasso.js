@@ -1,21 +1,29 @@
 /** @module web/renderer/svg-renderer/svg-text-helpers */
 
+import { renderer } from "./svg-renderer";
+
 export default {
-	measureText( text, fontSize = 13, font = "Arial" ) {
-		const tempCanvas = document.createElement( "canvas" );
-		document.body.insertAdjacentElement( "beforeend", tempCanvas );
-		const ctx = tempCanvas.getContext( "2d" );
-		ctx.font = `${fontSize}px ${font}`;
-		const textSize = ctx.measureText( text );
-		document.body.removeChild( tempCanvas );
-		return textSize;
+	getBoundingClientRect( textStruct ) {
+		const tmpDiv = document.createElement( "div" );
+		document.body.insertAdjacentElement( "beforeend", tmpDiv );
+		const rend = renderer();
+		rend.appendTo( tmpDiv );
+		rend.render( [textStruct] );
+		const rect = tmpDiv.getElementsByTagName( "text" )[0].getBoundingClientRect();
+		document.body.removeChild( tmpDiv );
+		return rect;
+	},
+
+	getComputedTextLength( text, fontSize, font ) {
+		const struct = { type: "text", text: text, x: 0, y: 0, "font-family": font,	"font-size": fontSize, fill: "white" };
+		return this.getBoundingClientRect( struct ).width;
 	},
 
 	ellipsis( opt ) {
-		opt.reduce = opt.reduce ? opt.reduce : 3;
+		opt.reduce = opt.reduce ? opt.reduce : 3; // TODO doesnt make sense with recoursive call where 4 is hard-coded
 		opt.reduceChars = opt.reduceChars ? opt.reduceChars : "...";
 
-		let textLength = this.measureText( opt.text, opt.fontSize, opt.font ).width;
+		let textLength = this.getComputedTextLength( opt.text, opt.fontSize, opt.font );
 		if ( textLength > opt.width && opt.text !== "..." ) {
 			opt.text = opt.text.substr( 0, opt.text.length - opt.reduce );
 			opt.text += opt.reduceChars;

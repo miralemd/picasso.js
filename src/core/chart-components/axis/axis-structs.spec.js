@@ -143,7 +143,7 @@ describe( "AxisStructs", () => {
 
 	describe( "Label", () => {
 		let settings, tick, expected;
-		AxisStructs.setRenderer( { measureText: () => { return { width: 10 }; }, ellipsis: ( opt ) => { return opt.text; } } );
+		AxisStructs.setRenderer( { getBoundingClientRect: () => { return { width: 10, height: 10 }; }, ellipsis: ( opt ) => { return opt.text; } } );
 
 		beforeEach( () => {
 			settings = {
@@ -354,7 +354,7 @@ describe( "AxisStructs", () => {
 
 	describe( "Title", () => {
 		let settings, expected;
-		AxisStructs.setRenderer( { measureText: () => { return { width: 10 }; }, ellipsis: ( opt ) => { return opt.text; } } );
+		AxisStructs.setRenderer( { getBoundingClientRect: () => { return { width: 10, height: 10 }; }, ellipsis: ( opt ) => { return opt.text; } } );
 
 		beforeEach( () => {
 			settings = {

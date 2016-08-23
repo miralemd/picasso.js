@@ -62,11 +62,16 @@ export class AxisStructs {
 			direction: settings.direction
 		};
 
+		// Apply base rotation so that getBoundingClientRect can be correctly calculated
+		if ( settings.tilted ) {
+			struct.transform = "rotate(-45)";
+		}
+
 		if ( settings.dock === "top" || settings.dock === "bottom" ) {
 			struct.x = ( tick.position * rect.width );
 			struct["text-anchor"] = "middle";
 
-			const textWidth = rendererHelper.measureText( struct.text ).width;
+			const textWidth = rendererHelper.getBoundingClientRect( struct ).width;
 			if ( ( struct.x + rect.x ) <= textWidth ) {
 				struct.x = ( textWidth / 2 ) - rect.x;
 			} else if ( struct.x >= rendererRect.width - rect.x - textWidth ) {
@@ -78,7 +83,7 @@ export class AxisStructs {
 			struct.y = ( ( 1 - tick.position ) * rect.height );
 			struct["text-anchor"] = settings.dock === "left" ? "end" : "start";
 
-			const textHeight = settings.style.size;
+			const textHeight = rendererHelper.getBoundingClientRect( struct ).height;
 			if ( struct.y + rect.y <= textHeight ) {
 				struct.y = textHeight - rect.y;
 			} else if ( struct.y !== rendererRect.height - rect.y && struct.y <= rendererRect.height - rect.y ) {
@@ -88,6 +93,7 @@ export class AxisStructs {
 			struct.x = settings.dock === "left" ? -settings.spacing : settings.spacing;
 		}
 
+		// Finalize transform
 		if ( settings.tilted ) {
 			struct.transform = `rotate(-45, ${struct.x}, ${struct.y})`;
 		}
