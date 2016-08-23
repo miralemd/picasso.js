@@ -1,6 +1,6 @@
 import { AxisStructs } from "./axis-structs";
 
-describe.only( "AxisStructs", () => {
+describe( "AxisStructs", () => {
 	const rect = { x: 0, y: 0, width: 0, height: 0 };
 	const rendererRect = { x: 0, y: 0, width: 0, height: 0 };
 
