@@ -1,5 +1,5 @@
-import "./web/css/picasso.less";
 import { chart } from "./core/charts/chart";
+import "./web";
 
 export default {
 	chart
