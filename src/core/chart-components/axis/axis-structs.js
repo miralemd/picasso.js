@@ -72,7 +72,7 @@ export class AxisStructs {
 			struct["text-anchor"] = "middle";
 
 			const textWidth = rendererHelper.getComputedRect( struct ).width;
-			if ( ( struct.x + rect.x ) <= textWidth ) {
+			if ( ( struct.x + rect.x ) <= textWidth / 2 ) {
 				struct.x = ( textWidth / 2 ) - rect.x;
 			} else if ( struct.x >= rendererRect.width - rect.x - ( textWidth / 2 ) ) {
 				struct.x = rect.width - ( textWidth / 2 );

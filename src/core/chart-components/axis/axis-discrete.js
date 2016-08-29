@@ -30,7 +30,8 @@ export default class AxisDiscrete extends Axis {
 					size: 13,
 					color: "#999"
 				},
-				padding: 4
+				padding: 4,
+				layered: true
 			},
 			line: {
 				show: true,
@@ -87,7 +88,7 @@ export default class AxisDiscrete extends Axis {
 			font: this._settings.labels.style.font
 		};
 
-		if ( this._settings.labels.bandWidth.width < ( this.rect.width / 15 ) && ( this._dock === "top" || this._dock === "bottom" ) ) {
+		if ( this._settings.labels.layered && this._settings.labels.bandWidth.width < ( this.rect.width / 15 ) && ( this._dock === "top" || this._dock === "bottom" ) ) {
 			this._ticks.forEach( ( tick, i ) => {
 				const struct = { type: "text", text: tick.label, x: 0, y: 0, "font-family": this._settings.labels.style.font,	"font-size": this._settings.labels.style.size, fill: "white" };
 				this._settings.labels.spacing = i % 2 === 0 ? helpers.labelsSpacing( this._settings ) : helpers.labelsSpacing( this._settings ) + svgText.getComputedRect( struct ).height;
