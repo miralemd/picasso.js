@@ -74,7 +74,7 @@ export class AxisStructs {
 			const textWidth = rendererHelper.getComputedRect( struct ).width;
 			if ( ( struct.x + rect.x ) <= textWidth ) {
 				struct.x = ( textWidth / 2 ) - rect.x;
-			} else if ( struct.x >= rendererRect.width - rect.x - textWidth ) {
+			} else if ( struct.x >= rendererRect.width - rect.x - ( textWidth / 2 ) ) {
 				struct.x = rect.width - ( textWidth / 2 );
 			}
 
