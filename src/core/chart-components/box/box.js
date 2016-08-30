@@ -17,8 +17,7 @@ export default class Box {
 		this.q3 = this.settings.q3 ? composer.scales[this.settings.q3.scale] : null;
 		this.med = this.settings.med ? composer.scales[this.settings.med.scale] : null;
 
-		//this.scales = this.settings.scales.map( s => composer.scales[s.scale] );
-
+		// Compile all styles
 		Object.keys( this.settings.styles ).forEach( key => {
 			this.settings.styles[key].compiled = this.compileStyle( this.settings.styles[key] );
 		} );
@@ -61,6 +60,7 @@ export default class Box {
 		const { width, height } = this.renderer.rect;
 
 		let displayBoxes = boxes.filter( item => {
+				// If all values are NaN ignore the item
 				return [ item.min, item.q2, item.q3, item.max ].filter( v => Number.isNaN( v ) ).length !== 4;
 			} );
 
@@ -146,6 +146,7 @@ export default class Box {
 		this.renderer.render( draw );
 	}
 
+	// Compile styes into a CSS format
 	compileStyle( props ) {
 		return Object.keys( props ).map( key => {
 			return key + ": " + props[key];
