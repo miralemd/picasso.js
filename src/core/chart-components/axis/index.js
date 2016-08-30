@@ -6,11 +6,18 @@ export function axisFactory( axes, composer ) {
 	return axes.map( ( axisConfig ) => {
 		const scale = composer.scales[axisConfig.scale];
 		// const elm = document.getElementById( config.parent );
+		const rend = renderer();
+		const element = document.getElementById( axisConfig.parent );
+		element.innerHTML = "";
+		rend.rect.width = element.getBoundingClientRect().width;
+		rend.rect.height = element.getBoundingClientRect().height;
+		rend.appendTo( element );
+
 		let ax;
 		if ( scale.type === "ordinal" ) {
-			ax = new AxisDiscrete( axisConfig, composer, renderer );
+			ax = new AxisDiscrete( axisConfig, composer, rend );
 		} else {
-			ax = new AxisContinuous( axisConfig, composer, renderer );
+			ax = new AxisContinuous( axisConfig, composer, rend );
 		}
 
 		ax.dock( axisConfig.dock )

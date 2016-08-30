@@ -8,12 +8,7 @@ export class Axis {
 		this.scale = composer.scales[axisConfig.scale].scale;
 		this.data = composer.data;
 		this.source = composer.scales[axisConfig.scale].source;
-		this.renderer = renderer();
-		const element = document.getElementById( axisConfig.parent );
-		element.innerHTML = "";
-		this.renderer.rect.width = element.getBoundingClientRect().width;
-		this.renderer.rect.height = element.getBoundingClientRect().height;
-		this.renderer.appendTo( element );
+		this.renderer = renderer;
 		this.size( this.renderer.rect.width, this.renderer.rect.height );
 		this.elements = [];
 	}
