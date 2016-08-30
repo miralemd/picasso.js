@@ -28,7 +28,7 @@ function create( options, data ) {
 		s = band();
 		s.domain( range( meta.count ) );
 		s.range( [0, 1] );
-		s.paddingOuter( 0.5 ); // TODO hard-coded
+		s.paddingOuter( 1 ); // TODO hard-coded
 		s.paddingInner( 1 ); // TODO hard-coded
 		s.align( 0.5 ); // TODO hard-coded
 	} else {

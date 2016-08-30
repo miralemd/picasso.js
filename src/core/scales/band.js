@@ -64,7 +64,11 @@ export default class BandScale {
 	}
 
 	bandWidth() {
-		return this._scale.bandWidt();
+		return this._scale.bandwidth();
+	}
+
+	step() {
+		return this._scale.step();
 	}
 
 	/**

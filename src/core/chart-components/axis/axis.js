@@ -10,6 +10,7 @@ export class Axis {
 		this.source = composer.scales[axisConfig.scale].source;
 		this.renderer = renderer();
 		const element = document.getElementById( axisConfig.parent );
+		element.innerHTML = "";
 		this.renderer.rect.width = element.getBoundingClientRect().width;
 		this.renderer.rect.height = element.getBoundingClientRect().height;
 		this.renderer.appendTo( element );

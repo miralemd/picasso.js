@@ -30,8 +30,8 @@ export default class AxisDiscrete extends Axis {
 					size: 13,
 					color: "#999"
 				},
-				padding: 4,
-				layered: true
+				padding: 6,
+				layered: true // TODO support auto, true and false?
 			},
 			line: {
 				show: true,
@@ -55,17 +55,18 @@ export default class AxisDiscrete extends Axis {
 	}
 
 	onData() {
-		this._ticks = this.scale.domain().map( ( d, i ) => {
+		// TODO Handle data paging
+		this._ticks = this.data.fromSource( this.source, 0 ).map( ( d, i ) => {
 			return {
-				position: this.scale.get( d, i ),
-				label: this.data.fromSource( this.source, 0 )[i].qText
+				position: this.scale.get( i ),
+				label: d.qText
 			};
 		} );
 
 		return this;
 	}
 
-	render( ) {
+	render() {
 		this.onData();
 		this.generateLine();
 		this.generateTicks();
@@ -76,6 +77,8 @@ export default class AxisDiscrete extends Axis {
 	}
 
 	generateLabels() {
+		if ( !this._settings.labels.show ) { return; }
+
 		this._settings.labels.dock = this._dock;
 		this._settings.labels.direction = this._settings.direction;
 		this._settings.labels.spacing = helpers.labelsSpacing( this._settings );
@@ -88,25 +91,20 @@ export default class AxisDiscrete extends Axis {
 			font: this._settings.labels.style.font
 		};
 
-		if ( this._settings.labels.layered && this._settings.labels.bandWidth.width < ( this.rect.width / 15 ) && ( this._dock === "top" || this._dock === "bottom" ) ) {
-			this._ticks.forEach( ( tick, i ) => {
+		if ( this._settings.labels.layered && ( this._dock === "top" || this._dock === "bottom" ) ) {
+			this._ticks.filter( ( t ) => { return !t.isMinor; } ).forEach( ( tick, i ) => {
 				const struct = { type: "text", text: tick.label, x: 0, y: 0, "font-family": this._settings.labels.style.font,	"font-size": this._settings.labels.style.size, fill: "white" };
-				this._settings.labels.spacing = i % 2 === 0 ? helpers.labelsSpacing( this._settings ) : helpers.labelsSpacing( this._settings ) + svgText.getComputedRect( struct ).height;
-
-				if ( this._settings.labels.show && !tick.isMinor ) {
-					ellipsOpt.text = tick.label;
-					ellipsOpt.width = this._settings.labels.bandWidth.width * 2;
-					tick.label = svgText.ellipsis( ellipsOpt );
-					this.elements.push( AxisStructs.label( tick, this._settings.labels, this.rect, this.renderer.rect ) );
-				}
+				this._settings.labels.spacing = i % 2 === 0 ? helpers.labelsSpacing( this._settings ) : helpers.labelsSpacing( this._settings ) + svgText.getComputedRect( struct ).height + this._settings.labels.padding;
+				ellipsOpt.text = tick.label;
+				ellipsOpt.width = this._settings.labels.bandWidth.width * 2;
+				tick.label = svgText.ellipsis( ellipsOpt );
+				this.elements.push( AxisStructs.label( tick, this._settings.labels, this.rect, this.renderer.rect ) );
 			} );
 		} else {
-			this._ticks.forEach( ( tick ) => {
-				if ( this._settings.labels.show && !tick.isMinor ) {
-					ellipsOpt.text = tick.label;
-					tick.label = svgText.ellipsis( ellipsOpt );
-					this.elements.push( AxisStructs.label( tick, this._settings.labels, this.rect, this.renderer.rect ) );
-				}
+			this._ticks.filter( ( t ) => { return !t.isMinor; } ).forEach( ( tick ) => {
+				ellipsOpt.text = tick.label;
+				tick.label = svgText.ellipsis( ellipsOpt );
+				this.elements.push( AxisStructs.label( tick, this._settings.labels, this.rect, this.renderer.rect ) );
 			} );
 		}
 	}

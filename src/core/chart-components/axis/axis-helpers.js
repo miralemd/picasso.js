@@ -24,8 +24,8 @@ export class AxisHelpers {
 		} else if ( dock === "top" ){
 			spacing += settings.labels.style.size;
 		} else {
-			const maxTextLength = Math.max.apply( this, ticks.map( ( t ) => svgText.getComputedTextLength( t.label, settings.labels.style.size, settings.labels.style.font ) ) );
-			spacing += maxTextLength;
+			const maxComputedLength = ticks.map( ( t ) => svgText.getComputedTextLength( t.label, settings.labels.style.size, settings.labels.style.font ) );
+			spacing += maxComputedLength.length > 0 ? Math.max.apply( this, maxComputedLength ) : 0;
 		}
 		return spacing;
 	}

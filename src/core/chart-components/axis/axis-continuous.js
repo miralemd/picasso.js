@@ -74,8 +74,10 @@ export default class AxisContinuous extends Axis {
 		return this;
 	}
 
-	format( formatter = "s" ) {
-		this._formatter = formatter;
+	format() {
+		if ( this._settings.labels.format ) {
+			this._formatter = this._settings.labels.format || "s";
+		}
 		return this;
 	}
 
@@ -90,8 +92,49 @@ export default class AxisContinuous extends Axis {
 		} );
 	}
 
-	ticks( count = 5, minorCount = 5 ) {
-		const ticks = this.scale.ticks( ( ( count - 1 ) * minorCount ) + count );
+	extendDomain() {
+		const min = this._settings.ticks.min,
+			max = this._settings.ticks.max,
+			start = this.scale.start(),
+			end = this.scale.end(),
+			minSafe = min !== undefined,
+			maxSafe = max !== undefined;
+
+		if ( minSafe || maxSafe ) {
+			const d = [ minSafe ? min : start, maxSafe ? max : end ];
+			this.scale.domain( d );
+		} else if ( start === 0 && end === 0 ) {
+			this.scale.domain( [-10, 10] );
+		} else if ( start === end ) {
+			this.scale.domain( [start * 0.9, end * 1.1] );
+		}
+
+		if ( this._settings.ticks.clamp ) {
+			const niceVal = start > 1 && end > 1 ? 2 : 10;
+			this.scale.nice( niceVal ); // TODO scale with data granularity
+		}
+
+		return this;
+	}
+
+	ticks() {
+		let count = 0;
+		const minorCount = this._settings.minorTicks.show ? this._settings.minorTicks.count : 0;
+
+		if ( this._settings.ticks.values ) {
+			// TODO With custom tick values, dont care if its within the domain?
+			return this.ticksValue( this._settings.ticks.values );
+		} else if ( this._settings.ticks.count !== undefined ) {
+			count = this._settings.ticks.count;
+		} else {
+			if ( this._dock === "top" || this._dock === "bottom" ) {
+				count = Math.max( this._ticksCountScale.get( this.rect.width - this.rect.x ), 2 );
+			} else {
+				count = Math.max( this._ticksCountScale.get( this.rect.height - this.rect.y ), 2 );
+			}
+		}
+
+		let ticks = this.scale.ticks( ( ( count - 1 ) * minorCount ) + count );
 		const ticksFormatted = ticks.map( this.scale.tickFormat( count, this._formatter ) );
 
 		return ticksFormatted.map( ( tick, i ) => {
@@ -104,38 +147,10 @@ export default class AxisContinuous extends Axis {
 	}
 
 	onData() {
-		const tSet = this._settings.ticks;
-		let count = 5;
+		this.extendDomain();
+		this.format();
+		this._ticks = this.ticks();
 
-		if ( Number.isInteger( tSet.min ) || Number.isInteger( tSet.max ) ) {
-			const d = [ Number.isInteger( tSet.min ) ? tSet.min : this.scale.start(), Number.isInteger( tSet.max ) ? tSet.max : this.scale.end() ];
-			this.scale.domain( d );
-		} else if ( tSet.clamp ) {
-			const niceVal = this.scale.start() > 1 ? 5 : 2;
-			this.scale.nice( niceVal ); // TODO scale with data granularity
-		}
-
-		if ( this._settings.labels.format ) {
-			this.format( this._settings.labels.format );
-		}
-
-		if ( tSet.values ) {
-			// TODO With custom tick values, dont care if its within the domain?
-
-			this._ticks = this.ticksValue( tSet.values );
-			return this;
-
-		} else if ( tSet.count ) {
-			count = tSet.count;
-		} else {
-			if ( this._dock === "top" || this._dock === "bottom" ) {
-				count = Math.max( this._ticksCountScale.get( this.rect.width - this.rect.x ), 2 );
-			} else {
-				count = Math.max( this._ticksCountScale.get( this.rect.height - this.rect.y ), 2 );
-			}
-		}
-
-		this._ticks = this.ticks( count, this._settings.minorTicks.show ? this._settings.minorTicks.count : 0 );
 		return this;
 	}
 }

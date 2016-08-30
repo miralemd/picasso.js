@@ -32,7 +32,7 @@ export default {
 
 		let textLength = this.getComputedTextLength( opt.text, opt.fontSize, opt.font );
 		if ( textLength > opt.width && opt.text !== "…" ) {
-			opt.text = opt.text.substr( 0, opt.text.length - opt.reduce );
+			opt.text = opt.text.toString().substr( 0, opt.text.length - opt.reduce );
 			opt.text += opt.reduceChars;
 			opt.reduce = 2;
 			return this.ellipsis( opt );
