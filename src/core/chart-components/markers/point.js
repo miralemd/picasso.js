@@ -70,7 +70,7 @@ export default class Point {
 					cx: margin.left + p.x * ( width - margin.left - margin.right ),
 					cy: margin.top + p.y * ( height - margin.top - margin.bottom ),
 					r: size[0] + 0.5 * p.size * ( size[1] - size[0] ),
-					//title: p.title,
+					title: p.title,
 					opacity: 0.8,
 					fill: p.fill
 				};

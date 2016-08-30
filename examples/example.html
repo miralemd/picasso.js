@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Picasso example</title>
+
+    <!-- import picasso and its dependencies-->
+    <script src="../dist/picasso.js"></script>
+
+    <style>
+        body {
+            background: #fafafa;
+            color: #666;
+            font: normal 12px/1 Arial;
+        }
+
+        #container {
+            margin: 0 auto;
+            width: 1200px;
+            height: 600px;
+            background: #fff;
+            position: relative;
+        }
+
+    </style>
+
+</head>
+<body>
+<div id="container"></div>
+
+<script>
+    var rawData = [
+        [ 'd',      'm',    'm',    'm'     ],
+        [ 'Name',   'm1',   'm2',   'm3'    ],
+        [ 'First',  0,      0,      0       ],
+        [ 'Second', 0.3,    0.4,    0.2     ],
+        [ 'Third',  0.4,    0.3,    0.4     ],
+        [ 'T2',     0.9,    0.8,    0.4     ],
+        [ 'T3',     0.6,    0.5,    0.4     ],
+        [ 'T4',     0.1,    0.6,    0.4     ],
+        [ 'Fourth', 1,      1,      1       ]
+    ]
+
+    //var qLayout = picasso.generator.generateDataFromArray( rawData );
+
+    var randomData = picasso.generator.generateRandomData( 1, 3, 10000 );
+
+    var qLayout = picasso.generator.generateDataFromArray( randomData );
+
+    var data = {
+        type: "q",
+        data: {
+            layout: qLayout
+        }
+    };
+
+    var settings = {
+        scales: {
+            x: { source: "/qHyperCube/qMeasureInfo/0" }, // create scale from first measure
+            y: { source: "/qHyperCube/qMeasureInfo/1" }, // second measure
+            size: { source: "/qHyperCube/qMeasureInfo/2" }, // third
+            color: {
+                source: "/qHyperCube/qMeasureInfo/0/qAttrExprInfo/0", // from first attribute expression on first measure
+                colors: ["green", "blue"] // output colors
+            }
+        },
+        components: {
+            markers: [
+                {
+                    type: "point",
+                    data: { source: "/qHyperCube/qDimensionInfo/0" }, // loop over dimension values
+                    settings: {
+                        x: { scale: "x" }, // map x value of point to "x" scale
+                        y: { scale: "y" }, // y value to "y" scale
+                        size: { scale: "size" }, // optional - size to "size" scale
+                        fill: { scale: "color" } // optional - fill to "color" scale
+                    }
+                }
+            ]
+        }
+    };
+
+    var startPicasso = window.performance.now();
+    picasso.chart( document.querySelector( "#container" ), data, settings );
+    var endPicasso = window.performance.now() - startPicasso;
+
+    console.log( "picasso end", endPicasso );
+
+</script>
+</body>
+</html>
