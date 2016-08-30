@@ -31,7 +31,7 @@ export class AxisHelpers {
 	}
 
 	static labelsBandwidth( dock, settings, ticks, rect ) {
-		const innerPadding = 0.75;
+		let innerPadding = 1;
 		const bandWidth = { width: 0, height: 0 };
 		ticks = ticks.filter( ( t ) => !t.isMinor );
 
@@ -39,6 +39,7 @@ export class AxisHelpers {
 		if ( dock === "left" || dock === "right" ) {
 			bandWidth.width = ( rect.width - settings.spacing ) * innerPadding;
 		} else {
+			innerPadding = 0.75;
 			bandWidth.width = ( rect.width / ticks.length ) * innerPadding;
 		}
 
