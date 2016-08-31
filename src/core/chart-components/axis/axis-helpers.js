@@ -16,13 +16,15 @@ export class AxisHelpers {
 		return spacing;
 	}
 
-	static titleSpacing( settings, ticks, dock ) {
+	static titleSpacing( settings, ticks, dock, layered = false ) {
 		let spacing = 0;
+		let multiplier = layered ? 2 : 1;
 		spacing += settings.labels.show ? AxisHelpers.labelsSpacing( settings ) + settings.title.padding : settings.title.padding;
+
 		if ( dock === "bottom" ) {
-			spacing += settings.labels.style.size * 2;
+			spacing += settings.labels.style.size * 2 * multiplier;
 		} else if ( dock === "top" ){
-			spacing += settings.labels.style.size;
+			spacing += settings.labels.style.size * multiplier;
 		} else {
 			const maxComputedLength = ticks.map( ( t ) => svgText.getComputedTextLength( t.label, settings.labels.style.size, settings.labels.style.font ) );
 			spacing += maxComputedLength.length > 0 ? Math.max.apply( this, maxComputedLength ) : 0;

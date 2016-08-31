@@ -90,7 +90,7 @@ export class Axis {
 	generateTitle() {
 		this._settings.title.dock = this._dock;
 		this._settings.title.direction = this._settings.direction;
-		this._settings.title.spacing = helpers.titleSpacing( this._settings, this._ticks, this._dock );
+		this._settings.title.spacing = helpers.titleSpacing( this._settings, this._ticks, this._dock, this._settings.labels.layered );
 		return AxisStructs.title( this._settings.title.value || this.title, this._settings.title, this.rect );
 	}
 
