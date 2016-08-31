@@ -68,17 +68,24 @@ export default class AxisDiscrete extends Axis {
 
 	render() {
 		this.onData();
-		this.generateLine();
-		this.generateTicks();
-		this.generateLabels();
-		this.generateTitle();
+
+		if ( this._settings.line.show ) {
+			this.elements.push( this.generateLine() );
+		}
+		if ( this._settings.ticks.show ) {
+			this.generateTicks().forEach( ( tick ) => { this.elements.push( tick ); } );
+		}
+		if ( this._settings.labels.show ) {
+			this.generateLabels().forEach( ( label ) => { this.elements.push( label ); } );
+		}
+		if ( this._settings.title.show ) {
+			this.elements.push( this.generateTitle() );
+		 }
 
 		this.renderer.render( this.elements );
 	}
 
 	generateLabels() {
-		if ( !this._settings.labels.show ) { return; }
-
 		this._settings.labels.dock = this._dock;
 		this._settings.labels.direction = this._settings.direction;
 		this._settings.labels.spacing = helpers.labelsSpacing( this._settings );
@@ -92,19 +99,19 @@ export default class AxisDiscrete extends Axis {
 		};
 
 		if ( this._settings.labels.layered && ( this._dock === "top" || this._dock === "bottom" ) ) {
-			this._ticks.filter( ( t ) => { return !t.isMinor; } ).forEach( ( tick, i ) => {
+			return this._ticks.filter( ( t ) => { return !t.isMinor; } ).map( ( tick, i ) => {
 				const struct = { type: "text", text: tick.label, x: 0, y: 0, "font-family": this._settings.labels.style.font,	"font-size": this._settings.labels.style.size, fill: "white" };
 				this._settings.labels.spacing = i % 2 === 0 ? helpers.labelsSpacing( this._settings ) : helpers.labelsSpacing( this._settings ) + svgText.getComputedRect( struct ).height + this._settings.labels.padding;
 				ellipsOpt.text = tick.label;
 				ellipsOpt.width = this._settings.labels.bandWidth.width * 2;
 				tick.label = svgText.ellipsis( ellipsOpt );
-				this.elements.push( AxisStructs.label( tick, this._settings.labels, this.rect, this.renderer.rect ) );
+				return AxisStructs.label( tick, this._settings.labels, this.rect, this.renderer.rect );
 			} );
 		} else {
-			this._ticks.filter( ( t ) => { return !t.isMinor; } ).forEach( ( tick ) => {
+			return this._ticks.filter( ( t ) => { return !t.isMinor; } ).map( ( tick ) => {
 				ellipsOpt.text = tick.label;
 				tick.label = svgText.ellipsis( ellipsOpt );
-				this.elements.push( AxisStructs.label( tick, this._settings.labels, this.rect, this.renderer.rect ) );
+				return AxisStructs.label( tick, this._settings.labels, this.rect, this.renderer.rect );
 			} );
 		}
 	}

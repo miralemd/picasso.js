@@ -43,19 +43,15 @@ export class Axis {
 
 	generateLine() {
 		this._settings.line.dock = this._dock;
-		if ( this._settings.line.show ) {
-			this.elements.push( AxisStructs.line( this._settings.line, this.rect ) );
-		}
+		return AxisStructs.line( this._settings.line, this.rect );
 	}
 
 	generateTicks() {
 		this._settings.ticks.dock = this._dock;
 		this._settings.ticks.spacing = helpers.tickSpacing( this._settings );
 
-		this._ticks.forEach( tick => {
-			if ( this._settings.ticks.show && !tick.isMinor ) {
-				this.elements.push( AxisStructs.tick( tick, this._settings.ticks, this.rect ) );
-			}
+		return this._ticks.filter( ( t ) => { return !t.isMinor; } ).map( tick => {
+			return AxisStructs.tick( tick, this._settings.ticks, this.rect );
 		} );
 	}
 
@@ -63,14 +59,8 @@ export class Axis {
 		this._settings.minorTicks.dock = this._dock;
 		this._settings.minorTicks.spacing = helpers.tickMinorSpacing( this._settings );
 
-		this._ticks.forEach( tick => {
-			if ( this._settings.ticks.show ) {
-				if ( this._settings.minorTicks.show ) {
-					if ( tick.isMinor ) {
-						this.elements.push( AxisStructs.tick( tick, this._settings.minorTicks, this.rect ) );
-					}
-				}
-			}
+		return this._ticks.filter( ( t ) => { return t.isMinor; } ).map( tick => {
+			return AxisStructs.tick( tick, this._settings.minorTicks, this.rect );
 		} );
 	}
 
@@ -87,31 +77,38 @@ export class Axis {
 			font: this._settings.labels.style.font
 		};
 
-		this._ticks.forEach( ( tick ) => {
-			if ( this._settings.labels.show && !tick.isMinor ) {
-				ellipsOpt.text = tick.label;
-				tick.label = svgText.ellipsis( ellipsOpt );
-				this.elements.push( AxisStructs.label( tick, this._settings.labels, this.rect, this.renderer.rect ) );
-			}
-		 } );
+		return this._ticks.filter( ( t ) => { return !t.isMinor; } ).map( ( tick ) => {
+			ellipsOpt.text = tick.label;
+			tick.label = svgText.ellipsis( ellipsOpt );
+			return AxisStructs.label( tick, this._settings.labels, this.rect, this.renderer.rect );
+		} );
 	}
 
 	generateTitle() {
-		if ( this._settings.title.show ) {
-			this._settings.title.dock = this._dock;
-			this._settings.title.direction = this._settings.direction;
-			this._settings.title.spacing = helpers.titleSpacing( this._settings, this._ticks, this._dock );
-			this.elements.push( AxisStructs.title( this._settings.title, this.rect ) );
-		}
+		this._settings.title.dock = this._dock;
+		this._settings.title.direction = this._settings.direction;
+		this._settings.title.spacing = helpers.titleSpacing( this._settings, this._ticks, this._dock );
+		return AxisStructs.title( this._settings.title, this.rect );
 	}
 
 	render( ) {
 		this.onData();
-		this.generateLine();
-		this.generateTicks();
-		this.generateMinorTicks();
-		this.generateLabels();
-		this.generateTitle();
+
+		if ( this._settings.line.show ) {
+			this.elements.push( this.generateLine() );
+		}
+		if ( this._settings.ticks.show ) {
+			this.generateTicks().forEach( ( tick ) => { this.elements.push( tick ); } );
+		}
+		if ( this._settings.minorTicks.show ) {
+			this.generateMinorTicks().forEach( ( tick ) => { this.elements.push( tick ); } );
+		}
+		if ( this._settings.labels.show ) {
+			this.generateLabels().forEach( ( label ) => { this.elements.push( label ); } );
+		}
+		if ( this._settings.title.show ) {
+			this.elements.push( this.generateTitle() );
+		 }
 
 		this.renderer.render( this.elements );
 	}
