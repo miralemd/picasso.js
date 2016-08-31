@@ -8,6 +8,7 @@ export default class AxisDiscrete extends Axis {
 		super( axisConfig, composer, renderer );
 		this._ticks = [];
 		this.settings( axisConfig.settings );
+		this.render();
 	}
 
 	settings( opt ) {

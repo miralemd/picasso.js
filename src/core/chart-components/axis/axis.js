@@ -114,5 +114,7 @@ export class Axis {
 		 }
 
 		this.renderer.render( this.elements );
+
+		return this;
 	}
 }

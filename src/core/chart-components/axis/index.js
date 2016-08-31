@@ -1,6 +1,12 @@
 import { axisContinuous } from "./axis-continuous";
 import { axisDiscrete } from "./axis-discrete";
 import { renderer } from "../../../web/renderer/svg-renderer/svg-renderer";
+import { registry } from "../../utils/registry";
+
+let reg = registry();
+
+reg.register( "discrete", axisDiscrete );
+reg.register( "continuous", axisContinuous );
 
 export function axisFactory( axes, composer ) {
 	return axes.map( ( axisConfig ) => {
@@ -13,9 +19,9 @@ export function axisFactory( axes, composer ) {
 		rend.appendTo( element );
 
 		if ( scale.type === "ordinal" ) {
-			return axisDiscrete( axisConfig, composer, rend ).render();
+			return reg.registry.discrete( axisConfig, composer, rend );
 		} else {
-			return axisContinuous( axisConfig, composer, rend ).render();
+			return reg.registry.continuous( axisConfig, composer, rend );
 		}
 	} );
 }
