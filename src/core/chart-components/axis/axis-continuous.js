@@ -3,8 +3,9 @@ import { linear } from "../../scales/linear";
 import { AxisHelpers as helpers } from "./axis-helpers";
 
 export default class AxisContinuous extends Axis {
-	constructor( config, composer, renderer ) {
-		super( config, composer, renderer );
+	constructor( axisConfig, composer, renderer ) {
+		super( axisConfig, composer, renderer );
+		this.settings( axisConfig.settings );
 		this._minorTicksCount = 0; // Should be set by renderer based on amount of space available and/or use config to toggle on of as option
 		this._ticksCountScale = linear().domain( [0, 100] ).range( [0, 1] );
 	}
@@ -13,7 +14,7 @@ export default class AxisContinuous extends Axis {
 		this._settings = {
 			direction: "ltl",
 			title: {
-				value: "Fake title asdaadasd asda das das das das dasd as dasdasdasd",
+				// value: "Custom title",
 				show: true,
 				style: {
 					font: "Arial",
@@ -50,11 +51,9 @@ export default class AxisContinuous extends Axis {
 				// clamp: true, // if start and end should always have a tick, use nice?
 				// values: [0, 1, 2], // overrides count and auto
 				style: {
-					// auto: true, // if size of thicks should be scaled with available draw rect
 					size: 8, // TODO unify format for size
 					color: "#999",
 					thickness: 1
-					// length: 1
 				}
 			},
 			minorTicks: {
@@ -81,7 +80,6 @@ export default class AxisContinuous extends Axis {
 		return this;
 	}
 
-	// TODO support minor ticks?
 	ticksValue( values ){
 		return values.map( ( tick ) => {
 			return {

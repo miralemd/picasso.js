@@ -9,11 +9,13 @@ let data = {
 				qLocked: 1,
 				qOption: 2,
 				qSelected: 3
-			}
+			},
+			qFallbackTitle: "My Title"
 		}],
 		qMeasureInfo: [{}, {
 			qMin: 130,
-			qMax: 170
+			qMax: 170,
+			qFallbackTitle: "My Title"
 		}],
 		qDataPages: [
 			{
@@ -77,14 +79,14 @@ describe( "StraightLayout", () => {
 			resolve.returns( data.qHyperCube.qDimensionInfo[0] );
 			let v = s.metaOf( "/foo/boo" );
 			expect( resolve ).to.have.been.calledWithExactly( "/foo/boo", data );
-			expect( v ).to.deep.equal( { min: 2, max: 3, count: 6 } );
+			expect( v ).to.deep.equal( { min: 2, max: 3, count: 6, title: "My Title" } );
 		} );
 
 		it( "should find meta values of measure", () => {
 			resolve.returns( data.qHyperCube.qMeasureInfo[1] );
 			let v = s.metaOf( "/foo/boo" );
 			expect( resolve ).to.have.been.calledWithExactly( "/foo/boo", data );
-			expect( v ).to.deep.equal( { min: 130, max: 170 } );
+			expect( v ).to.deep.equal( { min: 130, max: 170, title: "My Title" } );
 		} );
 	} );
 

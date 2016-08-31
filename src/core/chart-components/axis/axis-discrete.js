@@ -4,17 +4,18 @@ import { default as svgText } from "../../../web/renderer/svg-renderer/svg-text-
 import { AxisStructs } from "./axis-structs";
 
 export default class AxisDiscrete extends Axis {
-	constructor( config, composer, renderer ) {
-		super( config, composer, renderer );
+	constructor( axisConfig, composer, renderer ) {
+		super( axisConfig, composer, renderer );
 		this._ticks = [];
+		this.settings( axisConfig.settings );
 	}
 
 	settings( opt ) {
 		this._settings = {
 			direction: "ltl",
 			title: {
-				value: "Fake title asdaadasd asda das das das das dasd as dasdasdasd",
 				show: true,
+				// value: "Custom title",
 				style: {
 					font: "Arial",
 					size: 15,
@@ -83,6 +84,8 @@ export default class AxisDiscrete extends Axis {
 		 }
 
 		this.renderer.render( this.elements );
+
+		return this;
 	}
 
 	generateLabels() {

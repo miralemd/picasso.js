@@ -127,10 +127,10 @@ export class AxisStructs {
 		 return struct;
 	}
 
-	static title( settings, rect ) {
+	static title( title, settings, rect ) {
 		const struct = {
 			type: "text",
-			text: settings.value,
+			text: title,
 			x: 0,
 			y: 0,
 			fill: settings.style.color,

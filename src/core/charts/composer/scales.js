@@ -38,6 +38,7 @@ function create( options, data ) {
 	return {
 		scale: s,
 		type,
+		title: meta.title,
 		update: () => {
 			values = data.fromSource( source );
 			if ( type === "ordinal" ) {

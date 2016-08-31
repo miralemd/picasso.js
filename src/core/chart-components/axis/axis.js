@@ -8,9 +8,12 @@ export class Axis {
 		this.scale = composer.scales[axisConfig.scale].scale;
 		this.data = composer.data;
 		this.source = composer.scales[axisConfig.scale].source;
+		this.title = composer.scales[axisConfig.scale].title;
 		this.renderer = renderer;
-		this.size( this.renderer.rect.width, this.renderer.rect.height );
 		this.elements = [];
+
+		this.size( this.renderer.rect.width, this.renderer.rect.height );
+		this.dock( axisConfig.dock );
 	}
 
 	dock( value = "left" ) {
@@ -88,7 +91,7 @@ export class Axis {
 		this._settings.title.dock = this._dock;
 		this._settings.title.direction = this._settings.direction;
 		this._settings.title.spacing = helpers.titleSpacing( this._settings, this._ticks, this._dock );
-		return AxisStructs.title( this._settings.title, this.rect );
+		return AxisStructs.title( this._settings.title.value || this.title, this._settings.title, this.rect );
 	}
 
 	render( ) {

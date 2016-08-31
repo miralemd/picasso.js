@@ -362,8 +362,7 @@ describe( "AxisStructs", () => {
 				dock: "bottom",
 				spacing: 10,
 				direction: "ltl",
-				tilted: false,
-				value: "My Title"
+				tilted: false
 			};
 			expected = {
 				type: "text",
@@ -383,7 +382,7 @@ describe( "AxisStructs", () => {
 			expected.x = -10;
 			expected.y = 50;
 			expected.transform = "rotate(270 -10 50)";
-			expect( AxisStructs.title( settings, rect ) ).to.deep.equal( expected );
+			expect( AxisStructs.title( "My Title", settings, rect ) ).to.deep.equal( expected );
 		} );
 
 		it( "Right dock", () => {
@@ -391,21 +390,21 @@ describe( "AxisStructs", () => {
 			expected.x = 10;
 			expected.y = 50;
 			expected.transform = "rotate(90 10 50)";
-			expect( AxisStructs.title( settings, rect ) ).to.deep.equal( expected );
+			expect( AxisStructs.title( "My Title", settings, rect ) ).to.deep.equal( expected );
 		} );
 
 		it( "Top dock", () => {
 			settings.dock = "top";
 			expected.x = 25;
 			expected.y = -10;
-			expect( AxisStructs.title( settings, rect ) ).to.deep.equal( expected );
+			expect( AxisStructs.title( "My Title", settings, rect ) ).to.deep.equal( expected );
 		} );
 
 		it( "Bottom dock", () => {
 			settings.dock = "bottom";
 			expected.x = 25;
 			expected.y = 10;
-			expect( AxisStructs.title( settings, rect ) ).to.deep.equal( expected );
+			expect( AxisStructs.title( "My Title", settings, rect ) ).to.deep.equal( expected );
 		} );
 	} );
 
