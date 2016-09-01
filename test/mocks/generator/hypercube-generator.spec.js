@@ -59,4 +59,24 @@ describe( "Hypercube generator", function () {
 		expect( d.qHyperCube.qMeasureInfo[2].qMin ).to.equal( -4 );
 	} );
 
+	it( "should create random 2d arrays with the correct width and height", function () {
+		let randomArr = generator.random2dArr( 2, 2 );
+
+		expect( randomArr.length ).to.equal( 2 );
+		expect( randomArr[0].length ).to.equal( 2 );
+
+	} );
+
+	it( "should generate random data correctly", function () {
+		let generatedData = generator.generateRandomData( 1, 3, 5 );
+
+		expect( generatedData.length ).to.equal( 7 ); // 5 rows + 1 column row + 1 dimension/measure definition row
+		expect( generatedData[0].length ).to.equal( 4 ); // 1 dimension, 3 measures = 4 columns
+
+		expect( generatedData[0][0] ).to.equal( "d" );
+		expect( generatedData[0][1] ).to.equal( "m" );
+		expect( generatedData[1][0] ).to.be.a( "number" );
+
+	} );
+
 } );

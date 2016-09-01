@@ -6,6 +6,11 @@
 */
 class HypercubeGenerator {
 
+	/**
+	 * Get all unique values in an array
+	 *
+	 * @return {Array} 	All unique variables
+	 */
 	arrayGetUnique() {
 		let u = {}, a = [];
 
@@ -22,7 +27,7 @@ class HypercubeGenerator {
 
 	generateDimensionInfoFromData( data, label ) {
 		let numUnique = this.arrayGetUnique.call( data ).length,
-			glyphCount = Math.max.apply( null, data.map( function ( text ) { return text ? text.length : 0; } ) ),
+			glyphCount = Math.max( ...data.map( function ( text ) { return text ? text.length : 0; } ) ),
 			info;
 
 		info = {
@@ -50,9 +55,9 @@ class HypercubeGenerator {
 
 	generateMeasureInfoFromData( data, label ) {
 		let len = data ? data.length : 0,
-			glyphCount = Math.max.apply( null, data.map( function ( value ) { return ( value + "" ).length; } ) ),
-			max = Math.max.apply( null, data ),
-			min = Math.min.apply( null, data ),
+			glyphCount = Math.max( ...data.map( function ( value ) { return ( value + "" ).length; } ) ),
+			max = Math.max( ...data ),
+			min = Math.min( ...data ),
 			info;
 
 		info = {
@@ -74,6 +79,13 @@ class HypercubeGenerator {
 		return info;
 	}
 
+	/**
+	 * Extract all values of a column in a 2d array
+	 *
+	 * @param  {Integer} columnIndex 	The column index
+	 * @param  {Array} arr         		Specified array
+	 * @return {Array}             		Values from column
+	 */
 	extractColumnFrom2DArray( columnIndex, arr ) {
 		let column = [];
 
@@ -84,6 +96,12 @@ class HypercubeGenerator {
 		return column;
 	}
 
+	/**
+	 * Turn a 2d array into a hypercube json object
+	 *
+	 * @param  {Array} arr 2d array
+	 * @return {Array}     hypercube array
+	 */
 	generateDataFromArray( arr ) {
 		let i, j,
 			numDim = 0,
@@ -186,7 +204,7 @@ class HypercubeGenerator {
 	 * @return {Array}        	2d-generated array
 	 */
 	random2dArr( width, height ) {
-		return Array( height ).fill( undefined ).map( () => Array( width ).fill( undefined ).map( () => Math.random() * Math.random() ) );
+		return Array( height ).fill( undefined ).map( ( vy, y ) => Array( width ).fill( undefined ).map( ( vx, x ) => ( x / width * y / height ) * Math.random() ) );
 	}
 
 	/**

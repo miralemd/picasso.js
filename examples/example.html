@@ -6,6 +6,7 @@
 
     <!-- import picasso and its dependencies-->
     <script src="../dist/picasso.js"></script>
+    <script src="../dist/generator.js"></script>
 
     <style>
         body {
@@ -43,9 +44,8 @@
 
     //var qLayout = picasso.generator.generateDataFromArray( rawData );
 
-    var randomData = picasso.generator.generateRandomData( 1, 3, 10000 );
-
-    var qLayout = picasso.generator.generateDataFromArray( randomData );
+    var randomData = generator.generateRandomData( 1, 3, 1000 );
+    var qLayout = generator.generateDataFromArray( randomData );
 
     var data = {
         type: "q",
@@ -80,11 +80,11 @@
         }
     };
 
-    var startPicasso = window.performance.now();
+    var startPicasso = performance.now();
     picasso.chart( document.querySelector( "#container" ), data, settings );
-    var endPicasso = window.performance.now() - startPicasso;
+    var endPicasso = +( performance.now() - startPicasso ).toFixed( 2 );
 
-    console.log( "picasso end", endPicasso );
+    console.log( `Picasso took ${endPicasso} ms to execute` );
 
 </script>
 </body>
