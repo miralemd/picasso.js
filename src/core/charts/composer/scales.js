@@ -6,30 +6,48 @@ function getTypeFromMeta( meta ) {
 	return "count" in meta ? "ordinal" : "linear";
 }
 
+function getMeta( data, source ) {
+	if ( Array.isArray( source ) ) {
+		return source.map( ( s ) => {
+			return data.metaOf( s );
+		} );
+	} else {
+		const meta = data.metaOf( source );
+		return Array.isArray( meta ) ? meta : [ meta ];
+	}
+}
+
+function getMinMax( metaInfos ) {
+	const min = Math.min.apply( Math, metaInfos.map( ( m ) => { return m.min; } ) );
+	const max = Math.max.apply( Math, metaInfos.map( ( m ) => { return m.max; } ) );
+	return { min: min, max: max };
+}
+
 function range( num ) {
 	return Array.from( Array( num ).keys() );
 }
 
 function create( options, data ) {
-	let meta = data.metaOf( options.source ),
+	let meta = getMeta( data, options.source ),
 		source = options.source,
 		type = options.type ? options.type :
-			options.colors ? "color" : getTypeFromMeta( meta ),
+			options.colors ? "color" : getTypeFromMeta( meta[0] ),
 		values = [],
 		valueIds = [],
 		s;
 	if ( type === "color" ) {
 		s = linear();
-		s.domain( [meta.min, meta.max] );
+		s.domain( [meta[0].min, meta[0].max] );
 		s.range( [1, 0] );
 	}
 	else if ( type === "ordinal" ) {
 		s = ordinal();
-		s.domain( range( meta.count ) );
-		s.range( meta.count <= 1 ? [0.5] : range( meta.count ).map( v => v / ( meta.count - 1 ) ) );
+		s.domain( range( meta[0].count ) );
+		s.range( meta[0].count <= 1 ? [0.5] : range( meta[0].count ).map( v => v / ( meta[0].count - 1 ) ) );
 	} else {
+		const d = getMinMax( meta );
 		s = linear();
-		s.domain( [meta.min, meta.max] );
+		s.domain( [d.min, d.max] );
 	}
 	return {
 		scale: s,
