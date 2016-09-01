@@ -29,6 +29,7 @@ function create( options, data ) {
 		s.range( meta.count <= 1 ? [0.5] : range( meta.count ).map( v => v / ( meta.count - 1 ) ) );
 	} else {
 		s = linear();
+		//s.domain( [0, 1] ); // fulhack
 		s.domain( [meta.min, meta.max] );
 	}
 	return {
@@ -58,6 +59,10 @@ function create( options, data ) {
 				return interpolateViridis( s.get( arr[idx].qNum ) );
 			} :
 			( arr, idx ) => s.get( arr[idx].qNum ),
+		extent: ( arr ) => {
+			let vals = arr.map( d => d.qNum );
+			return [ Math.min( ...vals ), Math.max( ...vals ) ];
+		},
 		source: source
 	};
 }

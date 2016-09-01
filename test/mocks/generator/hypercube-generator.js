@@ -203,8 +203,26 @@ class HypercubeGenerator {
 	 * @param  {Integer} height The height of the 2d array
 	 * @return {Array}        	2d-generated array
 	 */
-	random2dArr( width, height ) {
-		return Array( height ).fill( undefined ).map( ( vy, y ) => Array( width ).fill( undefined ).map( ( vx, x ) => ( x / width * y / height ) * Math.random() ) );
+	random2dArr( width, height, manipulateRow, exponential = true ) {
+		return Array( height ).fill( undefined ).map( ( vy, y ) => {
+			let rowData = Array( width ).fill( undefined ).map( ( vx, x ) => ( exponential ? ( x / width * y / height ) : 1 ) * Math.random() );
+			if ( manipulateRow && typeof manipulateRow === "function" ) {
+				rowData = manipulateRow( rowData );
+			}
+			return rowData;
+		} );
+	}
+
+	/**
+	 * Replace approx 10% of random values with null
+	 *
+	 * @param  {Array} arr Input array
+	 * @return {Array}     Modified array
+	 */
+	randomNullInsert( arr ) {
+		return arr.map( v => {
+			return Math.random() <= 0.1 ? null : v;
+		} );
 	}
 
 	/**
@@ -213,15 +231,16 @@ class HypercubeGenerator {
 	 * @param  {Integer} dimensions The number of dimensions to be generated
 	 * @param  {Integer} measures   The number of measures
 	 * @param  {Integer} rows       The number of rows
+	 * @param  {Boolean} sorted     If the rows are supposed to be sorted or not
 	 * @return {Array}            	2d Array
 	 */
-	generateRandomData( dimensions, measures, rows ) {
+	generateRandomData( dimensions, measures, rows, sorted = false ) {
 		return [
 			[
 				...Array( dimensions ).fill( "d" ),
 				...Array( measures ).fill( "m" )
 			],
-			...this.random2dArr( dimensions + measures, rows + 1 )
+			...this.random2dArr( dimensions + measures, rows + 1, sorted ? row => this.randomNullInsert( row.sort() ) : null, !sorted )
 		];
 	}
 }
