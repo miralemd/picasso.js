@@ -29,8 +29,8 @@ function create( options, data ) {
 		s.range( meta.count <= 1 ? [0.5] : range( meta.count ).map( v => v / ( meta.count - 1 ) ) );
 	} else {
 		s = linear();
-		//s.domain( [0, 1] ); // fulhack
-		s.domain( [meta.min, meta.max] );
+		s.domain( [0, 1] ); // fulhack
+		//s.domain( [meta.min, meta.max] );
 	}
 	return {
 		scale: s,

@@ -240,7 +240,7 @@ class HypercubeGenerator {
 				...Array( dimensions ).fill( "d" ),
 				...Array( measures ).fill( "m" )
 			],
-			...this.random2dArr( dimensions + measures, rows + 1, sorted ? row => this.randomNullInsert( row.sort() ) : null, !sorted )
+			...this.random2dArr( dimensions + measures, rows + 1, sorted ? row => row.sort() : null, !sorted )
 		];
 	}
 }
