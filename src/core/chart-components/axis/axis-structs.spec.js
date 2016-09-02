@@ -150,7 +150,6 @@ describe( "AxisStructs", () => {
 				style: { font: "Arial", color: "red", size: 10 },
 				dock: "bottom",
 				spacing: 10,
-				direction: "ltl",
 				tilted: false
 			};
 			tick = { position: 0.5, label: "50%" };
@@ -162,7 +161,6 @@ describe( "AxisStructs", () => {
 				fill: "red",
 				"font-family": "Arial",
 				"font-size": 10,
-				direction: "ltl",
 				"text-anchor": "end"
 			};
 		} );
@@ -361,7 +359,6 @@ describe( "AxisStructs", () => {
 				style: { font: "Arial", color: "red", size: 10 },
 				dock: "bottom",
 				spacing: 10,
-				direction: "ltl",
 				tilted: false
 			};
 			expected = {
@@ -372,7 +369,6 @@ describe( "AxisStructs", () => {
 				fill: "red",
 				"font-family": "Arial",
 				"font-size": 10,
-				direction: "ltl",
 				"text-anchor": "middle"
 			};
 		} );

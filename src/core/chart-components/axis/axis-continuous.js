@@ -14,7 +14,6 @@ export default class AxisContinuous extends Axis {
 
 	settings( opt ) {
 		this._settings = {
-			direction: "ltl",
 			title: {
 				// value: "Custom title",
 				show: true,

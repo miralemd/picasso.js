@@ -13,7 +13,6 @@ export default class AxisDiscrete extends Axis {
 
 	settings( opt ) {
 		this._settings = {
-			direction: "ltl",
 			title: {
 				show: true,
 				// value: "Custom title",
@@ -91,7 +90,6 @@ export default class AxisDiscrete extends Axis {
 
 	generateLabels() {
 		this._settings.labels.dock = this._dock;
-		this._settings.labels.direction = this._settings.direction;
 		this._settings.labels.spacing = helpers.labelsSpacing( this._settings );
 		this._settings.labels.bandWidth = helpers.labelsBandwidth( this._dock, this._settings.labels, this._ticks, this.rect );
 

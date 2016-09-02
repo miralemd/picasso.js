@@ -58,8 +58,7 @@ export class AxisStructs {
 			y: 0,
 			fill: settings.style.color,
 			"font-family": settings.style.font,
-			"font-size": settings.style.size,
-			direction: settings.direction
+			"font-size": settings.style.size
 		};
 
 		// Apply base rotation so that getBoundingClientRect can be correctly calculated
@@ -136,7 +135,6 @@ export class AxisStructs {
 			fill: settings.style.color,
 			"font-family": settings.style.font,
 			"font-size": settings.style.size,
-			direction: settings.direction,
 			"text-anchor": "middle"
 		};
 
