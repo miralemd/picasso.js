@@ -973,7 +973,7 @@
 </script>
 
 <script>
-    var randomData = generator.generateRandomData( 1, 5, 5, true );
+    var randomData = generator.generateRandomData( 1, 5, 50, true );
     var qLayout = generator.generateDataFromArray( randomData );
 
     var data = {
@@ -991,11 +991,12 @@
 
     var settings = {
         scales: {
-            x: { source: "/qHyperCube/qMeasureInfo/0" }, // create scale from first measure
-            q2: { source: "/qHyperCube/qMeasureInfo/1" }, // third
-            med: { source: "/qHyperCube/qMeasureInfo/2" }, // fifth measure
-            q3: { source: "/qHyperCube/qMeasureInfo/3" }, // fourth measure
-            y: { source: "/qHyperCube/qMeasureInfo/4" }, // second measure
+            x: { source: "/qHyperCube/qDimensionInfo/0" },
+            y: { source: ["/qHyperCube/qMeasureInfo/0",
+							"/qHyperCube/qMeasureInfo/1",
+							"/qHyperCube/qMeasureInfo/2",
+							"/qHyperCube/qMeasureInfo/3",
+							"/qHyperCube/qMeasureInfo/4"] }
         },
         components: {
             box: [
@@ -1003,11 +1004,13 @@
                     type: "box",
                     data: { source: "/qHyperCube/qDimensionInfo/0" }, // loop over dimension values
                     settings: {
-                        min: { scale: "x" }, // map x value of point to "x" scale
-                        q2: { scale: "q2" }, // q2 value to "q2" scale
-                        med: { scale: "med" }, // med value to "med" scale
-                        q3: { scale: "q3" }, // q3 value to "q3" scale
-                        max: { scale: "y" }, // max value to "y" scale
+                        x: { scale: "x" },
+                        y: { scale: "y" },
+                        min: { source: "/qHyperCube/qMeasureInfo/0" }, // min value of point to "min" scale
+                        q2: { source: "/qHyperCube/qMeasureInfo/1" }, // q2 value to "q2" scale
+                        med: { source: "/qHyperCube/qMeasureInfo/2" }, // med value to "med" scale
+                        q3: { source: "/qHyperCube/qMeasureInfo/3" }, // q3 value to "q3" scale
+                        max: { source: "/qHyperCube/qMeasureInfo/4" }, // max value to "max" scale
                         styles: {
                           low: Object.assign( {}, baseStyle, { stroke: "rgb(255, 0, 0)" } ),
                           box: Object.assign( {}, baseStyle, { } ),

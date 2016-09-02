@@ -22,6 +22,10 @@ const maintainer = ( element, item ) => {
 		if ( ["id", "data", "type", "children"].indexOf( attr ) !== -1 ) {
 			continue;
 		}
+		if ( attr === "text" ) {
+			element.textContent = item[attr];
+			continue;
+		}
 		element.setAttribute( attr, item[attr] );
 	}
 };

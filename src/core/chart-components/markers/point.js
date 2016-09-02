@@ -40,7 +40,7 @@ export default class Point {
 						x: x ? this.x.toValue( x, row ) : 0.5,
 						y: y ? ( 1 - this.y.toValue( y, row ) ) : 0.5,
 						size: size ? this.size.toValue( size, row ) : 0.5,
-						title: value.qText,
+						title: `${value.qText} x:${x[row].qNum} y:${y[row].qNum}`,
 						fill: typeof this.fill === "string" ? this.fill : ( color ? this.fill.toValue( color, row ) : DEFAULT_FILL )
 					} );
 				} );
@@ -56,19 +56,13 @@ export default class Point {
 			//numXValues = this.x && this.x.type === "ordinal" ? this.x.scale.domain().length : -1,
 			{ width, height } = this.renderer.rect,
 			size = numYValues === -1 ? [5, 20] : [Math.max( 1, Math.min( 5, 0.4 * height / numYValues ) ), Math.max( 1, Math.min( 20, 0.4 * height / numYValues ) ) ],
-			margin = {
-				left: size[1],
-				right: size[1],
-				top: size[1],
-				bottom: size[1]
-			},
 			displayPoints = points.filter( p => {
 				return !isNaN( p.x + p.y + p.size );
 			} ).map( p => {
 				return {
 					type: "circle",
-					cx: margin.left + p.x * ( width - margin.left - margin.right ),
-					cy: margin.top + p.y * ( height - margin.top - margin.bottom ),
+					cx: p.x * width,
+					cy: p.y * height,
 					r: size[0] + 0.5 * p.size * ( size[1] - size[0] ),
 					title: p.title,
 					opacity: 0.8,

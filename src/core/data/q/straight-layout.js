@@ -6,12 +6,14 @@ function normalizeMeta( obj ) {
 		return {
 			min: obj.qMin,
 			max: obj.qMax,
-			count: obj.qStateCounts.qOption + obj.qStateCounts.qLocked + obj.qStateCounts.qSelected
+			count: obj.qStateCounts.qOption + obj.qStateCounts.qLocked + obj.qStateCounts.qSelected,
+			title: obj.qFallbackTitle
 		};
 	} else {
 		return {
 			min: obj.qMin,
-			max: obj.qMax
+			max: obj.qMax,
+			title: obj.qFallbackTitle
 		};
 	}
 }

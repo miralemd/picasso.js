@@ -11,11 +11,12 @@ export default class Box {
 		this.data = composer.data;
 		this.obj = obj;
 
-		this.min = this.settings.min ? composer.scales[this.settings.min.scale] : null;
-		this.max = this.settings.max ? composer.scales[this.settings.max.scale] : null;
-		this.q2 = this.settings.q2 ? composer.scales[this.settings.q2.scale] : null;
-		this.q3 = this.settings.q3 ? composer.scales[this.settings.q3.scale] : null;
-		this.med = this.settings.med ? composer.scales[this.settings.med.scale] : null;
+		this.x = this.settings.x ? composer.scales[this.settings.x.scale] : null;
+		this.y = this.settings.y ? composer.scales[this.settings.y.scale] : null;
+
+		this.rsettings = {
+			bandwidth: 0
+		};
 
 		// Compile all styles
 		Object.keys( this.settings.styles ).forEach( key => {
@@ -27,23 +28,26 @@ export default class Box {
 
 	onData() {
 		this.boxes = [];
+		this.rsettings.bandwidth = this.x.scale.step() * 0.75;
 
 		this.data.dataPages().then( ( pages ) => {
 
 			pages.forEach( ( page, i ) => {
-				const min = this.min ? this.data.fromSource( this.min.source, i ) : null,
-					max = this.max ? this.data.fromSource( this.max.source, i ) : null,
-					q2 = this.q2 ? this.data.fromSource( this.q2.source, i ) : null,
-					q3 = this.q3 ? this.data.fromSource( this.q3.source, i ) : null,
-					med = this.med ? this.data.fromSource( this.med.source, i ) : null;
+				const x = this.x ? this.data.fromSource( this.x.source, i ) : null,
+					min = this.data.fromSource( this.settings.min.source, i ),
+					max = this.data.fromSource( this.settings.max.source, i ),
+					q2 = this.data.fromSource( this.settings.q2.source, i ),
+					q3 = this.data.fromSource( this.settings.q3.source, i ),
+					med = this.data.fromSource( this.settings.med.source, i );
 
 				this.data.fromSource( this.obj.data.source, i ).forEach( ( value, row ) => {
 					this.boxes.push( {
-						min: min ? ( 1 - this.min.toValue( min, row ) ) : 0.5,
-						max: max ? ( 1 - this.max.toValue( max, row ) ) : 0.5,
-						q2: q2 ? ( 1 - this.q2.toValue( q2, row ) ) : 0.5,
-						q3: q3 ? ( 1 - this.q3.toValue( q3, row ) ) : 0.5,
-						med: med ? ( 1 - this.med.toValue( med, row ) ) : 0.5
+						x: x ? ( this.x.scale.get( row ) ) : 0.5,
+						min: min ? ( 1 - this.y.toValue( min, row ) ) : 0.5,
+						max: max ? ( 1 - this.y.toValue( max, row ) ) : 0.5,
+						q2: q2 ? ( 1 - this.y.toValue( q2, row ) ) : 0.5,
+						q3: q3 ? ( 1 - this.y.toValue( q3, row ) ) : 0.5,
+						med: med ? ( 1 - this.y.toValue( med, row ) ) : 0.5
 					} );
 				} );
 
@@ -65,9 +69,9 @@ export default class Box {
 			} );
 
 		let draw = [];
-		let boxWidth = this.settings.styles.box.width || ( width / displayBoxes.length ) * 0.75;
+		let boxWidth = Math.max( 5, Math.min( 100, this.rsettings.bandwidth * width ) );
 
-		let i = -0.5;
+		let i = 0;
 		displayBoxes.forEach( item => {
 			i++;
 			let vals = [ item.min, item.q2, item.q3, item.max ];
@@ -89,7 +93,7 @@ export default class Box {
 					type: "rect",
 					y: lowest * height,
 					height: ( highest - lowest ) * height,
-					x: i / displayBoxes.length * width - ( boxWidth / 2 ),
+					x: item.x * width - ( boxWidth / 2 ),
 					width: boxWidth,
 					style: this.settings.styles.box.compiled
 				} );
@@ -102,9 +106,9 @@ export default class Box {
 				draw.push( {
 					type: "line",
 					y1: item.q2 * height,
-					x1: i / displayBoxes.length * width,
+					x1: item.x * width,
 					y2: item.min * height,
-					x2: i / displayBoxes.length * width,
+					x2: item.x * width,
 					style: this.settings.styles.low.compiled
 				} );
 
@@ -113,7 +117,7 @@ export default class Box {
 					type: "rect",
 					y: item.q3 * height,
 					height: ( item.q2 - item.q3 ) * height,
-					x: i / displayBoxes.length * width - ( boxWidth / 2 ),
+					x: item.x * width - ( boxWidth / 2 ),
 					width: boxWidth,
 					style: this.settings.styles.box.compiled
 				} );
@@ -122,9 +126,9 @@ export default class Box {
 				draw.push( {
 					type: "line",
 					y1: item.max * height,
-					x1: i / displayBoxes.length * width,
+					x1: item.x * width,
 					y2: item.q3 * height,
-					x2: i / displayBoxes.length * width,
+					x2: item.x * width,
 					style: this.settings.styles.high.compiled
 				} );
 			}
@@ -134,9 +138,9 @@ export default class Box {
 				draw.push( {
 					type: "line",
 					y1: item.med * height,
-					x1: i / displayBoxes.length * width - ( boxWidth / 2 ),
+					x1: item.x * width - ( boxWidth / 2 ),
 					y2: item.med * height,
-					x2: i / displayBoxes.length * width + ( boxWidth / 2 ),
+					x2: item.x * width + ( boxWidth / 2 ),
 					style: this.settings.styles.med.compiled
 				} );
 			}
@@ -156,6 +160,7 @@ export default class Box {
 	resize() {
 		this.renderer.rect.width = this.element.clientWidth;
 		this.renderer.rect.height = this.element.clientHeight;
+
 		this.render( this.boxes );
 	}
 }
