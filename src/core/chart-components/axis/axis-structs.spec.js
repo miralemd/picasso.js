@@ -350,60 +350,6 @@ describe( "AxisStructs", () => {
 		} );
 	} );
 
-	describe( "Title", () => {
-		let settings, expected;
-		AxisStructs.setRenderer( { getComputedRect: () => { return { width: 10, height: 10 }; }, ellipsis: ( opt ) => { return opt.text; } } );
-
-		beforeEach( () => {
-			settings = {
-				style: { font: "Arial", color: "red", size: 10 },
-				dock: "bottom",
-				spacing: 10,
-				tilted: false
-			};
-			expected = {
-				type: "text",
-				text: "My Title",
-				x: 0,
-				y: 0,
-				fill: "red",
-				"font-family": "Arial",
-				"font-size": 10,
-				"text-anchor": "middle"
-			};
-		} );
-
-		it( "Left dock", () => {
-			settings.dock = "left";
-			expected.x = -10;
-			expected.y = 50;
-			expected.transform = "rotate(270 -10 50)";
-			expect( AxisStructs.title( "My Title", settings, rect ) ).to.deep.equal( expected );
-		} );
-
-		it( "Right dock", () => {
-			settings.dock = "right";
-			expected.x = 10;
-			expected.y = 50;
-			expected.transform = "rotate(90 10 50)";
-			expect( AxisStructs.title( "My Title", settings, rect ) ).to.deep.equal( expected );
-		} );
-
-		it( "Top dock", () => {
-			settings.dock = "top";
-			expected.x = 25;
-			expected.y = -10;
-			expect( AxisStructs.title( "My Title", settings, rect ) ).to.deep.equal( expected );
-		} );
-
-		it( "Bottom dock", () => {
-			settings.dock = "bottom";
-			expected.x = 25;
-			expected.y = 10;
-			expect( AxisStructs.title( "My Title", settings, rect ) ).to.deep.equal( expected );
-		} );
-	} );
-
 	describe( "Line", () => {
 		let settings, expected;
 

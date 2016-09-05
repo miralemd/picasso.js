@@ -125,35 +125,4 @@ export class AxisStructs {
 
 		 return struct;
 	}
-
-	static title( title, settings, rect ) {
-		const struct = {
-			type: "text",
-			text: title,
-			x: 0,
-			y: 0,
-			fill: settings.style.color,
-			"font-family": settings.style.font,
-			"font-size": settings.style.size,
-			"text-anchor": "middle"
-		};
-
-		const ellipsOpt = { width: 0, text: struct.text, fontSize: settings.style.size, font: settings.style.font };
-
-		if ( settings.dock === "top" || settings.dock === "bottom" ) {
-			struct.x = ( rect.width ) / 2;
-			struct.y = settings.dock === "top" ? -settings.spacing : settings.spacing;
-			ellipsOpt.width = rect.width / 1.5;
-		} else {
-			struct.y = rect.height / 2;
-			struct.x = settings.dock === "left" ? -settings.spacing : settings.spacing;
-			const rotation = settings.dock === "left" ? 270 : 90;
-			struct.transform = `rotate(${rotation} ${struct.x} ${struct.y})`;
-			ellipsOpt.width = rect.height / 1.5;
-		}
-
-		struct.text = rendererHelper.ellipsis( ellipsOpt );
-
-		return struct;
-	}
 }

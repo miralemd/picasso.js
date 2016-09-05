@@ -87,12 +87,6 @@ export class Axis {
 		} );
 	}
 
-	generateTitle() {
-		this._settings.title.dock = this._dock;
-		this._settings.title.spacing = helpers.titleSpacing( this._settings, this._ticks, this._dock, this._settings.labels.layered );
-		return AxisStructs.title( this._settings.title.value || this.title, this._settings.title, this.rect );
-	}
-
 	render( ) {
 		this.onData();
 
@@ -108,9 +102,6 @@ export class Axis {
 		if ( this._settings.labels.show ) {
 			this.generateLabels().forEach( ( label ) => { this.elements.push( label ); } );
 		}
-		if ( this._settings.title.show ) {
-			this.elements.push( this.generateTitle() );
-		 }
 
 		this.renderer.render( this.elements );
 

@@ -50,7 +50,7 @@ export class AxisHelpers {
 
 	static applyData( target, data ) {
 		for ( let d in data ) {
-			if ( data.hasOwnProperty( d ) ) {
+			if ( data.hasOwnProperty( d ) && target !== undefined ) {
 				if ( typeof data[d] === "object" && !Array.isArray( data[d] ) ) {
 					target[d] = AxisHelpers.applyData( target[d], data[d] );
 				} else {
