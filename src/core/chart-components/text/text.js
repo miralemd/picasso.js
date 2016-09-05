@@ -78,7 +78,9 @@ export default class Text {
 
 	generateTitle() {
 		let anchor = "middle";
-		if ( this._settings.align === "left" ) { anchor = "start"; }
+		if ( this._settings.align === "left" && this._dock === "left" ) { anchor = "end"; }
+		else if ( this._settings.align === "left" ) { anchor = "start"; }
+		else if ( this._settings.align === "right" && this._dock === "left" ) { anchor = "start"; }
 		else if ( this._settings.align === "right" ) { anchor = "end"; }
 
 		const struct = {
