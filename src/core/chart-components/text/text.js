@@ -1,4 +1,5 @@
 import { default as svgTextHelper } from "../../../web/renderer/svg-renderer/svg-text-helpers";
+import { AxisHelpers as helpers } from "../axis/axis-helpers";
 
 export default class Text {
 	constructor( config, composer, renderer ) {
@@ -6,12 +7,26 @@ export default class Text {
 		this.data = composer.data;
 		this.renderer = renderer;
 		this.elements = [];
-		this.settings = config.settings;
 
+		this.settings( config.settings );
 		this.size( this.renderer.rect.width, this.renderer.rect.height );
 		this.dock( config.dock );
 		this.parseTitle( config );
 		this.render();
+	}
+
+	settings( opt ) {
+		this._settings = {
+			align: "left",
+			padding: 0,
+			style: {
+				"font-size": 15,
+				"font-family": "Arial",
+				color: "#999"
+			}
+		};
+		helpers.applyData( this._settings, opt );
+		return this;
 	}
 
 	parseTitle( config ) {
@@ -63,41 +78,41 @@ export default class Text {
 
 	generateTitle() {
 		let anchor = "middle";
-		if ( this.settings.align === "left" ) { anchor = "start"; }
-		else if ( this.settings.align === "right" ) { anchor = "end"; }
+		if ( this._settings.align === "left" ) { anchor = "start"; }
+		else if ( this._settings.align === "right" ) { anchor = "end"; }
 
 		const struct = {
 			type: "text",
 			text: this.title,
 			x: 0,
 			y: 0,
-			fill: this.settings.style.color,
-			"font-family": this.settings.style["font-family"],
-			"font-size": this.settings.style["font-size"],
+			fill: this._settings.style.color,
+			"font-family": this._settings.style["font-family"],
+			"font-size": this._settings.style["font-size"],
 			"text-anchor": anchor,
 			"alignment-baseline": "ideographic"
 		};
 
-		const ellipsOpt = { width: 0, text: struct.text, fontSize: this.settings.style.size, font: this.settings.style.font };
+		const ellipsOpt = { width: 0, text: struct.text, fontSize: this._settings.style["font-size"], font: this._settings.style["font-family"] };
 
 		if ( this._dock === "top" || this._dock === "bottom" ) {
 			let x = ( this.rect.width ) / 2;
-			if ( this.settings.align === "left" ) { x = 0 + this.settings.padding; }
-			else if ( this.settings.align === "right" ) { x = this.rect.width - this.settings.padding; }
+			if ( this._settings.align === "left" ) { x = 0 + this._settings.padding; }
+			else if ( this._settings.align === "right" ) { x = this.rect.width - this._settings.padding; }
 
 			struct.x = x;
-			struct.y = this._dock === "top" ? -this.settings.padding : this.settings.padding + svgTextHelper.getComputedRect( struct ).height;
-			ellipsOpt.width = this.rect.width / 1.5;
+			struct.y = this._dock === "top" ? -this._settings.padding : this._settings.padding + svgTextHelper.getComputedRect( struct ).height;
+			ellipsOpt.width = this.rect.width / 1.2;
 		} else {
 			let y = ( this.rect.height ) / 2;
-			if ( this.settings.align === "left" ) { y = 0 + this.settings.padding; }
-			else if ( this.settings.align === "right" ) { y = this.rect.height - this.settings.padding; }
+			if ( this._settings.align === "left" ) { y = 0 + this._settings.padding; }
+			else if ( this._settings.align === "right" ) { y = this.rect.height - this._settings.padding; }
 
 			struct.y = y;
-			struct.x = this._dock === "left" ? -this.settings.padding : this.settings.padding;
+			struct.x = this._dock === "left" ? -this._settings.padding : this._settings.padding;
 			const rotation = this._dock === "left" ? 270 : 90;
 			struct.transform = `rotate(${rotation} ${struct.x} ${struct.y})`;
-			ellipsOpt.width = this.rect.height / 1.5;
+			ellipsOpt.width = this.rect.height / 1.2;
 		}
 
 		struct.text = svgTextHelper.ellipsis( ellipsOpt );
