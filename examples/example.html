@@ -17,7 +17,7 @@
 
         #container {
             margin: 0 auto;
-            width: 1200px;
+            width: 1000px;
             height: 600px;
             background: #fff;
             position: relative;
@@ -973,7 +973,7 @@
 </script>
 
 <script>
-    var randomData = generator.generateRandomData( 1, 5, 50, true );
+    var randomData = generator.generateRandomData( 1, 5, 20, true );
     var qLayout = generator.generateDataFromArray( randomData );
 
     var data = {
@@ -991,8 +991,8 @@
 
     var settings = {
         scales: {
-            x: { source: "/qHyperCube/qDimensionInfo/0" },
-            y: { source: ["/qHyperCube/qMeasureInfo/0",
+            y: { source: "/qHyperCube/qDimensionInfo/0" },
+            x: { source: ["/qHyperCube/qMeasureInfo/0",
 							"/qHyperCube/qMeasureInfo/1",
 							"/qHyperCube/qMeasureInfo/2",
 							"/qHyperCube/qMeasureInfo/3",

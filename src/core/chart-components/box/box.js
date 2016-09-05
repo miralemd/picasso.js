@@ -1,4 +1,5 @@
 import { renderer } from "../../../web/renderer/svg-renderer/svg-renderer";
+import { boxPrerend } from "./box-prerend";
 
 export default class Box {
 	constructor( obj, composer ) {
@@ -11,8 +12,22 @@ export default class Box {
 		this.data = composer.data;
 		this.obj = obj;
 
-		this.x = this.settings.x ? composer.scales[this.settings.x.scale] : null;
-		this.y = this.settings.y ? composer.scales[this.settings.y.scale] : null;
+		let scales = [
+			this.settings.x ? composer.scales[this.settings.x.scale] : null,
+			this.settings.y ? composer.scales[this.settings.y.scale] : null
+		];
+
+		scales.forEach( scale => {
+			if ( scale.type === "ordinal" ) {
+				this.x = scale;
+			} else {
+				this.y = scale;
+			}
+		} );
+
+		this.flipXY = scales[0].type !== "ordinal";
+
+		//console.log( this.x.type, this.y.type, this.flipXY );
 
 		this.rsettings = {
 			bandwidth: 0
@@ -24,6 +39,10 @@ export default class Box {
 		} );
 
 		this.onData();
+	}
+
+	negateCoordinates( value ) {
+		return this.flipXY ? value : 1 - value;
 	}
 
 	onData() {
@@ -43,11 +62,11 @@ export default class Box {
 				this.data.fromSource( this.obj.data.source, i ).forEach( ( value, row ) => {
 					this.boxes.push( {
 						x: x ? ( this.x.scale.get( row ) ) : 0.5,
-						min: min ? ( 1 - this.y.toValue( min, row ) ) : 0.5,
-						max: max ? ( 1 - this.y.toValue( max, row ) ) : 0.5,
-						q2: q2 ? ( 1 - this.y.toValue( q2, row ) ) : 0.5,
-						q3: q3 ? ( 1 - this.y.toValue( q3, row ) ) : 0.5,
-						med: med ? ( 1 - this.y.toValue( med, row ) ) : 0.5
+						min: min ? ( this.negateCoordinates( this.y.toValue( min, row ) ) ) : 0.5,
+						max: max ? ( this.negateCoordinates( this.y.toValue( max, row ) ) ) : 0.5,
+						q2: q2 ? ( this.negateCoordinates( this.y.toValue( q2, row ) ) ) : 0.5,
+						q3: q3 ? ( this.negateCoordinates( this.y.toValue( q3, row ) ) ) : 0.5,
+						med: med ? ( this.negateCoordinates( this.y.toValue( med, row ) ) ) : 0.5
 					} );
 				} );
 
@@ -61,15 +80,18 @@ export default class Box {
 	}
 
 	render( boxes ) {
-		const { width, height } = this.renderer.rect;
-
 		let displayBoxes = boxes.filter( item => {
-				// If all values are NaN ignore the item
-				return [ item.min, item.q2, item.q3, item.max ].filter( v => Number.isNaN( v ) ).length !== 4;
-			} );
+			// If all values are NaN ignore the item
+			return [ item.min, item.q2, item.q3, item.max ].filter( v => Number.isNaN( v ) ).length !== 4;
+		} );
 
-		let draw = [];
-		let boxWidth = Math.max( 5, Math.min( 100, this.rsettings.bandwidth * width ) );
+		let draw = boxPrerend();
+
+		draw.width = this.renderer.rect.width;
+		draw.height = this.renderer.rect.height;
+		draw.flipXY = this.flipXY;
+
+		let boxWidth = Math.max( 5, Math.min( 100, this.rsettings.bandwidth * draw.width ) );
 
 		let i = 0;
 		displayBoxes.forEach( item => {
@@ -91,9 +113,9 @@ export default class Box {
 				// Draw the box
 				draw.push( {
 					type: "rect",
-					y: lowest * height,
-					height: ( highest - lowest ) * height,
-					x: item.x * width - ( boxWidth / 2 ),
+					y: lowest * draw.height,
+					height: ( highest - lowest ) * draw.height,
+					x: item.x * draw.width - ( boxWidth / 2 ),
 					width: boxWidth,
 					style: this.settings.styles.box.compiled
 				} );
@@ -105,19 +127,19 @@ export default class Box {
 				// Draw the line min - q2
 				draw.push( {
 					type: "line",
-					y1: item.q2 * height,
-					x1: item.x * width,
-					y2: item.min * height,
-					x2: item.x * width,
+					y1: item.q2 * draw.height,
+					x1: item.x * draw.width,
+					y2: item.min * draw.height,
+					x2: item.x * draw.width,
 					style: this.settings.styles.low.compiled
 				} );
 
 				// Draw the box
 				draw.push( {
 					type: "rect",
-					y: item.q3 * height,
-					height: ( item.q2 - item.q3 ) * height,
-					x: item.x * width - ( boxWidth / 2 ),
+					y: ( draw.flipXY ? item.q2 : item.q3 ) * draw.height,
+					height: ( draw.flipXY ? item.q3 - item.q2 : item.q2 - item.q3 ) * draw.height,
+					x: item.x * draw.width - ( boxWidth / 2 ),
 					width: boxWidth,
 					style: this.settings.styles.box.compiled
 				} );
@@ -125,10 +147,10 @@ export default class Box {
 				// Draw the line q3 - max (high)
 				draw.push( {
 					type: "line",
-					y1: item.max * height,
-					x1: item.x * width,
-					y2: item.q3 * height,
-					x2: item.x * width,
+					y1: item.max * draw.height,
+					x1: item.x * draw.width,
+					y2: item.q3 * draw.height,
+					x2: item.x * draw.width,
 					style: this.settings.styles.high.compiled
 				} );
 			}
@@ -137,10 +159,10 @@ export default class Box {
 			if ( !Number.isNaN( item.med ) ) {
 				draw.push( {
 					type: "line",
-					y1: item.med * height,
-					x1: item.x * width - ( boxWidth / 2 ),
-					y2: item.med * height,
-					x2: item.x * width + ( boxWidth / 2 ),
+					y1: item.med * draw.height,
+					x1: item.x * draw.width - ( boxWidth / 2 ),
+					y2: item.med * draw.height,
+					x2: item.x * draw.width + ( boxWidth / 2 ),
 					style: this.settings.styles.med.compiled
 				} );
 			}
