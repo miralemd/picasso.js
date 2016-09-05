@@ -8,8 +8,6 @@ export class Axis {
 		this.scale = composer.scales[axisConfig.scale].scale;
 		this.data = composer.data;
 		this.source = composer.scales[axisConfig.scale].source;
-		const meta = composer.scales[axisConfig.scale].meta;
-		this.title = meta.map( ( m ) => { return m.title; } ).join( ", " );
 		this.renderer = renderer;
 		this.elements = [];
 
