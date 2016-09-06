@@ -983,16 +983,10 @@
         }
     };
 
-    var baseStyle = {
-      "stroke":       "rgb(0, 0, 0)",
-      "stroke-width": 1,
-      "fill":         "rgb(255, 255, 255)"
-  };
-
     var settings = {
         scales: {
-            y: { source: "/qHyperCube/qDimensionInfo/0" },
-            x: { source: ["/qHyperCube/qMeasureInfo/0",
+            x: { source: "/qHyperCube/qDimensionInfo/0" },
+            y: { source: ["/qHyperCube/qMeasureInfo/0",
 							"/qHyperCube/qMeasureInfo/1",
 							"/qHyperCube/qMeasureInfo/2",
 							"/qHyperCube/qMeasureInfo/3",
@@ -1011,11 +1005,15 @@
                         med: { source: "/qHyperCube/qMeasureInfo/2" }, // med value to "med" scale
                         q3: { source: "/qHyperCube/qMeasureInfo/3" }, // q3 value to "q3" scale
                         max: { source: "/qHyperCube/qMeasureInfo/4" }, // max value to "max" scale
+                        flipXY: true,
+                        basestyle: {
+                          "stroke":       "rgb(0, 0, 0)",
+                          "stroke-width": 1,
+                          "fill":         "rgb(255, 255, 255)"
+                        },
                         styles: {
-                          low: Object.assign( {}, baseStyle, { stroke: "rgb(255, 0, 0)" } ),
-                          box: Object.assign( {}, baseStyle, { } ),
-                          high: Object.assign( {}, baseStyle, { stroke: "rgb(0, 255, 0)" } ),
-                          med: baseStyle
+                          low: { stroke: "rgb(255, 0, 0)" },
+                          high: { stroke: "rgb(0, 255, 0)" }
                         }
                     }
                 }

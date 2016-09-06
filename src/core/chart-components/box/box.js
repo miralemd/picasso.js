@@ -12,35 +12,29 @@ export default class Box {
 		this.data = composer.data;
 		this.obj = obj;
 
-		let scales = [
-			this.settings.x ? composer.scales[this.settings.x.scale] : null,
-			this.settings.y ? composer.scales[this.settings.y.scale] : null
-		];
+		this.x = composer.scales[this.settings.x.scale];
+		this.y = composer.scales[this.settings.y.scale];
 
-		scales.forEach( scale => {
-			if ( scale.type === "ordinal" ) {
-				this.x = scale;
-			} else {
-				this.y = scale;
-			}
-		} );
+		// Tilt the boxplot
+		this.flipXY = this.settings.flipXY;
 
-		this.flipXY = scales[0].type !== "ordinal";
-
-		//console.log( this.x.type, this.y.type, this.flipXY );
-
+		// rendering settings
 		this.rsettings = {
 			bandwidth: 0
 		};
 
 		// Compile all styles
-		Object.keys( this.settings.styles ).forEach( key => {
-			this.settings.styles[key].compiled = this.compileStyle( this.settings.styles[key] );
+		[ "low", "box", "high", "med" ].forEach( key => {
+			this.settings.styles[key] = this.settings.styles[key] || {};
+			this.settings.styles[key].compiled = this.compileStyle(
+				Object.assign( {}, this.settings.basestyle, this.settings.styles[key]
+			) );
 		} );
 
 		this.onData();
 	}
 
+	// This negates the coordinates if the axis aren't flipped
 	negateCoordinates( value ) {
 		return this.flipXY ? value : 1 - value;
 	}
@@ -69,8 +63,6 @@ export default class Box {
 						med: med ? ( this.negateCoordinates( this.y.toValue( med, row ) ) ) : 0.5
 					} );
 				} );
-
-				//this.boxes.length = Math.ceil( Math.random() * ( this.boxes.length ) );
 			}, this );
 
 			this.resize();
@@ -82,14 +74,16 @@ export default class Box {
 	render( boxes ) {
 		let displayBoxes = boxes.filter( item => {
 			// If all values are NaN ignore the item
-			return [ item.min, item.q2, item.q3, item.max ].filter( v => Number.isNaN( v ) ).length !== 4;
+			return [
+				item.min, item.q2, item.q3, item.max
+			].filter( v => Number.isNaN( v ) ).length !== 4;
 		} );
 
 		let draw = boxPrerend();
 
 		draw.width = this.renderer.rect.width;
 		draw.height = this.renderer.rect.height;
-		draw.flipXY = this.flipXY;
+		draw.flipXY = this.flipXY; // this must be set after setting w/h but before draw
 
 		let boxWidth = Math.max( 5, Math.min( 100, this.rsettings.bandwidth * draw.width ) );
 
@@ -166,13 +160,12 @@ export default class Box {
 					style: this.settings.styles.med.compiled
 				} );
 			}
-
 		} );
 
 		this.renderer.render( draw );
 	}
 
-	// Compile styes into a CSS format
+	// Compile styles into a CSS format
 	compileStyle( props ) {
 		return Object.keys( props ).map( key => {
 			return key + ": " + props[key];
