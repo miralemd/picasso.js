@@ -220,10 +220,6 @@ export default class DisplayObject extends Node {
 		return this._scene.inverseModelView;
 	}
 
-	destroy() {
-		this._stage = null;
-	}
-
 	/**
 	 * Calculates the bounds of this object.
 	 * @private
@@ -297,7 +293,7 @@ export default class DisplayObject extends Node {
 	}
 
 	get stage() {
-		if ( this._parent && !this._stage ) {
+		if ( this._parent && !this._stage ) { // lazy evaluation
 			this._stage = this._parent.stage;
 		}
 		else if ( !this._parent && this._stage !== this ) {
