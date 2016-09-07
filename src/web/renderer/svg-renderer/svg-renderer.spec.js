@@ -60,6 +60,7 @@ describe( "SVGRenderer", () => {
 			svg.g = element( "g" );
 			let items = ["a"];
 			svg.items = "b";
+			svg.container = element( "div" );
 			svg.render( items );
 			expect( treeRenderer.render ).to.have.been.calledWith( "b", items, svg.g );
 		} );
