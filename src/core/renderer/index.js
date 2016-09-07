@@ -1,4 +1,4 @@
-let prio = ["svg", "canvas", "webgl"];
+let prio = ["svg"];
 let renderers = {};
 
 export function register( type, fn ) {
