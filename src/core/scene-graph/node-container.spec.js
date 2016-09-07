@@ -1,4 +1,4 @@
-import Node from "./node";
+import Node from "./node-container";
 
 /* eslint no-unused-expressions: 0 */
 describe( "TreeNode", () => {
