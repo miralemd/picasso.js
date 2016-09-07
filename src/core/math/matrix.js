@@ -208,6 +208,42 @@ export default class Matrix {
 			&& m[2][0] === 0 && m[2][1] === 0 && m[2][2] === 1;
 	}
 
+	/**
+	 * Transforms the given point by this matrix and returns a new point
+	 */
+	transformPoint ( p ) {
+		let vec = [p.x, p.y, 1], i, j,
+			e = this._elements,
+			m = [0, 0, 0];
+		for ( i = 0; i < this._elements.length; i++ ) { // row
+			for ( j = 0; j < this._elements[i].length; j++ ) {// column
+				m[i] += vec[j] * e[i][j];
+			}
+		}
+
+		return { x: m[0], y: m[1] };
+	}
+
+	/**
+	 * Transforms the given points by this matrix and returns the new points
+	 */
+	transformPoints ( array ) {
+		let vec, i, j, k, m, e = this._elements, ret = [];
+
+		for ( k = 0; k < array.length; k++ ) {
+			vec = [array[k].x, array[k].y, 1];
+			m = [0, 0, 0];
+
+			for ( i = 0; i < this._elements.length; i++ ) { // row
+				for ( j = 0; j < this._elements[i].length; j++ ) {// column
+					m[i] += vec[j] * e[i][j];
+				}
+			}
+			ret.push( { x: m[0], y: m[1] } );
+		}
+		return ret;
+	}
+
 	get elements () {
 		let m = this._elements;
 		return [
