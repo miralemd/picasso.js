@@ -11,7 +11,7 @@ export default class Matrix {
 
 	clone () {
 		let mt = new Matrix();
-		return mt.multiply( this._elements );
+		return mt.multiply( this );
 	}
 
 	/**
@@ -76,12 +76,6 @@ export default class Matrix {
 		return this;
 	}
 
-	skew ( xAngle, yAngle ) {
-		let tanX = Math.tan( xAngle ),
-			tanY = Math.tan( yAngle );
-		this.multiply( [[1, tanX, 0], [tanY, 1, 0], [0, 0, 1]] );
-		return this;
-	}
 	/**
 	*
 	* If value is a number; multiplies each element in the matrix by the given value.
@@ -123,10 +117,10 @@ export default class Matrix {
 	* @param {Number} x The value to scale the matrix with along the x direction
 	* @param {Number} [y=x] The value to scale the matrix with along the y direction.
 	*/
-	scale ( x, y ) {
-		if ( arguments.length < 2 || typeof y === "undefined" ) {
-			y = x;
-		}
+	scale ( x, y = x ) {
+		//if ( arguments.length < 2 || typeof y === "undefined" ) {
+		//	y = x;
+		//}
 
 		this.multiply( [[x, 0, 0], [0, y, 0], [0, 0, 1]] );
 		return this;
@@ -204,11 +198,7 @@ export default class Matrix {
 	}
 
 	toString () {
-		let s = "";
-		this._elements.forEach( function ( row, i, arr ) {
-			s += row.join( "\t" ) + ( i < arr.length ? "\n" : "" );
-		} );
-		return s;
+		return "" + this._elements.map( r => r.join( "\t" ) ).join( "\n" );
 	}
 
 	isIdentity () {
