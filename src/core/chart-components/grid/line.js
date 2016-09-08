@@ -29,7 +29,7 @@ export default class Line {
 
 		this.lines.x = this.x.scale.ticks( this.settings.ticks );
 		this.lines.y = this.y.scale.ticks( this.settings.ticks );
-
+		console.log(this.lines.x, this.lines.y);
 		this.resize();
 	}
 
@@ -50,7 +50,7 @@ export default class Line {
 		let lowestSparsity = Math.min( ...Object.keys( this.settings.styles ) );
 		let style = {};
 
-		let i = 1;
+		let i = 0;
 		const displayLinesX = lines.x.map( p => {
 			if ( i >= highestSparsity ) {
 				i = 1;
@@ -69,7 +69,7 @@ export default class Line {
 			};
 		} );
 
-		i = 1;
+		i = 0;
 		const displayLinesY = lines.y.map( p => {
 			if ( i >= highestSparsity ) {
 				i = 1;

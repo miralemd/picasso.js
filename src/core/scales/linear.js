@@ -65,8 +65,8 @@ export default class LinearScale {
 	}
 
 	// TODO Support this?
-	ticksFormat( count, format ) {
-		return this._scale.ticksFormat( count, format );
+	tickFormat( count, format ) {
+		return this._scale.tickFormat( count, format );
 	}
 
 	// TODO Support this?
