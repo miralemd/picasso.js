@@ -24,23 +24,23 @@ export default class Line {
 		this.x && this.x.update();
 		this.y && this.y.update();
 
-		this.y.scale.nice( this.settings.ticks );
-		this.x.scale.nice( this.settings.ticks );
+		this.x && this.x.scale.nice( this.settings.ticks );
+		this.y && this.y.scale.nice( this.settings.ticks );
 
-		this.lines.x = this.x.scale.ticks( this.settings.ticks );
-		this.lines.y = this.y.scale.ticks( this.settings.ticks );
-		console.log(this.lines.x, this.lines.y);
 		this.resize();
 	}
 
 	resize() {
 		this.renderer.rect.width = this.element.clientWidth;
 		this.renderer.rect.height = this.element.clientHeight;
-		this.render( this.lines );
+		this.render();
 	}
 
-	render( lines ) {
+	render( ) {
 		const { width, height } = this.renderer.rect;
+
+		this.lines.x = this.x && this.x.scale.magicTicks( this.renderer.rect.width - this.renderer.rect.x ) || [];
+		this.lines.y = this.y && this.y.scale.magicTicks( this.renderer.rect.height - this.renderer.rect.y ) || [];
 
 		if ( !Object.keys( this.settings.styles )[0] ) {
 			return;
@@ -49,41 +49,28 @@ export default class Line {
 		let highestSparsity = Math.max( ...Object.keys( this.settings.styles ) );
 		let lowestSparsity = Math.min( ...Object.keys( this.settings.styles ) );
 		let style = {};
-
-		let i = 0;
-		const displayLinesX = lines.x.map( p => {
-			if ( i >= highestSparsity ) {
-				i = 1;
-			}
-			i++;
-
-			style = this.settings.styles[i] || this.settings.styles[lowestSparsity];
+		const displayLinesX = this.lines.x.map( p => {
+			style = !p.isMinor ? this.settings.styles[highestSparsity] : this.settings.styles[lowestSparsity];
 
 			return {
 				type: "line",
-				x1: this.x.scale.get( p ) * width,
+				x1: p.position * width,
 				y1: 0,
-				x2: this.x.scale.get( p ) * width,
+				x2: p.position * width,
 				y2: height,
 				style: `stroke: ${style.color}; stroke-width: ${style.lineWidth}`
 			};
 		} );
 
-		i = 0;
-		const displayLinesY = lines.y.map( p => {
-			if ( i >= highestSparsity ) {
-				i = 1;
-			}
-			i++;
-
-			style = this.settings.styles[i] || this.settings.styles[lowestSparsity];
+		const displayLinesY = this.lines.y.map( p => {
+			style = !p.isMinor ? this.settings.styles[highestSparsity] : this.settings.styles[lowestSparsity];
 
 			return {
 				type: "line",
 				x1: 0,
-				y1: this.y.scale.get( p ) * height,
+				y1: ( 1 - p.position ) * height,
 				x2: width,
-				y2: this.y.scale.get( p ) * height,
+				y2: ( 1 - p.position ) * height,
 				style: `stroke: ${style.color}; stroke-width: ${style.lineWidth}`
 			};
 		} );
