@@ -17,7 +17,7 @@ let transform = {
 
 	scale: function scale( x, y ) {
 		this.matrix.scale( x, y );
-		this.bounds.dirty = true;
+		this._scene.bounds.dirty = true;
 		return this;
 	}
 };
@@ -51,7 +51,7 @@ function getTransformedBoundsOfRect( matrix, r ) {
 }
 
 export default class DisplayObject extends Node {
-	constructor () {
+	constructor ( ) {
 		super();
 		this._stage = null;
 		this._scene = {
@@ -66,6 +66,8 @@ export default class DisplayObject extends Node {
 			}
 		};
 	}
+
+	set () {}
 
 	translate ( x, y ) {
 		if ( x === 0 && y === 0 ) {

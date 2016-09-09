@@ -85,3 +85,7 @@ export default class Container extends DisplayObject {
 		this._scene.bounds.dirty = false;
 	}
 }
+
+export function create() {
+	return new Container();
+}

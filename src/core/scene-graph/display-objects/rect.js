@@ -2,17 +2,24 @@ import DisplayObject from "./display-object";
 import GeoRect from "../../geometry/rect";
 
 export default class Rect extends DisplayObject {
-	constructor( x, y, width, height ) {
+	constructor( ...s ) {
 		super();
-		this.set( x, y, width, height );
+		this.set( ...s );
 	}
 
-	set ( x, y, width, height ) {
+	set ( { x, y, width, height, fill } ) {
 		GeoRect.prototype.set.call( this, x, y, width, height );
+		if ( typeof fill !== "undefined" ) {
+			this.fill = fill;
+		}
 		this.invalidateBounds();
 	}
 
 	localBounds () {
 		return GeoRect.prototype.bounds.call( this );
 	}
+}
+
+export function create( ...s ) {
+	return new Rect( ...s );
 }
