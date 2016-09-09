@@ -6,8 +6,8 @@ register( "rect", ( rect, g ) => {
 
 register( "circle", ( circle, g ) => {
 	g.beginPath();
-	g.moveTo( circle.cx + circle.radius, circle.cy );
-	g.arc( circle.cx, circle.cy, circle.radius, 0, Math.PI * 2, false );
+	g.moveTo( circle.cx + circle.r, circle.cy );
+	g.arc( circle.cx, circle.cy, circle.r, 0, Math.PI * 2, false );
 	g.fill();
 } );
 

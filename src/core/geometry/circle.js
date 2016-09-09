@@ -1,18 +1,18 @@
 export default class Circle {
-	constructor ( cx = 0, cy = 0, radius = 0 ) {
-		this.set( cx, cy, radius );
+	constructor ( cx = 0, cy = 0, r = 0 ) {
+		this.set( cx, cy, r );
 	}
 
-	set ( cx, cy, radius ) {
+	set ( cx, cy, r ) {
 		this.cx = cx;
 		this.cy = cy;
-		this.radius = radius;
+		this.r = r;
 	}
 
 	bounds () {
-		let x = this.cx - this.radius,
-			y = this.cy - this.radius,
-			s = this.radius * 2;
+		let x = this.cx - this.r,
+			y = this.cy - this.r,
+			s = this.r * 2;
 		return [
 			{ x: x, y: y },
 			{ x: x + s, y: y },

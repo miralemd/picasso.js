@@ -44,6 +44,13 @@ export default class CanvasRenderer {
 
 		renderShapes( this.scene.children, g );
 	}
+
+	size () {
+		return {
+			width: this.canvas.parentElement.clientWidth,
+			height: this.canvas.parentElement.clientHeight
+		};
+	}
 }
 
 export function renderer() {
