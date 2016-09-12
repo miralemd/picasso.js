@@ -1,6 +1,7 @@
 import { interpolateViridis } from "d3-scale";
 import { linear } from "../../scales/linear";
-import { ordinal } from "../../scales/ordinal";
+// import { ordinal } from "../../scales/ordinal";
+import { band } from "../../scales/band";
 
 function getTypeFromMeta( meta ) {
 	return "count" in meta ? "ordinal" : "linear";
@@ -41,17 +42,23 @@ function create( options, data ) {
 		s.range( [1, 0] );
 	}
 	else if ( type === "ordinal" ) {
-		s = ordinal();
+		s = band();
 		s.domain( range( meta[0].count ) );
-		s.range( meta[0].count <= 1 ? [0.5] : range( meta[0].count ).map( v => v / ( meta[0].count - 1 ) ) );
+		s.range( [0, 1] );
+		s.paddingOuter( 1 ); // TODO hard-coded
+		s.paddingInner( 1 ); // TODO hard-coded
+		s.align( 0.5 ); // TODO hard-coded
 	} else {
 		const d = getMinMax( meta );
 		s = linear();
+		//s.domain( [0, 1] ); // fulhack
+		//s.domain( [meta.min, meta.max] );
 		s.domain( [d.min, d.max] );
 	}
 	return {
 		scale: s,
 		type,
+		meta: meta,
 		update: () => {
 			values = data.fromSource( source );
 			if ( type === "ordinal" ) {
@@ -76,6 +83,10 @@ function create( options, data ) {
 				return interpolateViridis( s.get( arr[idx].qNum ) );
 			} :
 			( arr, idx ) => s.get( arr[idx].qNum ),
+		extent: ( arr ) => {
+			let vals = arr.map( d => d.qNum );
+			return [ Math.min( ...vals ), Math.max( ...vals ) ];
+		},
 		source: source
 	};
 }

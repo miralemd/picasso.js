@@ -1,13 +1,16 @@
+"use strict"; // eslint-disable-line
 /* eslint-env node*/
 
-var path = require( "path" );
-var srcDir = path.resolve( __dirname, "src" );
+let path = require( "path" );
+let srcDir = path.resolve( __dirname, "src" );
+let testDir = path.resolve( __dirname, "test" );
 
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
+let ExtractTextPlugin = require( "extract-text-webpack-plugin" );
 
 module.exports = {
 	entry: {
-		"picasso": path.resolve( srcDir, "index" )
+		"picasso": path.resolve( srcDir, "index" ),
+		"generator": path.resolve( testDir, "mocks", "generator", "hypercube-generator" )
 	},
 	output: {
 		path: path.resolve( __dirname, "dist" ),
@@ -29,6 +32,6 @@ module.exports = {
 		]
 	},
 	plugins: [
-		new ExtractTextPlugin("[name].css")
+		new ExtractTextPlugin( "[name].css" )
 	]
 };
