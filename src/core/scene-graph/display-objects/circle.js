@@ -12,11 +12,6 @@ export default class Circle extends DisplayObject {
 		if ( typeof fill !== "undefined" ) {
 			this.fill = fill;
 		}
-		this.invalidateBounds();
-	}
-
-	localBounds () {
-		return GeoCircle.prototype.bounds.call( this );
 	}
 }
 

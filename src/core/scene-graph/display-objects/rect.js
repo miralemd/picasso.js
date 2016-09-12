@@ -12,11 +12,6 @@ export default class Rect extends DisplayObject {
 		if ( typeof fill !== "undefined" ) {
 			this.fill = fill;
 		}
-		this.invalidateBounds();
-	}
-
-	localBounds () {
-		return GeoRect.prototype.bounds.call( this );
 	}
 }
 
