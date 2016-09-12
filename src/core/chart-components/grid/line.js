@@ -24,9 +24,6 @@ export default class Line {
 		this.x && this.x.update();
 		this.y && this.y.update();
 
-		this.x && this.x.scale.nice( this.settings.ticks );
-		this.y && this.y.scale.nice( this.settings.ticks );
-
 		this.resize();
 	}
 
@@ -46,11 +43,10 @@ export default class Line {
 			return;
 		}
 
-		let highestSparsity = Math.max( ...Object.keys( this.settings.styles ) );
-		let lowestSparsity = Math.min( ...Object.keys( this.settings.styles ) );
 		let style = {};
+
 		const displayLinesX = this.lines.x.map( p => {
-			style = !p.isMinor ? this.settings.styles[highestSparsity] : this.settings.styles[lowestSparsity];
+			style = p.isMinor ? this.settings.styles.minor : this.settings.styles.major;
 
 			return {
 				type: "line",
@@ -63,7 +59,7 @@ export default class Line {
 		} );
 
 		const displayLinesY = this.lines.y.map( p => {
-			style = !p.isMinor ? this.settings.styles[highestSparsity] : this.settings.styles[lowestSparsity];
+			style = p.isMinor ? this.settings.styles.minor : this.settings.styles.major;
 
 			return {
 				type: "line",
