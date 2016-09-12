@@ -7,11 +7,9 @@ export default class Circle extends DisplayObject {
 		this.set( ...s );
 	}
 
-	set ( { cx, cy, r, fill } ) {
+	set ( { cx, cy, r, fill, stroke } ) {
+		super.set( { fill, stroke } );
 		GeoCircle.prototype.set.call( this, cx, cy, r );
-		if ( typeof fill !== "undefined" ) {
-			this.fill = fill;
-		}
 	}
 }
 

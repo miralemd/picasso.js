@@ -7,11 +7,9 @@ export default class Rect extends DisplayObject {
 		this.set( ...s );
 	}
 
-	set ( { x, y, width, height, fill } ) {
+	set ( { x, y, width, height, fill, stroke } ) {
+		super.set( { fill, stroke } );
 		GeoRect.prototype.set.call( this, x, y, width, height );
-		if ( typeof fill !== "undefined" ) {
-			this.fill = fill;
-		}
 	}
 }
 

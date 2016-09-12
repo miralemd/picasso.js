@@ -1,15 +1,9 @@
 import { renderer, register } from "./canvas-renderer";
+import { render as rect } from "./shapes/rect";
+import { render as circle } from "./shapes/circle";
 
-register( "rect", ( rect, g ) => {
-	g.fillRect( rect.x, rect.y, rect.width, rect.height );
-} );
-
-register( "circle", ( circle, g ) => {
-	g.beginPath();
-	g.moveTo( circle.cx + circle.r, circle.cy );
-	g.arc( circle.cx, circle.cy, circle.r, 0, Math.PI * 2, false );
-	g.fill();
-} );
+register( "rect", rect );
+register( "circle", circle );
 
 export {
 	renderer

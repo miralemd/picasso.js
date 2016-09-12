@@ -6,7 +6,14 @@ export default class DisplayObject extends Node {
 		this._stage = null;
 	}
 
-	set () {}
+	set ( { fill, stroke } ) {
+		if ( typeof fill !== "undefined" ) {
+			this.fill = fill;
+		}
+		if ( typeof stroke !== "undefined" ) {
+			this.stroke = stroke;
+		}
+	}
 
 	/**
 	 * Returns the value of attribute a.

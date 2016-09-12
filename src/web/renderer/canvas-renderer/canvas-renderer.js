@@ -8,8 +8,15 @@ function renderShapes ( shapes, g ) {
 		if ( "fill" in s && g.fill !== s.fill ) {
 			g.fillStyle = s.fill;
 		}
+		if ( "stroke" in s && g.stroke !== s.stroke ) {
+			g.strokeStyle = s.stroke;
+		}
 		if ( reg.has( s.type ) ) {
-			reg.get( s.type )( s, g, "fill" in s, "stroke" in s );
+			reg.get( s.type )( s, {
+				g,
+				doFill: "fill" in s,
+				doStroke: "stroke" in s
+			} );
 		}
 		if ( s.children ) {
 			renderShapes( s.children, g );

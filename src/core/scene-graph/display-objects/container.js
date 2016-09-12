@@ -1,7 +1,6 @@
 import DisplayObject from "./display-object";
 import NodeContainer from "../node-container";
 
-let UNDEF;
 const NC = NodeContainer.prototype;
 
 export default class Container extends DisplayObject {
