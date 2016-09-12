@@ -51,6 +51,8 @@ function create( options, data ) {
 	} else {
 		const d = getMinMax( meta );
 		s = linear();
+		//s.domain( [0, 1] ); // fulhack
+		//s.domain( [meta.min, meta.max] );
 		s.domain( [d.min, d.max] );
 	}
 	return {
@@ -81,6 +83,10 @@ function create( options, data ) {
 				return interpolateViridis( s.get( arr[idx].qNum ) );
 			} :
 			( arr, idx ) => s.get( arr[idx].qNum ),
+		extent: ( arr ) => {
+			let vals = arr.map( d => d.qNum );
+			return [ Math.min( ...vals ), Math.max( ...vals ) ];
+		},
 		source: source
 	};
 }
