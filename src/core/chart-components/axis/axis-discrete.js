@@ -13,16 +13,6 @@ export default class AxisDiscrete extends Axis {
 
 	settings( opt ) {
 		this._settings = {
-			title: {
-				show: true,
-				// value: "Custom title",
-				style: {
-					font: "Arial",
-					size: 15,
-					color: "#999"
-				},
-				padding: 15
-			},
 			labels: {
 				show: true,
 				tilted: false,
@@ -79,9 +69,6 @@ export default class AxisDiscrete extends Axis {
 		if ( this._settings.labels.show ) {
 			this.generateLabels().forEach( ( label ) => { this.elements.push( label ); } );
 		}
-		if ( this._settings.title.show ) {
-			this.elements.push( this.generateTitle() );
-		 }
 
 		this.renderer.render( this.elements );
 

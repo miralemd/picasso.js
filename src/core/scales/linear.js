@@ -142,6 +142,31 @@ export default class LinearScale {
 	}
 
 	/**
+	 * Get magic ticks for usage with grid and axis
+	 * @param  {Number} width 		Width of the element where we're drawing
+	 * @param  {Number} minorCount 	The number of minors you would want
+	 * @return {Array}       		Array of ticks with position
+	 */
+	magicTicks( width, minorCount = 3 ) {
+		let magicScale = scaleLinear();
+		magicScale.domain( [0, 100] );
+		magicScale.range( [0, 1] );
+
+		let count = Math.max( magicScale( width ), 2 );
+
+		let ticks = this.ticks( ( ( count - 1 ) * minorCount ) + count );
+		const ticksFormatted = ticks.map( this.tickFormat( count, "s" ) );
+
+		return ticksFormatted.map( ( tick, i ) => {
+			return {
+				position: this.get( ticks[i] ),
+				label: tick,
+				isMinor: i % ( minorCount + 1 ) !== 0
+			};
+		} );
+	}
+
+	/**
 	 * Divides the domain and range into uniform segments, based on start and end value
 	 * @param  { Number } segments The number of segments
 	 * @return { LinearScale } The instance this method was called on

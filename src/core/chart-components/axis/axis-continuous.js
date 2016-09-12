@@ -14,16 +14,6 @@ export default class AxisContinuous extends Axis {
 
 	settings( opt ) {
 		this._settings = {
-			title: {
-				// value: "Custom title",
-				show: true,
-				style: {
-					font: "Arial",
-					size: 15,
-					color: "#999"
-				},
-				padding: 15
-			},
 			labels: {
 				show: true,
 				tilted: false,
