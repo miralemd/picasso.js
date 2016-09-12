@@ -60,7 +60,7 @@ describe( "Hypercube generator", function () {
 	} );
 
 	it( "should create random 2d arrays with the correct width and height", function () {
-		let randomArr = generator.random2dArr( 2, 2 );
+		let randomArr = generator.random2dArr( 2, 2, null, () => Math.random() );
 
 		expect( randomArr.length ).to.equal( 2 );
 		expect( randomArr[0].length ).to.equal( 2 );

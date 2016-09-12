@@ -203,11 +203,11 @@ class HypercubeGenerator {
 	 * @param  {Integer} height The height of the 2d array
 	 * @return {Array}        	2d-generated array
 	 */
-	random2dArr( width, height, manipulateRow, exponential = true ) {
+	random2dArr( width, height, manipulateRow, manipulatePoint ) {
 		return Array( height ).fill( undefined ).map( ( vy, y ) => {
-			let rowData = Array( width ).fill( undefined ).map( ( vx, x ) => ( exponential ? ( x / width * y / height ) : 1 ) * Math.random() );
+			let rowData = Array( width ).fill( undefined ).map( ( vx, x ) => manipulatePoint.call( this, x, y, width, height ) );
 			if ( manipulateRow && typeof manipulateRow === "function" ) {
-				rowData = manipulateRow( rowData );
+				rowData = manipulateRow.call( this, rowData );
 			}
 			return rowData;
 		} );
@@ -240,7 +240,36 @@ class HypercubeGenerator {
 				...Array( dimensions ).fill( "d" ),
 				...Array( measures ).fill( "m" )
 			],
-			...this.random2dArr( dimensions + measures, rows + 1, sorted ? row => row.sort() : null, !sorted )
+			...this.random2dArr(
+				dimensions + measures,
+				rows + 1,
+				sorted ? row => row.sort() : null,
+				( x, y, width, height ) => ( !sorted ? ( x / width * y / height ) : 1 ) * Math.random()
+			)
+		];
+	}
+
+	/**
+	 * Generate custom data for usage with generateDataFromArray
+	 *
+	 * @param  {Integer} dimensions The number of dimensions to be generated
+	 * @param  {Integer} measures   The number of measures
+	 * @param  {Integer} rows       The number of rows
+	 * @param  {Function} callback  Custom callback for generating values
+	 * @return {Array}            	2d Array
+	 */
+	generateCustomData( dimensions, measures, rows, rowcallback, pointcallback ) {
+		return [
+			[
+				...Array( dimensions ).fill( "d" ),
+				...Array( measures ).fill( "m" )
+			],
+			...this.random2dArr(
+				dimensions + measures,
+				rows + 1,
+				rowcallback,
+				pointcallback
+			)
 		];
 	}
 }
