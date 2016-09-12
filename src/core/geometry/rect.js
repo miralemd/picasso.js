@@ -22,10 +22,6 @@ export default class Rect {
 		}
 	}
 
-	bounds () {
-		return this;
-	}
-
 	points () {
 		return [
 			{ x: this.x, y: this.y },

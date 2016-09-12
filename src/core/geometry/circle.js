@@ -8,16 +8,4 @@ export default class Circle {
 		this.cy = cy;
 		this.r = r;
 	}
-
-	bounds () {
-		let x = this.cx - this.r,
-			y = this.cy - this.r,
-			s = this.r * 2;
-		return [
-			{ x: x, y: y },
-			{ x: x + s, y: y },
-			{ x: x + s, y: y + s },
-			{ x: x, y: y + s }
-		];
-	}
 }
