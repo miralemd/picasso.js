@@ -2,12 +2,14 @@
 
 import { tree } from "./svg-tree";
 import { svgNs } from "./svg-nodes";
+import { scene } from "../../../core/scene-graph/scene";
 
 export default class SVGRenderer {
 
-	constructor( treeFn, ns ) {
+	constructor( treeFn, ns, sceneFactory ) {
 		this.ns = ns;
 		this.tree = treeFn();
+		this.sceneFactory = sceneFactory;
 
 		this.items = [];
 		this.rect = { x: 0, y: 0, width: 0, height: 0 };
@@ -46,7 +48,9 @@ export default class SVGRenderer {
 		this.root.setAttribute( "width", this.rect.width );
 		this.root.setAttribute( "height", this.rect.height );
 
-		this.items = this.tree.render( this.items, items, this.g );
+		this.clear();
+		this.scene = this.sceneFactory( items );
+		this.tree.render( this.scene.children, this.g );
 	}
 
 	/**
@@ -80,5 +84,5 @@ export default class SVGRenderer {
 }
 
 export function renderer() {
-	return new SVGRenderer( tree, svgNs );
+	return new SVGRenderer( tree, svgNs, scene );
 }

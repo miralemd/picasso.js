@@ -3,16 +3,21 @@ import element from "../../../../test/mocks/element-mock";
 
 
 describe( "SVGRenderer", () => {
-	let sandbox, tree, ns, treeRenderer, svg;
+	let sandbox, tree, ns, treeRenderer, svg, scene;
 
 	beforeEach( () => {
 		sandbox = sinon.sandbox.create();
 		treeRenderer = {
 			render: sandbox.spy()
 		};
+		scene = function() {
+			return {
+				children: []
+			};
+		};
 		tree = sandbox.stub().returns( treeRenderer );
 		ns = "namespace";
-		svg = new SVGRenderer( tree, ns );
+		svg = new SVGRenderer( tree, ns, scene );
 	} );
 
 	afterEach( () => {
@@ -62,7 +67,7 @@ describe( "SVGRenderer", () => {
 			svg.items = "b";
 			svg.container = element( "div" );
 			svg.render( items );
-			expect( treeRenderer.render ).to.have.been.calledWith( "b", items, svg.g );
+			expect( treeRenderer.render ).to.have.been.calledWith( svg.scene.children, svg.g );
 		} );
 	} );
 

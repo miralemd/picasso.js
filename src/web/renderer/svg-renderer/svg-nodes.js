@@ -19,7 +19,7 @@ const destroyer = el => {
 
 const maintainer = ( element, item ) => {
 	for ( let attr in item ) {
-		if ( ["id", "data", "type", "children"].indexOf( attr ) !== -1 ) {
+		if ( /^_/.test( attr ) || ["id", "data", "type", "children"].indexOf( attr ) !== -1 ) {
 			continue;
 		}
 		element.setAttribute( attr, item[attr] );
