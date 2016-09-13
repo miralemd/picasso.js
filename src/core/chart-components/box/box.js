@@ -47,20 +47,20 @@ export default class Box {
 
 			pages.forEach( ( page, i ) => {
 				const x = this.x ? this.data.fromSource( this.x.source, i ) : null,
-					min = this.data.fromSource( this.settings.min.source, i ),
-					max = this.data.fromSource( this.settings.max.source, i ),
-					q2 = this.data.fromSource( this.settings.q2.source, i ),
-					q3 = this.data.fromSource( this.settings.q3.source, i ),
-					med = this.data.fromSource( this.settings.med.source, i );
+					min = this.settings.min ? this.data.fromSource( this.settings.min.source, i ) : null,
+					max = this.settings.max ? this.data.fromSource( this.settings.max.source, i ) : null,
+					start = this.settings.start ? this.data.fromSource( this.settings.start.source, i ) : null,
+					end = this.settings.end ? this.data.fromSource( this.settings.end.source, i ) : null,
+					med = this.settings.med ? this.data.fromSource( this.settings.med.source, i ) : null;
 
 				this.data.fromSource( this.obj.data.source, i ).forEach( ( value, row ) => {
 					this.boxes.push( {
 						x: x ? ( this.x.scale.get( row ) ) : 0.5,
-						min: min ? ( this.negateCoordinates( this.y.toValue( min, row ) ) ) : 0.5,
-						max: max ? ( this.negateCoordinates( this.y.toValue( max, row ) ) ) : 0.5,
-						q2: q2 ? ( this.negateCoordinates( this.y.toValue( q2, row ) ) ) : 0.5,
-						q3: q3 ? ( this.negateCoordinates( this.y.toValue( q3, row ) ) ) : 0.5,
-						med: med ? ( this.negateCoordinates( this.y.toValue( med, row ) ) ) : 0.5
+						min: min ? ( this.negateCoordinates( this.y.toValue( min, row ) ) ) : null,
+						max: max ? ( this.negateCoordinates( this.y.toValue( max, row ) ) ) : null,
+						start: start ? ( this.negateCoordinates( this.y.toValue( start, row ) ) ) : null,
+						end: end ? ( this.negateCoordinates( this.y.toValue( end, row ) ) ) : null,
+						med: med ? ( this.negateCoordinates( this.y.toValue( med, row ) ) ) : null
 					} );
 				} );
 			}, this );
@@ -73,10 +73,7 @@ export default class Box {
 
 	render( boxes ) {
 		let displayBoxes = boxes.filter( item => {
-			// If all values are NaN ignore the item
-			return [
-				item.min, item.q2, item.q3, item.max
-			].filter( v => Number.isNaN( v ) ).length !== 4;
+			return [ item.min, item.max ].indexOf( null ) === -1 || [ item.start, item.end ].indexOf( null ) === -1;
 		} );
 
 		let draw = boxPrerend();
@@ -90,38 +87,28 @@ export default class Box {
 		let i = 0;
 		displayBoxes.forEach( item => {
 			i++;
-			let vals = [ item.min, item.q2, item.q3, item.max ];
-
-			// Don't draw anything without enough data
-			if ( vals.filter( v => Number.isNaN( v ) ).length > 1 )
-			{
-				return;
-			}
 
 			// Draw a speculative indication box of the highest and lowest values
-			if ( vals.filter( v => Number.isNaN( v ) ).length )
+			if ( !item.start && !item.end )
 			{
-				let lowest = Math.min( ...vals.filter( v => !Number.isNaN( v ) ) );
-				let highest = Math.max( ...vals.filter( v => !Number.isNaN( v ) ) );
-
-				// Draw the box
+				// Draw the line min - start
 				draw.push( {
-					type: "rect",
-					y: lowest * draw.height,
-					height: ( highest - lowest ) * draw.height,
-					x: item.x * draw.width - ( boxWidth / 2 ),
-					width: boxWidth,
-					style: this.settings.styles.box.compiled
+					type: "line",
+					y1: item.max * draw.height,
+					x1: item.x * draw.width,
+					y2: item.min * draw.height,
+					x2: item.x * draw.width,
+					style: this.settings.styles.low.compiled
 				} );
 			}
 			else
 			{
 				// Normal rendering
 
-				// Draw the line min - q2
+				// Draw the line min - start
 				draw.push( {
 					type: "line",
-					y1: item.q2 * draw.height,
+					y1: item.start * draw.height,
 					x1: item.x * draw.width,
 					y2: item.min * draw.height,
 					x2: item.x * draw.width,
@@ -131,19 +118,19 @@ export default class Box {
 				// Draw the box
 				draw.push( {
 					type: "rect",
-					y: ( draw.flipXY ? item.q2 : item.q3 ) * draw.height,
-					height: ( draw.flipXY ? item.q3 - item.q2 : item.q2 - item.q3 ) * draw.height,
+					y: ( draw.flipXY ? item.start : item.end ) * draw.height,
+					height: ( draw.flipXY ? item.end - item.start : item.start - item.end ) * draw.height,
 					x: item.x * draw.width - ( boxWidth / 2 ),
 					width: boxWidth,
 					style: this.settings.styles.box.compiled
 				} );
 
-				// Draw the line q3 - max (high)
+				// Draw the line end - max (high)
 				draw.push( {
 					type: "line",
 					y1: item.max * draw.height,
 					x1: item.x * draw.width,
-					y2: item.q3 * draw.height,
+					y2: item.end * draw.height,
 					x2: item.x * draw.width,
 					style: this.settings.styles.high.compiled
 				} );
