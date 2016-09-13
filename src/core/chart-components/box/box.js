@@ -12,6 +12,7 @@ export default class Box {
 		this.data = composer.data;
 		this.obj = obj;
 
+		// Setup scales
 		this.x = composer.scales[this.settings.x.scale];
 		this.y = composer.scales[this.settings.y.scale];
 
@@ -21,10 +22,21 @@ export default class Box {
 		// Toggle whiskers
 		this.whiskers = this.settings.whiskers;
 
-		// rendering settings
-		this.rsettings = {
-			bandwidth: 0
-		};
+		// Set the default bandwidth
+		this.bandwidth = 0;
+
+		// Select a mode
+		this.mode = "normal";
+		if ( this.settings.open && this.settings.high && this.settings.low && this.settings.close )
+		{
+			this.mode = "ohlc";
+			this.whiskers = false;
+
+			this.remap( "open", "start" );
+			this.remap( "high", "max" );
+			this.remap( "low", "min" );
+			this.remap( "close", "end" );
+		}
 
 		// Compile all styles
 		[ "low", "box", "high", "med", "single" ].forEach( key => {
@@ -44,7 +56,7 @@ export default class Box {
 
 	onData() {
 		this.boxes = [];
-		this.rsettings.bandwidth = this.x.scale.step() * 0.75;
+		this.bandwidth = this.x.scale.step() * 0.75;
 
 		this.data.dataPages().then( ( pages ) => {
 
@@ -61,7 +73,7 @@ export default class Box {
 						x: x ? ( this.x.scale.get( row ) ) : 0.5,
 						min: min ? ( this.negateCoordinates( this.y.toValue( min, row ) ) ) : null,
 						max: max ? ( this.negateCoordinates( this.y.toValue( max, row ) ) ) : null,
-						start: start ? ( this.negateCoordinates( this.y.toValue( start, row ) ) ) : null,
+						start: start ? ( this.negateCoordinates( this.y.toValue( start, row ) ) ) : 0,
 						end: end ? ( this.negateCoordinates( this.y.toValue( end, row ) ) ) : null,
 						med: med ? ( this.negateCoordinates( this.y.toValue( med, row ) ) ) : null
 					} );
@@ -75,7 +87,7 @@ export default class Box {
 	}
 
 	render( boxes ) {
-		let displayBoxes = boxes.filter( item => {
+		boxes = boxes.filter( item => {
 			return [ item.min, item.max ].indexOf( null ) === -1 || [ item.start, item.end ].indexOf( null ) === -1;
 		} );
 
@@ -83,20 +95,25 @@ export default class Box {
 
 		draw.width = this.renderer.rect.width;
 		draw.height = this.renderer.rect.height;
-		draw.flipXY = this.flipXY; // this must be set after setting w/h but before draw
 
-		let boxWidth = Math.max( 5, Math.min( 100, this.rsettings.bandwidth * draw.width ) );
+		// Flip the axis on draw after setting width/height but before pushing items
+		draw.flipXY = this.flipXY;
+
+		let boxWidth = Math.max( 5, Math.min( 100, this.bandwidth * draw.width ) );
 
 		let whiskerWidth = boxWidth * 0.5;
+
+		let ohlcWhiskerWidth = boxWidth * 0.5;
 
 		let single = false;
 
 		let i = 0;
-		displayBoxes.forEach( item => {
+		boxes.forEach( item => {
 			i++;
 
-			single = item.start === null || item.end === null;
+			single = item.start === null || item.end === null || this.mode === "ohlc";
 
+			// Single line from min to max, no box.
 			if ( single )
 			{
 				// Draw the line min - max
@@ -143,10 +160,33 @@ export default class Box {
 					width: boxWidth,
 					style: this.settings.styles.box.compiled
 				} );
-
 			}
 
-			// Whiskers
+			// Draw OHLC instead of box
+			if ( this.mode === "ohlc" )
+			{
+				// Open whisker
+				draw.push( {
+					type: "line",
+					y1: item.start * draw.height,
+					x1: item.x * draw.width - ohlcWhiskerWidth,
+					y2: item.start * draw.height,
+					x2: item.x * draw.width,
+					style: this.settings.styles.single.compiled
+				} );
+
+				// Close whisker
+				draw.push( {
+					type: "line",
+					y1: item.end * draw.height,
+					x1: item.x * draw.width,
+					y2: item.end * draw.height,
+					x2: item.x * draw.width + ohlcWhiskerWidth,
+					style: this.settings.styles.single.compiled
+				} );
+			}
+
+			// Draw the whiskers
 			if ( this.whiskers && item.min !== null && item.max !== null )
 			{
 				// Low whisker
@@ -170,8 +210,8 @@ export default class Box {
 				} );
 			}
 
-			// The median line is drawn separately, and only if it's data exists
-			if ( item.med !== null ) {
+			// Draw the median line
+			if ( item.med !== null && this.mode !== "ohlc" ) {
 				draw.push( {
 					type: "line",
 					y1: item.med * draw.height,
@@ -198,6 +238,11 @@ export default class Box {
 		this.renderer.rect.height = this.element.clientHeight;
 
 		this.render( this.boxes );
+	}
+
+	remap( input, output ) {
+		this.settings[output] = this.settings[input];
+		delete this.settings[input];
 	}
 }
 
