@@ -2,6 +2,7 @@
 
 import { tree } from "./svg-tree";
 import { svgNs } from "./svg-nodes";
+import { scene } from "../../../core/scene-graph/scene";
 
 export default class SVGRenderer {
 
@@ -46,7 +47,9 @@ export default class SVGRenderer {
 		this.root.setAttribute( "width", this.rect.width );
 		this.root.setAttribute( "height", this.rect.height );
 
-		this.items = this.tree.render( this.items, items, this.g );
+		this.clear();
+		this.scene = scene( items );
+		this.tree.render( this.items, this.scene.children, this.g );
 	}
 
 	/**
