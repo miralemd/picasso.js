@@ -18,13 +18,16 @@ export default class Box {
 		// Tilt the boxplot
 		this.flipXY = this.settings.flipXY;
 
+		// Toggle whiskers
+		this.whiskers = this.settings.whiskers;
+
 		// rendering settings
 		this.rsettings = {
 			bandwidth: 0
 		};
 
 		// Compile all styles
-		[ "low", "box", "high", "med" ].forEach( key => {
+		[ "low", "box", "high", "med", "single" ].forEach( key => {
 			this.settings.styles[key] = this.settings.styles[key] || {};
 			this.settings.styles[key].compiled = this.compileStyle(
 				Object.assign( {}, this.settings.basestyle, this.settings.styles[key]
@@ -84,36 +87,52 @@ export default class Box {
 
 		let boxWidth = Math.max( 5, Math.min( 100, this.rsettings.bandwidth * draw.width ) );
 
+		let whiskerWidth = boxWidth * 0.5;
+
+		let single = false;
+
 		let i = 0;
 		displayBoxes.forEach( item => {
 			i++;
 
-			// Draw a speculative indication box of the highest and lowest values
-			if ( !item.start && !item.end )
+			single = item.start === null || item.end === null;
+
+			if ( single )
 			{
-				// Draw the line min - start
+				// Draw the line min - max
 				draw.push( {
 					type: "line",
 					y1: item.max * draw.height,
 					x1: item.x * draw.width,
 					y2: item.min * draw.height,
 					x2: item.x * draw.width,
-					style: this.settings.styles.low.compiled
+					style: this.settings.styles.single.compiled
 				} );
 			}
 			else
 			{
-				// Normal rendering
+				if ( item.min !== null && item.max !== null )
+				{
+					// Draw the line min - start
+					draw.push( {
+						type: "line",
+						y1: item.start * draw.height,
+						x1: item.x * draw.width,
+						y2: item.min * draw.height,
+						x2: item.x * draw.width,
+						style: this.settings.styles.low.compiled
+					} );
 
-				// Draw the line min - start
-				draw.push( {
-					type: "line",
-					y1: item.start * draw.height,
-					x1: item.x * draw.width,
-					y2: item.min * draw.height,
-					x2: item.x * draw.width,
-					style: this.settings.styles.low.compiled
-				} );
+					// Draw the line end - max (high)
+					draw.push( {
+						type: "line",
+						y1: item.max * draw.height,
+						x1: item.x * draw.width,
+						y2: item.end * draw.height,
+						x2: item.x * draw.width,
+						style: this.settings.styles.high.compiled
+					} );
+				}
 
 				// Draw the box
 				draw.push( {
@@ -125,19 +144,34 @@ export default class Box {
 					style: this.settings.styles.box.compiled
 				} );
 
-				// Draw the line end - max (high)
+			}
+
+			// Whiskers
+			if ( this.whiskers && item.min !== null && item.max !== null )
+			{
+				// Low whisker
+				draw.push( {
+					type: "line",
+					y1: item.min * draw.height,
+					x1: item.x * draw.width - ( whiskerWidth / 2 ),
+					y2: item.min * draw.height,
+					x2: item.x * draw.width + ( whiskerWidth / 2 ),
+					style: single ? this.settings.styles.single.compiled : this.settings.styles.low.compiled
+				} );
+
+				// High whisker
 				draw.push( {
 					type: "line",
 					y1: item.max * draw.height,
-					x1: item.x * draw.width,
-					y2: item.end * draw.height,
-					x2: item.x * draw.width,
-					style: this.settings.styles.high.compiled
+					x1: item.x * draw.width - ( whiskerWidth / 2 ),
+					y2: item.max * draw.height,
+					x2: item.x * draw.width + ( whiskerWidth / 2 ),
+					style: single ? this.settings.styles.single.compiled : this.settings.styles.high.compiled
 				} );
 			}
 
 			// The median line is drawn separately, and only if it's data exists
-			if ( !Number.isNaN( item.med ) ) {
+			if ( item.med !== null ) {
 				draw.push( {
 					type: "line",
 					y1: item.med * draw.height,
