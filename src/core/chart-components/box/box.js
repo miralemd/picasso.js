@@ -239,7 +239,7 @@ export default class Box {
 			}
 		} );
 
-		this.renderer.render( draw );
+		this.renderer.render( draw.storage );
 	}
 
 	// Compile styles into a CSS format

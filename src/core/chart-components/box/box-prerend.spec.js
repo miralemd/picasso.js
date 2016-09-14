@@ -8,7 +8,7 @@ describe( "boxPrerend", () => {
 		draw.push( "asdf" );
 
 		expect( draw ).to.deep.equal( boxPrerend( "asdf" ) );
-		expect( draw[0] ).to.equal( "asdf" );
+		expect( draw.storage[0] ).to.equal( "asdf" );
 		expect( draw.length ).to.equal( 1 );
 	} );
 
@@ -42,10 +42,10 @@ describe( "boxPrerend", () => {
 			y2: 40
 		} );
 
-		expect( draw[0].width ).to.equal( 50 );
-		expect( draw[0].height ).to.equal( 25 );
-		expect( draw[0].y1 ).to.equal( 20 );
-		expect( draw[0].x2 ).to.equal( 40 );
+		expect( draw.storage[0].width ).to.equal( 50 );
+		expect( draw.storage[0].height ).to.equal( 25 );
+		expect( draw.storage[0].y1 ).to.equal( 20 );
+		expect( draw.storage[0].x2 ).to.equal( 40 );
 	} );
 
 } );

@@ -19,6 +19,7 @@ export default class Registry {
 
 	/**
 	 * Register a factory function
+	 * @deprecated - Use #add instead
 	 * @param name
 	 * @param fn
 	 */
@@ -33,6 +34,25 @@ export default class Registry {
 			throw new Error( `${name} already exists` );
 		}
 		this.registry[name] = fn;
+		return true;
+	}
+
+	add( name, fn ) {
+		return this.register( name, fn );
+	}
+
+	get( name ) {
+		return this.registry[name];
+	}
+
+	has( name ) {
+		return !!this.registry[name];
+	}
+
+	remove( name ) {
+		let d = this.registry[name];
+		delete this.registry[name];
+		return d;
 	}
 
 	/**
