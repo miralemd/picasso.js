@@ -2,7 +2,6 @@ export default class BoxPrerend {
 	constructor( ...items ) {
 		this.storage = [];
 		this.flipXY = false;
-
 		this.push( ...items );
 	}
 
@@ -24,12 +23,17 @@ export default class BoxPrerend {
 	}
 
 	push( ...items ) {
-		if ( this.flipXY ) {
+		if ( this.flipXY || this.noDecimals ) {
 			items = items.map( item => {
 				let newItem = {};
 				Object.keys( item ).forEach( key => {
-					newItem[ this.oppositeKey( key ) ] = item[key];
+					let nkey = this.flipXY ? this.oppositeKey( key ) : key;
+					let value = this.noDecimals && Number.isFinite( item[key] ) ? item[key].toFixed( 0 ) : item[key];
+					newItem[ nkey ] = value;
 				} );
+				if ( this.noDecimals ) {
+					newItem["shape-rendering"] = "crispEdges";
+				}
 				return newItem;
 			} );
 		}
