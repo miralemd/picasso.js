@@ -1,7 +1,8 @@
-export default class BoxPrerend extends Array {
+export default class BoxPrerend {
 	constructor( ...items ) {
-		super();
+		this.storage = [];
 		this.flipXY = false;
+
 		this.push( ...items );
 	}
 
@@ -32,7 +33,7 @@ export default class BoxPrerend extends Array {
 				return newItem;
 			} );
 		}
-		super.push( ...items );
+		this.storage.push( ...items );
 	}
 
 	get width() {
@@ -49,6 +50,14 @@ export default class BoxPrerend extends Array {
 
 	set height( value ) {
 		this[ this.flipXY ? "_width" : "_height" ] = value;
+	}
+
+	get length() {
+		return this.storage.length;
+	}
+
+	set length( value ) {
+		this.storage.length = value;
 	}
 }
 
