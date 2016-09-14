@@ -21,6 +21,9 @@ module.exports = {
 			{
 				test: /\.js$/,
 				loader: "babel-loader",
+				query: {
+					presets: ["es2015"] // need to have this here instead of in .babelrc until after-work bumps babel dependecy to ^6.0.0
+				},
 				exclude: /node_modules/
 			}
 		]
