@@ -39,7 +39,7 @@ export default class Box {
 		}
 
 		// Compile all styles
-		[ "low", "box", "high", "med", "single" ].forEach( key => {
+		[ "low", "box", "high", "med", "single", "up", "down" ].forEach( key => {
 			this.settings.styles[key] = this.settings.styles[key] || {};
 			this.settings.styles[key].compiled = this.compileStyle(
 				Object.assign( {}, this.settings.basestyle, this.settings.styles[key]
@@ -99,6 +99,8 @@ export default class Box {
 		// Flip the axis on draw after setting width/height but before pushing items
 		draw.flipXY = this.flipXY;
 
+		draw.noDecimals = true;
+
 		let boxWidth = Math.max( 5, Math.min( 100, this.bandwidth * draw.width ) );
 
 		let whiskerWidth = boxWidth * 0.5;
@@ -151,14 +153,28 @@ export default class Box {
 					} );
 				}
 
+				if ( item.start === 0 && !this.flipXY ) {
+					item.start = 1;
+				}
+
+				let high = Math.max( item.start, item.end );
+				let low = Math.min( item.start, item.end );
+
+				let style = this.settings.styles.box.compiled;
+				if ( item.start > item.end ) {
+					style = this.settings.styles.up.compiled;
+				} else {
+					style = this.settings.styles.down.compiled;
+				}
+
 				// Draw the box
 				draw.push( {
 					type: "rect",
-					y: ( draw.flipXY ? item.start : item.end ) * draw.height,
-					height: ( draw.flipXY ? item.end - item.start : item.start - item.end ) * draw.height,
+					y: low * draw.height,
+					height: ( high - low ) * draw.height,
 					x: item.x * draw.width - ( boxWidth / 2 ),
 					width: boxWidth,
-					style: this.settings.styles.box.compiled
+					style: style
 				} );
 			}
 
