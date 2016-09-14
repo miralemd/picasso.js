@@ -18,8 +18,8 @@ export default class TreeItemRenderer {
 		this.nodeDestroyer = nodeDestroyer;
 	}
 
-	render( oldItems, newItems, root ) {
-		return this.create( oldItems, newItems, root, this.nodeCreator, this.nodeMaintainer, this.nodeDestroyer );
+	render( newItems, root ) {
+		return this.create( [], newItems, root, this.nodeCreator, this.nodeMaintainer, this.nodeDestroyer );
 	}
 }
 
