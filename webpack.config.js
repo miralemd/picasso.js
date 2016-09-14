@@ -5,8 +5,6 @@ let path = require( "path" );
 let srcDir = path.resolve( __dirname, "src" );
 let testDir = path.resolve( __dirname, "test" );
 
-let ExtractTextPlugin = require( "extract-text-webpack-plugin" );
-
 module.exports = {
 	entry: {
 		"picasso": path.resolve( srcDir, "index" ),
@@ -23,15 +21,11 @@ module.exports = {
 			{
 				test: /\.js$/,
 				loader: "babel-loader",
+				query: {
+					presets: ["es2015"] // need to have this here instead of in .babelrc until after-work bumps babel dependecy to ^6.0.0
+				},
 				exclude: /node_modules/
-			},
-			{
-				test: /\.less$/,
-				loader: ExtractTextPlugin.extract( "css!less" )
 			}
 		]
-	},
-	plugins: [
-		new ExtractTextPlugin( "[name].css" )
-	]
+	}
 };
