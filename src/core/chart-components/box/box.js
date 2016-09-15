@@ -96,12 +96,11 @@ export default class Box {
 		draw.width = this.renderer.rect.width;
 		draw.height = this.renderer.rect.height;
 
-		// Flip the axis on draw after setting width/height but before pushing items
 		draw.flipXY = this.flipXY;
 
 		draw.noDecimals = true;
 
-		let boxWidth = Math.max( 5, Math.min( 100, this.bandwidth * draw.width ) );
+		let boxWidth = Math.max( 5, Math.min( 100, this.bandwidth * draw.width ) ) / draw.width;
 
 		let whiskerWidth = boxWidth * 0.5;
 
@@ -121,11 +120,10 @@ export default class Box {
 				// Draw the line min - max
 				draw.push( {
 					type: "line",
-					y1: item.max * draw.height,
-					x1: item.x * draw.width,
-					y2: item.min * draw.height,
-					x2: item.x * draw.width,
-					style: this.settings.styles.single.compiled
+					y1: item.max,
+					x1: item.x,
+					y2: item.min,
+					x2: item.x
 				} );
 			}
 			else
@@ -135,21 +133,21 @@ export default class Box {
 					// Draw the line min - start
 					draw.push( {
 						type: "line",
-						y1: item.start * draw.height,
-						x1: item.x * draw.width,
-						y2: item.min * draw.height,
-						x2: item.x * draw.width,
-						style: this.settings.styles.low.compiled
+						y1: item.start,
+						x1: item.x,
+						y2: item.min,
+						x2: item.x,
+						stroke: "#f00"
 					} );
 
 					// Draw the line end - max (high)
 					draw.push( {
 						type: "line",
-						y1: item.max * draw.height,
-						x1: item.x * draw.width,
-						y2: item.end * draw.height,
-						x2: item.x * draw.width,
-						style: this.settings.styles.high.compiled
+						y1: item.max,
+						x1: item.x,
+						y2: item.end,
+						x2: item.x,
+						stroke: "#0f0"
 					} );
 				}
 
@@ -160,21 +158,13 @@ export default class Box {
 				let high = Math.max( item.start, item.end );
 				let low = Math.min( item.start, item.end );
 
-				let style = this.settings.styles.box.compiled;
-				if ( item.start > item.end ) {
-					style = this.settings.styles.up.compiled;
-				} else {
-					style = this.settings.styles.down.compiled;
-				}
-
 				// Draw the box
 				draw.push( {
 					type: "rect",
-					y: low * draw.height,
-					height: ( high - low ) * draw.height,
-					x: item.x * draw.width - ( boxWidth / 2 ),
-					width: boxWidth,
-					style: style
+					y: low,
+					height: ( high - low ),
+					x: item.x - ( boxWidth / 2 ),
+					width: boxWidth
 				} );
 			}
 
@@ -184,21 +174,19 @@ export default class Box {
 				// Open whisker
 				draw.push( {
 					type: "line",
-					y1: item.start * draw.height,
-					x1: item.x * draw.width - ohlcWhiskerWidth,
-					y2: item.start * draw.height,
-					x2: item.x * draw.width,
-					style: this.settings.styles.single.compiled
+					y1: item.start,
+					x1: item.x - ohlcWhiskerWidth,
+					y2: item.start,
+					x2: item.x
 				} );
 
 				// Close whisker
 				draw.push( {
 					type: "line",
-					y1: item.end * draw.height,
-					x1: item.x * draw.width,
-					y2: item.end * draw.height,
-					x2: item.x * draw.width + ohlcWhiskerWidth,
-					style: this.settings.styles.single.compiled
+					y1: item.end,
+					x1: item.x,
+					y2: item.end,
+					x2: item.x + ohlcWhiskerWidth
 				} );
 			}
 
@@ -208,21 +196,19 @@ export default class Box {
 				// Low whisker
 				draw.push( {
 					type: "line",
-					y1: item.min * draw.height,
-					x1: item.x * draw.width - ( whiskerWidth / 2 ),
-					y2: item.min * draw.height,
-					x2: item.x * draw.width + ( whiskerWidth / 2 ),
-					style: single ? this.settings.styles.single.compiled : this.settings.styles.low.compiled
+					y1: item.min,
+					x1: item.x - ( whiskerWidth / 2 ),
+					y2: item.min,
+					x2: item.x + ( whiskerWidth / 2 )
 				} );
 
 				// High whisker
 				draw.push( {
 					type: "line",
-					y1: item.max * draw.height,
-					x1: item.x * draw.width - ( whiskerWidth / 2 ),
-					y2: item.max * draw.height,
-					x2: item.x * draw.width + ( whiskerWidth / 2 ),
-					style: single ? this.settings.styles.single.compiled : this.settings.styles.high.compiled
+					y1: item.max,
+					x1: item.x - ( whiskerWidth / 2 ),
+					y2: item.max,
+					x2: item.x + ( whiskerWidth / 2 )
 				} );
 			}
 
@@ -230,16 +216,15 @@ export default class Box {
 			if ( item.med !== null && this.mode !== "ohlc" ) {
 				draw.push( {
 					type: "line",
-					y1: item.med * draw.height,
-					x1: item.x * draw.width - ( boxWidth / 2 ),
-					y2: item.med * draw.height,
-					x2: item.x * draw.width + ( boxWidth / 2 ),
-					style: this.settings.styles.med.compiled
+					y1: item.med,
+					x1: item.x - ( boxWidth / 2 ),
+					y2: item.med,
+					x2: item.x + ( boxWidth / 2 )
 				} );
 			}
 		} );
 
-		this.renderer.render( draw.storage );
+		this.renderer.render( draw.output() );
 	}
 
 	// Compile styles into a CSS format

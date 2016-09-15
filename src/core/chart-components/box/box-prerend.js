@@ -2,7 +2,9 @@ export default class BoxPrerend {
 	constructor( ...items ) {
 		this.storage = [];
 		this.flipXY = false;
-		this.noDecimals = false;
+
+		this.width = 0;
+		this.height = 0;
 
 		this.push( ...items );
 	}
@@ -24,46 +26,41 @@ export default class BoxPrerend {
 		return value;
 	}
 
-	push( ...items ) {
-		if ( this.flipXY || this.noDecimals ) {
-			items = items.map( item => {
-				let newItem = {};
-				Object.keys( item ).forEach( key => {
-					let nkey = this.flipXY ? this.oppositeKey( key ) : key;
-					let value = this.noDecimals && Number.isFinite( item[key] ) ? item[key].toFixed( 0 ) : item[key];
-					newItem[ nkey ] = value;
-				} );
-				if ( this.noDecimals ) {
-					newItem["shape-rendering"] = "crispEdges";
-				}
-				return newItem;
-			} );
+	coordinateToValue( key, coordinate ) {
+		if ( Number.isFinite( coordinate ) ) {
+
+			let firstChar = key.substring( 0, 1 );
+
+			if ( firstChar === "x" || key === "width" ) {
+				return coordinate * this.width;
+			} else if ( firstChar === "y" || key === "height" ) {
+				return coordinate * this.height;
+			} else {
+				return coordinate;
+			}
 		}
+
+		return coordinate;
+	}
+
+	push( ...items ) {
 		this.storage.push( ...items );
 	}
 
-	get width() {
-		return this.flipXY ? this._height : this._width;
-	}
+	output() {
+		let items = this.storage.map( item => {
+			let newItem = {};
 
-	set width( value ) {
-		this[ this.flipXY ? "_height" : "_width" ] = value;
-	}
+			Object.keys( item ).forEach( key => {
+				let nkey = this.flipXY ? this.oppositeKey( key ) : key;
+				let nval = this.coordinateToValue( nkey, item[key] );
+				newItem[ nkey ] = nval;
+			} );
 
-	get height() {
-		return this.flipXY ? this._width : this._height;
-	}
+			return newItem;
+		} );
 
-	set height( value ) {
-		this[ this.flipXY ? "_width" : "_height" ] = value;
-	}
-
-	get length() {
-		return this.storage.length;
-	}
-
-	set length( value ) {
-		this.storage.length = value;
+		return items;
 	}
 }
 
