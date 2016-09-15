@@ -16,12 +16,6 @@ export default class Box {
 		this.x = composer.scales[this.settings.x.scale];
 		this.y = composer.scales[this.settings.y.scale];
 
-		// Tilt the boxplot
-		this.flipXY = this.settings.flipXY;
-
-		// Toggle whiskers
-		this.whiskers = this.settings.whiskers;
-
 		// Set the default bandwidth
 		this.bandwidth = 0;
 
@@ -30,7 +24,7 @@ export default class Box {
 		if ( this.settings.open && this.settings.high && this.settings.low && this.settings.close )
 		{
 			this.mode = "ohlc";
-			this.whiskers = false;
+			this.settings.whiskers = false;
 
 			this.remap( "open", "start" );
 			this.remap( "high", "max" );
@@ -38,20 +32,7 @@ export default class Box {
 			this.remap( "close", "end" );
 		}
 
-		// Compile all styles
-		[ "low", "box", "high", "med", "single", "up", "down" ].forEach( key => {
-			this.settings.styles[key] = this.settings.styles[key] || {};
-			this.settings.styles[key].compiled = this.compileStyle(
-				Object.assign( {}, this.settings.basestyle, this.settings.styles[key]
-			) );
-		} );
-
 		this.onData();
-	}
-
-	// This negates the coordinates if the axis aren't flipped
-	negateCoordinates( value ) {
-		return this.flipXY ? value : 1 - value;
 	}
 
 	onData() {
@@ -71,11 +52,11 @@ export default class Box {
 				this.data.fromSource( this.obj.data.source, i ).forEach( ( value, row ) => {
 					this.boxes.push( {
 						x: x ? ( this.x.scale.get( row ) ) : 0.5,
-						min: min ? ( this.negateCoordinates( this.y.toValue( min, row ) ) ) : null,
-						max: max ? ( this.negateCoordinates( this.y.toValue( max, row ) ) ) : null,
-						start: start ? ( this.negateCoordinates( this.y.toValue( start, row ) ) ) : 0,
-						end: end ? ( this.negateCoordinates( this.y.toValue( end, row ) ) ) : null,
-						med: med ? ( this.negateCoordinates( this.y.toValue( med, row ) ) ) : null
+						min: min ? ( this.y.toValue( min, row ) ) : null,
+						max: max ? ( this.y.toValue( max, row ) ) : null,
+						start: start ? ( this.y.toValue( start, row ) ) : 0,
+						end: end ? ( this.y.toValue( end, row ) ) : null,
+						med: med ? ( this.y.toValue( med, row ) ) : null
 					} );
 				} );
 			}, this );
@@ -96,7 +77,11 @@ export default class Box {
 		draw.width = this.renderer.rect.width;
 		draw.height = this.renderer.rect.height;
 
-		draw.flipXY = this.flipXY;
+		draw.vertical = this.settings.vertical;
+		draw.flipY = !draw.vertical;
+
+		// Toggle flipX for RTL when on vertical (?)
+		//draw.flipX = true;
 
 		draw.noDecimals = true;
 
@@ -123,7 +108,8 @@ export default class Box {
 					y1: item.max,
 					x1: item.x,
 					y2: item.min,
-					x2: item.x
+					x2: item.x,
+					stroke: "#000"
 				} );
 			}
 			else
@@ -137,7 +123,7 @@ export default class Box {
 						x1: item.x,
 						y2: item.min,
 						x2: item.x,
-						stroke: "#f00"
+						stroke: "#000"
 					} );
 
 					// Draw the line end - max (high)
@@ -147,24 +133,24 @@ export default class Box {
 						x1: item.x,
 						y2: item.end,
 						x2: item.x,
-						stroke: "#0f0"
+						stroke: "#000"
 					} );
-				}
-
-				if ( item.start === 0 && !this.flipXY ) {
-					item.start = 1;
 				}
 
 				let high = Math.max( item.start, item.end );
 				let low = Math.min( item.start, item.end );
 
+				let uptrend = item.start < item.end;
+
 				// Draw the box
 				draw.push( {
 					type: "rect",
+					x: item.x - ( boxWidth / 2 ),
 					y: low,
 					height: ( high - low ),
-					x: item.x - ( boxWidth / 2 ),
-					width: boxWidth
+					width: boxWidth,
+					fill: uptrend ? "#0f0" : "#f00",
+					stroke: "#000"
 				} );
 			}
 
@@ -191,7 +177,7 @@ export default class Box {
 			}
 
 			// Draw the whiskers
-			if ( this.whiskers && item.min !== null && item.max !== null )
+			if ( this.settings.whiskers && item.min !== null && item.max !== null )
 			{
 				// Low whisker
 				draw.push( {
@@ -199,7 +185,8 @@ export default class Box {
 					y1: item.min,
 					x1: item.x - ( whiskerWidth / 2 ),
 					y2: item.min,
-					x2: item.x + ( whiskerWidth / 2 )
+					x2: item.x + ( whiskerWidth / 2 ),
+					stroke: "#000"
 				} );
 
 				// High whisker
@@ -208,7 +195,8 @@ export default class Box {
 					y1: item.max,
 					x1: item.x - ( whiskerWidth / 2 ),
 					y2: item.max,
-					x2: item.x + ( whiskerWidth / 2 )
+					x2: item.x + ( whiskerWidth / 2 ),
+					stroke: "#000"
 				} );
 			}
 
@@ -219,19 +207,13 @@ export default class Box {
 					y1: item.med,
 					x1: item.x - ( boxWidth / 2 ),
 					y2: item.med,
-					x2: item.x + ( boxWidth / 2 )
+					x2: item.x + ( boxWidth / 2 ),
+					stroke: "#000"
 				} );
 			}
 		} );
 
 		this.renderer.render( draw.output() );
-	}
-
-	// Compile styles into a CSS format
-	compileStyle( props ) {
-		return Object.keys( props ).map( key => {
-			return key + ": " + props[key];
-		} ).join( "; " );
 	}
 
 	resize() {
