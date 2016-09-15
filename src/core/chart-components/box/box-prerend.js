@@ -1,7 +1,10 @@
 export default class BoxPrerend {
 	constructor( ...items ) {
 		this.storage = [];
-		this.flipXY = false;
+		this.vertical = false;
+
+		this.flipX = false;
+		this.flipY = false;
 
 		this.width = 0;
 		this.height = 0;
@@ -9,31 +12,40 @@ export default class BoxPrerend {
 		this.push( ...items );
 	}
 
-	oppositeKey( value ) {
-		let firstChar = value.substring( 0, 1 );
-		let rest = value.substring( 1 );
+	getActualKey( value ) {
 
-		if ( firstChar === "x" ) {
-			return "y" + rest;
-		} else if ( firstChar === "y" ) {
-			return "x" + rest;
-		} else if ( value === "width" ) {
-			return "height";
-		} else if ( value === "height" ) {
-			return "width";
+		if ( this.vertical ) {
+			let firstChar = value.substring( 0, 1 );
+			let rest = value.substring( 1 );
+
+			if ( firstChar === "x" ) {
+				return "y" + rest;
+			} else if ( firstChar === "y" ) {
+				return "x" + rest;
+			} else if ( value === "width" ) {
+				return "height";
+			} else if ( value === "height" ) {
+				return "width";
+			}
 		}
 
 		return value;
 	}
 
-	coordinateToValue( key, coordinate ) {
+	coordinateToValue( key, coordinate, item = {} ) {
 		if ( Number.isFinite( coordinate ) ) {
 
 			let firstChar = key.substring( 0, 1 );
 
-			if ( firstChar === "x" || key === "width" ) {
+			if ( firstChar === "x" ) {
+				coordinate = this.flipX ? ( 1 - coordinate ) - ( item[ this.getActualKey( "width" ) ] || 0 ) : coordinate;
 				return coordinate * this.width;
-			} else if ( firstChar === "y" || key === "height" ) {
+			} else if ( key === "width" ) {
+				return coordinate * this.width;
+			} else if ( firstChar === "y" ) {
+				coordinate = this.flipY ? ( 1 - coordinate ) - ( item[ this.getActualKey( "height" ) ] || 0 ) : coordinate;
+				return coordinate * this.height;
+			} else if ( key === "height" ) {
 				return coordinate * this.height;
 			} else {
 				return coordinate;
@@ -52,8 +64,8 @@ export default class BoxPrerend {
 			let newItem = {};
 
 			Object.keys( item ).forEach( key => {
-				let nkey = this.flipXY ? this.oppositeKey( key ) : key;
-				let nval = this.coordinateToValue( nkey, item[key] );
+				let nkey = this.vertical ? this.getActualKey( key ) : key;
+				let nval = this.coordinateToValue( nkey, item[key], item );
 				newItem[ nkey ] = nval;
 			} );
 
