@@ -11,11 +11,14 @@ function renderShapes ( shapes, g ) {
 		if ( "stroke" in s && g.stroke !== s.stroke ) {
 			g.strokeStyle = s.stroke;
 		}
+		if ( "stroke-width" in s && g["stroke-width"] !== s["stroke-width"] ) {
+			g.lineWidth = s["stroke-width"];
+		}
 		if ( reg.has( s.type ) ) {
 			reg.get( s.type )( s, {
 				g,
 				doFill: "fill" in s,
-				doStroke: "stroke" in s
+				doStroke: "stroke" in s && g.lineWidth !== 0
 			} );
 		}
 		if ( s.children ) {
