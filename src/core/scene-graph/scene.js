@@ -7,6 +7,9 @@ function traverse( items, parent ) {
 			obj.set( s );
 			obj.type = s.type;
 			parent.addChild( obj );
+			if ( s.children ) {
+				traverse( s.children, obj );
+			}
 		}
 	} );
 }
