@@ -1,5 +1,5 @@
 import { renderer } from "../../../web/renderer/svg-renderer/svg-renderer";
-import { boxPrerend } from "./box-prerend";
+import { transposer } from "../../transposer/transposer";
 
 export default class Box {
 	constructor( obj, composer ) {
@@ -72,18 +72,12 @@ export default class Box {
 			return [ item.min, item.max ].indexOf( null ) === -1 || [ item.start, item.end ].indexOf( null ) === -1;
 		} );
 
-		let draw = boxPrerend();
+		let draw = transposer();
 
 		draw.width = this.renderer.rect.width;
 		draw.height = this.renderer.rect.height;
 
 		draw.vertical = this.settings.vertical;
-		draw.flipY = !draw.vertical;
-
-		// Toggle flipX for RTL when on vertical (?)
-		//draw.flipX = true;
-
-		draw.noDecimals = true;
 
 		let boxWidth = Math.max( 5, Math.min( 100, this.bandwidth * draw.width ) ) / draw.width;
 
