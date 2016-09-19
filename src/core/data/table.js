@@ -1,5 +1,5 @@
 /* eslint no-return-assign: 0 */
-export function data() {
+export function table() {
 	let dd = {},
 		acc = {
 			rows: () => 0,

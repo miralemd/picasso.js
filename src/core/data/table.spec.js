@@ -1,10 +1,10 @@
-import { data } from "./data";
+import { table } from "./table";
 
-describe( "data", () => {
+describe( "table", () => {
 	let dd;
 
 	beforeEach( () => {
-		dd = data();
+		dd = table();
 		dd.data( [
 			["Country", "Population"],
 			["Sweden", 9000000],
