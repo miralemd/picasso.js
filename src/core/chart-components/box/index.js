@@ -1,9 +1,11 @@
 import { registry } from "../../utils/registry";
 import { box } from "./box";
+import { candlestick } from "./candlestick";
 
 let reg = registry();
 
 reg.register( "box", box );
+reg.register( "candlestick", candlestick );
 
 export function createbox( arr, composer ) {
 	let markers = [];

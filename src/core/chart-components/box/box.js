@@ -1,20 +1,13 @@
+import { economic } from "../palette/economic";
 import { renderer } from "../../../web/renderer/svg-renderer/svg-renderer";
 import { transposer } from "../../transposer/transposer";
 
-export default class Box {
+export default class Box extends economic {
 	constructor( obj, composer ) {
-		this.element = composer.element;
+		super( obj, composer );
 
 		this.renderer = renderer();
 		this.renderer.appendTo( this.element );
-
-		this.settings = obj.settings;
-		this.data = composer.data;
-		this.obj = obj;
-
-		// Setup scales
-		this.x = composer.scales[this.settings.x.scale];
-		this.y = composer.scales[this.settings.y.scale];
 
 		// Set the default bandwidth
 		this.bandwidth = 0;
@@ -36,35 +29,9 @@ export default class Box {
 	}
 
 	onData() {
-		this.boxes = [];
 		this.bandwidth = this.x.scale.step() * 0.75;
 
-		this.data.dataPages().then( ( pages ) => {
-
-			pages.forEach( ( page, i ) => {
-				const x = this.x ? this.data.fromSource( this.x.source, i ) : null,
-					min = this.settings.min ? this.data.fromSource( this.settings.min.source, i ) : null,
-					max = this.settings.max ? this.data.fromSource( this.settings.max.source, i ) : null,
-					start = this.settings.start ? this.data.fromSource( this.settings.start.source, i ) : null,
-					end = this.settings.end ? this.data.fromSource( this.settings.end.source, i ) : null,
-					med = this.settings.med ? this.data.fromSource( this.settings.med.source, i ) : null;
-
-				this.data.fromSource( this.obj.data.source, i ).forEach( ( value, row ) => {
-					this.boxes.push( {
-						x: x ? ( this.x.scale.get( row ) ) : 0.5,
-						min: min ? ( this.y.toValue( min, row ) ) : null,
-						max: max ? ( this.y.toValue( max, row ) ) : null,
-						start: start ? ( this.y.toValue( start, row ) ) : 0,
-						end: end ? ( this.y.toValue( end, row ) ) : null,
-						med: med ? ( this.y.toValue( med, row ) ) : null
-					} );
-				} );
-			}, this );
-
-			this.resize();
-		} ).catch( () => {
-			this.resize();
-		} );
+		super.onData();
 	}
 
 	render( boxes ) {
@@ -80,9 +47,7 @@ export default class Box {
 		draw.vertical = this.settings.vertical;
 
 		let boxWidth = Math.max( 5, Math.min( 100, this.bandwidth * draw.width ) ) / draw.width;
-
 		let whiskerWidth = boxWidth * 0.5;
-
 		let ohlcWhiskerWidth = boxWidth * 0.5;
 
 		let single = false;
@@ -208,18 +173,6 @@ export default class Box {
 		} );
 
 		this.renderer.render( draw.output() );
-	}
-
-	resize() {
-		this.renderer.rect.width = this.element.clientWidth;
-		this.renderer.rect.height = this.element.clientHeight;
-
-		this.render( this.boxes );
-	}
-
-	remap( input, output ) {
-		this.settings[output] = this.settings[input];
-		delete this.settings[input];
 	}
 }
 
