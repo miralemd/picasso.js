@@ -67,6 +67,20 @@ export default class Doodler {
 		);
 	}
 
+	openwhisker( x, y ) {
+		return this.whisker(
+			x - ( this.settings.styles.whisker.width / 2 ),
+			y
+		);
+	}
+
+	closewhisker( x, y ) {
+		return this.whisker(
+			x + ( this.settings.styles.whisker.width / 2 ),
+			y
+		);
+	}
+
 	median( x, y ) {
 		return this.horizontalLine(
 			x,

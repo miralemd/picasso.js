@@ -1,15 +1,14 @@
 import { registry } from "../../utils/registry";
-import { box } from "./box";
+import { bar } from "./bar";
 import { candlestick } from "./candlestick";
 import { gantt } from "./gantt";
-import { bar } from "./bar";
+
 
 let reg = registry();
 
-reg.register( "box", box );
+reg.register( "bar", bar );
 reg.register( "candlestick", candlestick );
 reg.register( "gantt", gantt );
-reg.register( "bar", bar );
 
 export function createbox( arr, composer ) {
 	let markers = [];

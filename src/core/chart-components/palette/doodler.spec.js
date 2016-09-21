@@ -50,12 +50,38 @@ describe( "Doodler", () => {
 		} );
 	} );
 
-	it( "should doodle whiskers correctly", () => {
+	it( "should doodle normal whiskers correctly", () => {
 		doodle.postfill( "whisker", "width", 0.5 );
 
 		expect( doodle.whisker( 1, 2 ) ).to.eql(
 			doodle.horizontalLine(
 				1,
+				2,
+				0.5,
+				"whisker"
+			)
+		);
+	} );
+
+	it( "should doodle open whiskers correctly", () => {
+		doodle.postfill( "whisker", "width", 0.5 );
+
+		expect( doodle.openwhisker( 1, 2 ) ).to.eql(
+			doodle.horizontalLine(
+				0.75,
+				2,
+				0.5,
+				"whisker"
+			)
+		);
+	} );
+
+	it( "should doodle open whiskers correctly", () => {
+		doodle.postfill( "whisker", "width", 0.5 );
+
+		expect( doodle.closewhisker( 1, 2 ) ).to.eql(
+			doodle.horizontalLine(
+				1.25,
 				2,
 				0.5,
 				"whisker"
