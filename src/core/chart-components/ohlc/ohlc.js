@@ -53,9 +53,7 @@ export default class OHLC extends economic {
 		doodle.postfill( "box", "width", boxWidth );
 		doodle.postfill( "whisker", "width", whiskerWidth );
 
-		let i = 0;
 		boxes.forEach( item => {
-			i++;
 
 			doodle.customize( item );
 

@@ -38,10 +38,7 @@ export default class Bar extends economic {
 		// Postfill settings instead of prefilling them if nonexistant
 		doodle.postfill( "box", "width", boxWidth );
 
-		let i = 0;
 		boxes.forEach( item => {
-			i++;
-
 			doodle.customize( item );
 
 			doodle.box(
