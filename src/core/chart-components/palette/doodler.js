@@ -1,7 +1,7 @@
 export default class Doodler {
-	constructor( pusher, settings ) {
-		this.push = pusher || ( v => v );
-		this.settings = settings || { styles: {} };
+	constructor() {
+		this.push = v => v;
+		this.settings = { styles: {} };
 		this.customStyle = {};
 	}
 

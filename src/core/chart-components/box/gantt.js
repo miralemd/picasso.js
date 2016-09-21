@@ -3,7 +3,7 @@ import { doodler } from "../palette/doodler";
 import { renderer } from "../../../web/renderer/svg-renderer/svg-renderer";
 import { transposer } from "../../transposer/transposer";
 
-export default class Candlestick extends economic {
+export default class Gantt extends economic {
 	constructor( obj, composer ) {
 		super( obj, composer );
 
@@ -12,6 +12,11 @@ export default class Candlestick extends economic {
 
 		// Set the default bandwidth
 		this.bandwidth = 0;
+
+		// Default to vertical on gantt
+		if ( this.settings.vertical === undefined ) {
+			this.settings.vertical = true;
+		}
 
 		this.onData();
 	}
@@ -34,11 +39,9 @@ export default class Candlestick extends economic {
 
 		// Calculate box width
 		let boxWidth = Math.max( 5, Math.min( 100, this.bandwidth * bp.width ) ) / bp.width;
-		let whiskerWidth = boxWidth * 0.5;
 
 		// Postfill settings instead of prefilling them if nonexistant
 		doodle.postfill( "box", "width", boxWidth );
-		doodle.postfill( "whisker", "width", whiskerWidth );
 
 		let i = 0;
 		boxes.forEach( item => {
@@ -46,37 +49,16 @@ export default class Candlestick extends economic {
 
 			doodle.customize( item );
 
-			if ( item.min !== null && item.max !== null )
-			{
-				// Draw the line min - start
-				doodle.verticalLine( item.x, item.start, item.min, "line" );
-
-				// Draw the line end - max (high)
-				doodle.verticalLine( item.x, item.max, item.end, "line" );
-			}
-
 			// Draw the box
 			let high = Math.max( item.start, item.end );
 			let low = Math.min( item.start, item.end );
-
-			let uptrend = item.start < item.end;
 
 			doodle.box(
 				item.x,
 				low,
 				( high - low ),
-				uptrend ? "upbox" : "downbox"
+				"box"
 			);
-
-			// Draw the whiskers
-			if ( this.settings.whiskers && item.min !== null && item.max !== null )
-			{
-				// Low whisker
-				doodle.whisker( item.x, item.min );
-
-				// High whisker
-				doodle.whisker( item.x, item.max );
-			}
 
 			// Draw the median line
 			if ( item.med !== null ) {
@@ -88,6 +70,6 @@ export default class Candlestick extends economic {
 	}
 }
 
-export function candlestick( ...args ) {
-	return new Candlestick( ...args );
+export function gantt( ...args ) {
+	return new Gantt( ...args );
 }

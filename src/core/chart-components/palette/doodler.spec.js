@@ -4,18 +4,21 @@ import { doodler } from "./doodler";
 
 describe( "Doodler", () => {
 
-	let doodle = null;
+	let doodle, latestPush;
+
+	beforeEach( () => {
+		doodle = doodler();
+		latestPush = null;
+	} );
 
 	it( "should postfill styles correctly in doodle settings", () => {
-		doodle = doodler( null, { styles: { } } );
-
 		doodle.postfill( "box", "width", 0.5 );
 
 		expect( doodle.settings.styles.box.width ).to.equal( 0.5 );
 	} );
 
 	it( "should doodle horizontal lines correctly with base style", () => {
-		doodle = doodler( null, { styles: { base: { test: "test" } } } );
+		doodle.settings = { styles: { base: { test: "test" } } };
 
 		expect( doodle.horizontalLine( 1, 2, 3, "line1" ) ).to.eql( {
 			type: "line",
@@ -30,8 +33,8 @@ describe( "Doodler", () => {
 	} );
 
 	it( "should doodle vertical lines correctly with custom push function", () => {
-		let latestPush = null;
-		doodle = doodler( v => { latestPush = v; }, { styles: { line2: { test2: "test2" } } } );
+		doodle.push = v => { latestPush = v; };
+		doodle.settings = { styles: { line2: { test2: "test2" } } };
 
 		doodle.verticalLine( 1, 2, 3, "line2" );
 
@@ -48,8 +51,6 @@ describe( "Doodler", () => {
 	} );
 
 	it( "should doodle whiskers correctly", () => {
-		doodle = doodler();
-
 		doodle.postfill( "whisker", "width", 0.5 );
 
 		expect( doodle.whisker( 1, 2 ) ).to.eql(
@@ -63,8 +64,6 @@ describe( "Doodler", () => {
 	} );
 
 	it( "should doodle median correctly", () => {
-		doodle = doodler();
-
 		doodle.postfill( "box", "width", 0.7 );
 
 		expect( doodle.median( 1, 2 ) ).to.eql(
@@ -74,6 +73,22 @@ describe( "Doodler", () => {
 				0.7,
 				"med"
 			)
+		);
+	} );
+
+	it( "should doodle a box correctly", () => {
+		doodle.postfill( "box", "width", 0.75 );
+
+		expect( doodle.box( 1, 2, 3, "box" ) ).to.eql(
+			{
+				type: "rect",
+				x: 1 - ( 0.75 / 2 ),
+				y: 2,
+				height: 3,
+				width: 0.75,
+				fill: "#fff",
+				stroke: "#000"
+			}
 		);
 	} );
 
