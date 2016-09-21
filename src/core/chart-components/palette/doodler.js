@@ -1,3 +1,5 @@
+import { default as extend } from "extend";
+
 export default class Doodler {
 	constructor() {
 		this.push = v => v;
@@ -15,7 +17,7 @@ export default class Doodler {
 	}
 
 	style( object, styleName ) {
-		return Object.assign(
+		return extend(
 			object,
 			this.settings.styles.base || {},
 			this.settings.styles[styleName] || {},
