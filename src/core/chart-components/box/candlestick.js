@@ -66,8 +66,7 @@ export default class Candlestick extends economic {
 			);
 
 			// Draw the whiskers
-			if ( this.settings.whiskers && item.min !== null && item.max !== null )
-			{
+			if ( this.settings.whiskers && item.min !== null && item.max !== null ) {
 				// Low whisker
 				doodle.whisker( item.x, item.min );
 
