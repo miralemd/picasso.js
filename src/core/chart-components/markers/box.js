@@ -1,6 +1,6 @@
-import { bedrock } from "./generic/bedrock";
+import { dispersion } from "./generic/dispersion";
 
-export default class Box extends bedrock {
+export default class Box extends dispersion {
 	constructor( obj, composer ) {
 		super( obj, composer );
 

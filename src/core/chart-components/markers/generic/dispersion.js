@@ -2,7 +2,7 @@ import { renderer } from "../../../renderer";
 import { doodler } from "./doodler";
 import { transposer } from "../../../transposer/transposer";
 
-export class bedrock {
+export class dispersion {
 	constructor( obj, composer ) {
 		this.element = composer.element;
 
