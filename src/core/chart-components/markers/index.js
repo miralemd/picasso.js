@@ -1,9 +1,11 @@
 import { registry } from "../../utils/registry";
 import { point } from "./point";
+import { box } from "./box";
 
 let reg = registry();
 
 reg.register( "point", point );
+reg.register( "box", box );
 
 export function create( arr, composer ) {
 	let markers = [];
