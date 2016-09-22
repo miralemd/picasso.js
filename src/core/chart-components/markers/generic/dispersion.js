@@ -2,7 +2,7 @@ import { renderer } from "../../../renderer";
 import { doodler } from "./doodler";
 import { transposer } from "../../../transposer/transposer";
 
-export class dispersion {
+export class Dispersion {
 	constructor( obj, composer ) {
 		this.element = composer.element;
 

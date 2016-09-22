@@ -10,7 +10,7 @@ export default class Doodler {
 	customize( item ) {
 		if (
 			this.settings.styler &&
-			this.settings.styler instanceof Function
+			typeof this.settings.styler === "function"
 		) {
 			this.customStyle = this.settings.styler( item ) || {};
 		}

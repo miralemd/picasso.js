@@ -1,6 +1,6 @@
-import { dispersion } from "./generic/dispersion";
+import { Dispersion } from "./generic/dispersion";
 
-export default class Box extends dispersion {
+export default class Box extends Dispersion {
 	constructor( obj, composer ) {
 		super( obj, composer );
 
