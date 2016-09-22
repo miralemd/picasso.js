@@ -37,8 +37,8 @@ export default class Box extends Dispersion {
 		}
 
 		// Draw the box
-		let high = Math.max( item.start, item.end );
-		let low = Math.min( item.start, item.end );
+		const high = Math.max( item.start, item.end );
+		const low = Math.min( item.start, item.end );
 
 		this.doodle.box(
 			item.x,
