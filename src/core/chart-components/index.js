@@ -1,18 +1,14 @@
 import { registry } from "../utils/registry";
 import { create } from "./markers/index";
-import { createbox } from "./box/index";
 import { creategrid } from "./grid/index";
 import { axisFactory } from "./axis/index";
-import { ohlcFactory } from "./ohlc/index";
 import { textFactory } from "./text/index";
 
 let reg = registry();
 
 reg.register( "markers", create );
-reg.register( "box", createbox );
 reg.register( "grid", creategrid );
 reg.register( "axes", axisFactory );
-reg.register( "ohlcs", ohlcFactory );
 reg.register( "texts", textFactory );
 
 
