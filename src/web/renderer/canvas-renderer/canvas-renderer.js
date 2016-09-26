@@ -29,29 +29,33 @@ function renderShapes ( shapes, g ) {
 
 export function renderer( sceneFn = sceneFactory, Promise = window.Promise ) {
 
-	let canvas,
+	let el,
 		scene;
 
 	let canvasRenderer = function() {};
 
+	canvasRenderer.element = () => el;
+
+	canvasRenderer.root = () => el;
+
 	canvasRenderer.appendTo = ( element ) => {
-		if ( !canvas ) {
-			canvas = element.ownerDocument.createElement( "canvas" );
+		if ( !el ) {
+			el = element.ownerDocument.createElement( "canvas" );
 		}
 
-		element.appendChild( canvas );
+		element.appendChild( el );
 	};
 
 	canvasRenderer.render = ( shapes ) => {
-		if ( !canvas ) {
+		if ( !el ) {
 			return Promise.reject();
 		}
 
-		let el = canvas.parentElement,
-			g = canvas.getContext( "2d" );
+		let parent = el.parentElement,
+			g = el.getContext( "2d" );
 
-		canvas.width = el.clientWidth;
-		canvas.height = el.clientHeight;
+		el.width = parent.clientWidth;
+		el.height = parent.clientHeight;
 
 		scene = sceneFn( shapes );
 
@@ -60,19 +64,26 @@ export function renderer( sceneFn = sceneFactory, Promise = window.Promise ) {
 		return Promise.resolve();
 	};
 
+	canvasRenderer.clear = () => {
+		if ( !el ) {
+			return;
+		}
+		el.width = el.width;
+	};
+
 	canvasRenderer.size = () => {
 		return {
-			width: canvas ? canvas.parentElement.clientWidth : 0,
-			height: canvas ? canvas.parentElement.clientHeight : 0
+			width: el ? el.parentElement.clientWidth : 0,
+			height: el ? el.parentElement.clientHeight : 0
 		};
 	};
 
 	canvasRenderer.destroy = () => {
-		if ( canvas ) {
-			if ( canvas.parentElement ) {
-				canvas.parentElement.removeChild( canvas );
+		if ( el ) {
+			if ( el.parentElement ) {
+				el.parentElement.removeChild( el );
 			}
-			canvas = null;
+			el = null;
 		}
 		scene = null;
 	};
