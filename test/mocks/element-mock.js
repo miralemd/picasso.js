@@ -1,10 +1,12 @@
 function element( name ) {
-	return {
+
+	let e = {
 		name,
 		attributes: {},
 		style: {},
 		children: [],
 		parentNode: null,
+		parentElement: null,
 		ownerDocument: {
 			createElementNS: function( ns, tag ) {
 				return element( `${ns}:${tag}` );
@@ -29,12 +31,20 @@ function element( name ) {
 		appendChild: function( el ) {
 			this.children.push( el );
 			el.parentNode = this;
+			el.parentElement = this;
 		},
 		removeChild: function( el ) {
 			this.children.splice( this.children.indexOf( el ), 1 );
 			el.parentNode = null;
+			el.parentElement = this;
 		}
 	};
+
+	if ( name === "canvas" ) {
+		e.getContext = function(){};
+	}
+
+	return e;
 }
 
 export default element;

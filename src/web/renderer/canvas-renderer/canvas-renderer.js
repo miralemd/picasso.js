@@ -1,4 +1,4 @@
-import { scene } from "../../../core/scene-graph/scene";
+import { scene as sceneFactory } from "../../../core/scene-graph/scene";
 import { registry } from "../../../core/utils/registry";
 
 let reg = registry();
@@ -27,48 +27,57 @@ function renderShapes ( shapes, g ) {
 	} );
 }
 
-export default class CanvasRenderer {
-	constructor( Promise ) {
-		this.Promise = Promise;
-	}
+export function renderer( sceneFn = sceneFactory, Promise = window.Promise ) {
 
-	appendTo( element ) {
-		if ( !this.canvas ) {
-			this.canvas = element.ownerDocument.createElement( "canvas" );
+	let canvas,
+		scene;
+
+	let canvasRenderer = function() {};
+
+	canvasRenderer.appendTo = ( element ) => {
+		if ( !canvas ) {
+			canvas = element.ownerDocument.createElement( "canvas" );
 		}
 
-		element.appendChild( this.canvas );
-	}
+		element.appendChild( canvas );
+	};
 
-	render( shapes ) {
-		let c = this.canvas,
-			el = c.parentElement,
-			g = c.getContext( "2d" );
-
-		if ( !c ) {
-			return this.Promise.resolve();
+	canvasRenderer.render = ( shapes ) => {
+		if ( !canvas ) {
+			return Promise.reject();
 		}
 
-		c.width = el.clientWidth;
-		c.height = el.clientHeight;
+		let el = canvas.parentElement,
+			g = canvas.getContext( "2d" );
 
-		this.scene = scene( shapes );
+		canvas.width = el.clientWidth;
+		canvas.height = el.clientHeight;
 
-		renderShapes( this.scene.children, g );
+		scene = sceneFn( shapes );
 
-		return this.Promise.resolve();
-	}
+		renderShapes( scene.children, g );
 
-	size () {
+		return Promise.resolve();
+	};
+
+	canvasRenderer.size = () => {
 		return {
-			width: this.canvas.parentElement.clientWidth,
-			height: this.canvas.parentElement.clientHeight
+			width: canvas ? canvas.parentElement.clientWidth : 0,
+			height: canvas ? canvas.parentElement.clientHeight : 0
 		};
-	}
-}
+	};
 
-export function renderer() {
-	return new CanvasRenderer( window.Promise );
+	canvasRenderer.destroy = () => {
+		if ( canvas ) {
+			if ( canvas.parentElement ) {
+				canvas.parentElement.removeChild( canvas );
+			}
+			canvas = null;
+		}
+		scene = null;
+	};
+
+	return canvasRenderer;
 }
 
 export function register( type, renderFn ) {
