@@ -6,7 +6,8 @@ import { scene } from "../../../core/scene-graph/scene";
 
 export default class SVGRenderer {
 
-	constructor( treeFn, ns, sceneFactory ) {
+	constructor( Promise, treeFn, ns, sceneFactory ) {
+		this.Promise = Promise;
 		this.ns = ns;
 		this.tree = treeFn();
 		this.sceneFactory = sceneFactory;
@@ -49,6 +50,8 @@ export default class SVGRenderer {
 		this.clear();
 		this.scene = this.sceneFactory( items );
 		this.tree.render( this.scene.children, this.g );
+
+		return Promise.resolve();
 	}
 
 	/**

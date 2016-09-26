@@ -3,10 +3,13 @@ import element from "../../../../test/mocks/element-mock";
 
 
 describe( "SVGRenderer", () => {
-	let sandbox, tree, ns, treeRenderer, svg, scene;
+	let sandbox, tree, ns, treeRenderer, svg, scene, Prom;
 
 	beforeEach( () => {
 		sandbox = sinon.sandbox.create();
+		Prom = {
+			resolve: sandbox.spy()
+		};
 		treeRenderer = {
 			render: sandbox.spy()
 		};
@@ -17,7 +20,7 @@ describe( "SVGRenderer", () => {
 		};
 		tree = sandbox.stub().returns( treeRenderer );
 		ns = "namespace";
-		svg = new SVGRenderer( tree, ns, scene );
+		svg = new SVGRenderer( Prom, tree, ns, scene );
 	} );
 
 	afterEach( () => {

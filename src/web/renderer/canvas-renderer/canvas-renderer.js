@@ -28,7 +28,9 @@ function renderShapes ( shapes, g ) {
 }
 
 export default class CanvasRenderer {
-	constructor() {}
+	constructor( Promise ) {
+		this.Promise = Promise;
+	}
 
 	appendTo( element ) {
 		if ( !this.canvas ) {
@@ -44,7 +46,7 @@ export default class CanvasRenderer {
 			g = c.getContext( "2d" );
 
 		if ( !c ) {
-			return;
+			return this.Promise.resolve();
 		}
 
 		c.width = el.clientWidth;
@@ -53,6 +55,8 @@ export default class CanvasRenderer {
 		this.scene = scene( shapes );
 
 		renderShapes( this.scene.children, g );
+
+		return this.Promise.resolve();
 	}
 
 	size () {
@@ -64,7 +68,7 @@ export default class CanvasRenderer {
 }
 
 export function renderer() {
-	return new CanvasRenderer();
+	return new CanvasRenderer( window.Promise );
 }
 
 export function register( type, renderFn ) {
