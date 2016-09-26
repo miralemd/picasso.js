@@ -1,41 +1,31 @@
-import SVGRenderer from "./svg-renderer";
+import { renderer } from "./svg-renderer";
 import element from "../../../../test/mocks/element-mock";
 
 
-describe( "SVGRenderer", () => {
+describe( "svg renderer", () => {
 	let sandbox, tree, ns, treeRenderer, svg, scene, Prom;
 
 	beforeEach( () => {
 		sandbox = sinon.sandbox.create();
 		Prom = {
-			resolve: sandbox.spy()
+			resolve: sandbox.spy(),
+			reject: sandbox.spy()
 		};
 		treeRenderer = {
 			render: sandbox.spy()
 		};
-		scene = function() {
-			return {
-				children: []
-			};
-		};
+		scene = sandbox.stub();
 		tree = sandbox.stub().returns( treeRenderer );
 		ns = "namespace";
-		svg = new SVGRenderer( Prom, tree, ns, scene );
+		svg = renderer( tree, ns, scene, Prom );
 	} );
 
 	afterEach( () => {
 		sandbox.restore();
 	} );
 
-	describe( "constructor", () => {
-		it( "should be a constructor", () => {
-			expect( SVGRenderer ).to.be.a( "function" );
-		} );
-
-		it( "should set dependencies as properties", () => {
-			expect( svg.tree ).to.equal( treeRenderer );
-			expect( svg.ns ).to.equal( "namespace" );
-		} );
+	it( "should be a function", () => {
+		expect( renderer ).to.be.a( "function" );
 	} );
 
 	describe( "appendTo", () => {
@@ -43,70 +33,64 @@ describe( "SVGRenderer", () => {
 			let el = element( "div" );
 			svg.appendTo( el );
 
-			expect( svg.root.name ).to.equal( "namespace:svg" );
-			expect( svg.root.parentNode ).to.equal( el );
-			expect( svg.g.name ).to.equal( "namespace:g" );
-			expect( svg.g.parentNode ).to.equal( svg.root );
+			expect( svg.element().name ).to.equal( "namespace:svg" );
+			expect( svg.element().parentElement ).to.equal( el );
 		} );
 
 		it( "should not create new root if it already exists", () => {
-			let dummy = { name: "dummy" };
-			let el = element( "div" );
-			svg.root = dummy;
+			let el = element( "div" ),
+				el2 = element( "div" );
 			svg.appendTo( el );
+			let svgEl = svg.element();
+			svg.appendTo( el2 );
 
-			expect( svg.root ).to.equal( dummy );
-			expect( svg.root.parentNode ).to.equal( el );
+			expect( svg.element() ).to.equal( svgEl );
 		} );
 	} );
 
 	describe( "render", () => {
+
+		it( "should reject promise when rendering before appending", () => {
+			svg.render();
+			expect( Prom.reject.callCount ).to.equal( 1 );
+		} );
+
 		it( "should call tree creator with proper params", () => {
-			svg.rect.width = 50;
-			svg.rect.height = 20;
-			svg.root = element( "svg" );
-			svg.g = element( "g" );
-			let items = ["a"];
-			svg.items = "b";
-			svg.container = element( "div" );
+			let items = ["a"],
+				s = { children: ["AA"] };
+			scene.returns( s );
+			svg.appendTo( element( "div" ) );
 			svg.render( items );
-			expect( treeRenderer.render ).to.have.been.calledWith( svg.scene.children, svg.g );
+			expect( scene.args[0][0] ).to.equal( items );
+			expect( treeRenderer.render ).to.have.been.calledWith( s.children, svg.root() );
 		} );
 	} );
 
 	describe( "clear", () => {
 		it( "should remove all elements", () => {
-			svg.items = ["a"];
-			svg.root = element( "svg" );
-			svg.g = element( "node" );
-			svg.root.appendChild( svg.g );
-
-			svg.g.appendChild( element( "circle" ) );
-			svg.g.appendChild( element( "rect" ) );
-			expect( svg.g.children.length ).to.equal( 2 );
+			svg.appendTo( element( "div" ) );
+			svg.root().appendChild( element( "circle" ) );
+			svg.root().appendChild( element( "rect" ) );
+			expect( svg.root().children.length ).to.equal( 2 );
 
 			svg.clear();
 
-			expect( svg.g.name ).to.equal( "node" );
-			expect( svg.g.children.length ).to.equal( 0 );
-			expect( svg.items.length ).to.equal( 0 );
+			expect( svg.root().children.length ).to.equal( 0 );
 		} );
 	} );
 
 	describe( "destroy", () => {
 		it( "should detach root from its parent", () => {
 			let parent = element( "div" );
-			svg.root = element( "svg" );
-			parent.appendChild( svg.root );
-			expect( svg.root.parentNode ).to.equal( parent );
+			svg.appendTo( parent );
+			expect( svg.element().parentElement ).to.equal( parent );
 			svg.destroy();
 
-			expect( svg.root ).to.equal( null );
+			expect( svg.element() ).to.equal( null );
 			expect( parent.children.length ).to.equal( 0 );
 		} );
 
-		it( "should not throw error if root does not have parent", () => {
-			svg.root = element( "svg" );
+		it( "should not throw error if root does not exist", () => {
 			let fn = () => {
 				svg.destroy();
 			};
