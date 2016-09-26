@@ -1,86 +1,76 @@
 /** @module web/renderer/svg-renderer/svg-renderer */
 
-import { tree } from "./svg-tree";
+import { tree as treeFactory } from "./svg-tree";
 import { svgNs } from "./svg-nodes";
 import { scene } from "../../../core/scene-graph/scene";
 
-export default class SVGRenderer {
+export function renderer( treeFn = treeFactory, ns = svgNs, sceneFn = scene, Promise = window.Promise ) {
+	let tree = treeFn(),
+		el,
+		group,
+		rect = { x: 0, y: 0, width: 0, height: 0 };
 
-	constructor( treeFn, ns, sceneFactory ) {
-		this.ns = ns;
-		this.tree = treeFn();
-		this.sceneFactory = sceneFactory;
+	let svg = function(){};
 
-		this.items = [];
-		this.rect = { x: 0, y: 0, width: 0, height: 0 };
-	}
+	svg.element = () => {
+		return el;
+	};
 
-	/**
-	 * Append the svg renderer to an element.
-	 * @param  {HTMLElement} element - The element to append the svg renderer to.
-	 */
-	appendTo( element ) {
-		if ( !this.root ) {
-			this.root = element.ownerDocument.createElementNS( this.ns, "svg" );
-			this.root.style.position = "absolute";
-			this.root.setAttribute( "xmlns", this.ns );
-			this.g = element.ownerDocument.createElementNS( this.ns, "g" );
-			this.root.appendChild( this.g );
+	svg.root = () => {
+		return group;
+	};
+
+	svg.appendTo = ( element ) => {
+		if ( !el ) {
+			el = element.ownerDocument.createElementNS( ns, "svg" );
+			el.style.position = "absolute";
+			el.setAttribute( "xmlns", ns );
+			group = element.ownerDocument.createElementNS( ns, "g" );
+			el.appendChild( group );
 		}
-		this.container = element;
-		element.appendChild( this.root );
-	}
+		element.appendChild( el );
+	};
 
-	/**
-	 * Render items.
-	 * @param  {Object[]} items - Items to render.
-	 * @example
-	 * renderer.render( [
-	 * 	{type: "circle", cx: 50, cy: 20, r: 13},
-	 * 	{type: "rect", width: 20, height: 50, fill: "red"}
-	 * ] );
-	 */
-	render( items ) {
-		this.rect.width = this.container.clientWidth;
-		this.rect.height = this.container.clientHeight;
-		this.root.setAttribute( "width", this.rect.width );
-		this.root.setAttribute( "height", this.rect.height );
-
-		this.clear();
-		this.scene = this.sceneFactory( items );
-		this.tree.render( this.scene.children, this.g );
-	}
-
-	/**
-	 * Clear all content.
-	 */
-	clear () {
-		let g = this.g.cloneNode( false );
-		this.root.replaceChild( g, this.g );
-		this.g = g;
-		this.items = [];
-	}
-
-	/**
-	 * Clear all content and detach renderer from DOM.
-	 */
-	destroy () {
-		if ( this.root && this.root.parentNode ) {
-			this.root.parentNode.removeChild( this.root );
+	svg.render = ( items ) => {
+		if ( !el ) {
+			return Promise.reject();
 		}
-		this.root = null;
-		this.g = null;
-		this.items = [];
-	}
+		rect.width = el.parentElement.clientWidth;
+		rect.height = el.parentElement.clientHeight;
+		el.setAttribute( "width", rect.width );
+		el.setAttribute( "height", rect.height );
 
-	size () {
+		svg.clear();
+		let s = sceneFn( items );
+		tree.render( s.children, group );
+
+		return Promise.resolve();
+	};
+
+	svg.clear = () => {
+		if ( !group ) {
+			return svg;
+		}
+		let g = group.cloneNode( false );
+		el.replaceChild( g, group );
+		group = g;
+		return svg;
+	};
+
+	svg.destroy = () => {
+		if ( el && el.parentElement ) {
+			el.parentElement.removeChild( el );
+		}
+		el = null;
+		group = null;
+	};
+
+	svg.size = () => {
 		return {
-			width: this.container.clientWidth,
-			height: this.container.clientHeight
+			width: el ? el.parentElement.clientWidth : 0,
+			height: el ? el.parentElement.clientHeight : 0
 		};
-	}
-}
+	};
 
-export function renderer() {
-	return new SVGRenderer( tree, svgNs, scene );
+	return svg;
 }
