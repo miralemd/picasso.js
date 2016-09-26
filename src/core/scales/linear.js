@@ -46,11 +46,14 @@ export default class LinearScale {
 
 	/**
 	 * {@link https://github.com/d3/d3-scale#continuous_ticks }
-	 * @param { Number } count Number of ticks to generate
-	 * @return { Number[] } Array of ticks
+	 * @param { Object } input Number of ticks to generate or an object passed to tick generator
+	 * @return { Number[] | Object } Array of ticks or any type the custom tick generator returns
 	 */
-	ticks( count ) {
-		return this._scale.ticks( count );
+	ticks( input ) {
+		if ( typeof this._tickGenerator === "function" ) {
+			return this._tickGenerator.call( null, input );
+		}
+		return this._scale.ticks( input );
 	}
 
 	/**
@@ -142,28 +145,13 @@ export default class LinearScale {
 	}
 
 	/**
-	 * Get magic ticks for usage with grid and axis
-	 * @param  {Number} width 		Width of the element where we're drawing
-	 * @param  {Number} minorCount 	The number of minors you would want
-	 * @return {Array}       		Array of ticks with position
+	 * Assign a tick generator. Will be used when calling ticks function
+	 * @param  { Function } generator Tick generator function
+	 * @return { LinearScale } The instance this method was called on
 	 */
-	magicTicks( width, minorCount = 3 ) {
-		let magicScale = scaleLinear();
-		magicScale.domain( [0, 100] );
-		magicScale.range( [0, 1] );
-
-		let count = Math.max( magicScale( width ), 2 );
-
-		let ticks = this.ticks( ( ( count - 1 ) * minorCount ) + count );
-		const ticksFormatted = ticks.map( this.tickFormat( count, "s" ) );
-
-		return ticksFormatted.map( ( tick, i ) => {
-			return {
-				position: this.get( ticks[i] ),
-				label: tick,
-				isMinor: i % ( minorCount + 1 ) !== 0
-			};
-		} );
+	tickGenerator( generator ) {
+		this._tickGenerator = generator;
+		return this;
 	}
 
 	/**
@@ -209,4 +197,30 @@ Events.mixin( LinearScale.prototype );
  */
 export function linear( ...a ) {
 	return new LinearScale( ...a );
+}
+
+
+/**
+* Generate ticks based on a distance, for each 100th unit, one additional tick may be added
+* @param  {Number} distance 			Distance between each tick
+* @param  {Number} [minorCount=0] 		Number of tick added between each distance
+* @param  {Number} [unitDivider=100] 	Number to divide distance with
+* @param  {Number} [start=0] 			Start of domain
+* @param  {Number} [end=0] 				End of domain
+* @return {Array}       				Array of ticks
+*/
+export function basicDistanceBasedGenerator( { distance, minorCount = 0, start = 0, end = 1, unitDivider = 100 } ) {
+	let scale = scaleLinear();
+	scale.domain( [start, end] );
+	scale.range( [0, 1] );
+
+	let count = Math.max( distance / unitDivider, 2 );
+	let ticks = scale.ticks( ( ( count - 1 ) * minorCount ) + count );
+
+	return ticks.map( ( tick, i ) => {
+		return {
+			position: scale( tick ),
+			isMinor: i % ( minorCount + 1 ) !== 0
+		};
+	} );
 }

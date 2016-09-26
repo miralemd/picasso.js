@@ -1,9 +1,9 @@
-import LinearScale from "./linear";
+import { linear, basicDistanceBasedGenerator } from "./linear";
 
 describe( "LinearScale", () => {
 	let lin;
 	beforeEach( () => {
-		lin = new LinearScale();
+		lin = linear();
 	} );
 
 	it( "should have 0-1 as defaults", () => {
@@ -12,7 +12,7 @@ describe( "LinearScale", () => {
 	} );
 
 	it( "should accept domain and range parameters", () => {
-		lin = new LinearScale( [1, 3], [-1, 1] );
+		lin = linear( [1, 3], [-1, 1] );
 		expect( lin.domain() ).to.deep.equal( [1, 3] );
 		expect( lin.range() ).to.deep.equal( [-1, 1] );
 	} );
@@ -189,6 +189,44 @@ describe( "LinearScale", () => {
 			expect( lin.get( 0.85 ) ).to.equal( "rgb(236, 134, 134)" );
 			expect( lin.get( 0.90 ) ).to.equal( "rgb(236, 134, 134)" ); // Fourth interval
 			expect( lin.get( 1 ) ).to.equal( "rgb(236, 134, 134)" );
+		} );
+	} );
+
+	describe( "Tick Generator", () => {
+		it( "should use default tick generator if no custom generator have been assigned", () => {
+			expect( lin.ticks( 2 ) ).to.deep.equal( [0, 0.5, 1] );
+		} );
+
+		it( "should pass correct arguments to tick generator function", () => {
+			let tickG = ( [a, b, c] ) => {
+				return [a, b, c];
+			};
+			lin.tickGenerator( tickG );
+			expect( lin.ticks( [1, 2, 3] ) ).to.deep.equal( [1, 2, 3] );
+
+			tickG = ( { a, b, c } ) => {
+				return [a, b, c];
+			};
+			lin.tickGenerator( tickG );
+			expect( lin.ticks( { a: 1, b: 2, c: 3 } ) ).to.deep.equal( [1, 2, 3] );
+		} );
+
+		it( "should be possible to reset tick generator", () => {
+			let tickG = ( { a, b, c } ) => {
+				return [a, b, c];
+			};
+			lin.tickGenerator( tickG );
+			lin.tickGenerator();
+			expect( lin.ticks( 2 ) ).to.deep.equal( [0, 0.5, 1] );
+		} );
+
+		it( "should be able to assign and run a custom tick generator", () => {
+			lin.tickGenerator( basicDistanceBasedGenerator );
+			expect( lin.ticks( { distance: 100 } ) ).to.deep.equal( [
+				{ isMinor: false, position: 0 },
+				{ isMinor: false, position: 0.5 },
+				{ isMinor: false, position: 1 },
+			] );
 		} );
 	} );
 } );
