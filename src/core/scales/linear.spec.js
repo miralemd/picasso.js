@@ -225,7 +225,7 @@ describe( "LinearScale", () => {
 			expect( lin.ticks( { distance: 100 } ) ).to.deep.equal( [
 				{ isMinor: false, position: 0 },
 				{ isMinor: false, position: 0.5 },
-				{ isMinor: false, position: 1 },
+				{ isMinor: false, position: 1 }
 			] );
 		} );
 	} );
