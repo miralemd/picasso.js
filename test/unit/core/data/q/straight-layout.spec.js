@@ -1,4 +1,4 @@
-import { default as Straight, create } from "./straight-layout";
+import { default as Straight, create } from "../../../../../src/core/data/q/straight-layout";
 
 let data = {
 	qHyperCube: {

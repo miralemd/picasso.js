@@ -16,13 +16,13 @@
     "build:debug": "webpack -d",
     "build:watch": "webpack -d --watch",
     "docs": "rimraf ./docs/api && jsdoc -r ./src -d ./docs/api",
-    "lint": "eslint src",
-    "lint:fix": "eslint src --fix",
-    "test": "aw-test-runner ./src/**/*.spec.js",
-    "test:watch": "aw-test-runner ./src/**/*.spec.js -w",
-    "test:coverage": "aw-test-coverage ./src/**/*.spec.js",
-    "test:component:local": "node node_modules/@qlik/after-work/node_modules/protractor/bin/webdriver-manager update --standalone false && aw-webdriver-test-runner ./test/config/aw-config.js --specs ./src/**/*.comp.js",
-    "test:component:remote": "aw-webdriver-test-runner ./test/config/aw-config-remote.js --specs src/**/*.comp.js"
+    "lint": "eslint src test",
+    "lint:fix": "eslint src test --fix",
+    "test": "aw-test-runner ./test/unit/**/*.spec.js",
+    "test:watch": "aw-test-runner ./test/unit/**/*.spec.js -w",
+    "test:coverage": "aw-test-coverage ./test/unit/**/*.spec.js",
+    "test:component:local": "node node_modules/@qlik/after-work/node_modules/protractor/bin/webdriver-manager update --standalone false && aw-webdriver-test-runner ./test/config/aw-config.js --specs ./test/**/*.comp.js",
+    "test:component:remote": "aw-webdriver-test-runner ./test/config/aw-config-remote.js --specs test/**/*.comp.js"
   },
   "files": [
     "/dist"

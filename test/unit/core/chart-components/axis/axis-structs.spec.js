@@ -1,4 +1,4 @@
-import { AxisStructs } from "./axis-structs";
+import { AxisStructs } from "../../../../../src/core/chart-components/axis/axis-structs";
 
 describe( "AxisStructs", () => {
 	const rect = { x: 0, y: 0, width: 0, height: 0 };

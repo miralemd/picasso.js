@@ -1,4 +1,4 @@
-import OrdinalScale from "./ordinal";
+import OrdinalScale from "../../../../src/core/scales/ordinal";
 
 describe( "OrdinalScale", () => {
 	let scale;

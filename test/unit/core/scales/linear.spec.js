@@ -1,4 +1,4 @@
-import { linear, basicDistanceBasedGenerator } from "./linear";
+import { linear, basicDistanceBasedGenerator } from "../../../../src/core/scales/linear";
 
 describe( "LinearScale", () => {
 	let lin;

@@ -1,4 +1,4 @@
-import numeric from "./numeric";
+import numeric from "../../../../../src/core/scales/interpolators/numeric";
 
 describe( "Numeric interpolator", () => {
 	it( "should linearly interpolate between two numbers", () => {

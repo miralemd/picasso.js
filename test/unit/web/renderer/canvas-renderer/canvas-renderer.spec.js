@@ -1,5 +1,5 @@
-import { renderer } from "./canvas-renderer";
-import element from "../../../../test/mocks/element-mock";
+import { renderer } from "../../../../../src/web/renderer/canvas-renderer";
+import element from "../../../../mocks/element-mock";
 
 describe( "canvas renderer", () => {
 	let sandbox,

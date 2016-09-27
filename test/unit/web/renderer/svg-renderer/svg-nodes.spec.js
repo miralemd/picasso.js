@@ -1,4 +1,4 @@
-import { svgNs, creator, maintainer, destroyer } from "./svg-nodes";
+import { svgNs, creator, maintainer, destroyer } from "../../../../../src/web/renderer/svg-renderer/svg-nodes";
 
 describe( "svg-nodes", () => {
 	it( "should have the correct svg namespace", () => {
