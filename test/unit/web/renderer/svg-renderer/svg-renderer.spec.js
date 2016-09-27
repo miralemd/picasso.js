@@ -1,5 +1,5 @@
-import { renderer } from "./svg-renderer";
-import element from "../../../../test/mocks/element-mock";
+import { renderer } from "../../../../../src/web/renderer/svg-renderer/svg-renderer";
+import element from "../../../../mocks/element-mock";
 
 
 describe( "svg renderer", () => {

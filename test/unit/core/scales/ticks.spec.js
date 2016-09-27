@@ -1,4 +1,4 @@
-import { default as ticks } from "./ticks";
+import { default as ticks } from "../../../../src/core/scales/ticks";
 
 describe( "Ticks", () => {
 

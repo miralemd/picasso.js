@@ -1,6 +1,6 @@
 /*eslint no-unused-expressions: 0*/
 
-import { transposer } from "./transposer";
+import { transposer } from "../../../../src/core/transposer/transposer";
 
 describe( "transposer", () => {
 

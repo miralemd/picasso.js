@@ -1,4 +1,4 @@
-import { metaToDataPath } from "./meta-to-data";
+import { metaToDataPath } from "../../../../../src/core/data/q/meta-to-data";
 
 describe( "Meta to Data path", () => {
 	it( "should map dimension info to data pages path", () => {

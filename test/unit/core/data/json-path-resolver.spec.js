@@ -1,4 +1,4 @@
-import { resolve } from "./json-path-resolver";
+import { resolve } from "../../../../src/core/data/json-path-resolver";
 
 describe( "JSON Path resolver", () => {
 	it( "should resolve basic path", () => {
@@ -33,31 +33,5 @@ describe( "JSON Path resolver", () => {
 			};
 
 		expect( resolve( p, obj ) ).to.deep.equal( ["BMW", "Mercedes", "Volvo"] );
-	} );
-
-	it( "should map array values within a correct range of indexes", () => {
-		let p = "/cars/0...1/brand",
-			obj = {
-				cars: [
-					{ brand: "BMW", color: "red" },
-					{ brand: "Mercedes", color: "silver" },
-					{ brand: "Volvo", color: "black" }
-				]
-			};
-
-		expect( resolve( p, obj ) ).to.deep.equal( ["BMW", "Mercedes"] );
-	} );
-
-	it( "should map array values within a correct set of indexes", () => {
-		let p = "/cars/1,2/brand",
-			obj = {
-				cars: [
-					{ brand: "BMW", color: "red" },
-					{ brand: "Mercedes", color: "silver" },
-					{ brand: "Volvo", color: "black" }
-				]
-			};
-
-		expect( resolve( p, obj ) ).to.deep.equal( ["Mercedes", "Volvo"] );
 	} );
 } );
