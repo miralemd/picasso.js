@@ -1,6 +1,5 @@
 var extend = require( "extend" );
 var baseConfig = require( "@qlik/after-work/dist/config/client.conf.js" );
-var httpServer = require( "@qlik/after-work/dist/utils").httpServer;
 
 var repoConfig = {
 	config: {

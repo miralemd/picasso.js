@@ -2,21 +2,12 @@
 	"env": {
 		"browser": true,
 		"es6": true,
-		"node": true,
-		"mocha": true
+		"node": true
 	},
 	"parserOptions": {
 		"ecmaVersion": 6,
 		"sourceType": "module"
 	},
-	"globals": {
-		"chai": true,
-		"sinon": true,
-		"expect": true
-	},
-	"plugins": [
-		"mocha"
-	],
 	"extends": "eslint:recommended",
 	"rules": {
 		"no-alert": "error",
@@ -77,8 +68,6 @@
 		"space-in-parens": ["error", "always"],
 		"object-curly-spacing": ["error", "always"],
 		"no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
-		"no-implicit-globals": "error",
-
-		"mocha/no-exclusive-tests": "error"
+		"no-implicit-globals": "error"
 	}
 }
