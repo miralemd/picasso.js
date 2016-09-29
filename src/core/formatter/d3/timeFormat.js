@@ -1,6 +1,6 @@
 import { timeFormatLocale } from "d3-time-format";
 
-function Formatter() {
+export function formatter() {
 	let locale = timeFormatLocale( {
 	  dateTime: "%x, %X",
 	  date: "%-m/%-d/%Y",
@@ -76,8 +76,4 @@ function Formatter() {
 	};
 
 	return format;
-}
-
-export function formatter() {
-	return new Formatter();
 }
