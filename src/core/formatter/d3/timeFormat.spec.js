@@ -41,4 +41,17 @@ describe( "timeFormat", () => {
 
 	} );
 
+	it( "should parse dates correctly", () => {
+
+		let formatter = timeFormat( "%A, %B %d, %Y" );
+
+		let parsedDate1 = formatter.parse( "%Y-%m-%d", "2013-11-18" );
+		let parsedDate2 = formatter.parsePattern( "%Y-%m-%d" )( "2013-11-18" );
+
+		expect( formatter( parsedDate1 ) ).to.equal( "Monday, November 18, 2013" );
+
+		expect( formatter( parsedDate2 ) ).to.equal( "Monday, November 18, 2013" );
+
+	} );
+
 } );
