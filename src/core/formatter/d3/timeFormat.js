@@ -1,6 +1,6 @@
 import { timeFormatLocale } from "d3-time-format";
 
-export function formatter() {
+export function formatter( pattern ) {
 	let locale = timeFormatLocale( {
 	  dateTime: "%x, %X",
 	  date: "%-m/%-d/%Y",
@@ -12,26 +12,29 @@ export function formatter() {
 	  shortMonths: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 	} );
 
-	/**
-	 * Format a value according to pattern
-	 *
-	 * @param  {String} p 	Pattern
-	 * @param  {Date} v 	Value
-	 * @return {String}   	Formatted value
-	 */
-	function format( p, v ) {
-		return locale.timeFormat( p )( v );
-	}
+	let d3format = locale.format( pattern );
 
 	/**
-	 * Returns a formatting function using the specified pattern
+	 * Format a value according to the specified pattern created at construct
 	 *
-	 * @param  {String} args 	Pattern
-	 * @return {Function}      	Formatting function
+	 * @param  {Date} value 	The number to be formatted
+	 * @return {String}       	[description]
 	 */
-	format.pattern = function( ...args ) {
-		return locale.timeFormat( ...args );
-	};
+	 function format( value ) {
+		 return d3format( value );
+	 }
+
+	 /**
+	  * Format a value according to a specific pattern
+	  * that is not the one specified in the constructor
+	  *
+	  * @param  {String} p 	Pattern
+	  * @param  {Date} v 	Value
+	  * @return {String}   	Formatted value
+	  */
+	 format.format = function( p, v ) {
+		 return locale.format( p )( v );
+	 };
 
 	/**
 	 * Set the locale for the formatter
@@ -41,17 +44,9 @@ export function formatter() {
 	 */
 	format.locale = function( ...args ) {
 		locale = timeFormatLocale( ...args );
-	};
+		d3format = locale.format( pattern );
 
-	/**
-	 * Parse a string to a date according to a pattern
-	 *
-	 * @param  {String} p 	Pattern
-	 * @param  {String} v 	Value
-	 * @return {Date}   	Date
-	 */
-	format.parse = function( p, v ) {
-		return locale.parse( p )( v );
+		return this;
 	};
 
 	/**

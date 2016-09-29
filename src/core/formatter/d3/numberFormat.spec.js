@@ -4,9 +4,13 @@ import { formatter as numberFormat } from "./numberFormat";
 
 describe( "numberFormat", () => {
 
-	it( "should swallow a pattern", () => {
+	let formatter;
 
-		let formatter = numberFormat( "0.2f" );
+	beforeEach( () => {
+		formatter = numberFormat( "0.2f" );
+	} );
+
+	it( "should swallow a pattern", () => {
 
 		expect( formatter( 0.123 ) ).to.equal( "0.12" );
 
@@ -14,7 +18,6 @@ describe( "numberFormat", () => {
 
 	it( "should format manually correctly", () => {
 
-		let formatter = numberFormat( "0.2f" );
 
 		expect( formatter.format( "0.1f", 0.123 ) ).to.equal( "0.1" );
 
@@ -22,7 +25,7 @@ describe( "numberFormat", () => {
 
 	it( "should allow for custom locale", () => {
 
-		let formatter = numberFormat( "0.2f" ).locale( {
+		formatter.locale( {
 		  "decimal": ",",
 		  "thousands": "\u00a0",
 		  "grouping": [3],
