@@ -1,6 +1,6 @@
 /*eslint no-unused-expressions: 0*/
 
-import { formatter } from "./";
+import { formatter } from "../../../../src/core/formatter";
 
 describe( "formatter", () => {
 

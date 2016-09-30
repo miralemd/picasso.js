@@ -1,6 +1,6 @@
 /*eslint no-unused-expressions: 0*/
 
-import { formatter as timeFormat } from "./timeFormat";
+import { formatter as timeFormat } from "../../../../../src/core/formatter/d3/timeFormat";
 
 describe( "timeFormat", () => {
 
