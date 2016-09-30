@@ -7,10 +7,14 @@ let reg = registry();
 reg.add( "number", numberFormat );
 reg.add( "time", timeFormat );
 
-export function type( t ) {
-	return reg.has( t ) && reg.get( t )();
-}
+export default function() {
+	function type ( t ) {
+		return reg.has( t ) && reg.get( t );
+	}
 
-export function has( t ) {
-	reg.has( t );
+	type.has = function( t ) {
+		return reg.has( t );
+	};
+
+	return type;
 }

@@ -1,4 +1,5 @@
 import { registry } from "../utils/registry";
+import { default as d3formatter } from "./d3";
 
 let reg = registry();
 
@@ -12,3 +13,5 @@ export function formatter( type ) {
 	}
 	return reg.get( type )();
 }
+
+register( "d3", d3formatter );
