@@ -91,6 +91,7 @@ export class Dispersion {
 	}
 
 	resize() {
+		this.renderer.rect = this.renderer.rect || {};
 		this.renderer.rect.width = this.element.clientWidth;
 		this.renderer.rect.height = this.element.clientHeight;
 
