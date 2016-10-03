@@ -1,38 +1,42 @@
 import { default as extend } from "extend";
 
-export default class Doodler {
-	constructor() {
-		this.push = v => v;
-		this.settings = { styles: {} };
-		this.customStyle = {};
-	}
+export function doodler() {
+	let doodle = {};
 
-	customize( item ) {
+	doodle.init = function() {
+		doodle.push = v => v;
+		doodle.settings = { styles: {} };
+		doodle.customStyle = {};
+
+		return doodle;
+	};
+
+	doodle.customize = function( item ) {
 		if (
-			this.settings.styler &&
-			typeof this.settings.styler === "function"
+			doodle.settings.styler &&
+			typeof doodle.settings.styler === "function"
 		) {
-			this.customStyle = this.settings.styler( item ) || {};
+			doodle.customStyle = doodle.settings.styler( item ) || {};
 		}
-	}
+	};
 
-	style( object, styleName ) {
+	doodle.style = function( object, styleName ) {
 		return extend(
 			object,
-			this.settings.styles.base || {},
-			this.settings.styles[styleName] || {},
-			this.customStyle[styleName] || {}
+			doodle.settings.styles.base || {},
+			doodle.settings.styles[styleName] || {},
+			doodle.customStyle[styleName] || {}
 		);
-	}
+	};
 
-	postfill( object, key, fill ) {
-		this.settings.styles[object] = this.settings.styles[object] || {};
-		this.settings.styles[object][key] = this.settings.styles[object][key] || fill;
-	}
+	doodle.postfill = function( object, key, fill ) {
+		doodle.settings.styles[object] = doodle.settings.styles[object] || {};
+		doodle.settings.styles[object][key] = doodle.settings.styles[object][key] || fill;
+	};
 
-	horizontalLine( x, y, width, styleName ) {
-		return this.push(
-			this.style( {
+	doodle.horizontalLine = function( x, y, width, styleName ) {
+		return doodle.push(
+			doodle.style( {
 				type: "line",
 				y1: y,
 				x1: x - ( width / 2 ),
@@ -43,11 +47,11 @@ export default class Doodler {
 			},
 			styleName )
 		);
-	}
+	};
 
-	verticalLine( x, y1, y2, styleName ) {
-		return this.push(
-			this.style( {
+	doodle.verticalLine = function( x, y1, y2, styleName ) {
+		return doodle.push(
+			doodle.style( {
 				type: "line",
 				y1: y1,
 				x1: x,
@@ -58,56 +62,54 @@ export default class Doodler {
 			},
 			styleName )
 		);
-	}
+	};
 
-	whisker( x, y ) {
-		return this.horizontalLine(
+	doodle.whisker = function( x, y ) {
+		return doodle.horizontalLine(
 			x,
 			y,
-			this.settings.styles.whisker.width,
+			doodle.settings.styles.whisker.width,
 			"whisker"
 		);
-	}
+	};
 
-	openwhisker( x, y ) {
-		return this.whisker(
-			x - ( this.settings.styles.whisker.width / 2 ),
+	doodle.openwhisker = function( x, y ) {
+		return doodle.whisker(
+			x - ( doodle.settings.styles.whisker.width / 2 ),
 			y
 		);
-	}
+	};
 
-	closewhisker( x, y ) {
-		return this.whisker(
-			x + ( this.settings.styles.whisker.width / 2 ),
+	doodle.closewhisker = function( x, y ) {
+		return doodle.whisker(
+			x + ( doodle.settings.styles.whisker.width / 2 ),
 			y
 		);
-	}
+	};
 
-	median( x, y ) {
-		return this.horizontalLine(
+	doodle.median = function( x, y ) {
+		return doodle.horizontalLine(
 			x,
 			y,
-			this.settings.styles.box.width,
+			doodle.settings.styles.box.width,
 			"med"
 		);
-	}
+	};
 
-	box( x, y, height, name ) {
-		return this.push(
-			this.style( {
+	doodle.box = function( x, y, height, name ) {
+		return doodle.push(
+			doodle.style( {
 				type: "rect",
-				x: x - ( this.settings.styles.box.width / 2 ),
+				x: x - ( doodle.settings.styles.box.width / 2 ),
 				y: y,
 				height: height,
-				width: this.settings.styles.box.width,
+				width: doodle.settings.styles.box.width,
 				fill: "#fff",
 				stroke: "#000"
 			},
 			name )
 		);
-	}
-}
+	};
 
-export function doodler( ...args ) {
-	return new Doodler( ...args );
+	return doodle.init();
 }
