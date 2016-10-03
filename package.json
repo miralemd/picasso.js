@@ -40,7 +40,9 @@
     "webpack": "^1.13.2"
   },
   "dependencies": {
+    "d3-format": "^1.0.2",
     "d3-scale": "^1.0.0",
+    "d3-time-format": "^2.0.2",
     "node-event-emitter": "0.0.1"
   }
 }
