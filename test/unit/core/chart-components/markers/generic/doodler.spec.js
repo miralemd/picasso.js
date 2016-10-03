@@ -2,7 +2,7 @@
 
 import { doodler } from "../../../../../../src/core/chart-components/markers/generic/doodler";
 
-describe( "Doodler", () => {
+describe.only( "Doodler", () => {
 
 	let doodle, latestPush;
 
@@ -53,53 +53,37 @@ describe( "Doodler", () => {
 	it( "should doodle normal whiskers correctly", () => {
 		doodle.postfill( "whisker", "width", 0.5 );
 
-		expect( doodle.whisker( 1, 2 ) ).to.eql(
-			doodle.horizontalLine(
-				1,
-				2,
-				0.5,
-				"whisker"
-			)
-		);
+		let whisker = doodle.whisker( 1, 2 );
+
+		expect( whisker.type ).to.eql( "line" );
+		expect( whisker.y1 ).to.eql( 2 );
 	} );
 
 	it( "should doodle open whiskers correctly", () => {
 		doodle.postfill( "whisker", "width", 0.5 );
 
-		expect( doodle.openwhisker( 1, 2 ) ).to.eql(
-			doodle.horizontalLine(
-				0.75,
-				2,
-				0.5,
-				"whisker"
-			)
-		);
+		let whisker = doodle.openwhisker( 1, 2 );
+
+		expect( whisker.type ).to.eql( "line" );
+		expect( whisker.y1 ).to.eql( 2 );
 	} );
 
 	it( "should doodle open whiskers correctly", () => {
 		doodle.postfill( "whisker", "width", 0.5 );
 
-		expect( doodle.closewhisker( 1, 2 ) ).to.eql(
-			doodle.horizontalLine(
-				1.25,
-				2,
-				0.5,
-				"whisker"
-			)
-		);
+		let whisker = doodle.closewhisker( 1, 2 );
+
+		expect( whisker.type ).to.eql( "line" );
+		expect( whisker.y1 ).to.eql( 2 );
 	} );
 
 	it( "should doodle median correctly", () => {
 		doodle.postfill( "box", "width", 0.7 );
 
-		expect( doodle.median( 1, 2 ) ).to.eql(
-			doodle.horizontalLine(
-				1,
-				2,
-				0.7,
-				"med"
-			)
-		);
+		let median = doodle.median( 1, 2 );
+
+		expect( median.type ).to.eql( "line" );
+		expect( median.y1 ).to.eql( 2 );
 	} );
 
 	it( "should doodle a box correctly", () => {
