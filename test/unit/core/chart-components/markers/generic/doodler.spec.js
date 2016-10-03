@@ -2,7 +2,7 @@
 
 import { doodler } from "../../../../../../src/core/chart-components/markers/generic/doodler";
 
-describe.only( "Doodler", () => {
+describe( "Doodler", () => {
 
 	let doodle, latestPush;
 
