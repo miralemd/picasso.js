@@ -1,15 +1,13 @@
 import { default as extend } from "extend";
 
 export function doodler() {
-	let doodle = {};
-
-	doodle.init = function() {
+	function doodle() {
 		doodle.push = v => v;
 		doodle.settings = { styles: {} };
 		doodle.customStyle = {};
 
 		return doodle;
-	};
+	}
 
 	doodle.customize = function( item ) {
 		if (
@@ -111,5 +109,5 @@ export function doodler() {
 		);
 	};
 
-	return doodle.init();
+	return doodle();
 }
