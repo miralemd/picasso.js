@@ -209,17 +209,51 @@ export function linear( ...a ) {
 * @param  {Number} [end=0] 				End of domain
 * @return {Array}       				Array of ticks
 */
-export function basicDistanceBasedGenerator( { distance, minorCount = 0, start = 0, end = 1, unitDivider = 100 } ) {
+export function looseDistanceBasedGenerator( { distance, minorCount = 0, start = 0, end = 1, unitDivider = 100 } ) {
 	let scale = scaleLinear();
 	scale.domain( [start, end] );
 	scale.range( [0, 1] );
 
-	let count = Math.max( distance / unitDivider, 2 );
-	let ticks = scale.ticks( ( ( count - 1 ) * minorCount ) + count );
+	const fraction = Math.max( distance / unitDivider, 2 );
+	let count = ( ( fraction - 1 ) * minorCount ) + fraction;
+	let ticks = scale.ticks( count );
+	if ( ticks.length <= 1 ) {
+		ticks = scale.ticks( count + 1 );
+	}
 
 	return ticks.map( ( tick, i ) => {
 		return {
 			position: scale( tick ),
+			label: tick,
+			isMinor: i % ( minorCount + 1 ) !== 0
+		};
+	} );
+}
+
+/**
+* Generate ticks based on a distance, for each 100th unit, one additional tick may be added.
+* Will attempt to round the bounds of domain to even values and generate ticks hitting the domain bounds.
+* @param  {Number} distance 			Distance between each tick
+* @param  {Number} [minorCount=0] 		Number of tick added between each distance
+* @param  {Number} [unitDivider=100] 	Number to divide distance with
+* @param  {Number} [start=0] 			Start of domain
+* @param  {Number} [end=0] 				End of domain
+* @return {Array}       				Array of ticks
+*/
+export function tightDistanceBasedGenerator( { distance, minorCount = 0, start = 0, end = 1, unitDivider = 100 } ) {
+	let scale = scaleLinear();
+	scale.domain( [start, end] );
+	scale.range( [0, 1] );
+	const count = Math.max( distance / unitDivider, 2 );
+	const ticksCount = Math.round( ( ( count - 1 ) * minorCount ) + count );
+	const n = ticksCount > 10 ? 10 : ticksCount;
+	scale.nice( n );
+
+	let ticks = scale.ticks( ticksCount );
+	return ticks.map( ( tick, i ) => {
+		return {
+			position: scale( tick ),
+			label: tick,
 			isMinor: i % ( minorCount + 1 ) !== 0
 		};
 	} );

@@ -1,5 +1,8 @@
 /** @module web/renderer/svg-renderer/svg-nodes */
 
+import { measureText } from "./text-metrics";
+import { ellipsText } from "../text-manipulation";
+
 const svgNs = "http://www.w3.org/2000/svg";
 
 const creator = ( type, parent ) => {
@@ -23,7 +26,7 @@ const maintainer = ( element, item ) => {
 			continue;
 		}
 		if ( attr === "text" ) {
-			element.textContent = item[attr];
+			element.textContent = ellipsText( item, measureText );
 			continue;
 		}
 		element.setAttribute( attr, item[attr] );

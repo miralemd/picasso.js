@@ -1,5 +1,4 @@
-import { default as svgTextHelper } from "../../../web/renderer/svg-renderer/svg-text-helpers";
-import { AxisHelpers as helpers } from "../axis/axis-helpers";
+// import { AxisHelpers as helpers } from "../axis/axis-helpers";
 
 export default class Text {
 	constructor( config, composer, renderer ) {
@@ -9,13 +8,14 @@ export default class Text {
 		this.elements = [];
 
 		this.settings( config.settings );
-		this.size( this.renderer.rect.width, this.renderer.rect.height );
+		const s = this.renderer.size();
+		this.size( s.width, s.height );
 		this.dock( config.dock );
 		this.parseTitle( config );
 		this.render();
 	}
 
-	settings( opt ) {
+	settings() {
 		this._settings = {
 			align: "left",
 			padding: 0,
@@ -25,7 +25,7 @@ export default class Text {
 				color: "#999"
 			}
 		};
-		helpers.applyData( this._settings, opt );
+		// helpers.applyData( this._settings, opt );
 		return this;
 	}
 
@@ -55,7 +55,6 @@ export default class Text {
 	}
 
 	transform( x, y ) {
-		this.renderer.g.setAttribute( "transform", `translate(${x}, ${y})` ); // TODO svg render specific code
 		this.rect.x = x;
 		this.rect.y = y;
 		return this;
@@ -89,10 +88,10 @@ export default class Text {
 			x: 0,
 			y: 0,
 			fill: this._settings.style.color,
-			"font-family": this._settings.style["font-family"],
-			"font-size": this._settings.style["font-size"],
-			"text-anchor": anchor,
-			"alignment-baseline": "ideographic"
+			fontFamily: this._settings.style["font-family"],
+			fontSize: this._settings.style["font-size"],
+			anchor: anchor,
+			baseline: "ideographic"
 		};
 
 		const ellipsOpt = { width: 0, text: struct.text, fontSize: this._settings.style["font-size"], font: this._settings.style["font-family"] };
@@ -103,7 +102,7 @@ export default class Text {
 			else if ( this._settings.align === "right" ) { x = this.rect.width - this._settings.padding; }
 
 			struct.x = x;
-			struct.y = this._dock === "top" ? -this._settings.padding : this._settings.padding + svgTextHelper.getComputedRect( struct ).height;
+			struct.y = this._dock === "top" ? this.rect.y - this._settings.padding : this._settings.padding + this.renderer.measureText( struct ).height;
 			ellipsOpt.width = this.rect.width / 1.2;
 		} else {
 			let y = ( this.rect.height ) / 2;
@@ -116,8 +115,6 @@ export default class Text {
 			struct.transform = `rotate(${rotation} ${struct.x} ${struct.y})`;
 			ellipsOpt.width = this.rect.height / 1.2;
 		}
-
-		struct.text = svgTextHelper.ellipsis( ellipsOpt );
 
 		return struct;
 	}

@@ -3,6 +3,7 @@
 import { tree as treeFactory } from "./svg-tree";
 import { svgNs } from "./svg-nodes";
 import { scene } from "../../../core/scene-graph/scene";
+import { measureText } from "./text-metrics";
 
 export function renderer( treeFn = treeFactory, ns = svgNs, sceneFn = scene, Promise = window.Promise ) {
 	let tree = treeFn(),
@@ -47,6 +48,7 @@ export function renderer( treeFn = treeFactory, ns = svgNs, sceneFn = scene, Pro
 		return Promise.resolve();
 	};
 
+
 	svg.clear = () => {
 		if ( !group ) {
 			return svg;
@@ -70,6 +72,10 @@ export function renderer( treeFn = treeFactory, ns = svgNs, sceneFn = scene, Pro
 			width: el ? el.parentElement.clientWidth : 0,
 			height: el ? el.parentElement.clientHeight : 0
 		};
+	};
+
+	svg.measureText = ( { text, fontSize, fontFamily } ) => {
+		return measureText( { text, fontSize, fontFamily } );
 	};
 
 	return svg;

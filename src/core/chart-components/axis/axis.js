@@ -1,108 +1,103 @@
-import { default as svgText } from "../../../web/renderer/svg-renderer/svg-text-helpers";
-import { AxisHelpers as helpers } from "./axis-helpers";
-import { AxisStructs } from "./axis-structs";
+import { nodeBuilder } from "./axis-node-builder";
+import { discreteDefaultSettings, continuousDefaultSettings } from "./axis-default-settings";
+import { generateContinuousTicks, generateDiscreteTicks } from "./axis-tick-generators";
+import { default as extend } from "extend";
 
-export class Axis {
-	constructor( axisConfig, composer, renderer ) {
-		this.rect = { width: 0, height: 0, x: 0, y: 0 };
-		this.scale = composer.scales[axisConfig.scale].scale;
-		this.data = composer.data;
-		this.source = composer.scales[axisConfig.scale].source;
-		this.renderer = renderer;
-		this.elements = [];
+function extendDomain( settings, scale ) {
+	const min = settings.ticks.min,
+		max = settings.ticks.max,
+		minSafe = min !== undefined,
+		maxSafe = max !== undefined;
 
-		this.size( this.renderer.rect.width, this.renderer.rect.height );
-		this.dock( axisConfig.dock );
+	if ( minSafe || maxSafe ) {
+		const start = scale.start();
+		const end = scale.end();
+		const d = [ minSafe ? min : start, maxSafe ? max : end ];
+		scale.domain( d );
 	}
+}
 
-	dock( value = "left" ) {
-		if ( value === "left" ) {
-			this.transform( this.rect.width, 0 );
-		} else if ( value === "right" ) {
-			this.transform( 0, 0 );
-		} else if ( value === "bottom" ) {
-			this.transform( 0, 0 );
-		} else if ( value === "top" ) {
-			this.transform( 0, this.rect.height );
-		}
-
-		this._dock = value;
-		return this;
+function alignTransform( { align, innerRect } ) {
+	if ( align === "left" ) {
+		return { x: innerRect.width, y: 0 };
+	} else if ( align === "right" || align === "bottom" ) {
+		return { x: 0, y: 0 };
+	} else {
+		return { x: 0, y: innerRect.height };
 	}
+}
 
-	size( width, height ) {
-		this.rect.height = height;
-		this.rect.width = width;
-		return this;
-	}
+function qDiscreteDataMapper( data, source ) {
+	return data.fromSource( source, 0 ).map( ( d ) => {
+		return d.qText;
+	} );
+}
 
-	transform( x, y ) {
-		this.renderer.g.setAttribute( "transform", `translate(${x}, ${y})` ); // TODO svg render specific code
-		this.rect.x = x;
-		this.rect.y = y;
-		return this;
-	}
+export function abstractAxis( axisConfig, composer, renderer ){
+	const innerRect = { width: 0, height: 0, x: 0, y: 0 };
+	const outerRect = { width: 0, height: 0, x: 0, y: 0 };
+	const nodes = [];
+	const scale = composer.scales[axisConfig.scale].scale;
+	const type = composer.scales[axisConfig.scale].type;
+	const source = composer.scales[axisConfig.scale].source;
+	let data = composer.data;
+	let concreteNodeBuilder;
+	let settings;
+	let ticksFn;
 
-	generateLine() {
-		this._settings.line.dock = this._dock;
-		return AxisStructs.line( this._settings.line, this.rect );
-	}
+	let continuous = function() {
+		settings = continuousDefaultSettings();
+		extend( true, settings, axisConfig.settings );
+		extendDomain( settings, scale );
+		continuous.resize( renderer.size() );
+		continuous.resize( alignTransform( { align: settings.align, innerRect } ) );
+		concreteNodeBuilder = nodeBuilder( type );
+		ticksFn = generateContinuousTicks;
 
-	generateTicks() {
-		this._settings.ticks.dock = this._dock;
-		this._settings.ticks.spacing = helpers.tickSpacing( this._settings );
+		return continuous;
+	};
 
-		return this._ticks.filter( ( t ) => { return !t.isMinor; } ).map( tick => {
-			return AxisStructs.tick( tick, this._settings.ticks, this.rect );
-		} );
-	}
+	let discrete = function( dataMapper = qDiscreteDataMapper ) {
+		settings = discreteDefaultSettings();
+		extend( true, settings, axisConfig.settings );
+		discrete.resize( renderer.size() );
+		discrete.resize( alignTransform( { align: settings.align, innerRect } ) );
+		concreteNodeBuilder = nodeBuilder( type );
+		ticksFn = generateDiscreteTicks;
+		data = dataMapper( data, source );
+		return discrete;
+	};
 
-	generateMinorTicks() {
-		this._settings.minorTicks.dock = this._dock;
-		this._settings.minorTicks.spacing = helpers.tickMinorSpacing( this._settings );
+	let render = function() {
+		const ticks = ticksFn( { settings, innerRect, scale, data } );
+		nodes.push( ...concreteNodeBuilder.build( { settings, scale, innerRect, outerRect, renderer, ticks } ) );
+		renderer.render( nodes );
+	};
 
-		return this._ticks.filter( ( t ) => { return t.isMinor; } ).map( tick => {
-			return AxisStructs.tick( tick, this._settings.minorTicks, this.rect );
-		} );
-	}
 
-	generateLabels() {
-		this._settings.labels.dock = this._dock;
-		this._settings.labels.spacing = helpers.labelsSpacing( this._settings );
-		this._settings.labels.bandWidth = helpers.labelsBandwidth( this._dock, this._settings.labels, this._ticks, this.rect );
+	let onData = function() {
+		// Do something
+	};
 
-		const ellipsOpt = {
-			width: this._settings.labels.bandWidth.width,
-			text: "",
-			fontSize: this._settings.labels.style.size,
-			font: this._settings.labels.style.font
-		};
+	let resize = function( inner, outer ) {
+		outer = outer ? outer : inner;
+		extend( innerRect, inner );
+		extend( outerRect, outer );
+	};
 
-		return this._ticks.filter( ( t ) => { return !t.isMinor; } ).map( ( tick ) => {
-			ellipsOpt.text = tick.label;
-			tick.label = svgText.ellipsis( ellipsOpt );
-			return AxisStructs.label( tick, this._settings.labels, this.rect, this.renderer.rect );
-		} );
-	}
+	// Declare public API
+	continuous.render = render;
+	continuous.onData = onData;
+	continuous.resize = resize;
+	discrete.render = render;
+	discrete.onData = onData;
+	discrete.resize = resize;
 
-	render( ) {
-		this.onData();
+	return type === "ordinal" ? discrete : continuous;
+}
 
-		if ( this._settings.line.show ) {
-			this.elements.push( this.generateLine() );
-		}
-		if ( this._settings.ticks.show ) {
-			this.generateTicks().forEach( ( tick ) => { this.elements.push( tick ); } );
-		}
-		if ( this._settings.minorTicks.show ) {
-			this.generateMinorTicks().forEach( ( tick ) => { this.elements.push( tick ); } );
-		}
-		if ( this._settings.labels.show ) {
-			this.generateLabels().forEach( ( label ) => { this.elements.push( label ); } );
-		}
-
-		this.renderer.render( this.elements );
-
-		return this;
-	}
+export function axis( ...a ) {
+	let ax = abstractAxis( ...a );
+	ax().render();
+	return ax;
 }

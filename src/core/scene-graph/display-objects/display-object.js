@@ -6,7 +6,7 @@ export default class DisplayObject extends Node {
 		this._stage = null;
 	}
 
-	set ( { fill, stroke, strokeWidth, fontFamily, fontSize, baseline } ) {
+	set ( { fill, stroke, strokeWidth, fontFamily, fontSize, baseline, anchor, maxWidth } ) {
 		if ( typeof fill !== "undefined" ) {
 			this.fill = fill;
 		}
@@ -23,7 +23,13 @@ export default class DisplayObject extends Node {
 			this["font-size"] = fontSize;
 		}
 		if ( typeof baseline !== "undefined" ) {
-			this.baseline = baseline;
+			this["dominant-baseline"] = baseline;
+		}
+		if ( typeof anchor !== "undefined" ) {
+			this["text-anchor"] = anchor;
+		}
+		if ( typeof maxWidth !== "undefined" ) {
+			this.maxWidth = maxWidth;
 		}
 	}
 

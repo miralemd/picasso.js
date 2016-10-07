@@ -1,4 +1,4 @@
-import { linear, basicDistanceBasedGenerator } from "../../../../src/core/scales/linear";
+import { linear, looseDistanceBasedGenerator } from "../../../../src/core/scales/linear";
 
 describe( "LinearScale", () => {
 	let lin;
@@ -221,11 +221,11 @@ describe( "LinearScale", () => {
 		} );
 
 		it( "should be able to assign and run a custom tick generator", () => {
-			lin.tickGenerator( basicDistanceBasedGenerator );
+			lin.tickGenerator( looseDistanceBasedGenerator );
 			expect( lin.ticks( { distance: 100 } ) ).to.deep.equal( [
-				{ isMinor: false, position: 0 },
-				{ isMinor: false, position: 0.5 },
-				{ isMinor: false, position: 1 }
+				{ isMinor: false, position: 0, label: 0 },
+				{ isMinor: false, position: 0.5, label: 0.5 },
+				{ isMinor: false, position: 1, label: 1 }
 			] );
 		} );
 	} );

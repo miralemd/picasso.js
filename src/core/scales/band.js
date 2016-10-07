@@ -39,34 +39,62 @@ export default class BandScale {
 		return this._scale.range();
 	}
 
+	/**
+	 * {@link https://github.com/d3/d3-scale#band_paddingOuter }
+	 * @param { Number } value A value within 0-1
+	 * @return { BandScale } The instance this method was called on
+	 */
 	paddingOuter( padding = 0 ) {
 		this._scale.paddingOuter( padding );
 		this.emit( "changed" );
 		return this;
 	}
 
+	/**
+	 * {@link https://github.com/d3/d3-scale#band_paddingInner }
+	 * @param { Number } value A value within 0-1
+	 * @return { BandScale } The instance this method was called on
+	 */
 	paddingInner( padding = 0 ) {
 		this._scale.paddingInner( padding );
 		this.emit( "changed" );
 		return this;
 	}
 
+	/**
+	 * {@link https://github.com/d3/d3-scale#band_padding }
+	 * @param { Number } value A value within 0-1
+	 * @return { BandScale } The instance this method was called on
+	 */
 	padding( padding = 0 ) {
 		this._scale.padding( padding );
 		this.emit( "changed" );
 		return this;
 	}
 
+	/**
+	 * {@link https://github.com/d3/d3-scale#band_padding }
+	 * @param { Number } value A value within 0-1
+	 * @return { BandScale } The instance this method was called on
+	 */
 	align( align ) {
 		this._scale.align( align );
 		this.emit( "changed" );
 		return this;
 	}
 
+	/**
+	 * {@link https://github.com/d3/d3-scale#band_align }
+	 * @return { Number } Bandwith of each band
+	 */
 	bandWidth() {
 		return this._scale.bandwidth();
 	}
 
+	/**
+	 * {@link https://github.com/d3/d3-scale#band_step }
+	 * @return { Number } Step distance
+	 */
 	step() {
 		return this._scale.step();
 	}

@@ -1,5 +1,6 @@
 import { scene as sceneFactory } from "../../../core/scene-graph/scene";
 import { registry } from "../../../core/utils/registry";
+import { measureText } from "./text-metrics";
 
 let reg = registry();
 
@@ -86,6 +87,10 @@ export function renderer( sceneFn = sceneFactory, Promise = window.Promise ) {
 			el = null;
 		}
 		scene = null;
+	};
+
+	canvasRenderer.measureText = ( { text, fontSize, fontFamily } ) => {
+		return measureText( { text, fontSize, fontFamily } );
 	};
 
 	return canvasRenderer;

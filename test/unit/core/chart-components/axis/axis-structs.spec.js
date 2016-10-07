@@ -1,156 +1,170 @@
-import { AxisStructs } from "../../../../../src/core/chart-components/axis/axis-structs";
+import { buildTick, buildLabel, buildLine } from "../../../../../src/core/chart-components/axis/axis-structs";
 
 describe( "AxisStructs", () => {
-	const rect = { x: 0, y: 0, width: 0, height: 0 };
-	const rendererRect = { x: 0, y: 0, width: 0, height: 0 };
+	const innerRect = { x: 0, y: 0, width: 0, height: 0 };
+	const outerRect = { x: 0, y: 0, width: 0, height: 0 };
+	const textRect = { width: 10, height: 10 };
 
 	beforeEach( () => {
-		rect.width = 50;
-		rect.height = 100;
-		rect.x = 0;
-		rect.y = 0;
-		rendererRect.width = 50;
-		rendererRect.height = 100;
-		rendererRect.x = 0;
-		rendererRect.y = 0;
+		innerRect.width = 50;
+		innerRect.height = 100;
+		innerRect.x = 0;
+		innerRect.y = 0;
+		outerRect.width = 50;
+		outerRect.height = 100;
+		outerRect.x = 0;
+		outerRect.y = 0;
 	} );
 
 	describe( "Tick", () => {
-		let settings, tick, expected;
+		let buildOpts, tick, expected;
 
 		beforeEach( () => {
-			settings = {
-				style: { thickness: 1, color: "red", size: 5 },
-				dock: "bottom",
-				spacing: 10
+			buildOpts = {
+				style: { strokeWidth: 1, stroke: "red" },
+				tickSize: 5,
+				align: "bottom",
+				padding: 10,
+				innerRect: innerRect,
+				outerRect: outerRect
 			};
 			tick = { position: 0.5 };
-			expected = { type: "line", "stroke-width": 1, stroke: "red", x1: 0, x2: 0, y1: 0, y2: 0 };
+			expected = {
+				type: "line",
+				strokeWidth: 1,
+				stroke: "red",
+				x1: 0,
+				x2: 0,
+				y1: 0,
+				y2: 0 };
 		} );
 
-		describe( "Left dock", () => {
+		describe( "Left align", () => {
 			beforeEach( () => {
-				settings.dock = "left";
-				expected.x1 = -settings.spacing;
-				expected.x2 = -settings.spacing - settings.style.size;
+				buildOpts.align = "left";
+				expected.x1 = -buildOpts.padding;
+				expected.x2 = -buildOpts.padding - buildOpts.tickSize;
 			} );
 
 			it( "middle tick", () => {
 				expected.y1 = 50;
 				expected.y2 = 50;
-				expect( AxisStructs.tick( tick, settings, rect ) ).to.deep.equal( expected );
+				expect( buildTick( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "start tick", () => {
 				tick.position = 0;
 				expected.y1 = 99.5;
 				expected.y2 = 99.5;
-				expect( AxisStructs.tick( tick, settings, rect ) ).to.deep.equal( expected );
+				expect( buildTick( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "end tick", () => {
 				tick.position = 1;
 				expected.y1 = 0.5;
 				expected.y2 = 0.5;
-				expect( AxisStructs.tick( tick, settings, rect ) ).to.deep.equal( expected );
+				expect( buildTick( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 		} );
 
-		describe( "Right dock", () => {
+		describe( "Right align", () => {
 			beforeEach( () => {
-				settings.dock = "right";
-				expected.x1 = settings.spacing;
-				expected.x2 = settings.spacing + settings.style.size;
+				buildOpts.align = "right";
+				expected.x1 = buildOpts.padding;
+				expected.x2 = buildOpts.padding + buildOpts.tickSize;
 			} );
 
 			it( "middle tick", () => {
 				expected.y1 = 50;
 				expected.y2 = 50;
-				expect( AxisStructs.tick( tick, settings, rect ) ).to.deep.equal( expected );
+				expect( buildTick( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "start tick", () => {
 				tick.position = 0;
 				expected.y1 = 99.5;
 				expected.y2 = 99.5;
-				expect( AxisStructs.tick( tick, settings, rect ) ).to.deep.equal( expected );
+				expect( buildTick( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "end tick", () => {
 				tick.position = 1;
 				expected.y1 = 0.5;
 				expected.y2 = 0.5;
-				expect( AxisStructs.tick( tick, settings, rect ) ).to.deep.equal( expected );
+				expect( buildTick( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 		} );
 
-		describe( "Top dock", () => {
+		describe( "Top align", () => {
 			beforeEach( () => {
-				settings.dock = "top";
-				expected.y1 = -settings.spacing;
-				expected.y2 = -settings.spacing - settings.style.size;
+				buildOpts.align = "top";
+				expected.y1 = -buildOpts.padding;
+				expected.y2 = -buildOpts.padding - buildOpts.tickSize;
 			} );
 
 			it( "middle tick", () => {
 				expected.x1 = 25;
 				expected.x2 = 25;
-				expect( AxisStructs.tick( tick, settings, rect ) ).to.deep.equal( expected );
+				expect( buildTick( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "start tick", () => {
 				tick.position = 0;
 				expected.x1 = 0.5;
 				expected.x2 = 0.5;
-				expect( AxisStructs.tick( tick, settings, rect ) ).to.deep.equal( expected );
+				expect( buildTick( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "end tick", () => {
 				tick.position = 1;
 				expected.x1 = 49.5;
 				expected.x2 = 49.5;
-				expect( AxisStructs.tick( tick, settings, rect ) ).to.deep.equal( expected );
+				expect( buildTick( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 		} );
 
-		describe( "Bottom dock", () => {
+		describe( "Bottom align", () => {
 			beforeEach( () => {
-				settings.dock = "bottom";
-				expected.y1 = settings.spacing;
-				expected.y2 = settings.spacing + settings.style.size;
+				buildOpts.align = "bottom";
+				expected.y1 = buildOpts.padding;
+				expected.y2 = buildOpts.padding + buildOpts.tickSize;
 			} );
 
 			it( "middle tick", () => {
 				expected.x1 = 25;
 				expected.x2 = 25;
-				expect( AxisStructs.tick( tick, settings, rect ) ).to.deep.equal( expected );
+				expect( buildTick( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "start tick", () => {
 				tick.position = 0;
 				expected.x1 = 0.5;
 				expected.x2 = 0.5;
-				expect( AxisStructs.tick( tick, settings, rect ) ).to.deep.equal( expected );
+				expect( buildTick( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "end tick", () => {
 				tick.position = 1;
 				expected.x1 = 49.5;
 				expected.x2 = 49.5;
-				expect( AxisStructs.tick( tick, settings, rect ) ).to.deep.equal( expected );
+				expect( buildTick( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 		} );
 	} );
 
 	describe( "Label", () => {
-		let settings, tick, expected;
-		AxisStructs.setRenderer( { getComputedRect: () => { return { width: 10, height: 10 }; }, ellipsis: ( opt ) => { return opt.text; } } );
+		let buildOpts, tick, expected;
 
 		beforeEach( () => {
-			settings = {
-				style: { font: "Arial", color: "red", size: 10 },
-				dock: "bottom",
-				spacing: 10,
-				tilted: false
+			buildOpts = {
+				style: { fontFamily: "Arial", fill: "red", fontSize: 10 },
+				align: "bottom",
+				padding: 10,
+				innerRect: innerRect,
+				outerRect: outerRect,
+				maxWidth: textRect.width,
+				maxHeight: textRect.height,
+				textRect: textRect
 			};
 			tick = { position: 0.5, label: "50%" };
 			expected = {
@@ -159,238 +173,234 @@ describe( "AxisStructs", () => {
 				x: 0,
 				y: 0,
 				fill: "red",
-				"font-family": "Arial",
-				"font-size": 10,
-				"text-anchor": "end"
+				fontFamily: "Arial",
+				fontSize: 10,
+				anchor: "end",
+				maxWidth: textRect.width,
+				maxHeight: textRect.height
 			};
 		} );
 
-		describe( "Left dock", () => {
+		describe( "Left align", () => {
 			beforeEach( () => {
-				settings.dock = "left";
+				buildOpts.align = "left";
 				expected.x = -10;
+				expected.baseline = "central";
 			} );
 
 			it( "middle label", () => {
-				expected.y = 53.333333333333336;
-				expect( AxisStructs.label( tick, settings, rect, rendererRect ) ).to.deep.equal( expected );
+				expected.y = 50;
+				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "start label", () => {
 				tick.position = 0;
 				expected.y = 100;
-				expect( AxisStructs.label( tick, settings, rect, rendererRect ) ).to.deep.equal( expected );
+				expected.baseline = "text-after-edge";
+				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "start label with margin", () => {
-				rendererRect.height = 105;
+				outerRect.height = 105;
 				tick.position = 0;
-				expected.y = 103.33333333333333;
-				expect( AxisStructs.label( tick, settings, rect, rendererRect ) ).to.deep.equal( expected );
+				expected.y = 100;
+				expected.baseline = "central";
+				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "end label", () => {
 				tick.position = 1;
-				expected.y = 10;
-				expect( AxisStructs.label( tick, settings, rect, rendererRect ) ).to.deep.equal( expected );
+				expected.y = 0;
+				expected.baseline = "text-before-edge";
+				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "end label with margin", () => {
-				rect.y = 5;
+				innerRect.y = 5;
 				tick.position = 1;
 				expected.y = 5;
-				expect( AxisStructs.label( tick, settings, rect, rendererRect ) ).to.deep.equal( expected );
-			} );
-
-			it( "tilted", () => {
-				settings.tilted = true;
-				expected.y = 53.333333333333336;
-				expected.transform = "rotate(-45, -10, 53.333333333333336)";
-				expected["text-anchor"] = "end";
-				expect( AxisStructs.label( tick, settings, rect, rendererRect ) ).to.deep.equal( expected );
+				expected.baseline = "text-before-edge";
+				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 		} );
 
-		describe( "Right dock", () => {
+		describe( "Right align", () => {
 			beforeEach( () => {
-				settings.dock = "right";
+				buildOpts.align = "right";
 				expected.x = 10;
-				expected["text-anchor"] = "start";
+				expected.anchor = "start";
+				expected.baseline = "central";
 			} );
 
 			it( "middle label", () => {
-				expected.y = 53.333333333333336;
-				expect( AxisStructs.label( tick, settings, rect, rendererRect ) ).to.deep.equal( expected );
+				expected.y = 50;
+				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "start label", () => {
 				tick.position = 0;
 				expected.y = 100;
-				expect( AxisStructs.label( tick, settings, rect, rendererRect ) ).to.deep.equal( expected );
+				expected.baseline = "text-after-edge";
+				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "start label with margin", () => {
-				rendererRect.height = 105;
+				outerRect.height = 105;
 				tick.position = 0;
-				expected.y = 103.33333333333333;
-				expect( AxisStructs.label( tick, settings, rect, rendererRect ) ).to.deep.equal( expected );
+				expected.y = 100;
+				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "end label", () => {
 				tick.position = 1;
-				expected.y = 10;
-				expect( AxisStructs.label( tick, settings, rect, rendererRect ) ).to.deep.equal( expected );
+				expected.y = 0;
+				expected.baseline = "text-before-edge";
+				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "end label with margin", () => {
-				rect.y = 5;
+				innerRect.y = 5;
 				tick.position = 1;
 				expected.y = 5;
-				expect( AxisStructs.label( tick, settings, rect, rendererRect ) ).to.deep.equal( expected );
-			} );
-
-			it( "tilted", () => {
-				settings.tilted = true;
-				expected.y = 53.333333333333336;
-				expected.transform = "rotate(-45, 10, 53.333333333333336)";
-				expect( AxisStructs.label( tick, settings, rect, rendererRect ) ).to.deep.equal( expected );
+				expected.baseline = "text-before-edge";
+				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 		} );
 
-		describe( "Top dock", () => {
+		describe( "Top align", () => {
 			beforeEach( () => {
-				settings.dock = "top";
+				buildOpts.align = "top";
 				expected.y = -10;
-				expected["text-anchor"] = "middle";
+				expected.anchor = "middle";
 			} );
 
 			it( "middle label", () => {
 				expected.x = 25;
-				expect( AxisStructs.label( tick, settings, rect, rendererRect ) ).to.deep.equal( expected );
+				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "start label", () => {
 				tick.position = 0;
-				expected.x = 5;
-				expect( AxisStructs.label( tick, settings, rect, rendererRect ) ).to.deep.equal( expected );
+				expected.x = 0;
+				expected.anchor = "left";
+				expected.maxWidth = expected.maxWidth * 0.75;
+				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "start label with margin", () => {
 				tick.position = 0;
-				rect.x = 5;
-				expected.x = 0;
-				expect( AxisStructs.label( tick, settings, rect, rendererRect ) ).to.deep.equal( expected );
+				innerRect.x = 5;
+				expected.x = 5;
+				expected.anchor = "left";
+				expected.maxWidth = expected.maxWidth * 0.75;
+				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "end label", () => {
 				tick.position = 1;
-				expected.x = 45;
-				expect( AxisStructs.label( tick, settings, rect, rendererRect ) ).to.deep.equal( expected );
+				expected.x = 50;
+				expected.anchor = "end";
+				expected.maxWidth = expected.maxWidth * 0.75;
+				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "end label with margin", () => {
 				tick.position = 1;
-				rendererRect.width = 65;
+				outerRect.width = 65;
 				expected.x = 50;
-				expect( AxisStructs.label( tick, settings, rect, rendererRect ) ).to.deep.equal( expected );
-			} );
-
-			it( "tilted", () => {
-				settings.tilted = true;
-				expected.x = 25;
-				expected.transform = "rotate(-45, 25, -10)";
-				expect( AxisStructs.label( tick, settings, rect, rendererRect ) ).to.deep.equal( expected );
+				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 		} );
 
-		describe( "Bottom dock", () => {
+		describe( "Bottom align", () => {
 			beforeEach( () => {
-				settings.dock = "bottom";
+				buildOpts.align = "bottom";
 				expected.y = 20;
-				expected["text-anchor"] = "middle";
+				expected.anchor = "middle";
 			} );
 
 			it( "middle label", () => {
 				expected.x = 25;
-				expect( AxisStructs.label( tick, settings, rect, rendererRect ) ).to.deep.equal( expected );
+				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "start label", () => {
 				tick.position = 0;
-				expected.x = 5;
-				expect( AxisStructs.label( tick, settings, rect, rendererRect ) ).to.deep.equal( expected );
+				expected.x = 0;
+				expected.anchor = "left";
+				expected.maxWidth = expected.maxWidth * 0.75;
+				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "start label with margin", () => {
 				tick.position = 0;
-				rect.x = 5;
-				expected.x = 0;
-				expect( AxisStructs.label( tick, settings, rect, rendererRect ) ).to.deep.equal( expected );
+				innerRect.x = 5;
+				expected.x = 5;
+				expected.anchor = "left";
+				expected.maxWidth = expected.maxWidth * 0.75;
+				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "end label", () => {
 				tick.position = 1;
-				expected.x = 45;
-				expect( AxisStructs.label( tick, settings, rect, rendererRect ) ).to.deep.equal( expected );
+				expected.x = 50;
+				expected.anchor = "end";
+				expected.maxWidth = expected.maxWidth * 0.75;
+				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "end label with margin", () => {
 				tick.position = 1;
-				rendererRect.width = 65;
+				outerRect.width = 65;
 				expected.x = 50;
-				expect( AxisStructs.label( tick, settings, rect, rendererRect ) ).to.deep.equal( expected );
-			} );
-
-			it( "tilted", () => {
-				settings.tilted = true;
-				expected.x = 25;
-				expected.transform = "rotate(-45, 25, 20)";
-				expect( AxisStructs.label( tick, settings, rect, rendererRect ) ).to.deep.equal( expected );
+				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 		} );
 	} );
 
 	describe( "Line", () => {
-		let settings, expected;
+		let buildOpts, expected;
 
 		beforeEach( () => {
-			settings = {
-				style: { color: "red", size: 1 },
-				dock: "bottom"
+			buildOpts = {
+				style: { stroke: "red", strokeWidth: 1 },
+				align: "bottom",
+				innerRect: innerRect,
+				outerRect: outerRect
 			};
-			expected = { type: "line", "stroke-width": 1, stroke: "red", x1: 0, x2: 0, y1: 0, y2: 0 };
+			expected = { type: "line", strokeWidth: 1, stroke: "red", x1: 0, x2: 0, y1: 0, y2: 0 };
 		} );
 
-		it( "Left dock", () => {
-			settings.dock = "left";
+		it( "Left align", () => {
+			buildOpts.align = "left";
 			expected.x1 = -0.5;
 			expected.x2 = -0.5;
 			expected.y2 = 100;
-			expect( AxisStructs.line( settings, rect ) ).to.deep.equal( expected );
+			expect( buildLine( buildOpts ) ).to.deep.equal( expected );
 		} );
 
-		it( "Right dock", () => {
-			settings.dock = "right";
+		it( "Right align", () => {
+			buildOpts.align = "right";
 			expected.x1 = 0.5;
 			expected.x2 = 0.5;
 			expected.y2 = 100;
-			expect( AxisStructs.line( settings, rect ) ).to.deep.equal( expected );
+			expect( buildLine( buildOpts ) ).to.deep.equal( expected );
 		} );
 
-		it( "Top dock", () => {
-			settings.dock = "top";
+		it( "Top align", () => {
+			buildOpts.align = "top";
 			expected.x2 = 50;
 			expected.y1 = -0.5;
 			expected.y2 = -0.5;
-			expect( AxisStructs.line( settings, rect ) ).to.deep.equal( expected );
+			expect( buildLine( buildOpts ) ).to.deep.equal( expected );
 		} );
 
-		it( "Bottom dock", () => {
-			settings.dock = "bottom";
+		it( "Bottom align", () => {
+			buildOpts.align = "bottom";
 			expected.x2 = 50;
 			expected.y1 = 0.5;
 			expected.y2 = 0.5;
-			expect( AxisStructs.line( settings, rect ) ).to.deep.equal( expected );
+			expect( buildLine( buildOpts ) ).to.deep.equal( expected );
 		} );
 	} );
 } );

@@ -10,10 +10,10 @@ let reg = registry();
 
 reg.add( "rect", rect );
 reg.add( "circle", circle );
+reg.add( "text", text );
+reg.add( "line", line );
 reg.add( "stage", stage );
 reg.add( "container", container );
-reg.add( "line", line );
-reg.add( "text", text );
 
 export function create( type, input ) {
 	return reg.get( type )( input );
