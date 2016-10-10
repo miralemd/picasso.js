@@ -6,7 +6,8 @@ const accessors = {
 	tags: data => data.tags,
 	min: data => data.min,
 	max: data => data.max,
-	title: data => data.title
+	title: data => data.title,
+	values: data => data.values
 };
 
 export function field() {
@@ -15,7 +16,8 @@ export function field() {
 			min: accessors.min,
 			max: accessors.max,
 			tags: accessors.tags,
-			title: accessors.title
+			title: accessors.title,
+			values: accessors.values
 		};
 
 	function fn() {}
@@ -29,6 +31,8 @@ export function field() {
 	fn.max = f => f ? ( acc.max = f, fn ) : acc.max( data );
 
 	fn.title = f => f ? ( acc.title = f, fn ) : acc.title( data );
+
+	fn.values = f => f ? ( acc.values = f, fn ) : acc.values( data );
 
 	return fn;
 }

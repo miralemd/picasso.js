@@ -1,4 +1,4 @@
-import { table } from "./table";
+import { table } from "../../../../src/core/data/table";
 
 describe( "table", () => {
 	let dd;
@@ -22,5 +22,10 @@ describe( "table", () => {
 
 	it( "should set fields accessor", () => {
 		expect( dd.fields( d => d[0].map( s => s ) ).fields() ).to.deep.equal( ["Country", "Population"] );
+	} );
+
+	it( "should find a field", () => {
+		let fieldFactory = d => d[0].map( s => s );
+		expect( dd.fields( fieldFactory ).findField( "Population", ( q, field ) => q === field ) ).to.equal( "Population" );
 	} );
 } );

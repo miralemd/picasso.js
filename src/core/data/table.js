@@ -1,6 +1,7 @@
 /* eslint no-return-assign: 0 */
 export function table() {
 	let dd = {},
+		cache = {},
 		acc = {
 			rows: () => 0,
 			cols: () => 0,
@@ -11,6 +12,7 @@ export function table() {
 
 	fn.data = function( d ) {
 		if ( d ) {
+			delete cache.fields;
 			dd = d;
 			return fn;
 		}
@@ -26,7 +28,20 @@ export function table() {
 	};
 
 	fn.fields = function( f ) {
-		return f ? ( acc.fields = f, fn ) : acc.fields( dd );
+		if ( f ) {
+			acc.fields = f;
+			delete cache.fields;
+			return fn;
+		}
+		if ( !cache.fields ) {
+			cache.fields = acc.fields( dd );
+		}
+		return cache.fields;
+	};
+
+	fn.findField = function( s, comparison ) {
+		let ff = fn.fields().filter( field => comparison( s, field ) );
+		return ff[0];
 	};
 
 	return fn;

@@ -1,4 +1,4 @@
-import { field } from "./field";
+import { field } from "../../../../src/core/data/field";
 
 describe( "Field", () => {
 	let f;
@@ -11,7 +11,8 @@ describe( "Field", () => {
 			min: 1,
 			max: 2,
 			tags: ["a", "b"],
-			title: "wohoo"
+			title: "wohoo",
+			values: ["a", "c", "a"]
 		};
 		beforeEach( () => {
 			f.data( dd );
@@ -36,6 +37,10 @@ describe( "Field", () => {
 		it( "should return title", () => {
 			expect( f.title() ).to.equal( "wohoo" );
 		} );
+
+		it( "should return values", () => {
+			expect( f.values() ).to.deep.equal( ["a", "c", "a"] );
+		} );
 	} );
 
 	describe( "custom accessors", () => {
@@ -45,7 +50,8 @@ describe( "Field", () => {
 				meta: {
 					taggar: [{ v: "numeric" }, { v: "date" }]
 				},
-				label: "custom"
+				label: "custom",
+				values: [{ v: 1 }, { v: 6 }, { v: 6 }]
 			} );
 		} );
 
@@ -63,6 +69,10 @@ describe( "Field", () => {
 
 		it( "should return title", () => {
 			expect( f.title( d => d.label ).title() ).to.equal( "custom" );
+		} );
+
+		it( "should return values", () => {
+			expect( f.values( d => d.values.map( x => x.v ) ).values() ).to.deep.equal( [1, 6, 6] );
 		} );
 	} );
 } );
