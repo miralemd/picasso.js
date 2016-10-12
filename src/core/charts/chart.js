@@ -1,4 +1,4 @@
-import { composer } from "./composer/composer";
+import { composer } from "./composer";
 
 export default class Chart {
 	/**
