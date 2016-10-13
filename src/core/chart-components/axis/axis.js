@@ -27,20 +27,15 @@ function alignTransform( { align, innerRect } ) {
 	}
 }
 
-function qDiscreteDataMapper( data, source ) {
-	return data.fromSource( source, 0 ).map( ( d ) => {
-		return d.qText;
-	} );
-}
 
 export function abstractAxis( axisConfig, composer, renderer ){
 	const innerRect = { width: 0, height: 0, x: 0, y: 0 };
 	const outerRect = { width: 0, height: 0, x: 0, y: 0 };
 	const nodes = [];
-	const scale = composer.scales[axisConfig.scale].scale;
-	const type = composer.scales[axisConfig.scale].type;
-	const source = composer.scales[axisConfig.scale].source;
-	let data = composer.data;
+	const dataScale = composer.scale( axisConfig );
+	const scale = dataScale.scale;
+	const type = dataScale.type;
+	let data; // = composer.data;
 	let concreteNodeBuilder;
 	let settings;
 	let ticksFn;
@@ -57,14 +52,14 @@ export function abstractAxis( axisConfig, composer, renderer ){
 		return continuous;
 	};
 
-	let discrete = function( dataMapper = qDiscreteDataMapper ) {
+	let discrete = function() {
 		settings = discreteDefaultSettings();
 		extend( true, settings, axisConfig.settings );
 		discrete.resize( renderer.size() );
 		discrete.resize( alignTransform( { align: settings.align, innerRect } ) );
 		concreteNodeBuilder = nodeBuilder( type );
 		ticksFn = generateDiscreteTicks;
-		data = dataMapper( data, source );
+		data = scale.domain();
 		return discrete;
 	};
 

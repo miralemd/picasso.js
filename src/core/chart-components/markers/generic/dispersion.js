@@ -2,9 +2,16 @@ import { renderer } from "../../../renderer";
 import { doodler } from "./doodler";
 import { transposer } from "../../../transposer/transposer";
 
+function values( table, setting ) {
+	if ( setting && setting.source ) {
+		return table.findField( setting.source ).values();
+	}
+	return null;
+}
+
 export class Dispersion {
 	constructor( obj, composer ) {
-		this.element = composer.element;
+		this.element = composer.container();
 
 		// Setup the renderer
 		this.renderer = renderer();
@@ -12,12 +19,12 @@ export class Dispersion {
 
 		// Setup settings and data
 		this.settings = obj.settings;
-		this.data = composer.data;
+		this.table = composer.table();
 		this.obj = obj;
 
 		// Setup scales
-		this.x = composer.scales[this.settings.x.scale];
-		this.y = composer.scales[this.settings.y.scale];
+		this.x = this.settings.x ? composer.scale( this.settings.x ) : null;
+		this.y = this.settings.y ? composer.scale( this.settings.y ) : null;
 
 		// Set the default bandwidth
 		this.bandwidth = 0;
@@ -30,34 +37,30 @@ export class Dispersion {
 	onData() {
 		this.items = [];
 
-		this.data.dataPages().then( ( pages ) => {
+		let data = values( this.table, this.obj.data );
+		let startValues = values( this.table, this.settings.start );
+		let endValues = values( this.table, this.settings.end );
+		let minValues = values( this.table, this.settings.min );
+		let maxValues = values( this.table, this.settings.max );
+		let medValues = values( this.table, this.settings.med );
 
-			pages.forEach( ( page, i ) => {
-				const x = this.x ? this.data.fromSource( this.x.source, i ) : null,
-					min = this.settings.min ? this.data.fromSource( this.settings.min.source, i ) : null,
-					max = this.settings.max ? this.data.fromSource( this.settings.max.source, i ) : null,
-					start = this.settings.start ? this.data.fromSource( this.settings.start.source, i ) : null,
-					end = this.settings.end ? this.data.fromSource( this.settings.end.source, i ) : null,
-					med = this.settings.med ? this.data.fromSource( this.settings.med.source, i ) : null;
+		let x = this.x;
+		let y = this.y;
 
-				this.bandwidth = this.x.scale.step() * 0.75;
+		this.bandwidth = x ? x.scale.step() * 0.75 : 0.5;
 
-				this.data.fromSource( this.obj.data.source, i ).forEach( ( value, row ) => {
-					this.items.push( {
-						x: x ? ( this.x.scale.get( row ) ) : 0.5,
-						min: min ? ( this.y.toValue( min, row ) ) : null,
-						max: max ? ( this.y.toValue( max, row ) ) : null,
-						start: start ? ( this.y.toValue( start, row ) ) : 0,
-						end: end ? ( this.y.toValue( end, row ) ) : null,
-						med: med ? ( this.y.toValue( med, row ) ) : null
-					} );
-				} );
-			}, this );
-
-			this.resize();
-		} ).catch( () => {
-			this.resize();
+		data.forEach( ( d, i ) => {
+			this.items.push( {
+				x: x ? x( d ) : 0.5,
+				min: y && minValues ? y( minValues[i] ) : null,
+				max: y && maxValues ? y( maxValues[i] ) : null,
+				start: y && startValues ? y( startValues[i] ) : 0,
+				end: y && endValues ? y( endValues[i] ) : null,
+				med: y && medValues ? y( medValues[i] ) : null
+			} );
 		} );
+
+		this.resize();
 	}
 
 	render( items ) {

@@ -17,13 +17,9 @@ describe( "Axis", () => {
 	}
 
 	beforeEach( () => {
-
+		let s = {};
 		composerMock = {
-			scales: {
-				y: {
-					source: "source"
-				}
-			},
+			scale: () => s,
 			data: {}
 		};
 
@@ -42,8 +38,8 @@ describe( "Axis", () => {
 	describe( "continuous", () => {
 
 		beforeEach( () => {
-			composerMock.scales.y.scale = linear();
-			composerMock.scales.y.type = "linear";
+			composerMock.scale().scale = linear();
+			composerMock.scale().type = "linear";
 
 			axis = abstractAxis( config, composerMock, rendererMock );
 		} );
@@ -89,8 +85,8 @@ describe( "Axis", () => {
 		it( "should extend domain of scale with custom min/max values", () => {
 			config.settings.ticks = { min: -10, max: 10 };
 			axis().render();
-			const actualMin = composerMock.scales.y.scale.start();
-			const actualMax = composerMock.scales.y.scale.end();
+			const actualMin = composerMock.scale().scale.start();
+			const actualMax = composerMock.scale().scale.end();
 			expect( actualMin ).to.equal( -10 );
 			expect( actualMax ).to.equal( 10 );
 		} );
@@ -99,8 +95,8 @@ describe( "Axis", () => {
 			config.settings.ticks = { min: -10, max: 400 };
 			config.settings.ticks.tight = true;
 			axis().render();
-			const actualMin = composerMock.scales.y.scale.start();
-			const actualMax = composerMock.scales.y.scale.end();
+			const actualMin = composerMock.scale().scale.start();
+			const actualMax = composerMock.scale().scale.end();
 			expect( actualMin ).to.equal( -10 );
 			expect( actualMax ).to.equal( 400 );
 		} );
@@ -113,8 +109,8 @@ describe( "Axis", () => {
 		beforeEach( () => {
 			data = ["d1", "d2", "d3"];
 			composerMock.data = data;
-			composerMock.scales.y.scale = band( [0, 1, 2], [0, 1] );
-			composerMock.scales.y.type = "ordinal";
+			composerMock.scale().scale = band( [0, 1, 2], [0, 1] );
+			composerMock.scale().type = "ordinal";
 			dataMapperMock = () => { return data; };
 			axis = abstractAxis( config, composerMock, rendererMock );
 		} );
