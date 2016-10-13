@@ -388,30 +388,19 @@ First, follow the instructions on [How to build](../README.md) to generate the r
 <script>
 	var data = {
 		type: "q",
-		data: {
-			layout: qLayout
-		}
+		data: qLayout.qHyperCube
 	};
 	var settings = {
-		scales: {
-			x: { source: "/qHyperCube/qMeasureInfo/0" }, // create scale from first measure
-			y: { source: "/qHyperCube/qMeasureInfo/1" }, // second measure
-			size: { source: "/qHyperCube/qMeasureInfo/2" }, // third
-			color: {
-				source: "/qHyperCube/qMeasureInfo/0/qAttrExprInfo/0", // from first attribute expression on first measure
-				colors: ["green", "blue"] // output colors
-			}
-		},
 		components: {
 			markers: [
 				{
 					type: "point",
 					data: { source: "/qHyperCube/qDimensionInfo/0" }, // loop over dimension values
 					settings: {
-						x: { scale: "x" }, // map x value of point to "x" scale
-						y: { scale: "y" }, // y value to "y" scale
-						size: { scale: "size" }, // optional - size to "size" scale
-						fill: { scale: "color" } // optional - fill to "color" scale
+						x: { source: "/qHyperCube/qMeasureInfo/0" }, // use values from first measure
+						y: { source: "/qHyperCube/qMeasureInfo/1" }, // use values from second measure
+						size: { source: "/qHyperCube/qMeasureInfo/2" }, // optional
+						fill: { source: "/qHyperCube/qMeasureInfo/2", type: "color" } // optional
 					}
 				}
 			]
