@@ -6,11 +6,9 @@ import {
 	getOrCreateScale
 } from "./scales";
 
-const regComps = registry();
-regComps.register( "components", components );
-
-const regScales = registry();
-regScales.register( "scales", buildScales );
+const reg = registry();
+reg.add( "components", components );
+reg.add( "scales", buildScales );
 
 export function composer () {
 
@@ -28,8 +26,9 @@ export function composer () {
 
 	fn.data = function( meta, settings ) {
 		tables = [data( meta )];
-		scales = regScales.build( settings, this ).scales;
-		comps = regComps.build( settings, this );
+		let obj = reg.build( settings, fn );
+		scales = obj.scales;
+		comps = obj.components;
 	};
 
 	fn.table = function() {
