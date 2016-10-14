@@ -20,6 +20,10 @@ describe( "transposer", () => {
 		// With multiple X and Ys
 		expect( draw.evaluateKey( "x1" ) ).to.equal( "y1" );
 		expect( draw.evaluateKey( "y2" ) ).to.equal( "x2" );
+
+		// With CX and CY
+		expect( draw.evaluateKey( "cx" ) ).to.equal( "cy" );
+		expect( draw.evaluateKey( "cy" ) ).to.equal( "cx" );
 	} );
 
 	it( "should return correct coordinates", () => {

@@ -28,6 +28,10 @@ export default class Transposer {
 				return "y" + rest;
 			} else if ( firstChar === "y" ) {
 				return "x" + rest;
+			} else if ( key === "cx" ) {
+				return "cy";
+			} else if ( key === "cy" ) {
+				return "cx";
 			} else if ( key === "width" ) {
 				return "height";
 			} else if ( key === "height" ) {
@@ -52,14 +56,14 @@ export default class Transposer {
 
 			let firstChar = key.substring( 0, 1 );
 
-			if ( firstChar === "x" ) {
+			if ( firstChar === "x" || key === "cx" ) {
 				// The line below is for RTl, however, this can be changed in the scale instead
 				// by using a range of [1,0] instead of [0,1]
 				//coordinate = this.flipX ? ( 1 - coordinate ) - ( item[ this.evaluateKey( "width" ) ] || 0 ) : coordinate;
 				return coordinate * this.width + this.x;
-			} else if ( key === "width" ) {
+			} else if ( key === "width" || key === "r" ) {
 				return coordinate * this.width;
-			} else if ( firstChar === "y" ) {
+			} else if ( firstChar === "y" || key === "cy" ) {
 				coordinate = this.flipY ? ( 1 - coordinate ) - ( item[ this.evaluateKey( "height" ) ] || 0 ) : coordinate;
 				return coordinate * this.height + this.y;
 			} else if ( key === "height" ) {
