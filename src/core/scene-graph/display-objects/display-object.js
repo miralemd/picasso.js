@@ -6,12 +6,15 @@ export default class DisplayObject extends Node {
 		this._stage = null;
 	}
 
-	set ( { fill, stroke, strokeWidth, fontFamily, fontSize, baseline, anchor, maxWidth } ) {
+	set ( { fill, stroke, strokeWidth, fontFamily, fontSize, baseline, anchor, maxWidth, opacity } ) {
 		if ( typeof fill !== "undefined" ) {
 			this.fill = fill;
 		}
 		if ( typeof stroke !== "undefined" ) {
 			this.stroke = stroke;
+		}
+		if ( typeof opacity !== "undefined" ) {
+			this.opacity = opacity;
 		}
 		if ( typeof strokeWidth !== "undefined" ) {
 			this["stroke-width"] = strokeWidth;
