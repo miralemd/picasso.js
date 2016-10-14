@@ -219,7 +219,7 @@ describe( "AxisStructs", () => {
 				innerRect.y = 5;
 				tick.position = 1;
 				expected.y = 5;
-				expected.baseline = "text-before-edge";
+				expected.baseline = "central";
 				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 		} );
@@ -262,7 +262,7 @@ describe( "AxisStructs", () => {
 				innerRect.y = 5;
 				tick.position = 1;
 				expected.y = 5;
-				expected.baseline = "text-before-edge";
+				expected.baseline = "central";
 				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 		} );
@@ -291,8 +291,6 @@ describe( "AxisStructs", () => {
 				tick.position = 0;
 				innerRect.x = 5;
 				expected.x = 5;
-				expected.anchor = "left";
-				expected.maxWidth = expected.maxWidth * 0.75;
 				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
@@ -336,8 +334,6 @@ describe( "AxisStructs", () => {
 				tick.position = 0;
 				innerRect.x = 5;
 				expected.x = 5;
-				expected.anchor = "left";
-				expected.maxWidth = expected.maxWidth * 0.75;
 				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 

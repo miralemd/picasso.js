@@ -19,6 +19,7 @@ export default class Point {
 		this.settings = obj.settings;
 		this.table = composer.table();
 		this.obj = obj;
+		this.rect = { x: 0, y: 0, width: 0, height: 0 };
 
 		this.x = this.settings.x ? composer.scale( this.settings.x ) : null;
 		this.y = this.settings.y ? composer.scale( this.settings.y ) : null;
@@ -45,20 +46,18 @@ export default class Point {
 		this.points = data.map( ( p, i ) => {
 			return {
 				x: x ? x( xValues[i] ) : 0.5,
-				y: y ? y( yValues[i] ) : 0.5,
+				y: y ? 1 - y( yValues[i] ) : 0.5,
 				size: size ? size( sizeValues[i] ) : 1,
 				fill: typeof fill === "function" ? fill( fillValues[i] ) : typeof fill === "string" ? fill : DEFAULT_FILL,
 				label: p.label
 			};
 		} );
-
-		this.resize();
 	}
 
 	render() {
 		const points = this.points;
 		const numYValues = this.y && this.y.type === "ordinal" ? this.y.scale.domain().length : -1;
-		const { width, height } = this.renderer.size();
+		const { x, y, width, height } = this.rect;
 		const pointSize = numYValues === -1 ? [10, 40] : [Math.max( 1, Math.min( 5, 1 * height / numYValues ) ), Math.max( 1, Math.min( 40, 1 * height / numYValues ) ) ];
 			//numXValues = this.x && this.x.type === "ordinal" ? this.x.scale.domain().length : -1,
 		const displayPoints = points.filter( p => {
@@ -66,8 +65,8 @@ export default class Point {
 		} ).map( p => {
 			return {
 				type: "circle",
-				cx: p.x * width,
-				cy: p.y * height,
+				cx: p.x * width + x,
+				cy: p.y * height + y,
 				r: pointSize[0] + 0.5 * p.size * ( pointSize[1] - pointSize[0] ), // TODO - replace with scale
 				title: p.label,
 				opacity: 0.8,
@@ -78,8 +77,8 @@ export default class Point {
 		this.renderer.render( displayPoints );
 	}
 
-	resize() {
-		this.render();
+	resize( rect ) {
+		this.rect = rect;
 	}
 }
 

@@ -7,14 +7,12 @@ export function buildTick( tick, buildOpts ) {
 	};
 
 	if ( buildOpts.align === "top" || buildOpts.align === "bottom" ) {
-		struct.x1 = tick.position * buildOpts.innerRect.width;
-		struct.x2 = tick.position * buildOpts.innerRect.width;
-		struct.y1 = buildOpts.align === "top" ? buildOpts.innerRect.y : 0;
+		struct.x1 = struct.x2 = ( tick.position * buildOpts.innerRect.width ) + buildOpts.innerRect.x;
+		struct.y1 = buildOpts.innerRect.y;
 		struct.y2 = buildOpts.align === "top" ? struct.y1 - buildOpts.tickSize : struct.y1 + buildOpts.tickSize;
 	} else {
-		struct.y1 = ( 1 - tick.position ) * buildOpts.innerRect.height;
-		struct.y2 = ( 1 - tick.position ) * buildOpts.innerRect.height;
-		struct.x1 = buildOpts.align === "left" ? buildOpts.innerRect.x : 0;
+		struct.y1 = struct.y2 = ( 1 - tick.position ) * ( buildOpts.innerRect.height ) + buildOpts.innerRect.y;
+		struct.x1 = buildOpts.innerRect.x;
 		struct.x2 = buildOpts.align === "left" ? struct.x1 - buildOpts.tickSize : struct.x1 + buildOpts.tickSize;
 	}
 
@@ -72,35 +70,45 @@ export function buildLabel( tick, buildOpts ) {
 	};
 
 	if ( buildOpts.align === "top" || buildOpts.align === "bottom" ) {
-		struct.x = ( tick.position * buildOpts.innerRect.width );
-		struct.y = buildOpts.align === "top" ? buildOpts.innerRect.y : 0;
+		struct.x = ( tick.position * buildOpts.innerRect.width ) + buildOpts.innerRect.x;
+		struct.y = buildOpts.innerRect.y;
 		struct.anchor = "middle";
 	} else {
-		struct.y = ( ( 1 - tick.position ) * buildOpts.innerRect.height );
-		struct.x = buildOpts.align === "left" ? buildOpts.innerRect.x : 0;
+		struct.y = ( ( 1 - tick.position ) * buildOpts.innerRect.height ) + buildOpts.innerRect.y;
+		struct.x = buildOpts.innerRect.x;
 		struct.anchor = buildOpts.align === "left" ? "end" : "start";
 	}
 
 	let labelAdjustForEnds = () => {
-		const outerBoundryMultipler = 0.75;
+		const outerBoundaryMultipler = 0.75;
 
 		if ( buildOpts.align === "top" || buildOpts.align === "bottom" ) {
-			if ( ( struct.x + buildOpts.innerRect.x ) <= Math.min( buildOpts.maxWidth * outerBoundryMultipler, buildOpts.textRect.width / 2 ) ) {
+			const leftBoundary = buildOpts.outerRect.x;
+			const rightBoundary = buildOpts.outerRect.x + buildOpts.outerRect.width;
+			const textWidth = Math.min( ( buildOpts.maxWidth * outerBoundaryMultipler ) / 2, buildOpts.textRect.width / 2 );
+			const leftTextBoundary = struct.x - textWidth;
+			const rightTextBoundary = struct.x + textWidth;
+			if ( leftTextBoundary < leftBoundary ) {
 				struct.anchor = "left";
 				struct.x = buildOpts.innerRect.x;
-				struct.maxWidth = struct.maxWidth * outerBoundryMultipler;
-			} else if ( struct.x >= buildOpts.outerRect.width - buildOpts.innerRect.x - Math.min( buildOpts.maxWidth * outerBoundryMultipler, buildOpts.textRect.width / 2 ) ) {
+				struct.maxWidth = struct.maxWidth * outerBoundaryMultipler;
+			} else if ( rightTextBoundary > rightBoundary ) {
 				struct.anchor = "end";
-				struct.x = buildOpts.innerRect.width;
-				struct.maxWidth = struct.maxWidth * outerBoundryMultipler;
+				struct.x = buildOpts.innerRect.width + buildOpts.innerRect.x;
+				struct.maxWidth = struct.maxWidth * outerBoundaryMultipler;
 			}
 		} else {
-			if ( struct.y + buildOpts.innerRect.y <= buildOpts.maxHeight / 2 ) {
+			const topBoundary = buildOpts.outerRect.y;
+			const bottomBoundary = buildOpts.outerRect.y + buildOpts.outerRect.height;
+			const textHeight = buildOpts.maxHeight / 2;
+			const topTextBoundary = struct.y - textHeight;
+			const bottomTextBoundary = struct.y + textHeight;
+			if ( topTextBoundary < topBoundary ) {
 				struct.y = buildOpts.innerRect.y;
 				struct.baseline = "text-before-edge";
-			} else if ( struct.y + ( buildOpts.maxHeight / 2 ) > buildOpts.outerRect.height - buildOpts.innerRect.y ) {
+			} else if ( bottomTextBoundary > bottomBoundary ) {
 				struct.baseline = "text-after-edge";
-				struct.y = buildOpts.innerRect.height;
+				struct.y = buildOpts.innerRect.height + buildOpts.innerRect.y;
 			} else {
 				struct.baseline = "central";
 			}
@@ -135,11 +143,13 @@ export function buildLine( buildOpts ) {
 	};
 
 	if ( buildOpts.align === "top" || buildOpts.align === "bottom" ) {
-		struct.x2 = buildOpts.innerRect.width;
-		struct.y1 = struct.y2 = buildOpts.align === "top" ? buildOpts.innerRect.y : 0;
+		struct.x1 = buildOpts.innerRect.x;
+		struct.x2 = buildOpts.innerRect.width + buildOpts.innerRect.x;
+		struct.y1 = struct.y2 = buildOpts.innerRect.y;
 	} else {
-		struct.x1 = struct.x2 = buildOpts.align === "left" ? buildOpts.innerRect.x : 0;
-		struct.y2 = buildOpts.innerRect.height;
+		struct.x1 = struct.x2 = buildOpts.innerRect.x;
+		struct.y1 = buildOpts.innerRect.y;
+		struct.y2 = buildOpts.innerRect.height + buildOpts.innerRect.y;
 	}
 
 	let lineApplyStyle = () => {

@@ -57,7 +57,7 @@ export function generateContinuousTicks( { settings, scale, innerRect } ) {
 		scale.tickGenerator( ticksByCount );
 		ticks = scale.ticks( { count: settings.ticks.count, minorCount, scale } );
 	} else {
-		let distance = settings.align === "top" || settings.align === "bottom" ? innerRect.width - innerRect.x : innerRect.height - innerRect.y;
+		let distance = settings.align === "top" || settings.align === "bottom" ? innerRect.width : innerRect.height;
 		scale.tickGenerator( settings.ticks.tight && !hasMinMaxValue( settings ) ? tightDistanceBasedGenerator : looseDistanceBasedGenerator );
 		ticks = scale.ticks( {
 			distance: distance,

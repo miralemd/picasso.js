@@ -9,10 +9,7 @@ reg.register( "axis", axis );
 export function axisFactory( axes, composer ) {
 	return axes.map( ( axisConfig ) => {
 		const rend = renderer( "svg" );
-		const element = document.getElementById( axisConfig.parent );
-		element.innerHTML = "";
-		rend.appendTo( element );
-
+		rend.appendTo( composer.container() );
 		return reg.registry.axis( axisConfig, composer, rend );
 	} );
 }

@@ -2,6 +2,7 @@ import { nodeBuilder } from "./axis-node-builder";
 import { discreteDefaultSettings, continuousDefaultSettings } from "./axis-default-settings";
 import { generateContinuousTicks, generateDiscreteTicks } from "./axis-tick-generators";
 import { default as extend } from "extend";
+import { dockConfig } from "../../dock-layout/dock-config";
 
 function extendDomain( settings, scale ) {
 	const min = settings.ticks.min,
@@ -17,16 +18,32 @@ function extendDomain( settings, scale ) {
 	}
 }
 
-function alignTransform( { align, innerRect } ) {
+function alignTransform( { align, inner } ) {
 	if ( align === "left" ) {
-		return { x: innerRect.width, y: 0 };
+		return { x: inner.width + inner.x };
 	} else if ( align === "right" || align === "bottom" ) {
-		return { x: 0, y: 0 };
+		return inner;
 	} else {
-		return { x: 0, y: innerRect.height };
+		return { y: inner.y + inner.height };
 	}
 }
 
+function calcRequiredSize( dock ) {
+	// TODO base it on something...
+	let fn = function( rect ) {
+		return dock === "top" || dock === "bottom" ? rect.height * 0.1 : rect.width * 0.1;
+	};
+
+	return fn;
+}
+
+function dockAlignSetup( settings, type ) {
+	if ( settings.dock && !settings.align ) {
+		settings.align = settings.dock;
+	} else if ( !settings.dock && !settings.align ) {
+		settings.align = type === "ordinal" ? "bottom" : "left";
+	}
+}
 
 export function abstractAxis( axisConfig, composer, renderer ){
 	const innerRect = { width: 0, height: 0, x: 0, y: 0 };
@@ -35,46 +52,51 @@ export function abstractAxis( axisConfig, composer, renderer ){
 	const dataScale = composer.scale( axisConfig );
 	const scale = dataScale.scale;
 	const type = dataScale.type;
-	let data; // = composer.data;
+	let data;
 	let concreteNodeBuilder;
 	let settings;
 	let ticksFn;
+	let layoutConfig = dockConfig();
+
+	let init = function() {
+		extend( true, settings, axisConfig.settings );
+		concreteNodeBuilder = nodeBuilder( type );
+		dockAlignSetup( settings, type );
+		layoutConfig.dock( settings.dock );
+		layoutConfig.requiredSize( calcRequiredSize( settings.dock ) );
+	};
 
 	let continuous = function() {
 		settings = continuousDefaultSettings();
-		extend( true, settings, axisConfig.settings );
-		extendDomain( settings, scale );
-		continuous.resize( renderer.size() );
-		continuous.resize( alignTransform( { align: settings.align, innerRect } ) );
-		concreteNodeBuilder = nodeBuilder( type );
 		ticksFn = generateContinuousTicks;
+		init();
+		extendDomain( settings, scale );
 
 		return continuous;
 	};
 
 	let discrete = function() {
 		settings = discreteDefaultSettings();
-		extend( true, settings, axisConfig.settings );
-		discrete.resize( renderer.size() );
-		discrete.resize( alignTransform( { align: settings.align, innerRect } ) );
-		concreteNodeBuilder = nodeBuilder( type );
 		ticksFn = generateDiscreteTicks;
 		data = scale.domain();
+		init();
+
 		return discrete;
 	};
 
 	let render = function() {
 		const ticks = ticksFn( { settings, innerRect, scale, data } );
+
 		nodes.push( ...concreteNodeBuilder.build( { settings, scale, innerRect, outerRect, renderer, ticks } ) );
 		renderer.render( nodes );
 	};
-
 
 	let onData = function() {
 		// Do something
 	};
 
 	let resize = function( inner, outer ) {
+		extend( inner, alignTransform( { align: settings.align, inner } ) );
 		outer = outer ? outer : inner;
 		extend( innerRect, inner );
 		extend( outerRect, outer );
@@ -84,15 +106,17 @@ export function abstractAxis( axisConfig, composer, renderer ){
 	continuous.render = render;
 	continuous.onData = onData;
 	continuous.resize = resize;
+	continuous.dockConfig = layoutConfig;
+
 	discrete.render = render;
 	discrete.onData = onData;
 	discrete.resize = resize;
+	discrete.dockConfig = layoutConfig;
 
 	return type === "ordinal" ? discrete : continuous;
 }
 
 export function axis( ...a ) {
 	let ax = abstractAxis( ...a );
-	ax().render();
-	return ax;
+	return ax();
 }

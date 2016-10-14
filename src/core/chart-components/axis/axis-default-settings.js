@@ -1,6 +1,6 @@
 export function discreteDefaultSettings() {
 	return {
-		align: "bottom",
+		dock: "bottom",
 		labels: {
 			show: true,
 			tilted: false,
@@ -33,7 +33,7 @@ export function discreteDefaultSettings() {
 
 export function continuousDefaultSettings() {
 	return {
-		align: "left",
+		dock: "left",
 		labels: {
 			show: true,
 			tilted: false,
