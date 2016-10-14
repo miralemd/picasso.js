@@ -27,6 +27,8 @@ describe( "transposer", () => {
 		// all coordinates will be coordinate * width or height
 		draw.width = 2;
 		draw.height = 3;
+		draw.x = 0;
+		draw.y = 0;
 
 		draw.vertical = false;
 
@@ -74,6 +76,8 @@ describe( "transposer", () => {
 		draw = transposer( dummy );
 		draw.width = 100;
 		draw.height = 100;
+		draw.x = 0;
+		draw.y = 0;
 
 		let output = draw.output();
 
@@ -94,6 +98,8 @@ describe( "transposer", () => {
 		draw = transposer( dummy );
 		draw.width = 100;
 		draw.height = 100;
+		draw.x = 0;
+		draw.y = 0;
 		draw.vertical = true;
 
 		let output = draw.output();

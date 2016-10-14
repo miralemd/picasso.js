@@ -16,6 +16,7 @@ export class Dispersion {
 		// Setup the renderer
 		this.renderer = renderer();
 		this.renderer.appendTo( this.element );
+		this.rect = { x: 0, y: 0, width: 0, height: 0 };
 
 		// Setup settings and data
 		this.settings = obj.settings;
@@ -59,14 +60,14 @@ export class Dispersion {
 				med: y && medValues ? y( medValues[i] ) : null
 			} );
 		} );
-
-		this.resize();
 	}
 
-	render( items ) {
+	render() {
 		// Setup the blueprint
-		this.blueprint.width = this.renderer.rect.width;
-		this.blueprint.height = this.renderer.rect.height;
+		this.blueprint.width = this.rect.width;
+		this.blueprint.height = this.rect.height;
+		this.blueprint.x = this.rect.x;
+		this.blueprint.y = this.rect.y;
 		this.blueprint.vertical = this.settings.vertical;
 
 		// Setup the doodler
@@ -81,7 +82,7 @@ export class Dispersion {
 		this.doodle.postfill( "box", "width", boxWidth );
 		this.doodle.postfill( "whisker", "width", whiskerWidth );
 
-		items.forEach( item => {
+		this.items.forEach( item => {
 			this.doodle.customize( item );
 			this.renderDataPoint( item );
 		} );
@@ -93,12 +94,8 @@ export class Dispersion {
 		return item;
 	}
 
-	resize() {
-		this.renderer.rect = this.renderer.rect || {};
-		this.renderer.rect.width = this.element.clientWidth;
-		this.renderer.rect.height = this.element.clientHeight;
-
-		this.render( this.items );
+	resize( rect ) {
+		this.rect = rect;
 	}
 
 	remap( input, output ) {

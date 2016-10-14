@@ -17,9 +17,9 @@ export default class Box extends Dispersion {
 		this.onData(); // to be removed?
 	}
 
-	render( items ) {
+	render() {
 		// Filter out points we cannot render
-		items = items.filter( item => {
+		let items = this.items.filter( item => {
 			return [ item.min, item.max ].indexOf( null ) === -1 || [ item.start, item.end ].indexOf( null ) === -1;
 		} );
 

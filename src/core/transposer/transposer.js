@@ -56,12 +56,12 @@ export default class Transposer {
 				// The line below is for RTl, however, this can be changed in the scale instead
 				// by using a range of [1,0] instead of [0,1]
 				//coordinate = this.flipX ? ( 1 - coordinate ) - ( item[ this.evaluateKey( "width" ) ] || 0 ) : coordinate;
-				return coordinate * this.width;
+				return coordinate * this.width + this.x;
 			} else if ( key === "width" ) {
 				return coordinate * this.width;
 			} else if ( firstChar === "y" ) {
 				coordinate = this.flipY ? ( 1 - coordinate ) - ( item[ this.evaluateKey( "height" ) ] || 0 ) : coordinate;
-				return coordinate * this.height;
+				return coordinate * this.height + this.y;
 			} else if ( key === "height" ) {
 				return coordinate * this.height;
 			} else {
