@@ -29,7 +29,7 @@ export function doodler() {
 
 	doodle.postfill = function( object, key, fill ) {
 		doodle.settings.styles[object] = doodle.settings.styles[object] || {};
-		doodle.settings.styles[object][key] = doodle.settings.styles[object][key] || fill;
+		doodle.settings.styles[object][key] = doodle.settings.styles[object][key] * fill || fill;
 	};
 
 	doodle.horizontalLine = function( x, y, width, styleName ) {
@@ -63,11 +63,22 @@ export function doodler() {
 	};
 
 	doodle.whisker = function( x, y ) {
-		return doodle.horizontalLine(
-			x,
-			y,
-			doodle.settings.styles.whisker.width,
-			"whisker"
+		let width = doodle.settings.styles.whisker.width;
+
+		return doodle.push(
+			doodle.style( {
+				type: "line",
+				y1: y,
+				x1: x - ( width / 2 ),
+				cx: x,
+				cy: y,
+				r: width / 2,
+				y2: y,
+				x2: x + ( width / 2 ),
+				stroke: "#000",
+				strokeWidth: 1
+			},
+			"whisker" )
 		);
 	};
 
@@ -98,10 +109,10 @@ export function doodler() {
 		return doodle.push(
 			doodle.style( {
 				type: "rect",
-				x: x - ( doodle.settings.styles.box.width / 2 ),
+				x: x - ( doodle.settings.styles[name].width / 2 ),
 				y: y,
 				height: height,
-				width: doodle.settings.styles.box.width,
+				width: doodle.settings.styles[name].width,
 				fill: "#fff",
 				stroke: "#000"
 			},
