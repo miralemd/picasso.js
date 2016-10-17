@@ -5,12 +5,18 @@ import { measureText } from "./text-metrics";
 let reg = registry();
 
 function renderShapes ( shapes, g ) {
+	const alpha = g.globalAlpha;
 	shapes.forEach( s => {
 		if ( "fill" in s && g.fill !== s.fill ) {
 			g.fillStyle = s.fill;
 		}
 		if ( "stroke" in s && g.stroke !== s.stroke ) {
 			g.strokeStyle = s.stroke;
+		}
+		if ( "opacity" in s && g.globalAlpha !== s.globalAlpha ) {
+			g.globalAlpha = s.opacity;
+		} else if ( g.globalAlpha !== alpha ) {
+			g.globalAlpha = alpha;
 		}
 		if ( "stroke-width" in s && g["stroke-width"] !== s["stroke-width"] ) {
 			g.lineWidth = s["stroke-width"];

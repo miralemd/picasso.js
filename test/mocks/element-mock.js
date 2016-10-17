@@ -41,7 +41,7 @@ function element( name ) {
 	};
 
 	if ( name === "canvas" ) {
-		e.getContext = function(){};
+		e.getContext = () => ( {} );
 	}
 
 	return e;

@@ -7,8 +7,8 @@ export default class Rect extends DisplayObject {
 		this.set( ...s );
 	}
 
-	set ( { x, y, width, height, fill, stroke } ) {
-		super.set( { fill, stroke } );
+	set ( { x, y, width, height, fill, stroke, strokeWidth, opacity } ) {
+		super.set( { fill, stroke, strokeWidth, opacity } );
 		GeoRect.prototype.set.call( this, x, y, width, height );
 	}
 }
