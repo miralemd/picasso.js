@@ -1,7 +1,7 @@
-import { renderer } from "../../../renderer";
+import { renderer as rendererFactory } from "../../../renderer";
 import { shape as shapeFactory } from "./shapes";
 
-const SETTINGS = {
+const DEFAULT_DATA_SETTINGS = {
 	shape: "circle",
 	label: "",
 	fill: "#999",
@@ -24,9 +24,9 @@ function prop( stngs, name, composer ) {
 	const type = typeof stngs[name];
 
 	if ( type === "undefined" ) {
-		return SETTINGS[name];
+		return DEFAULT_DATA_SETTINGS[name];
 	}
-	if ( type === typeof SETTINGS[name] ) { // if property is of same primitive type as default, use the provided value
+	if ( type === typeof DEFAULT_DATA_SETTINGS[name] ) { // if property is of same primitive type as default, use the provided value
 		return stngs[name];
 	}
 	if ( type === "function" ) { // custom accessor function
@@ -37,7 +37,7 @@ function prop( stngs, name, composer ) {
 	}
 	const scale = composer.scale( stngs[name] ); // check if a scale accessor can be created from the given input
 
-	return scale || SETTINGS[name];
+	return scale || DEFAULT_DATA_SETTINGS[name];
 }
 
 function getSpaceFromScale( s, space ) {
@@ -58,78 +58,89 @@ function getPointSizeLimits( x, y, width, height ) {
 
 function calculateLocalSettings( stngs, composer ) {
 	let ret = {};
-	for ( let s in SETTINGS ) {
+	for ( let s in DEFAULT_DATA_SETTINGS ) {
 		ret[s] = prop( stngs, s, composer );
 	}
 	return ret;
 }
 
-export default class Point {
-	constructor( obj, composer ) {
-		this.container = composer.container();
+function createDisplayPoints( dataPoints, { x, y, width, height }, pointSize, shapeFn ) {
+	return dataPoints.filter( p => {
+		return !isNaN( p.x + p.y + p.size );
+	} ).map( p => {
+		return shapeFn( p.shape, {
+			label: p.label,
+			x: p.x * width + x,
+			y: ( 1 - p.y ) * height + y,
+			fill: p.fill,
+			size: pointSize[0] + p.size * ( pointSize[1] - pointSize[0] ), // TODO - replace with scale
+			stroke: p.stroke,
+			strokeWidth: p.strokeWidth,
+			opacity: p.opacity
+		} );
+	} );
+}
 
-		this.renderer = renderer();
-		this.renderer.appendTo( this.container );
+export function pointFn( rendererFn, shapeFn ) {
 
-		this.settings = obj.settings;
-		this.table = composer.table();
-		this.obj = obj;
-		this.composer = composer;
+	let rect = { x: 0, y: 0, width: 0, height: 0 },
+		points,
+		dataInput,
+		local,
+		settings,
+		composer,
+		table,
+		renderer;
 
-		this.rect = { x: 0, y: 0, width: 0, height: 0 };
+	let fn = function( obj, comp ) {
+		rect = { x: 0, y: 0, width: 0, height: 0 };
+		composer = comp;
 
-		this.onData();
-	}
+		settings = obj.settings;
+		dataInput = obj.data;
+		table = composer.table();
 
-	onData() {
-		this.points = [];
+		renderer = rendererFn();
+		renderer.appendTo( composer.container() );
 
-		const data = values( this.table, this.obj.data );
-		const local = calculateLocalSettings( this.settings, this.composer );
+		fn.onData();
+		return fn;
+	};
+
+	fn.onData = function() {
+		local = calculateLocalSettings( settings, composer );
+
+		const data = values( table, dataInput );
 		const dataValues = {};
 
-		for ( let s in SETTINGS ) {
-			dataValues[s] = values( this.table, this.settings[s] ) || data;
+		for ( let s in DEFAULT_DATA_SETTINGS ) {
+			dataValues[s] = values( table, settings[s] ) || data;
 		}
 
-		this.points = data.map( ( p, i ) => {
+		points = data.map( ( p, i ) => {
 			const obj = {};
-			for ( let s in SETTINGS ) {
+			for ( let s in DEFAULT_DATA_SETTINGS ) {
 				obj[s] = typeof local[s] === "function" ? local[s]( dataValues[s][i], i, dataValues[s] ) : local[s];
 			}
 			return obj;
 		} );
+	};
 
-		this.local = local;
-	}
+	fn.render = function() {
+		const { width, height } = rect;
+		const pointSize = getPointSizeLimits( local.x, local.y, width, height );
+		const displayPoints = createDisplayPoints( points, rect, pointSize, shapeFn );
 
-	render() {
-		const points = this.points;
-		const { x, y, width, height } = this.rect;
-		const pointSize = getPointSizeLimits( this.local.x, this.local.y, width, height );
-		const displayPoints = points.filter( p => {
-			return !isNaN( p.x + p.y + p.size );
-		} ).map( p => {
-			return shapeFactory( p.shape, {
-				label: p.label,
-				x: p.x * width + x,
-				y: ( 1 - p.y ) * height + y,
-				fill: p.fill,
-				size: pointSize[0] + p.size * ( pointSize[1] - pointSize[0] ), // TODO - replace with scale
-				stroke: p.stroke,
-				strokeWidth: p.strokeWidth,
-				opacity: p.opacity
-			} );
-		} );
+		renderer.render( displayPoints );
+	};
 
-		this.renderer.render( displayPoints );
-	}
+	fn.resize = function( r ) {
+		rect = r;
+	};
 
-	resize( rect ) {
-		this.rect = rect;
-	}
+	return fn;
 }
 
 export function point( obj, composer ) {
-	return new Point( obj, composer );
+	return pointFn( rendererFactory, shapeFactory )( obj, composer );
 }
