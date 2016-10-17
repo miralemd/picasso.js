@@ -40,6 +40,22 @@ function prop( stngs, name, composer ) {
 	return scale || SETTINGS[name];
 }
 
+function getSpaceFromScale( s, space ) {
+	if ( s && s.scale && typeof s.scale.step === "function" ) { // some kind of ordinal scale
+		return Math.max( 1, s.scale.step() * space );
+	}
+	return Math.max( 1, space / 10 );
+}
+
+function getPointSizeLimits( x, y, width, height ) {
+	let xSpace = getSpaceFromScale( x, width );
+	let ySpace = getSpaceFromScale( y, height );
+	let space = Math.min( xSpace, ySpace );
+	let min = Math.max( 1, Math.floor( space / 4 ) ); // set min size to be 4 (arbitrary choice) times smaller than allowed space
+	let max = Math.max( min, Math.min( Math.floor( space ) ) );
+	return [min, max];
+}
+
 function calculateLocalSettings( stngs, composer ) {
 	let ret = {};
 	for ( let s in SETTINGS ) {
@@ -83,14 +99,14 @@ export default class Point {
 			}
 			return obj;
 		} );
+
+		this.local = local;
 	}
 
 	render() {
 		const points = this.points;
-		const numYValues = this.y && this.y.type === "ordinal" ? this.y.scale.domain().length : -1;
 		const { x, y, width, height } = this.rect;
-		const pointSize = numYValues === -1 ? [10, 40] : [Math.max( 1, Math.min( 5, 1 * height / numYValues ) ), Math.max( 1, Math.min( 40, 1 * height / numYValues ) ) ];
-			//numXValues = this.x && this.x.type === "ordinal" ? this.x.scale.domain().length : -1,
+		const pointSize = getPointSizeLimits( this.local.x, this.local.y, width, height );
 		const displayPoints = points.filter( p => {
 			return !isNaN( p.x + p.y + p.size );
 		} ).map( p => {
