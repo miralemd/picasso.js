@@ -190,6 +190,11 @@ class LinearScale {
 
 		return this;
 	}
+
+	copy() {
+		return new LinearScale( this.domain(), this.range() )
+			.clamp( this._scale.clamp() );
+	}
 }
 
 Events.mixin( LinearScale.prototype );
@@ -210,10 +215,9 @@ export function linear( ...a ) {
 * Generate ticks based on a distance, for each 100th unit, one additional tick may be added
 * @private
 * @param  {Number} distance 			Distance between each tick
+* @param  {Number} scale 				The scale instance
 * @param  {Number} [minorCount=0] 		Number of tick added between each distance
 * @param  {Number} [unitDivider=100] 	Number to divide distance with
-* @param  {Number} [start=0] 			Start of domain
-* @param  {Number} [end=0] 				End of domain
 * @return {Array}       				Array of ticks
 */
 export function looseDistanceBasedGenerator( { distance, minorCount = 0, start = 0, end = 1, unitDivider = 100, formatter = undefined } ) {
@@ -244,10 +248,9 @@ export function looseDistanceBasedGenerator( { distance, minorCount = 0, start =
 * Will attempt to round the bounds of domain to even values and generate ticks hitting the domain bounds.
 * @private
 * @param  {Number} distance 			Distance between each tick
+* @param  {Number} scale 				The scale instance
 * @param  {Number} [minorCount=0] 		Number of tick added between each distance
 * @param  {Number} [unitDivider=100] 	Number to divide distance with
-* @param  {Number} [start=0] 			Start of domain
-* @param  {Number} [end=0] 				End of domain
 * @return {Array}       				Array of ticks
 */
 export function tightDistanceBasedGenerator( { distance, minorCount = 0, start = 0, end = 1, unitDivider = 100, formatter = undefined } ) {
