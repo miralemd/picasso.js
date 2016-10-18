@@ -27,18 +27,19 @@ function ticksByValue( { values, scale, formatter } ) {
 function forceTicksAtBounds( ticks, scale, formatter ) {
 	// let bounds = [];
 	let ticksP = ticks.map( t => t.position );
+	let range = scale.range();
 
-	if ( ticksP.indexOf( 0 ) === -1 ) {
+	if ( ticksP.indexOf( range[0] ) === -1 ) {
 		ticks.splice( 0, 0, {
-			position: 0,
+			position: range[0],
 			label: formatter( scale.start() ),
 			isMinor: false
 		} );
 	}
 
-	if ( ticksP.indexOf( 1 ) === -1 ) {
+	if ( ticksP.indexOf( range[1] ) === -1 ) {
 		ticks.push( {
-			position: 1,
+			position: range[1],
 			label: formatter( scale.end() ),
 			isMinor: false
 		} );
