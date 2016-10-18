@@ -52,18 +52,17 @@ export function generateContinuousTicks( { settings, scale, innerRect, formatter
 	if ( settings.ticks.values ) {
 		// TODO With custom tick values, dont care if its within the domain?
 		scale.tickGenerator( ticksByValue );
-		ticks = scale.ticks( { values: settings.ticks.values, scale, formatter } );
+		ticks = scale.ticks( { values: settings.ticks.values, scale: scale.copy(), formatter } );
 	} else if ( settings.ticks.count !== undefined ) {
 		scale.tickGenerator( ticksByCount );
-		ticks = scale.ticks( { count: settings.ticks.count, minorCount, scale, formatter } );
+		ticks = scale.ticks( { count: settings.ticks.count, minorCount, scale: scale.copy(), formatter } );
 	} else {
 		let distance = settings.align === "top" || settings.align === "bottom" ? innerRect.width : innerRect.height;
 		scale.tickGenerator( settings.ticks.tight && !hasMinMaxValue( settings ) ? tightDistanceBasedGenerator : looseDistanceBasedGenerator );
 		ticks = scale.ticks( {
 			distance: distance,
 			minorCount: minorCount,
-			start: scale.start(),
-			end: scale.end(),
+			scale: scale.copy(),
 			formatter
 		} );
 
