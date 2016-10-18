@@ -1,5 +1,3 @@
-/** @module core/colors/palettes */
-
 import { linear } from "../scales/linear";
 import color from "./color";
 
@@ -17,7 +15,13 @@ function rangeCal ( min, max, colors ) {
 	return from;
 }
 
-export default {
+/**
+ * @memberof picasso.color
+ * @namespace
+ * @private
+ * @type {Object}
+ */
+let palettes = {
 	/**
 	 * Palettet for Cold to Warm colors
 	 * @param { Number } min Minimum value of the domain
@@ -82,3 +86,5 @@ export default {
 		return colorPalette;
 	}
 };
+
+export default palettes;

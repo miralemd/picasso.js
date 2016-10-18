@@ -1,5 +1,6 @@
-export default class Registry {
+class Registry {
 	/**
+	 * @private
 	 * @example
 	 * var r = new Registry();
 	 * r.register( "marker", function( args ) {
@@ -75,3 +76,5 @@ export default class Registry {
 export function registry( reg ) {
 	return new Registry( reg );
 }
+
+export default Registry;

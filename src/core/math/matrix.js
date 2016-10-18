@@ -1,4 +1,8 @@
-export default class Matrix {
+class Matrix {
+	/**
+	 * Creates a matrix with identity values.
+	 * @private
+	 */
 	constructor () {
 		this._elements = [
 			[1, 0, 0],
@@ -9,6 +13,9 @@ export default class Matrix {
 		this._stack = [];
 	}
 
+	/**
+	 * Creates a new matrix with a copy of the current values.
+	 */
 	clone () {
 		let mt = new Matrix();
 		return mt.multiply( this );
@@ -253,3 +260,5 @@ export default class Matrix {
 		];
 	}
 }
+
+export default Matrix;

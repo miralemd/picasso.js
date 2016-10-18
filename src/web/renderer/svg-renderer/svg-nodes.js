@@ -1,5 +1,3 @@
-/** @module web/renderer/svg-renderer/svg-nodes */
-
 import { measureText } from "./text-metrics";
 import { ellipsText } from "../text-manipulation";
 

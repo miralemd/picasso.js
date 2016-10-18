@@ -1,7 +1,3 @@
-/**
- * @module core/colors/instantiator/hsl
- */
-
 import HslaColor from "./../hsla-color";
 
 const rHsl = /^\s*hsl\(\s*(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*%{1})\s*,\s*(-?\d+\.?\d*%{1})\s*\)$/i,
@@ -9,6 +5,7 @@ const rHsl = /^\s*hsl\(\s*(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*%{1})\s*,\s*(-?\d+\.?\
 
 /**
  * Instanciate a new color object
+ * @ignore
  * @param { String } colStr HSL representation of a Color.
  * Supports HSL and HSLA defintion at {@link https://www.w3.org/TR/css3-color/#svg-color}
  * @return { HslaColor } Color instance
@@ -45,6 +42,7 @@ export default function hsl( colStr ) {
 
 /**
  * Test if the object is a color instance
+ * @ignore
  * @function test
  * @param  { String } colStr HSL representation of a Color.
  * @return { Boolean } TRUE if colrStr matches HSL and HSLA notation defined at {@link https://www.w3.org/TR/css3-color/#svg-color}

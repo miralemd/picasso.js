@@ -1,11 +1,12 @@
-/**
- * @module core/colors/utils
- */
-
 import color from "./color";
 
-export default {
-
+/**
+ * @memberof picasso.color
+ * @namespace
+ * @private
+ * @type {Object}
+ */
+let utils = {
 	/**
 	 * Takes a collection of colors and constructs a linear-gradient CSS property
 	 * @param { String } direction Allowed values are top, bottom, left or right
@@ -67,3 +68,5 @@ export default {
 		}
 	}
 };
+
+export default utils;

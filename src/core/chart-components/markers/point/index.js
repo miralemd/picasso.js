@@ -13,6 +13,70 @@ const DEFAULT_DATA_SETTINGS = {
 	size: 1
 };
 
+/**
+ * @typedef marker-point
+ * @property {string} type - "point"
+ * @property {data-ref} data - Point data.
+ * @property {marker-point-settings} settings - Marker settings
+ * @example
+ * {
+ * 	type: "point",
+ * 	data: { source: "/qDimensionInfo/0" },
+ *	settings: {
+ *		x: 0.2, // simple number, places all points at the same position along the x-axis (which assumes to have a range of [0,1])
+ *		y: ( d, i, arr ) => i / arr.length, // function is called for each datum `d`
+ *		fill: { source: "/qMeasureInfo/0", type: "color" }, // auto-constructs a color scale from the specified source
+ *		opacity: { source: "/qMeasureInfo/1", fn: ( d, i ) => d.value },
+ *		shape: ( d, i ) => ["rect", "circle"][i % 2]
+ *	}
+ * }
+ */
+
+/**
+ * @typedef marker-point-settings
+ * @property {marker-point-number} [x=0.5] - x coordinate
+ * @property {marker-point-number} [y=0.5] - y coordinate
+ * @property {marker-point-string} [fill="#999"] - fill color
+ * @property {marker-point-string} [stroke="#ccc"] - stroke color
+ * @property {marker-point-number} [strokeWidth=0] - stroke width
+ * @property {marker-point-number} [size=1] - size of shape
+ * @property {marker-point-number} [opacity=1] - opacity of shape
+ * @property {marker-point-string} [shape="circle"] - type of shape
+ */
+
+/**
+ * @typedef {(string|marker-point-data-accessor|marker-point-data)} marker-point-string
+ */
+
+ /**
+  * @typedef {(number|marker-point-data-accessor|marker-point-data)} marker-point-number
+  */
+
+ /**
+  * @callback marker-point-data-accessor
+  * @param {object} datum - The datum object
+  * @param {string} datum.label - Label of datum
+  * @param {number} datum.value - Numeric value of datum
+  * @param {string|number} datum.id - Id of datum
+  * @param {integer} index - Index of datum in the data
+  * @param {datum[]} arr - Array of current data
+  */
+
+/**
+ * The data to use for encoding a property of the point.
+ *
+ * The specified source will provide the point marker with data.
+ * @typedef marker-point-data
+ * @property {string} source - Data field
+ * @property {marker-point-data-accessor} [fn] - Data accessor. Custom data accessor which will be called for each datum. The return value is used for the specified property.
+ * @property {string} [scale] - Name of a predefined scale. Not used if fn is defined.
+ * @example
+ * // the following definition will provide data from the first measure in the form: [{value: 3, label: "$3", id: 0}, ...]
+ * {
+ * 	source: "/qMeasureInfo/0"
+ * }
+ */
+
 function values( table, setting ) {
 	if ( setting && setting.source ) {
 		return table.findField( setting.source ).values();

@@ -1,9 +1,10 @@
 import { scaleOrdinal } from "d3-scale";
 import Events from "../utils/event-emitter";
 
-export default class OrdinalScale {
+class OrdinalScale {
 	/**
 	 * Class representing a OrdinalScale
+	 * @private
 	 * @param { Object[] } [ domain=[] ] The domain values
 	 * @param { Object[] } [ range=[] ] The range values
 	 */
@@ -83,6 +84,7 @@ Events.mixin( OrdinalScale.prototype );
 
 /**
  * OrdinalScale instantiator
+ * @private
  * @param { Object[] } [ domain=[] ] The domain values
  * @param { Object[] } [ range=[] ] The range values
  * @return { OrdinalScale } OrdinalScale instance
@@ -90,3 +92,5 @@ Events.mixin( OrdinalScale.prototype );
 export function ordinal( ...a ) {
 	return new OrdinalScale( ...a );
 }
+
+export default OrdinalScale;

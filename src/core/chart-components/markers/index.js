@@ -7,6 +7,21 @@ let reg = registry();
 reg.register( "point", point );
 reg.register( "box", box );
 
+/**
+ * Marker settings
+ * @typedef {(marker-point|marker-box)} marker
+ */
+
+/**
+ * Data reference object
+ * @typedef {object} data-ref
+ * @property {string} source - Data field
+ * @example
+ * {
+ * 	source: "/qDimensionInfo/0"
+ * }
+ */
+
 export function create( arr, composer ) {
 	let markers = [];
 	arr.forEach( marker => {

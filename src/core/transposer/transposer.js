@@ -1,4 +1,7 @@
-export default class Transposer {
+class Transposer {
+	/**
+	 * @private
+	 */
 	constructor( ...items ) {
 		this.storage = [];
 		this.vertical = false;
@@ -114,3 +117,5 @@ export default class Transposer {
 export function transposer( ...items ) {
 	return new Transposer( ...items );
 }
+
+export default Transposer;

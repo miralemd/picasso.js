@@ -1,7 +1,3 @@
-/**
- * @module core/colors/instantiator/color-keyword
- */
-
 import RgbaColor from "../rgba-color";
 
 const colorStruct = {
@@ -155,7 +151,8 @@ const colorStruct = {
 };
 
 /**
- * Instanciate a new color object
+ * Instantiate a new color object
+ * @ignore
  * @param { String } colStr Keyword representation of a Color.
  * Support basic and extended keywords defined at {@link https://www.w3.org/TR/css3-color/#svg-color}
  * @return { RgbaColor } Color instance
@@ -171,6 +168,7 @@ export default function colorKeyWord( colStr ) {
 
 /**
  * Test if the object is a color instance
+ * @ignore
  * @function test
  * @param  { String } colStr Keyword representation of a Color.
  * @return { Boolean } TRUE if colrStr matches on of the basic and extended keywords defined at {@link https://www.w3.org/TR/css3-color/#svg-color}

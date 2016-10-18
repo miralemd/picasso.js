@@ -1,6 +1,6 @@
 import Node from "../node";
 
-export default class DisplayObject extends Node {
+class DisplayObject extends Node {
 	constructor ( ) {
 		super();
 		this._stage = null;
@@ -55,3 +55,5 @@ export default class DisplayObject extends Node {
 		return this._stage;
 	}
 }
+
+export default DisplayObject;

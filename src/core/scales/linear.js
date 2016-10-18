@@ -1,9 +1,10 @@
 import { scaleLinear } from "d3-scale";
 import Events from "../utils/event-emitter";
 
-export default class LinearScale {
+class LinearScale {
 	/**
 	 * Class representing a linear scale
+	 * @private
 	 * @param { Number[] } [ domain=[0,1] ] The domain values
 	 * @param { Number[] } [ range=[0,1] ] The range values
 	 */
@@ -191,6 +192,7 @@ Events.mixin( LinearScale.prototype );
 
 /**
  * LinearScale instantiator
+ * @private
  * @param { Number[] } [ domain=[0,1] ] The domain values
  * @param { Number[] } [ range=[0,1] ] The range values
  * @return { LinearScale } LinearScale instance
@@ -202,6 +204,7 @@ export function linear( ...a ) {
 
 /**
 * Generate ticks based on a distance, for each 100th unit, one additional tick may be added
+* @private
 * @param  {Number} distance 			Distance between each tick
 * @param  {Number} [minorCount=0] 		Number of tick added between each distance
 * @param  {Number} [unitDivider=100] 	Number to divide distance with
@@ -233,6 +236,7 @@ export function looseDistanceBasedGenerator( { distance, minorCount = 0, start =
 /**
 * Generate ticks based on a distance, for each 100th unit, one additional tick may be added.
 * Will attempt to round the bounds of domain to even values and generate ticks hitting the domain bounds.
+* @private
 * @param  {Number} distance 			Distance between each tick
 * @param  {Number} [minorCount=0] 		Number of tick added between each distance
 * @param  {Number} [unitDivider=100] 	Number to divide distance with
@@ -258,3 +262,5 @@ export function tightDistanceBasedGenerator( { distance, minorCount = 0, start =
 		};
 	} );
 }
+
+export default LinearScale;

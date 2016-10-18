@@ -1,53 +1,48 @@
 import { composer } from "./composer";
 
-export default class Chart {
-	/**
-	 * @typedef Chart.DataProps
-	 * @property {string} type - the type of data parser to use
-	 * @property {object} data - data property to send to data parser
-	 * @example
-	 * {
-	 * 	type: "q",
-	 * 	data: {...}
-	 * }
-	 */
+/**
+ * @typedef Chart.DataProps
+ * @property {string} type - the type of data parser to use
+ * @property {object} data - data property to send to data parser
+ * @example
+ * {
+ * 	type: "q",
+ * 	data: {...}
+ * }
+ */
 
-	/**
-	 * @typedef Chart.SettingsProps
-	 * @property {Chart.ScaleProps} scales
-	 * @property {object} components
-	 * @property {Chart.Marker[]} components.markers
-	 * @example
-	 * {
-	 * 	scales: {
-	 * 		x: <Chart.ScaleProps>
-	 * 	},
-	 * 	components: [<Chart.Marker>, <Chart.Marker>]
-	 * }
-	 */
+/**
+ * @typedef Chart.SettingsProps
+ * @property {Chart.ScaleProps} scales
+ * @property {object} components
+ * @property {marker[]} components.markers,
+ * @property {axis[]} components.axes
+ * @example
+ * {
+ * 	scales: {
+ * 		x: {...}
+ * 	},
+ * 	components: {
+ * 		axes: [...]
+ * 		markers: [...]
+ * 	}
+ * }
+ */
 
-	/**
-	 * @typedef Chart.Marker
-	 * @property {string} type - the type of marker
-	 * @property {object} settings - settings applied to the marker
-	 * @example
-	 * {
-	 * 	type: "point",
-	 * 	settings: {...}
-	 * }
-	 */
+/**
+ * @typedef Chart.ScaleProps
+ * @property {string} source - The data source used as input when creating the scale
+ * @property {string} [type] - The type of scale to create
+ * @property {boolean} invert - Whether to invert the scale's output
+ * @example
+ * {
+ * 	source: "whatever is accepted by the data parser",
+ * 	type: "color",
+ * 	invert: true
+ * }
+ */
 
-	/**
-	 * @typedef Chart.ScaleProps
-	 * @property {string} source - The data source used as input when creating the scale
-	 * @property {string} [type] - The type of scale to create
-	 * @example
-	 * {
-	 * 	source: "whatever is accepted by the data parser",
-	 * 	type: "color"
-	 * }
-	 */
-
+class Chart {
 	/**
 	 * @constructor
 	 * @param {HTMLElement} element
@@ -58,9 +53,7 @@ export default class Chart {
 	 * chart( element,
 	 * {
 	 * 	type: "q",
-	 * 	data: {
-	 * 		layout: {...}
-	 * 	}
+	 * 	data: layout.qHyperCube
 	 * },
 	 * {
 	 * 	scales: {
@@ -76,8 +69,6 @@ export default class Chart {
 	 * 			{
 	 * 				type: "point",
 	 * 				settings: {
-	 * 					x: {scale: "x" },
-	 * 					y: {scale: "y" },
 	 * 					fill: 'red'
 	 * 				}
 	 * 			}
@@ -95,6 +86,19 @@ export default class Chart {
 	}
 }
 
-export function chart( element, data, settings ) {
+/**
+ * The chart creator
+ * @memberof picasso
+ * @param  {DOMElement} element - Element to draw the chart in
+ * @param  {Chart.DataProps} data - Data
+ * @param  {Chart.SettingsProps} settings - Settings
+ * @return {Chart}
+ */
+function chartFn( element, data, settings ) {
 	return new Chart( element, data, settings );
 }
+
+export {
+	chartFn as chart,
+	Chart
+};
