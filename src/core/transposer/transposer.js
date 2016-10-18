@@ -51,10 +51,9 @@ class Transposer {
 	 *
 	 * @param  {String} key        The key of the coordinate to transpose
 	 * @param  {Number} coordinate The coordinate
-	 * @param  {Object} [item={}]  The object which hosts this coordinate
 	 * @return {Number}            The actual location of the coordinate
 	 */
-	transposeCoordinate( key, coordinate, item = {} ) {
+	transposeCoordinate( key, coordinate ) {
 		if ( Number.isFinite( coordinate ) ) {
 
 			let firstChar = key.substring( 0, 1 );
@@ -67,7 +66,6 @@ class Transposer {
 			} else if ( key === "width" || key === "r" ) {
 				return coordinate * this.width;
 			} else if ( firstChar === "y" || key === "cy" ) {
-				coordinate = this.flipY ? ( 1 - coordinate ) - ( item[ this.evaluateKey( "height" ) ] || 0 ) : coordinate;
 				return coordinate * this.height;
 			} else if ( key === "height" ) {
 				return coordinate * this.height;
