@@ -7,10 +7,11 @@ function getMinMax( fields ) {
 	};
 }
 
-export function linear( fields ) {
+export function linear( fields, settings ) {
 	let s = lin();
 	let { min, max } = getMinMax( fields );
 	s.domain( [min, max] );
+	s.range( settings.invert ? [1, 0] : [0, 1] );
 	let fn = function( v ) {
 		return s.get( v.value );
 	};

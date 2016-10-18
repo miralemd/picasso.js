@@ -8,11 +8,11 @@ function getMinMax( fields ) {
 	};
 }
 
-export function color( fields ) {
+export function color( fields, settings ) {
 	let s = linear();
 	let { min, max } = getMinMax( fields );
 	s.domain( [min, max] );
-	s.range( [1, 0] );
+	s.range( settings.invert ? [1, 0] : [0, 1] );
 	let fn = function( v ) {
 		return interpolateViridis( s.get( v.value ) );
 	};
