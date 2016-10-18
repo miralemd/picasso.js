@@ -49,32 +49,6 @@ class Chart {
 	 * @param {Chart.DataProps} data
 	 * @param {Chart.SettingsProps} settings
 	 * @returns {Chart}
-	 * @example
-	 * chart( element,
-	 * {
-	 * 	type: "q",
-	 * 	data: layout.qHyperCube
-	 * },
-	 * {
-	 * 	scales: {
-	 * 		x: {
-	 * 			source: "/qHyperCube/qMeasureInfo/0"
-	 * 		},
-	 * 		y: {
-	 * 			source: "/qHyperCube/qDimensionInfo/0"
-	 * 		}
-	 * 	},
-	 * 	components: {
-	 * 		markers: [
-	 * 			{
-	 * 				type: "point",
-	 * 				settings: {
-	 * 					fill: 'red'
-	 * 				}
-	 * 			}
-	 * 		]
-	 * 	}
-	 * } );
 	 */
 	constructor( element, d, settings ) {
 		this.element = element;
@@ -89,10 +63,37 @@ class Chart {
 /**
  * The chart creator
  * @memberof picasso
+ * @alias chart
  * @param  {DOMElement} element - Element to draw the chart in
  * @param  {Chart.DataProps} data - Data
  * @param  {Chart.SettingsProps} settings - Settings
  * @return {Chart}
+ * @example
+ * picasso.chart( element,
+ * {
+ * 	type: "q",
+ * 	data: layout.qHyperCube
+ * },
+ * {
+ * 	scales: {
+ * 		x: {
+ * 			source: "/qHyperCube/qMeasureInfo/0"
+ * 		},
+ * 		y: {
+ * 			source: "/qHyperCube/qDimensionInfo/0"
+ * 		}
+ * 	},
+ * 	components: {
+ * 		markers: [
+ * 			{
+ * 				type: "point",
+ * 				settings: {
+ * 					fill: 'red'
+ * 				}
+ * 			}
+ * 		]
+ * 	}
+ * } );
  */
 function chartFn( element, data, settings ) {
 	return new Chart( element, data, settings );
