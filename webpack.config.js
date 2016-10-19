@@ -3,12 +3,10 @@
 
 let path = require( "path" );
 let srcDir = path.resolve( __dirname, "src" );
-let testDir = path.resolve( __dirname, "test" );
 
 module.exports = {
 	entry: {
-		"picasso": path.resolve( srcDir, "index" ),
-		"generator": path.resolve( testDir, "mocks", "generator", "hypercube-generator" )
+		"picasso": path.resolve( srcDir, "index" )
 	},
 	output: {
 		path: path.resolve( __dirname, "dist" ),
