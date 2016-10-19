@@ -1,5 +1,6 @@
 /**
  * Resolves the value at the given JSON path
+ * @private
  * @param  {String} path [description]
  * @param  {Object} obj  [description]
  * @return {Object}      [description]

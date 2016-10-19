@@ -1,6 +1,7 @@
 export default {
 	/**
 	 * Linearly interpolate two numbers
+	 * @private
 	 * @param  {Number} from Start value
 	 * @param  {Number} to   End value
 	 * @param  {Number} t    The weight

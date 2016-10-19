@@ -1,12 +1,9 @@
-/**
- * @module core/colors/instantiator/color-object
- */
-
 import RgbaColor from "../rgba-color";
 import HslaColor from "../hsla-color";
 
 /**
  * Instanciate a new color object
+ * @ignore
  * @param { Object } colorObj Color object
  * @param { Number } colorObj.h Required for an HSL object
  * @param { Number } colorObj.s Required for an HSL object
@@ -33,6 +30,7 @@ export default function colorObject( colorObj ) {
 
 /**
  * Test if the object is a color instance
+ * @ignore
  * @function test
  * @param  { Object } obj Color object
  * @return { Boolean } TRUE if obj is an instance of RgbaColor or HslaColor
@@ -51,6 +49,7 @@ colorObject.test = ( obj ) => {
 
 /**
  * Get the color type from a color object
+ * @ignore
  * @function getColorType
  * @param  { Object } obj Color object
  * @return { String } rgb or hsl denpeding on the color type, undefined if no match is found

@@ -18,7 +18,7 @@ function hue2rgb( p, q, t ) {
 
 /**
  * Converts HSL to RGB.
- * @private
+ * @ignore
  * @param h - The hue
  * @param s - The saturation
  * @param l - The lightness
@@ -55,9 +55,10 @@ function toByte( h, s, l ) {
 	};
 }
 
-export default class HslaColor {
+class HslaColor {
 	/**
 	 * Create a HSLA Color
+	 * @private
 	 * @param { Number } h The hue value
 	 * @param { Number } s The saturation value
 	 * @param { Number } l The lightness value
@@ -160,3 +161,5 @@ export default class HslaColor {
 		return luminance / 255;
 	}
 }
+
+export default HslaColor;

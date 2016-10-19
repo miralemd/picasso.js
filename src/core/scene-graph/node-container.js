@@ -1,6 +1,6 @@
 import Node from "./node";
 
-export default class NodeContainer extends Node {
+class NodeContainer extends Node {
 	addChild( c ) {
 		if ( !c || !( c instanceof Node ) ) {
 			throw new TypeError( "Expecting a Node as argument, but got " + c );
@@ -75,3 +75,5 @@ export default class NodeContainer extends Node {
 		return this;
 	}
 }
+
+export default NodeContainer;

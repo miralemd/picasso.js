@@ -1,5 +1,3 @@
-/** @module web/renderer/svg-renderer/svg-renderer */
-
 import { tree as treeFactory } from "./svg-tree";
 import { svgNs } from "./svg-nodes";
 import { scene } from "../../../core/scene-graph/scene";

@@ -1,4 +1,7 @@
-export default class Node {
+class Node {
+	/**
+	 * @private
+	 */
 	constructor() {
 		this._parent = null;
 		this._children = [];
@@ -77,3 +80,5 @@ export default class Node {
 		return r;
 	}
 }
+
+export default Node;

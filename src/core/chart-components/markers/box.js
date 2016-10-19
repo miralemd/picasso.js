@@ -1,5 +1,39 @@
 import { Dispersion } from "./generic/dispersion";
 
+/**
+ * @typedef marker-box
+ * @property {string} type - "box"
+ * @property {data-ref} data - Box data
+ * @property {marker-box-settings} settings - Box marker settings
+ * @example
+ * {
+ * 	type: "box",
+ * 	data: { source: "/qDimensionInfo/0" },
+ *	settings: {
+ *		x: { source: "/qDimensionInfo/0" },
+ *		y: { source: ["/qMeasureInfo/0", "/qMeasureInfo/1", "/qMeasureInfo/2", "/qMeasureInfo/3", "/qMeasureInfo/4"] },
+ *		min: { source: "/qMeasureInfo/0" },
+ *		max: { source: "/qMeasureInfo/1" },
+ *		start: { source: "/qMeasureInfo/2" },
+ *		end: { source: "/qMeasureInfo/3" },
+ *		med: { source: "/qMeasureInfo/4" }
+ *	}
+ * }
+ */
+
+/**
+ * @typedef marker-box-settings
+ * @property {marker-box-data} min - min
+ * @property {marker-box-data} max - max
+ * @property {marker-box-data} start - start
+ * @property {marker-box-data} end - end
+ * @property {marker-box-data} med - med
+ */
+
+/**
+ * @typedef marker-box-data
+ */
+
 export default class Box extends Dispersion {
 	constructor( obj, composer ) {
 		super( obj, composer );

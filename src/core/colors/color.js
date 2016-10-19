@@ -1,9 +1,8 @@
 let creators = [];
 
-/** @module core/colors/color */
-
  /**
   * Color instantiator
+  * @private
   * @param { ...Object } ...c The color representation, can be any type that is recognized by a registered color instantiator
   * @return { RgbaColor | HslaColor } Color instance, the type returned depends on the color instantiator that recognizes the color
   * @example
@@ -12,7 +11,7 @@ let creators = [];
   * color( "hsl(0, 50%, 50%)" );
   * color( "red" );
   */
-export default function color( ...c ) {
+function color( ...c ) {
 	for ( let i = 0; i < creators.length; i++ ) {
 		if ( creators[i].test( ...c ) ) {
 			return creators[i].fn( ...c );
@@ -24,7 +23,8 @@ export default function color( ...c ) {
 
 /**
  * Register a color instantiator
- * @function register
+ * @memberof picasso.color
+ * @private
  * @param  { Function } test The function that test if a color is recognized
  * @param  { Function } fn   The function that instanciates a new color instance
  * @example
@@ -47,7 +47,8 @@ color.register = ( test, fn ) => {
 
 /**
  * Extend the color function with new methods
- * @function extend
+ * @memberof picasso.color
+ * @private
  * @param  { String } name Name of the property
  * @param  { Object } obj Object to extend with
  * @example
@@ -68,3 +69,5 @@ color.extend = ( name, obj ) => {
 	}
 	color[ name ] = obj;
 };
+
+export default color;

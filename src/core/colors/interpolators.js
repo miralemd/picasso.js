@@ -1,7 +1,3 @@
-/**
- * @module core/colors/interpolators
- */
-
 import { default as numeric } from "../scales/interpolators/numeric";
 import colorObject from "./instantiator/color-object";
 import color from "./color";
@@ -9,6 +5,7 @@ import color from "./color";
 export default {
 	/**
 	* Interpolate two colors
+	* @private
 	* @param  { Object } from The color to interpolate from
 	* @param  { Object } to   The color to interpolate to
 	* @param  { Number } t	A number between [0-1]

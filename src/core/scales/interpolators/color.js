@@ -3,6 +3,7 @@ import interpolators from "../../colors/interpolators";
 export default {
 	/**
 	 * Interpolate two colors
+	 * @private
 	 * @param  {object} from The color to interpolate from
 	 * @param  {object} to   The color to interpolate to
 	 * @param  {Number} t    A number between [0-1]

@@ -6,7 +6,7 @@ function componentToHex( c ) {
 
 /**
  * Converts RGB to HSL
- * @private
+ * @ignore
  * @param r Red
  * @param g Green
  * @param b Blue
@@ -43,9 +43,10 @@ function toHSL( r, g, b ) {
 	return `${Math.round( h * 360 )}, ${Math.round( s * 100 )}%, ${Math.round( l * 100 )}%`;
 }
 
-export default class RgbaColor {
+class RgbaColor {
 	/**
 	 * Class representing a RGBA Color
+	 * @private
 	 * @param { Number } r The red value
 	 * @param { Number } g The green value
 	 * @param { Number } b The blue value
@@ -147,3 +148,5 @@ export default class RgbaColor {
 		return luminance / 255;
 	}
 }
+
+export default RgbaColor;

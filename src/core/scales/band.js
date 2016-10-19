@@ -1,9 +1,10 @@
 import { scaleBand } from "d3-scale";
 import Events from "../utils/event-emitter";
 
-export default class BandScale {
+class BandScale {
 	/**
 	 * Class representing a BandScale
+	 * @private
 	 * @param { Object[] } [ domain=[] ] The domain values
 	 * @param { Number[] } [ range=[] ] The range values
 	 */
@@ -129,6 +130,7 @@ Events.mixin( BandScale.prototype );
 
 /**
  * BandScale instantiator
+ * @private
  * @param { Object[] } [ domain=[] ] The domain values
  * @param { Number[] } [ range=[] ] The range values
  * @return { BandScale } BandScale instance
@@ -136,3 +138,5 @@ Events.mixin( BandScale.prototype );
 export function band( ...a ) {
 	return new BandScale( ...a );
 }
+
+export default BandScale;

@@ -18,6 +18,7 @@ const fieldFactoryFn = function( fieldFn ) {
 
 /**
  * Data interface for the Qlik Sense hypercube format
+ * @private
  * @param  {function} [fieldFn=qField] Field factory function
  * @return {table}                  Data table
  */

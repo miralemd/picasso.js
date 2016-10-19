@@ -1,7 +1,3 @@
-/**
- * @module core/colors/instantiator/hex
- */
-
 import RgbaColor from "../rgba-color";
 
 const rHex = /^\s*#([A-Fa-f0-9]{2})([A-f0-A-Fa-f0-9]{2})([A-Fa-f0-9]{2})\s*$/i,
@@ -9,6 +5,7 @@ const rHex = /^\s*#([A-Fa-f0-9]{2})([A-f0-A-Fa-f0-9]{2})([A-Fa-f0-9]{2})\s*$/i,
 
 /**
  * Instanciate a new color object
+ * @ignore
  * @param { String } colStr HEX representation of a Color.
  * Supports HEX defintion at {@link https://www.w3.org/TR/css3-color/#svg-color}
  * @return { RgbaColor } Color instance
@@ -27,6 +24,7 @@ export default function hex( colStr ) {
 
 /**
  * Test if the object is a color instance
+ * @ignore
  * @function test
  * @param  { String } colStr HEX representation of a Color.
  * @return { Boolean } TRUE if colrStr matches HEX notation defined at {@link https://www.w3.org/TR/css3-color/#svg-color}

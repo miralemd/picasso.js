@@ -1,8 +1,3 @@
-/**
- * @module core/colors/instantiator/rgb
- */
-
-
 import RgbaColor from "../rgba-color";
 
 const rRgb = /^\s*rgb\(\s*(-?\d{1,3})\s*,\s*(-?\d{1,3})\s*,\s*(-?\d{1,3})\s*\)\s*$/i,
@@ -11,7 +6,8 @@ const rRgb = /^\s*rgb\(\s*(-?\d{1,3})\s*,\s*(-?\d{1,3})\s*,\s*(-?\d{1,3})\s*\)\s
 	rRgbaPer = /^\s*rgba\(\s*(-?\d{1,3}%{1})\s*,\s*(-?\d{1,3}%{1})\s*,\s*(-?\d{1,3}%{1})\s*,\s*(-?\d+\.?\d*?)\s*\)\s*$/i;
 
 /**
- * Instanciate a new color object
+ * Instantiate a new color object
+ * @ignore
  * @param { String } colStr RGB representation of a Color.
  * Supports RGB and RGBA defintion at {@link https://www.w3.org/TR/css3-color/#svg-color}
  * @return { RgbaColor } Color instance
@@ -52,6 +48,7 @@ export default function rgb( colStr ) {
 
 /**
  * Test if the object is a color instance
+ * @ignore
  * @function test
  * @param  { String } colStr RGB representation of a Color.
  * @return { Boolean } TRUE if colrStr matches RGB and RGBA notation defined at {@link https://www.w3.org/TR/css3-color/#svg-color}
