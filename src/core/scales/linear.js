@@ -1,6 +1,10 @@
 import { scaleLinear } from "d3-scale";
 import Events from "../utils/event-emitter";
 
+function applyFormat( formatter ) {
+	return typeof formatter === "undefined" ? t => t : t => formatter( t );
+}
+
 class LinearScale {
 	/**
 	 * Class representing a linear scale
@@ -212,7 +216,7 @@ export function linear( ...a ) {
 * @param  {Number} [end=0] 				End of domain
 * @return {Array}       				Array of ticks
 */
-export function looseDistanceBasedGenerator( { distance, minorCount = 0, start = 0, end = 1, unitDivider = 100 } ) {
+export function looseDistanceBasedGenerator( { distance, minorCount = 0, start = 0, end = 1, unitDivider = 100, formatter = undefined } ) {
 	let scale = scaleLinear();
 	scale.domain( [start, end] );
 	scale.range( [0, 1] );
@@ -224,10 +228,12 @@ export function looseDistanceBasedGenerator( { distance, minorCount = 0, start =
 		ticks = scale.ticks( count + 1 );
 	}
 
+	let ticksFormatted = ticks.map( applyFormat( formatter ) );
+
 	return ticks.map( ( tick, i ) => {
 		return {
 			position: scale( tick ),
-			label: tick,
+			label: ticksFormatted[i],
 			isMinor: i % ( minorCount + 1 ) !== 0
 		};
 	} );
@@ -244,7 +250,7 @@ export function looseDistanceBasedGenerator( { distance, minorCount = 0, start =
 * @param  {Number} [end=0] 				End of domain
 * @return {Array}       				Array of ticks
 */
-export function tightDistanceBasedGenerator( { distance, minorCount = 0, start = 0, end = 1, unitDivider = 100 } ) {
+export function tightDistanceBasedGenerator( { distance, minorCount = 0, start = 0, end = 1, unitDivider = 100, formatter = undefined } ) {
 	let scale = scaleLinear();
 	scale.domain( [start, end] );
 	scale.range( [0, 1] );
@@ -254,10 +260,12 @@ export function tightDistanceBasedGenerator( { distance, minorCount = 0, start =
 	scale.nice( n );
 
 	let ticks = scale.ticks( ticksCount );
+	let ticksFormatted = ticks.map( applyFormat( formatter ) );
+
 	return ticks.map( ( tick, i ) => {
 		return {
 			position: scale( tick ),
-			label: tick,
+			label: ticksFormatted[i],
 			isMinor: i % ( minorCount + 1 ) !== 0
 		};
 	} );

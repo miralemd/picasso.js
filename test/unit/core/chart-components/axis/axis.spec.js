@@ -1,12 +1,14 @@
 import { abstractAxis } from "../../../../../src/core/chart-components/axis/axis";
 import { linear } from "../../../../../src/core/scales/linear";
 import { band } from "../../../../../src/core/scales/band";
+import { formatter } from "../../../../../src/core/formatter";
 
 describe( "Axis", () => {
 	let composerMock;
 	let config;
 	let rendererMock;
 	let axis;
+	let formatterSpy;
 
 	function verifyNumberOfNodes( tNodes, lNodes ) {
 		let nodes = rendererMock.render.args[0][0];
@@ -18,9 +20,11 @@ describe( "Axis", () => {
 
 	beforeEach( () => {
 		let s = {};
+		let formatterBuilder = () => formatter( "d3" )( "number" )( " " );
+		formatterSpy = sinon.spy( formatterBuilder );
 		composerMock = {
 			scale: () => s,
-			data: {}
+			formatter: formatterSpy
 		};
 
 		config = {
@@ -40,8 +44,27 @@ describe( "Axis", () => {
 		beforeEach( () => {
 			composerMock.scale().scale = linear();
 			composerMock.scale().type = "linear";
+			composerMock.scale().sources = ["fieldSource"];
 
 			axis = abstractAxis( config, composerMock, rendererMock );
+		} );
+
+		it( "should instantiate a default formatter dervied from the first field", () => {
+			expect( formatterSpy.args[0][0] ).to.deep.equal( { source: "fieldSource" } );
+		} );
+
+		it( "should instantiate a formatter referenced by name", () => {
+			formatterSpy.reset(); // Reset spy here because init is done in beforeEach
+			config.formatter = "customFormatter";
+			axis = abstractAxis( config, composerMock, rendererMock );
+			expect( formatterSpy.args[0][0] ).to.equal( "customFormatter" );
+		} );
+
+		it( "should instantiate a formatter derived from a configured field", () => {
+			formatterSpy.reset(); // Reset spy here because init is done in beforeEach
+			config.formatter = { source: "customSource" };
+			axis = abstractAxis( config, composerMock, rendererMock );
+			expect( formatterSpy.args[0][0] ).to.deep.equal( { source: "customSource" } );
 		} );
 
 		["left", "right", "top", "bottom" ].forEach( ( d ) => {
@@ -111,6 +134,8 @@ describe( "Axis", () => {
 			composerMock.data = data;
 			composerMock.scale().scale = band( [0, 1, 2], [0, 1] );
 			composerMock.scale().type = "ordinal";
+			composerMock.scale().sources = ["source"];
+
 			dataMapperMock = () => { return data; };
 			axis = abstractAxis( config, composerMock, rendererMock );
 		} );

@@ -52,6 +52,7 @@ export function abstractAxis( axisConfig, composer, renderer ){
 	const dataScale = composer.scale( axisConfig );
 	const scale = dataScale.scale;
 	const type = dataScale.type;
+	const formatter = composer.formatter( axisConfig.formatter || { source: dataScale.sources[0] } );
 	let data;
 	let concreteNodeBuilder;
 	let settings;
@@ -85,7 +86,7 @@ export function abstractAxis( axisConfig, composer, renderer ){
 	};
 
 	let render = function() {
-		const ticks = ticksFn( { settings, innerRect, scale, data } );
+		const ticks = ticksFn( { settings, innerRect, scale, data, formatter } );
 
 		nodes.push( ...concreteNodeBuilder.build( { settings, scale, innerRect, outerRect, renderer, ticks } ) );
 		renderer.render( nodes );

@@ -42,7 +42,6 @@ export function continuousDefaultSettings() {
 				fontSize: "13px",
 				fill: "#999"
 			},
-			format: "s",
 			padding: 4,
 			layered: false
 		},

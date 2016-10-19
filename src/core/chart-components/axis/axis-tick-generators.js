@@ -4,34 +4,34 @@ function hasMinMaxValue( settings ) {
 	return settings.ticks.min !== undefined || settings.ticks.max !== undefined;
 }
 
-function ticksByCount( { count, minorCount, scale } ) {
+function ticksByCount( { count, minorCount, scale, formatter } ) {
 	return scale._scale.ticks( ( ( count - 1 ) * minorCount ) + count ).map( ( tick, i ) => {
 		return {
 			position: scale.get( tick ),
-			label: tick,
+			label: formatter( tick ),
 			isMinor: i % ( minorCount + 1 ) !== 0
 		};
 	} );
 }
 
-function ticksByValue( { values, scale } ) {
+function ticksByValue( { values, scale, formatter } ) {
 	return values.map( ( tick ) => {
 		return {
 			position: scale.get( tick ),
-			label: tick,
+			label: formatter( tick ),
 			isMinor: false
 		};
 	} );
 }
 
-function forceTicksAtBounds( ticks, scale ) {
+function forceTicksAtBounds( ticks, scale, formatter ) {
 	// let bounds = [];
 	let ticksP = ticks.map( t => t.position );
 
 	if ( ticksP.indexOf( 0 ) === -1 ) {
 		ticks.splice( 0, 0, {
 			position: 0,
-			label: scale.start(),
+			label: formatter( scale.start() ),
 			isMinor: false
 		} );
 	}
@@ -39,23 +39,23 @@ function forceTicksAtBounds( ticks, scale ) {
 	if ( ticksP.indexOf( 1 ) === -1 ) {
 		ticks.push( {
 			position: 1,
-			label: scale.end(),
+			label: formatter( scale.end() ),
 			isMinor: false
 		} );
 	}
 }
 
-export function generateContinuousTicks( { settings, scale, innerRect } ) {
+export function generateContinuousTicks( { settings, scale, innerRect, formatter } ) {
 	let ticks;
 	const minorCount = settings.minorTicks && settings.minorTicks.show ? settings.minorTicks.count : 0;
 
 	if ( settings.ticks.values ) {
 		// TODO With custom tick values, dont care if its within the domain?
 		scale.tickGenerator( ticksByValue );
-		ticks = scale.ticks( { values: settings.ticks.values, scale } );
+		ticks = scale.ticks( { values: settings.ticks.values, scale, formatter } );
 	} else if ( settings.ticks.count !== undefined ) {
 		scale.tickGenerator( ticksByCount );
-		ticks = scale.ticks( { count: settings.ticks.count, minorCount, scale } );
+		ticks = scale.ticks( { count: settings.ticks.count, minorCount, scale, formatter } );
 	} else {
 		let distance = settings.align === "top" || settings.align === "bottom" ? innerRect.width : innerRect.height;
 		scale.tickGenerator( settings.ticks.tight && !hasMinMaxValue( settings ) ? tightDistanceBasedGenerator : looseDistanceBasedGenerator );
@@ -63,7 +63,8 @@ export function generateContinuousTicks( { settings, scale, innerRect } ) {
 			distance: distance,
 			minorCount: minorCount,
 			start: scale.start(),
-			end: scale.end()
+			end: scale.end(),
+			formatter
 		} );
 
 		if ( settings.ticks.tight && !hasMinMaxValue( settings ) ) {
@@ -71,7 +72,7 @@ export function generateContinuousTicks( { settings, scale, innerRect } ) {
 		}
 
 		if ( settings.ticks.forceBounds ) {
-			forceTicksAtBounds( ticks, scale );
+			forceTicksAtBounds( ticks, scale, formatter );
 		}
 	}
 

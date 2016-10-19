@@ -3,6 +3,10 @@ import { components } from "../../chart-components/index";
 import { data } from "../../data/index";
 import { dockLayout } from "../../dock-layout/dock-layout";
 import {
+	default as buildFormatters,
+	getOrCreateFormatter
+} from "./formatter/index";
+import {
 	builder as buildScales,
 	getOrCreateScale
 } from "./scales";
@@ -10,8 +14,10 @@ import {
 const regComps = registry();
 regComps.add( "components", components );
 
-const regScales = registry();
-regScales.add( "scales", buildScales );
+const regPreComps = registry();
+regPreComps.add( "scales", buildScales );
+regPreComps.add( "formatters", buildFormatters );
+
 
 function getRect( container ) {
 	let rect = { x: 0, y: 0, width: 0, height: 0 };
@@ -44,6 +50,7 @@ function flattenComponents( c ) {
 export function composer () {
 
 	let scales = {},
+		formatters = {},
 		tables = [],
 		comps = {},
 		container = null,
@@ -59,7 +66,9 @@ export function composer () {
 
 	fn.data = function( meta, settings ) {
 		tables = [data( meta )];
-		scales = regScales.build( settings, fn ).scales;
+		let preComps = regPreComps.build( settings, fn );
+		scales = preComps.scales;
+		formatters = preComps.formatters;
 		comps = regComps.build( settings, fn ).components;
 	};
 
@@ -88,6 +97,10 @@ export function composer () {
 		docker.layout( cRect );
 
 		cc.forEach( ( c ) => { c.render(); } );
+	};
+
+	fn.formatter = function ( v ) {
+		return getOrCreateFormatter( v, formatters, fn.table() );
 	};
 
 	return fn;
