@@ -135,7 +135,7 @@ function createDisplayPoints( dataPoints, { x, y, width, height }, pointSize, sh
 		return shapeFn( p.shape, {
 			label: p.label,
 			x: p.x * width + x,
-			y: ( 1 - p.y ) * height + y,
+			y: p.y * height + y,
 			fill: p.fill,
 			size: pointSize[0] + p.size * ( pointSize[1] - pointSize[0] ), // TODO - replace with scale
 			stroke: p.stroke,
@@ -160,7 +160,7 @@ export function pointFn( rendererFn, shapeFn ) {
 		rect = { x: 0, y: 0, width: 0, height: 0 };
 		composer = comp;
 
-		settings = obj.settings;
+		settings = obj.settings || {};
 		dataInput = obj.data;
 		table = composer.table();
 
