@@ -96,6 +96,7 @@ export class Dispersion {
 
 	resize( rect ) {
 		this.rect = rect;
+		this.renderer.size( rect );
 	}
 
 	remap( input, output ) {

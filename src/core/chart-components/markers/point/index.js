@@ -134,8 +134,8 @@ function createDisplayPoints( dataPoints, { x, y, width, height }, pointSize, sh
 	} ).map( p => {
 		return shapeFn( p.shape, {
 			label: p.label,
-			x: p.x * width + x,
-			y: p.y * height + y,
+			x: p.x * width,
+			y: p.y * height,
 			fill: p.fill,
 			size: pointSize[0] + p.size * ( pointSize[1] - pointSize[0] ), // TODO - replace with scale
 			stroke: p.stroke,
@@ -200,6 +200,7 @@ export function pointFn( rendererFn, shapeFn ) {
 
 	fn.resize = function( r ) {
 		rect = r;
+		renderer.size( rect );
 	};
 
 	return fn;

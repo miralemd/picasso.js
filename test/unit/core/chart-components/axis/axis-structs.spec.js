@@ -1,6 +1,6 @@
 import { buildTick, buildLabel, buildLine } from "../../../../../src/core/chart-components/axis/axis-structs";
 
-describe( "AxisStructs", () => {
+describe.skip( "AxisStructs", () => {
 	const innerRect = { x: 0, y: 0, width: 0, height: 0 };
 	const outerRect = { x: 0, y: 0, width: 0, height: 0 };
 	const textRect = { width: 10, height: 10 };

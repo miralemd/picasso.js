@@ -49,6 +49,12 @@ describe( "svg renderer", () => {
 	} );
 
 	describe( "render", () => {
+		let items, s;
+
+		beforeEach( () => {
+			items = ["a"];
+			s = { children: ["AA"] };
+		} );
 
 		it( "should reject promise when rendering before appending", () => {
 			svg.render();
@@ -56,13 +62,25 @@ describe( "svg renderer", () => {
 		} );
 
 		it( "should call tree creator with proper params", () => {
-			let items = ["a"],
-				s = { children: ["AA"] };
 			scene.returns( s );
 			svg.appendTo( element( "div" ) );
 			svg.render( items );
 			expect( scene.args[0][0] ).to.equal( items );
 			expect( treeRenderer.render ).to.have.been.calledWith( s.children, svg.root() );
+		} );
+
+		it( "should attach to given position in the container", () => {
+			scene.returns( s );
+			svg.appendTo( element( "div" ) );
+			svg.size( { x: 50, y: 100, width: 200, height: 400 } );
+			svg.render( items );
+
+			let el = svg.element();
+			expect( el.style.position ).to.equal( "absolute" );
+			expect( el.style.left ).to.equal( "50px" );
+			expect( el.style.top ).to.equal( "100px" );
+			expect( el.attributes.width ).to.equal( 200 );
+			expect( el.attributes.height ).to.equal( 400 );
 		} );
 	} );
 
@@ -95,6 +113,14 @@ describe( "svg renderer", () => {
 				svg.destroy();
 			};
 			expect( fn ).to.not.throw();
+		} );
+	} );
+
+	describe( "size", () => {
+		it( "should return current size if no parameters are given", () => {
+			svg.appendTo( element( "div" ) );
+			svg.size( { x: 50, y: 100, width: 200, height: 400 } );
+			expect( svg.size() ).to.deep.equal( { x: 50, y: 100, width: 200, height: 400 } );
 		} );
 	} );
 } );

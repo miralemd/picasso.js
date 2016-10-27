@@ -97,6 +97,7 @@ export function abstractAxis( axisConfig, composer, renderer ){
 	};
 
 	let resize = function( inner, outer ) {
+		renderer.size( outer );
 		extend( inner, alignTransform( { align: settings.align, inner } ) );
 		outer = outer ? outer : inner;
 		extend( innerRect, inner );

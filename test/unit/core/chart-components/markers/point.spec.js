@@ -9,7 +9,8 @@ describe( "point marker", () => {
 		let shape = ( type, p ) => { p.type = type; return p; };
 		renderer = {
 			appendTo: () => {},
-			render: ( p ) => ( renderedPoints = p )
+			render: ( p ) => ( renderedPoints = p ),
+			size: () => {}
 		};
 		let renderFn = () => renderer;
 		let table = {
@@ -42,8 +43,8 @@ describe( "point marker", () => {
 		expect( renderedPoints ).to.deep.equal( [{
 			type: "circle",
 			label: "",
-			x: 60,
-			y: 120,
+			x: 50,
+			y: 100,
 			fill: "#999",
 			size: 10,
 			stroke: "#ccc",
@@ -78,8 +79,8 @@ describe( "point marker", () => {
 		expect( renderedPoints ).to.deep.equal( [{
 			type: "circle",
 			label: "",
-			x: 60,
-			y: 120,
+			x: 50,
+			y: 100,
 			fill: "#999",
 			size: 10,
 			stroke: "#ccc",
@@ -115,8 +116,8 @@ describe( "point marker", () => {
 		expect( renderedPoints ).to.deep.equal( [{
 			type: "rect",
 			label: "etikett",
-			x: 90,
-			y: 80,
+			x: 80,
+			y: 60,
 			fill: "red",
 			size: 34,
 			stroke: "blue",
@@ -151,8 +152,8 @@ describe( "point marker", () => {
 		expect( renderedPoints ).to.deep.equal( [{
 			type: "a",
 			label: "etikett",
-			x: 90,
-			y: 80,
+			x: 80,
+			y: 60,
 			fill: "red",
 			size: 34,
 			stroke: "blue",
@@ -191,8 +192,8 @@ describe( "point marker", () => {
 		expect( renderedPoints ).to.deep.equal( [{
 			type: "circle",
 			label: "etta",
-			x: 10 - 0.2 * 100,
-			y: 20 + 0.3 * 200,
+			x: -0.2 * 100,
+			y: 0.3 * 200,
 			fill: "red",
 			size: 2, // min value of [2,10]
 			stroke: "stroke:red",
@@ -201,8 +202,8 @@ describe( "point marker", () => {
 		}, {
 			type: "rect",
 			label: "tvåa",
-			x: 10 + 0.7 * 100,
-			y: 20 + 1.2 * 200,
+			x: 0.7 * 100,
+			y: 1.2 * 200,
 			fill: "green",
 			size: 10, // max value of [2,10]
 			stroke: "stroke:green",

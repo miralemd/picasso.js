@@ -34,8 +34,9 @@ export function renderer( treeFn = treeFactory, ns = svgNs, sceneFn = scene, Pro
 		if ( !el ) {
 			return Promise.reject();
 		}
-		rect.width = el.parentElement.clientWidth;
-		rect.height = el.parentElement.clientHeight;
+
+		el.style.left = `${rect.x}px`;
+		el.style.top = `${rect.y}px`;
 		el.setAttribute( "width", rect.width );
 		el.setAttribute( "height", rect.height );
 
@@ -65,11 +66,12 @@ export function renderer( treeFn = treeFactory, ns = svgNs, sceneFn = scene, Pro
 		group = null;
 	};
 
-	svg.size = () => {
-		return {
-			width: el ? el.parentElement.clientWidth : 0,
-			height: el ? el.parentElement.clientHeight : 0
-		};
+	svg.size = ( { x, y, width, height } = {} ) => {
+		rect.x = isNaN( x ) ? rect.x : x;
+		rect.y = isNaN( x ) ? rect.y : y;
+		rect.width = isNaN( width ) ? rect.width : width;
+		rect.height = isNaN( height ) ? rect.height : height;
+		return rect;
 	};
 
 	svg.measureText = ( { text, fontSize, fontFamily } ) => {

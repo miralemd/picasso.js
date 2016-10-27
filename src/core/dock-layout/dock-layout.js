@@ -11,6 +11,15 @@ function validateComponent( component ) {
 	} );
 }
 
+function roundRect( rect ) {
+	return {
+		x: Math.ceil( rect.x ),
+		y: Math.ceil( rect.y ),
+		width: Math.ceil( rect.width ),
+		height: Math.ceil( rect.height )
+	};
+}
+
 function reduceLayoutRect( containerRect, components ) {
 	let reducedRect = {
 		x: containerRect.x,
@@ -20,7 +29,7 @@ function reduceLayoutRect( containerRect, components ) {
 	};
 
 	components.filter( c => ["left", "top", "right", "bottom"].indexOf( c.config.dock() ) !== -1 ).forEach( c => {
-		c.cachedSize = c.config.requiredSize()( containerRect );
+		c.cachedSize = Math.ceil( c.config.requiredSize()( containerRect ) );
 		switch ( c.config.dock() ) {
 			case "top":
 				reducedRect.y += c.cachedSize;
@@ -46,7 +55,7 @@ function positionComponents( components, containerRect, reducedRect ) {
 		hRect = { x: reducedRect.x, y: reducedRect.y, width: reducedRect.width, height: reducedRect.height };
 
 	components.sort( ( a, b ) => a.config.order() - b.config.order() ).forEach( c => {
-		c.cachedSize = c.cachedSize === undefined ? c.config.requiredSize()( containerRect ) : c.cachedSize;
+		c.cachedSize = c.cachedSize === undefined ? Math.ceil( c.config.requiredSize()( containerRect ) ) : c.cachedSize;
 		let outerRect = {};
 		let rect = {};
 
@@ -128,7 +137,7 @@ export function dockLayout() {
 	};
 
 	docker.layout = function( rect ) {
-		extend( containerRect, rect );
+		extend( containerRect, roundRect( rect ) );
 		let reduced = reduceLayoutRect( containerRect, components );
 		positionComponents( components, containerRect, reduced );
 	};

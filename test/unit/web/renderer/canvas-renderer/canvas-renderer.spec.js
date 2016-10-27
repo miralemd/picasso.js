@@ -41,15 +41,26 @@ describe( "canvas renderer", () => {
 	} );
 
 	it( "should return zero size when canvas is not initiated", () => {
-		expect( r.size() ).to.deep.equal( { width: 0, height: 0 } );
+		expect( r.size() ).to.deep.equal( { x: 0, y: 0, width: 0, height: 0 } );
 	} );
 
-	it( "should return size when canvas is initiated", () => {
-		let div = element( "div" );
-		div.clientWidth = 50;
-		div.clientHeight = 100;
-		r.appendTo( div );
-		expect( r.size() ).to.deep.equal( { width: 50, height: 100 } );
+	it( "should return size when called", () => {
+		r.size( { x: 50, y: 100, width: 200, height: 400 } );
+		expect( r.size() ).to.deep.equal( { x: 50, y: 100, width: 200, height: 400 } );
+	} );
+
+	it( "should attach to given position in the container", () => {
+		scene.returns( { children: [] } );
+		r.appendTo( element( "div" ) );
+		r.size( { x: 50, y: 100, width: 200, height: 400 } );
+		r.render();
+
+		let el = r.element();
+		expect( el.style.position ).to.equal( "absolute" );
+		expect( el.style.left ).to.equal( "50px" );
+		expect( el.style.top ).to.equal( "100px" );
+		expect( el.width ).to.equal( 200 );
+		expect( el.height ).to.equal( 400 );
 	} );
 
 	it( "should detach from parent element when destoyed", () => {

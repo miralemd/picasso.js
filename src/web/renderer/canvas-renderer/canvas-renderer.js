@@ -37,7 +37,8 @@ function renderShapes ( shapes, g ) {
 export function renderer( sceneFn = sceneFactory, Promise = window.Promise ) {
 
 	let el,
-		scene;
+		scene,
+		rect = { x: 0, y: 0, width: 0, height: 0 };
 
 	let canvasRenderer = function() {};
 
@@ -48,6 +49,7 @@ export function renderer( sceneFn = sceneFactory, Promise = window.Promise ) {
 	canvasRenderer.appendTo = ( element ) => {
 		if ( !el ) {
 			el = element.ownerDocument.createElement( "canvas" );
+			el.style.position = "absolute";
 		}
 
 		element.appendChild( el );
@@ -58,11 +60,12 @@ export function renderer( sceneFn = sceneFactory, Promise = window.Promise ) {
 			return Promise.reject();
 		}
 
-		let parent = el.parentElement,
-			g = el.getContext( "2d" );
+		let g = el.getContext( "2d" );
 
-		el.width = parent.clientWidth;
-		el.height = parent.clientHeight;
+		el.style.left = `${rect.x}px`;
+		el.style.top = `${rect.y}px`;
+		el.width = rect.width;
+		el.height = rect.height;
 
 		scene = sceneFn( shapes );
 
@@ -78,11 +81,12 @@ export function renderer( sceneFn = sceneFactory, Promise = window.Promise ) {
 		el.width = el.width;
 	};
 
-	canvasRenderer.size = () => {
-		return {
-			width: el ? el.parentElement.clientWidth : 0,
-			height: el ? el.parentElement.clientHeight : 0
-		};
+	canvasRenderer.size = ( { x, y, width, height } = {} ) => {
+		rect.x = isNaN( x ) ? rect.x : x;
+		rect.y = isNaN( x ) ? rect.y : y;
+		rect.width = isNaN( width ) ? rect.width : width;
+		rect.height = isNaN( height ) ? rect.height : height;
+		return rect;
 	};
 
 	canvasRenderer.destroy = () => {
