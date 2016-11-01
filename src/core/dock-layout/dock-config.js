@@ -1,4 +1,4 @@
-export function dockConfig( dock = "", order = 0, relevantSizeFn = () => 0 ) {
+export function dockConfig( dock = "", displayOrder = 0, prioOrder = 0, relevantSizeFn = () => 0 ) {
 
 	let fn = function() {};
 
@@ -18,11 +18,19 @@ export function dockConfig( dock = "", order = 0, relevantSizeFn = () => 0 ) {
 		return this;
 	};
 
-	fn.order = function( o ) {
+	fn.displayOrder = function( o ) {
 		if ( typeof o === "undefined" ) {
-			return order;
+			return displayOrder;
 		}
-		order = o;
+		displayOrder = o;
+		return this;
+	};
+
+	fn.prioOrder = function( o ) {
+		if ( typeof o === "undefined" ) {
+			return prioOrder;
+		}
+		prioOrder = o;
 		return this;
 	};
 

@@ -20,6 +20,43 @@ function roundRect( rect ) {
 	};
 }
 
+function reduceSingleLayoutRect( containerRect, reducedRect, c ) {
+	switch ( c.config.dock() ) {
+		case "top":
+			if ( reducedRect.height >= c.cachedSize + containerRect.height * 0.5 ) {
+				reducedRect.y += c.cachedSize;
+				reducedRect.height -= c.cachedSize;
+				return true;
+			} else {
+				return false;
+			}
+		case "bottom":
+			if ( reducedRect.height >= c.cachedSize + containerRect.height * 0.5 ) {
+				reducedRect.height -= c.cachedSize;
+				return true;
+			} else {
+				return false;
+			}
+		case "left":
+			if ( reducedRect.width >= c.cachedSize + containerRect.width * 0.5 ) {
+				reducedRect.x += c.cachedSize;
+				reducedRect.width -= c.cachedSize;
+				return true;
+			} else {
+				return false;
+			}
+		case "right":
+			if ( reducedRect.width >= c.cachedSize + containerRect.width * 0.5 ) {
+				reducedRect.width -= c.cachedSize;
+				return true;
+			} else {
+				return false;
+			}
+		default:
+			return true;
+	}
+}
+
 function reduceLayoutRect( containerRect, components ) {
 	let reducedRect = {
 		x: containerRect.x,
@@ -28,24 +65,17 @@ function reduceLayoutRect( containerRect, components ) {
 		height: containerRect.height
 	};
 
-	components.filter( c => ["left", "top", "right", "bottom"].indexOf( c.config.dock() ) !== -1 ).forEach( c => {
+	components.sort( ( a, b ) => a.config.prioOrder() - b.config.prioOrder() );
+
+	for ( let i = 0; i < components.length; ++i ) {
+		let c = components[i];
 		c.cachedSize = Math.ceil( c.config.requiredSize()( containerRect ) );
-		switch ( c.config.dock() ) {
-			case "top":
-				reducedRect.y += c.cachedSize;
-				reducedRect.height -= c.cachedSize;
-				break;
-			case "bottom":
-				reducedRect.height -= c.cachedSize;
-				break;
-			case "left":
-				reducedRect.x += c.cachedSize;
-				reducedRect.width -= c.cachedSize;
-				break;
-			case "right":
-				reducedRect.width -= c.cachedSize;
+
+		if ( !reduceSingleLayoutRect( containerRect, reducedRect, c ) ) {
+			components.splice( i, 1 );
+			--i;
 		}
-	} );
+	}
 	return reducedRect;
 }
 
@@ -54,7 +84,7 @@ function positionComponents( components, containerRect, reducedRect ) {
 	let vRect = { x: reducedRect.x, y: reducedRect.y, width: reducedRect.width, height: reducedRect.height },
 		hRect = { x: reducedRect.x, y: reducedRect.y, width: reducedRect.width, height: reducedRect.height };
 
-	components.sort( ( a, b ) => a.config.order() - b.config.order() ).forEach( c => {
+	components.sort( ( a, b ) => a.config.displayOrder() - b.config.displayOrder() ).forEach( c => {
 		c.cachedSize = c.cachedSize === undefined ? Math.ceil( c.config.requiredSize()( containerRect ) ) : c.cachedSize;
 		let outerRect = {};
 		let rect = {};
