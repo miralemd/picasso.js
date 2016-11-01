@@ -1,6 +1,7 @@
 import { scene as sceneFactory } from "../../../core/scene-graph/scene";
 import { registry } from "../../../core/utils/registry";
 import { measureText } from "./text-metrics";
+import { resolveTransform } from "./transform-resolver";
 
 let reg = registry();
 
@@ -21,6 +22,10 @@ function renderShapes ( shapes, g ) {
 		if ( "stroke-width" in s && g["stroke-width"] !== s["stroke-width"] ) {
 			g.lineWidth = s["stroke-width"];
 		}
+		if ( s.transform ) {
+			g.save();
+			resolveTransform( s.transform, g );
+		}
 		if ( reg.has( s.type ) ) {
 			reg.get( s.type )( s, {
 				g,
@@ -31,6 +36,8 @@ function renderShapes ( shapes, g ) {
 		if ( s.children ) {
 			renderShapes( s.children, g );
 		}
+
+		g.restore();
 	} );
 }
 

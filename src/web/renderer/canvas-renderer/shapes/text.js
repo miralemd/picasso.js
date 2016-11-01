@@ -15,6 +15,7 @@ function convertBaseline( baseline ){
 
 export function render( t, { g } ) {
 	const text = ellipsText( t, measureText );
+
 	g.beginPath();
 	g.font = `${t["font-size"]} ${t["font-family"]}`;
 	g.textAlign = t["text-anchor"] === "middle" ? "center" : t["text-anchor"];

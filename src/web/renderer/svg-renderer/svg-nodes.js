@@ -7,7 +7,9 @@ const creator = ( type, parent ) => {
 	if ( !type || typeof type !== "string" ) {
 		throw new Error( `Invalid type: ${type}` );
 	}
-	let el = parent.ownerDocument.createElementNS( svgNs, type );
+
+	let el = parent.ownerDocument.createElementNS( svgNs, type === "container" ? "g" : type );
+
 	parent.appendChild( el );
 	return el;
 };

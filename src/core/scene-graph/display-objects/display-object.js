@@ -6,7 +6,7 @@ class DisplayObject extends Node {
 		this._stage = null;
 	}
 
-	set ( { fill, stroke, strokeWidth, fontFamily, fontSize, baseline, anchor, maxWidth, opacity } ) {
+	set ( { fill, stroke, strokeWidth, fontFamily, fontSize, baseline, anchor, maxWidth, opacity, transform } ) {
 		if ( typeof fill !== "undefined" ) {
 			this.fill = fill;
 		}
@@ -33,6 +33,9 @@ class DisplayObject extends Node {
 		}
 		if ( typeof maxWidth !== "undefined" ) {
 			this.maxWidth = maxWidth;
+		}
+		if ( typeof transform !== "undefined" ) {
+			this.transform = transform;
 		}
 	}
 

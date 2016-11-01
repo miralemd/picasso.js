@@ -7,8 +7,8 @@ export default class Line extends DisplayObject {
 		this.set( ...s );
 	}
 
-	set ( { x1, y1, x2, y2, strokeWidth, stroke, opacity } ) {
-		super.set( { strokeWidth, stroke, opacity } );
+	set ( { x1, y1, x2, y2, strokeWidth, stroke, opacity, transform } ) {
+		super.set( { strokeWidth, stroke, opacity, transform } );
 		GeoLine.prototype.set.call( this, x1, y1, x2, y2 );
 	}
 }

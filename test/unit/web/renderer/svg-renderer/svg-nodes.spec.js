@@ -33,6 +33,18 @@ describe( "svg-nodes", () => {
 
 			expect( creator( "magic", p ) ).to.equal( "candy" );
 		} );
+
+		it( "should create a group element for type container", () => {
+			let p = {
+				ownerDocument: {
+					createElementNS: sinon.stub().returns( "candy" )
+				},
+				appendChild: sinon.spy()
+			};
+
+			creator( "container", p );
+			expect( p.ownerDocument.createElementNS ).to.have.been.calledWithExactly( svgNs, "g" );
+		} );
 	} );
 
 	describe( "destroyer", () => {
