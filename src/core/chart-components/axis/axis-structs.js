@@ -74,7 +74,7 @@ export function buildLabel( tick, buildOpts ) {
 		struct.y = buildOpts.align === "top" ? buildOpts.innerRect.height : 0;
 		struct.anchor = "middle";
 	} else {
-		struct.y = ( ( 1 - tick.position ) * buildOpts.innerRect.height ) + buildOpts.innerRect.y - buildOpts.outerRect.y;
+		struct.y = ( ( tick.position ) * buildOpts.innerRect.height ) + buildOpts.innerRect.y - buildOpts.outerRect.y;
 		struct.x = buildOpts.align === "left" ? buildOpts.innerRect.width : 0;
 		struct.anchor = buildOpts.align === "left" ? "end" : "start";
 	}

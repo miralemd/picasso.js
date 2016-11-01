@@ -7,12 +7,12 @@ function unique( values ) {
 	} );
 }
 
-export function ordinal( fields ) {
+export function ordinal( fields, settings ) {
 	let s = band();
 	let values = fields[0].values();
 	let uniq = unique( values ).map( v => v.label );
 	s.domain( uniq );
-	s.range( [0, 1] );
+	s.range( settings.invert ? [1, 0] : [0, 1] );
 	s.paddingOuter( 1 ); // TODO hard-coded
 	s.paddingInner( 1 ); // TODO hard-coded
 	s.align( 0.5 ); // TODO hard-coded

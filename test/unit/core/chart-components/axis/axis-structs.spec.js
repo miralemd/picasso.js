@@ -54,15 +54,15 @@ describe.skip( "AxisStructs", () => {
 
 			it( "start tick", () => {
 				tick.position = 0;
-				expected.y1 = 99.5;
-				expected.y2 = 99.5;
+				expected.y1 = 0.5;
+				expected.y2 = 0.5;
 				expect( buildTick( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "end tick", () => {
 				tick.position = 1;
-				expected.y1 = 0.5;
-				expected.y2 = 0.5;
+				expected.y1 = 99.5;
+				expected.y2 = 99.5;
 				expect( buildTick( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 		} );
@@ -82,15 +82,15 @@ describe.skip( "AxisStructs", () => {
 
 			it( "start tick", () => {
 				tick.position = 0;
-				expected.y1 = 99.5;
-				expected.y2 = 99.5;
+				expected.y1 = 0.5;
+				expected.y2 = 0.5;
 				expect( buildTick( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
 			it( "end tick", () => {
 				tick.position = 1;
-				expected.y1 = 0.5;
-				expected.y2 = 0.5;
+				expected.y1 = 99.5;
+				expected.y2 = 99.5;
 				expect( buildTick( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 		} );
@@ -193,31 +193,31 @@ describe.skip( "AxisStructs", () => {
 				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
-			it( "start label", () => {
-				tick.position = 0;
+			it( "end label", () => {
+				tick.position = 1;
 				expected.y = 100;
 				expected.baseline = "text-after-edge";
 				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
-			it( "start label with margin", () => {
+			it( "end label with margin", () => {
 				outerRect.height = 105;
-				tick.position = 0;
+				tick.position = 1;
 				expected.y = 100;
 				expected.baseline = "central";
 				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
-			it( "end label", () => {
-				tick.position = 1;
+			it( "start label", () => {
+				tick.position = 0;
 				expected.y = 0;
 				expected.baseline = "text-before-edge";
 				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
-			it( "end label with margin", () => {
+			it( "start label with margin", () => {
 				innerRect.y = 5;
-				tick.position = 1;
+				tick.position = 0;
 				expected.y = 5;
 				expected.baseline = "central";
 				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
@@ -237,30 +237,30 @@ describe.skip( "AxisStructs", () => {
 				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
-			it( "start label", () => {
-				tick.position = 0;
+			it( "end label", () => {
+				tick.position = 1;
 				expected.y = 100;
 				expected.baseline = "text-after-edge";
 				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
-			it( "start label with margin", () => {
+			it( "end label with margin", () => {
 				outerRect.height = 105;
-				tick.position = 0;
+				tick.position = 1;
 				expected.y = 100;
 				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
-			it( "end label", () => {
-				tick.position = 1;
+			it( "start label", () => {
+				tick.position = 0;
 				expected.y = 0;
 				expected.baseline = "text-before-edge";
 				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );
 			} );
 
-			it( "end label with margin", () => {
+			it( "start label with margin", () => {
 				innerRect.y = 5;
-				tick.position = 1;
+				tick.position = 0;
 				expected.y = 5;
 				expected.baseline = "central";
 				expect( buildLabel( tick, buildOpts ) ).to.deep.equal( expected );

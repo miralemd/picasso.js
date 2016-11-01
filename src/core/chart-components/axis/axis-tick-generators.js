@@ -27,18 +27,19 @@ function ticksByValue( { values, scale, formatter } ) {
 function forceTicksAtBounds( ticks, scale, formatter ) {
 	// let bounds = [];
 	let ticksP = ticks.map( t => t.position );
+	let range = scale.range();
 
-	if ( ticksP.indexOf( 0 ) === -1 ) {
+	if ( ticksP.indexOf( range[0] ) === -1 ) {
 		ticks.splice( 0, 0, {
-			position: 0,
+			position: range[0],
 			label: formatter( scale.start() ),
 			isMinor: false
 		} );
 	}
 
-	if ( ticksP.indexOf( 1 ) === -1 ) {
+	if ( ticksP.indexOf( range[1] ) === -1 ) {
 		ticks.push( {
-			position: 1,
+			position: range[1],
 			label: formatter( scale.end() ),
 			isMinor: false
 		} );
@@ -52,18 +53,17 @@ export function generateContinuousTicks( { settings, scale, innerRect, formatter
 	if ( settings.ticks.values ) {
 		// TODO With custom tick values, dont care if its within the domain?
 		scale.tickGenerator( ticksByValue );
-		ticks = scale.ticks( { values: settings.ticks.values, scale, formatter } );
+		ticks = scale.ticks( { values: settings.ticks.values, scale: scale.copy(), formatter } );
 	} else if ( settings.ticks.count !== undefined ) {
 		scale.tickGenerator( ticksByCount );
-		ticks = scale.ticks( { count: settings.ticks.count, minorCount, scale, formatter } );
+		ticks = scale.ticks( { count: settings.ticks.count, minorCount, scale: scale.copy(), formatter } );
 	} else {
 		let distance = settings.align === "top" || settings.align === "bottom" ? innerRect.width : innerRect.height;
 		scale.tickGenerator( settings.ticks.tight && !hasMinMaxValue( settings ) ? tightDistanceBasedGenerator : looseDistanceBasedGenerator );
 		ticks = scale.ticks( {
 			distance: distance,
 			minorCount: minorCount,
-			start: scale.start(),
-			end: scale.end(),
+			scale: scale.copy(),
 			formatter
 		} );
 

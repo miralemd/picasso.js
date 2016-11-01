@@ -86,7 +86,7 @@ describe( "transposer", () => {
 		let output = draw.output();
 
 		expect( output[0].x ).to.equal( 25 );
-		expect( output[0].y ).to.equal( 12.5 );
+		expect( output[0].y ).to.equal( 75 );
 		expect( output[0].width ).to.equal( 37.5 );
 		expect( output[0].height ).to.equal( 12.5 );
 	} );
