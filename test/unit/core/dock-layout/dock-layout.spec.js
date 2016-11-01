@@ -92,4 +92,25 @@ describe( "Dock Layout", () => {
 		expect( fn ).to.throw( "Component is missing required function \"resize\"" );
 		expect( fn2 ).to.throw( "Component is missing required function \"resize\"" );
 	} );
+
+	it( "should remove components that don't fit", () => {
+		let leftComp = componentMock( "left", 0.30 );
+		let leftComp2 = componentMock( "left", 0.30 );
+		let leftComp3 = componentMock( "left", 0.30 );
+		let mainComp = componentMock( "", 0 );
+		let rect = { x: 0, y: 0, width: 1000, height: 1000 };
+		let dl = dockLayout();
+		dl.addComponent( leftComp );
+		dl.addComponent( leftComp2 );
+		dl.addComponent( leftComp3 );
+		dl.addComponent( mainComp );
+
+		dl.layout( rect );
+
+		expect( leftComp.resize().innerRect, "leftComp innerRect had incorrect calculated size" ).to.deep.equal( { x: 0, y: 0, width: 300, height: 1000 } );
+		expect( leftComp2.resize().innerRect, "leftComp2 innerRect had incorrect calculated size" ).to.deep.equal( { x: 0, y: 0, width: 0, height: 0 } );
+		expect( leftComp3.resize().innerRect, "leftComp3 innerRect had incorrect calculated size" ).to.deep.equal( { x: 0, y: 0, width: 0, height: 0 } );
+		expect( mainComp.resize().innerRect, "Main innerRect had incorrect calculated size" ).to.deep.equal( { x: 300, y: 0, width: 700, height: 1000 } );
+	} );
+
 } );
