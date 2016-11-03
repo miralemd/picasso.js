@@ -263,7 +263,7 @@ export function tightDistanceBasedGenerator( { distance, scale, minorCount = 0, 
 
 	return ticks.map( ( tick, i ) => {
 		return {
-			position: scale( tick ),
+			position: scale.get( tick ),
 			label: ticksFormatted[i],
 			isMinor: i % ( minorCount + 1 ) !== 0
 		};
