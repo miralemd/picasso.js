@@ -66,6 +66,7 @@ class Transposer {
 			} else if ( key === "width" || key === "r" ) {
 				return coordinate * this.width;
 			} else if ( firstChar === "y" || key === "cy" ) {
+				//coordinate = this.flipY ? ( 1 - coordinate ) - ( item[ this.evaluateKey( "height" ) ] || 0 ) : coordinate;
 				return coordinate * this.height;
 			} else if ( key === "height" ) {
 				return coordinate * this.height;
@@ -94,14 +95,12 @@ class Transposer {
 	 * @return {Array} 	Array of objects
 	 */
 	output() {
-		this.flipY = !this.vertical;
-
 		let items = this.storage.map( item => {
 			let newItem = {};
 
 			Object.keys( item ).forEach( key => {
 				let nkey = this.vertical ? this.evaluateKey( key ) : key;
-				let nval = this.transposeCoordinate( nkey, item[key], item );
+				let nval = this.transposeCoordinate( nkey, item[key] );
 				newItem[ nkey ] = nval;
 			} );
 
