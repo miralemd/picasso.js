@@ -11,7 +11,7 @@ export function buildTick( tick, buildOpts ) {
 		struct.y1 = buildOpts.align === "top" ? buildOpts.innerRect.height : 0;
 		struct.y2 = buildOpts.align === "top" ? struct.y1 - buildOpts.tickSize : struct.y1 + buildOpts.tickSize;
 	} else {
-		struct.y1 = struct.y2 = ( 1 - tick.position ) * ( buildOpts.innerRect.height ) + buildOpts.innerRect.y - buildOpts.outerRect.y;
+		struct.y1 = struct.y2 = ( tick.position ) * ( buildOpts.innerRect.height ) + buildOpts.innerRect.y - buildOpts.outerRect.y;
 		struct.x1 = buildOpts.align === "left" ? buildOpts.innerRect.width : 0;
 		struct.x2 = buildOpts.align === "left" ? struct.x1 - buildOpts.tickSize : struct.x1 + buildOpts.tickSize;
 	}

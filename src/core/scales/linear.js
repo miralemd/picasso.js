@@ -220,10 +220,7 @@ export function linear( ...a ) {
 * @param  {Number} [unitDivider=100] 	Number to divide distance with
 * @return {Array}       				Array of ticks
 */
-export function looseDistanceBasedGenerator( { distance, minorCount = 0, start = 0, end = 1, unitDivider = 100, formatter = undefined } ) {
-	let scale = scaleLinear();
-	scale.domain( [start, end] );
-	scale.range( [0, 1] );
+export function looseDistanceBasedGenerator( { distance, scale, minorCount = 0, unitDivider = 100, formatter = undefined } ) {
 
 	const fraction = Math.max( distance / unitDivider, 2 );
 	let count = ( ( fraction - 1 ) * minorCount ) + fraction;
@@ -232,11 +229,13 @@ export function looseDistanceBasedGenerator( { distance, minorCount = 0, start =
 		ticks = scale.ticks( count + 1 );
 	}
 
+	//console.log( end );
+
 	let ticksFormatted = ticks.map( applyFormat( formatter ) );
 
 	return ticks.map( ( tick, i ) => {
 		return {
-			position: scale( tick ),
+			position: scale.get( tick ),
 			label: ticksFormatted[i],
 			isMinor: i % ( minorCount + 1 ) !== 0
 		};
@@ -253,10 +252,7 @@ export function looseDistanceBasedGenerator( { distance, minorCount = 0, start =
 * @param  {Number} [unitDivider=100] 	Number to divide distance with
 * @return {Array}       				Array of ticks
 */
-export function tightDistanceBasedGenerator( { distance, minorCount = 0, start = 0, end = 1, unitDivider = 100, formatter = undefined } ) {
-	let scale = scaleLinear();
-	scale.domain( [start, end] );
-	scale.range( [0, 1] );
+export function tightDistanceBasedGenerator( { distance, scale, minorCount = 0, unitDivider = 100, formatter = undefined } ) {
 	const count = Math.max( distance / unitDivider, 2 );
 	const ticksCount = Math.round( ( ( count - 1 ) * minorCount ) + count );
 	const n = ticksCount > 10 ? 10 : ticksCount;
