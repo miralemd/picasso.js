@@ -188,7 +188,7 @@ function preparePattern( o, t, d ) {
 	o.temp = temp;
 }
 
-function NumberFormatter( ...args ) {
+class NumberFormatter {
 	/**
 	 * @constructs
 	 * @param {Object} localeInfo
@@ -197,7 +197,7 @@ function NumberFormatter( ...args ) {
 	 * @param {String} [decimal]
 	 * @param {String} [type]
 	 */
-	this.init = function ( localeInfo, pattern, thousand, decimal, type ) {
+	constructor ( localeInfo, pattern, thousand, decimal, type ) {
 		this.localeInfo = localeInfo;
 		this.pattern = pattern;
 		this.thousandDelimiter = thousand || ",";
@@ -205,13 +205,14 @@ function NumberFormatter( ...args ) {
 		this.type = type || "numeric";
 
 		this.prepare();
-	};
+	}
 
-	this.clone = function () {
+	clone () {
 		const n = new NumberFormatter( this.localeInfo, this.pattern, this.thousandDelimiter, this.decimalDelimiter, this.type );
 		n.subtype = this.subtype;
 		return n;
-	};
+	}
+
 	/**
 	 * Formats a number according to a specific pattern.
 	 * Use # for optional numbers and 0 for padding.
@@ -242,12 +243,12 @@ function NumberFormatter( ...args ) {
 	 * format(10, "(bin)") // 1010; // same as (r02)
 	 * format(10, "(oct)") // 12; // same as (r08)
 	 */
-	this.format = function ( value, pattern, t, d ) {
+	format ( value, pattern, t, d ) {
 		this.prepare( pattern, t, d );
 		return this.formatValue( value );
-	};
+	}
 
-	this.prepare = function( pattern, t, d ) {
+	prepare ( pattern, t, d ) {
 		let prep, isFunctional;
 
 		if ( typeof pattern === "undefined" ) {	pattern = this.pattern;	}
@@ -304,9 +305,9 @@ function NumberFormatter( ...args ) {
 			}
 
 		}
-	};
+	}
 
-	this.formatValue = function( value ) {
+	formatValue ( value ) {
 		let prep = this._prepared,
 			temp,
 			exponent,
@@ -437,13 +438,11 @@ function NumberFormatter( ...args ) {
 		}
 
 		return prep.prefix + value + sciValue + abbr + prep.postfix;
-	};
+	}
 
-	this.getStaticFormatter = function () {
+	getStaticFormatter () {
 		return { prepare: function () { }, formatValue: function ( v ) { return v + ""; } };
-	};
-
-	this.init( ...args );
+	}
 }
 
 export function numberFormatFactory( ...args ) {
