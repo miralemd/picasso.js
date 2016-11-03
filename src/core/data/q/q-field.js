@@ -19,7 +19,17 @@ export function qField() {
 		} )
 		.formatter( d => {
 			if ( d.meta.qNumFormat && d.meta.qNumFormat.qType && [ "U", "I", "R", "F", "M" ].indexOf( d.meta.qNumFormat.qType ) !== -1 ) {
-				return formatter( "q" )( "number" )( d.meta.qNumFormat.qFmt, d.meta.qNumFormat.qThou || ",", d.meta.qNumFormat.qDec || ".", d.meta.qNumFormat.qType );
+
+				let pattern = d.meta.qNumFormat.qFmt;
+				let thousand = d.meta.qNumFormat.qThou || ",";
+				let decimal = d.meta.qNumFormat.qDec || ".";
+				let type = d.meta.qNumFormat.qType || "U";
+
+				if ( type === "U" ) {
+					pattern = "#" + decimal + "##A";
+				}
+
+				return formatter( "q" )( "number" )( pattern, thousand, decimal, type );
 			}
 			return ( v ) => v;
 		} );
