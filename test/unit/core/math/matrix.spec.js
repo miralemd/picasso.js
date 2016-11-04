@@ -105,6 +105,11 @@ describe( "Matrix", () => {
 		expect( m.elements ).to.deep.equal( [[1, 0, 0], [0, 1, 0], [0, 0, 1]] );
 	} );
 
+	it( "should handle transform by a six value coordinate system", () => {
+		m.transform( 1, 2, 3, 4, 5, 6 );
+		expect( m.elements ).to.deep.equal( [[1, 3, 5], [2, 4, 6], [0, 0, 1]] );
+	} );
+
 	it( "should clone element values", () => {
 		m.set( [[2, 1, 2], [7, 1, 3], [3, 5, 9]] );
 		let c = m.clone();

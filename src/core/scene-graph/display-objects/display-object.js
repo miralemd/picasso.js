@@ -57,6 +57,20 @@ class DisplayObject extends Node {
 		}
 		return this._stage;
 	}
+
+	set modelViewMatrix( m ) {
+		this._mvm = m;
+		this._imvm = null;
+	}
+
+	get modelViewMatrix() {
+		return this._mvm;
+	}
+
+	get inverseModelViewMatrix() {
+		this._imvm = this._imvm ? this._imvm : this._mvm.clone().invert();
+		return this._imvm;
+	}
 }
 
 export default DisplayObject;

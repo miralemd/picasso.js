@@ -1,4 +1,4 @@
-const transformRegEx = /(translate|scale|rotate|matrix)\((.+?)\)/g;
+const transformRegEx = /(translate|scale|rotate|matrix)\(([0-9,\.eE+-\s]+)(?:,|\s?)+\)/g;
 
 function parseTransform( transform ) {
 	let m,
@@ -16,49 +16,50 @@ function parseTransform( transform ) {
 	return commands;
 }
 
-function resolveRotateCmd( g, transform ) {
+function resolveRotateCmd( matrix, transform ) {
 	let radians = transform.args[0] * ( Math.PI / 180 );
 
-	if ( transform.args.length > 1 ) {
+	if ( transform.args.length > 2 ) {
 		let x = transform.args[1];
 		let y = transform.args[2];
-		g.translate( x, y );
-		g.rotate( radians );
-		g.translate( -x, -y );
-	} else {
-		g.rotate( radians );
+		matrix.translate( x, y );
+		matrix.rotate( radians );
+		matrix.translate( -x, -y );
+	} else if ( transform.args.length === 1 ) {
+		matrix.rotate( radians );
 	}
 }
 
-function resolveScaleCmd( g, transform ) {
+function resolveScaleCmd( matrix, transform ) {
 	let x = transform.args[0];
 	let y = isNaN( transform.args[1] ) ? transform.args[0] : transform.args[1];
-	g.scale( x, y );
+	matrix.scale( x, y );
 }
 
-function resolveTranslateCmd( g, transform ) {
+function resolveTranslateCmd( matrix, transform ) {
 	let x = transform.args[0];
 	let y = isNaN( transform.args[1] ) ? 0 : transform.args[1];
-	g.translate( x, y );
+	matrix.translate( x, y );
 }
 
-function resolveMatrixCmd( g, transform ) {
-	g.transform( ...transform.args );
+function resolveMatrixCmd( matrix, transform ) {
+	if ( transform.args.length >= 6 ) {
+		matrix.transform( ...transform.args );
+	}
 }
 
-export function resolveTransform( t, g ) {
+export function resolveTransform( t, matrix ) {
 	const transforms = parseTransform( t );
 
 	transforms.forEach( transform => {
 		if ( transform.cmd === "rotate" ) {
-			resolveRotateCmd( g, transform );
+			resolveRotateCmd( matrix, transform );
 		} else if ( transform.cmd === "scale" ) {
-			resolveScaleCmd( g, transform );
+			resolveScaleCmd( matrix, transform );
 		} else if ( transform.cmd === "matrix" ) {
-			resolveMatrixCmd( g, transform );
+			resolveMatrixCmd( matrix, transform );
 		} else if ( transform.cmd === "translate" ) {
-			resolveTranslateCmd( g, transform );
+			resolveTranslateCmd( matrix, transform );
 		}
-
 	} );
 }

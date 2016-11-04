@@ -134,6 +134,21 @@ class Matrix {
 	}
 
 	/**
+	 * Multiples the matrix with the supplied transformation values
+	 * @param {Number} a Horizontal scaling
+	 * @param {Number} b Horizontal skewing
+	 * @param {Number} c Vertical skewing
+	 * @param {Number} d Vertical scaling
+	 * @param {Number} e Horizontal moving
+	 * @param {Number} f Vertical scaling
+	 */
+	transform( a, b, c, d, e, f ) {
+		this.multiply( [[a, c, e], [b, d, f], [0, 0, 1]] );
+
+		return this;
+	}
+
+	/**
 	* Gets the value of the determinant.
 	* @return {Number}
 	*/

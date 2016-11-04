@@ -1,4 +1,4 @@
-import { resolveTransform } from "../../../../../src/web/renderer/canvas-renderer/transform-resolver";
+import { resolveTransform } from "../../../../src/core/scene-graph/transform-resolver";
 
 describe( "Transform resolver", () => {
 	let g,
@@ -25,12 +25,6 @@ describe( "Transform resolver", () => {
 			expect( g.translate ).to.have.been.calledWithExactly( 1123, 0.002321 );
 		} );
 
-		it( "should support hexadecimal notation", () => {
-			transform = "translate(0x20, 0xA)";
-			resolveTransform( transform, g );
-			expect( g.translate ).to.have.been.calledWithExactly( 32, 10 );
-		} );
-
 		it( "should support fractional-constant notation", () => {
 			transform = "translate(1.2, 0.5)";
 			resolveTransform( transform, g );
@@ -49,24 +43,12 @@ describe( "Transform resolver", () => {
 			transform = "matrix(1, 2, 3, 4, 5, 6)";
 			resolveTransform( transform, g );
 			expect( g.transform ).to.have.been.calledWithExactly( 1, 2, 3, 4, 5, 6 );
-
-			sandbox.restore();
-
-			transform = "matrix( 1, 2, 3 )";
-			resolveTransform( transform, g );
-			expect( g.transform ).to.have.been.calledWithExactly( 1, 2, 3 );
 		} );
 
 		it( "should support space seperated values", () => {
 			transform = "matrix(1 2 3 4 5 6)";
 			resolveTransform( transform, g );
 			expect( g.transform ).to.have.been.calledWithExactly( 1, 2, 3, 4, 5, 6 );
-
-			sandbox.restore();
-
-			transform = "matrix( 1 2 3 )";
-			resolveTransform( transform, g );
-			expect( g.transform ).to.have.been.calledWithExactly( 1, 2, 3 );
 		} );
 
 		it( "should handle multiple spaces between parameters", () => {
@@ -152,12 +134,10 @@ describe( "Transform resolver", () => {
 				expect( g.translate.args[1] ).to.deep.equal( [-10, -20] );
 			} );
 
-			it( "should not default to a value if y parameter is omitted", () => {
+			it( "should not apply rotation if x or y is omitted", () => {
 				transform = "rotate(45, 10)";
 				resolveTransform( transform, g );
-				expect( g.translate.args[0] ).to.deep.equal( [10, undefined] );
-				expect( g.rotate ).to.have.been.calledWithExactly( 0.7853981633974483 );
-				expect( g.translate.args[1] ).to.deep.equal( [-10, NaN] );
+				expect( g.rotate.callCount ).to.equal( 0 );
 			} );
 
 			it( "should not rotate if parameters are omitted", () => {
@@ -174,10 +154,16 @@ describe( "Transform resolver", () => {
 				expect( g.transform ).to.have.been.calledWithExactly( 1, 2, 3, 4, 5, 6 );
 			} );
 
-			it( "should not default to a value if a parameter is omitted", () => {
+			it( "should not apply transform if a parameter is omitted", () => {
 				transform = "matrix(1, 2, 3, 4)";
 				resolveTransform( transform, g );
-				expect( g.transform ).to.have.been.calledWithExactly( 1, 2, 3, 4 );
+				expect( g.transform.callCount ).to.equal( 0 );
+			} );
+
+			it( "should not apply transform if parameters is omitted", () => {
+				transform = "matrix()";
+				resolveTransform( transform, g );
+				expect( g.transform.callCount ).to.equal( 0 );
 			} );
 		} );
 
