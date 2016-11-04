@@ -55,8 +55,8 @@ export class Dispersion {
 				x: x ? x( d ) : 0.5,
 				min: y && minValues ? y( minValues[i] ) : null,
 				max: y && maxValues ? y( maxValues[i] ) : null,
-				start: y && startValues ? y( startValues[i] ) : 0,
-				end: y && endValues ? y( endValues[i] ) : null,
+				start: y && startValues ? y( startValues[i] ) : y( { value: 0 } ),
+				end: y && endValues ? y( endValues[i] ) : y( { value: 0 } ),
 				med: y && medValues ? y( medValues[i] ) : null
 			} );
 		} );
