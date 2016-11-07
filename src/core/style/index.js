@@ -127,7 +127,8 @@ export function resolveStyle( defaults, styleRoot, path ) {
     let steps = path ? path.split( "." ) : [];
     let ret = {};
     for ( let s in defaults ) {
-       ret[s] = resolveAttribute( styleRoot, steps.concat(), s, defaults[s] || globalDefaults[s] );
+        let def = defaults[s] == null ? globalDefaults[s] : defaults[s];
+        ret[s] = resolveAttribute( styleRoot, steps.concat(), s, def );
     }
     return ret;
 }

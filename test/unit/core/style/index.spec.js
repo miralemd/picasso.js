@@ -27,7 +27,8 @@ describe( "Style resolver", () => {
                 },
                 med: {
                     stroke: "#00f",
-                    strokeWidth: 6
+                    strokeWidth: 6,
+                    fill: 0
                 },
                 line: {
                     stroke: function stroke( item, index ) {
@@ -54,6 +55,10 @@ describe( "Style resolver", () => {
 		let result = resolveStyle( { fill: null }, settings, "style.whisker" );
         expect( result.fill ).to.equal( "red" );
 	} );
+    it( "should resolve existing 0 style", () => {
+		let result = resolveStyle( { fill: 1 }, settings, "style.med" );
+        expect( result.fill ).to.equal( 0 );
+	} );
     it( "should resolve deep inheritance", () => {
 		let result = resolveStyle( { fontSize: null }, settings, "style.title.main" );
         expect( result.fontSize ).to.equal( "13px" );
@@ -61,6 +66,10 @@ describe( "Style resolver", () => {
     it( "should fallback to inline default", () => {
 		let result = resolveStyle( { color: "red" }, settings, "style.title.main" );
         expect( result.color ).to.equal( "red" );
+	} );
+    it( "should fallback to inline 0 default", () => {
+		let result = resolveStyle( { fontSize: 0 }, settings, "style.med" );
+        expect( result.fontSize ).to.equal( 0 );
 	} );
     it( "should fallback to global default", () => {
 		let result = resolveStyle( { color: null }, settings, "style.title.main" );
