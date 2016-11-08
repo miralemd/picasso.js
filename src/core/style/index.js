@@ -1,98 +1,98 @@
 let globalDefaults = {
-    fontFamily: "Arial",
-    fontSize: "13px",
-    color: "#595959",
-    fill: "#333333",
-    backgroundColor: "#ffffff",
-    stroke: "#000000",
-    strokeWidth: 1
+	fontFamily: "Arial",
+	fontSize: "13px",
+	color: "#595959",
+	fill: "#333333",
+	backgroundColor: "#ffffff",
+	stroke: "#000000",
+	strokeWidth: 1
 };
 
 function getObject( root, steps ) {
-    let obj = root;
-    for ( let i = 0; i < steps.length; i++ ) {
-        if ( obj[steps[i]] ) {
-            obj = obj[steps[i]];
-        } else {
-            return undefined;
-        }
-    }
-    return obj;
+	let obj = root;
+	for ( let i = 0; i < steps.length; i++ ) {
+		if ( obj[steps[i]] ) {
+			obj = obj[steps[i]];
+		} else {
+			return undefined;
+		}
+	}
+	return obj;
 }
 
 function wrapper( fallbackVal, fn, item, index, array ) {
-    let value = fn ? fn( item, index, array ) : null;
-    if ( value !== null && value !== undefined ) {
-        // Custom accessor returned a proper value
-        return value;
-    } else {
-        // Fall back to fallback
-        if ( typeof fallbackVal === "function" ) {
-            // fallback is a function, run it
-            return fallbackVal( item, index, array );
-        } else if ( fallbackVal && typeof fallbackVal.fn === "function" ) {
-            // fallback has a custom function, run it
-            return fallbackVal.fn( item, index, array );
-        } else {
-            // fallback is a value, return it
-            return fallbackVal;
-        }
-    }
+	let value = fn ? fn( item, index, array ) : null;
+	if ( value !== null && typeof value !== "undefined" ) {
+		// Custom accessor returned a proper value
+		return value;
+	} else {
+		// Fall back to fallback
+		if ( typeof fallbackVal === "function" ) {
+			// fallback is a function, run it
+			return fallbackVal( item, index, array );
+		} else if ( fallbackVal && typeof fallbackVal.fn === "function" ) {
+			// fallback has a custom function, run it
+			return fallbackVal.fn( item, index, array );
+		} else {
+			// fallback is a value, return it
+			return fallbackVal;
+		}
+	}
 }
 
 function attr( targets, attribute, defaultVal, index ) {
-    let target = targets[index];
-    if ( !target ) {
-        return defaultVal;
-    }
+	let target = targets[index];
+	if ( !target ) {
+		return defaultVal;
+	}
 	const type = typeof target[attribute];
 
 
-    if ( type === "undefined" ) {
-        // undefined value
-        if ( index < targets.length - 1 ) {
-            // check inheritance
-            return attr( targets, attribute, defaultVal, index + 1 );
-        } else {
-            // end of the chain, return default
-            return defaultVal;
-        }
-    } else if ( typeof target[attribute] === typeof defaultVal ) {
-        // constant value
+	if ( type === "undefined" ) {
+		// undefined value
+		if ( index < targets.length - 1 ) {
+			// check inheritance
+			return attr( targets, attribute, defaultVal, index + 1 );
+		} else {
+			// end of the chain, return default
+			return defaultVal;
+		}
+	} else if ( typeof target[attribute] === typeof defaultVal ) {
+		// constant value
 		return target[attribute];
 	}
 
-    // custom accessor function
+	// custom accessor function
 	if ( type === "function" ) {
-        // Return object with fn and fallback attribute value
+		// Return object with fn and fallback attribute value
 		return { fn: ( ...args ) => wrapper( attr( targets, attribute, defaultVal, index + 1 ), target[attribute], ...args ) };
 	}
-    // A composite object, for example a scale
-    if ( type === "object" ){
-        if ( typeof target[attribute].fn === "function" ) {
-            // custom accessor function inside object
-            let fn = target[attribute].fn;
-            target[attribute].fn = ( ...args ) => wrapper( attr( targets, attribute, defaultVal, index + 1 ), fn, ...args );
-        } else {
-            // Add in the fallback attribute value as fn
-            target[attribute].fn = ( ...args ) => wrapper( attr( targets, attribute, defaultVal, index + 1 ), null, ...args );
-        }
+	// A composite object, for example a scale
+	if ( type === "object" ) {
+		if ( typeof target[attribute].fn === "function" ) {
+			// custom accessor function inside object
+			let fn = target[attribute].fn;
+			target[attribute].fn = ( ...args ) => wrapper( attr( targets, attribute, defaultVal, index + 1 ), fn, ...args );
+		} else {
+			// Add in the fallback attribute value as fn
+			target[attribute].fn = ( ...args ) => wrapper( attr( targets, attribute, defaultVal, index + 1 ), null, ...args );
+		}
 
-        return target[attribute];
-    }
-    return defaultVal;
+		return target[attribute];
+	}
+	return defaultVal;
 }
 
 function resolveAttribute( root, steps, attribute, defaultVal ) {
-    let i = steps.length;
-    let targets = [];
-    while ( i >= 0 ) {
-        targets.push( getObject( root, steps ) );
-        steps.pop();
-        i--;
-    }
+	let i = steps.length;
+	let targets = [];
+	while ( i >= 0 ) {
+		targets.push( getObject( root, steps ) );
+		steps.pop();
+		i--;
+	}
 
-    return attr( targets, attribute, defaultVal, 0 );
+	return attr( targets, attribute, defaultVal, 0 );
 }
 /**
 * Resolves styles from multiple sources
@@ -124,11 +124,11 @@ function resolveAttribute( root, steps, attribute, defaultVal ) {
 *    "parts.rect" );
 */
 export function resolveStyle( defaults, styleRoot, path ) {
-    let steps = path ? path.split( "." ) : [];
-    let ret = {};
-    for ( let s in defaults ) {
-        let def = defaults[s] == null ? globalDefaults[s] : defaults[s];
-        ret[s] = resolveAttribute( styleRoot, steps.concat(), s, def );
-    }
-    return ret;
+	let steps = path ? path.split( "." ) : [];
+	let ret = {};
+	for ( let s in defaults ) {
+		let def = defaults[s] === null || typeof defaults[s] === "undefined" ? globalDefaults[s] : defaults[s];
+		ret[s] = resolveAttribute( styleRoot, steps.concat(), s, def );
+	}
+	return ret;
 }
