@@ -8,7 +8,7 @@ reg.register( "axis", axis );
 
 export function axisFactory( axes, composer ) {
 	return axes.map( ( axisConfig ) => {
-		const rend = renderer( "svg" );
+		const rend = renderer();
 		rend.appendTo( composer.container() );
 		return reg.registry.axis( axisConfig, composer, rend );
 	} );
