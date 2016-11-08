@@ -14,7 +14,9 @@ $ npm install
 $ npm run build
 ```
 
-This will generate a UMD package for `picasso` under `/dist`.
+This will generate a UMD package `picasso.min.js` under `/dist`.
+
+To build the development version `picasso.js` run `npm run build:debug`.
 
 To watch for changes and regenerate the package run `npm run build:watch`.
 
@@ -39,3 +41,4 @@ $ npm run test:coverage
 ## How to use
 
 See the [Documentation and examples](docs/usage.md).
+
