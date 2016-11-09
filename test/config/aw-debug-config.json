@@ -1,10 +1,10 @@
 {
-	"logLevel": "info",
-	"port":3333,
-	"server": {
-		"baseDir": "./",
-		"routes": {
-			"/src": "./src"
-		}
-	}
+  "logLevel": "info",
+  "port":3333,
+  "server": {
+    "baseDir": "./",
+    "routes": {
+      "/src": "./src"
+    }
+  }
 }

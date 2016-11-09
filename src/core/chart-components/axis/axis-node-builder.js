@@ -1,153 +1,153 @@
-import { buildLabel, buildTick, buildLine } from "./axis-structs";
+import { buildLabel, buildTick, buildLine } from './axis-structs';
 
-function tickSpacing( settings ) {
-	return settings.line.style.strokeWidth + settings.ticks.padding;
+function tickSpacing(settings) {
+  return settings.line.style.strokeWidth + settings.ticks.padding;
 }
 
-function tickMinorSpacing( settings ) {
-	return settings.line.style.strokeWidth + settings.minorTicks.padding;
+function tickMinorSpacing(settings) {
+  return settings.line.style.strokeWidth + settings.minorTicks.padding;
 }
 
-function labelsSpacing( settings ) {
-	let spacing = 0;
-	spacing += settings.ticks.show ? settings.ticks.tickSize : 0;
-	spacing += tickSpacing( settings ) + settings.labels.padding;
-	return spacing;
+function labelsSpacing(settings) {
+  let spacing = 0;
+  spacing += settings.ticks.show ? settings.ticks.tickSize : 0;
+  spacing += tickSpacing(settings) + settings.labels.padding;
+  return spacing;
 }
 
-function calcActualTextRect( { style, renderer, tick } ) {
-	return renderer.measureText( {
-		text: tick.label,
-		fontSize: style.fontSize,
-		fontFamily: style.fontFamily
-	} );
+function calcActualTextRect({ style, renderer, tick }) {
+  return renderer.measureText({
+    text: tick.label,
+    fontSize: style.fontSize,
+    fontFamily: style.fontFamily
+  });
 }
 
-function majorTicks( ticks ) {
-	return ticks.filter( ( t ) => { return !t.isMinor; } );
+function majorTicks(ticks) {
+  return ticks.filter(t => !t.isMinor);
 }
 
-function minorTicks( ticks ) {
-	return ticks.filter( ( t ) => { return t.isMinor; } );
+function minorTicks(ticks) {
+  return ticks.filter(t => t.isMinor);
 }
 
-function tickBuilder( ticks, buildOpts ) {
-	return ticks.map( ( tick ) => {
-		return buildTick( tick, buildOpts );
-	} );
+function tickBuilder(ticks, buildOpts) {
+  return ticks.map(tick =>
+   buildTick(tick, buildOpts)
+);
 }
 
-function labelBuilder( ticks, buildOpts, renderer ) {
-	return ticks.map( ( tick ) => {
-		buildOpts.textRect = calcActualTextRect( { tick, renderer: renderer, style: buildOpts.style } );
-		return buildLabel( tick, buildOpts );
-	} );
+function labelBuilder(ticks, buildOpts, renderer) {
+  return ticks.map((tick) => {
+    buildOpts.textRect = calcActualTextRect({ tick, renderer, style: buildOpts.style });
+    return buildLabel(tick, buildOpts);
+  });
 }
 
-function layeredLabelBuilder( ticks, buildOpts, settings, renderer ) {
-	buildOpts.maxWidth = buildOpts.maxWidth * 2;
-	const padding = buildOpts.padding;
-	const padding2 = labelsSpacing( settings ) + buildOpts.maxHeight + settings.labels.padding;
-	return ticks.map( ( tick, i ) => {
-		buildOpts.padding = i % 2 === 0 ? padding : padding2;
-		buildOpts.textRect = calcActualTextRect( { tick, renderer: renderer, style: buildOpts.style } );
-		return buildLabel( tick, buildOpts );
-	} );
+function layeredLabelBuilder(ticks, buildOpts, settings, renderer) {
+  buildOpts.maxWidth = buildOpts.maxWidth * 2;
+  const padding = buildOpts.padding;
+  const padding2 = labelsSpacing(settings) + buildOpts.maxHeight + settings.labels.padding;
+  return ticks.map((tick, i) => {
+    buildOpts.padding = i % 2 === 0 ? padding : padding2;
+    buildOpts.textRect = calcActualTextRect({ tick, renderer, style: buildOpts.style });
+    return buildLabel(tick, buildOpts);
+  });
 }
 
-function discreteCalcMaxTextRect( { renderer, settings, innerRect, scale } ) {
-	const h = renderer.measureText( {
-		text: "M",
-		fontSize: settings.labels.style.fontSize,
-		fontFamily: settings.labels.style.fontFamily
-	} ).height;
+function discreteCalcMaxTextRect({ renderer, settings, innerRect, scale }) {
+  const h = renderer.measureText({
+    text: 'M',
+    fontSize: settings.labels.style.fontSize,
+    fontFamily: settings.labels.style.fontFamily
+  }).height;
 
-	const textRect = { width: 0, height: h };
-	if ( settings.align === "left" || settings.align === "right" ) {
-		textRect.width = innerRect.width * 0.75;
-	} else {
-		textRect.width = scale.step() * 0.75 * innerRect.width;
-	}
-	return textRect;
+  const textRect = { width: 0, height: h };
+  if (settings.align === 'left' || settings.align === 'right') {
+    textRect.width = innerRect.width * 0.75;
+  } else {
+    textRect.width = scale.step() * 0.75 * innerRect.width;
+  }
+  return textRect;
 }
 
-function continuousCalcMaxTextRect( { renderer, settings, innerRect, ticks } ) {
-	const h = renderer.measureText( {
-		text: "M",
-		fontSize: settings.labels.style.fontSize,
-		fontFamily: settings.labels.style.fontFamily
-	} ).height;
+function continuousCalcMaxTextRect({ renderer, settings, innerRect, ticks }) {
+  const h = renderer.measureText({
+    text: 'M',
+    fontSize: settings.labels.style.fontSize,
+    fontFamily: settings.labels.style.fontFamily
+  }).height;
 
-	const textRect = { width: 0, height: h };
-	if ( settings.align === "left" || settings.align === "right" ) {
-		textRect.width = innerRect.width * 0.75;
-	} else {
-		textRect.width = ( innerRect.width / majorTicks( ticks ).length ) * 0.75;
-	}
-	return textRect;
+  const textRect = { width: 0, height: h };
+  if (settings.align === 'left' || settings.align === 'right') {
+    textRect.width = innerRect.width * 0.75;
+  } else {
+    textRect.width = (innerRect.width / majorTicks(ticks).length) * 0.75;
+  }
+  return textRect;
 }
 
-export function nodeBuilder( type ) {
-	let calcMaxTextRectFn;
-	let nodes = [];
+export function nodeBuilder(type) {
+  let calcMaxTextRectFn;
+  const nodes = [];
 
-	function continuous() {
-		calcMaxTextRectFn = continuousCalcMaxTextRect;
-		return continuous;
-	}
+  function continuous() {
+    calcMaxTextRectFn = continuousCalcMaxTextRect;
+    return continuous;
+  }
 
-	function discrete() {
-		calcMaxTextRectFn = discreteCalcMaxTextRect;
-		return discrete;
-	}
+  function discrete() {
+    calcMaxTextRectFn = discreteCalcMaxTextRect;
+    return discrete;
+  }
 
-	function build( { settings, scale, innerRect, outerRect, renderer, ticks } ) {
-		const major = majorTicks( ticks );
-		const minor = minorTicks( ticks );
-		let buildOpts = {
-			innerRect: innerRect,
-			align: settings.align,
-			outerRect: outerRect
-		};
+  function build({ settings, scale, innerRect, outerRect, renderer, ticks }) {
+    const major = majorTicks(ticks);
+    const minor = minorTicks(ticks);
+    const buildOpts = {
+      innerRect,
+      align: settings.align,
+      outerRect
+    };
 
-		if ( settings.line.show ) {
-			buildOpts.style = settings.line.style;
+    if (settings.line.show) {
+      buildOpts.style = settings.line.style;
 
-			nodes.push( buildLine( buildOpts ) );
-		}
-		if ( settings.ticks.show ) {
-			buildOpts.style = settings.ticks.style;
-			buildOpts.tickSize = settings.ticks.tickSize;
-			buildOpts.padding = tickSpacing( settings );
+      nodes.push(buildLine(buildOpts));
+    }
+    if (settings.ticks.show) {
+      buildOpts.style = settings.ticks.style;
+      buildOpts.tickSize = settings.ticks.tickSize;
+      buildOpts.padding = tickSpacing(settings);
 
-			nodes.push( ...tickBuilder( major, buildOpts ) );
-		}
-		if ( settings.minorTicks && settings.minorTicks.show ) {
-			buildOpts.style = settings.minorTicks.style;
-			buildOpts.tickSize = settings.minorTicks.tickSize;
-			buildOpts.padding = tickMinorSpacing( settings );
+      nodes.push(...tickBuilder(major, buildOpts));
+    }
+    if (settings.minorTicks && settings.minorTicks.show) {
+      buildOpts.style = settings.minorTicks.style;
+      buildOpts.tickSize = settings.minorTicks.tickSize;
+      buildOpts.padding = tickMinorSpacing(settings);
 
-			nodes.push( ...tickBuilder( minor, buildOpts ) );
-		}
-		if ( settings.labels.show ) {
-			const textRect = calcMaxTextRectFn( { renderer, settings, innerRect, ticks, scale } );
-			const padding = labelsSpacing( settings );
-			buildOpts.style = settings.labels.style;
-			buildOpts.padding = padding;
-			buildOpts.maxWidth = textRect.width;
-			buildOpts.maxHeight = textRect.height;
+      nodes.push(...tickBuilder(minor, buildOpts));
+    }
+    if (settings.labels.show) {
+      const textRect = calcMaxTextRectFn({ renderer, settings, innerRect, ticks, scale });
+      const padding = labelsSpacing(settings);
+      buildOpts.style = settings.labels.style;
+      buildOpts.padding = padding;
+      buildOpts.maxWidth = textRect.width;
+      buildOpts.maxHeight = textRect.height;
 
-			if ( settings.labels.layered && ( settings.align === "top" || settings.align === "bottom" ) ) {
-				nodes.push( ...layeredLabelBuilder( major, buildOpts, settings, renderer ) );
-			} else {
-				nodes.push( ...labelBuilder( major, buildOpts, renderer ) );
-			}
-		}
-		return nodes;
-	}
+      if (settings.labels.layered && (settings.align === 'top' || settings.align === 'bottom')) {
+        nodes.push(...layeredLabelBuilder(major, buildOpts, settings, renderer));
+      } else {
+        nodes.push(...labelBuilder(major, buildOpts, renderer));
+      }
+    }
+    return nodes;
+  }
 
-	continuous.build = build;
-	discrete.build = build;
+  continuous.build = build;
+  discrete.build = build;
 
-	return type === "ordinal" ? discrete() : continuous();
+  return type === 'ordinal' ? discrete() : continuous();
 }

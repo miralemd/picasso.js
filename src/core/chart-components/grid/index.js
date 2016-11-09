@@ -1,16 +1,16 @@
-import { registry } from "../../utils/registry";
-import { line } from "./line";
+import { registry } from '../../utils/registry';
+import { line } from './line';
 
-let reg = registry();
+const reg = registry();
 
-reg.register( "line", line );
+reg.register('line', line);
 
-export function creategrid( arr, composer ) {
-	let items = [];
-	arr.forEach( item => {
-		if ( item.type in reg.registry ) {
-			items.push( reg.registry[item.type]( item, composer ) );
-		}
-	} );
-	return items;
+export function creategrid(arr, composer) {
+  const items = [];
+  arr.forEach((item) => {
+    if (item.type in reg.registry) {
+      items.push(reg.registry[item.type](item, composer));
+    }
+  });
+  return items;
 }

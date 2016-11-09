@@ -1,7 +1,7 @@
-import RgbaColor from "../rgba-color";
+import RgbaColor from '../rgba-color';
 
 const rHex = /^\s*#([A-Fa-f0-9]{2})([A-f0-A-Fa-f0-9]{2})([A-Fa-f0-9]{2})\s*$/i,
-	rHexShort = /^\s*#([A-Fa-f0-9])([A-Fa-f0-9])([A-Fa-f0-9])\s*$/i;
+  rHexShort = /^\s*#([A-Fa-f0-9])([A-Fa-f0-9])([A-Fa-f0-9])\s*$/i;
 
 /**
  * Instanciate a new color object
@@ -13,13 +13,12 @@ const rHex = /^\s*#([A-Fa-f0-9]{2})([A-f0-A-Fa-f0-9]{2})([A-Fa-f0-9]{2})\s*$/i,
  * hex( "#fff" );
  * hex( "#ffffff" );
 */
-export default function hex( colStr ) {
+export default function hex(colStr) {
+  let [r, g, b] = (rHex.exec(colStr) || rHexShort.exec(colStr) || []).slice(1).map(v =>
+   parseInt(v.length === 1 ? v + v : v, 16)
+);
 
-	let [r, g, b] = ( rHex.exec( colStr ) || rHexShort.exec( colStr ) || [] ).slice( 1 ).map( v => {
-		return parseInt( v.length === 1 ? v + v : v, 16 );
-	} );
-
-	return new RgbaColor( r, g, b, 1 );
+  return new RgbaColor(r, g, b, 1);
 }
 
 /**
@@ -31,4 +30,4 @@ export default function hex( colStr ) {
  * @example
  * hex.test( "#fff" );
  */
-hex.test = ( colStr ) => typeof colStr === "string" && ( rHex.test( colStr ) || rHexShort.test( colStr ) );
+hex.test = colStr => typeof colStr === 'string' && (rHex.test(colStr) || rHexShort.test(colStr));

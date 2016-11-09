@@ -1,16 +1,19 @@
 {
-	"env": {
-		"mocha": true
-	},
-	"globals": {
-		"chai": true,
-		"sinon": true,
-		"expect": true
-	},
-	"plugins": [
-		"mocha"
-	],
-	"rules": {
-		"mocha/no-exclusive-tests": "error"
-	}
+  "env": {
+  "browser": false,
+  "node": true,
+    "mocha": true
+  },
+  "globals": {
+    "chai": false,
+    "expect": false,
+    "sinon": false
+  },
+  "plugins": [
+    "mocha"
+  ],
+  "rules": {
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
+    "mocha/no-exclusive-tests": "error"
+  }
 }

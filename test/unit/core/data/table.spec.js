@@ -1,31 +1,31 @@
-import { table } from "../../../../src/core/data/table";
+import { table } from '../../../../src/core/data/table';
 
-describe( "table", () => {
-	let dd;
+describe('table', () => {
+  let dd;
 
-	beforeEach( () => {
-		dd = table();
-		dd.data( [
-			["Country", "Population"],
-			["Sweden", 9000000],
-			["Norway", 5000000]
-		] );
-	} );
+  beforeEach(() => {
+    dd = table();
+    dd.data([
+      ['Country', 'Population'],
+      ['Sweden', 9000000],
+      ['Norway', 5000000]
+    ]);
+  });
 
-	it( "should set row accessor", () => {
-		expect( dd.rows( d => d.length ).rows() ).to.equal( 3 );
-	} );
+  it('should set row accessor', () => {
+    expect(dd.rows(d => d.length).rows()).to.equal(3);
+  });
 
-	it( "should set cols accessor", () => {
-		expect( dd.cols( d => d[0].length ).cols() ).to.equal( 2 );
-	} );
+  it('should set cols accessor', () => {
+    expect(dd.cols(d => d[0].length).cols()).to.equal(2);
+  });
 
-	it( "should set fields accessor", () => {
-		expect( dd.fields( d => d[0].map( s => s ) ).fields() ).to.deep.equal( ["Country", "Population"] );
-	} );
+  it('should set fields accessor', () => {
+    expect(dd.fields(d => d[0].map(s => s)).fields()).to.deep.equal(['Country', 'Population']);
+  });
 
-	it( "should find a field", () => {
-		let fieldFactory = d => d[0].map( s => s );
-		expect( dd.fields( fieldFactory ).findField( "Population", ( q, field ) => q === field ) ).to.equal( "Population" );
-	} );
-} );
+  it('should find a field', () => {
+    const fieldFactory = d => d[0].map(s => s);
+    expect(dd.fields(fieldFactory).findField('Population', (q, field) => q === field)).to.equal('Population');
+  });
+});

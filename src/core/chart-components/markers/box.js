@@ -1,4 +1,4 @@
-import { Dispersion } from "./generic/dispersion";
+import { Dispersion } from './generic/dispersion';
 
 /**
  * @typedef marker-box
@@ -7,17 +7,17 @@ import { Dispersion } from "./generic/dispersion";
  * @property {marker-box-settings} settings - Box marker settings
  * @example
  * {
- * 	type: "box",
- * 	data: { source: "/qDimensionInfo/0" },
- *	settings: {
- *		x: { source: "/qDimensionInfo/0" },
- *		y: { source: ["/qMeasureInfo/0", "/qMeasureInfo/1", "/qMeasureInfo/2", "/qMeasureInfo/3", "/qMeasureInfo/4"] },
- *		min: { source: "/qMeasureInfo/0" },
- *		max: { source: "/qMeasureInfo/1" },
- *		start: { source: "/qMeasureInfo/2" },
- *		end: { source: "/qMeasureInfo/3" },
- *		med: { source: "/qMeasureInfo/4" }
- *	}
+ *   type: "box",
+ *   data: { source: "/qDimensionInfo/0" },
+ *  settings: {
+ *    x: { source: "/qDimensionInfo/0" },
+ *    y: { source: ["/qMeasureInfo/0", "/qMeasureInfo/1", "/qMeasureInfo/2", "/qMeasureInfo/3", "/qMeasureInfo/4"] },
+ *    min: { source: "/qMeasureInfo/0" },
+ *    max: { source: "/qMeasureInfo/1" },
+ *    start: { source: "/qMeasureInfo/2" },
+ *    end: { source: "/qMeasureInfo/3" },
+ *    med: { source: "/qMeasureInfo/4" }
+ *  }
  * }
  */
 
@@ -35,68 +35,67 @@ import { Dispersion } from "./generic/dispersion";
  */
 
 export default class Box extends Dispersion {
-	constructor( obj, composer ) {
-		super( obj, composer );
+  constructor(obj, composer) {
+    super(obj, composer);
 
-		// Default to vertical
-		if ( this.settings.vertical === undefined ) {
-			this.settings.vertical = true;
-		}
+    // Default to vertical
+    if (this.settings.vertical === undefined) {
+      this.settings.vertical = true;
+    }
 
-		// Default to show whiskers
-		if ( this.settings.whiskers === undefined ) {
-			this.settings.whiskers = true;
-		}
+    // Default to show whiskers
+    if (this.settings.whiskers === undefined) {
+      this.settings.whiskers = true;
+    }
 
-		this.onData(); // to be removed?
-	}
+    this.onData(); // to be removed?
+  }
 
-	render() {
-		// Filter out points we cannot render
-		let items = this.items.filter( item => {
-			return [ item.min, item.max ].indexOf( null ) === -1 || [ item.start, item.end ].indexOf( null ) === -1;
-		} );
+  render() {
+    // Filter out points we cannot render
+    const items = this.items.filter(item =>
+   [item.min, item.max].indexOf(null) === -1 || [item.start, item.end].indexOf(null) === -1
+);
 
-		super.render( items );
-	}
+    super.render(items);
+  }
 
-	renderDataPoint( item ) {
-		if ( item.min !== null && item.max !== null )
-		{
-			// Draw the line min - start
-			this.doodle.verticalLine( item.x, item.start, item.min, "line" );
+  renderDataPoint(item) {
+    if (item.min !== null && item.max !== null) {
+      // Draw the line min - start
+      this.doodle.verticalLine(item.x, item.start, item.min, 'line');
 
-			// Draw the line end - max (high)
-			this.doodle.verticalLine( item.x, item.max, item.end, "line" );
-		}
+      // Draw the line end - max (high)
+      this.doodle.verticalLine(item.x, item.max, item.end, 'line');
+    }
 
-		// Draw the box
-		const high = Math.max( item.start, item.end );
-		const low = Math.min( item.start, item.end );
+    // Draw the box
+    const high = Math.max(item.start, item.end);
+    const low = Math.min(item.start, item.end);
 
-		this.doodle.box(
-			item.x,
-			low,
-			( high - low ),
-			"box"
-		);
+    this.doodle.box(
+      item.x,
+      low,
+      (high - low),
+      'box'
+    );
 
-		// Draw the whiskers
-		if ( this.settings.whiskers && item.min !== null && item.max !== null ) {
-			// Low whisker
-			this.doodle.whisker( item.x, item.min );
+    // Draw the whiskers
+    if (this.settings.whiskers && item.min !== null && item.max !== null) {
+      // Low whisker
+      this.doodle.whisker(item.x, item.min);
 
-			// High whisker
-			this.doodle.whisker( item.x, item.max );
-		}
+      // High whisker
+      this.doodle.whisker(item.x, item.max);
+    }
 
-		// Draw the median line
-		if ( item.med !== null ) {
-			this.doodle.median( item.x, item.med );
-		}
-	}
+    // Draw the median line
+    if (item.med !== null) {
+      this.doodle.median(item.x, item.med);
+    }
+  }
 }
 
-export function box( ...args ) {
-	return new Box( ...args );
+export function box(...args) {
+  return new Box(...args);
 }

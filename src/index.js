@@ -1,8 +1,8 @@
 import {
-	chart,
-	renderer
-} from "./core";
-import "./web";
+  chart,
+  renderer
+} from './core';
+import './web';
 
 /**
  * The mother of all namespaces
@@ -10,6 +10,6 @@ import "./web";
  */
 
 export {
-	chart,
-	renderer
+  chart,
+  renderer
 };

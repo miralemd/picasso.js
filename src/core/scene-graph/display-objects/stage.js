@@ -1,12 +1,12 @@
-import Container from "./container";
+import Container from './container';
 
 export default class Stage extends Container {
-	constructor() {
-		super();
-		this._stage = this;
-	}
+  constructor() {
+    super();
+    this._stage = this;
+  }
 }
 
 export function create() {
-	return new Stage();
+  return new Stage();
 }
