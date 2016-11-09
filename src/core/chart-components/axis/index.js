@@ -1,15 +1,15 @@
-import { renderer } from "../../renderer";
-import { registry } from "../../utils/registry";
-import { axis } from "./axis";
+import { renderer } from '../../renderer';
+import { registry } from '../../utils/registry';
+import { axis } from './axis';
 
-let reg = registry();
+const reg = registry();
 
-reg.register( "axis", axis );
+reg.register('axis', axis);
 
-export function axisFactory( axes, composer ) {
-	return axes.map( ( axisConfig ) => {
-		const rend = renderer();
-		rend.appendTo( composer.container() );
-		return reg.registry.axis( axisConfig, composer, rend );
-	} );
+export function axisFactory(axes, composer) {
+  return axes.map((axisConfig) => {
+    const rend = renderer();
+    rend.appendTo(composer.container());
+    return reg.registry.axis(axisConfig, composer, rend);
+  });
 }

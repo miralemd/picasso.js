@@ -8,25 +8,25 @@
  * @example
  * let path = "/path/to/paradise";
  * let obj = {
- * 	path: {
- * 		to: { paradise: "heaven"},
- * 		from: {...}
- * 	}
+ *   path: {
+ *     to: { paradise: "heaven"},
+ *     from: {...}
+ *   }
  * };
  * resolve( path, obj ); // "heaven"
  */
-export function resolve( path, obj ) {
-	let arr = path.replace( /^\//, "" ).split( /\// ),
-		container = obj;
-	for ( let i = 0; i < arr.length; i++ ) {
-		if ( !arr[i] && Array.isArray( container ) ) {
-			return container.map( v => {
-				return resolve( arr.slice( i + 1 ).join( "/" ), v );
-			} );
-		} else if ( arr[i] in container ) {
-			container = container[arr[i]];
-		}
-	}
+export function resolve(path, obj) {
+  let arr = path.replace(/^\//, '').split(/\//),
+    container = obj;
+  for (let i = 0; i < arr.length; i++) {
+    if (!arr[i] && Array.isArray(container)) {
+      return container.map(v =>
+   resolve(arr.slice(i + 1).join('/'), v)
+);
+    } else if (arr[i] in container) {
+      container = container[arr[i]];
+    }
+  }
 
-	return container;
+  return container;
 }

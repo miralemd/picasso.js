@@ -1,36 +1,36 @@
-import { measureText } from "./text-metrics";
-import { ellipsText } from "../text-manipulation";
+import { measureText } from './text-metrics';
+import { ellipsText } from '../text-manipulation';
 
-const svgNs = "http://www.w3.org/2000/svg";
+const svgNs = 'http://www.w3.org/2000/svg';
 
-const creator = ( type, parent ) => {
-	if ( !type || typeof type !== "string" ) {
-		throw new Error( `Invalid type: ${type}` );
-	}
+const creator = (type, parent) => {
+  if (!type || typeof type !== 'string') {
+    throw new Error(`Invalid type: ${type}`);
+  }
 
-	let el = parent.ownerDocument.createElementNS( svgNs, type === "container" ? "g" : type );
+  const el = parent.ownerDocument.createElementNS(svgNs, type === 'container' ? 'g' : type);
 
-	parent.appendChild( el );
-	return el;
+  parent.appendChild(el);
+  return el;
 };
 
-const destroyer = el => {
-	if ( el.parentNode ) {
-		el.parentNode.removeChild( el );
-	}
+const destroyer = (el) => {
+  if (el.parentNode) {
+    el.parentNode.removeChild(el);
+  }
 };
 
-const maintainer = ( element, item ) => {
-	for ( let attr in item ) {
-		if ( /^_/.test( attr ) || ["id", "data", "type", "children"].indexOf( attr ) !== -1 ) {
-			continue;
-		}
-		if ( attr === "text" ) {
-			element.textContent = ellipsText( item, measureText );
-			continue;
-		}
-		element.setAttribute( attr, item[attr] );
-	}
+const maintainer = (element, item) => {
+  for (const attr in item) {
+    if (/^_/.test(attr) || ['id', 'data', 'type', 'children'].indexOf(attr) !== -1) {
+      continue;
+    }
+    if (attr === 'text') {
+      element.textContent = ellipsText(item, measureText);
+      continue;
+    }
+    element.setAttribute(attr, item[attr]);
+  }
 };
 
 export {

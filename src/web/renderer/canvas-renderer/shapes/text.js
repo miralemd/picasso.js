@@ -1,24 +1,24 @@
-import { measureText } from "../text-metrics";
-import { ellipsText } from "../../text-manipulation";
+import { measureText } from '../text-metrics';
+import { ellipsText } from '../../text-manipulation';
 
-function convertBaseline( baseline ){
-	if ( baseline === "central" ) {
-		return "middle";
-	} else if ( baseline === "text-before-edge" ) {
-		return "top";
-	} else if ( baseline === "text-after-edge" ) {
-		return "bottom";
-	}
+function convertBaseline(baseline) {
+  if (baseline === 'central') {
+    return 'middle';
+  } else if (baseline === 'text-before-edge') {
+    return 'top';
+  } else if (baseline === 'text-after-edge') {
+    return 'bottom';
+  }
 
-	return baseline;
+  return baseline;
 }
 
-export function render( t, { g } ) {
-	const text = ellipsText( t, measureText );
+export function render(t, { g }) {
+  const text = ellipsText(t, measureText);
 
-	g.beginPath();
-	g.font = `${t["font-size"]} ${t["font-family"]}`;
-	g.textAlign = t["text-anchor"] === "middle" ? "center" : t["text-anchor"];
-	g.textBaseline = convertBaseline( t["dominant-baseline"] );
-	g.fillText( text, t.x, t.y );
+  g.beginPath();
+  g.font = `${t['font-size']} ${t['font-family']}`;
+  g.textAlign = t['text-anchor'] === 'middle' ? 'center' : t['text-anchor'];
+  g.textBaseline = convertBaseline(t['dominant-baseline']);
+  g.fillText(text, t.x, t.y);
 }

@@ -1,4 +1,4 @@
-import { composer } from "./composer";
+import { composer } from './composer';
 
 /**
  * @typedef Chart.DataProps
@@ -6,8 +6,8 @@ import { composer } from "./composer";
  * @property {object} data - data property to send to data parser
  * @example
  * {
- * 	type: "q",
- * 	data: {...}
+ *   type: "q",
+ *   data: {...}
  * }
  */
 
@@ -19,13 +19,13 @@ import { composer } from "./composer";
  * @property {axis[]} components.axes
  * @example
  * {
- * 	scales: {
- * 		x: {...}
- * 	},
- * 	components: {
- * 		axes: [...]
- * 		markers: [...]
- * 	}
+ *   scales: {
+ *     x: {...}
+ *   },
+ *   components: {
+ *     axes: [...]
+ *     markers: [...]
+ *   }
  * }
  */
 
@@ -36,28 +36,28 @@ import { composer } from "./composer";
  * @property {boolean} invert - Whether to invert the scale's output
  * @example
  * {
- * 	source: "whatever is accepted by the data parser",
- * 	type: "color",
- * 	invert: true
+ *   source: "whatever is accepted by the data parser",
+ *   type: "color",
+ *   invert: true
  * }
  */
 
 class Chart {
-	/**
-	 * @constructor
-	 * @param {HTMLElement} element
-	 * @param {Chart.DataProps} data
-	 * @param {Chart.SettingsProps} settings
-	 * @returns {Chart}
-	 */
-	constructor( element, d, settings ) {
-		this.element = element;
+  /**
+   * @constructor
+   * @param {HTMLElement} element
+   * @param {Chart.DataProps} data
+   * @param {Chart.SettingsProps} settings
+   * @returns {Chart}
+   */
+  constructor(element, d, settings) {
+    this.element = element;
 
-		this.element.innerHTML = "";
+    this.element.innerHTML = '';
 
-		this.composer = composer();
-		this.composer.build( element, d, settings );
-	}
+    this.composer = composer();
+    this.composer.build(element, d, settings);
+  }
 }
 
 /**
@@ -71,35 +71,35 @@ class Chart {
  * @example
  * picasso.chart( element,
  * {
- * 	type: "q",
- * 	data: layout.qHyperCube
+ *   type: "q",
+ *   data: layout.qHyperCube
  * },
  * {
- * 	scales: {
- * 		x: {
- * 			source: "/qHyperCube/qMeasureInfo/0"
- * 		},
- * 		y: {
- * 			source: "/qHyperCube/qDimensionInfo/0"
- * 		}
- * 	},
- * 	components: {
- * 		markers: [
- * 			{
- * 				type: "point",
- * 				settings: {
- * 					fill: 'red'
- * 				}
- * 			}
- * 		]
- * 	}
+ *   scales: {
+ *     x: {
+ *       source: "/qHyperCube/qMeasureInfo/0"
+ *     },
+ *     y: {
+ *       source: "/qHyperCube/qDimensionInfo/0"
+ *     }
+ *   },
+ *   components: {
+ *     markers: [
+ *       {
+ *         type: "point",
+ *         settings: {
+ *           fill: 'red'
+ *         }
+ *       }
+ *     ]
+ *   }
  * } );
  */
-function chartFn( element, data, settings ) {
-	return new Chart( element, data, settings );
+function chartFn(element, data, settings) {
+  return new Chart(element, data, settings);
 }
 
 export {
-	chartFn as chart,
-	Chart
+  chartFn as chart,
+  Chart
 };

@@ -1,29 +1,29 @@
-import { createTree } from "../node-tree";
-import { creator, maintainer, destroyer } from "./svg-nodes";
+import { createTree } from '../node-tree';
+import { creator, maintainer, destroyer } from './svg-nodes';
 
 export default class TreeItemRenderer {
-	/**
-	 * Constructor
-	 * @private
-	 * @param  {TreeCreator} treeCreator - Function used to create the DOM tree..
-	 * @param  {SVGCreator} nodeCreator - Function used to create nodes.
-	 * @param  {SVGMaintainer} nodeMaintainer - Function used to update nodes.
-	 * @param  {SVGDestroyer} nodeDestroyer - Function used to destroy nodes.
-	 */
-	constructor( treeCreator, nodeCreator, nodeMaintainer, nodeDestroyer ) {
-		this.create = treeCreator;
-		this.nodeCreator = nodeCreator;
-		this.nodeMaintainer = nodeMaintainer;
-		this.nodeDestroyer = nodeDestroyer;
-	}
+  /**
+   * Constructor
+   * @private
+   * @param  {TreeCreator} treeCreator - Function used to create the DOM tree..
+   * @param  {SVGCreator} nodeCreator - Function used to create nodes.
+   * @param  {SVGMaintainer} nodeMaintainer - Function used to update nodes.
+   * @param  {SVGDestroyer} nodeDestroyer - Function used to destroy nodes.
+   */
+  constructor(treeCreator, nodeCreator, nodeMaintainer, nodeDestroyer) {
+    this.create = treeCreator;
+    this.nodeCreator = nodeCreator;
+    this.nodeMaintainer = nodeMaintainer;
+    this.nodeDestroyer = nodeDestroyer;
+  }
 
-	render( newItems, root ) {
-		return this.create( [], newItems, root, this.nodeCreator, this.nodeMaintainer, this.nodeDestroyer );
-	}
+  render(newItems, root) {
+    return this.create([], newItems, root, this.nodeCreator, this.nodeMaintainer, this.nodeDestroyer);
+  }
 }
 
 export function tree() {
-	return new TreeItemRenderer( createTree, creator, maintainer, destroyer );
+  return new TreeItemRenderer(createTree, creator, maintainer, destroyer);
 }
 
 /**

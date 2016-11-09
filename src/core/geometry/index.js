@@ -1,7 +1,7 @@
-import Rect from "./rect";
-import Circle from "./circle";
+import Rect from './rect';
+import Circle from './circle';
 
 export {
-	Rect,
-	Circle
+  Rect,
+  Circle
 };
