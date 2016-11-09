@@ -46,6 +46,10 @@ class Registry {
 		return this.registry[name];
 	}
 
+	getKeys( ) {
+		return Object.keys( this.registry );
+	}
+
 	has( name ) {
 		return !!this.registry[name];
 	}
