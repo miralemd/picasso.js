@@ -13,9 +13,9 @@ function componentToHex(c) {
  * @return { String } In format 0, 0%, 0%
  */
 function toHSL(r, g, b) {
-  r = r / 255;
-  g = g / 255;
-  b = b / 255;
+  r /= 255;
+  g /= 255;
+  b /= 255;
 
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);

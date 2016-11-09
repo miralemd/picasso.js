@@ -337,7 +337,7 @@ class NumberFormatter {
 
       if (prep.abbreviate) {
         exponent = Number(Number(value).toExponential().split('e')[1]);
-        exponent = exponent - (exponent % 3);
+        exponent -= (exponent % 3);
         if (exponent in SIprefixes) {
           abbr = SIprefixes[exponent];
           value /= Math.pow(10, exponent);

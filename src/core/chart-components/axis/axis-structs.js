@@ -91,11 +91,11 @@ export function buildLabel(tick, buildOpts) {
       if (leftTextBoundary < leftBoundary) {
         struct.anchor = 'left';
         struct.x = buildOpts.innerRect.x - buildOpts.outerRect.x;
-        struct.maxWidth = struct.maxWidth * outerBoundaryMultipler;
+        struct.maxWidth *= outerBoundaryMultipler;
       } else if (rightTextBoundary > rightBoundary) {
         struct.anchor = 'end';
         struct.x = buildOpts.innerRect.width + buildOpts.innerRect.x;
-        struct.maxWidth = struct.maxWidth * outerBoundaryMultipler;
+        struct.maxWidth *= outerBoundaryMultipler;
       }
     } else {
       const topBoundary = 0;

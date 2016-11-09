@@ -33,7 +33,6 @@
     "no-useless-escape": 0,
     "object-property-newline": 0,
     "one-var": 0,
-    "operator-assignment": 0,
     "prefer-const": 0,
     "radix": 0,
 	// Overrides
