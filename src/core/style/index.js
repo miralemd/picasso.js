@@ -25,18 +25,15 @@ function wrapper(fallbackVal, fn, item, index, array) {
   if (value !== null && typeof value !== 'undefined') {
     // Custom accessor returned a proper value
     return value;
+  } else if (typeof fallbackVal === 'function') {
+    // fallback is a function, run it
+    return fallbackVal(item, index, array);
+  } else if (fallbackVal && typeof fallbackVal.fn === 'function') {
+    // fallback has a custom function, run it
+    return fallbackVal.fn(item, index, array);
   } else {
-    // Fall back to fallback
-    if (typeof fallbackVal === 'function') {
-      // fallback is a function, run it
-      return fallbackVal(item, index, array);
-    } else if (fallbackVal && typeof fallbackVal.fn === 'function') {
-      // fallback has a custom function, run it
-      return fallbackVal.fn(item, index, array);
-    } else {
-      // fallback is a value, return it
-      return fallbackVal;
-    }
+    // fallback is a value, return it
+    return fallbackVal;
   }
 }
 
