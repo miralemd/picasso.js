@@ -16,7 +16,7 @@ class HypercubeGenerator {
       a = [];
 
     for (let i = 0, l = this.length; i < l; ++i) {
-      if (u.hasOwnProperty(this[i])) {
+      if ({}.hasOwnProperty.call(u, this[i])) {
         continue;
       }
       a.push(this[i]);
