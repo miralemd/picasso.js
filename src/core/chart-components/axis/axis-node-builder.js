@@ -1,7 +1,10 @@
 import { buildLabel, buildTick, buildLine } from './axis-structs';
 
 function tickSpacing(settings) {
-  return settings.line.style.strokeWidth + settings.ticks.padding;
+  let spacing = 0;
+  spacing += settings.line.show ? settings.line.style.strokeWidth : 0;
+  spacing += settings.ticks.show ? settings.ticks.padding : 0;
+  return spacing;
 }
 
 function tickMinorSpacing(settings) {
