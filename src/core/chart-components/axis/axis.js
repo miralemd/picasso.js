@@ -3,6 +3,7 @@ import { discreteDefaultSettings, continuousDefaultSettings } from './axis-defau
 import { generateContinuousTicks, generateDiscreteTicks } from './axis-tick-generators';
 import { default as extend } from 'extend';
 import { dockConfig } from '../../dock-layout/dock-config';
+import { calcRequiredSize } from './axis-size-calculator';
 
 function extendDomain(settings, scale) {
   const min = settings.ticks.min,
@@ -26,15 +27,6 @@ function alignTransform({ align, inner }) {
   } else {
     return { y: inner.y + inner.height };
   }
-}
-
-function calcRequiredSize(dock) {
-  // TODO base it on something...
-  const fn = function (rect) {
-    return dock === 'top' || dock === 'bottom' ? rect.height * 0.1 : rect.width * 0.1;
-  };
-
-  return fn;
 }
 
 function dockAlignSetup(settings, type) {
@@ -64,7 +56,7 @@ export function abstractAxis(axisConfig, composer, renderer) {
     concreteNodeBuilder = nodeBuilder(type);
     dockAlignSetup(settings, type);
     layoutConfig.dock(settings.dock);
-    layoutConfig.requiredSize(calcRequiredSize(settings.dock));
+    layoutConfig.requiredSize(calcRequiredSize({ data, formatter, renderer, scale, settings, ticksFn }));
   };
 
   const continuous = function () {
