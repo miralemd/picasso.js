@@ -420,7 +420,7 @@ class NumberFormatter {
     return prep.prefix + value + sciValue + abbr + prep.postfix;
   }
 
-  getStaticFormatter() {
+  static getStaticFormatter() {
     return { prepare() { }, formatValue(v) { return `${v}`; } };
   }
 }

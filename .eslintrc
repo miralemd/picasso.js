@@ -12,6 +12,7 @@
   "extends": "airbnb/base",
   "rules": {
 	// Temporary rules
+    "guard-for-in": 0,
     "import/first": 0,
     "import/no-extraneous-dependencies": 0,
     "import/no-named-default": 0,
@@ -22,8 +23,10 @@
     "no-mixed-operators": 0,
     "no-confusing-arrow": 0,
     "no-else-return": 0,
+    "no-lonely-if": 0,
     "no-throw-literal": 0,
     "no-restricted-properties": 0,
+    "no-restricted-syntax": 0,
     "no-param-reassign": 0,
     "no-prototype-builtins": 0,
     "no-underscore-dangle": 0,

@@ -7,7 +7,7 @@ function measureTextWidth({ text, fontSize, fontFamily }) {
   if (match !== undefined) {
     return match;
   } else {
-    canvasCache = canvasCache ? canvasCache : document.createElement('canvas');
+    canvasCache = canvasCache || document.createElement('canvas');
     const g = canvasCache.getContext('2d');
     g.font = `${fontSize} ${fontFamily}`;
     const w = g.measureText(text).width;

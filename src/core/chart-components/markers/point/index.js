@@ -90,16 +90,20 @@ function prop(stngs, name, composer) {
   if (type === 'undefined') {
     return DEFAULT_DATA_SETTINGS[name];
   }
-  if (type === typeof DEFAULT_DATA_SETTINGS[name]) { // if property is of same primitive type as default, use the provided value
+  // if property is of same primitive type as default, use the provided value
+  if (type === typeof DEFAULT_DATA_SETTINGS[name]) { // eslint-disable-line valid-typeof
     return stngs[name];
   }
-  if (type === 'function') { // custom accessor function
+  // if property is of same primitive type as default, use the provided value
+  if (type === 'function') {
     return stngs[name];
   }
-  if (typeof stngs[name].fn === 'function') { // custom accessor function inside object
+  // custom accessor function inside object
+  if (typeof stngs[name].fn === 'function') {
     return stngs[name].fn;
   }
-  const scale = composer.scale(stngs[name]); // check if a scale accessor can be created from the given input
+  // check if a scale accessor can be created from the given input
+  const scale = composer.scale(stngs[name]);
 
   return scale || DEFAULT_DATA_SETTINGS[name];
 }

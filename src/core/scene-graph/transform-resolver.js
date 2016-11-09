@@ -3,7 +3,7 @@ const transformRegEx = /(translate|scale|rotate|matrix)\(([0-9,\.eE+-\s]+)(?:,|\
 function parseTransform(transform) {
   let m,
     commands = [];
-  while ((m = transformRegEx.exec(transform)) !== null) {
+  while ((m = transformRegEx.exec(transform)) !== null) { // eslint-disable-line no-cond-assign
     const argsStr = m[2].trim();
     const args = argsStr.indexOf(',') === -1 ? argsStr.split(' ') : argsStr.split(',');
 

@@ -54,7 +54,7 @@ class HypercubeGenerator {
     return info;
   }
 
-  generateMeasureInfoFromData(data, label) {
+  static generateMeasureInfoFromData(data, label) {
     let len = data ? data.length : 0,
       glyphCount = Math.max(...data.map(value => (`${value}`).length)),
       max = Math.max(...data),
@@ -87,7 +87,7 @@ class HypercubeGenerator {
    * @param  {Array} arr             Specified array
    * @return {Array}                 Values from column
    */
-  extractColumnFrom2DArray(columnIndex, arr) {
+  static extractColumnFrom2DArray(columnIndex, arr) {
     const column = [];
 
     arr.forEach((row) => {
@@ -223,10 +223,10 @@ class HypercubeGenerator {
    * @param  {Array} arr Input array
    * @return {Array}     Modified array
    */
-  randomNullInsert(arr) {
+  static randomNullInsert(arr) {
     return arr.map(v =>
-   Math.random() <= 0.1 ? null : v
-);
+      Math.random() <= 0.1 ? null : v
+    );
   }
 
   /**

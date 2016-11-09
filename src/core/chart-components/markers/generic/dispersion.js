@@ -90,7 +90,7 @@ export class Dispersion {
     this.renderer.render(this.blueprint.output());
   }
 
-  renderDataPoint(item) {
+  static renderDataPoint(item) { // Static marker prevents eslint error
     return item;
   }
 

@@ -1,4 +1,5 @@
 import { registry } from '../utils/registry';
+
 let prio = [];
 
 let reg = registry();

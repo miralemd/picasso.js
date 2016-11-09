@@ -1,18 +1,28 @@
 function diff(from, to) {
-  let added = [],
-    items,
-    removed = [],
-    updatedNew = [],
-    updatedOld = [],
-    fromIds,
-    toIds,
-    idMapper = a => a.id,
-    nodeMapper = (node, i) =>
-       ({
-         content: node,
-         id: `${typeof node === 'object' ? 'id' in node ? node.id : i : node}__${node.type || ''}`
-       })
-    ;
+  const added = [];
+  let items;
+  let removed = [];
+  const updatedNew = [];
+  const updatedOld = [];
+  let fromIds;
+  let toIds;
+  const idMapper = a => a.id;
+  const nodeMapper = (node, i) => {
+    let id;
+    if (typeof node === 'object') {
+      if ('id' in node) {
+        id = node.id;
+      } else {
+        id = i;
+      }
+    } else {
+      id = node;
+    }
+    return {
+      content: node,
+      id: `${id}__${node.type || ''}`
+    };
+  };
 
   if (!from.isTree) {
     from = from.map(nodeMapper);

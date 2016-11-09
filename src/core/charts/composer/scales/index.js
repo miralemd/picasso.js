@@ -27,11 +27,13 @@ function findFields(table, source) {
 }
 
 export function create(options, tables) {
-  let sources = Array.isArray(options.source) ? options.source : [options.source],
-    fields = findFields(tables[0], sources),
-    type = options.type ? options.type :
-      options.colors ? 'color' : getTypeFromMeta(fields[0]),
-    s;
+  const sources = Array.isArray(options.source) ? options.source : [options.source];
+  const fields = findFields(tables[0], sources);
+  let type = options.type;
+  if (!type) {
+    type = options.colors ? 'color' : getTypeFromMeta(fields[0]);
+  }
+  let s;
 
   if (reg.has(type)) {
     s = reg.get(type)(fields, options);
