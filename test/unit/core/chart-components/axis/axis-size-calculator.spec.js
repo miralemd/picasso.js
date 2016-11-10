@@ -38,9 +38,9 @@ describe('AxisSizeCalculator', () => {
     ticks = [{ label: 'AA' }, { label: 'BB' }, { label: 'CC' }];
     ticksFn = sinon.stub().returns(ticks);
     rect = { x: 0, y: 0, height: 100, width: 100 };
-    let scale = null;
-    let data = null;
-    let formatter = null;
+    const scale = null;
+    const data = null;
+    const formatter = null;
     renderer = {
       measureText: ({ text }) => ({ width: text.toString().length, height: 5 })
     };
@@ -48,7 +48,7 @@ describe('AxisSizeCalculator', () => {
   });
 
   it('axis with no visible component have a margin of 10', () => {
-    let size = sizeFn(rect);
+    const size = sizeFn(rect);
     expect(size).to.equals(10);
   });
 
@@ -78,7 +78,7 @@ describe('AxisSizeCalculator', () => {
     settings.dock = 'bottom';
     settings.labels.show = true;
     settings.labels.layered = true;
-    let size = sizeFn(rect);
+    const size = sizeFn(rect);
     expect(size).to.equals(28);
   });
 
@@ -86,7 +86,7 @@ describe('AxisSizeCalculator', () => {
     settings.dock = 'bottom';
     settings.labels.show = true;
     settings.labels.tilted = true;
-    let size = sizeFn(rect);
+    const size = sizeFn(rect);
     expect(size).to.approximately(18.9497, 0.0001);
   });
 
@@ -94,7 +94,7 @@ describe('AxisSizeCalculator', () => {
     settings.ticks.show = true;
     settings.ticks.padding = 4;
     settings.ticks.tickSize = 7;
-    let size = sizeFn(rect);
+    const size = sizeFn(rect);
     expect(size).to.equals(21);
   });
 
@@ -102,14 +102,14 @@ describe('AxisSizeCalculator', () => {
     settings.minorTicks.show = true;
     settings.minorTicks.padding = 2;
     settings.minorTicks.tickSize = 9;
-    let size = sizeFn(rect);
+    const size = sizeFn(rect);
     expect(size).to.equals(21);
   });
 
   it('measure line', () => {
     settings.line.show = true;
     settings.line.style.strokeWidth = 5;
-    let size = sizeFn(rect);
+    const size = sizeFn(rect);
     expect(size).to.equals(15);
   });
 
@@ -122,7 +122,7 @@ describe('AxisSizeCalculator', () => {
     settings.minorTicks.padding = 0;
     settings.minorTicks.tickSize = 2;
 
-    let size = sizeFn(rect);
+    const size = sizeFn(rect);
     expect(size).to.equals(21);
   });
 });

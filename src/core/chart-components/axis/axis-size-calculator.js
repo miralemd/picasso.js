@@ -8,10 +8,10 @@ export function calcRequiredSize({ data, formatter, renderer, scale, settings, t
     let size = 0;
 
     if (settings.labels.show) {
-      let dock = settings.dock;
-      let horizontal = dock === 'top' || dock === 'bottom';
+      const dock = settings.dock;
+      const horizontal = dock === 'top' || dock === 'bottom';
 
-      let measureText = text => renderer.measureText({
+      const measureText = text => renderer.measureText({
         text,
         fontSize: settings.labels.style.fontSize,
         fontFamily: settings.labels.style.fontFamily
@@ -34,13 +34,13 @@ export function calcRequiredSize({ data, formatter, renderer, scale, settings, t
           .filter(isMajorTick)
           .map(tick => tick.label);
       }
-      let labelSizes = labels.map(measureText).map(sizeFromTextRect);
-      let textSize = Math.max(...labelSizes);
+      const labelSizes = labels.map(measureText).map(sizeFromTextRect);
+      const textSize = Math.max(...labelSizes);
 
       size += textSize;
       size += settings.labels.padding;
 
-      let layered = horizontal && settings.labels.layered;
+      const layered = horizontal && settings.labels.layered;
       if (layered) {
         size *= 2;
       }
@@ -50,7 +50,7 @@ export function calcRequiredSize({ data, formatter, renderer, scale, settings, t
       size += settings.ticks.tickSize;
     }
     if (settings.minorTicks && settings.minorTicks.show) {
-      let minorTicksSize = settings.minorTicks.padding + settings.minorTicks.tickSize;
+      const minorTicksSize = settings.minorTicks.padding + settings.minorTicks.tickSize;
       if (minorTicksSize > size) {
         size = minorTicksSize;
       }
