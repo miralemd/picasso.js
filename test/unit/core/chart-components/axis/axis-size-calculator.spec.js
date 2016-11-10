@@ -67,7 +67,7 @@ describe('AxisSizeCalculator', () => {
     settings.labels.show = true;
     settings.labels.tilted = true;
     const size = sizeFn(rect);
-    expect(size).to.approximately(18.9497, 0.0001);
+    expect(size).to.approximately(19.3301, 0.0001);
   });
 
   it('measure ticks', () => {
