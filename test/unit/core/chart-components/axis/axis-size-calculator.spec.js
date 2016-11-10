@@ -1,4 +1,5 @@
 import { calcRequiredSize } from '../../../../../src/core/chart-components/axis/axis-size-calculator';
+import { continuousDefaultSettings } from '../../../../../src/core/chart-components/axis/axis-default-settings';
 
 describe('AxisSizeCalculator', () => {
   let settings;
@@ -9,32 +10,11 @@ describe('AxisSizeCalculator', () => {
   let rect;
 
   beforeEach(() => {
-    settings = {
-      dock: 'bottom',
-      labels: {
-        show: false,
-        tilted: false,
-        padding: 4,
-        layered: false,
-        style: {}
-      },
-      line: {
-        show: false,
-        style: {
-          strokeWidth: 1
-        }
-      },
-      ticks: {
-        show: false,
-        padding: 0,
-        tickSize: 8
-      },
-      minorTicks: {
-        show: false,
-        padding: 0,
-        tickSize: 3
-      }
-    };
+    settings = continuousDefaultSettings();
+    settings.labels.show = false;
+    settings.line.show = false;
+    settings.ticks.show = false;
+
     ticks = [{ label: 'AA' }, { label: 'BB' }, { label: 'CC' }];
     ticksFn = sinon.stub().returns(ticks);
     rect = { x: 0, y: 0, height: 100, width: 100 };
