@@ -3,7 +3,10 @@ import { default as extend } from 'extend';
 export function buildTick(tick, buildOpts) {
   const struct = {
     type: 'line',
-    x1: 0, x2: 0, y1: 0, y2: 0
+    x1: 0,
+    x2: 0,
+    y1: 0,
+    y2: 0
   };
 
   if (buildOpts.align === 'top' || buildOpts.align === 'bottom') {
@@ -64,7 +67,8 @@ export function buildLabel(tick, buildOpts) {
   const struct = {
     type: 'text',
     text: tick.label,
-    x: 0, y: 0,
+    x: 0,
+    y: 0,
     maxWidth: buildOpts.maxWidth,
     maxHeight: buildOpts.maxHeight
   };
@@ -139,7 +143,10 @@ export function buildLabel(tick, buildOpts) {
 export function buildLine(buildOpts) {
   const struct = {
     type: 'line',
-    x1: 0, x2: 0, y1: 0, y2: 0
+    x1: 0,
+    x2: 0,
+    y1: 0,
+    y2: 0
   };
 
   if (buildOpts.align === 'top' || buildOpts.align === 'bottom') {

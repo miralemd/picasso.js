@@ -9,8 +9,22 @@ function escapeRegExp(str) {
 * Re-formatted and fitted into picasso by Hannes Lindquist (bge)
 */
 const SIprefixes = {
-    3: 'k', 6: 'M', 9: 'G', 12: 'T', 15: 'P', 18: 'E', 21: 'Z', 24: 'Y',
-    '-3': 'm', '-6': 'μ', '-9': 'n', '-12': 'p', '-15': 'f', '-18': 'a', '-21': 'z', '-24': 'y'
+    3: 'k',
+    6: 'M',
+    9: 'G',
+    12: 'T',
+    15: 'P',
+    18: 'E',
+    21: 'Z',
+    24: 'Y',
+    '-3': 'm',
+    '-6': 'μ',
+    '-9': 'n',
+    '-12': 'p',
+    '-15': 'f',
+    '-18': 'a',
+    '-21': 'z',
+    '-24': 'y'
   },
   percentage = /%$/,
   //    scientific = /e[\+\-][0-9]+/,
