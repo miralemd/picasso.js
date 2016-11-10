@@ -30,7 +30,6 @@
     "no-useless-escape": 0,
     "one-var": 0,
     "prefer-const": 0,
-    "radix": 2,
 	// Overrides
     "no-plusplus": 0,
     "comma-dangle": [2, "never"]
