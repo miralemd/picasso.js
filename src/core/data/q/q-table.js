@@ -7,12 +7,12 @@ const M_RX = /^\/(?:qHyperCube\/)?qMeasureInfo\/(\d+)/;
 const fieldFactoryFn = function (fieldFn) {
   return function (hc) {
     return hc.qDimensionInfo.concat(hc.qMeasureInfo).map((f, idx) =>
-   fieldFn().data({
-     meta: f,
-     matrix: hc.qDataPages[0].qMatrix,
-     idx
-   })
-);
+       fieldFn().data({
+         meta: f,
+         matrix: hc.qDataPages[0].qMatrix,
+         idx
+       })
+    );
   };
 };
 
@@ -31,13 +31,25 @@ export function qTable(fieldFn = qField) {
   q.findField = function (query) {
     const d = q.data();
     const numDimz = d.qDimensionInfo.length;
-    let idx = -1;
+    const fields = q.fields();
+
+        // Find by path
     if (DIM_RX.test(query)) {
-      idx = +DIM_RX.exec(query)[1];
+      const idx = +DIM_RX.exec(query)[1];
+      return fields[idx];
     } else if (M_RX.test(query)) {
-      idx = +M_RX.exec(query)[1] + numDimz;
+      const idx = +M_RX.exec(query)[1] + numDimz;
+      return fields[idx];
     }
-    return idx >= 0 ? q.fields()[idx] : undefined;
+
+        // Find by title
+    for (let i = 0; i < fields.length; i++) {
+      if (fields[i].title() === query) {
+        return fields[i];
+      }
+    }
+
+    return undefined;
   };
 
   return q;

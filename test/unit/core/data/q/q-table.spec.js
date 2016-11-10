@@ -1,18 +1,14 @@
 import { qTable } from '../../../../../src/core/data/q/q-table';
+import { qField } from '../../../../../src/core/data/q/q-field';
 
 describe('qTable', () => {
-  let q,
-    fieldFn = () => {
-      const field = () => {};
-      field.data = d => d.meta.name;
-      return field;
-    };
+  let q;
   beforeEach(() => {
-    q = qTable(fieldFn);
+    q = qTable(qField);
     q.data({
       qSize: { qcx: 3, qcy: 20 },
-      qDimensionInfo: [{ name: 'A' }, { name: 'B' }],
-      qMeasureInfo: [{ name: 'C' }],
+      qDimensionInfo: [{ qFallbackTitle: 'A' }, { qFallbackTitle: 'B' }],
+      qMeasureInfo: [{ qFallbackTitle: 'C' }],
       qDataPages: [{}]
     });
   });
@@ -26,15 +22,23 @@ describe('qTable', () => {
   });
 
   it('should have 3 fields', () => {
-    expect(q.fields()).to.deep.equal(['A', 'B', 'C']);
+    expect(q.fields().length).to.equal(3);
   });
 
   it('should find a dimension field', () => {
-    expect(q.findField('/qDimensionInfo/0')).to.equal('A');
+    expect(q.findField('/qDimensionInfo/0').title()).to.equal('A');
   });
 
   it('should find a measure field', () => {
-    expect(q.findField('/qMeasureInfo/0')).to.equal('C');
+    expect(q.findField('/qMeasureInfo/0').title()).to.equal('C');
+  });
+
+  it('should find a dimension field by title', () => {
+    expect(q.findField('A').title()).to.equal('A');
+  });
+
+  it('should find a measure field by title', () => {
+    expect(q.findField('C').title()).to.equal('C');
   });
 
   it('should return undefined when field can not be found', () => {
