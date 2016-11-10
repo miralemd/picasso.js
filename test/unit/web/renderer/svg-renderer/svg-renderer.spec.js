@@ -1,6 +1,6 @@
 import { renderer } from '../../../../../src/web/renderer/svg-renderer/svg-renderer';
+import config from '../../../../../src/config';
 import element from '../../../../mocks/element-mock';
-
 
 describe('svg renderer', () => {
   let sandbox,
@@ -8,12 +8,11 @@ describe('svg renderer', () => {
     ns,
     treeRenderer,
     svg,
-    scene,
-    Prom;
+    scene;
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
-    Prom = {
+    config.Promise = {
       resolve: sandbox.spy(),
       reject: sandbox.spy()
     };
@@ -23,11 +22,12 @@ describe('svg renderer', () => {
     scene = sandbox.stub();
     tree = sandbox.stub().returns(treeRenderer);
     ns = 'namespace';
-    svg = renderer(tree, ns, scene, Prom);
+    svg = renderer(tree, ns, scene);
   });
 
   afterEach(() => {
     sandbox.restore();
+    config.Promise = global.Promise;
   });
 
   it('should be a function', () => {
@@ -65,7 +65,7 @@ describe('svg renderer', () => {
 
     it('should reject promise when rendering before appending', () => {
       svg.render();
-      expect(Prom.reject.callCount).to.equal(1);
+      expect(config.Promise.reject.callCount).to.equal(1);
     });
 
     it('should call tree creator with proper params', () => {

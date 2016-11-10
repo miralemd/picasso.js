@@ -36,7 +36,7 @@ describe('StraightLayout', () => {
     sandbox = sinon.sandbox.create();
     resolve = sandbox.stub();
     metaToData = sandbox.stub();
-    s = new Straight(Promise, resolve, metaToData);
+    s = new Straight(resolve, metaToData);
     s.layout(data);
   });
 

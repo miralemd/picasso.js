@@ -1,3 +1,4 @@
+import config from '../../../config';
 import { scene as sceneFactory } from '../../../core/scene-graph/scene';
 import { registry } from '../../../core/utils/registry';
 import { measureText } from './text-metrics';
@@ -45,7 +46,7 @@ function renderShapes(shapes, g) {
   });
 }
 
-export function renderer(sceneFn = sceneFactory, Promise = window.Promise) {
+export function renderer(sceneFn = sceneFactory) {
   let el,
     scene,
     rect = { x: 0, y: 0, width: 0, height: 0 };
@@ -67,7 +68,7 @@ export function renderer(sceneFn = sceneFactory, Promise = window.Promise) {
 
   canvasRenderer.render = (shapes) => {
     if (!el) {
-      return Promise.reject();
+      return config.Promise.reject();
     }
 
     const g = el.getContext('2d');
@@ -81,7 +82,7 @@ export function renderer(sceneFn = sceneFactory, Promise = window.Promise) {
 
     renderShapes(scene.children, g);
 
-    return Promise.resolve();
+    return config.Promise.resolve();
   };
 
   canvasRenderer.clear = () => {

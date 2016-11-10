@@ -2,6 +2,7 @@ import {
   chart,
   renderer
 } from './core';
+import config from './config';
 import './web';
 
 /**
@@ -9,7 +10,14 @@ import './web';
  * @namespace picasso
  */
 
-export {
+const exports = {
   chart,
   renderer
 };
+
+Object.defineProperty(exports, 'Promise', {
+  get: () => config.Promise,
+  set: (p) => { config.Promise = p; }
+});
+
+module.exports = exports;

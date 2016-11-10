@@ -1,8 +1,8 @@
 "use strict"; // eslint-disable-line
 /* eslint-env node*/
 
-let path = require( "path" );
-let srcDir = path.resolve( __dirname, "src" );
+const path = require( "path" );
+const srcDir = path.resolve( __dirname, "src" );
 
 module.exports = {
 	entry: {

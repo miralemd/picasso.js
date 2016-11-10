@@ -1,9 +1,10 @@
+import config from '../../../config';
 import { tree as treeFactory } from './svg-tree';
 import { svgNs } from './svg-nodes';
 import { scene } from '../../../core/scene-graph/scene';
 import { measureText } from './text-metrics';
 
-export function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = scene, Promise = window.Promise) {
+export function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = scene) {
   let tree = treeFn(),
     el,
     group,
@@ -32,7 +33,7 @@ export function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = scene, Prom
 
   svg.render = (items) => {
     if (!el) {
-      return Promise.reject();
+      return config.Promise.reject();
     }
 
     el.style.left = `${rect.x}px`;
@@ -44,7 +45,7 @@ export function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = scene, Prom
     const s = sceneFn(items);
     tree.render(s.children, group);
 
-    return Promise.resolve();
+    return config.Promise.resolve();
   };
 
 

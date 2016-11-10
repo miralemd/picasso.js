@@ -1,23 +1,24 @@
 import { renderer } from '../../../../../src/web/renderer/canvas-renderer';
+import config from '../../../../../src/config';
 import element from '../../../../mocks/element-mock';
 
 describe('canvas renderer', () => {
   let sandbox,
     r,
-    Prom,
     scene;
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
-    Prom = {
+    config.Promise = {
       resolve: sandbox.stub(),
       reject: sandbox.stub()
     };
     scene = sandbox.stub();
-    r = renderer(scene, Prom);
+    r = renderer(scene);
   });
 
   afterEach(() => {
+    config.Promise = global.Promise;
     sandbox.restore();
   });
 
@@ -30,14 +31,14 @@ describe('canvas renderer', () => {
 
   it('should return rejected promise when no canvas is initiated', () => {
     r.render();
-    expect(Prom.reject.callCount).to.equal(1);
+    expect(config.Promise.reject.callCount).to.equal(1);
   });
 
   it('should return resolved promise when canvas exists', () => {
     r.appendTo(element('div'));
     scene.returns({ children: [] });
     r.render();
-    expect(Prom.resolve.callCount).to.equal(1);
+    expect(config.Promise.resolve.callCount).to.equal(1);
   });
 
   it('should return zero size when canvas is not initiated', () => {
