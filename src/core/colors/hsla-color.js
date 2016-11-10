@@ -50,9 +50,9 @@ function toRgb(h, s, l) {
 
 function toByte(h, s, l) {
   return {
-    h: parseInt((h * 255) / 359) & 0xFF,
-    s: parseInt(s * 255) & 0xFF,
-    l: parseInt(l * 255) & 0xFF
+    h: parseInt((h * 255) / 359, 10) & 0xFF,
+    s: parseInt(s * 255, 10) & 0xFF,
+    l: parseInt(l * 255, 10) & 0xFF
   };
 }
 

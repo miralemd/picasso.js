@@ -33,7 +33,7 @@ export default function rgb(colStr) {
       val = val < 0 ? 0 : val;
       val = Math.round(255 * (val / 100));
     } else {
-      val = parseInt(val);
+      val = parseInt(val, 10);
       val = val > 255 ? 255 : val;
       val = val < 0 ? 0 : val;
     }
