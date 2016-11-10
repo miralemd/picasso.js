@@ -13,8 +13,8 @@ const shapes = {
   rect: p => ({
     type: 'rect',
     title: p.label,
-    x: p.x - p.size / 2,
-    y: p.y - p.size / 2,
+    x: p.x - (p.size / 2),
+    y: p.y - (p.size / 2),
     width: p.size,
     height: p.size,
     opacity: p.opacity,

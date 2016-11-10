@@ -36,8 +36,8 @@ export default class Line {
   render() {
     const { width, height } = this.renderer.rect;
 
-    this.lines.x = this.x && this.x.scale.magicTicks(this.renderer.rect.width - this.renderer.rect.x) || [];
-    this.lines.y = this.y && this.y.scale.magicTicks(this.renderer.rect.height - this.renderer.rect.y) || [];
+    this.lines.x = (this.x && this.x.scale.magicTicks(this.renderer.rect.width - this.renderer.rect.x)) || [];
+    this.lines.y = (this.y && this.y.scale.magicTicks(this.renderer.rect.height - this.renderer.rect.y)) || [];
 
     if (!Object.keys(this.settings.styles)[0]) {
       return;

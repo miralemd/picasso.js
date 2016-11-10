@@ -248,7 +248,7 @@ class HypercubeGenerator {
         dimensions + measures,
         rows + 1,
         sorted ? row => row.sort() : null,
-        (x, y, width, height) => (!sorted ? (x / width * y / height) : 1) * Math.random()
+        (x, y, width, height) => (!sorted ? ((x / width) * (y / height)) : 1) * Math.random()
       )
     ];
   }

@@ -167,7 +167,7 @@ class Matrix {
       i = this._elements[2][2],
       p = 0;
 
-    p = a * e * i + b * f * g + c * d * h - c * e * g - b * d * i - a * f * h;
+    p = ((a * e * i) + (b * f * g) + (c * d * h)) - (c * e * g) - (b * d * i) - (a * f * h);
 
     return p;
   }
@@ -188,9 +188,9 @@ class Matrix {
       k = this._elements[2][2];
 
     this._elements = [
-      [e * k - f * h, c * h - b * k, b * f - c * e],
-      [f * g - d * k, a * k - c * g, c * d - a * f],
-      [d * h - e * g, g * b - a * h, a * e - b * d]
+      [(e * k) - (f * h), (c * h) - (b * k), (b * f) - (c * e)],
+      [(f * g) - (d * k), (a * k) - (c * g), (c * d) - (a * f)],
+      [(d * h) - (e * g), (g * b) - (a * h), (a * e) - (b * d)]
     ];
 
     this.multiply(1 / dt); // TODO - handle when dt === 0 ?

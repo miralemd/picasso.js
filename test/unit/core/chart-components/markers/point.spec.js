@@ -233,6 +233,6 @@ describe('point marker', () => {
     point.resize({ x: 10, y: 20, width: 100, height: 200 }); // point size limits: [5,20]
     point.render();
 
-    expect(renderedPoints.map(p => p.size)).to.deep.equal([5, 5 + 15 * 0.4, 20]);
+    expect(renderedPoints.map(p => p.size)).to.deep.equal([5, 5 + (15 * 0.4), 20]);
   });
 });

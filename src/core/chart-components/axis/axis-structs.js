@@ -7,11 +7,11 @@ export function buildTick(tick, buildOpts) {
   };
 
   if (buildOpts.align === 'top' || buildOpts.align === 'bottom') {
-    struct.x1 = struct.x2 = (tick.position * buildOpts.innerRect.width) + buildOpts.innerRect.x - buildOpts.outerRect.x;
+    struct.x1 = struct.x2 = (tick.position * buildOpts.innerRect.width) + (buildOpts.innerRect.x - buildOpts.outerRect.x);
     struct.y1 = buildOpts.align === 'top' ? buildOpts.innerRect.height : 0;
     struct.y2 = buildOpts.align === 'top' ? struct.y1 - buildOpts.tickSize : struct.y1 + buildOpts.tickSize;
   } else {
-    struct.y1 = struct.y2 = (tick.position) * (buildOpts.innerRect.height) + buildOpts.innerRect.y - buildOpts.outerRect.y;
+    struct.y1 = struct.y2 = (tick.position * (buildOpts.innerRect.height)) + (buildOpts.innerRect.y - buildOpts.outerRect.y);
     struct.x1 = buildOpts.align === 'left' ? buildOpts.innerRect.width : 0;
     struct.x2 = buildOpts.align === 'left' ? struct.x1 - buildOpts.tickSize : struct.x1 + buildOpts.tickSize;
   }
@@ -70,11 +70,11 @@ export function buildLabel(tick, buildOpts) {
   };
 
   if (buildOpts.align === 'top' || buildOpts.align === 'bottom') {
-    struct.x = (tick.position * buildOpts.innerRect.width) + buildOpts.innerRect.x - buildOpts.outerRect.x;
+    struct.x = (tick.position * buildOpts.innerRect.width) + (buildOpts.innerRect.x - buildOpts.outerRect.x);
     struct.y = buildOpts.align === 'top' ? buildOpts.innerRect.height : 0;
     struct.anchor = 'middle';
   } else {
-    struct.y = ((tick.position) * buildOpts.innerRect.height) + buildOpts.innerRect.y - buildOpts.outerRect.y;
+    struct.y = ((tick.position) * buildOpts.innerRect.height) + (buildOpts.innerRect.y - buildOpts.outerRect.y);
     struct.x = buildOpts.align === 'left' ? buildOpts.innerRect.width : 0;
     struct.anchor = buildOpts.align === 'left' ? 'end' : 'start';
   }
@@ -108,7 +108,7 @@ export function buildLabel(tick, buildOpts) {
         struct.baseline = 'text-before-edge';
       } else if (bottomTextBoundary > bottomBoundary) {
         struct.baseline = 'text-after-edge';
-        struct.y = buildOpts.innerRect.height + buildOpts.innerRect.y - buildOpts.outerRect.y;
+        struct.y = buildOpts.innerRect.height + (buildOpts.innerRect.y - buildOpts.outerRect.y);
       } else {
         struct.baseline = 'central';
       }
