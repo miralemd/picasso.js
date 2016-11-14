@@ -25,9 +25,9 @@ function getRect(container) {
     const boundingRect = container.getBoundingClientRect();
     rect.width = boundingRect.width;
     rect.height = boundingRect.height;
-  } else if (container.hasOwnProperty('height') && container.hasOwnProperty('width')) {
-    rect.width = container.width;
-    rect.height = container.height;
+  } else {
+    rect.width = container.width || 0;
+    rect.height = container.height || 0;
   }
 
   return rect;
@@ -36,7 +36,7 @@ function getRect(container) {
 function flattenComponents(c) {
   const chartComponents = [];
   for (const prop in c) {
-    if (c.hasOwnProperty(prop)) {
+    if ({}.hasOwnProperty.call(c, prop)) {
       if (Array.isArray(c[prop])) {
         c[prop].forEach(cc => chartComponents.push(cc));
       } else {

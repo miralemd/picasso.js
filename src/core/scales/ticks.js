@@ -41,7 +41,7 @@ export default {
     graphmin = Math.floor(min / d) * d;
     graphmax = Math.ceil(max / d) * d;
     nfrac = Math.max(-Math.floor(Math.log(d) / Math.log(10)), 0);
-    for (let v = graphmin; v < graphmax + 0.5 * d; v += d) {
+    for (let v = graphmin; v < graphmax + (0.5 * d); v += d) {
       ticks.push(v);
     }
     if (start > end) {

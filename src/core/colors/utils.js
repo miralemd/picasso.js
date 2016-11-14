@@ -34,7 +34,7 @@ const utils = {
 
       for (let i = 0; i < cssColors.length; i++) {
         result += `${cssColors[i]} ${percent}%, ${cssColors[i]} ${percent + interval}%, `;
-        percent = percent + interval;
+        percent += interval;
       }
 
       cssColors = result.slice(0, -2);

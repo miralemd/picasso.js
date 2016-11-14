@@ -6,10 +6,10 @@ import { dockConfig } from '../../dock-layout/dock-config';
 import { calcRequiredSize } from './axis-size-calculator';
 
 function extendDomain(settings, scale) {
-  const min = settings.ticks.min,
-    max = settings.ticks.max,
-    minSafe = min !== undefined,
-    maxSafe = max !== undefined;
+  const min = settings.ticks.min;
+  const max = settings.ticks.max;
+  const minSafe = min !== undefined;
+  const maxSafe = max !== undefined;
 
   if (minSafe || maxSafe) {
     const start = scale.start();

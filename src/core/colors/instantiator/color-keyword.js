@@ -180,6 +180,6 @@ colorKeyWord.test = (colStr) => {
     return false;
   } else {
     const key = colStr.toLowerCase().trim();
-    return colorStruct.hasOwnProperty(key);
+    return {}.hasOwnProperty.call(colorStruct, key);
   }
 };

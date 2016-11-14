@@ -9,8 +9,22 @@ function escapeRegExp(str) {
 * Re-formatted and fitted into picasso by Hannes Lindquist (bge)
 */
 const SIprefixes = {
-    3: 'k', 6: 'M', 9: 'G', 12: 'T', 15: 'P', 18: 'E', 21: 'Z', 24: 'Y',
-    '-3': 'm', '-6': 'μ', '-9': 'n', '-12': 'p', '-15': 'f', '-18': 'a', '-21': 'z', '-24': 'y'
+    3: 'k',
+    6: 'M',
+    9: 'G',
+    12: 'T',
+    15: 'P',
+    18: 'E',
+    21: 'Z',
+    24: 'Y',
+    '-3': 'm',
+    '-6': 'μ',
+    '-9': 'n',
+    '-12': 'p',
+    '-15': 'f',
+    '-18': 'a',
+    '-21': 'z',
+    '-24': 'y'
   },
   percentage = /%$/,
   //    scientific = /e[\+\-][0-9]+/,
@@ -337,7 +351,7 @@ class NumberFormatter {
 
       if (prep.abbreviate) {
         exponent = Number(Number(value).toExponential().split('e')[1]);
-        exponent = exponent - (exponent % 3);
+        exponent -= (exponent % 3);
         if (exponent in SIprefixes) {
           abbr = SIprefixes[exponent];
           value /= Math.pow(10, exponent);

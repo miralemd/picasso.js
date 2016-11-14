@@ -48,7 +48,7 @@ function labelBuilder(ticks, buildOpts, renderer) {
 }
 
 function layeredLabelBuilder(ticks, buildOpts, settings, renderer) {
-  buildOpts.maxWidth = buildOpts.maxWidth * 2;
+  buildOpts.maxWidth *= 2;
   const padding = buildOpts.padding;
   const padding2 = labelsSpacing(settings) + buildOpts.maxHeight + settings.labels.padding;
   return ticks.map((tick, i) => {

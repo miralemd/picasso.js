@@ -16,7 +16,7 @@ class HypercubeGenerator {
       a = [];
 
     for (let i = 0, l = this.length; i < l; ++i) {
-      if (u.hasOwnProperty(this[i])) {
+      if ({}.hasOwnProperty.call(u, this[i])) {
         continue;
       }
       a.push(this[i]);
@@ -248,7 +248,7 @@ class HypercubeGenerator {
         dimensions + measures,
         rows + 1,
         sorted ? row => row.sort() : null,
-        (x, y, width, height) => (!sorted ? (x / width * y / height) : 1) * Math.random()
+        (x, y, width, height) => (!sorted ? ((x / width) * (y / height)) : 1) * Math.random()
       )
     ];
   }

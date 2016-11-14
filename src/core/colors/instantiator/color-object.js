@@ -57,9 +57,9 @@ colorObject.test = (obj) => {
  * colorObject.getColorType( { r:255, g: 123, b: 123 } )
  */
 colorObject.getColorType = (obj) => {
-  if (typeof obj === 'object' && obj.hasOwnProperty('r') && obj.hasOwnProperty('g') && obj.hasOwnProperty('b')) {
+  if (typeof obj === 'object' && {}.hasOwnProperty.call(obj, 'r') && {}.hasOwnProperty.call(obj, 'g') && {}.hasOwnProperty.call(obj, 'b')) {
     return 'rgb';
-  } else if (typeof obj === 'object' && obj.hasOwnProperty('h') && obj.hasOwnProperty('s') && obj.hasOwnProperty('l')) {
+  } else if (typeof obj === 'object' && {}.hasOwnProperty.call(obj, 'h') && {}.hasOwnProperty.call(obj, 's') && {}.hasOwnProperty.call(obj, 'l')) {
     return 'hsl';
   }
   return undefined;

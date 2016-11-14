@@ -141,7 +141,7 @@ function createDisplayPoints(dataPoints, { x, y, width, height }, pointSize, sha
    x: p.x * width,
    y: p.y * height,
    fill: p.fill,
-   size: pointSize[0] + p.size * (pointSize[1] - pointSize[0]), // TODO - replace with scale
+   size: pointSize[0] + (p.size * (pointSize[1] - pointSize[0])), // TODO - replace with scale
    stroke: p.stroke,
    strokeWidth: p.strokeWidth,
    opacity: p.opacity

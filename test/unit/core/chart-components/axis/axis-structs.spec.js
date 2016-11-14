@@ -287,7 +287,7 @@ describe.skip('AxisStructs', () => {
         tick.position = 0;
         expected.x = 0;
         expected.anchor = 'left';
-        expected.maxWidth = expected.maxWidth * 0.75;
+        expected.maxWidth *= 0.75;
         expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
       });
 
@@ -302,7 +302,7 @@ describe.skip('AxisStructs', () => {
         tick.position = 1;
         expected.x = 50;
         expected.anchor = 'end';
-        expected.maxWidth = expected.maxWidth * 0.75;
+        expected.maxWidth *= 0.75;
         expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
       });
 
@@ -330,7 +330,7 @@ describe.skip('AxisStructs', () => {
         tick.position = 0;
         expected.x = 0;
         expected.anchor = 'left';
-        expected.maxWidth = expected.maxWidth * 0.75;
+        expected.maxWidth *= 0.75;
         expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
       });
 
@@ -345,7 +345,7 @@ describe.skip('AxisStructs', () => {
         tick.position = 1;
         expected.x = 50;
         expected.anchor = 'end';
-        expected.maxWidth = expected.maxWidth * 0.75;
+        expected.maxWidth *= 0.75;
         expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
       });
 

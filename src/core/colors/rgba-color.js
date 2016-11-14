@@ -13,9 +13,9 @@ function componentToHex(c) {
  * @return { String } In format 0, 0%, 0%
  */
 function toHSL(r, g, b) {
-  r = r / 255;
-  g = g / 255;
-  b = b / 255;
+  r /= 255;
+  g /= 255;
+  b /= 255;
 
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
@@ -30,13 +30,13 @@ function toHSL(r, g, b) {
     s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
     switch (max) {
       case r:
-        h = (g - b) / d + (g < b ? 6 : 0);
+        h = ((g - b) / d) + (g < b ? 6 : 0);
         break;
       case g:
-        h = (b - r) / d + 2;
+        h = ((b - r) / d) + 2;
         break;
       case b:
-        h = (r - g) / d + 4;
+        h = ((r - g) / d) + 4;
         break;
       default:
     }
@@ -147,7 +147,7 @@ class RgbaColor {
    * @return { Number } A value in the range 0-1 where a low value is considered dark and vice versa.
    */
   luminance() {
-    const luminance = Math.sqrt(0.299 * Math.pow(this.r, 2) + 0.587 * Math.pow(this.g, 2) + 0.114 * Math.pow(this.b, 2)); // Using Weighted Euclidean Distance in 3D RGB Space
+    const luminance = Math.sqrt((0.299 * Math.pow(this.r, 2)) + (0.587 * Math.pow(this.g, 2)) + (0.114 * Math.pow(this.b, 2))); // Using Weighted Euclidean Distance in 3D RGB Space
     return luminance / 255;
   }
 }

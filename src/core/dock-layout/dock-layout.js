@@ -23,7 +23,7 @@ function roundRect(rect) {
 function reduceSingleLayoutRect(containerRect, reducedRect, c) {
   switch (c.config.dock()) {
     case 'top':
-      if (reducedRect.height >= c.cachedSize + containerRect.height * 0.5) {
+      if (reducedRect.height >= c.cachedSize + (containerRect.height * 0.5)) {
         reducedRect.y += c.cachedSize;
         reducedRect.height -= c.cachedSize;
         return true;
@@ -31,14 +31,14 @@ function reduceSingleLayoutRect(containerRect, reducedRect, c) {
         return false;
       }
     case 'bottom':
-      if (reducedRect.height >= c.cachedSize + containerRect.height * 0.5) {
+      if (reducedRect.height >= c.cachedSize + (containerRect.height * 0.5)) {
         reducedRect.height -= c.cachedSize;
         return true;
       } else {
         return false;
       }
     case 'left':
-      if (reducedRect.width >= c.cachedSize + containerRect.width * 0.5) {
+      if (reducedRect.width >= c.cachedSize + (containerRect.width * 0.5)) {
         reducedRect.x += c.cachedSize;
         reducedRect.width -= c.cachedSize;
         return true;
@@ -46,7 +46,7 @@ function reduceSingleLayoutRect(containerRect, reducedRect, c) {
         return false;
       }
     case 'right':
-      if (reducedRect.width >= c.cachedSize + containerRect.width * 0.5) {
+      if (reducedRect.width >= c.cachedSize + (containerRect.width * 0.5)) {
         reducedRect.width -= c.cachedSize;
         return true;
       } else {
