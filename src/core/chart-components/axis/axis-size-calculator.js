@@ -19,7 +19,7 @@ export function calcRequiredSize({ data, formatter, renderer, scale, settings, t
       let sizeFromTextRect;
       if (settings.labels.tilted) {
         const radians = Math.PI / 3; // angle in radians
-        sizeFromTextRect = r => r.height * Math.sin(radians) + r.width * Math.cos(radians);
+        sizeFromTextRect = r => (r.height * Math.sin(radians)) + (r.width * Math.cos(radians));
       } else if (horizontal) {
         sizeFromTextRect = r => r.height;
       } else {
