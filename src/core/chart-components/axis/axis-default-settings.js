@@ -3,7 +3,8 @@ export function discreteDefaultSettings() {
     {
       dock: 'bottom',
       displayOrder: 0,
-      prioOrder: 0
+      prioOrder: 0,
+      padding: 10
     },
     {
       labels: {
@@ -13,7 +14,8 @@ export function discreteDefaultSettings() {
         fontSize: '12px',
         fill: '#595959',
         padding: 6,
-        layered: false // TODO support auto, true and false?
+        layered: false, // TODO support auto, true and false?
+        maxSize: 150
       },
       line: {
         show: true,
@@ -36,7 +38,8 @@ export function continuousDefaultSettings() {
     {
       dock: 'left',
       displayOrder: 0,
-      prioOrder: 0
+      prioOrder: 0,
+      padding: 10
     },
     {
       labels: {
@@ -46,7 +49,8 @@ export function continuousDefaultSettings() {
         fontSize: '12px',
         fill: '#595959',
         padding: 4,
-        layered: false
+        layered: false,
+        maxSize: 150
       },
       line: {
         show: true,

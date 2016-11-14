@@ -35,7 +35,7 @@ export function calcRequiredSize({ data, formatter, renderer, scale, settings, t
           .map(tick => tick.label);
       }
       const labelSizes = labels.map(measureText).map(sizeFromTextRect);
-      const textSize = Math.max(...labelSizes);
+      const textSize = Math.min(settings.labels.maxSize, Math.max(...labelSizes));
 
       size += textSize;
       size += settings.labels.padding;
@@ -58,7 +58,7 @@ export function calcRequiredSize({ data, formatter, renderer, scale, settings, t
     if (settings.line.show) {
       size += settings.line.strokeWidth;
     }
-    size += 10; // 10px outside margin
+    size += settings.padding;
 
     return size;
   };

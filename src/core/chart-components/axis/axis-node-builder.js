@@ -67,7 +67,7 @@ function discreteCalcMaxTextRect({ renderer, settings, innerRect, scale }) {
 
   const textRect = { width: 0, height: h };
   if (settings.align === 'left' || settings.align === 'right') {
-    textRect.width = innerRect.width * 0.75;
+    textRect.width = innerRect.width - labelsSpacing(settings) - settings.padding;
   } else {
     textRect.width = scale.step() * 0.75 * innerRect.width;
   }
@@ -83,7 +83,7 @@ function continuousCalcMaxTextRect({ renderer, settings, innerRect, ticks }) {
 
   const textRect = { width: 0, height: h };
   if (settings.align === 'left' || settings.align === 'right') {
-    textRect.width = innerRect.width * 0.75;
+    textRect.width = innerRect.width - labelsSpacing(settings) - settings.padding;
   } else {
     textRect.width = (innerRect.width / majorTicks(ticks).length) * 0.75;
   }
