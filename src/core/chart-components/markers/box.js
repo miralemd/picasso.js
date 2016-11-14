@@ -1,5 +1,27 @@
 import { Dispersion } from './generic/dispersion';
 
+const DEFAULT_STYLE_SETTINGS = {
+  line: {
+    stroke: '#000',
+    strokeWidth: 1
+  },
+  med: {
+    stroke: '#000',
+    strokeWidth: 1
+  },
+  whisker: {
+    stroke: '#000',
+    strokeWidth: 1,
+    fill: '',
+    type: 'line'
+  },
+  box: {
+    fill: '#fff',
+    stroke: '#000',
+    strokeWidth: 1
+  }
+};
+
 /**
  * @typedef marker-box
  * @property {string} type - "box"
@@ -36,7 +58,7 @@ import { Dispersion } from './generic/dispersion';
 
 export default class Box extends Dispersion {
   constructor(obj, composer) {
-    super(obj, composer);
+    super(obj, composer, DEFAULT_STYLE_SETTINGS);
 
     // Default to vertical
     if (this.settings.vertical === undefined) {
@@ -54,8 +76,8 @@ export default class Box extends Dispersion {
   render() {
     // Filter out points we cannot render
     const items = this.items.filter(item =>
-   [item.min, item.max].indexOf(null) === -1 || [item.start, item.end].indexOf(null) === -1
-);
+      [item.min, item.max].indexOf(null) === -1 || [item.start, item.end].indexOf(null) === -1
+    );
 
     super.render(items);
   }
@@ -63,10 +85,10 @@ export default class Box extends Dispersion {
   renderDataPoint(item) {
     if (item.min !== null && item.max !== null) {
       // Draw the line min - start
-      this.doodle.verticalLine(item.x, item.start, item.min, 'line');
+      this.doodle.verticalLine(item.x, item.start, item.min, 'line', item.style);
 
       // Draw the line end - max (high)
-      this.doodle.verticalLine(item.x, item.max, item.end, 'line');
+      this.doodle.verticalLine(item.x, item.max, item.end, 'line', item.style);
     }
 
     // Draw the box
@@ -77,21 +99,22 @@ export default class Box extends Dispersion {
       item.x,
       low,
       (high - low),
-      'box'
+      'box',
+      item.style
     );
 
     // Draw the whiskers
     if (this.settings.whiskers && item.min !== null && item.max !== null) {
       // Low whisker
-      this.doodle.whisker(item.x, item.min);
+      this.doodle.whisker(item.x, item.min, item.style);
 
       // High whisker
-      this.doodle.whisker(item.x, item.max);
+      this.doodle.whisker(item.x, item.max, item.style);
     }
 
     // Draw the median line
     if (item.med !== null) {
-      this.doodle.median(item.x, item.med);
+      this.doodle.median(item.x, item.med, item.style);
     }
   }
 }

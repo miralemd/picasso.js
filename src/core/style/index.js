@@ -25,17 +25,15 @@ function wrapper(fallbackVal, fn, item, index, array) {
   if (value !== null && typeof value !== 'undefined') {
     // Custom accessor returned a proper value
     return value;
-  } else if (typeof fallbackVal === 'function') {
-    // fallback is a function, run it
-    return fallbackVal(item, index, array);
-  } else if (fallbackVal && typeof fallbackVal.fn === 'function') {
-    // fallback has a custom function, run it
-    return fallbackVal.fn(item, index, array);
   } else {
-    // fallback is a value, return it
-    return fallbackVal;
+    if (fallbackVal && typeof fallbackVal.fn === 'function') {
+      // fallback has a custom function, run it
+      return fallbackVal.fn(item, index, array);
+    } else {
+      // fallback is a value, return it
+      return fallbackVal;
+    }
   }
-}
 
 function attr(targets, attribute, defaultVal, index) {
   const target = targets[index];
@@ -62,13 +60,14 @@ function attr(targets, attribute, defaultVal, index) {
   // custom accessor function
   if (type === 'function') {
     // Return object with fn and fallback attribute value
-    return { fn: (...args) => wrapper(attr(targets, attribute, defaultVal, index + 1), target[attribute], ...args) };
+    let inner = attr(targets, attribute, defaultVal, index + 1);
+    return { fn: (...args) => wrapper(inner, target[attribute], ...args) };
   }
   // A composite object, for example a scale
   if (type === 'object') {
     if (typeof target[attribute].fn === 'function') {
       // custom accessor function inside object
-      const fn = target[attribute].fn;
+      let fn = target[attribute].fn;
       target[attribute].fn = (...args) => wrapper(attr(targets, attribute, defaultVal, index + 1), fn, ...args);
     } else {
       // Add in the fallback attribute value as fn
@@ -126,6 +125,21 @@ export function resolveStyle(defaults, styleRoot, path) {
   for (const s in defaults) {
     const def = defaults[s] === null || typeof defaults[s] === 'undefined' ? globalDefaults[s] : defaults[s];
     ret[s] = resolveAttribute(styleRoot, steps.concat(), s, def);
+  }
+  return ret;
+}
+/**
+* Resolves styles for individual data values
+* @private
+* @param {object} styles for the target
+* @param {array} dataValues Calculated values for the target
+* @param {int} index Current index in dataValues array to resolve
+* @returns {object} resolved styles for each attribute as appropriate type
+*/
+export function resolveForDataValues(styles, dataValues, index) {
+  let ret = {};
+  for (let s in styles) {
+    ret[s] = typeof styles[s].fn === 'function' ? styles[s].fn(dataValues[s][index], index, dataValues[s]) : styles[s];
   }
   return ret;
 }

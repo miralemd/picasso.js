@@ -1,18 +1,25 @@
 import { renderer } from '../../../renderer';
 import { doodler } from './doodler';
 import { transposer } from '../../../transposer/transposer';
+import { resolveForDataValues } from '../../../style';
+import { resolveInitialSettings } from './settings-setup';
 
 function values(table, setting) {
   if (setting && setting.source) {
-    return table.findField(setting.source).values();
+    const field = table.findField(setting.source);
+    return field ? field.values() : null;
   }
   return null;
 }
 
-export class Dispersion {
-  constructor(obj, composer) {
-    this.element = composer.container();
+function resolveInitialStyle(settings, baseStyles, composer) {
+  return resolveInitialSettings(settings, baseStyles, composer, 'style');
+}
 
+export class Dispersion {
+  constructor(obj, composer, defaultStyles) {
+    this.element = composer.container();
+    this.composer = composer;
     // Setup the renderer
     this.renderer = renderer();
     this.renderer.appendTo(this.element);
@@ -22,6 +29,7 @@ export class Dispersion {
     this.settings = obj.settings;
     this.table = composer.table();
     this.obj = obj;
+    this.defaultStyles = defaultStyles;
 
     // Setup scales
     this.x = this.settings.x ? composer.scale(this.settings.x) : null;
@@ -32,11 +40,12 @@ export class Dispersion {
 
     // Initialize blueprint and doodler
     this.blueprint = transposer();
-    this.doodle = doodler();
+    this.doodle = doodler(this.settings);
   }
 
   onData() {
     this.items = [];
+    this.resolvedStyle = resolveInitialStyle(this.settings, this.defaultStyles, this.composer);
 
     const data = values(this.table, this.obj.data);
     const startValues = values(this.table, this.settings.start);
@@ -49,9 +58,22 @@ export class Dispersion {
     const y = this.y;
 
     this.bandwidth = x ? x.scale.step() * 0.75 : 0.5;
+    const dataValues = {};
+    for (const s in this.resolvedStyle) {
+      dataValues[s] = {};
+      for (const p in this.resolvedStyle[s]) {
+        dataValues[s][p] = values(this.table, this.resolvedStyle[s][p]) || data;
+      }
+    }
 
     data.forEach((d, i) => {
+      let obj = {};
+      for (let part in this.resolvedStyle) {
+        obj[part] = resolveForDataValues(this.resolvedStyle[part], dataValues[part], i);
+      }
+
       this.items.push({
+        style: obj,
         x: x ? x(d) : 0.5,
         min: y && minValues ? y(minValues[i]) : null,
         max: y && maxValues ? y(maxValues[i]) : null,
@@ -72,7 +94,6 @@ export class Dispersion {
 
     // Setup the doodler
     this.doodle.push = item => this.blueprint.push(item);
-    this.doodle.settings = this.settings;
 
     // Calculate box width
     const boxWidth = Math.max(5, Math.min(100, this.bandwidth * this.blueprint.width)) / this.blueprint.width;
@@ -83,7 +104,6 @@ export class Dispersion {
     this.doodle.postfill('whisker', 'width', whiskerWidth);
 
     this.items.forEach((item) => {
-      this.doodle.customize(item);
       this.renderDataPoint(item);
     });
 
