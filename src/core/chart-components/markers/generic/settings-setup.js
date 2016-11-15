@@ -5,7 +5,7 @@ export default function resolveInitialSettings(settings, defaults, composer, roo
   const ret = {};
   const externals = extend({}, settings);
   Object.keys(defaults).forEach((s) => {
-    const ext = rootPath ? externals[rootPath][s] : externals[s];
+    const ext = rootPath && externals[rootPath] ? externals[rootPath][s] : externals[s];
     if (ext) {
       // Check each setting for the existance of a source without custom function
       Object.keys(ext).forEach((a) => {

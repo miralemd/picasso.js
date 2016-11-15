@@ -17,11 +17,11 @@ function resolveInitialStyle(settings, baseStyles, composer) {
 }
 
 export default class Dispersion {
-  constructor(obj, composer, defaultStyles) {
+  constructor(obj, composer, defaultStyles, render) {
     this.element = composer.container();
     this.composer = composer;
     // Setup the renderer
-    this.renderer = renderer();
+    this.renderer = render || renderer();
     this.renderer.appendTo(this.element);
     this.rect = { x: 0, y: 0, width: 0, height: 0 };
 
