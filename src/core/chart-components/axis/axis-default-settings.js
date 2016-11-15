@@ -1,6 +1,8 @@
 export function discreteDefaultSettings() {
   return {
     dock: 'bottom',
+    displayOrder: 0,
+    prioOrder: 0,
     labels: {
       show: true,
       tilted: false,
@@ -34,6 +36,8 @@ export function discreteDefaultSettings() {
 export function continuousDefaultSettings() {
   return {
     dock: 'left',
+    displayOrder: 0,
+    prioOrder: 0,
     labels: {
       show: true,
       tilted: false,

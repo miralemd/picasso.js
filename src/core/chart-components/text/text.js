@@ -90,7 +90,10 @@ function generateTitle({ title, settings, dock, rect, renderer }) {
 
 export function text(config, composer, renderer) {
   let settings = extend({
+      dock: 'bottom',
       anchor: 'center',
+      displayOrder: 99,
+      prioOrder: 0,
       padding: 3,
       style: {
         fontSize: '15px',
@@ -110,6 +113,8 @@ export function text(config, composer, renderer) {
     title = parseTitle(config, table, scale);
     fn.dockConfig.requiredSize(calcRequiredSize(title, settings, renderer));
     fn.dockConfig.dock(dock);
+    fn.dockConfig.displayOrder(settings.displayOrder);
+    fn.dockConfig.prioOrder(settings.prioOrder);
     return fn;
   };
 

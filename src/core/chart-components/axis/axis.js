@@ -57,6 +57,8 @@ export function abstractAxis(axisConfig, composer, renderer) {
     dockAlignSetup(settings, type);
     layoutConfig.dock(settings.dock);
     layoutConfig.requiredSize(calcRequiredSize({ data, formatter, renderer, scale, settings, ticksFn }));
+    layoutConfig.displayOrder(settings.displayOrder);
+    layoutConfig.prioOrder(settings.prioOrder);
   };
 
   const continuous = function () {
