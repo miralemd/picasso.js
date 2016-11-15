@@ -11,13 +11,7 @@ export default function doodler(settings) {
     return extend(object, style[styleName] || {});
   };
 
-  doodle.postfill = function (object, key, fill) {
-    doodle.settings.style = doodle.settings.style || {};
-    doodle.settings.style[object] = doodle.settings.style[object] || {};
-    doodle.settings.style[object][key] = doodle.settings.style[object][key] * fill || fill;
-  };
-
-  doodle.horizontalLine = function (x, y, width, styleName, style) {
+  doodle.horizontalLine = function (x, y, width, styleName, style = {}) {
     return doodle.push(
       doodle.style({
         type: 'line',
@@ -27,11 +21,12 @@ export default function doodler(settings) {
         x2: x + (width / 2)
       },
         styleName,
-        style)
+        style
+      )
     );
   };
 
-  doodle.verticalLine = function (x, y1, y2, styleName, style) {
+  doodle.verticalLine = function (x, y1, y2, styleName, style = {}) {
     return doodle.push(
       doodle.style({
         type: 'line',
@@ -41,13 +36,13 @@ export default function doodler(settings) {
         x2: x
       },
         styleName,
-        style)
+        style
+      )
     );
   };
 
-  doodle.whisker = function (x, y, style) {
-    const width = doodle.settings.style.whisker.width;
-
+  doodle.whisker = function (x, y, style = { whisker: {} }) {
+    const width = style.whisker.width || 1;
     return doodle.push(
       doodle.style({
         type: 'line',
@@ -60,47 +55,53 @@ export default function doodler(settings) {
         x2: x + (width / 2)
       },
         'whisker',
-        style)
+        style
+      )
     );
   };
 
-  doodle.openwhisker = function (x, y, style) {
+  doodle.openwhisker = function (x, y, style = { whisker: {} }) {
+    const width = style.whisker.width || 1;
     return doodle.whisker(
-      x - (doodle.settings.style.whisker.width / 2),
+      x - (width / 2),
       y,
       style
     );
   };
 
-  doodle.closewhisker = function (x, y, style) {
+  doodle.closewhisker = function (x, y, style = { whisker: {} }) {
+    const width = style.whisker.width || 1;
     return doodle.whisker(
-      x + (doodle.settings.style.whisker.width / 2),
+      x + (width / 2),
       y,
       style
     );
   };
 
-  doodle.median = function (x, y, style) {
+  doodle.median = function (x, y, style = { box: {} }) {
+    const width = style.box.width || 1;
     return doodle.horizontalLine(
       x,
       y,
-      doodle.settings.style.box.width,
+      width,
       'med',
       style
     );
   };
 
-  doodle.box = function (x, y, height, name, style) {
+  doodle.box = function (x, y, height, style = { box: {} }) {
+    const width = style.box.width || 1;
     return doodle.push(
       doodle.style({
         type: 'rect',
-        x: x - (doodle.settings.style[name].width / 2),
+        x: x - (width / 2),
         y,
         height,
-        width: doodle.settings.style[name].width
+        width
       },
-        name,
-        style)
+        'box',
+        style
+      )
     );
   };
 

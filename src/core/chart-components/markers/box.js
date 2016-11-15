@@ -13,12 +13,16 @@ const DEFAULT_STYLE_SETTINGS = {
     stroke: '#000',
     strokeWidth: 1,
     fill: '',
-    type: 'line'
+    type: 'line',
+    width: 1
   },
   box: {
     fill: '#fff',
     stroke: '#000',
-    strokeWidth: 1
+    strokeWidth: 1,
+    width: 1,
+    maxWidth: 100,
+    minWidth: 5
   }
 };
 
@@ -73,7 +77,6 @@ export default class Box extends Dispersion {
     if (this.settings.whiskers === undefined) {
       this.settings.whiskers = true;
     }
-
     this.onData(); // to be removed?
   }
 
@@ -83,10 +86,23 @@ export default class Box extends Dispersion {
       [item.min, item.max].indexOf(null) === -1 || [item.start, item.end].indexOf(null) === -1
     );
 
+    // Calculate box width
+    this.boxWidth = this.bandwidth * this.rect.width;
+
     super.render(items);
   }
 
   renderDataPoint(item) {
+    item.style.box.width = Math.max(item.style.box.minWidth,
+      Math.min(item.style.box.maxWidth,
+        item.style.box.width * this.bandwidth * this.rect.width))
+        / this.rect.width;
+
+    item.style.whisker.width = Math.max(item.style.box.minWidth,
+      Math.min(item.style.box.maxWidth,
+        item.style.whisker.width * this.bandwidth * 0.5 * this.rect.width))
+        / this.rect.width;
+
     if (item.min !== null && item.max !== null) {
       // Draw the line min - start
       this.doodle.verticalLine(item.x, item.start, item.min, 'line', item.style);
@@ -103,7 +119,6 @@ export default class Box extends Dispersion {
       item.x,
       low,
       (high - low),
-      'box',
       item.style
     );
 

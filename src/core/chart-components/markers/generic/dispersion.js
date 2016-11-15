@@ -95,16 +95,6 @@ export default class Dispersion {
     // Setup the doodler
     this.doodle.push = item => this.blueprint.push(item);
 
-    // Calculate box width
-    const boxWidth = Math.max(5,
-      Math.min(100, this.bandwidth * this.blueprint.width))
-      / this.blueprint.width;
-    const whiskerWidth = boxWidth * 0.5;
-
-    // Postfill settings instead of prefilling them if nonexistant
-    this.doodle.postfill('box', 'width', boxWidth);
-    this.doodle.postfill('whisker', 'width', whiskerWidth);
-
     this.items.forEach((item) => {
       this.renderDataPoint(item);
     });

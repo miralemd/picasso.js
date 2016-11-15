@@ -26,9 +26,9 @@ function wrapper(fallbackVal, fn, item, index, array) {
     // Custom accessor returned a proper value
     return value;
   }
-  if (fallbackVal && typeof fallbackVal.fn === 'function') {
+  if (fallbackVal && typeof fallbackVal === 'function') {
     // fallback has a custom function, run it
-    return fallbackVal.fn(item, index, array);
+    return fallbackVal(item, index, array);
   }
   // fallback is a value, return it
   return fallbackVal;
@@ -56,25 +56,11 @@ function attr(targets, attribute, defaultVal, index) {
 
   // custom accessor function
   if (type === 'function') {
-    // Return object with fn and fallback attribute value
+    // Return function with fallback attribute value
     const inner = attr(targets, attribute, defaultVal, index + 1);
-    return { fn: (...args) => wrapper(inner, target[attribute], ...args) };
+    return (...args) => wrapper(inner, target[attribute], ...args);
   }
-  // A composite object, for example a scale
-  if (type === 'object') {
-    if (typeof target[attribute].fn === 'function') {
-      // custom accessor function inside object
-      const fn = target[attribute].fn;
-      target[attribute].fn = (...args) =>
-        wrapper(attr(targets, attribute, defaultVal, index + 1), fn, ...args);
-    } else {
-      // Add in the fallback attribute value as fn
-      target[attribute].fn = (...args) =>
-        wrapper(attr(targets, attribute, defaultVal, index + 1), null, ...args);
-    }
 
-    return target[attribute];
-  }
   return defaultVal;
 }
 
@@ -97,7 +83,7 @@ function resolveAttribute(root, steps, attribute, defaultVal) {
 * @param {string} propertyName Name of child property to access
 * @returns {object} combined styles
 * @example
-* // returns { stroke: "#00f", strokeWidth: 2, fill: "red", width: {value: 999 fn: function} }
+* // returns { stroke: "#00f", strokeWidth: 2, fill: "red", width: function(999, widthResolve, ...args) }
 * resolveSettings(
 *    {
 *    stroke: "#000",
@@ -111,7 +97,7 @@ function resolveAttribute(root, steps, attribute, defaultVal) {
 *        parts: {
 *            rect: {
 *                stroke: "#00f",
-*                width: function( item ) { return item.x; }
+*                width: function widthResolve ( dataVal, index, dataValues ) { return dataVal.value; }
 *            },
 *            label: { }
 *        }
@@ -138,7 +124,7 @@ export function resolveStyle(defaults, styleRoot, path) {
 export function resolveForDataValues(styles, dataValues, index) {
   const ret = {};
   Object.keys(styles).forEach((s) => {
-    ret[s] = typeof styles[s].fn === 'function' ? styles[s].fn(dataValues[s][index], index, dataValues[s]) : styles[s];
+    ret[s] = typeof styles[s] === 'function' ? styles[s](dataValues[s][index], index, dataValues[s]) : styles[s];
   });
   return ret;
 }

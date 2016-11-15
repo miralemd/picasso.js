@@ -11,11 +11,6 @@ describe('Doodler', () => {
     latestPush = null;
   });
 
-  it('should postfill styles correctly in doodle settings', () => {
-    doodle.postfill('box', 'width', 0.5);
-    expect(doodle.settings.style.box.width).to.equal(0.5);
-  });
-
   it('should doodle horizontal lines correctly', () => {
     expect(doodle.horizontalLine(1, 2, 3, 'line1', { line1: { stroke: 2 } })).to.eql({
       type: 'line',
@@ -42,8 +37,6 @@ describe('Doodler', () => {
   });
 
   it('should doodle normal whiskers correctly', () => {
-    doodle.postfill('whisker', 'width', 0.5);
-
     const whisker = doodle.whisker(1, 2);
 
     expect(whisker.type).to.eql('line');
@@ -51,8 +44,6 @@ describe('Doodler', () => {
   });
 
   it('should doodle open whiskers correctly', () => {
-    doodle.postfill('whisker', 'width', 0.5);
-
     const whisker = doodle.openwhisker(1, 2);
 
     expect(whisker.type).to.eql('line');
@@ -60,8 +51,6 @@ describe('Doodler', () => {
   });
 
   it('should doodle open whiskers correctly', () => {
-    doodle.postfill('whisker', 'width', 0.5);
-
     const whisker = doodle.closewhisker(1, 2);
 
     expect(whisker.type).to.eql('line');
@@ -69,8 +58,6 @@ describe('Doodler', () => {
   });
 
   it('should doodle median correctly', () => {
-    doodle.postfill('box', 'width', 0.7);
-
     const median = doodle.median(1, 2);
 
     expect(median.type).to.eql('line');
@@ -78,15 +65,13 @@ describe('Doodler', () => {
   });
 
   it('should doodle a box correctly', () => {
-    doodle.postfill('box', 'width', 0.75);
-
-    expect(doodle.box(1, 2, 3, 'box')).to.eql(
+    expect(doodle.box(1, 2, 3)).to.eql(
       {
         type: 'rect',
-        x: 1 - (0.75 / 2),
+        x: 1 - (1 / 2),
         y: 2,
         height: 3,
-        width: 0.75
+        width: 1
       }
     );
   });

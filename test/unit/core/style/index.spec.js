@@ -78,24 +78,8 @@ describe('Style resolver', () => {
   it('should fallback throught functions', () => {
     const result = resolveStyle({ stroke: null }, settings, 'style.line');
     const output = [0, 1, 2].map(item =>
-   result.stroke.fn(null, item)
-);
+      result.stroke(null, item)
+    );
     expect(output).to.deep.equal(['style.line.stroke', 'style.stroke', 'stroke']);
-  });
-  it('should leave additional properties alone', () => {
-    const result = resolveStyle({ strokeWidth: null }, settings, 'style.line');
-    expect(result.strokeWidth.source).to.equal('/qMeasureInfo/1');
-    expect(result.strokeWidth.fn()).to.equal(5);
-  });
-  it('should add fallback if custom scale', () => {
-    const result = resolveStyle({ fill: 'filling' }, settings, 'style.line');
-    expect(result.fill.source).to.equal('/qMeasureInfo/0');
-    expect(result.fill.fn()).to.equal('filling');
-  });
-  it('should add fallback if custom fn', () => {
-    const result = resolveStyle({ opacity: '!transparency' }, settings, 'style.box');
-    expect(result.opacity.source).to.equal('/qMeasureInfo/1');
-    expect(result.opacity.fn(2)).to.equal(0.5);
-    expect(result.opacity.fn(0)).to.equal('!transparency');
   });
 });
