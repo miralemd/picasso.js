@@ -1,6 +1,6 @@
 import { default as extend } from 'extend';
 
-export function doodler(settings) {
+export default function doodler(settings) {
   function doodle() {
     doodle.push = v => v;
     doodle.settings = settings || { style: {} };
@@ -46,7 +46,7 @@ export function doodler(settings) {
   };
 
   doodle.whisker = function (x, y, style) {
-    let width = doodle.settings.style.whisker.width;
+    const width = doodle.settings.style.whisker.width;
 
     return doodle.push(
       doodle.style({

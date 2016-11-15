@@ -1,4 +1,4 @@
-import { Dispersion } from './generic/dispersion';
+import Dispersion from './generic/dispersion';
 
 const DEFAULT_STYLE_SETTINGS = {
   line: {
@@ -33,7 +33,11 @@ const DEFAULT_STYLE_SETTINGS = {
  *   data: { source: "/qDimensionInfo/0" },
  *  settings: {
  *    x: { source: "/qDimensionInfo/0" },
- *    y: { source: ["/qMeasureInfo/0", "/qMeasureInfo/1", "/qMeasureInfo/2", "/qMeasureInfo/3", "/qMeasureInfo/4"] },
+ *    y: { source: ["/qMeasureInfo/0",
+ *                  "/qMeasureInfo/1",
+ *                  "/qMeasureInfo/2",
+ *                  "/qMeasureInfo/3",
+ *                  "/qMeasureInfo/4"] },
  *    min: { source: "/qMeasureInfo/0" },
  *    max: { source: "/qMeasureInfo/1" },
  *    start: { source: "/qMeasureInfo/2" },

@@ -1,8 +1,8 @@
 import { renderer } from '../../../renderer';
-import { doodler } from './doodler';
+import doodler from './doodler';
 import { transposer } from '../../../transposer/transposer';
 import { resolveForDataValues } from '../../../style';
-import { resolveInitialSettings } from './settings-setup';
+import resolveInitialSettings from './settings-setup';
 
 function values(table, setting) {
   if (setting && setting.source) {
@@ -16,7 +16,7 @@ function resolveInitialStyle(settings, baseStyles, composer) {
   return resolveInitialSettings(settings, baseStyles, composer, 'style');
 }
 
-export class Dispersion {
+export default class Dispersion {
   constructor(obj, composer, defaultStyles) {
     this.element = composer.container();
     this.composer = composer;
@@ -59,18 +59,18 @@ export class Dispersion {
 
     this.bandwidth = x ? x.scale.step() * 0.75 : 0.5;
     const dataValues = {};
-    for (const s in this.resolvedStyle) {
+    Object.keys(this.resolvedStyle).forEach((s) => {
       dataValues[s] = {};
-      for (const p in this.resolvedStyle[s]) {
+      Object.keys(this.resolvedStyle[s]).forEach((p) => {
         dataValues[s][p] = values(this.table, this.resolvedStyle[s][p]) || data;
-      }
-    }
+      });
+    });
 
     data.forEach((d, i) => {
-      let obj = {};
-      for (let part in this.resolvedStyle) {
+      const obj = {};
+      Object.keys(this.resolvedStyle).forEach((part) => {
         obj[part] = resolveForDataValues(this.resolvedStyle[part], dataValues[part], i);
-      }
+      });
 
       this.items.push({
         style: obj,
@@ -96,7 +96,9 @@ export class Dispersion {
     this.doodle.push = item => this.blueprint.push(item);
 
     // Calculate box width
-    const boxWidth = Math.max(5, Math.min(100, this.bandwidth * this.blueprint.width)) / this.blueprint.width;
+    const boxWidth = Math.max(5,
+      Math.min(100, this.bandwidth * this.blueprint.width))
+      / this.blueprint.width;
     const whiskerWidth = boxWidth * 0.5;
 
     // Postfill settings instead of prefilling them if nonexistant

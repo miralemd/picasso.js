@@ -1,6 +1,6 @@
 /* eslint no-unused-expressions: 0*/
 
-import { doodler } from '../../../../../../src/core/chart-components/markers/generic/doodler';
+import doodler from '../../../../../../src/core/chart-components/markers/generic/doodler';
 
 describe('Doodler', () => {
   let doodle;
