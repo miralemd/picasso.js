@@ -2,6 +2,7 @@ import {
   chart,
   renderer
 } from './core';
+import config from './config';
 import './web';
 
 /**
@@ -10,6 +11,7 @@ import './web';
  */
 
 export {
+  config,
   chart,
   renderer
 };

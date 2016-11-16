@@ -1,3 +1,4 @@
+import config from '../../../config';
 import { resolve } from '../json-path-resolver';
 import { metaToDataPath } from './meta-to-data';
 
@@ -19,8 +20,7 @@ function normalizeMeta(obj) {
 }
 
 export default class StraightLayout {
-  constructor(Promise, resolver, metaToData) {
-    this.Promise = Promise;
+  constructor(resolver, metaToData) {
     this.resolve = resolver;
     this.metaToData = metaToData;
   }
@@ -39,9 +39,9 @@ export default class StraightLayout {
 
   dataPages() {
     if (!this._layout) {
-      return this.Promise.reject();
+      return config.Promise.reject();
     }
-    return this.Promise.resolve(this._layout.qHyperCube.qDataPages);
+    return config.Promise.resolve(this._layout.qHyperCube.qDataPages);
   }
 
   fromSource(source, pageIdx = 0) {
@@ -54,5 +54,5 @@ export default class StraightLayout {
 }
 
 export function create() {
-  return new StraightLayout(Promise, resolve, metaToDataPath);
+  return new StraightLayout(resolve, metaToDataPath);
 }
