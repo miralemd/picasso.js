@@ -1,4 +1,34 @@
-import { Dispersion } from './generic/dispersion';
+import Dispersion from './generic/dispersion';
+
+const DEFAULT_STYLE_SETTINGS = {
+  line: {
+    show: true,
+    stroke: '#000',
+    strokeWidth: 1
+  },
+  median: {
+    show: true,
+    stroke: '#000',
+    strokeWidth: 1
+  },
+  whisker: {
+    show: true,
+    stroke: '#000',
+    strokeWidth: 1,
+    fill: '',
+    type: 'line',
+    width: 1
+  },
+  box: {
+    show: true,
+    fill: '#fff',
+    stroke: '#000',
+    strokeWidth: 1,
+    width: 1,
+    maxWidth: 100,
+    minWidth: 5
+  }
+};
 
 /**
  * @typedef marker-box
@@ -11,7 +41,11 @@ import { Dispersion } from './generic/dispersion';
  *   data: { source: "/qDimensionInfo/0" },
  *  settings: {
  *    x: { source: "/qDimensionInfo/0" },
- *    y: { source: ["/qMeasureInfo/0", "/qMeasureInfo/1", "/qMeasureInfo/2", "/qMeasureInfo/3", "/qMeasureInfo/4"] },
+ *    y: { source: ["/qMeasureInfo/0",
+ *                  "/qMeasureInfo/1",
+ *                  "/qMeasureInfo/2",
+ *                  "/qMeasureInfo/3",
+ *                  "/qMeasureInfo/4"] },
  *    min: { source: "/qMeasureInfo/0" },
  *    max: { source: "/qMeasureInfo/1" },
  *    start: { source: "/qMeasureInfo/2" },
@@ -36,7 +70,7 @@ import { Dispersion } from './generic/dispersion';
 
 export default class Box extends Dispersion {
   constructor(obj, composer) {
-    super(obj, composer);
+    super(obj, composer, DEFAULT_STYLE_SETTINGS);
 
     // Default to vertical
     if (this.settings.vertical === undefined) {
@@ -47,51 +81,63 @@ export default class Box extends Dispersion {
     if (this.settings.whiskers === undefined) {
       this.settings.whiskers = true;
     }
-
     this.onData(); // to be removed?
   }
 
   render() {
     // Filter out points we cannot render
     const items = this.items.filter(item =>
-   [item.min, item.max].indexOf(null) === -1 || [item.start, item.end].indexOf(null) === -1
-);
+      [item.min, item.max].indexOf(null) === -1 || [item.start, item.end].indexOf(null) === -1
+    );
+
+    // Calculate box width
+    this.boxWidth = this.bandwidth * this.rect.width;
 
     super.render(items);
   }
 
   renderDataPoint(item) {
-    if (item.min !== null && item.max !== null) {
+    item.style.box.width = Math.max(item.style.box.minWidth,
+      Math.min(item.style.box.maxWidth,
+        item.style.box.width * this.bandwidth * this.rect.width))
+      / this.rect.width;
+
+    item.style.whisker.width = Math.max(item.style.box.minWidth,
+      Math.min(item.style.box.maxWidth,
+        item.style.whisker.width * this.bandwidth * 0.5 * this.rect.width))
+      / this.rect.width;
+
+    if (item.style.line.show && item.min !== null && item.max !== null) {
       // Draw the line min - start
-      this.doodle.verticalLine(item.x, item.start, item.min, 'line');
+      this.doodle.verticalLine(item.x, item.start, item.min, 'line', item.style);
 
       // Draw the line end - max (high)
-      this.doodle.verticalLine(item.x, item.max, item.end, 'line');
+      this.doodle.verticalLine(item.x, item.max, item.end, 'line', item.style);
     }
 
     // Draw the box
     const high = Math.max(item.start, item.end);
     const low = Math.min(item.start, item.end);
-
-    this.doodle.box(
-      item.x,
-      low,
-      (high - low),
-      'box'
-    );
-
+    if (item.style.box.show) {
+      this.doodle.box(
+        item.x,
+        low,
+        (high - low),
+        item.style
+      );
+    }
     // Draw the whiskers
-    if (this.settings.whiskers && item.min !== null && item.max !== null) {
+    if (item.style.whisker.show && item.min !== null && item.max !== null) {
       // Low whisker
-      this.doodle.whisker(item.x, item.min);
+      this.doodle.whisker(item.x, item.min, item.style);
 
       // High whisker
-      this.doodle.whisker(item.x, item.max);
+      this.doodle.whisker(item.x, item.max, item.style);
     }
 
     // Draw the median line
-    if (item.med !== null) {
-      this.doodle.median(item.x, item.med);
+    if (item.style.median.show && item.med !== null) {
+      this.doodle.median(item.x, item.med, item.style);
     }
   }
 }

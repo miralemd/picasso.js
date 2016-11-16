@@ -1,70 +1,48 @@
 import { default as extend } from 'extend';
 
-export function doodler() {
+export default function doodler(settings) {
   function doodle() {
     doodle.push = v => v;
-    doodle.settings = { styles: {} };
-    doodle.customStyle = {};
-
+    doodle.settings = settings || { style: {} };
     return doodle;
   }
 
-  doodle.customize = function (item) {
-    if (
-      doodle.settings.styler &&
-      typeof doodle.settings.styler === 'function'
-    ) {
-      doodle.customStyle = doodle.settings.styler(item) || {};
-    }
+  doodle.style = function (object, styleName, style = {}) {
+    return extend(object, style[styleName] || {});
   };
 
-  doodle.style = function (object, styleName) {
-    return extend(
-      object,
-      doodle.settings.styles.base || {},
-      doodle.settings.styles[styleName] || {},
-      doodle.customStyle[styleName] || {}
-    );
-  };
-
-  doodle.postfill = function (object, key, fill) {
-    doodle.settings.styles[object] = doodle.settings.styles[object] || {};
-    doodle.settings.styles[object][key] = doodle.settings.styles[object][key] * fill || fill;
-  };
-
-  doodle.horizontalLine = function (x, y, width, styleName) {
+  doodle.horizontalLine = function (x, y, width, styleName, style = {}) {
     return doodle.push(
       doodle.style({
         type: 'line',
         y1: y,
         x1: x - (width / 2),
         y2: y,
-        x2: x + (width / 2),
-        stroke: '#000',
-        strokeWidth: 1
+        x2: x + (width / 2)
       },
-      styleName)
+        styleName,
+        style
+      )
     );
   };
 
-  doodle.verticalLine = function (x, y1, y2, styleName) {
+  doodle.verticalLine = function (x, y1, y2, styleName, style = {}) {
     return doodle.push(
       doodle.style({
         type: 'line',
         y1,
         x1: x,
         y2,
-        x2: x,
-        stroke: '#000',
-        strokeWidth: 1
+        x2: x
       },
-      styleName)
+        styleName,
+        style
+      )
     );
   };
 
-  doodle.whisker = function (x, y) {
-    const width = doodle.settings.styles.whisker.width;
-
+  doodle.whisker = function (x, y, style = { whisker: {} }) {
+    const width = style.whisker.width || 1;
     return doodle.push(
       doodle.style({
         type: 'line',
@@ -74,49 +52,56 @@ export function doodler() {
         cy: y,
         r: width / 2,
         y2: y,
-        x2: x + (width / 2),
-        stroke: '#000',
-        strokeWidth: 1
+        x2: x + (width / 2)
       },
-      'whisker')
+        'whisker',
+        style
+      )
     );
   };
 
-  doodle.openwhisker = function (x, y) {
+  doodle.openwhisker = function (x, y, style = { whisker: {} }) {
+    const width = style.whisker.width || 1;
     return doodle.whisker(
-      x - (doodle.settings.styles.whisker.width / 2),
-      y
+      x - (width / 2),
+      y,
+      style
     );
   };
 
-  doodle.closewhisker = function (x, y) {
+  doodle.closewhisker = function (x, y, style = { whisker: {} }) {
+    const width = style.whisker.width || 1;
     return doodle.whisker(
-      x + (doodle.settings.styles.whisker.width / 2),
-      y
+      x + (width / 2),
+      y,
+      style
     );
   };
 
-  doodle.median = function (x, y) {
+  doodle.median = function (x, y, style = { box: {} }) {
+    const width = style.box.width || 1;
     return doodle.horizontalLine(
       x,
       y,
-      doodle.settings.styles.box.width,
-      'med'
+      width,
+      'median',
+      style
     );
   };
 
-  doodle.box = function (x, y, height, name) {
+  doodle.box = function (x, y, height, style = { box: {} }) {
+    const width = style.box.width || 1;
     return doodle.push(
       doodle.style({
         type: 'rect',
-        x: x - (doodle.settings.styles[name].width / 2),
+        x: x - (width / 2),
         y,
         height,
-        width: doodle.settings.styles[name].width,
-        fill: '#fff',
-        stroke: '#000'
+        width
       },
-      name)
+        'box',
+        style
+      )
     );
   };
 
