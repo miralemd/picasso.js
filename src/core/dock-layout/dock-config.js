@@ -1,5 +1,8 @@
+import extend from 'extend';
+
 export default function dockConfig(dock = '', displayOrder = 0, prioOrder = 0, relevantSizeFn = () => 0) {
   const fn = function () {};
+  const egdeBleed = { left: 0, right: 0, top: 0, bottom: 0 };
 
   fn.requiredSize = function (calcFn) {
     if (typeof calcFn === 'function') {
@@ -30,6 +33,14 @@ export default function dockConfig(dock = '', displayOrder = 0, prioOrder = 0, r
       return prioOrder;
     }
     prioOrder = o;
+    return this;
+  };
+
+  fn.edgeBleed = function (b) {
+    if (typeof b === 'undefined') {
+      return egdeBleed;
+    }
+    extend(egdeBleed, b);
     return this;
   };
 
