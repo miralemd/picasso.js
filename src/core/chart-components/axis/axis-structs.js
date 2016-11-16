@@ -90,6 +90,10 @@ export function buildLabel(tick, buildOpts) {
   const labelAdjustForEnds = () => {
     const outerBoundaryMultipler = 0.75;
 
+    if (buildOpts.tilted) {
+      return;
+    }
+
     if (buildOpts.align === 'top' || buildOpts.align === 'bottom') {
       const leftBoundary = 0;
       const rightBoundary = buildOpts.outerRect.width;
@@ -136,12 +140,23 @@ export function buildLabel(tick, buildOpts) {
     }
   };
 
+  const labelApplyTilting = () => {
+    if (buildOpts.tilted) {
+      const r = -60;
+      struct.transform = `rotate(${r}, ${struct.x}, ${struct.y})`;
+      struct.anchor = buildOpts.align === 'bottom' ? 'end' : 'start';
+    }
+  };
+
   const labelApplyStyle = () => {
     extend(struct, buildOpts.style);
   };
+
   labelApplyStyle();
   labelAdjustForEnds();
   labelApplyPadding();
+  labelApplyTilting();
+
   return struct;
 }
 

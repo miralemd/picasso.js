@@ -49,7 +49,6 @@ function labelBuilder(ticks, buildOpts, renderer) {
 }
 
 function layeredLabelBuilder(ticks, buildOpts, settings, renderer) {
-  buildOpts.maxWidth *= 2;
   const padding = buildOpts.padding;
   const padding2 = labelsSpacing(settings) + buildOpts.maxHeight + settings.labels.margin;
   return ticks.map((tick, i) => {
@@ -69,6 +68,10 @@ function discreteCalcMaxTextRect({ renderer, settings, innerRect, scale }) {
   const textRect = { width: 0, height: h };
   if (settings.align === 'left' || settings.align === 'right') {
     textRect.width = innerRect.width - labelsSpacing(settings) - settings.paddingEnd;
+  } else if (settings.labels.layered) {
+    textRect.width = (scale.step() * 0.75 * innerRect.width) * 2;
+  } else if (!settings.labels.layered && settings.labels.tilted) {
+    textRect.width = innerRect.height;
   } else {
     textRect.width = scale.step() * 0.75 * innerRect.width;
   }
@@ -141,6 +144,8 @@ export default function nodeBuilder(type) {
       buildOpts.padding = padding;
       buildOpts.maxWidth = textRect.width;
       buildOpts.maxHeight = textRect.height;
+      buildOpts.layered = settings.labels.layered;
+      buildOpts.tilted = !settings.labels.layered && settings.labels.tilted;
 
       if (settings.labels.layered && (settings.align === 'top' || settings.align === 'bottom')) {
         nodes.push(...layeredLabelBuilder(major, buildOpts, settings, renderer));

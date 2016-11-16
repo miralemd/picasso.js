@@ -63,7 +63,8 @@ export default function calcRequiredSize({ type, data, formatter, renderer, scal
       });
       let sizeFromTextRect;
       if (tilted) {
-        const radians = Math.PI / 3; // angle in radians
+        // const radians = Math.PI / 3; // angle in radians
+        const radians = -60 * (Math.PI / 180); // angle in radians
         sizeFromTextRect = r => (r.height * Math.sin(radians)) + (r.width * Math.cos(radians));
       } else if (horizontal) {
         sizeFromTextRect = r => r.height;
