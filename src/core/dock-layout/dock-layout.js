@@ -20,6 +20,11 @@ function roundRect(rect) {
   };
 }
 
+function cacheSize(c, containerRect) {
+  c.cachedSize = typeof c.cachedSize === 'undefined' ? Math.ceil(c.config.requiredSize()(containerRect)) : c.cachedSize;
+  return c.cachedSize;
+}
+
 function reduceSingleLayoutRect(containerRect, reducedRect, c) {
   switch (c.config.dock()) {
     case 'top':
@@ -69,7 +74,7 @@ function reduceLayoutRect(containerRect, components) {
 
   for (let i = 0; i < components.length; ++i) {
     const c = components[i];
-    c.cachedSize = Math.ceil(c.config.requiredSize()(containerRect));
+    cacheSize(c, containerRect);
 
     if (!reduceSingleLayoutRect(containerRect, reducedRect, c)) {
       components.splice(i, 1);
@@ -84,7 +89,6 @@ function positionComponents(components, containerRect, reducedRect) {
     hRect = { x: reducedRect.x, y: reducedRect.y, width: reducedRect.width, height: reducedRect.height };
 
   components.sort((a, b) => a.config.displayOrder() - b.config.displayOrder()).forEach((c) => {
-    c.cachedSize = c.cachedSize === undefined ? Math.ceil(c.config.requiredSize()(containerRect)) : c.cachedSize;
     const outerRect = {};
     const rect = {};
 
