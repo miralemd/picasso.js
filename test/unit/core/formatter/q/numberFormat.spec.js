@@ -8,8 +8,8 @@ describe('numberFormat', () => {
       f = formatter();
 
       expect(Object.keys(f).length).to.equal(2);
-      expect(f.hasOwnProperty('format')).to.equal(true);
-      expect(f.hasOwnProperty('pattern')).to.equal(true);
+      expect({}.hasOwnProperty.call(f, 'format')).to.equal(true);
+      expect({}.hasOwnProperty.call(f, 'pattern')).to.equal(true);
       expect(typeof f === 'function').to.equal(true);
     });
 
