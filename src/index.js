@@ -10,14 +10,8 @@ import './web';
  * @namespace picasso
  */
 
-const exports = {
+export {
+  config,
   chart,
   renderer
 };
-
-Object.defineProperty(exports, 'Promise', {
-  get: () => config.Promise,
-  set: (p) => { config.Promise = p; }
-});
-
-module.exports = exports;

@@ -1,11 +1,11 @@
-import picasso from '../../src/index';
+import * as picasso from '../../src/index';
 
 describe('picasso.js', () => {
   it('should expose the correct top-level API', () => {
     expect(typeof picasso.chart).to.equal('function');
     expect(typeof picasso.renderer).to.equal('function');
-    expect(typeof picasso.Promise).to.equal('function');
-    expect(picasso.Promise).to.equal(global.Promise);
+    expect(typeof picasso.config.Promise).to.equal('function');
+    expect(picasso.config.Promise).to.equal(global.Promise);
   });
 
   describe('Promise configuration', () => {
@@ -19,17 +19,17 @@ describe('picasso.js', () => {
       MyPromise = () => {};
       MyPromise.resolve = myResolve;
       MyPromise.reject = myReject;
-      picasso.Promise = MyPromise;
+      picasso.config.Promise = MyPromise;
     });
 
     afterEach(() => {
-      picasso.Promise = global.Promise;
+      picasso.config.Promise = global.Promise;
     });
 
     it('should be able to configure Promise', () => {
-      expect(picasso.Promise).to.equal(MyPromise);
-      expect(picasso.Promise.resolve).to.equal(MyPromise.resolve);
-      expect(picasso.Promise.reject).to.equal(MyPromise.reject);
+      expect(picasso.config.Promise).to.equal(MyPromise);
+      expect(picasso.config.Promise.resolve).to.equal(MyPromise.resolve);
+      expect(picasso.config.Promise.reject).to.equal(MyPromise.reject);
     });
   });
 });
