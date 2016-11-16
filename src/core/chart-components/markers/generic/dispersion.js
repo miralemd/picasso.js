@@ -13,7 +13,7 @@ function values(table, setting) {
 }
 
 function resolveInitialStyle(settings, baseStyles, composer) {
-  return resolveInitialSettings(settings, baseStyles, composer, 'style');
+  return resolveInitialSettings(settings, baseStyles, composer);
 }
 
 export default class Dispersion {

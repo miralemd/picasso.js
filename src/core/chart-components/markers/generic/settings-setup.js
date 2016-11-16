@@ -1,5 +1,5 @@
-import { resolveStyle } from '../../../style';
 import { default as extend } from 'extend';
+import { resolveStyle } from '../../../style';
 
 export default function resolveInitialSettings(settings, defaults, composer, rootPath) {
   const ret = {};

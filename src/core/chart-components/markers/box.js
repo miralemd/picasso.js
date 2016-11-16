@@ -2,14 +2,17 @@ import Dispersion from './generic/dispersion';
 
 const DEFAULT_STYLE_SETTINGS = {
   line: {
+    show: true,
     stroke: '#000',
     strokeWidth: 1
   },
-  med: {
+  median: {
+    show: true,
     stroke: '#000',
     strokeWidth: 1
   },
   whisker: {
+    show: true,
     stroke: '#000',
     strokeWidth: 1,
     fill: '',
@@ -17,6 +20,7 @@ const DEFAULT_STYLE_SETTINGS = {
     width: 1
   },
   box: {
+    show: true,
     fill: '#fff',
     stroke: '#000',
     strokeWidth: 1,
@@ -96,14 +100,14 @@ export default class Box extends Dispersion {
     item.style.box.width = Math.max(item.style.box.minWidth,
       Math.min(item.style.box.maxWidth,
         item.style.box.width * this.bandwidth * this.rect.width))
-        / this.rect.width;
+      / this.rect.width;
 
     item.style.whisker.width = Math.max(item.style.box.minWidth,
       Math.min(item.style.box.maxWidth,
         item.style.whisker.width * this.bandwidth * 0.5 * this.rect.width))
-        / this.rect.width;
+      / this.rect.width;
 
-    if (item.min !== null && item.max !== null) {
+    if (item.style.line.show && item.min !== null && item.max !== null) {
       // Draw the line min - start
       this.doodle.verticalLine(item.x, item.start, item.min, 'line', item.style);
 
@@ -114,16 +118,16 @@ export default class Box extends Dispersion {
     // Draw the box
     const high = Math.max(item.start, item.end);
     const low = Math.min(item.start, item.end);
-
-    this.doodle.box(
-      item.x,
-      low,
-      (high - low),
-      item.style
-    );
-
+    if (item.style.box.show) {
+      this.doodle.box(
+        item.x,
+        low,
+        (high - low),
+        item.style
+      );
+    }
     // Draw the whiskers
-    if (this.settings.whiskers && item.min !== null && item.max !== null) {
+    if (item.style.whisker.show && item.min !== null && item.max !== null) {
       // Low whisker
       this.doodle.whisker(item.x, item.min, item.style);
 
@@ -132,7 +136,7 @@ export default class Box extends Dispersion {
     }
 
     // Draw the median line
-    if (item.med !== null) {
+    if (item.style.median.show && item.med !== null) {
       this.doodle.median(item.x, item.med, item.style);
     }
   }

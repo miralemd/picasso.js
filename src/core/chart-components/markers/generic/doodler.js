@@ -84,7 +84,7 @@ export default function doodler(settings) {
       x,
       y,
       width,
-      'med',
+      'median',
       style
     );
   };

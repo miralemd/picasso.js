@@ -83,7 +83,8 @@ function resolveAttribute(root, steps, attribute, defaultVal) {
 * @param {string} propertyName Name of child property to access
 * @returns {object} combined styles
 * @example
-* // returns { stroke: "#00f", strokeWidth: 2, fill: "red", width: function(999, widthResolve, ...args) }
+* // returns { stroke: "#00f", strokeWidth: 2, fill: "red",
+*     width: function(999, widthResolve, ...args) }
 * resolveSettings(
 *    {
 *    stroke: "#000",
@@ -97,7 +98,9 @@ function resolveAttribute(root, steps, attribute, defaultVal) {
 *        parts: {
 *            rect: {
 *                stroke: "#00f",
-*                width: function widthResolve ( dataVal, index, dataValues ) { return dataVal.value; }
+*                width: function widthResolve ( dataVal, index, dataValues ) {
+*                  return dataVal.value;
+*                }
 *            },
 *            label: { }
 *        }
