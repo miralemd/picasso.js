@@ -38,7 +38,7 @@ export function formatter(pattern, thousand, decimal, qType) {
   format.pattern = function (p) {
     if (p) {
       qformat.pattern = p;
-      p.prepare();
+      qformat.prepare();
     }
     return qformat.pattern;
   };
