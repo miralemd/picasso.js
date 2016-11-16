@@ -25,41 +25,52 @@ function cacheSize(c, containerRect) {
   return c.cachedSize;
 }
 
-function reduceSingleLayoutRect(containerRect, reducedRect, c) {
-  switch (c.config.dock()) {
-    case 'top':
-      if (reducedRect.height >= c.cachedSize + (containerRect.height * 0.5)) {
-        reducedRect.y += c.cachedSize;
-        reducedRect.height -= c.cachedSize;
-        return true;
-      } else {
-        return false;
-      }
-    case 'bottom':
-      if (reducedRect.height >= c.cachedSize + (containerRect.height * 0.5)) {
-        reducedRect.height -= c.cachedSize;
-        return true;
-      } else {
-        return false;
-      }
-    case 'left':
-      if (reducedRect.width >= c.cachedSize + (containerRect.width * 0.5)) {
-        reducedRect.x += c.cachedSize;
-        reducedRect.width -= c.cachedSize;
-        return true;
-      } else {
-        return false;
-      }
-    case 'right':
-      if (reducedRect.width >= c.cachedSize + (containerRect.width * 0.5)) {
-        reducedRect.width -= c.cachedSize;
-        return true;
-      } else {
-        return false;
-      }
-    default:
-      return true;
+function validateRequestedReduce(containerRect, reducedRect, requestedReduce) {
+  const minReduceWidth = containerRect.width * 0.5;
+  const minReduceHeight = containerRect.height * 0.5;
+  const verticalReduce = (reducedRect.width - requestedReduce.left - requestedReduce.right) > minReduceWidth;
+  const horizontalReduce = (reducedRect.height - requestedReduce.top - requestedReduce.bottom) > minReduceHeight;
+
+  if (verticalReduce && horizontalReduce) {
+    return true;
   }
+  return false;
+}
+
+function reduceLeft(reducedRect, requestedReduce) {
+  reducedRect.x += requestedReduce.left;
+  reducedRect.width -= requestedReduce.left;
+}
+
+function reduceRight(reducedRect, requestedReduce) {
+  reducedRect.width -= requestedReduce.right;
+}
+
+function reduceTop(reducedRect, requestedReduce) {
+  reducedRect.y += requestedReduce.top;
+  reducedRect.height -= requestedReduce.top;
+}
+
+function reduceBottom(reducedRect, requestedReduce) {
+  reducedRect.height -= requestedReduce.bottom;
+}
+
+function reduceSingleLayoutRect(containerRect, reducedRect, c) {
+  const requestedReduce = { left: 0, right: 0, top: 0, bottom: 0 };
+
+  requestedReduce[c.config.dock()] = c.cachedSize;
+
+  const reduce = validateRequestedReduce(containerRect, reducedRect, requestedReduce);
+
+  if (!reduce) {
+    return false;
+  }
+
+  reduceLeft(reducedRect, requestedReduce);
+  reduceRight(reducedRect, requestedReduce);
+  reduceTop(reducedRect, requestedReduce);
+  reduceBottom(reducedRect, requestedReduce);
+  return true;
 }
 
 function reduceLayoutRect(containerRect, components) {
