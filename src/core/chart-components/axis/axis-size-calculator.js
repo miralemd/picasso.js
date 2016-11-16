@@ -58,7 +58,8 @@ export function calcRequiredSize({ data, formatter, renderer, scale, settings, t
     if (settings.line.show) {
       size += settings.line.strokeWidth;
     }
-    size += settings.padding;
+    size += settings.paddingStart;
+    size += settings.paddingEnd;
 
     return size;
   };

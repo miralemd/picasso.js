@@ -2,6 +2,7 @@ import { buildLabel, buildTick, buildLine } from './axis-structs';
 
 function tickSpacing(settings) {
   let spacing = 0;
+  spacing += settings.paddingStart;
   spacing += settings.line.show ? settings.line.strokeWidth : 0;
   spacing += settings.ticks.show ? settings.ticks.padding : 0;
   return spacing;
@@ -67,7 +68,7 @@ function discreteCalcMaxTextRect({ renderer, settings, innerRect, scale }) {
 
   const textRect = { width: 0, height: h };
   if (settings.align === 'left' || settings.align === 'right') {
-    textRect.width = innerRect.width - labelsSpacing(settings) - settings.padding;
+    textRect.width = innerRect.width - labelsSpacing(settings) - settings.paddingEnd;
   } else {
     textRect.width = scale.step() * 0.75 * innerRect.width;
   }
@@ -83,7 +84,7 @@ function continuousCalcMaxTextRect({ renderer, settings, innerRect, ticks }) {
 
   const textRect = { width: 0, height: h };
   if (settings.align === 'left' || settings.align === 'right') {
-    textRect.width = innerRect.width - labelsSpacing(settings) - settings.padding;
+    textRect.width = innerRect.width - labelsSpacing(settings) - settings.paddingEnd;
   } else {
     textRect.width = (innerRect.width / majorTicks(ticks).length) * 0.75;
   }
@@ -115,6 +116,7 @@ export function nodeBuilder(type) {
 
     if (settings.line.show) {
       buildOpts.style = settings.line;
+      buildOpts.padding = settings.paddingStart;
 
       nodes.push(buildLine(buildOpts));
     }

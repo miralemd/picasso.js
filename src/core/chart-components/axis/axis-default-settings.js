@@ -4,7 +4,8 @@ export function discreteDefaultSettings() {
       dock: 'bottom',
       displayOrder: 0,
       prioOrder: 0,
-      padding: 10
+      paddingStart: 0,
+      paddingEnd: 10
     },
     {
       labels: {
@@ -39,7 +40,8 @@ export function continuousDefaultSettings() {
       dock: 'left',
       displayOrder: 0,
       prioOrder: 0,
-      padding: 10
+      paddingStart: 0,
+      paddingEnd: 10
     },
     {
       labels: {
