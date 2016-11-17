@@ -43,7 +43,7 @@ function tiltedLabelOverlap({ majorTicks, measureText, rect }) {
   return false;
 }
 
-export default function calcRequiredSize({ type, data, formatter, renderer, scale, settings, ticksFn }) {
+export default function calcRequiredSize({ type, data, formatter, renderer, scale, settings, ticksFn, layoutConfig }) {
   return function (rect) {
     let size = 0;
 
@@ -51,8 +51,8 @@ export default function calcRequiredSize({ type, data, formatter, renderer, scal
       const align = settings.align;
       const horizontal = align === 'top' || align === 'bottom';
       const layered = horizontal && settings.labels.layered;
-      const tilted = horizontal && settings.labels.tilted && !layered;
 
+      const tilted = horizontal && settings.labels.tilted && !layered;
       const majorTicks = ticksFn({ settings, innerRect: rect, scale, data, formatter })
           .filter(isMajorTick);
 
@@ -63,7 +63,6 @@ export default function calcRequiredSize({ type, data, formatter, renderer, scal
       });
       let sizeFromTextRect;
       if (tilted) {
-        // const radians = Math.PI / 3; // angle in radians
         const radians = 60 * (Math.PI / 180); // angle in radians
         sizeFromTextRect = r => (r.width * Math.sin(radians)) + (r.height * Math.cos(radians));
       } else if (horizontal) {
@@ -98,6 +97,18 @@ export default function calcRequiredSize({ type, data, formatter, renderer, scal
 
       if (layered) {
         size *= 2;
+      }
+
+      if (tilted) {
+        const radians = 60 * (Math.PI / 180); // angle in radians
+        let bleedSize = Math.ceil(Math.cos(radians) * textSize) + 10;
+        if (settings.align === 'bottom') {
+          bleedSize -= majorTicks[0].position * rect.width * 0.8;
+        } else {
+          bleedSize -= majorTicks[majorTicks.length - 1].position * rect.width * 0.8;
+        }
+        const bleedDir = settings.align === 'bottom' ? 'left' : 'right';
+        layoutConfig.edgeBleed({ [bleedDir]: bleedSize });
       }
     }
     if (settings.ticks.show) {

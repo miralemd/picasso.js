@@ -25,51 +25,71 @@ function cacheSize(c, containerRect) {
   return c.cachedSize;
 }
 
-function validateRequestedReduce(containerRect, reducedRect, requestedReduce) {
+function validateReduceRect(containerRect, reducedRect) {
   const minReduceWidth = containerRect.width * 0.5;
   const minReduceHeight = containerRect.height * 0.5;
-  const verticalReduce = (reducedRect.width - requestedReduce.left - requestedReduce.right) > minReduceWidth;
-  const horizontalReduce = (reducedRect.height - requestedReduce.top - requestedReduce.bottom) > minReduceHeight;
+  return reducedRect.width >= minReduceWidth && reducedRect.height >= minReduceHeight;
+}
 
-  if (verticalReduce && horizontalReduce) {
-    return true;
+function reduceDocRect(reducedRect, c) {
+  switch (c.config.dock()) {
+    case 'top':
+      reducedRect.y += c.cachedSize;
+      reducedRect.height -= c.cachedSize;
+      break;
+    case 'bottom':
+      reducedRect.height -= c.cachedSize;
+      break;
+    case 'left':
+      reducedRect.x += c.cachedSize;
+      reducedRect.width -= c.cachedSize;
+      break;
+    case 'right':
+      reducedRect.width -= c.cachedSize;
+      break;
+    default:
   }
-  return false;
+}
+function addEdgeBleed(currentEdgeBleed, c) {
+  const edgeBleed = c.config.edgeBleed();
+  currentEdgeBleed.left = Math.max(currentEdgeBleed.left, edgeBleed.left);
+  currentEdgeBleed.right = Math.max(currentEdgeBleed.right, edgeBleed.right);
+  currentEdgeBleed.top = Math.max(currentEdgeBleed.top, edgeBleed.top);
+  currentEdgeBleed.bottom = Math.max(currentEdgeBleed.bottom, edgeBleed.bottom);
+}
+function reduceEdgeBleed(containerRect, reducedRect, edgeBleed) {
+  if (reducedRect.x < edgeBleed.left) {
+    reducedRect.width -= edgeBleed.left - reducedRect.x;
+    reducedRect.x = edgeBleed.left;
+  }
+  const reducedRectRightBoundary = containerRect.width - (reducedRect.x + reducedRect.width);
+  if (reducedRectRightBoundary < edgeBleed.right) {
+    reducedRect.width -= edgeBleed.right - reducedRectRightBoundary;
+  }
+  if (reducedRect.y < edgeBleed.top) {
+    reducedRect.height -= edgeBleed.top - reducedRect.y;
+    reducedRect.y = edgeBleed.top;
+  }
+  const reducedRectBottomBoundary = containerRect.height - (reducedRect.y + reducedRect.height);
+  if (reducedRectBottomBoundary < edgeBleed.bottom) {
+    reducedRect.height -= edgeBleed.bottom - reducedRectBottomBoundary;
+  }
 }
 
-function reduceLeft(reducedRect, requestedReduce) {
-  reducedRect.x += requestedReduce.left;
-  reducedRect.width -= requestedReduce.left;
-}
+function reduceSingleLayoutRect(containerRect, reducedRect, edgeBleed, c) {
+  const newReduceRect = extend({}, reducedRect);
+  const newEdgeBeed = extend({}, edgeBleed);
+  reduceDocRect(newReduceRect, c);
+  addEdgeBleed(newEdgeBeed, c);
+  reduceEdgeBleed(containerRect, newReduceRect, newEdgeBeed);
 
-function reduceRight(reducedRect, requestedReduce) {
-  reducedRect.width -= requestedReduce.right;
-}
-
-function reduceTop(reducedRect, requestedReduce) {
-  reducedRect.y += requestedReduce.top;
-  reducedRect.height -= requestedReduce.top;
-}
-
-function reduceBottom(reducedRect, requestedReduce) {
-  reducedRect.height -= requestedReduce.bottom;
-}
-
-function reduceSingleLayoutRect(containerRect, reducedRect, c) {
-  const requestedReduce = { left: 0, right: 0, top: 0, bottom: 0 };
-
-  requestedReduce[c.config.dock()] = c.cachedSize;
-
-  const reduce = validateRequestedReduce(containerRect, reducedRect, requestedReduce);
-
-  if (!reduce) {
+  const isValid = validateReduceRect(containerRect, newReduceRect);
+  if (!isValid) {
     return false;
   }
 
-  reduceLeft(reducedRect, requestedReduce);
-  reduceRight(reducedRect, requestedReduce);
-  reduceTop(reducedRect, requestedReduce);
-  reduceBottom(reducedRect, requestedReduce);
+  reduceDocRect(reducedRect, c);
+  addEdgeBleed(edgeBleed, c);
   return true;
 }
 
@@ -80,6 +100,7 @@ function reduceLayoutRect(containerRect, components) {
     width: containerRect.width,
     height: containerRect.height
   };
+  const edgeBleed = { left: 0, right: 0, top: 0, bottom: 0 };
 
   components.sort((a, b) => a.config.prioOrder() - b.config.prioOrder());
 
@@ -87,11 +108,12 @@ function reduceLayoutRect(containerRect, components) {
     const c = components[i];
     cacheSize(c, containerRect);
 
-    if (!reduceSingleLayoutRect(containerRect, reducedRect, c)) {
+    if (!reduceSingleLayoutRect(containerRect, reducedRect, edgeBleed, c)) {
       components.splice(i, 1);
       --i;
     }
   }
+  reduceEdgeBleed(containerRect, reducedRect, edgeBleed);
   return reducedRect;
 }
 

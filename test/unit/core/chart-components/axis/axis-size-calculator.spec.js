@@ -24,10 +24,13 @@ describe('AxisSizeCalculator', () => {
     const scale = null;
     const data = null;
     const formatter = null;
+    const layoutConfig = {
+      edgeBleed: () => {}
+    };
     renderer = {
       measureText: ({ text }) => ({ width: text.toString().length, height: 5 })
     };
-    sizeFn = calcRequiredSize({ settings, ticksFn, scale, data, formatter, renderer });
+    sizeFn = calcRequiredSize({ settings, ticksFn, scale, data, formatter, renderer, layoutConfig });
   });
 
   it('axis with no visible component have a margin of 10', () => {
@@ -74,7 +77,7 @@ describe('AxisSizeCalculator', () => {
     settings.labels.show = true;
     settings.labels.tilted = true;
     const size = sizeFn(rect);
-    expect(size).to.approximately(19.3301, 0.0001);
+    expect(size).to.approximately(18.2320, 0.0001);
   });
 
   it('measure ticks', () => {
