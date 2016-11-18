@@ -1,4 +1,4 @@
-import resolveInitialSettings from '../../../../../../src/core/chart-components/markers/generic/settings-setup';
+import resolveInitialSettings from '../../../../../../src/core/chart-components/settings-setup';
 
 describe('Settings setup', () => {
   let settings,

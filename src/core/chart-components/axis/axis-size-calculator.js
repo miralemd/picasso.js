@@ -13,8 +13,8 @@ export function calcRequiredSize({ data, formatter, renderer, scale, settings, t
 
       const measureText = text => renderer.measureText({
         text,
-        fontSize: settings.labels.style.fontSize,
-        fontFamily: settings.labels.style.fontFamily
+        fontSize: settings.labels.fontSize,
+        fontFamily: settings.labels.fontFamily
       });
       let sizeFromTextRect;
       if (settings.labels.tilted) {
@@ -56,7 +56,7 @@ export function calcRequiredSize({ data, formatter, renderer, scale, settings, t
       }
     }
     if (settings.line.show) {
-      size += settings.line.style.strokeWidth;
+      size += settings.line.strokeWidth;
     }
     size += 10; // 10px outside margin
 

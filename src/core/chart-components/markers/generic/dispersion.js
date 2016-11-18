@@ -2,7 +2,7 @@ import { renderer } from '../../../renderer';
 import doodler from './doodler';
 import { transposer } from '../../../transposer/transposer';
 import { resolveForDataValues } from '../../../style';
-import resolveInitialSettings from './settings-setup';
+import resolveInitialSettings from '../../settings-setup';
 
 function values(table, setting) {
   if (setting && setting.source) {

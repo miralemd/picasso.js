@@ -1,9 +1,9 @@
 import { default as extend } from 'extend';
-import { resolveStyle } from '../../../style';
+import { resolveStyle } from '../style';
 
 export default function resolveInitialSettings(settings, defaults, composer, rootPath) {
   const ret = {};
-  const externals = extend({}, settings);
+  const externals = extend(true, {}, settings);
   Object.keys(defaults).forEach((s) => {
     const ext = rootPath && externals[rootPath] ? externals[rootPath][s] : externals[s];
     if (ext) {
