@@ -144,8 +144,13 @@ export function buildLabel(tick, buildOpts) {
     if (buildOpts.tilted) {
       const r = -60;
       const radians = r * (Math.PI / 180);
-      struct.x -= (buildOpts.maxHeight * Math.sin(radians)) / 2;
-      struct.y -= buildOpts.maxHeight * Math.cos(radians);
+
+      if (buildOpts.align === 'bottom') {
+        struct.x -= (buildOpts.maxHeight * Math.sin(radians)) / 2;
+        struct.y -= buildOpts.maxHeight * Math.cos(radians);
+      } else {
+        struct.x -= (buildOpts.maxHeight * Math.sin(radians)) / 3;
+      }
       struct.transform = `rotate(${r}, ${struct.x}, ${struct.y})`;
       struct.anchor = buildOpts.align === 'bottom' ? 'end' : 'start';
     }
