@@ -1,6 +1,10 @@
 import RgbaColor from '../rgba-color';
 import HslaColor from '../hsla-color';
 
+function hasPropertyCombination(obj, properties) {
+  return properties.every(p => ({}.hasOwnProperty.call(obj, p)));
+}
+
 /**
  * Instanciate a new color object
  * @ignore
@@ -38,14 +42,11 @@ export default function colorObject(colorObj) {
  * colorObject.test( { r:255, g: 123, b: 123 } );
  */
 colorObject.test = (obj) => {
-  if (obj === null || obj === undefined || typeof obj !== 'object') {
-    return false;
-  } else {
-    // Doesnt really work out well if any of the proparties have invalid values
-    return colorObject.getColorType(obj) !== undefined;
-  }
-};
+  if (obj === null || obj === undefined || typeof obj !== 'object') return false;
 
+  // Doesnt really work out well if any of the proparties have invalid values
+  return typeof colorObject.getColorType(obj) !== 'undefined';
+};
 
 /**
  * Get the color type from a color object
@@ -57,10 +58,11 @@ colorObject.test = (obj) => {
  * colorObject.getColorType( { r:255, g: 123, b: 123 } )
  */
 colorObject.getColorType = (obj) => {
-  if (typeof obj === 'object' && {}.hasOwnProperty.call(obj, 'r') && {}.hasOwnProperty.call(obj, 'g') && {}.hasOwnProperty.call(obj, 'b')) {
-    return 'rgb';
-  } else if (typeof obj === 'object' && {}.hasOwnProperty.call(obj, 'h') && {}.hasOwnProperty.call(obj, 's') && {}.hasOwnProperty.call(obj, 'l')) {
-    return 'hsl';
-  }
+  if (obj === null || typeof obj !== 'object') return undefined;
+
+  if (hasPropertyCombination(obj, ['r', 'g', 'b'])) return 'rgb';
+
+  if (hasPropertyCombination(obj, ['h', 's', 'l'])) return 'hsl';
+
   return undefined;
 };
