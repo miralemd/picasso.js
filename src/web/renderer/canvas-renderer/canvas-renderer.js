@@ -9,28 +9,23 @@ function resolveMatrix(p, g) {
   g.setTransform(p[0][0], p[1][0], p[0][1], p[1][1], p[0][2], p[1][2]);
 }
 
-function renderShapes(shapes, g) {
-  const alpha = g.globalAlpha;
+function applyContext(g, s, shapeToCanvasMap) {
+  shapeToCanvasMap.forEach((cmd) => {
+    const shapeCmd = cmd[0];
+    const canvasCmd = cmd[1];
+    if (shapeCmd in s && g[canvasCmd] !== s[shapeCmd]) {
+      g[canvasCmd] = s[shapeCmd];
+    }
+  });
+}
+
+function renderShapes(shapes, g, shapeToCanvasMap) {
   shapes.forEach((s) => {
-    if ('fill' in s && g.fill !== s.fill) {
-      g.fillStyle = s.fill;
-    }
-    if ('stroke' in s && g.stroke !== s.stroke) {
-      g.strokeStyle = s.stroke;
-    }
-    if ('opacity' in s && g.globalAlpha !== s.globalAlpha) {
-      g.globalAlpha = s.opacity;
-    } else if (g.globalAlpha !== alpha) {
-      g.globalAlpha = alpha;
-    }
-    if ('stroke-width' in s && g['stroke-width'] !== s['stroke-width']) {
-      g.lineWidth = s['stroke-width'];
-    }
+    g.save();
+    applyContext(g, s, shapeToCanvasMap);
 
     if (s.modelViewMatrix) {
       resolveMatrix(s.modelViewMatrix.elements, g);
-    } else {
-      g.setTransform(1, 0, 0, 1, 0, 0);
     }
 
     if (reg.has(s.type)) {
@@ -41,15 +36,23 @@ function renderShapes(shapes, g) {
       });
     }
     if (s.children) {
-      renderShapes(s.children, g);
+      renderShapes(s.children, g, shapeToCanvasMap);
     }
+    g.restore();
   });
 }
 
 export function renderer(sceneFn = sceneFactory) {
-  let el,
-    scene,
-    rect = { x: 0, y: 0, width: 0, height: 0 };
+  let el;
+  let scene;
+  const rect = { x: 0, y: 0, width: 0, height: 0 };
+  const shapeToCanvasMap = [
+    ['fill', 'fillStyle'],
+    ['stroke', 'strokeStyle'],
+    ['opacity', 'globalAlpha'],
+    ['globalAlpha', 'globalAlpha'],
+    ['stroke-width', 'lineWidth']
+  ];
 
   const canvasRenderer = function () {};
 
@@ -80,7 +83,7 @@ export function renderer(sceneFn = sceneFactory) {
 
     scene = sceneFn(shapes);
 
-    renderShapes(scene.children, g);
+    renderShapes(scene.children, g, shapeToCanvasMap);
 
     return config.Promise.resolve();
   };
