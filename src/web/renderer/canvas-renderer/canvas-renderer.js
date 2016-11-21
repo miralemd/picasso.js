@@ -5,6 +5,16 @@ import { measureText } from './text-metrics';
 
 const reg = registry();
 
+function dpiScale(g) {
+  const dpr = typeof window === 'undefined' ? 1 : window.devicePixelRatio || 1;
+  const backingStorePixelRatio = g.webkitBackingStorePixelRatio ||
+    g.mozBackingStorePixelRatio ||
+    g.msBackingStorePixelRatio ||
+    g.oBackingStorePixelRatio ||
+    g.backingStorePixelRatio || 1;
+  return dpr / backingStorePixelRatio;
+}
+
 function resolveMatrix(p, g) {
   g.setTransform(p[0][0], p[1][0], p[0][1], p[1][1], p[0][2], p[1][2]);
 }
@@ -64,6 +74,8 @@ export function renderer(sceneFn = sceneFactory) {
     if (!el) {
       el = element.ownerDocument.createElement('canvas');
       el.style.position = 'absolute';
+      el.style['-webkit-font-smoothing'] = 'antialiased';
+      el.style['-moz-osx-font-smoothing'] = 'antialiased';
     }
 
     element.appendChild(el);
@@ -75,13 +87,24 @@ export function renderer(sceneFn = sceneFactory) {
     }
 
     const g = el.getContext('2d');
-
+    const dpiRatio = dpiScale(g);
     el.style.left = `${rect.x}px`;
     el.style.top = `${rect.y}px`;
-    el.width = rect.width;
-    el.height = rect.height;
+    el.style.width = `${rect.width}px`;
+    el.style.height = `${rect.height}px`;
+    el.width = rect.width * dpiRatio;
+    el.height = rect.height * dpiRatio;
 
-    scene = sceneFn(shapes);
+    if (dpiRatio === 1) {
+      scene = sceneFn(shapes);
+    } else {
+      const scaledShapes = [{
+        type: 'container',
+        children: shapes,
+        transform: `scale(${dpiRatio}, ${dpiRatio})`
+      }];
+      scene = sceneFn(scaledShapes);
+    }
 
     renderShapes(scene.children, g, shapeToCanvasMap);
 

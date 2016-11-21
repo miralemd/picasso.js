@@ -60,6 +60,8 @@ describe('canvas renderer', () => {
     expect(el.style.position).to.equal('absolute');
     expect(el.style.left).to.equal('50px');
     expect(el.style.top).to.equal('100px');
+    expect(el.style.width).to.equal('200px');
+    expect(el.style.height).to.equal('400px');
     expect(el.width).to.equal(200);
     expect(el.height).to.equal(400);
   });
@@ -70,5 +72,31 @@ describe('canvas renderer', () => {
     expect(div.children.length).to.equal(1);
     r.destroy();
     expect(div.children.length).to.equal(0);
+  });
+
+  it('should scale canvas to adjust for HiDPI screens', () => {
+    const div = element('div');
+    const inputShapes = [{ type: 'container' }];
+    const expectedInputShapes = [
+      {
+        type: 'container',
+        children: inputShapes,
+        transform: 'scale(0.5, 0.5)'
+      }
+    ];
+    scene.returns({ children: [] });
+    r.appendTo(div);
+    r.size({ x: 50, y: 100, width: 200, height: 400 });
+
+    const ctxStub = sandbox.stub(div.children[0], 'getContext');
+    ctxStub.returns({ webkitBackingStorePixelRatio: 2 });
+
+    r.render(inputShapes);
+
+    expect(r.element().style.width).to.equal('200px');
+    expect(r.element().style.height).to.equal('400px');
+    expect(r.element().width).to.equal(200 * (1 / 2));
+    expect(r.element().height).to.equal(400 * (1 / 2));
+    expect(scene.args[0][0]).to.deep.equal(expectedInputShapes);
   });
 });
