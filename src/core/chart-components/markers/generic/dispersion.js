@@ -38,6 +38,9 @@ export default class Dispersion {
     // Set the default bandwidth
     this.bandwidth = 0;
 
+    // Set the minimum data point distance
+    this.minDataPointDistance = 0;
+
     // Initialize blueprint and doodler
     this.blueprint = transposer();
     this.doodle = doodler(this.settings);
@@ -57,10 +60,23 @@ export default class Dispersion {
     const x = this.x;
     const y = this.y;
 
-    if (x.scale.step) {
-      this.bandwidth = x ? x.scale.step() * 0.75 : 0.5;
-    } else {
-      this.bandwidth = 0.1;
+    // Calculate the minimum data point distance
+    if (!x.scale.step) {
+      let pointCoords = data.map(d => d.value);
+
+      // Sort values
+      pointCoords.sort();
+
+      let minSpace = pointCoords[pointCoords.length - 1];
+      for (let i = 0; i < pointCoords.length; i++) {
+        if (pointCoords[i] && pointCoords[i - 1]) {
+          if (minSpace === null || minSpace > (pointCoords[i] - pointCoords[i - 1])) {
+            minSpace = pointCoords[i] - pointCoords[i - 1];
+          }
+        }
+      }
+
+      this.minDataPointDistance = minSpace;
     }
 
     const dataValues = {};
@@ -71,28 +87,15 @@ export default class Dispersion {
       });
     });
 
-    let lastPoint;
-    let curPoint;
-    let minSpace = null;
-
     data.forEach((d, i) => {
       const obj = {};
       Object.keys(this.resolvedStyle).forEach((part) => {
         obj[part] = resolveForDataValues(this.resolvedStyle[part], dataValues[part], i);
       });
 
-      lastPoint = curPoint;
-      curPoint = x(d);
-
-      if (curPoint && lastPoint) {
-        if ((lastPoint - curPoint) < minSpace || minSpace === null) {
-          minSpace = lastPoint - curPoint;
-        }
-      }
-
       this.items.push({
         style: obj,
-        x: x ? curPoint : 0.5,
+        x: x ? x(d) : 0.5,
         min: y && minValues ? y(minValues[i]) : null,
         max: y && maxValues ? y(maxValues[i]) : null,
         start: y && startValues ? y(startValues[i]) : y({ value: 0 }),
@@ -103,6 +106,13 @@ export default class Dispersion {
   }
 
   render() {
+    if (this.minDataPointDistance) {
+      let normalizedWidth = this.x({ value: this.x.scale.domain()[0] }) - this.x({ value: this.x.scale.domain()[0] + this.minDataPointDistance });
+      this.bandwidth = Math.abs(normalizedWidth) * 0.75;
+    } else {
+      this.bandwidth = this.x && this.x.scale.step ? this.x.scale.step() * 0.75 : 0.5;
+    }
+
     // Setup the blueprint
     this.blueprint.width = this.rect.width;
     this.blueprint.height = this.rect.height;
