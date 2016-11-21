@@ -57,7 +57,12 @@ export default class Dispersion {
     const x = this.x;
     const y = this.y;
 
-    this.bandwidth = x ? x.scale.step() * 0.75 : 0.5;
+    if (x.scale.step) {
+      this.bandwidth = x ? x.scale.step() * 0.75 : 0.5;
+    } else {
+      this.bandwidth = 0.1;
+    }
+
     const dataValues = {};
     Object.keys(this.resolvedStyle).forEach((s) => {
       dataValues[s] = {};
@@ -66,15 +71,28 @@ export default class Dispersion {
       });
     });
 
+    let lastPoint;
+    let curPoint;
+    let minSpace = null;
+
     data.forEach((d, i) => {
       const obj = {};
       Object.keys(this.resolvedStyle).forEach((part) => {
         obj[part] = resolveForDataValues(this.resolvedStyle[part], dataValues[part], i);
       });
 
+      lastPoint = curPoint;
+      curPoint = x(d);
+
+      if (curPoint && lastPoint) {
+        if ((lastPoint - curPoint) < minSpace || minSpace === null) {
+          minSpace = lastPoint - curPoint;
+        }
+      }
+
       this.items.push({
         style: obj,
-        x: x ? x(d) : 0.5,
+        x: x ? curPoint : 0.5,
         min: y && minValues ? y(minValues[i]) : null,
         max: y && maxValues ? y(maxValues[i]) : null,
         start: y && startValues ? y(startValues[i]) : y({ value: 0 }),
