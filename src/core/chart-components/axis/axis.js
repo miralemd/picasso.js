@@ -66,6 +66,13 @@ export function abstractAxis(axisConfig, composer, renderer) {
     layoutConfig.requiredSize(calcRequiredSize({ data, formatter, renderer, scale, settings, ticksFn }));
     layoutConfig.displayOrder(settings.displayOrder);
     layoutConfig.prioOrder(settings.prioOrder);
+
+    Object.keys(styleSettings).forEach((a) => {
+      let styles = settings[a];
+      Object.keys(styles).forEach((s) => {
+        styles[s] = typeof styles[s] === 'function' ? styles[s]() : styles[s];
+      });
+    });
   };
 
   const continuous = function () {
@@ -87,13 +94,6 @@ export function abstractAxis(axisConfig, composer, renderer) {
   };
 
   const render = function () {
-    Object.keys(styleSettings).forEach((a) => {
-      let styles = settings[a];
-      Object.keys(styles).forEach((s) => {
-        styles[s] = typeof styles[s] === 'function' ? styles[s]() : styles[s];
-      });
-    });
-
     const ticks = ticksFn({ settings, innerRect, scale, data, formatter });
 
     nodes.push(...concreteNodeBuilder.build({ settings, scale, innerRect, outerRect, renderer, ticks }));
@@ -101,7 +101,7 @@ export function abstractAxis(axisConfig, composer, renderer) {
   };
 
   const onData = function () {
-    // Do something
+        // Do something
   };
 
   const resize = function (inner, outer) {

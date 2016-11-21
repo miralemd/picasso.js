@@ -10,21 +10,21 @@ export function discreteDefaultSettings() {
         show: true,
         tilted: false,
         fontFamily: 'Arial',
-        fontSize: '13px',
-        fill: '#999',
+        fontSize: '12px',
+        fill: '#595959',
         padding: 6,
         layered: false // TODO support auto, true and false?
       },
       line: {
         show: true,
         strokeWidth: 1,
-        stroke: '#999'
+        stroke: '#cccccc'
       },
       ticks: {
         show: true,
         padding: 0,
         tickSize: 4,
-        stroke: '#999',
+        stroke: '#cccccc',
         strokeWidth: 1
       }
     }
@@ -43,15 +43,15 @@ export function continuousDefaultSettings() {
         show: true,
         tilted: false,
         fontFamily: 'Arial',
-        fontSize: '13px',
-        fill: '#999',
+        fontSize: '12px',
+        fill: '#595959',
         padding: 4,
         layered: false
       },
       line: {
         show: true,
         strokeWidth: 1,
-        stroke: '#999'
+        stroke: '#cccccc'
       },
       ticks: {
         show: true,
@@ -59,14 +59,14 @@ export function continuousDefaultSettings() {
         tickSize: 8,
         tight: false,
         forceBounds: false,
-        stroke: '#999',
+        stroke: '#cccccc',
         strokeWidth: 1
       },
       minorTicks: {
         show: false,
         padding: 0,
         tickSize: 3,
-        stroke: '#999',
+        stroke: '#E6E6E6',
         strokeWidth: 1,
         count: 3
       }
