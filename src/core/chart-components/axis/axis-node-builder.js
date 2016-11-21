@@ -4,18 +4,18 @@ function tickSpacing(settings) {
   let spacing = 0;
   spacing += settings.paddingStart;
   spacing += settings.line.show ? settings.line.strokeWidth : 0;
-  spacing += settings.ticks.show ? settings.ticks.padding : 0;
+  spacing += settings.ticks.show ? settings.ticks.margin : 0;
   return spacing;
 }
 
 function tickMinorSpacing(settings) {
-  return settings.line.strokeWidth + settings.minorTicks.padding;
+  return settings.line.strokeWidth + settings.minorTicks.margin;
 }
 
 function labelsSpacing(settings) {
   let spacing = 0;
   spacing += settings.ticks.show ? settings.ticks.tickSize : 0;
-  spacing += tickSpacing(settings) + settings.labels.padding;
+  spacing += tickSpacing(settings) + settings.labels.margin;
   return spacing;
 }
 
@@ -51,7 +51,7 @@ function labelBuilder(ticks, buildOpts, renderer) {
 function layeredLabelBuilder(ticks, buildOpts, settings, renderer) {
   buildOpts.maxWidth *= 2;
   const padding = buildOpts.padding;
-  const padding2 = labelsSpacing(settings) + buildOpts.maxHeight + settings.labels.padding;
+  const padding2 = labelsSpacing(settings) + buildOpts.maxHeight + settings.labels.margin;
   return ticks.map((tick, i) => {
     buildOpts.padding = i % 2 === 0 ? padding : padding2;
     buildOpts.textRect = calcActualTextRect({ tick, renderer, style: buildOpts });

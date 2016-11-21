@@ -38,7 +38,7 @@ export function calcRequiredSize({ data, formatter, renderer, scale, settings, t
       const textSize = Math.min(settings.labels.maxSize, Math.max(...labelSizes));
 
       size += textSize;
-      size += settings.labels.padding;
+      size += settings.labels.margin;
 
       const layered = horizontal && settings.labels.layered;
       if (layered) {
@@ -46,11 +46,11 @@ export function calcRequiredSize({ data, formatter, renderer, scale, settings, t
       }
     }
     if (settings.ticks.show) {
-      size += settings.ticks.padding;
+      size += settings.ticks.margin;
       size += settings.ticks.tickSize;
     }
     if (settings.minorTicks && settings.minorTicks.show) {
-      const minorTicksSize = settings.minorTicks.padding + settings.minorTicks.tickSize;
+      const minorTicksSize = settings.minorTicks.margin + settings.minorTicks.tickSize;
       if (minorTicksSize > size) {
         size = minorTicksSize;
       }
