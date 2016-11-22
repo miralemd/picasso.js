@@ -4,6 +4,7 @@ import { generateContinuousTicks, generateDiscreteTicks } from './axis-tick-gene
 import { default as extend } from 'extend';
 import { dockConfig } from '../../dock-layout/dock-config';
 import { calcRequiredSize } from './axis-size-calculator';
+import resolveInitialSettings from '../settings-setup';
 
 function extendDomain(settings, scale) {
   const min = settings.ticks.min;
@@ -37,6 +38,10 @@ function dockAlignSetup(settings, type) {
   }
 }
 
+function resolveInitialStyle(settings, baseStyles, composer) {
+  return resolveInitialSettings(settings, baseStyles, composer);
+}
+
 export function abstractAxis(axisConfig, composer, renderer) {
   const innerRect = { width: 0, height: 0, x: 0, y: 0 };
   const outerRect = { width: 0, height: 0, x: 0, y: 0 };
@@ -48,21 +53,30 @@ export function abstractAxis(axisConfig, composer, renderer) {
   let data;
   let concreteNodeBuilder;
   let settings;
+  let styleSettings;
   let ticksFn;
   const layoutConfig = dockConfig();
 
   const init = function () {
-    extend(true, settings, axisConfig.settings);
+    styleSettings = resolveInitialStyle(axisConfig.settings, styleSettings, composer);
+    extend(true, settings, axisConfig.settings, styleSettings);
     concreteNodeBuilder = nodeBuilder(type);
     dockAlignSetup(settings, type);
     layoutConfig.dock(settings.dock);
     layoutConfig.requiredSize(calcRequiredSize({ data, formatter, renderer, scale, settings, ticksFn }));
     layoutConfig.displayOrder(settings.displayOrder);
     layoutConfig.prioOrder(settings.prioOrder);
+
+    Object.keys(styleSettings).forEach((a) => {
+      let styles = settings[a];
+      Object.keys(styles).forEach((s) => {
+        styles[s] = typeof styles[s] === 'function' ? styles[s]() : styles[s];
+      });
+    });
   };
 
   const continuous = function () {
-    settings = continuousDefaultSettings();
+    [settings, styleSettings] = continuousDefaultSettings();
     ticksFn = generateContinuousTicks;
     init();
     extendDomain(settings, scale);
@@ -71,7 +85,7 @@ export function abstractAxis(axisConfig, composer, renderer) {
   };
 
   const discrete = function () {
-    settings = discreteDefaultSettings();
+    [settings, styleSettings] = discreteDefaultSettings();
     ticksFn = generateDiscreteTicks;
     data = scale.domain();
     init();
@@ -87,7 +101,7 @@ export function abstractAxis(axisConfig, composer, renderer) {
   };
 
   const onData = function () {
-    // Do something
+        // Do something
   };
 
   const resize = function (inner, outer) {

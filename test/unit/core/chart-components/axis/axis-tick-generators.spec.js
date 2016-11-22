@@ -1,3 +1,4 @@
+import { default as extend } from 'extend';
 import { generateContinuousTicks, generateDiscreteTicks } from '../../../../../src/core/chart-components/axis/axis-tick-generators';
 import { continuousDefaultSettings } from '../../../../../src/core/chart-components/axis/axis-default-settings';
 import { linear } from '../../../../../src/core/scales/linear';
@@ -6,6 +7,7 @@ import { formatter } from '../../../../../src/core/formatter';
 
 describe('Tick generators', () => {
   let settings;
+  let styleSettings;
   let scale;
   const d3formatter = formatter('d3')('number')('');
   let input;
@@ -14,7 +16,8 @@ describe('Tick generators', () => {
     let innerRect;
     beforeEach(() => {
       innerRect = { width: 500, height: 100, x: 0, y: 0 };
-      settings = continuousDefaultSettings();
+      [settings, styleSettings] = continuousDefaultSettings();
+      extend(true, settings, styleSettings);
       scale = linear();
       input = { settings, innerRect, scale, formatter: d3formatter };
     });

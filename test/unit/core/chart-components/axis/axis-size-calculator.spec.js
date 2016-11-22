@@ -1,8 +1,10 @@
+import { default as extend } from 'extend';
 import { calcRequiredSize } from '../../../../../src/core/chart-components/axis/axis-size-calculator';
 import { continuousDefaultSettings } from '../../../../../src/core/chart-components/axis/axis-default-settings';
 
 describe('AxisSizeCalculator', () => {
   let settings;
+  let styleSettings;
   let ticks;
   let sizeFn;
   let ticksFn;
@@ -10,7 +12,8 @@ describe('AxisSizeCalculator', () => {
   let rect;
 
   beforeEach(() => {
-    settings = continuousDefaultSettings();
+    [settings, styleSettings] = continuousDefaultSettings();
+    extend(true, settings, styleSettings);
     settings.labels.show = false;
     settings.line.show = false;
     settings.ticks.show = false;
@@ -88,7 +91,7 @@ describe('AxisSizeCalculator', () => {
 
   it('measure line', () => {
     settings.line.show = true;
-    settings.line.style.strokeWidth = 5;
+    settings.line.strokeWidth = 5;
     const size = sizeFn(rect);
     expect(size).to.equals(15);
   });
