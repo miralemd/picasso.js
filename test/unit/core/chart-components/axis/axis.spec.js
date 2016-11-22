@@ -103,25 +103,6 @@ describe('Axis', () => {
       axis().render();
       verifyNumberOfNodes(2, 7);
     });
-
-    it('should extend domain of scale with custom min/max values', () => {
-      config.settings.ticks = { min: -10, max: 10 };
-      axis().render();
-      const actualMin = composerMock.scale().scale.start();
-      const actualMax = composerMock.scale().scale.end();
-      expect(actualMin).to.equal(-10);
-      expect(actualMax).to.equal(10);
-    });
-
-    it('should not extend domain based on tight ticks generation if custom min/max values are set', () => {
-      config.settings.ticks = { min: -10, max: 400 };
-      config.settings.ticks.tight = true;
-      axis().render();
-      const actualMin = composerMock.scale().scale.start();
-      const actualMax = composerMock.scale().scale.end();
-      expect(actualMin).to.equal(-10);
-      expect(actualMax).to.equal(400);
-    });
   });
 
   describe('discrete', () => {

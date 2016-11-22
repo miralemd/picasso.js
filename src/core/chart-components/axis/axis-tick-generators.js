@@ -1,9 +1,5 @@
 import { looseDistanceBasedGenerator, tightDistanceBasedGenerator } from '../../scales/linear';
 
-function hasMinMaxValue(settings) {
-  return settings.ticks.min !== undefined || settings.ticks.max !== undefined;
-}
-
 function ticksByCount({ count, minorCount, scale, formatter }) {
   return scale._scale.ticks(((count - 1) * minorCount) + count).map((tick, i) =>
    ({
@@ -59,7 +55,7 @@ export function generateContinuousTicks({ settings, scale, innerRect, formatter 
     ticks = scale.ticks({ count: settings.ticks.count, minorCount, scale: scale.copy(), formatter });
   } else {
     const distance = settings.align === 'top' || settings.align === 'bottom' ? innerRect.width : innerRect.height;
-    scale.tickGenerator(settings.ticks.tight && !hasMinMaxValue(settings) ? tightDistanceBasedGenerator : looseDistanceBasedGenerator);
+    scale.tickGenerator(settings.ticks.tight ? tightDistanceBasedGenerator : looseDistanceBasedGenerator);
     ticks = scale.ticks({
       distance,
       minorCount,
@@ -67,7 +63,7 @@ export function generateContinuousTicks({ settings, scale, innerRect, formatter 
       formatter
     });
 
-    if (settings.ticks.tight && !hasMinMaxValue(settings)) {
+    if (settings.ticks.tight) {
       scale.domain([ticks[0].label, ticks[ticks.length - 1].label]);
     }
 

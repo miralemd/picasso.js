@@ -6,20 +6,6 @@ import { dockConfig } from '../../dock-layout/dock-config';
 import { calcRequiredSize } from './axis-size-calculator';
 import resolveInitialSettings from '../settings-setup';
 
-function extendDomain(settings, scale) {
-  const min = settings.ticks.min;
-  const max = settings.ticks.max;
-  const minSafe = min !== undefined;
-  const maxSafe = max !== undefined;
-
-  if (minSafe || maxSafe) {
-    const start = scale.start();
-    const end = scale.end();
-    const d = [minSafe ? min : start, maxSafe ? max : end];
-    scale.domain(d);
-  }
-}
-
 function alignTransform({ align, inner }) {
   if (align === 'left') {
     return { x: inner.width + inner.x };
@@ -79,7 +65,6 @@ export function abstractAxis(axisConfig, composer, renderer) {
     [settings, styleSettings] = continuousDefaultSettings();
     ticksFn = generateContinuousTicks;
     init();
-    extendDomain(settings, scale);
 
     return continuous;
   };
