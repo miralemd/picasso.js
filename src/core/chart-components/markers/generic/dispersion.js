@@ -39,7 +39,7 @@ export default class Dispersion {
     this.bandwidth = 0;
 
     // Set the minimum data point distance
-    this.minDataPointDistance = 0;
+    this.minDataPointDistance = null;
 
     // Initialize blueprint and doodler
     this.blueprint = transposer();
@@ -106,7 +106,10 @@ export default class Dispersion {
   }
 
   render() {
-    if (this.minDataPointDistance) {
+    if (this.minDataPointDistance !== null) {
+      if (this.minDataPointDistance === 0) {
+        this.minDataPointDistance = 0.000000001;
+      }
       let normalizedWidth = this.x({ value: this.x.scale.domain()[0] }) - this.x({ value: this.x.scale.domain()[0] + this.minDataPointDistance });
       this.bandwidth = Math.abs(normalizedWidth) * 0.75;
     } else {

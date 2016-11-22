@@ -53,7 +53,7 @@ class Transposer {
    * @return {Number}            The actual location of the coordinate
    */
   transposeCoordinate(key, coordinate) {
-    if (Number.isFinite(coordinate)) {
+    if (typeof coordinate === 'number' && isFinite(coordinate)) {
       const firstChar = key.substring(0, 1);
 
       if (firstChar === 'x' || key === 'cx') {
