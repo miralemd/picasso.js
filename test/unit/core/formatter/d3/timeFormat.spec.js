@@ -2,7 +2,7 @@
 
 import { formatter as timeFormat } from '../../../../../src/core/formatter/d3/timeFormat';
 
-describe('timeFormat', () => {
+describe('d3 timeFormat', () => {
   it('should format dates correctly according to constructor pattern', () => {
     const formatter = timeFormat('%B %d, %Y');
 

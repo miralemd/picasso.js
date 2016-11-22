@@ -29,6 +29,8 @@ export function qField() {
         }
 
         return formatter('q')('number')(pattern, thousand, decimal, type);
+      } else if (d.meta.qNumFormat && d.meta.qNumFormat.qType && ['D', 'T', 'TS', 'IV'].indexOf(d.meta.qNumFormat.qType) !== -1) {
+        return formatter('q')('time')(d.meta.qNumFormat.qFmt, d.meta.qNumFormat.qType);
       }
       return v => v;
     });

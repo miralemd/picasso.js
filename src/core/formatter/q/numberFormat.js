@@ -3,8 +3,6 @@ import { numberFormatFactory } from './parts/qs-number-formatter';
 export function formatter(pattern, thousand, decimal, qType) {
   const qformat = numberFormatFactory(null, pattern, thousand, decimal, qType);
 
-  // qformat.init( null, pattern, thousand, decimal );
-
   /**
    * Format a value according to the specified pattern created at construct
    *

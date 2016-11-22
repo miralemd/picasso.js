@@ -2,7 +2,7 @@
 
 import { formatter as numberFormat } from '../../../../../src/core/formatter/d3/numberFormat';
 
-describe('numberFormat', () => {
+describe('d3 numberFormat', () => {
   let formatter;
 
   beforeEach(() => {

@@ -1,11 +1,11 @@
 import { registry } from '../../../core/utils/registry';
 import { formatter as numberFormat } from './numberFormat';
-// import { formatter as timeFormat } from "./timeFormat";
+import { formatter as timeFormat } from './timeFormat';
 
 const reg = registry();
 
 reg.add('number', numberFormat);
-// reg.add( "time", timeFormat );
+reg.add('time', timeFormat);
 
 export default function () {
   function type(t) {
