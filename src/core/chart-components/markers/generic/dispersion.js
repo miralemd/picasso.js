@@ -38,6 +38,9 @@ export default class Dispersion {
     // Set the default bandwidth
     this.bandwidth = 0;
 
+    // Set the minimum data point distance
+    this.minDataPointDistance = null;
+
     // Initialize blueprint and doodler
     this.blueprint = transposer();
     this.doodle = doodler(this.settings);
@@ -57,7 +60,25 @@ export default class Dispersion {
     const x = this.x;
     const y = this.y;
 
-    this.bandwidth = x ? x.scale.step() * 0.75 : 0.5;
+    // Calculate the minimum data point distance
+    if (!x.scale.step) {
+      let pointCoords = data.map(d => d.value);
+
+      // Sort values
+      pointCoords.sort();
+
+      let minSpace = pointCoords[pointCoords.length - 1];
+      for (let i = 0; i < pointCoords.length; i++) {
+        if (pointCoords[i] && pointCoords[i - 1]) {
+          if (minSpace === null || minSpace > (pointCoords[i] - pointCoords[i - 1])) {
+            minSpace = pointCoords[i] - pointCoords[i - 1];
+          }
+        }
+      }
+
+      this.minDataPointDistance = minSpace;
+    }
+
     const dataValues = {};
     Object.keys(this.resolvedStyle).forEach((s) => {
       dataValues[s] = {};
@@ -85,6 +106,16 @@ export default class Dispersion {
   }
 
   render() {
+    if (this.minDataPointDistance !== null) {
+      if (this.minDataPointDistance === 0) {
+        this.minDataPointDistance = 0.000000001;
+      }
+      let normalizedWidth = this.x({ value: this.x.scale.domain()[0] }) - this.x({ value: this.x.scale.domain()[0] + this.minDataPointDistance });
+      this.bandwidth = Math.abs(normalizedWidth) * 0.75;
+    } else {
+      this.bandwidth = this.x && this.x.scale.step ? this.x.scale.step() * 0.75 : 0.5;
+    }
+
     // Setup the blueprint
     this.blueprint.width = this.rect.width;
     this.blueprint.height = this.rect.height;
