@@ -1,4 +1,4 @@
-import { measureText } from '../text-metrics';
+import { measureText } from '../../text-metrics';
 import { ellipsText } from '../../text-manipulation';
 
 function convertBaseline(baseline) {

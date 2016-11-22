@@ -1,4 +1,4 @@
-import { measureText } from '../../../../../src/web/renderer/canvas-renderer/text-metrics';
+import { measureText } from '../../../../src/web/renderer/text-metrics';
 
 describe('text-metrics', () => {
   describe('measureText', () => {

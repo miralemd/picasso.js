@@ -2,7 +2,7 @@ import config from '../../../config';
 import { tree as treeFactory } from './svg-tree';
 import { svgNs } from './svg-nodes';
 import { scene } from '../../../core/scene-graph/scene';
-import { measureText } from './text-metrics';
+import { measureText } from '../text-metrics';
 
 export function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = scene) {
   let tree = treeFn(),
@@ -12,13 +12,9 @@ export function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = scene) {
 
   const svg = function () {};
 
-  svg.element = () =>
-     el
-  ;
+  svg.element = () => el;
 
-  svg.root = () =>
-     group
-  ;
+  svg.root = () => group;
 
   svg.appendTo = (element) => {
     if (!el) {
@@ -75,9 +71,7 @@ export function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = scene) {
     return rect;
   };
 
-  svg.measureText = ({ text, fontSize, fontFamily }) =>
-     measureText({ text, fontSize, fontFamily })
-  ;
+  svg.measureText = ({ text, fontSize, fontFamily }) => measureText({ text, fontSize, fontFamily });
 
   return svg;
 }

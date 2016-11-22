@@ -1,4 +1,4 @@
-import { measureText } from './text-metrics';
+import { measureText } from '../text-metrics';
 import { ellipsText } from '../text-manipulation';
 
 const svgNs = 'http://www.w3.org/2000/svg';

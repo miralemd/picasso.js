@@ -1,7 +1,7 @@
 import config from '../../../config';
 import { scene as sceneFactory } from '../../../core/scene-graph/scene';
 import { registry } from '../../../core/utils/registry';
-import { measureText } from './text-metrics';
+import { measureText } from '../text-metrics';
 
 const reg = registry();
 
