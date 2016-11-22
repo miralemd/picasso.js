@@ -9,7 +9,7 @@ export default function resolveInitialSettings(settings, defaults, composer, roo
     if (ext) {
       // Check each setting for the existance of a source without custom function
       Object.keys(ext).forEach((a) => {
-        if (ext[a].source && !ext[a].fn) {
+        if ((ext[a].source || ext[a].scale) && !ext[a].fn) {
           const scale = composer.scale(ext[a]);
           if (scale) {
             ext[a] = scale;
