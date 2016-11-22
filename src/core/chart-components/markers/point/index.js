@@ -1,5 +1,7 @@
 import { renderer as rendererFactory } from '../../../renderer';
 import { shape as shapeFactory } from './shapes';
+import resolveInitialSettings from '../../settings-setup';
+import { resolveForDataValues } from '../../../style';
 
 const DEFAULT_DATA_SETTINGS = {
   shape: 'circle',
@@ -84,30 +86,6 @@ function values(table, setting) {
   return null;
 }
 
-function prop(stngs, name, composer) {
-  const type = typeof stngs[name];
-
-  if (type === 'undefined') {
-    return DEFAULT_DATA_SETTINGS[name];
-  }
-  // if property is of same primitive type as default, use the provided value
-  if (type === typeof DEFAULT_DATA_SETTINGS[name]) { // eslint-disable-line valid-typeof
-    return stngs[name];
-  }
-  // if property is of same primitive type as default, use the provided value
-  if (type === 'function') {
-    return stngs[name];
-  }
-  // custom accessor function inside object
-  if (typeof stngs[name].fn === 'function') {
-    return stngs[name].fn;
-  }
-  // check if a scale accessor can be created from the given input
-  const scale = composer.scale(stngs[name]);
-
-  return scale || DEFAULT_DATA_SETTINGS[name];
-}
-
 function getSpaceFromScale(s, space) {
   if (s && s.scale && typeof s.scale.step === 'function') { // some kind of ordinal scale
     return Math.max(1, s.scale.step() * space);
@@ -125,11 +103,8 @@ function getPointSizeLimits(x, y, width, height) {
 }
 
 function calculateLocalSettings(stngs, composer) {
-  const ret = {};
-  for (const s in DEFAULT_DATA_SETTINGS) {
-    ret[s] = prop(stngs, s, composer);
-  }
-  return ret;
+  const local = resolveInitialSettings({ point: stngs }, { point: DEFAULT_DATA_SETTINGS }, composer);
+  return local.point;
 }
 
 function createDisplayPoints(dataPoints, { x, y, width, height }, pointSize, shapeFn) {
@@ -185,10 +160,7 @@ export function pointFn(rendererFn, shapeFn) {
     }
 
     points = data.map((p, i) => {
-      const obj = {};
-      for (const s in DEFAULT_DATA_SETTINGS) {
-        obj[s] = typeof local[s] === 'function' ? local[s](dataValues[s][i], i, dataValues[s]) : local[s];
-      }
+      const obj = resolveForDataValues(local, dataValues, i);
       return obj;
     });
   };
