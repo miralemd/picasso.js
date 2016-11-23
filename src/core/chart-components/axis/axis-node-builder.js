@@ -71,7 +71,8 @@ function discreteCalcMaxTextRect({ renderer, settings, innerRect, scale }) {
   } else if (settings.labels.layered) {
     textRect.width = (scale.step() * 0.75 * innerRect.width) * 2;
   } else if (!settings.labels.layered && settings.labels.tilted) {
-    textRect.width = innerRect.height;
+    const radians = settings.labels.tiltAngle * (Math.PI / 180);
+    textRect.width = (innerRect.height - 10/* = settings.paddingEnd*/) / Math.sin(radians);
   } else {
     textRect.width = scale.step() * 0.75 * innerRect.width;
   }
@@ -146,6 +147,7 @@ export default function nodeBuilder(type) {
       buildOpts.maxHeight = textRect.height;
       buildOpts.layered = settings.labels.layered;
       buildOpts.tilted = !settings.labels.layered && settings.labels.tilted;
+      buildOpts.angle = settings.labels.tiltAngle;
 
       if (settings.labels.layered && (settings.align === 'top' || settings.align === 'bottom')) {
         nodes.push(...layeredLabelBuilder(major, buildOpts, settings, renderer));

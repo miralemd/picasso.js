@@ -63,8 +63,8 @@ export default function calcRequiredSize({ type, data, formatter, renderer, scal
       });
       let sizeFromTextRect;
       if (tilted) {
-        const radians = 60 * (Math.PI / 180); // angle in radians
-        sizeFromTextRect = r => (r.width * Math.sin(radians)) + (r.height * Math.cos(radians));
+        const radians = settings.labels.tiltAngle * (Math.PI / 180); // angle in radians
+        sizeFromTextRect = r => (r.width * Math.sin(radians)) + (r.height * Math.cos(radians) * 0.5);
       } else if (horizontal) {
         sizeFromTextRect = r => r.height;
       } else {
@@ -89,8 +89,9 @@ export default function calcRequiredSize({ type, data, formatter, renderer, scal
       } else {
         labels = majorTicks.map(tick => tick.label);
       }
-      const labelSizes = labels.map(measureText).map(sizeFromTextRect);
-      const textSize = Math.min(settings.labels.maxSize, Math.max(...labelSizes));
+      const tickMeasures = labels.map(measureText);
+      const labelSizes = tickMeasures.map(sizeFromTextRect);
+      const textSize = Math.max(...labelSizes);
 
       size += textSize;
       size += settings.labels.margin;
@@ -100,13 +101,15 @@ export default function calcRequiredSize({ type, data, formatter, renderer, scal
       }
 
       if (tilted) {
-        const radians = 60 * (Math.PI / 180); // angle in radians
-        let bleedSize = Math.ceil(Math.cos(radians) * textSize) + 10;
-        if (settings.align === 'bottom') {
-          bleedSize -= majorTicks[0].position * rect.width * 0.8;
-        } else {
-          bleedSize -= majorTicks[majorTicks.length - 1].position * rect.width * 0.8;
-        }
+        const radians = settings.labels.tiltAngle * (Math.PI / 180); // angle in radians
+        const bleedSize = Math.max(...tickMeasures
+          .map(r => (r.width * Math.cos(radians)) + r.height)
+          .map((s, i) =>
+            settings.align === 'bottom'
+              ? s - (majorTicks[i].position * rect.width)
+              : s - ((1 - majorTicks[i].position) * rect.width)))
+          + 10/* = settings.paddingEnd*/;
+
         const bleedDir = settings.align === 'bottom' ? 'left' : 'right';
         layoutConfig.edgeBleed({ [bleedDir]: bleedSize });
       }
