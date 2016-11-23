@@ -3,13 +3,58 @@ function isMajorTick(tick) {
   return !tick.isMinor;
 }
 
-export default function calcRequiredSize({ data, formatter, renderer, scale, settings, ticksFn }) {
+function verticalLabelOverlap({ majorTicks, measureText, rect }) {
+  const size = rect.height;
+  const textHeight = measureText('M').height;
+  for (let i = 1; i < majorTicks.length; ++i) {
+    const d = size * Math.abs(majorTicks[i - 1].position - majorTicks[i].position);
+    if (d < textHeight) {
+      return true;
+    }
+  }
+  return false;
+}
+function horizontalLabelOverlap({ majorTicks, measureText, rect, scale, settings }) {
+  const m = settings.labels.layered ? 2 : 1;
+  const size = rect.width;
+  const tickSize = majorTicks
+      .map(tick => tick.label)
+      .map(l => l.substr(0, Math.max(5, l.length / 2)))
+      .map(measureText)
+      .map(r => r.width);
+  for (let i = 0; i < majorTicks.length; ++i) {
+    const d1 = m * size * scale.step() * 0.75;
+    const d2 = tickSize[i];
+    if (d1 < d2) {
+      return true;
+    }
+  }
+  return false;
+}
+function tiltedLabelOverlap({ majorTicks, measureText, rect }) {
+  const size = rect.width;
+  const textHeight = measureText('M').height;
+  for (let i = 1; i < majorTicks.length; ++i) {
+    const d = size * Math.abs(majorTicks[i - 1].position - majorTicks[i].position);
+    if (d < textHeight) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export default function calcRequiredSize({ type, data, formatter, renderer, scale, settings, ticksFn }) {
   return function (rect) {
     let size = 0;
 
     if (settings.labels.show) {
-      const dock = settings.dock;
-      const horizontal = dock === 'top' || dock === 'bottom';
+      const align = settings.align;
+      const horizontal = align === 'top' || align === 'bottom';
+      const layered = horizontal && settings.labels.layered;
+      const tilted = horizontal && settings.labels.tilted && !layered;
+
+      const majorTicks = ticksFn({ settings, innerRect: rect, scale, data, formatter })
+          .filter(isMajorTick);
 
       const measureText = text => renderer.measureText({
         text,
@@ -17,7 +62,7 @@ export default function calcRequiredSize({ data, formatter, renderer, scale, set
         fontFamily: settings.labels.fontFamily
       });
       let sizeFromTextRect;
-      if (settings.labels.tilted) {
+      if (tilted) {
         const radians = Math.PI / 3; // angle in radians
         sizeFromTextRect = r => (r.height * Math.sin(radians)) + (r.width * Math.cos(radians));
       } else if (horizontal) {
@@ -26,13 +71,23 @@ export default function calcRequiredSize({ data, formatter, renderer, scale, set
         sizeFromTextRect = r => r.width;
       }
 
+      const tiltedOverlap = tilted && tiltedLabelOverlap({ majorTicks, measureText, rect });
+      const horizontalOverlap =
+        type === 'ordinal' &&
+        !tilted &&
+        horizontal &&
+        horizontalLabelOverlap({ majorTicks, measureText, rect, scale, settings });
+      const verticalOverlap = !horizontal && verticalLabelOverlap({ majorTicks, measureText, rect, settings });
+      if (tiltedOverlap || horizontalOverlap || verticalOverlap) {
+        const toLargeSize = Math.max(rect.width, rect.height); // used to hide the axis
+        return toLargeSize;
+      }
+
       let labels;
-      if (horizontal && !settings.labels.tilted) {
+      if (horizontal && !tilted) {
         labels = ['M'];
       } else {
-        labels = ticksFn({ settings, innerRect: rect, scale, data, formatter })
-          .filter(isMajorTick)
-          .map(tick => tick.label);
+        labels = majorTicks.map(tick => tick.label);
       }
       const labelSizes = labels.map(measureText).map(sizeFromTextRect);
       const textSize = Math.min(settings.labels.maxSize, Math.max(...labelSizes));
@@ -40,7 +95,6 @@ export default function calcRequiredSize({ data, formatter, renderer, scale, set
       size += textSize;
       size += settings.labels.margin;
 
-      const layered = horizontal && settings.labels.layered;
       if (layered) {
         size *= 2;
       }
