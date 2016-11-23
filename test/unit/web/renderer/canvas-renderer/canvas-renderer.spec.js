@@ -29,6 +29,15 @@ describe('canvas renderer', () => {
     expect(spy.args[0][0].name).to.equal('canvas');
   });
 
+  it('should on appendTo apply font smoothing', () => {
+    scene.returns({ children: [] });
+    r.appendTo(element('div'));
+
+    const el = r.element();
+    expect(el.style['-webkit-font-smoothing']).to.equal('antialiased');
+    expect(el.style['-moz-osx-font-smoothing']).to.equal('antialiased');
+  });
+
   it('should return rejected promise when no canvas is initiated', () => {
     r.render();
     expect(config.Promise.reject.callCount).to.equal(1);

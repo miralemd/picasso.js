@@ -20,6 +20,8 @@ export function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = scene) {
     if (!el) {
       el = element.ownerDocument.createElementNS(ns, 'svg');
       el.style.position = 'absolute';
+      el.style['-webkit-font-smoothing'] = 'antialiased';
+      el.style['-moz-osx-font-smoothing'] = 'antialiased';
       el.setAttribute('xmlns', ns);
       group = element.ownerDocument.createElementNS(ns, 'g');
       el.appendChild(group);

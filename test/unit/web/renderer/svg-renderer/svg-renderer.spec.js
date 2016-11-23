@@ -52,6 +52,14 @@ describe('svg renderer', () => {
 
       expect(svg.element()).to.equal(svgEl);
     });
+
+    it('should apply font smoothing', () => {
+      const el = element('div');
+      svg.appendTo(el);
+
+      expect(svg.element().style['-webkit-font-smoothing']).to.equal('antialiased');
+      expect(svg.element().style['-moz-osx-font-smoothing']).to.equal('antialiased');
+    });
   });
 
   describe('render', () => {
