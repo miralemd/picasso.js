@@ -45,7 +45,7 @@ function attr(targets, attribute, defaultVal, index) {
     // undefined value
     if (index < targets.length - 1) {
       // check inheritance
-      return attr(targets, attribute, defaultVal, index + 1)  ;
+      return attr(targets, attribute, defaultVal, index + 1);
     }
     // end of the chain, return default
     return defaultVal;
@@ -127,7 +127,7 @@ export function resolveStyle(defaults, styleRoot, path) {
 */
 export function resolveForDataValues(styles, dataValues, index) {
   const ret = {};
-  if(dataValues) {
+  if (dataValues) {
     Object.keys(styles).forEach((s) => {
       ret[s] = typeof styles[s].fn === 'function' ? styles[s].fn(dataValues[s][index], index, dataValues[s]) : styles[s];
     });
