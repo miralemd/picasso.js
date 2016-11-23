@@ -72,7 +72,7 @@ function discreteCalcMaxTextRect({ renderer, settings, innerRect, scale }) {
     textRect.width = (scale.step() * 0.75 * innerRect.width) * 2;
   } else if (!settings.labels.layered && settings.labels.tilted) {
     const radians = settings.labels.tiltAngle * (Math.PI / 180);
-    textRect.width = (innerRect.height - 10/* = settings.paddingEnd*/) / Math.sin(radians);
+    textRect.width = (innerRect.height - 10) / Math.sin(radians);
   } else {
     textRect.width = scale.step() * 0.75 * innerRect.width;
   }
