@@ -19,5 +19,5 @@ export function render(t, { g }) {
   g.font = `${t['font-size']} ${t['font-family']}`;
   g.textAlign = t['text-anchor'] === 'middle' ? 'center' : t['text-anchor'];
   g.textBaseline = convertBaseline(t['dominant-baseline']);
-  g.fillText(text, t.x, t.y);
+  g.fillText(text, t.x + t.dx, t.y + t.dy);
 }

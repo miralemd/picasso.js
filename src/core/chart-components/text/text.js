@@ -4,7 +4,7 @@ import { default as extend } from 'extend';
 function calcRequiredSize(title, settings, renderer) {
   const fn = function () {
     const args = { text: title, fontSize: settings.style.fontSize, fontFamily: settings.style.fontFamily };
-    return renderer.measureText(args).height + settings.padding;
+    return renderer.measureText(args).height + settings.paddingStart + settings.paddingEnd;
   };
 
   return fn;
@@ -18,10 +18,8 @@ function parseTitle(config, table, scale) {
     title = config.text;
   } else if (scale && scale.sources) {
     if (Array.isArray(scale.sources)) {
-      title = scale.sources.map(s =>
-   table.findField(s).title()
-)
-          .join(config.settings.join || ', ');
+      const titles = scale.sources.map(s => table.findField(s).title());
+      title = titles.join(config.settings.join || ', ');
     } else {
       title = table.findField(scale.sources).title();
     }
@@ -60,8 +58,10 @@ function generateTitle({ title, settings, dock, rect, renderer }) {
     text: title,
     x: 0,
     y: 0,
+    dx: 0,
+    dy: 0,
     anchor: getTextAnchor(settings),
-    baseline: 'ideographic' // TODO Fix for IE & Edge
+    baseline: 'alphabetical'
   };
 
   extend(struct, settings.style);
@@ -69,19 +69,29 @@ function generateTitle({ title, settings, dock, rect, renderer }) {
 
   if (dock === 'top' || dock === 'bottom') {
     let x = rect.width / 2;
-    if (settings.anchor === 'left') { x = 0 + settings.padding; } else if (settings.anchor === 'right') { x = rect.width - settings.padding; }
+    if (settings.anchor === 'left') {
+      x = settings.paddingLeft || 0;
+    } else if (settings.anchor === 'right') {
+      x = rect.width - (settings.paddingRight || 0);
+    }
 
     struct.x = x;
-    struct.y = dock === 'top' ? rect.height - settings.padding : settings.padding + textRect.height;
+    struct.y = dock === 'top' ? rect.height - settings.paddingStart : settings.paddingStart + textRect.height;
+    struct.dy = dock === 'top' ? -(textRect.height / 6) : -(textRect.height / 3);
     struct.maxWidth = rect.width * 0.8;
   } else {
     let y = rect.height / 2;
-    if (settings.anchor === 'top') { y = 0 + settings.padding; } else if (settings.anchor === 'bottom') { y = rect.height - settings.padding; }
+    if (settings.anchor === 'top') {
+      y = settings.paddingStart;
+    } else if (settings.anchor === 'bottom') {
+      y = rect.height - settings.paddingStart;
+    }
 
     struct.y = y;
-    struct.x = dock === 'left' ? rect.width - settings.padding : settings.padding;
+    struct.x = dock === 'left' ? rect.width - settings.paddingStart : settings.paddingStart;
+    struct.dx = dock === 'left' ? -(textRect.height / 3) : (textRect.height / 3);
     const rotation = dock === 'left' ? 270 : 90;
-    struct.transform = `rotate(${rotation}, ${struct.x}, ${struct.y})`;
+    struct.transform = `rotate(${rotation}, ${struct.x + struct.dx}, ${struct.y + struct.dy})`;
     struct.maxWidth = rect.height * 0.8;
   }
 
@@ -94,7 +104,10 @@ export function text(config, composer, renderer) {
       anchor: 'center',
       displayOrder: 99,
       prioOrder: 0,
-      padding: 3,
+      paddingStart: 5,
+      paddingEnd: 5,
+      paddingLeft: 0,
+      paddingRight: 0,
       style: {
         fontSize: '15px',
         fontFamily: 'Arial',

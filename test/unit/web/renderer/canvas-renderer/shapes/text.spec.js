@@ -21,6 +21,8 @@ describe('text', () => {
       text = {
         x: 1,
         y: 2,
+        dx: 3,
+        dy: 4,
         'font-size': '15px',
         'font-family': 'sans',
         'text-anchor': '',
@@ -53,7 +55,7 @@ describe('text', () => {
       render(text, { g });
 
       expect(g.fillText.calledOnce).to.equal(true);
-      expect(g.fillText.alwaysCalledWithExactly('...', 1, 2)).to.equal(true);
+      expect(g.fillText.alwaysCalledWithExactly('...', 4, 6)).to.equal(true);
     });
 
     describe('textAlign', () => {

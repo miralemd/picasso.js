@@ -109,12 +109,13 @@ export function buildLabel(tick, buildOpts) {
       const bottomTextBoundary = struct.y + textHeight;
       if (topTextBoundary < topBoundary) {
         struct.y = buildOpts.innerRect.y - buildOpts.outerRect.y;
-        struct.baseline = 'text-before-edge';
+        struct.dy = buildOpts.textRect.height;
       } else if (bottomTextBoundary > bottomBoundary) {
-        struct.baseline = 'text-after-edge';
         struct.y = buildOpts.innerRect.height + (buildOpts.innerRect.y - buildOpts.outerRect.y);
+        struct.dy = 0;
       } else {
-        struct.baseline = 'central';
+        const alphabeticalBaselineDivisor = 3;
+        struct.dy = buildOpts.textRect.height / alphabeticalBaselineDivisor;
       }
     }
   };
