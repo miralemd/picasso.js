@@ -1,4 +1,4 @@
-import resolveInitialSettings from '../../../../../../src/core/chart-components/settings-setup';
+import resolveInitialSettings from '../../../../src/core/chart-components/settings-setup';
 
 describe('Settings setup', () => {
   let settings,
@@ -65,20 +65,20 @@ describe('Settings setup', () => {
   });
   it('should use custom scale if not-null', () => {
     const result = resolveInitialSettings(settings, { line: { fill: 'filling' } }, composer, 'style');
-    expect(result.line.fill()).to.equal('compost');
+    expect(result.line.fill.fn()).to.equal('compost');
   });
   it('should add fallback if custom scale', () => {
     const result = resolveInitialSettings(settings, { line: { fill: 'filling' } }, nullComposer, 'style');
-    expect(result.line.fill()).to.equal('filling');
+    expect(result.line.fill.fn()).to.equal('filling');
   });
   it('should add fallback if custom fn', () => {
     const result = resolveInitialSettings(settings, { box: { opacity: '!transparency' } }, composer, 'style');
-    expect(result.box.opacity(2)).to.equal(0.5);
-    expect(result.box.opacity(0)).to.equal('!transparency');
+    expect(result.box.opacity.fn(2)).to.equal(0.5);
+    expect(result.box.opacity.fn(0)).to.equal('!transparency');
   });
   it('should add fallback if custom fn no root', () => {
     const result = resolveInitialSettings(settings.style, { box: { opacity: '!transparency' } }, composer);
-    expect(result.box.opacity(2)).to.equal(0.5);
-    expect(result.box.opacity(0)).to.equal('!transparency');
+    expect(result.box.opacity.fn(2)).to.equal(0.5);
+    expect(result.box.opacity.fn(0)).to.equal('!transparency');
   });
 });

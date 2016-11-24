@@ -78,7 +78,7 @@ describe('Style resolver', () => {
   it('should fallback throught functions', () => {
     const result = resolveStyle({ stroke: null }, settings, 'style.line');
     const output = [0, 1, 2].map(item =>
-      result.stroke(null, item)
+      result.stroke.fn(null, item)
     );
     expect(output).to.deep.equal(['style.line.stroke', 'style.stroke', 'stroke']);
   });

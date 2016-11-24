@@ -26,9 +26,9 @@ function wrapper(fallbackVal, fn, item, index, array) {
     // Custom accessor returned a proper value
     return value;
   }
-  if (fallbackVal && typeof fallbackVal === 'function') {
+  if (fallbackVal && typeof fallbackVal.fn === 'function') {
     // fallback has a custom function, run it
-    return fallbackVal(item, index, array);
+    return fallbackVal.fn(item, index, array);
   }
   // fallback is a value, return it
   return fallbackVal;
@@ -58,7 +58,8 @@ function attr(targets, attribute, defaultVal, index) {
   if (type === 'function') {
     // Return function with fallback attribute value
     const inner = attr(targets, attribute, defaultVal, index + 1);
-    return (...args) => wrapper(inner, target[attribute], ...args);
+    target[attribute].fn = (...args) => wrapper(inner, target[attribute], ...args);
+    return target[attribute];
   }
 
   return defaultVal;
@@ -126,8 +127,14 @@ export function resolveStyle(defaults, styleRoot, path) {
 */
 export function resolveForDataValues(styles, dataValues, index) {
   const ret = {};
-  Object.keys(styles).forEach((s) => {
-    ret[s] = typeof styles[s] === 'function' ? styles[s](dataValues[s][index], index, dataValues[s]) : styles[s];
-  });
+  if (dataValues) {
+    Object.keys(styles).forEach((s) => {
+      ret[s] = typeof styles[s].fn === 'function' ? styles[s].fn(dataValues[s][index], index, dataValues[s]) : styles[s];
+    });
+  } else {
+    Object.keys(styles).forEach((s) => {
+      ret[s] = typeof styles[s].fn === 'function' ? styles[s].fn() : styles[s];
+    });
+  }
   return ret;
 }

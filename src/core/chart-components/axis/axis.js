@@ -5,6 +5,7 @@ import { default as extend } from 'extend';
 import { dockConfig } from '../../dock-layout/dock-config';
 import { calcRequiredSize } from './axis-size-calculator';
 import resolveInitialSettings from '../settings-setup';
+import { resolveForDataValues } from '../../style';
 
 function alignTransform({ align, inner }) {
   if (align === 'left') {
@@ -54,10 +55,7 @@ export function abstractAxis(axisConfig, composer, renderer) {
     layoutConfig.prioOrder(settings.prioOrder);
 
     Object.keys(styleSettings).forEach((a) => {
-      let styles = settings[a];
-      Object.keys(styles).forEach((s) => {
-        styles[s] = typeof styles[s] === 'function' ? styles[s]() : styles[s];
-      });
+      settings[a] = resolveForDataValues(settings[a]);
     });
   };
 
