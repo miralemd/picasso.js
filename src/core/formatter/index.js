@@ -1,6 +1,5 @@
 import { registry } from '../utils/registry';
 import { default as d3formatter } from './d3';
-import { default as qformatter } from './q';
 
 const reg = registry();
 
@@ -16,4 +15,3 @@ export function formatter(type) {
 }
 
 register('d3', d3formatter);
-register('q', qformatter);

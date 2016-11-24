@@ -1,4 +1,4 @@
-import { qField } from '../../../../../src/core/data/q/q-field';
+import { qField } from '../../../../src/q/data/q-field';
 
 describe('QField', () => {
   let f;

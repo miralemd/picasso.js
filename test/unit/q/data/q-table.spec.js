@@ -1,5 +1,5 @@
-import { qTable } from '../../../../../src/core/data/q/q-table';
-import { qField } from '../../../../../src/core/data/q/q-field';
+import { qTable } from '../../../../src/q/data/q-table';
+import { qField } from '../../../../src/q/data/q-field';
 
 describe('qTable', () => {
   let q;

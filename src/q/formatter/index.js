@@ -1,4 +1,5 @@
-import { registry } from '../../../core/utils/registry';
+
+import { registry } from '../../core/utils/registry';
 import { formatter as numberFormat } from './numberFormat';
 import { formatter as timeFormat } from './timeFormat';
 

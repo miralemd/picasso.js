@@ -1,6 +1,6 @@
-import { field } from '../field';
-import { resolve } from '../json-path-resolver';
-import { formatter } from '../../formatter';
+import { field } from '../../core/data/field';
+import { resolve } from '../../core/data/json-path-resolver';
+import { formatter } from '../../core/formatter';
 
 export function qField() {
   const q = field()

@@ -1,4 +1,4 @@
-import { table } from '../table';
+import { table } from '../../core/data/table';
 import { qField } from './q-field';
 
 const DIM_RX = /^\/(?:qHyperCube\/)?qDimensionInfo\/(\d+)/;

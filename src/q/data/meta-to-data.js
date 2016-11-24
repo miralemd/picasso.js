@@ -1,4 +1,4 @@
-import { resolve } from '../json-path-resolver';
+import { resolve } from '../../core/data/json-path-resolver';
 
 const metaToData = [
   {
