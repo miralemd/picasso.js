@@ -16,7 +16,7 @@ export function discreteDefaultSettings() {
         fill: '#595959',
         margin: 6,
         layered: false, // TODO support auto, true and false?
-        maxSize: 150
+        maxSize: 250
       },
       line: {
         show: true,
@@ -52,7 +52,7 @@ export function continuousDefaultSettings() {
         fill: '#595959',
         margin: 4,
         layered: false,
-        maxSize: 150
+        maxSize: 250
       },
       line: {
         show: true,
