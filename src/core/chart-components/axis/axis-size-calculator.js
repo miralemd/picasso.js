@@ -35,10 +35,10 @@ export function calcRequiredSize({ data, formatter, renderer, scale, settings, t
           .map(tick => tick.label);
       }
       const labelSizes = labels.map(measureText).map(sizeFromTextRect);
-      const textSize = Math.max(...labelSizes);
+      const textSize = Math.min(settings.labels.maxSize, Math.max(...labelSizes));
 
       size += textSize;
-      size += settings.labels.padding;
+      size += settings.labels.margin;
 
       const layered = horizontal && settings.labels.layered;
       if (layered) {
@@ -46,11 +46,11 @@ export function calcRequiredSize({ data, formatter, renderer, scale, settings, t
       }
     }
     if (settings.ticks.show) {
-      size += settings.ticks.padding;
+      size += settings.ticks.margin;
       size += settings.ticks.tickSize;
     }
     if (settings.minorTicks && settings.minorTicks.show) {
-      const minorTicksSize = settings.minorTicks.padding + settings.minorTicks.tickSize;
+      const minorTicksSize = settings.minorTicks.margin + settings.minorTicks.tickSize;
       if (minorTicksSize > size) {
         size = minorTicksSize;
       }
@@ -58,7 +58,8 @@ export function calcRequiredSize({ data, formatter, renderer, scale, settings, t
     if (settings.line.show) {
       size += settings.line.strokeWidth;
     }
-    size += 10; // 10px outside margin
+    size += settings.paddingStart;
+    size += settings.paddingEnd;
 
     return size;
   };

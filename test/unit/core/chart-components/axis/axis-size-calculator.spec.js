@@ -75,7 +75,7 @@ describe('AxisSizeCalculator', () => {
 
   it('measure ticks', () => {
     settings.ticks.show = true;
-    settings.ticks.padding = 4;
+    settings.ticks.margin = 4;
     settings.ticks.tickSize = 7;
     const size = sizeFn(rect);
     expect(size).to.equals(21);
@@ -83,7 +83,7 @@ describe('AxisSizeCalculator', () => {
 
   it('measure minorTicks', () => {
     settings.minorTicks.show = true;
-    settings.minorTicks.padding = 2;
+    settings.minorTicks.margin = 2;
     settings.minorTicks.tickSize = 9;
     const size = sizeFn(rect);
     expect(size).to.equals(21);
@@ -98,11 +98,11 @@ describe('AxisSizeCalculator', () => {
 
   it('minor and major ticks', () => {
     settings.ticks.show = true;
-    settings.ticks.padding = 4;
+    settings.ticks.margin = 4;
     settings.ticks.tickSize = 7;
 
     settings.minorTicks.show = true;
-    settings.minorTicks.padding = 0;
+    settings.minorTicks.margin = 0;
     settings.minorTicks.tickSize = 2;
 
     const size = sizeFn(rect);
