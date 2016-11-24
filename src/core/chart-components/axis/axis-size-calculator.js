@@ -108,7 +108,7 @@ export default function calcRequiredSize({ type, data, formatter, renderer, scal
             settings.align === 'bottom'
               ? s - (majorTicks[i].position * rect.width)
               : s - ((1 - majorTicks[i].position) * rect.width)))
-          + 10/* = settings.paddingEnd*/;
+          + settings.paddingEnd;
 
         const bleedDir = settings.align === 'bottom' ? 'left' : 'right';
         layoutConfig.edgeBleed({ [bleedDir]: bleedSize });
