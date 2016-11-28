@@ -64,7 +64,7 @@ export default function calcRequiredSize({ type, data, formatter, renderer, scal
       let sizeFromTextRect;
       if (tilted) {
         const radians = settings.labels.tiltAngle * (Math.PI / 180); // angle in radians
-        sizeFromTextRect = r => (r.width * Math.sin(radians)) + (r.height * Math.cos(radians) * 0.5);
+        sizeFromTextRect = r => (r.width * Math.sin(radians)) + (r.height * Math.cos(radians));
       } else if (horizontal) {
         sizeFromTextRect = r => r.height;
       } else {
@@ -91,7 +91,7 @@ export default function calcRequiredSize({ type, data, formatter, renderer, scal
       }
       const tickMeasures = labels.map(measureText);
       const labelSizes = tickMeasures.map(sizeFromTextRect);
-      const textSize = Math.max(...labelSizes);
+      const textSize = Math.min(settings.labels.maxSize, Math.max(...labelSizes));
 
       size += textSize;
       size += settings.labels.margin;
@@ -102,8 +102,10 @@ export default function calcRequiredSize({ type, data, formatter, renderer, scal
 
       if (tilted) {
         const radians = settings.labels.tiltAngle * (Math.PI / 180); // angle in radians
+        const h = measureText('M').height;
+        const maxWidth = (textSize - (h * Math.cos(radians))) / Math.sin(radians);
         const bleedSize = Math.max(...tickMeasures
-          .map(r => (r.width * Math.cos(radians)) + r.height)
+          .map(r => (Math.min(maxWidth, r.width) * Math.cos(radians)) + r.height)
           .map((s, i) =>
             settings.align === 'bottom'
               ? s - (majorTicks[i].position * rect.width)
