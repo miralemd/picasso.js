@@ -21,9 +21,25 @@ const shapes = {
     fill: p.fill,
     stroke: p.stroke,
     strokeWidth: p.strokeWidth
-  })
+  }),
+  saltire: (p) => {
+    const x1 = (p.x - (10 / 2));
+    const y1 = (p.y - (10 / 2));
+    return {
+      type: 'path',
+      title: p.label,
+      d: `M ${x1} ${y1} l 10 10 M ${x1} ${y1 + 10} l 10 -10`,
+      opacity: p.opacity,
+      stroke: p.fill,
+      strokeWidth: 2
+    };
+  }
 };
 
 export function shape(s, p) {
-  return shapes[s] ? shapes[s](p) : shapes.circle(p);
+  if (!p.size && shapes[s]) {
+    return shapes.saltire(p);
+  } else {
+    return shapes[s] ? shapes[s](p) : shapes.circle(p);
+  }
 }

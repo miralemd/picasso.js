@@ -63,12 +63,9 @@ describe('point marker', () => {
         shape: 1,
         label: true,
         fill: 123,
-        stroke: { },
-        strokeWidth: undefined,
         opacity: 'red',
         x: false,
-        y: /12345/,
-        size: {}
+        y: /12345/
       }
     };
     composer.table().findField.returns({

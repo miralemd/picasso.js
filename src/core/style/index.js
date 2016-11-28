@@ -129,11 +129,11 @@ export function resolveForDataValues(styles, dataValues, index) {
   const ret = {};
   if (dataValues) {
     Object.keys(styles).forEach((s) => {
-      ret[s] = typeof styles[s].fn === 'function' ? styles[s].fn(dataValues[s][index], index, dataValues[s]) : styles[s];
+      ret[s] = styles[s] && typeof styles[s].fn === 'function' ? styles[s].fn(dataValues[s][index], index, dataValues[s]) : styles[s];
     });
   } else {
     Object.keys(styles).forEach((s) => {
-      ret[s] = typeof styles[s].fn === 'function' ? styles[s].fn() : styles[s];
+      ret[s] = styles[s] && typeof styles[s].fn === 'function' ? styles[s].fn() : styles[s];
     });
   }
   return ret;

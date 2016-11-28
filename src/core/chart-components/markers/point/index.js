@@ -109,7 +109,7 @@ function calculateLocalSettings(stngs, composer) {
 
 function createDisplayPoints(dataPoints, { x, y, width, height }, pointSize, shapeFn) {
   return dataPoints.filter(p =>
-   !isNaN(p.x + p.y + p.size)
+   !isNaN(p.x + p.y)
 ).map(p =>
  shapeFn(p.shape, {
    label: p.label,

@@ -1,5 +1,9 @@
 import Dispersion from './generic/dispersion';
 
+function isUndef(value) {
+  return value === null || typeof value === 'undefined' || Number.isNaN(value);
+}
+
 const DEFAULT_STYLE_SETTINGS = {
   line: {
     show: true,
@@ -97,6 +101,10 @@ export default class Box extends Dispersion {
   }
 
   renderDataPoint(item) {
+    if (isUndef(item.x)) {
+      return;
+    }
+
     item.style.box.width = Math.max(item.style.box.minWidth,
       Math.min(item.style.box.maxWidth,
         item.style.box.width * this.bandwidth * this.rect.width))
@@ -107,18 +115,18 @@ export default class Box extends Dispersion {
         item.style.whisker.width * this.bandwidth * 0.5 * this.rect.width))
       / this.rect.width;
 
-    if (item.style.line.show && item.min !== null && item.max !== null) {
+    if (item.style.line.show && !isUndef(item.min) && !isUndef(item.start)) {
       // Draw the line min - start
       this.doodle.verticalLine(item.x, item.start, item.min, 'line', item.style);
-
+    }
+    if (item.style.line.show && !isUndef(item.max) && !isUndef(item.end)) {
       // Draw the line end - max (high)
       this.doodle.verticalLine(item.x, item.max, item.end, 'line', item.style);
     }
-
     // Draw the box
-    const high = Math.max(item.start, item.end);
-    const low = Math.min(item.start, item.end);
-    if (item.style.box.show) {
+    if (item.style.box.show && !isUndef(item.start) && !isUndef(item.end)) {
+      const high = Math.max(item.start, item.end);
+      const low = Math.min(item.start, item.end);
       this.doodle.box(
         item.x,
         low,
@@ -127,7 +135,7 @@ export default class Box extends Dispersion {
       );
     }
     // Draw the whiskers
-    if (item.style.whisker.show && item.min !== null && item.max !== null) {
+    if (item.style.whisker.show && !isUndef(item.min) && !isUndef(item.max)) {
       // Low whisker
       this.doodle.whisker(item.x, item.min, item.style);
 
@@ -136,7 +144,7 @@ export default class Box extends Dispersion {
     }
 
     // Draw the median line
-    if (item.style.median.show && item.med !== null) {
+    if (item.style.median.show && !isUndef(item.med)) {
       this.doodle.median(item.x, item.med, item.style);
     }
   }
