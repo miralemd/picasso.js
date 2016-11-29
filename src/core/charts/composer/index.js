@@ -40,7 +40,7 @@ function flattenComponents(c) {
       if (Array.isArray(c[prop])) {
         c[prop].forEach(cc => chartComponents.push(cc));
       } else {
-        c.push(c[prop]);
+        chartComponents.push(c[prop]);
       }
     }
   }
