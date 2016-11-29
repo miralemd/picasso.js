@@ -22,7 +22,7 @@ function getObject(root, steps) {
 
 function wrapper(fallbackVal, fn, item, index, array) {
   const value = fn ? fn(item, index, array) : null;
-  if (value !== null && typeof value !== 'undefined') {
+  if (typeof value !== 'undefined') {
     // Custom accessor returned a proper value
     return value;
   }

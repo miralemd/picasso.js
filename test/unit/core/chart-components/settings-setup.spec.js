@@ -10,7 +10,7 @@ describe('Settings setup', () => {
       fontSize: '13px',
       style: {
         stroke: function stroke(item, index) {
-          return index < 2 ? 'style.stroke' : null;
+          return index < 2 ? 'style.stroke' : undefined;
         },
         box: {
           width: 1.2,
@@ -18,7 +18,7 @@ describe('Settings setup', () => {
           opacity: {
             source: '/qMeasureInfo/1',
             fn: function fn(index) {
-              return index > 1 ? 0.5 : null;
+              return index > 1 ? 0.5 : undefined;
             }
           }
         },
@@ -34,7 +34,7 @@ describe('Settings setup', () => {
         },
         line: {
           stroke: function stroke(item, index) {
-            return index < 1 ? 'style.line.stroke' : null;
+            return index < 1 ? 'style.line.stroke' : undefined;
           },
           strokeWidth: {
             fn: function fn() {
@@ -54,7 +54,7 @@ describe('Settings setup', () => {
 
     nullComposer = {
       scale() {
-        return function () { return null; };
+        return function () { return undefined; };
       }
     };
     composer = {

@@ -1,7 +1,7 @@
 import Dispersion from './generic/dispersion';
 
 function isUndef(value) {
-  return value === null || typeof value === 'undefined' || Number.isNaN(value);
+  return typeof value !== 'number' || isNaN(value);
 }
 
 const DEFAULT_STYLE_SETTINGS = {

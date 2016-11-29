@@ -3,6 +3,10 @@ import { shape as shapeFactory } from './shapes';
 import resolveInitialSettings from '../../settings-setup';
 import { resolveForDataValues } from '../../../style';
 
+function isUndef(value) {
+  return typeof value !== 'number' || isNaN(value);
+}
+
 const DEFAULT_DATA_SETTINGS = {
   shape: 'circle',
   label: '',
@@ -12,7 +16,13 @@ const DEFAULT_DATA_SETTINGS = {
   opacity: 1,
   x: 0.5,
   y: 0.5,
-  size: 1
+  size: 1,
+  nullShape: {
+    shape: 'saltire',
+    size: 0.1,
+    stroke: '#ccc',
+    strokeWidth: 2
+  }
 };
 
 /**
@@ -110,17 +120,19 @@ function calculateLocalSettings(stngs, composer) {
 function createDisplayPoints(dataPoints, { x, y, width, height }, pointSize, shapeFn) {
   return dataPoints.filter(p =>
    !isNaN(p.x + p.y)
-).map(p =>
- shapeFn(p.shape, {
-   label: p.label,
-   x: p.x * width,
-   y: p.y * height,
-   fill: p.fill,
-   size: pointSize[0] + (p.size * (pointSize[1] - pointSize[0])), // TODO - replace with scale
-   stroke: p.stroke,
-   strokeWidth: p.strokeWidth,
-   opacity: p.opacity
- })
+).map((p) => {
+  const s = isUndef(p.size) ? p.nullShape : p;
+  return shapeFn(s.shape, {
+    label: p.label,
+    x: p.x * width,
+    y: p.y * height,
+    fill: p.fill,
+    size: pointSize[0] + (s.size * (pointSize[1] - pointSize[0])), // TODO - replace with scale
+    stroke: s.stroke,
+    strokeWidth: s.strokeWidth,
+    opacity: p.opacity
+  });
+}
 );
 }
 

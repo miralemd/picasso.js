@@ -23,23 +23,19 @@ const shapes = {
     strokeWidth: p.strokeWidth
   }),
   saltire: (p) => {
-    const x1 = (p.x - (10 / 2));
-    const y1 = (p.y - (10 / 2));
+    const x1 = (p.x - (p.size / 2));
+    const y1 = (p.y - (p.size / 2));
     return {
       type: 'path',
       title: p.label,
-      d: `M ${x1} ${y1} l 10 10 M ${x1} ${y1 + 10} l 10 -10`,
+      d: `M ${x1} ${y1} l ${p.size} ${p.size} M ${x1} ${y1 + p.size} l ${p.size} -${p.size}`,
       opacity: p.opacity,
       stroke: p.fill,
-      strokeWidth: 2
+      strokeWidth: p.strokeWidth
     };
   }
 };
 
 export function shape(s, p) {
-  if (!p.size && shapes[s]) {
-    return shapes.saltire(p);
-  } else {
-    return shapes[s] ? shapes[s](p) : shapes.circle(p);
-  }
+  return shapes[s] ? shapes[s](p) : shapes.circle(p);
 }
