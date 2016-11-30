@@ -1,5 +1,6 @@
 import { scaleLinear } from 'd3-scale';
 import Events from '../utils/event-emitter';
+import { notNumber } from '../utils/undef';
 
 function applyFormat(formatter) {
   return typeof formatter === 'undefined' ? t => t : t => formatter(t);
@@ -114,7 +115,7 @@ class LinearScale {
    * @return { Number } Interpolated from the range
    */
   get(value) {
-    return this._scale(value);
+    return notNumber(value) ? NaN : this._scale(value);
   }
 
   /**

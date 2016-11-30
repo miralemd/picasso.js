@@ -1,4 +1,5 @@
 import { linear as lin } from '../../../scales/linear';
+import { notNumber } from '../../../utils/undef';
 
 const AVAILABLE_SETTINGS = ['min', 'max', 'expand', 'include', 'invert'];
 
@@ -57,7 +58,7 @@ export function linear(fields, settings) {
   const { min, max } = getMinMax(fields, stgns);
   s.domain([min, max]);
   s.range(stgns.invert ? [1, 0] : [0, 1]);
-  const fn = v => v.value === null ? NaN : s.get(v.value);
+  const fn = v => notNumber(v.value) ? NaN : s.get(v.value);
 
   fn.scale = s;
 

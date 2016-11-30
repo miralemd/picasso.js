@@ -2,10 +2,7 @@ import { renderer as rendererFactory } from '../../../renderer';
 import { shape as shapeFactory } from './shapes';
 import resolveInitialSettings from '../../settings-setup';
 import { resolveForDataValues } from '../../../style';
-
-function isUndef(value) {
-  return typeof value !== 'number' || isNaN(value);
-}
+import { notNumber } from '../../../utils/undef';
 
 const DEFAULT_DATA_SETTINGS = {
   shape: 'circle',
@@ -121,7 +118,7 @@ function createDisplayPoints(dataPoints, { x, y, width, height }, pointSize, sha
   return dataPoints.filter(p =>
    !isNaN(p.x + p.y)
 ).map((p) => {
-  const s = isUndef(p.size) ? p.nullShape : p;
+  const s = notNumber(p.size) ? p.nullShape : p;
   return shapeFn(s.shape, {
     label: p.label,
     x: p.x * width,

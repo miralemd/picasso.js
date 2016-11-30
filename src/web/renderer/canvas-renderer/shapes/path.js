@@ -1,26 +1,29 @@
 export function render(path, { g, doStroke }) {
   const commands = path.d.match(/[a-z][^a-z]*/ig);
+
   let prevPoint;
   let points = [];
   g.beginPath();
   for (let i = 0; i < commands.length; i++) {
-    const command = commands[i][0];
-    const params = commands[i].substr(1).trim().split(' ').map(p => parseFloat(p));
+    const params = commands[i].match(/([ml])\s?(\S+)(?:\s|,)(\S+)/i);
+    const command = params[1];
+    const x = +params[2];
+    const y = +params[3];
     switch (command) {
       case 'M':
-        prevPoint = { x: params[0], y: params[1] };
+        prevPoint = { x, y };
         g.moveTo(prevPoint.x, prevPoint.y);
         break;
       case 'L':
-        prevPoint = { x: params[0], y: params[1] };
+        prevPoint = { x, y };
         g.lineTo(prevPoint.x, prevPoint.y);
         break;
       case 'm':
-        prevPoint = { x: prevPoint.x + params[0], y: prevPoint.y + params[1] };
+        prevPoint = { x: prevPoint.x + x, y: prevPoint.y + y };
         g.moveTo(prevPoint.x, prevPoint.y);
         break;
       case 'l':
-        prevPoint = { x: prevPoint.x + params[0], y: prevPoint.y + params[1] };
+        prevPoint = { x: prevPoint.x + x, y: prevPoint.y + y };
         g.lineTo(prevPoint.x, prevPoint.y);
         break;
       default:
