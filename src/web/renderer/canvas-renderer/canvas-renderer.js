@@ -96,14 +96,14 @@ export function renderer(sceneFn = sceneFactory) {
     el.height = rect.height * dpiRatio;
 
     if (dpiRatio === 1) {
-      scene = sceneFn(shapes);
+      scene = sceneFn({ items: shapes });
     } else {
-      const scaledShapes = [{
+      const items = [{
         type: 'container',
         children: shapes,
         transform: `scale(${dpiRatio}, ${dpiRatio})`
       }];
-      scene = sceneFn(scaledShapes);
+      scene = sceneFn({ items, dpi: dpiRatio });
     }
 
     renderShapes(scene.children, g, shapeToCanvasMap);

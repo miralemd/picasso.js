@@ -8,4 +8,12 @@ export default class Circle {
     this.cy = cy;
     this.r = r;
   }
+
+  isPointInside(p) {
+    let sqrDist = Math.pow(this.cx - p.x, 2) + Math.pow(this.cy - p.y, 2);
+    if (sqrDist < Math.pow(this.r, 2)) {
+      return true;
+    }
+    return false;
+  }
 }

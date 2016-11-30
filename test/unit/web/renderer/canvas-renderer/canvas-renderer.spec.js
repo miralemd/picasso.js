@@ -86,13 +86,16 @@ describe('canvas renderer', () => {
   it('should scale canvas to adjust for HiDPI screens', () => {
     const div = element('div');
     const inputShapes = [{ type: 'container' }];
-    const expectedInputShapes = [
-      {
-        type: 'container',
-        children: inputShapes,
-        transform: 'scale(0.5, 0.5)'
-      }
-    ];
+    const expectedInput = {
+      items: [
+        {
+          type: 'container',
+          children: inputShapes,
+          transform: 'scale(0.5, 0.5)'
+        }
+      ],
+      dpi: 0.5
+    };
     scene.returns({ children: [] });
     r.appendTo(div);
     r.size({ x: 50, y: 100, width: 200, height: 400 });
@@ -106,6 +109,6 @@ describe('canvas renderer', () => {
     expect(r.element().style.height).to.equal('400px');
     expect(r.element().width).to.equal(200 * (1 / 2));
     expect(r.element().height).to.equal(400 * (1 / 2));
-    expect(scene.args[0][0]).to.deep.equal(expectedInputShapes);
+    expect(scene.args[0][0]).to.deep.equal(expectedInput);
   });
 });

@@ -29,9 +29,9 @@ function traverse(items, parent, matrix) {
   });
 }
 
-export function scene(items, stage) {
+export function scene({ items, stage, dpi }) {
   if (!stage) {
-    stage = create('stage');
+    stage = create('stage', dpi);
   }
 
   traverse(items, stage, new Matrix());

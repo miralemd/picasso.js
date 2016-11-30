@@ -40,7 +40,7 @@ export function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = scene) {
     el.setAttribute('height', rect.height);
 
     svg.clear();
-    const s = sceneFn(items);
+    const s = sceneFn({ items });
     tree.render(s.children, group);
 
     return config.Promise.resolve();

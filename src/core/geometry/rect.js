@@ -20,6 +20,15 @@ export default class Rect {
     }
   }
 
+  isPointInside(p) {
+    let xBoundary = p.x >= this.x && p.x <= this.x + this.width;
+    let yBoundary = p.y >= this.y && p.y <= this.y + this.height;
+    if (xBoundary && yBoundary) {
+      return true;
+    }
+    return false;
+  }
+
   points() {
     return [
       { x: this.x, y: this.y },

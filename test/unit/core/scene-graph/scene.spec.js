@@ -18,7 +18,7 @@ describe('Scene', () => {
   it('should accept a custom stage', () => {
     const myStage = createStage();
     myStage.test = true;
-    stage = scene([], myStage);
+    stage = scene({ items: [], stage: myStage });
     expect(stage.test).to.equal(true);
   });
 
@@ -29,7 +29,7 @@ describe('Scene', () => {
       const r3 = Object.assign({}, rect);
       r1.transform = 'translate(50, 50)';
       r2.transform = 'translate(20, 20)';
-      stage = scene([r1, r2, r3]);
+      stage = scene({ items: [r1, r2, r3] });
       const r1do = stage.children[0];
       const r2do = stage.children[1];
       const r3do = stage.children[2];
@@ -55,7 +55,7 @@ describe('Scene', () => {
       container.children = [c1];
       c1.children = [c2];
       c2.children = [r1];
-      stage = scene([container]);
+      stage = scene({ items: [container] });
       const c1do = stage.children[0].children[0];
       const c2do = c1do.children[0];
       const r1do = c2do.children[0];
@@ -85,7 +85,7 @@ describe('Scene', () => {
       r0.transform = 'translate(3, 3)';
       r2.transform = 'translate(50, 50)';
       container.children = [r1, r2];
-      stage = scene([r0, container, r3]);
+      stage = scene({ items: [r0, container, r3] });
       const r0do = stage.children[0];
       const c1do = stage.children[1];
       const r1do = c1do.children[0];

@@ -80,7 +80,7 @@ describe('svg renderer', () => {
       scene.returns(s);
       svg.appendTo(element('div'));
       svg.render(items);
-      expect(scene.args[0][0]).to.equal(items);
+      expect(scene.args[0][0]).to.deep.equal({ items });
       expect(treeRenderer.render).to.have.been.calledWith(s.children, svg.root());
     });
 

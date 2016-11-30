@@ -11,6 +11,11 @@ export default class Rect extends DisplayObject {
     super.set({ fill, stroke, strokeWidth, opacity, transform });
     GeoRect.prototype.set.call(this, x, y, width, height);
   }
+
+  isPointInside(p) {
+    let pt = this.modelViewMatrix ? this.inverseModelViewMatrix.transformPoint(p) : p;
+    return GeoRect.prototype.isPointInside.call(this, pt);
+  }
 }
 
 export function create(...s) {
