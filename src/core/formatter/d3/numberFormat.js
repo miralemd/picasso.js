@@ -1,6 +1,6 @@
 import { formatLocale } from 'd3-format';
 
-export function formatter(pattern, thousand, decimal) {
+export default function formatter(pattern, thousand, decimal) {
   let locale,
     d3format;
 

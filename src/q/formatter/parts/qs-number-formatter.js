@@ -1,4 +1,4 @@
-import { default as formatter } from 'number-format.js';
+import formatter from 'number-format.js';
 
 function escapeRegExp(str) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
@@ -439,6 +439,6 @@ class NumberFormatter {
   }
 }
 
-export function numberFormatFactory(...args) {
+export default function numberFormatFactory(...args) {
   return new NumberFormatter(...args);
 }

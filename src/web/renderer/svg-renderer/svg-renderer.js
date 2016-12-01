@@ -1,10 +1,10 @@
 import config from '../../../config';
 import { tree as treeFactory } from './svg-tree';
 import { svgNs } from './svg-nodes';
-import { scene } from '../../../core/scene-graph/scene';
+import scene from '../../../core/scene-graph/scene';
 import { measureText } from '../text-metrics';
 
-export function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = scene) {
+export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = scene) {
   let tree = treeFn(),
     el,
     group,

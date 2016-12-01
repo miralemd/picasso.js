@@ -1,4 +1,4 @@
-import { dateFormatFactory } from './parts/qs-date-formatter';
+import dateFormatFactory from './parts/qs-date-formatter';
 
 export function QlikTimeToDate(value) {
   return new Date(1899, 11, 30 + Math.floor(value), 0, 0, 0, 1000 * 24 * 60 * 60 * (value - Math.floor(value)));
@@ -16,7 +16,7 @@ export const TYPES = {
   INTERVAL: 'IV'
 };
 
-export function formatter(pattern, qtype = 'TS', localeInfo = null) {
+export default function formatter(pattern, qtype = 'TS', localeInfo = null) {
   let qformat = dateFormatFactory(localeInfo, pattern, qtype);
 
   /**

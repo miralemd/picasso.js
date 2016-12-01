@@ -1,4 +1,4 @@
-import { renderer } from '../../../../../src/web/renderer/canvas-renderer';
+import renderer from '../../../../../src/web/renderer/canvas-renderer';
 import config from '../../../../../src/config';
 import element from '../../../../mocks/element-mock';
 

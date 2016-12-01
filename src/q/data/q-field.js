@@ -1,8 +1,8 @@
-import { field } from '../../core/data/field';
-import { resolve } from '../../core/data/json-path-resolver';
+import field from '../../core/data/field';
+import resolve from '../../core/data/json-path-resolver';
 import { formatter } from '../../core/formatter';
 
-export function qField() {
+export default function qField() {
   const q = field()
     .min(d => d.meta.qMin)
     .max(d => d.meta.qMax)

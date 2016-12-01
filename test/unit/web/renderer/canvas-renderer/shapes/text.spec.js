@@ -1,6 +1,6 @@
 import * as textManipulation from '../../../../../../src/web/renderer/text-manipulation';
 import { measureText } from '../../../../../../src/web/renderer/text-metrics';
-import { render } from '../../../../../../src/web/renderer/canvas-renderer/shapes/text';
+import render from '../../../../../../src/web/renderer/canvas-renderer/shapes/text';
 
 describe('text', () => {
   describe('render', () => {

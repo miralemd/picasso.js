@@ -1,4 +1,4 @@
-import { default as numeric } from '../scales/interpolators/numeric';
+import numeric from '../scales/interpolators/numeric';
 import colorObject from './instantiator/color-object';
 import color from './color';
 

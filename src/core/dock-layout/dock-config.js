@@ -1,4 +1,4 @@
-export function dockConfig(dock = '', displayOrder = 0, prioOrder = 0, relevantSizeFn = () => 0) {
+export default function dockConfig(dock = '', displayOrder = 0, prioOrder = 0, relevantSizeFn = () => 0) {
   const fn = function () {};
 
   fn.requiredSize = function (calcFn) {

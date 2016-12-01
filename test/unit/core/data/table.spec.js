@@ -1,4 +1,4 @@
-import { table } from '../../../../src/core/data/table';
+import table from '../../../../src/core/data/table';
 
 describe('table', () => {
   let dd;

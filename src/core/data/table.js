@@ -1,5 +1,5 @@
 /* eslint no-return-assign: 0 */
-export function table() {
+export default function table() {
   let dd = {},
     cache = {},
     acc = {

@@ -1,5 +1,5 @@
-import { default as extend } from 'extend';
-import { dockConfig } from './dock-config';
+import extend from 'extend';
+import dockConfig from './dock-config';
 
 function validateComponent(component) {
   const expectedProperties = ['resize'];
@@ -143,7 +143,7 @@ function positionComponents(components, containerRect, reducedRect) {
   });
 }
 
-export function dockLayout() {
+export default function dockLayout() {
   const containerRect = { x: 0, y: 0, width: 0, height: 0 };
   const components = [];
 

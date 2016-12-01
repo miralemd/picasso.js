@@ -91,7 +91,7 @@ function continuousCalcMaxTextRect({ renderer, settings, innerRect, ticks }) {
   return textRect;
 }
 
-export function nodeBuilder(type) {
+export default function nodeBuilder(type) {
   let calcMaxTextRectFn;
   const nodes = [];
 

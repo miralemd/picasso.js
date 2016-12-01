@@ -1,4 +1,4 @@
-import { field } from '../../../../src/core/data/field';
+import field from '../../../../src/core/data/field';
 
 describe('Field', () => {
   let f;

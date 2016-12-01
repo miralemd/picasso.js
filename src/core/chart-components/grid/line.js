@@ -1,4 +1,4 @@
-import { renderer } from '../../../web/renderer/svg-renderer/svg-renderer';
+import renderer from '../../../web/renderer/svg-renderer/svg-renderer';
 
 export default class Line {
   constructor(obj, composer) {

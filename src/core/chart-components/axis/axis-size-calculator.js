@@ -3,7 +3,7 @@ function isMajorTick(tick) {
   return !tick.isMinor;
 }
 
-export function calcRequiredSize({ data, formatter, renderer, scale, settings, ticksFn }) {
+export default function calcRequiredSize({ data, formatter, renderer, scale, settings, ticksFn }) {
   return function (rect) {
     let size = 0;
 

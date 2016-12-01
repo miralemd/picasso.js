@@ -48,7 +48,7 @@ function resolveMatrixCmd(matrix, transform) {
   }
 }
 
-export function resolveTransform(t, matrix) {
+export default function resolveTransform(t, matrix) {
   const transforms = parseTransform(t);
 
   transforms.forEach((transform) => {

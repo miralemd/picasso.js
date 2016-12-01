@@ -15,6 +15,6 @@ reg.add('line', line);
 reg.add('stage', stage);
 reg.add('container', container);
 
-export function create(type, input) {
+export function create(type, input) { // eslint-disable-line import/prefer-default-export
   return reg.get(type)(input);
 }
