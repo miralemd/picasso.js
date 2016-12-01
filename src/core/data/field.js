@@ -12,7 +12,7 @@ const accessors = {
   formatter: () => formatter('d3')('number')('')
 };
 
-export function field() {
+export default function field() {
   let data = {},
     acc = {
       min: accessors.min,

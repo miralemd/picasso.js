@@ -1,5 +1,5 @@
 import { registry } from '../utils/registry';
-import { default as d3formatter } from './d3';
+import d3formatter from './d3';
 
 const reg = registry();
 

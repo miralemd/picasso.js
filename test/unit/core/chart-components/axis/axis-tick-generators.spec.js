@@ -1,4 +1,4 @@
-import { default as extend } from 'extend';
+import extend from 'extend';
 import { generateContinuousTicks, generateDiscreteTicks } from '../../../../../src/core/chart-components/axis/axis-tick-generators';
 import { continuousDefaultSettings } from '../../../../../src/core/chart-components/axis/axis-default-settings';
 import { linear } from '../../../../../src/core/scales/linear';

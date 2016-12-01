@@ -1,4 +1,4 @@
-import { renderer } from '../../../../src/core/renderer';
+import renderer from '../../../../src/core/renderer';
 
 describe('fooo', () => {
   beforeEach(() => {

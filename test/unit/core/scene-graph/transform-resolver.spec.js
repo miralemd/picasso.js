@@ -1,4 +1,4 @@
-import { resolveTransform } from '../../../../src/core/scene-graph/transform-resolver';
+import resolveTransform from '../../../../src/core/scene-graph/transform-resolver';
 
 describe('Transform resolver', () => {
   let g,

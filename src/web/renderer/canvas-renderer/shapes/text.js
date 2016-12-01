@@ -13,7 +13,7 @@ function convertBaseline(baseline) {
   return baseline;
 }
 
-export function render(t, { g }) {
+export default function render(t, { g }) {
   const text = ellipsText(t, measureText);
 
   g.font = `${t['font-size']} ${t['font-family']}`;

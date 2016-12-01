@@ -1,17 +1,17 @@
 import { registry } from '../utils/registry';
-import { create } from './markers/index';
-import { creategrid } from './grid/index';
-import { axisFactory } from './axis/index';
-import { textFactory } from './text/index';
+import markersFactory from './markers/index';
+import gridFactory from './grid/index';
+import axisFactory from './axis/index';
+import textFactory from './text/index';
 
 const reg = registry();
 
-reg.register('markers', create);
-reg.register('grid', creategrid);
+reg.register('markers', markersFactory);
+reg.register('grid', gridFactory);
 reg.register('axes', axisFactory);
 reg.register('texts', textFactory);
 
 
-export function components(obj, composer) {
+export default function components(obj, composer) {
   return reg.build(obj, composer);
 }

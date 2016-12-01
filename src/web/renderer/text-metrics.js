@@ -29,7 +29,7 @@ function measureTextHeight({ fontSize, fontFamily }) {
   }
 }
 
-export function measureText({ text, fontSize, fontFamily }) {
+export function measureText({ text, fontSize, fontFamily }) { // eslint-disable-line import/prefer-default-export
   const w = measureTextWidth({ text, fontSize, fontFamily });
   const h = measureTextHeight({ fontSize, fontFamily });
   return { width: w, height: h };

@@ -1,11 +1,8 @@
 import { registry } from '../../utils/registry';
-import { components } from '../../chart-components/index';
+import components from '../../chart-components/index';
 import { data } from '../../data/index';
-import { dockLayout } from '../../dock-layout/dock-layout';
-import {
-  default as buildFormatters,
-  getOrCreateFormatter
-} from './formatter/index';
+import dockLayout from '../../dock-layout/dock-layout';
+import buildFormatters, { getOrCreateFormatter } from './formatter/index';
 import {
   builder as buildScales,
   getOrCreateScale
@@ -47,7 +44,7 @@ function flattenComponents(c) {
   return chartComponents;
 }
 
-export function composer() {
+export default function composer() {
   let scales = {},
     formatters = {},
     tables = [],

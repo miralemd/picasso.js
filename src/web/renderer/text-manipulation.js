@@ -1,4 +1,4 @@
-export function ellipsText({ text, 'font-size': fontSize, 'font-family': fontFamily, maxWidth }, measureText) {
+export function ellipsText({ text, 'font-size': fontSize, 'font-family': fontFamily, maxWidth }, measureText) { // eslint-disable-line import/prefer-default-export
   const reduceChars = '…';
   text = typeof text === 'string' ? text : text.toString();
   let textWidth = measureText({ text, fontSize, fontFamily }).width;

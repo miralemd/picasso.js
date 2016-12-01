@@ -1,5 +1,5 @@
-import { renderer as rendererFactory } from '../../../renderer';
-import { shape as shapeFactory } from './shapes';
+import rendererFactory from '../../../renderer';
+import shapeFactory from './shapes';
 import resolveInitialSettings from '../../settings-setup';
 import { resolveForDataValues } from '../../../style';
 import { notNumber } from '../../../utils/undef';

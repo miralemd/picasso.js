@@ -1,6 +1,6 @@
 import { registry } from '../../../core/utils/registry';
-import { formatter as numberFormat } from './numberFormat';
-import { formatter as timeFormat } from './timeFormat';
+import numberFormat from './numberFormat';
+import timeFormat from './timeFormat';
 
 const reg = registry();
 

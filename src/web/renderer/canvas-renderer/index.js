@@ -1,9 +1,9 @@
 import { renderer, register } from './canvas-renderer';
-import { render as rect } from './shapes/rect';
-import { render as circle } from './shapes/circle';
-import { render as line } from './shapes/line';
-import { render as path } from './shapes/path';
-import { render as text } from './shapes/text';
+import rect from './shapes/rect';
+import circle from './shapes/circle';
+import line from './shapes/line';
+import text from './shapes/text';
+import path from './shapes/path';
 
 register('rect', rect);
 register('circle', circle);
@@ -11,6 +11,4 @@ register('line', line);
 register('path', path);
 register('text', text);
 
-export {
-  renderer
-};
+export default renderer;

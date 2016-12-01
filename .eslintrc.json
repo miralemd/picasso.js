@@ -13,10 +13,6 @@
   "rules": {
 	// Temporary rules
     "guard-for-in": 0,
-    "import/first": 0,
-    "import/no-extraneous-dependencies": 0,
-    "import/no-named-default": 0,
-    "import/prefer-default-export": 0,
     "max-len": 0,
     "no-bitwise": 0,
     "no-continue": 0,
@@ -31,6 +27,7 @@
     "one-var": 0,
     "prefer-const": 0,
 	// Overrides
+    "import/no-extraneous-dependencies": [2, { "devDependencies": true }],
     "no-plusplus": 0,
     "comma-dangle": [2, "never"]
   }

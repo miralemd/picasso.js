@@ -1,4 +1,4 @@
-import { render } from '../../../../../../src/web/renderer/canvas-renderer/shapes/line';
+import render from '../../../../../../src/web/renderer/canvas-renderer/shapes/line';
 
 describe('line', () => {
   describe('render', () => {

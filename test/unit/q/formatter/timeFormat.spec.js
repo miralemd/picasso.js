@@ -1,6 +1,6 @@
 /* eslint no-unused-expressions: 0*/
 
-import { formatter as timeFormat, QlikTimeToDate } from '../../../../src/q/formatter/timeFormat';
+import timeFormat, { QlikTimeToDate } from '../../../../src/q/formatter/timeFormat';
 
 /**
  * PLEASE NOTE / WARNING: THIS FUNCTION *MAY* HAVE FLOATING POINT ERRORS

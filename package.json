@@ -45,5 +45,6 @@
     "number-format.js": "^1.1.10",
     "rimraf": "^2.5.2",
     "webpack": "^1.13.2"
-  }
+  },
+  "dependencies": {}
 }
