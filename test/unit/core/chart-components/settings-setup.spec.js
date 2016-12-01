@@ -10,7 +10,7 @@ describe('Settings setup', () => {
       fontSize: '13px',
       style: {
         stroke: function stroke(item, index) {
-          return index < 2 ? 'style.stroke' : null;
+          return index < 2 ? 'style.stroke' : undefined;
         },
         box: {
           width: 1.2,
@@ -18,7 +18,7 @@ describe('Settings setup', () => {
           opacity: {
             source: '/qMeasureInfo/1',
             fn: function fn(index) {
-              return index > 1 ? 0.5 : null;
+              return index > 1 ? 0.5 : undefined;
             }
           }
         },
@@ -34,7 +34,7 @@ describe('Settings setup', () => {
         },
         line: {
           stroke: function stroke(item, index) {
-            return index < 1 ? 'style.line.stroke' : null;
+            return index < 1 ? 'style.line.stroke' : undefined;
           },
           strokeWidth: {
             fn: function fn() {
@@ -45,16 +45,14 @@ describe('Settings setup', () => {
           fill: { source: '/qMeasureInfo/0', type: 'color' }
         },
         title: {
-          main: {
-
-          }
+          nullValue: null
         }
       }
     };
 
     nullComposer = {
       scale() {
-        return function () { return null; };
+        return function () { return undefined; };
       }
     };
     composer = {
@@ -80,5 +78,9 @@ describe('Settings setup', () => {
     const result = resolveInitialSettings(settings.style, { box: { opacity: '!transparency' } }, composer);
     expect(result.box.opacity.fn(2)).to.equal(0.5);
     expect(result.box.opacity.fn(0)).to.equal('!transparency');
+  });
+  it('should handle explicitly set null value', () => {
+    const result = resolveInitialSettings(settings.style, { title: { nullValue: '2' } }, composer);
+    expect(result.title.nullValue).to.equal(null);
   });
 });

@@ -1,11 +1,13 @@
-const globalDefaults = {
+
+// Should consist of attributes that does not allow for null values
+const GLOBAL_DEFAULTS = {
   fontFamily: 'Arial',
   fontSize: '13px',
   color: '#595959',
   fill: '#333333',
   backgroundColor: '#ffffff',
   stroke: '#000000',
-  strokeWidth: 1
+  strokeWidth: 0
 };
 
 function getObject(root, steps) {
@@ -20,11 +22,16 @@ function getObject(root, steps) {
   return obj;
 }
 
-function wrapper(fallbackVal, fn, item, index, array) {
+function validateValue(globalFallback, value) {
+  // This attribute does not allow for null values
+  return value === null && globalFallback ? globalFallback : value;
+}
+
+function wrapper(globalFallback, fallbackVal, fn, item, index, array) {
   const value = fn ? fn(item, index, array) : null;
-  if (value !== null && typeof value !== 'undefined') {
+  if (typeof value !== 'undefined') {
     // Custom accessor returned a proper value
-    return value;
+    return validateValue(globalFallback, value);
   }
   if (fallbackVal && typeof fallbackVal.fn === 'function') {
     // fallback has a custom function, run it
@@ -36,6 +43,7 @@ function wrapper(fallbackVal, fn, item, index, array) {
 
 function attr(targets, attribute, defaultVal, index) {
   const target = targets[index];
+  const globalDefault = GLOBAL_DEFAULTS[attribute];
   if (!target) {
     return defaultVal;
   }
@@ -49,16 +57,16 @@ function attr(targets, attribute, defaultVal, index) {
     }
     // end of the chain, return default
     return defaultVal;
-  } else if (typeof target[attribute] === typeof defaultVal) {
-    // constant value
-    return target[attribute];
+  } else if (typeof target[attribute] === typeof defaultVal || target[attribute] === null) {
+    // constant value of same type as default or explicitly set to null
+    return validateValue(globalDefault, target[attribute]);
   }
 
   // custom accessor function
   if (type === 'function') {
     // Return function with fallback attribute value
     const inner = attr(targets, attribute, defaultVal, index + 1);
-    target[attribute].fn = (...args) => wrapper(inner, target[attribute], ...args);
+    target[attribute].fn = (...args) => wrapper(globalDefault, inner, target[attribute], ...args);
     return target[attribute];
   }
 
@@ -112,7 +120,7 @@ export function resolveStyle(defaults, styleRoot, path) {
   const steps = path ? path.split('.') : [];
   const ret = {};
   Object.keys(defaults).forEach((s) => {
-    const def = defaults[s] === null || typeof defaults[s] === 'undefined' ? globalDefaults[s] : defaults[s];
+    const def = defaults[s] === null && typeof GLOBAL_DEFAULTS[s] !== 'undefined' ? GLOBAL_DEFAULTS[s] : defaults[s];
     ret[s] = resolveAttribute(styleRoot, steps.concat(), s, def);
   });
   return ret;
@@ -129,11 +137,11 @@ export function resolveForDataValues(styles, dataValues, index) {
   const ret = {};
   if (dataValues) {
     Object.keys(styles).forEach((s) => {
-      ret[s] = typeof styles[s].fn === 'function' ? styles[s].fn(dataValues[s][index], index, dataValues[s]) : styles[s];
+      ret[s] = styles[s] && typeof styles[s].fn === 'function' ? styles[s].fn(dataValues[s][index], index, dataValues[s]) : styles[s];
     });
   } else {
     Object.keys(styles).forEach((s) => {
-      ret[s] = typeof styles[s].fn === 'function' ? styles[s].fn() : styles[s];
+      ret[s] = styles[s] && typeof styles[s].fn === 'function' ? styles[s].fn() : styles[s];
     });
   }
   return ret;

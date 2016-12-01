@@ -63,10 +63,14 @@ export function buildTick(tick, buildOpts) {
   return struct;
 }
 
+function checkText(text) {
+  return typeof text === 'string' || typeof text === 'number' ? text : '-';
+}
+
 export function buildLabel(tick, buildOpts) {
   const struct = {
     type: 'text',
-    text: tick.label,
+    text: checkText(tick.label),
     x: 0,
     y: 0,
     maxWidth: buildOpts.maxWidth,
