@@ -1,4 +1,4 @@
-import { composer } from './composer';
+import composer from './composer';
 
 /**
  * @typedef Chart.DataProps

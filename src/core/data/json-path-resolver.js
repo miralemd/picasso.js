@@ -15,7 +15,7 @@
  * };
  * resolve( path, obj ); // "heaven"
  */
-export function resolve(path, obj) {
+export default function resolve(path, obj) {
   let arr = path.replace(/^\//, '').split(/\//),
     container = obj;
   for (let i = 0; i < arr.length; i++) {

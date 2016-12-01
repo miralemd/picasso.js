@@ -7,7 +7,7 @@ function unique(values) {
 );
 }
 
-export function ordinal(fields, settings) {
+export default function ordinal(fields, settings) {
   const s = band();
   const values = fields[0].values();
   const uniq = unique(values).map(v => v.label);

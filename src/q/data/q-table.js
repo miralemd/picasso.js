@@ -1,5 +1,5 @@
-import { table } from '../../core/data/table';
-import { qField } from './q-field';
+import table from '../../core/data/table';
+import qField from './q-field';
 
 const DIM_RX = /^\/(?:qHyperCube\/)?qDimensionInfo\/(\d+)/;
 const M_RX = /^\/(?:qHyperCube\/)?qMeasureInfo\/(\d+)/;
@@ -22,7 +22,7 @@ const fieldFactoryFn = function (fieldFn) {
  * @param  {function} [fieldFn=qField] Field factory function
  * @return {table}                  Data table
  */
-export function qTable(fieldFn = qField) {
+export default function qTable(fieldFn = qField) {
   const q = table()
     .rows(d => d.qSize.qcy)
     .cols(d => d.qSize.qcx)

@@ -51,7 +51,7 @@ function getMinMax(fields, settings) {
   };
 }
 
-export function linear(fields, settings) {
+export default function linear(fields, settings) {
   const s = lin();
   const stgns = generateSettings(fields, settings);
   const { min, max } = getMinMax(fields, stgns);

@@ -22,7 +22,7 @@ reg.register('box', box);
  * }
  */
 
-export function create(arr, composer) {
+export default function create(arr, composer) {
   const markers = [];
   arr.forEach((marker) => {
     if (marker.type in reg.registry) {

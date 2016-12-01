@@ -8,7 +8,7 @@ function getMinMax(fields) {
   };
 }
 
-export function color(fields, settings) {
+export default function color(fields, settings) {
   const s = linear();
   let { min, max } = getMinMax(fields);
   s.domain([min, max]);

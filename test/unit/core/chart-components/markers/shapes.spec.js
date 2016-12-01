@@ -1,4 +1,4 @@
-import { shape as shapeFn } from '../../../../../src/core/chart-components/markers/point/shapes';
+import shapeFn from '../../../../../src/core/chart-components/markers/point/shapes';
 
 describe('point shapes', () => {
   let p;

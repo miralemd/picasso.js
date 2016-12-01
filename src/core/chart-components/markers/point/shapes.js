@@ -24,6 +24,6 @@ const shapes = {
   })
 };
 
-export function shape(s, p) {
+export default function shape(s, p) {
   return shapes[s] ? shapes[s](p) : shapes.circle(p);
 }

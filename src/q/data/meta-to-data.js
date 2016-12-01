@@ -1,4 +1,4 @@
-import { resolve } from '../../core/data/json-path-resolver';
+import resolve from '../../core/data/json-path-resolver';
 
 const metaToData = [
   {
@@ -25,7 +25,7 @@ const metaToData = [
   }
 ];
 
-export function metaToDataPath(path, meta) {
+export default function metaToDataPath(path, meta) {
   let p = path;
   for (let i = 0; i < metaToData.length; i++) {
     if (!metaToData[i].pattern.test(path)) {

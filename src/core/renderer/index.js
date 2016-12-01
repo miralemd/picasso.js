@@ -4,7 +4,7 @@ let prio = [];
 
 let reg = registry();
 
-export function renderer(type = prio[0]) {
+export default function renderer(type = prio[0]) {
   if (!reg.has(type)) {
     throw new Error(`Renderer of type '${type}' does not exist`);
   }

@@ -1,6 +1,6 @@
 import { create } from './display-objects';
 import Matrix from '../math/matrix';
-import { resolveTransform } from './transform-resolver';
+import resolveTransform from './transform-resolver';
 
 function traverse(items, parent, matrix) {
   items.forEach((s) => {
@@ -29,7 +29,7 @@ function traverse(items, parent, matrix) {
   });
 }
 
-export function scene({ items, stage, dpi }) {
+export default function scene({ items, stage, dpi }) {
   if (!stage) {
     stage = create('stage', dpi);
   }

@@ -300,6 +300,6 @@ class DateFormatter {
   }
 }
 
-export function dateFormatFactory(...args) {
+export default function dateFormatFactory(...args) {
   return new DateFormatter(...args);
 }

@@ -1,6 +1,6 @@
 /* eslint no-unused-expressions: 0*/
 
-import { formatter as timeFormat } from '../../../../../src/core/formatter/d3/timeFormat';
+import timeFormat from '../../../../../src/core/formatter/d3/timeFormat';
 
 describe('d3 timeFormat', () => {
   it('should format dates correctly according to constructor pattern', () => {

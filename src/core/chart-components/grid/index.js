@@ -5,7 +5,7 @@ const reg = registry();
 
 reg.register('line', line);
 
-export function creategrid(arr, composer) {
+export default function creategrid(arr, composer) {
   const items = [];
   arr.forEach((item) => {
     if (item.type in reg.registry) {

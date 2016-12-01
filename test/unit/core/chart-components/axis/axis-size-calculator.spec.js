@@ -1,5 +1,5 @@
 import extend from 'extend';
-import { calcRequiredSize } from '../../../../../src/core/chart-components/axis/axis-size-calculator';
+import calcRequiredSize from '../../../../../src/core/chart-components/axis/axis-size-calculator';
 import { continuousDefaultSettings } from '../../../../../src/core/chart-components/axis/axis-default-settings';
 
 describe('AxisSizeCalculator', () => {

@@ -1,5 +1,5 @@
 import config from '../../../config';
-import { scene as sceneFactory } from '../../../core/scene-graph/scene';
+import sceneFactory from '../../../core/scene-graph/scene';
 import { registry } from '../../../core/utils/registry';
 import { measureText } from '../text-metrics';
 

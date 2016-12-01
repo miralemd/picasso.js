@@ -1,5 +1,5 @@
 import extend from 'extend';
-import { dockConfig } from '../../dock-layout/dock-config';
+import dockConfig from '../../dock-layout/dock-config';
 
 function calcRequiredSize(title, settings, renderer) {
   const fn = function () {
@@ -98,7 +98,7 @@ function generateTitle({ title, settings, dock, rect, renderer }) {
   return struct;
 }
 
-export function text(config, composer, renderer) {
+export default function text(config, composer, renderer) {
   let settings = extend({
       dock: 'bottom',
       anchor: 'center',
