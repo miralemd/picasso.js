@@ -27,22 +27,24 @@
   "files": [
     "/dist"
   ],
+  "dependencies": {
+    "d3-format": "^1.0.2",
+    "d3-scale": "^1.0.0",
+    "d3-time-format": "^2.0.2",
+    "extend": "^3.0.0",
+    "node-event-emitter": "0.0.1",
+    "number-format.js": "^1.1.10"
+  },
   "devDependencies": {
     "@qlik/after-work": "^0.12.3",
     "babel-core": "^6.14.0",
     "babel-loader": "^6.2.5",
     "babel-preset-es2015": "^6.14.0",
-    "d3-format": "^1.0.2",
-    "d3-scale": "^1.0.0",
-    "d3-time-format": "^2.0.2",
     "eslint": "^3.8.0",
     "eslint-config-airbnb": "^13.0.0",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-mocha": "^4.7.0",
-    "extend": "^3.0.0",
     "jsdoc": "^3.4.0",
-    "node-event-emitter": "0.0.1",
-    "number-format.js": "^1.1.10",
     "rimraf": "^2.5.2",
     "webpack": "^1.13.2"
   }

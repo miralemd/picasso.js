@@ -1,7 +1,7 @@
+import extend from 'extend';
 import { nodeBuilder } from './axis-node-builder';
 import { discreteDefaultSettings, continuousDefaultSettings } from './axis-default-settings';
 import { generateContinuousTicks, generateDiscreteTicks } from './axis-tick-generators';
-import { default as extend } from 'extend';
 import { dockConfig } from '../../dock-layout/dock-config';
 import { calcRequiredSize } from './axis-size-calculator';
 import resolveInitialSettings from '../settings-setup';

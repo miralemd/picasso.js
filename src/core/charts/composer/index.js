@@ -2,10 +2,7 @@ import { registry } from '../../utils/registry';
 import { components } from '../../chart-components/index';
 import { data } from '../../data/index';
 import { dockLayout } from '../../dock-layout/dock-layout';
-import {
-  default as buildFormatters,
-  getOrCreateFormatter
-} from './formatter/index';
+import buildFormatters, { getOrCreateFormatter } from './formatter/index';
 import {
   builder as buildScales,
   getOrCreateScale

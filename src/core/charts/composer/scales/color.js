@@ -1,5 +1,5 @@
-import { linear } from '../../../scales/linear';
 import { interpolateViridis } from 'd3-scale';
+import { linear } from '../../../scales/linear';
 
 function getMinMax(fields) {
   return {

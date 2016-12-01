@@ -1,4 +1,4 @@
-import { default as extend } from 'extend';
+import extend from 'extend';
 import { dockConfig } from './dock-config';
 
 function validateComponent(component) {

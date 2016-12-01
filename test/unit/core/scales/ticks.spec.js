@@ -1,4 +1,4 @@
-import { default as ticks } from '../../../../src/core/scales/ticks';
+import ticks from '../../../../src/core/scales/ticks';
 
 describe('Ticks', () => {
   it('should produce nice numbers by extending the given value into a multiple of [1, 2, 5, 10]', () => {

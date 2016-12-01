@@ -1,4 +1,4 @@
-import { default as extend } from 'extend';
+import extend from 'extend';
 
 export function buildTick(tick, buildOpts) {
   const struct = {

@@ -1,5 +1,5 @@
+import extend from 'extend';
 import { dockConfig } from '../../dock-layout/dock-config';
-import { default as extend } from 'extend';
 
 function calcRequiredSize(title, settings, renderer) {
   const fn = function () {
