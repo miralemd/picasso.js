@@ -1,5 +1,5 @@
 import Dispersion from './generic/dispersion';
-import { notNumber } from '../../utils/undef';
+import notNumber from '../../utils/undef';
 
 const DEFAULT_STYLE_SETTINGS = {
   line: {

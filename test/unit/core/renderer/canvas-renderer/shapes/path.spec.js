@@ -1,4 +1,4 @@
-import { render } from '../../../../../../src/web/renderer/canvas-renderer/shapes/path';
+import render from '../../../../../../src/web/renderer/canvas-renderer/shapes/path';
 
 let g;
 let gMock;

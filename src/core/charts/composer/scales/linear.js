@@ -1,5 +1,5 @@
 import { linear as lin } from '../../../scales/linear';
-import { notNumber } from '../../../utils/undef';
+import notNumber from '../../../utils/undef';
 
 const AVAILABLE_SETTINGS = ['min', 'max', 'expand', 'include', 'invert'];
 

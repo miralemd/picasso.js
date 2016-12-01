@@ -1,4 +1,4 @@
-export function render(path, { g, doStroke }) {
+export default function render(path, { g, doStroke }) {
   const commands = path.d.match(/[a-z][^a-z]*/ig);
 
   let prevPoint;

@@ -2,7 +2,7 @@ import rendererFactory from '../../../renderer';
 import shapeFactory from './shapes';
 import resolveInitialSettings from '../../settings-setup';
 import { resolveForDataValues } from '../../../style';
-import { notNumber } from '../../../utils/undef';
+import notNumber from '../../../utils/undef';
 
 const DEFAULT_DATA_SETTINGS = {
   shape: 'circle',
