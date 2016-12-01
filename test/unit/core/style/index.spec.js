@@ -46,7 +46,7 @@ describe('Style resolver', () => {
         },
         title: {
           main: {
-
+            nullValue: null
           }
         }
       }
@@ -54,7 +54,7 @@ describe('Style resolver', () => {
   });
 
   it('should resolve existing style', () => {
-    const result = resolveStyle({ fill: undefined }, settings, 'style.whisker');
+    const result = resolveStyle({ fill: 'default' }, settings, 'style.whisker');
     expect(result.fill).to.equal('red');
   });
   it('should resolve existing 0 style', () => {
@@ -62,7 +62,7 @@ describe('Style resolver', () => {
     expect(result.fill).to.equal(0);
   });
   it('should resolve deep inheritance', () => {
-    const result = resolveStyle({ fontSize: undefined }, settings, 'style.title.main');
+    const result = resolveStyle({ fontSize: 'default' }, settings, 'style.title.main');
     expect(result.fontSize).to.equal('13px');
   });
   it('should fallback to inline default', () => {
@@ -73,22 +73,26 @@ describe('Style resolver', () => {
     const result = resolveStyle({ fontSize: 0 }, settings, 'style.med');
     expect(result.fontSize).to.equal(0);
   });
-  it('should fallback to global default', () => {
-    const result = resolveStyle({ color: undefined }, settings, 'style.title.main');
+  it('should fallback to global default for unallowed null value', () => {
+    const result = resolveStyle({ color: null }, settings, 'style.title.main');
     expect(result.color).to.equal('#595959');
   });
   it('should fallback throught functions', () => {
-    const result = resolveStyle({ stroke: undefined }, settings, 'style.line');
+    const result = resolveStyle({ stroke: 'default' }, settings, 'style.line');
     const output = [0, 1, 2].map(item =>
       result.stroke.fn(null, item)
     );
     expect(output).to.deep.equal(['style.line.stroke', 'style.stroke', 'stroke']);
   });
   it('should possibly return null', () => {
-    const result = resolveStyle({ otherThing: 2 }, settings, 'style.whisker');
+    const result = resolveStyle({ otherThing: 'default' }, settings, 'style.whisker');
     const output = [0, 1, 2].map(item =>
       result.otherThing.fn(null, item)
     );
     expect(output).to.deep.equal(['thing', null, null]);
+  });
+  it('should return explicitly set null values', () => {
+    const result = resolveStyle({ nullValue: 2 }, settings, 'style.title.main');
+    expect(result.nullValue).to.equal(null);
   });
 });
