@@ -45,13 +45,13 @@ function getJSDOCData(inputFile) {
 
     if (filePath) {
       filePath += `/${i.meta.filename}/${i.longname}`;
-      filePath = filePath.replace(/\./gui, '-');
+      filePath = filePath.replace(/\./gi, '-');
 
       if (filePath.indexOf('~') !== -1) {
-        filePath = filePath.replace(/~/gui, '/');
+        filePath = filePath.replace(/~/gi, '/');
       }
       if (filePath.indexOf('#') !== -1) {
-        filePath = filePath.replace(/#/gui, '/');
+        filePath = filePath.replace(/#/gi, '/');
       }
 
       resolve(filePath, output, i);
@@ -74,7 +74,7 @@ let jsdoc = getJSDOCData(JSDOC_INPUT);
 function registerTemplates(cb) {
   glob(`${MD_TEMPLATES_FOLDER}**/*.md`, {}, (err, files) => {
     files.forEach((file) => {
-      let title = file.split('/').pop().replace(/\.md/gui, '');
+      let title = file.split('/').pop().replace(/\.md/gi, '');
       let content = `${fs.readFileSync(file)}`;
       handlebars.registerPartial(title, content);
     });
