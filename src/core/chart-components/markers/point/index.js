@@ -1,6 +1,6 @@
 import rendererFactory from '../../../renderer';
 import shapeFactory from './shapes';
-import resolveInitialSettings from '../../settings-setup';
+import resolveSettingsForPath from '../../settings-setup';
 import { resolveForDataValues } from '../../../style';
 import notNumber from '../../../utils/undef';
 
@@ -13,11 +13,16 @@ const DEFAULT_DATA_SETTINGS = {
   opacity: 1,
   x: 0.5,
   y: 0.5,
-  size: 1,
-  nullShape: {
+  size: 1
+};
+
+const DEFAULT_ERROR_SETTINGS = {
+  errorShape: {
+    opacity: 1,
     shape: 'saltire',
     size: 0.1,
-    stroke: '#ccc',
+    fill: undefined,
+    stroke: undefined,
     strokeWidth: 2
   }
 };
@@ -110,15 +115,16 @@ function getPointSizeLimits(x, y, width, height) {
 }
 
 function calculateLocalSettings(stngs, composer) {
-  const local = resolveInitialSettings({ point: stngs }, { point: DEFAULT_DATA_SETTINGS }, composer);
-  return local.point;
+  const local = resolveSettingsForPath(stngs, DEFAULT_DATA_SETTINGS, composer);
+  local.errorShape = resolveSettingsForPath(stngs, DEFAULT_ERROR_SETTINGS, composer, 'errorShape');
+  return local;
 }
 
 function createDisplayPoints(dataPoints, { x, y, width, height }, pointSize, shapeFn) {
   return dataPoints.filter(p =>
    !isNaN(p.x + p.y)
 ).map((p) => {
-  const s = notNumber(p.size) ? p.nullShape : p;
+  const s = notNumber(p.size) ? p.errorShape : p;
   return shapeFn(s.shape, {
     label: p.label,
     x: p.x * width,
@@ -162,14 +168,18 @@ export function pointFn(rendererFn, shapeFn) {
     local = calculateLocalSettings(settings, composer);
 
     const data = values(table, dataInput);
-    const dataValues = {};
+    const dataValues = { errorShape: {} };
 
     for (const s in DEFAULT_DATA_SETTINGS) {
       dataValues[s] = values(table, settings[s]) || data;
     }
+    for (const s in DEFAULT_ERROR_SETTINGS.errorShape) {
+      dataValues.errorShape[s] = values(table, settings.errorShape && settings.errorShape[s]) || data;
+    }
 
     points = data.map((p, i) => {
       const obj = resolveForDataValues(local, dataValues, i);
+      obj.errorShape = resolveForDataValues(local.errorShape, dataValues.errorShape, i);
       return obj;
     });
   };

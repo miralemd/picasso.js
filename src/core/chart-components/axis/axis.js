@@ -4,7 +4,7 @@ import { discreteDefaultSettings, continuousDefaultSettings } from './axis-defau
 import { generateContinuousTicks, generateDiscreteTicks } from './axis-tick-generators';
 import dockConfig from '../../dock-layout/dock-config';
 import calcRequiredSize from './axis-size-calculator';
-import resolveInitialSettings from '../settings-setup';
+import resolveSettingsForPath from '../settings-setup';
 import { resolveForDataValues } from '../../style';
 
 function alignTransform({ align, inner }) {
@@ -26,7 +26,11 @@ function dockAlignSetup(settings, type) {
 }
 
 function resolveInitialStyle(settings, baseStyles, composer) {
-  return resolveInitialSettings(settings, baseStyles, composer);
+  const ret = {};
+  Object.keys(baseStyles).forEach((s) => {
+    ret[s] = resolveSettingsForPath(settings, baseStyles, composer, s);
+  });
+  return ret;
 }
 
 export function abstractAxis(axisConfig, composer, renderer) {

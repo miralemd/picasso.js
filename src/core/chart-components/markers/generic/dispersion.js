@@ -2,7 +2,7 @@ import renderer from '../../../renderer';
 import doodler from './doodler';
 import { transposer } from '../../../transposer/transposer';
 import { resolveForDataValues } from '../../../style';
-import resolveInitialSettings from '../../settings-setup';
+import resolveSettingsForPath from '../../settings-setup';
 
 function values(table, setting) {
   if (setting && setting.source) {
@@ -13,7 +13,11 @@ function values(table, setting) {
 }
 
 function resolveInitialStyle(settings, baseStyles, composer) {
-  return resolveInitialSettings(settings, baseStyles, composer);
+  const ret = {};
+  Object.keys(baseStyles).forEach((s) => {
+    ret[s] = resolveSettingsForPath(settings, baseStyles, composer, s);
+  });
+  return ret;
 }
 
 export default class Dispersion {

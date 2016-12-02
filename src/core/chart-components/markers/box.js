@@ -1,5 +1,16 @@
 import Dispersion from './generic/dispersion';
 import notNumber from '../../utils/undef';
+/*
+const DEFAULT_DATA_SETTINGS = {
+  x: 0.5,
+  y: 0.5,
+  min: 0,
+  start: 0,
+  med: 0.5,
+  end: 1,
+  max: 1,
+  vertical: false,
+}*/
 
 const DEFAULT_STYLE_SETTINGS = {
   line: {
