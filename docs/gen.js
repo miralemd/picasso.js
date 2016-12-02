@@ -1,3 +1,4 @@
+"use strict"; // eslint-disable-line
 console.log('Generating docs...'); // eslint-disable-line no-console
 
 let rimraf = require('rimraf');
