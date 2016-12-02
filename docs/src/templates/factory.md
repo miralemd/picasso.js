@@ -1,6 +1,6 @@
-### {{>function this }}
+{{>function this }}
 {{#each children }}
 {{#with (lookup .. this)}}
-#### {{>magic this parent=../../name}}
+{{>magic this parent=../../name}}
 {{/with}}
 {{/each}}

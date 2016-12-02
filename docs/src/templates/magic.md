@@ -4,7 +4,7 @@
 {{else}}
 {{#each children }}
 {{#with (lookup .. this)}}
-{{>magic this }}
+{{>magic this parent=../../parent}}
 {{/with}}
 {{/each}}
 {{/if}}

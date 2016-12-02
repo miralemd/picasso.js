@@ -1,3 +1,5 @@
+"use strict"; // eslint-disable-line
+
 /**
  * Resolves the value at the given JSON path
  * @private

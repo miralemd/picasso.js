@@ -54,7 +54,8 @@
   invert: true
 }
 ```
-<a name='Chart' href='#Chart'>#</a> **Chart**(*HTMLElement element, Chart.DataProps data, Chart.SettingsProps settings*)
+#### <a name='Chart' href='#Chart'>#</a> **Chart**(*HTMLElement element, Chart.DataProps data, Chart.SettingsProps settings*)
+
 
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|
@@ -63,8 +64,9 @@
 | settings | Chart.SettingsProps |  |No|
 | Returns | Chart |  | ... |
 
+  
+#### <a name='picasso.chart' href='#picasso.chart'>#</a> **chart**(*DOMElement element, Chart.DataProps data, Chart.SettingsProps settings*)
 
-<a name='picasso.chart' href='#picasso.chart'>#</a> **chart**(*DOMElement element, Chart.DataProps data, Chart.SettingsProps settings*)
 
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|
@@ -73,7 +75,7 @@
 | settings | Chart.SettingsProps | Settings |No|
 | Returns | Chart |  | ... |
 
-The chart creator
+The chart creator  
 #### Examples
 ```js
 picasso.chart( element,
