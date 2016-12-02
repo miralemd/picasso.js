@@ -185,6 +185,7 @@ function getMasks(inst, d) {
 
 class DateFormatter {
   /**
+   * @name DateFormatter
    * @constructs
    * @param {Object} localeInfo
    * @param {String} pattern

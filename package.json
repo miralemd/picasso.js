@@ -15,7 +15,7 @@
     "build": "webpack -p --output-filename [name].min.js",
     "build:debug": "webpack -d",
     "build:watch": "webpack -d --watch",
-    "docs": "rimraf ./docs/api && jsdoc -r ./src -d ./docs/api -c jsdoc.config.json",
+    "docs": "cd docs && npm run docs",
     "lint": "eslint src test --quiet",
     "lint:fix": "eslint src test --quiet --fix",
     "test": "aw-test-runner ./test/unit/**/*.spec.js",

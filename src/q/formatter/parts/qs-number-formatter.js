@@ -196,6 +196,7 @@ function preparePattern(o, t, d) {
 
 class NumberFormatter {
   /**
+   * @name NumberFormatter
    * @constructs
    * @param {Object} localeInfo
    * @param {String} pattern
