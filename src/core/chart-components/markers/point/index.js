@@ -13,7 +13,9 @@ const DEFAULT_DATA_SETTINGS = {
   opacity: 1,
   x: 0.5,
   y: 0.5,
-  size: 1
+  size: 0.75,
+  maxSize: 100,
+  minSize: 5
 };
 
 const DEFAULT_ERROR_SETTINGS = {
@@ -109,7 +111,7 @@ function getPointSizeLimits(x, y, width, height) {
   const xSpace = getSpaceFromScale(x, width);
   const ySpace = getSpaceFromScale(y, height);
   const space = Math.min(xSpace, ySpace);
-  const min = Math.max(1, Math.floor(space / 4)); // set min size to be 4 (arbitrary choice) times smaller than allowed space
+  const min = Math.max(1, Math.floor(space / 8)); // set min size to be 4 (arbitrary choice) times smaller than allowed space
   const max = Math.max(min, Math.min(Math.floor(space)));
   return [min, max];
 }
@@ -125,12 +127,13 @@ function createDisplayPoints(dataPoints, { x, y, width, height }, pointSize, sha
    !isNaN(p.x + p.y)
 ).map((p) => {
   const s = notNumber(p.size) ? p.errorShape : p;
+  const size = pointSize[0] + (s.size * (pointSize[1] - pointSize[0])) // TODO - replace with scale
   return shapeFn(s.shape, {
     label: p.label,
     x: p.x * width,
     y: p.y * height,
     fill: p.fill,
-    size: pointSize[0] + (s.size * (pointSize[1] - pointSize[0])), // TODO - replace with scale
+    size: Math.min(s.maxSize, Math.max(s.minSize, size)),
     stroke: s.stroke,
     strokeWidth: s.strokeWidth,
     opacity: p.opacity
