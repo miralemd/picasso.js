@@ -111,7 +111,7 @@ function getPointSizeLimits(x, y, width, height) {
   const xSpace = getSpaceFromScale(x, width);
   const ySpace = getSpaceFromScale(y, height);
   const space = Math.min(xSpace, ySpace);
-  const min = Math.max(1, Math.floor(space / 8)); // set min size to be 4 (arbitrary choice) times smaller than allowed space
+  const min = Math.max(1, Math.floor(space / 10)); // set min size to be 10 (arbitrary choice) times smaller than allowed space
   const max = Math.max(min, Math.min(Math.floor(space)));
   return [min, max];
 }
@@ -127,7 +127,7 @@ function createDisplayPoints(dataPoints, { x, y, width, height }, pointSize, sha
    !isNaN(p.x + p.y)
 ).map((p) => {
   const s = notNumber(p.size) ? p.errorShape : p;
-  const size = pointSize[0] + (s.size * (pointSize[1] - pointSize[0])) // TODO - replace with scale
+  const size = pointSize[0] + (s.size * (pointSize[1] - pointSize[0])); // TODO - replace with scale
   return shapeFn(s.shape, {
     label: p.label,
     x: p.x * width,

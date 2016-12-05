@@ -49,7 +49,7 @@ describe('point marker', () => {
       x: 50,
       y: 100,
       fill: '#999',
-      size: 10,
+      size: 7.75,
       stroke: '#ccc',
       strokeWidth: 0,
       opacity: 1
@@ -82,7 +82,7 @@ describe('point marker', () => {
       x: 50,
       y: 100,
       fill: '#999',
-      size: 10,
+      size: 7.75,
       stroke: '#ccc',
       strokeWidth: 0,
       opacity: 1
@@ -119,7 +119,7 @@ describe('point marker', () => {
       x: 80,
       y: 60,
       fill: 'red',
-      size: 34,
+      size: 37,
       stroke: 'blue',
       strokeWidth: 2,
       opacity: 0.7
@@ -155,7 +155,7 @@ describe('point marker', () => {
       x: 80,
       y: 60,
       fill: 'red',
-      size: 34,
+      size: 37,
       stroke: 'blue',
       strokeWidth: 2,
       opacity: 0.7
@@ -174,7 +174,8 @@ describe('point marker', () => {
         opacity: { source: 'measure 1', fn: v => v / 10 },
         x: { source: 'measure 2', fn: v => v },
         y: { source: 'measure 3', fn: v => v },
-        size: { source: 'measure 1', fn: (v, i) => i }
+        size: { source: 'measure 1', fn: (v, i) => i },
+        minSize: 0 // Set here to avoid hitting the limit
       }
     };
     composer.table().findField.withArgs('foo').returns({ values: () => ['data 1', 'data 2'] });
@@ -195,7 +196,7 @@ describe('point marker', () => {
       x: -0.2 * 100,
       y: 0.3 * 200,
       fill: 'red',
-      size: 2, // min value of [2,10]
+      size: 1, // min value of [1,10]
       stroke: 'stroke:red',
       strokeWidth: 5,
       opacity: 0.5
@@ -205,7 +206,7 @@ describe('point marker', () => {
       x: 0.7 * 100,
       y: 1.2 * 200,
       fill: 'green',
-      size: 10, // max value of [2,10]
+      size: 10, // max value of [1,10]
       stroke: 'stroke:green',
       strokeWidth: 4,
       opacity: 0.4
@@ -217,7 +218,8 @@ describe('point marker', () => {
       data: { source: 'foo' },
       settings: {
         x: { source: 'measure 1' },
-        size: { source: 'measure 1', fn: v => v }
+        size: { source: 'measure 1', fn: v => v },
+        minSize: 0
       }
     };
     composer.table().findField.withArgs('foo').returns({ values: () => ['data 1', 'data 2', 'data 3'] });
@@ -227,9 +229,9 @@ describe('point marker', () => {
     composer.scale.onCall(0).returns(xScale);
 
     point(config, composer);
-    point.resize({ x: 10, y: 20, width: 100, height: 200 }); // point size limits: [5,20]
+    point.resize({ x: 10, y: 20, width: 100, height: 200 }); // point size limits: [2,20]
     point.render();
 
-    expect(renderedPoints.map(p => p.size)).to.deep.equal([5, 5 + (15 * 0.4), 20]);
+    expect(renderedPoints.map(p => p.size)).to.deep.equal([2, 2 + (18 * 0.4), 20]);
   });
 });
