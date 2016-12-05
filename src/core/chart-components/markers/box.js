@@ -36,7 +36,7 @@ const DEFAULT_STYLE_SETTINGS = {
     fill: '#fff',
     stroke: '#000',
     strokeWidth: 1,
-    width: 1,
+    width: 0.75,
     maxWidth: 100,
     minWidth: 5
   }
@@ -142,6 +142,12 @@ export default class Box extends Dispersion {
         item.style
       );
     }
+
+    // Draw the median line
+    if (item.style.median.show && !notNumber(item.med)) {
+      this.doodle.median(item.x, item.med, item.style);
+    }
+
     // Draw the whiskers
     if (item.style.whisker.show && !notNumber(item.min) && !notNumber(item.max)) {
       // Low whisker
@@ -149,11 +155,6 @@ export default class Box extends Dispersion {
 
       // High whisker
       this.doodle.whisker(item.x, item.max, item.style);
-    }
-
-    // Draw the median line
-    if (item.style.median.show && !notNumber(item.med)) {
-      this.doodle.median(item.x, item.med, item.style);
     }
   }
 }

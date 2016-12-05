@@ -115,9 +115,9 @@ export default class Dispersion {
         this.minDataPointDistance = 0.000000001;
       }
       let normalizedWidth = this.x({ value: this.x.scale.domain()[0] }) - this.x({ value: this.x.scale.domain()[0] + this.minDataPointDistance });
-      this.bandwidth = Math.abs(normalizedWidth) * 0.75;
+      this.bandwidth = Math.abs(normalizedWidth);
     } else {
-      this.bandwidth = this.x && this.x.scale.step ? this.x.scale.step() * 0.75 : 0.5;
+      this.bandwidth = this.x && this.x.scale.step ? this.x.scale.step() : 0.5;
     }
 
     // Setup the blueprint
