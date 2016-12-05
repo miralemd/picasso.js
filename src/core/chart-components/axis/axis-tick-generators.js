@@ -81,7 +81,7 @@ export function generateDiscreteTicks({ data, scale }) {
     const p = p0 !== undefined ? p0 : scale.get(d);
     return {
       position: p,
-      label: d
+      label: `${d}`
     };
   });
 }

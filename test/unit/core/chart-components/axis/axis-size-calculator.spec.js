@@ -37,6 +37,7 @@ describe('AxisSizeCalculator', () => {
 
   it('the size of a vertical axis depend on text length', () => {
     settings.dock = 'left';
+    settings.align = 'left';
     settings.labels.show = true;
     let size = sizeFn(rect);
     expect(size).to.equals(16 /* = 10(margin) + 4(label padding) + 2(text size)*/);
@@ -48,6 +49,7 @@ describe('AxisSizeCalculator', () => {
 
   it("the size of a horizontal axis don't depend on text length", () => {
     settings.dock = 'bottom';
+    settings.align = 'bottom';
     settings.labels.show = true;
     let size = sizeFn(rect);
     expect(size).to.equals(19);
@@ -59,6 +61,7 @@ describe('AxisSizeCalculator', () => {
 
   it('layered labels', () => {
     settings.dock = 'bottom';
+    settings.align = 'bottom';
     settings.labels.show = true;
     settings.labels.layered = true;
     const size = sizeFn(rect);
@@ -67,6 +70,7 @@ describe('AxisSizeCalculator', () => {
 
   it('tilted labels', () => {
     settings.dock = 'bottom';
+    settings.align = 'bottom';
     settings.labels.show = true;
     settings.labels.tilted = true;
     const size = sizeFn(rect);
