@@ -1,4 +1,15 @@
-import render from './render';
+import composer from './composer';
+
+/**
+ * @typedef Chart.DataProps
+ * @property {string} type - the type of data parser to use
+ * @property {object} data - data property to send to data parser
+ * @example
+ * {
+ *   type: "q",
+ *   data: {...}
+ * }
+ */
 
 /**
  * @typedef Chart.SettingsProps
@@ -31,36 +42,21 @@ import render from './render';
  * }
  */
 
-class Chart {
-  /**
-   * @constructor
-   * @param {HTMLElement} element
-   * @param {Chart.DataProps} data
-   * @param {Chart.SettingsProps} settings
-   * @returns {Chart}
-   */
-  constructor(definition = {}) {
-    Object.keys(definition).forEach((key) => {
-      this[key] = definition[key];
-    });
-    if (!this.data) {
-      this.data = {};
-    }
-    if (!this.settings) {
-      this.settings = {};
-    }
-  }
-
-}
-
 /**
  * The chart creator
  * @memberof picasso
  * @alias chart
+ * @param  {DOMElement} element - Element to draw the chart in
+ * @param  {Chart.DataProps} data - Data
  * @param  {Chart.SettingsProps} settings - Settings
  * @return {Chart}
  * @example
- * picasso.chart({
+ * picasso.chart( element,
+ * {
+ *   type: "q",
+ *   data: layout.qHyperCube
+ * },
+ * {
  *   scales: {
  *     x: {
  *       source: "/qHyperCube/qMeasureInfo/0"
@@ -79,24 +75,21 @@ class Chart {
  *       }
  *     ]
  *   }
- * });
+ * } );
  */
-function chartFn(definition, data, settings) {
-  if (definition.toString().match(/[HTML[\w\W]*?Element/)) {
-    // Backward compatibility
-    const element = definition;
-    const chart = new Chart({
-      data,
-      settings
-    });
-    render(element, chart);
-    return null;
-  } else {
-    return new Chart(definition || {});
+export default function render(element, chart) {
+  const {
+    data,
+    settings,
+    mounted
+  } = chart;
+
+  element.innerHTML = '';
+
+  const comp = composer();
+  comp.build(element, data, settings);
+
+  if (typeof mounted === 'function') {
+    mounted.call(chart);
   }
 }
-
-export {
-  chartFn as chart,
-  Chart
-};
