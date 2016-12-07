@@ -1,6 +1,7 @@
 import {
   chart,
-  renderer
+  renderer,
+  registerComponent
 } from './core';
 import config from './config';
 import './web';
@@ -14,5 +15,6 @@ import './q';
 export {
   config,
   chart,
-  renderer
+  renderer,
+  registerComponent
 };
