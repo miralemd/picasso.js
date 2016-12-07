@@ -1,4 +1,5 @@
 import composer from './composer';
+import config from '../../config';
 
 /**
  * @typedef Chart.DataProps
@@ -56,8 +57,13 @@ class Chart {
     this.element.innerHTML = '';
 
     this.composer = composer();
-    this.composer.build(element, d, settings);
+
+    this.rendered = new config.Promise((resolve) => {
+      this.composer.build(element, d, settings);
+      resolve();
+    });
   }
+
 }
 
 /**
