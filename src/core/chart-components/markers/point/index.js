@@ -22,7 +22,7 @@ const DEFAULT_ERROR_SETTINGS = {
   errorShape: {
     opacity: 1,
     shape: 'saltire',
-    size: 0.1,
+    size: 0.2,
     fill: undefined,
     stroke: undefined,
     strokeWidth: 2
@@ -133,7 +133,7 @@ function createDisplayPoints(dataPoints, { x, y, width, height }, pointSize, sha
     x: p.x * width,
     y: p.y * height,
     fill: p.fill,
-    size: Math.min(s.maxSize, Math.max(s.minSize, size)),
+    size: Math.min(p.maxSize, Math.max(p.minSize, size)),
     stroke: s.stroke,
     strokeWidth: s.strokeWidth,
     opacity: p.opacity
