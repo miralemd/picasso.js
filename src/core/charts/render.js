@@ -78,10 +78,12 @@ import composer from './composer';
  * } );
  */
 export default function render(element, chart) {
+  // TODO validation of chart props
   const {
     data,
     settings,
-    mounted
+    mounted,
+    on
   } = chart;
 
   element.innerHTML = '';
@@ -90,6 +92,13 @@ export default function render(element, chart) {
   comp.build(element, data, settings);
 
   if (typeof mounted === 'function') {
-    mounted.call(chart);
+    mounted.call(chart, element);
+  }
+
+  if (typeof on === 'object') {
+    Object.keys(on).forEach((key) => {
+      const listener = on[key].bind(chart);
+      element.addEventListener(key, listener);
+    });
   }
 }
