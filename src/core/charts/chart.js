@@ -1,6 +1,32 @@
 import render from './render';
 
 /**
+ * @typedef Chart.Props
+ * @property {Chart.DataProps} data - Chart data
+ * @property {Chart.SettingsProps} settings - Chart settings
+ * @property {Function} mounted - Lifecycle function called when the chart instance has been mounted into an element.
+ * @property {Function} updated - Lifecycle function called when the chart instance has been updated.
+ * @property {Object} on - Event listeners
+ * @example
+ * {
+ *   data: {
+ *     ...
+ *   },
+ *   settings: {
+ *     ...
+ *   },
+ *   mounted: function(element) {
+ *
+ *   },
+ *   on: {
+ *     click: function(e) {
+ *
+ *     }
+ *   }
+ * }
+ */
+
+/**
  * @typedef Chart.SettingsProps
  * @property {Chart.ScaleProps} scales
  * @property {object} components
@@ -31,17 +57,19 @@ import render from './render';
  * }
  */
 
-class Chart {
+/**
+ * Chart class holding the definition of a chart
+ */
+export default class Chart {
   /**
    * @constructor
    * @param {HTMLElement} element
-   * @param {Chart.DataProps} data
-   * @param {Chart.SettingsProps} settings
+   * @param {Chart.Props} props - Chart properties
    * @returns {Chart}
    */
-  constructor(definition = {}) {
-    Object.keys(definition).forEach((key) => {
-      this[key] = definition[key];
+  constructor(props = {}) {
+    Object.keys(props).forEach((key) => {
+      this[key] = props[key];
     });
     if (!this.data) {
       this.data = {};
@@ -50,7 +78,6 @@ class Chart {
       this.settings = {};
     }
   }
-
 }
 
 /**
@@ -96,7 +123,4 @@ function chartFn(definition, data, settings) {
   }
 }
 
-export {
-  chartFn as chart,
-  Chart
-};
+export const chart = chartFn;

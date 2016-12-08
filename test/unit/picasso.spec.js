@@ -47,6 +47,21 @@ describe('picasso.js', () => {
       expect(mountedFn).to.have.been.calledWith(element);
     });
 
+    it('should call updated function', () => {
+      const updatedFn = sinon.sandbox.stub();
+      const element = createElement();
+
+      const chart = picasso.chart({
+        updated: updatedFn
+      });
+      const chartInstance = picasso.render(element, chart);
+      chartInstance.update({
+        data: {}
+      });
+
+      expect(updatedFn).to.have.been.called; // eslint-disable-line no-unused-expressions
+    });
+
     it('should bind event listener', () => {
       const clickFn = sinon.sandbox.stub();
       const element = createElement();
