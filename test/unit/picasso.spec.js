@@ -1,4 +1,5 @@
 import * as picasso from '../../src/index';
+import createElement from '../mocks/element-mock';
 
 describe('picasso.js', () => {
   it('should expose the correct top-level API', () => {
@@ -30,6 +31,36 @@ describe('picasso.js', () => {
       expect(picasso.config.Promise).to.equal(MyPromise);
       expect(picasso.config.Promise.resolve).to.equal(MyPromise.resolve);
       expect(picasso.config.Promise.reject).to.equal(MyPromise.reject);
+    });
+  });
+
+  describe('Chart lifecycle', () => {
+    it('should call mounted function', () => {
+      const mountedFn = sinon.sandbox.stub();
+      const element = createElement();
+
+      const chart = picasso.chart({
+        mounted: mountedFn
+      });
+      picasso.render(element, chart);
+
+      expect(mountedFn).to.have.been.calledWith(element);
+    });
+
+    it('should bind event listener', () => {
+      const clickFn = sinon.sandbox.stub();
+      const element = createElement();
+
+      const chart = picasso.chart({
+        on: {
+          click: clickFn
+        }
+      });
+      picasso.render(element, chart);
+
+      const e = {};
+      element.trigger('click', e);
+      expect(clickFn).to.have.been.calledWith(e);
     });
   });
 });

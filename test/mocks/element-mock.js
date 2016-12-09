@@ -4,6 +4,7 @@ function element(name) {
     attributes: {},
     style: {},
     children: [],
+    listeners: {},
     parentNode: null,
     parentElement: null,
     ownerDocument: {
@@ -36,6 +37,12 @@ function element(name) {
       this.children.splice(this.children.indexOf(el), 1);
       el.parentNode = null;
       el.parentElement = this;
+    },
+    addEventListener(key, val) {
+      this.listeners[key] = val;
+    },
+    trigger(listenerKey, arg) {
+      this.listeners[listenerKey].call(this, arg);
     }
   };
 
