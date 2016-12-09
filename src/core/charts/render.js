@@ -1,4 +1,4 @@
-import { createInstance } from './chart-instance';
+import { createInstance, mountSymbol as mount } from './chart-instance';
 
 /**
  * Chart render function
@@ -12,6 +12,6 @@ import { createInstance } from './chart-instance';
  */
 export default function render(element, chart) {
   const chartInstance = createInstance(chart);
-  chartInstance.mount(element);
+  chartInstance[mount](element);
   return chartInstance;
 }

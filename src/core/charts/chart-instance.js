@@ -2,6 +2,7 @@ import Symbol from 'es6-symbol';
 import composer from './composer';
 
 const chartSymbol = Symbol('chart');
+export const mountSymbol = Symbol('mount-chart');
 
 /**
  * Chart instance class
@@ -14,42 +15,38 @@ export default class ChartInstance {
     this[chartSymbol] = chart;
 
     // Do a shallow extend
-    this.data = Object.assign({}, chart.data);
-    this.settings = Object.assign({}, chart.settings);
-  }
+    this.data = chart.data;
+    this.settings = chart.settings;
 
-  /**
-   * Mount the chart instance into an element.
-   * @param {HTMLElement} element - The element to render the chart to.
-   */
-  mount(element) {
-    if (this.element) {
-      throw new Error('Chart instance already mounted');
-    }
+    this[mountSymbol] = (element) => {
+      if (this.element) {
+        throw new Error('Chart instance already mounted');
+      }
 
-    const {
-      data,
-      settings,
-      mounted,
-      on
-    } = this[chartSymbol];
+      const {
+        data,
+        settings,
+        mounted,
+        on
+      } = chart;
 
-    this.element = element;
-    element.innerHTML = '';
+      this.element = element;
+      element.innerHTML = '';
 
-    const comp = composer();
-    comp.build(element, data, settings);
+      const comp = composer();
+      comp.build(element, data, settings);
 
-    if (typeof on === 'object') {
-      Object.keys(on).forEach((key) => {
-        const listener = on[key].bind(this);
-        element.addEventListener(key, listener);
-      });
-    }
+      if (typeof on === 'object') {
+        Object.keys(on).forEach((key) => {
+          const listener = on[key].bind(this);
+          element.addEventListener(key, listener);
+        });
+      }
 
-    if (typeof mounted === 'function') {
-      mounted.call(this, element);
-    }
+      if (typeof mounted === 'function') {
+        mounted.call(this, element);
+      }
+    };
   }
 
   /**
