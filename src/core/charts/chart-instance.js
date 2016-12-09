@@ -1,4 +1,7 @@
+import Symbol from 'es6-symbol';
 import composer from './composer';
+
+const chartSymbol = Symbol('chart');
 
 /**
  * Chart instance class
@@ -8,7 +11,7 @@ export default class ChartInstance {
    * @param {Chart} chart - Chart definition
    */
   constructor(chart) {
-    this.chart = chart;
+    this[chartSymbol] = chart;
 
     // Do a shallow extend
     this.data = Object.assign({}, chart.data);
@@ -20,7 +23,7 @@ export default class ChartInstance {
    * @param {HTMLElement} element - The element to render the chart to.
    */
   mount(element) {
-    if(this.element) {
+    if (this.element) {
       throw new Error('Chart instance already mounted');
     }
 
@@ -29,7 +32,7 @@ export default class ChartInstance {
       settings,
       mounted,
       on
-    } = this.chart;
+    } = this[chartSymbol];
 
     this.element = element;
     element.innerHTML = '';
@@ -67,8 +70,8 @@ export default class ChartInstance {
     const comp = composer();
     comp.build(this.element, this.data, this.settings);
 
-    if (typeof this.chart.updated === 'function') {
-      this.chart.updated.call(this);
+    if (typeof this[chartSymbol].updated === 'function') {
+      this[chartSymbol].updated.call(this);
     }
   }
 }

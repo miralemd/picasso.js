@@ -47,6 +47,20 @@ describe('picasso.js', () => {
       expect(mountedFn).to.have.been.calledWith(element);
     });
 
+    it('should throw exception when already mounted', () => {
+      const element = createElement();
+      const chart = picasso.chart({});
+      const chartInstance = picasso.render(element, chart);
+      expect(chartInstance.mount.bind(element)).to.throw(Error);
+    });
+
+    it('should not be able to access private chart property', () => {
+      const element = createElement();
+      const chart = picasso.chart({});
+      const chartInstance = picasso.render(element, chart);
+      expect(chartInstance.chart).to.be.undefined; // eslint-disable-line no-unused-expressions
+    });
+
     it('should call updated function', () => {
       const updatedFn = sinon.sandbox.stub();
       const element = createElement();
