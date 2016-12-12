@@ -1,20 +1,34 @@
 import table from '../../core/data/table';
 import qField from './q-field';
 
-const DIM_RX = /^\/(?:qHyperCube\/)?qDimensionInfo\/(\d+)/;
+const DIM_RX = /^\/(?:qHyperCube\/)?qDimensionInfo(?:\/(\d+))?/;
 const M_RX = /^\/(?:qHyperCube\/)?qMeasureInfo\/(\d+)/;
 
-const fieldFactoryFn = function (fieldFn) {
-  return function (hc) {
-    return hc.qDimensionInfo.concat(hc.qMeasureInfo).map((f, idx) =>
-       fieldFn().data({
-         meta: f,
-         matrix: hc.qDataPages[0].qMatrix,
-         idx
-       })
-    );
-  };
-};
+function hyperCubeFieldsFn(hc) {
+  let dimz = hc.qDimensionInfo.length;
+  return hc.qDimensionInfo.concat(hc.qMeasureInfo).map((f, idx) =>
+     qField({ id: idx < dimz ? `/qDimensionInfo/${idx}` : `/qMeasureInfo/${idx - dimz}` })({
+       meta: f,
+       pages: hc.qDataPages,
+       idx
+     })
+  );
+}
+
+function listObjectFieldsFn(lo) {
+  return [qField({ id: '/qDimensionInfo' })({
+    meta: lo.qDimensionInfo,
+    pages: lo.qDataPages,
+    idx: 0
+  })];
+}
+
+function fieldsFn(hc) {
+  if (Array.isArray(hc.qDimensionInfo)) {
+    return hyperCubeFieldsFn(hc);
+  }
+  return listObjectFieldsFn(hc);
+}
 
 /**
  * Data interface for the Qlik Sense hypercube format
@@ -22,27 +36,29 @@ const fieldFactoryFn = function (fieldFn) {
  * @param  {function} [fieldFn=qField] Field factory function
  * @return {table}                  Data table
  */
-export default function qTable(fieldFn = qField) {
-  const q = table()
-    .rows(d => d.qSize.qcy)
-    .cols(d => d.qSize.qcx)
-    .fields(fieldFactoryFn(fieldFn));
+export default function qTable({ id } = {}) {
+  const q = table({
+    id,
+    fields: fieldsFn
+  });
 
-  q.findField = function (query) {
+  q.findField = (query) => {
     const d = q.data();
-    const numDimz = d.qDimensionInfo.length;
     const fields = q.fields();
 
-        // Find by path
+    // Find by path
     if (DIM_RX.test(query)) {
       const idx = +DIM_RX.exec(query)[1];
-      return fields[idx];
+      if (Array.isArray(d.qDimensionInfo)) { // listobject
+        return fields[idx];
+      }
+      return fields[0];
     } else if (M_RX.test(query)) {
-      const idx = +M_RX.exec(query)[1] + numDimz;
+      const idx = +M_RX.exec(query)[1] + d.qDimensionInfo.length;
       return fields[idx];
     }
 
-        // Find by title
+    // Find by title
     for (let i = 0; i < fields.length; i++) {
       if (fields[i].title() === query) {
         return fields[i];

@@ -1,5 +1,5 @@
 /* eslint no-return-assign: 0*/
-import { formatter } from '../formatter';
+import { formatter as formatterFn } from '../formatter';
 
 // TODO - decide whether usage of .call() is appropriate when invoking accessors, if yes then arrow functions are not allowed!
 
@@ -9,7 +9,7 @@ const accessors = {
   max: data => data.max,
   title: data => data.title,
   values: data => data.values,
-  formatter: () => formatter('d3')('number')('')
+  formatter: () => formatterFn('d3')('number')('')
 };
 
 /**
@@ -17,81 +17,37 @@ const accessors = {
  *
  * @return {Object}   Object with accessors
  */
-export default function field() {
-  let data = {},
-    acc = {
-      min: accessors.min,
-      max: accessors.max,
-      tags: accessors.tags,
-      title: accessors.title,
-      values: accessors.values,
-      formatter: accessors.formatter
-    };
+export default function field({
+  id,
+  min = accessors.min,
+  max = accessors.max,
+  tags = accessors.tags,
+  title = accessors.title,
+  values = accessors.values,
+  formatter = accessors.formatter
+} = {}) {
+  let data = {};
 
-  function fn() {}
+  function fn(d) {
+    data = d;
+    return fn;
+  }
 
-  /**
-   * Get or set the data
-   *
-   * @param  {Object} [d] Data object
-   * @return {Function}   Field object
-   * @return {Object}     Data object
-   */
-  fn.data = d => d ? (data = d, fn) : data;
+  fn.id = () => id;
 
-  /**
-   * Get tags from the data or set an accessor for the tags
-   *
-   * @param  {Function} [f] Optional accessor function
-   * @return {Function}     Field object
-   * @return {Object}       Tags
-   */
-  fn.tags = f => f ? (acc.tags = f, fn) : acc.tags(data);
+  fn.data = () => data;
 
-  /**
-   * Get the minimum value of the data or set the accessor
-   *
-   * @param  {Function} [f] Optional accessor function
-   * @return {Function}     Field object
-   * @return {Integer}      The minimum value
-   */
-  fn.min = f => f ? (acc.min = f, fn) : acc.min(data);
+  fn.tags = () => tags(data);
 
-  /**
-   * Get the maximum value of the data or set the accessor
-   *
-   * @param  {Function} [f] Optional accessor function
-   * @return {Function}     Field object
-   * @return {Integer}      The maximum value
-   */
-  fn.max = f => f ? (acc.max = f, fn) : acc.max(data);
+  fn.min = () => min(data);
 
-  /**
-   * Get the title of the data or set the accessor
-   *
-   * @param  {Function} [f] Optional accessor function
-   * @return {Function}     Field object
-   * @return {String}       Title
-   */
-  fn.title = f => f ? (acc.title = f, fn) : acc.title(data);
+  fn.max = () => max(data);
 
-  /**
-   * Get the values of the data or set the accessor
-   *
-   * @param  {Function} [f] Optional accessor function
-   * @return {Function}     Field object
-   * @return {Array}        Array, array of objects or object of values
-   */
-  fn.values = f => f ? (acc.values = f, fn) : acc.values(data);
+  fn.title = () => title(data);
 
-  /**
-   * Get the formatted data of the data or set the formatter
-   *
-   * @param  {Function} [f] Optional formatter function
-   * @return {Function}     Field object
-   * @return {String}       Formatted data
-   */
-  fn.formatter = f => f ? (acc.formatter = f, fn) : acc.formatter(data);
+  fn.values = () => values(data);
+
+  fn.formatter = () => formatter(data);
 
   return fn;
 }

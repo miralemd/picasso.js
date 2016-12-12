@@ -1,31 +1,62 @@
 import table from '../../../../src/core/data/table';
 
 describe('table', () => {
-  let dd;
+  describe('defaults', () => {
+    let dd;
+    beforeEach(() => {
+      dd = table()([
+        ['Country', 'Population'],
+        ['Sweden', 123],
+        ['Norway', -345]
+      ]);
+    });
 
-  beforeEach(() => {
-    dd = table();
-    dd.data([
-      ['Country', 'Population'],
-      ['Sweden', 9000000],
-      ['Norway', 5000000]
-    ]);
+    it('should find 2 fields', () => {
+      expect(dd.fields().length).to.equal(2);
+    });
+
+    it('should have nice titles on fields', () => {
+      expect(dd.fields().map(f => f.title())).to.eql(['Country', 'Population']);
+    });
+
+    it('should extract values from fields', () => {
+      expect(dd.fields().map(f => f.values())).to.eql([
+        [{ id: 'Sweden', label: 'Sweden', value: 'Sweden' }, { id: 'Norway', label: 'Norway', value: 'Norway' }],
+        [{ id: '123', label: '123', value: 123 }, { id: '-345', label: '-345', value: -345 }]
+      ]);
+    });
   });
 
-  it('should set row accessor', () => {
-    expect(dd.rows(d => d.length).rows()).to.equal(3);
-  });
+  describe('with custom accessors', () => {
+    let dd;
+    const fieldsFn = (tableData) => {
+      const fieldFn = fieldData => ({
+        values: fieldData.values,
+        title: fieldData.title
+      });
+      return tableData.foo.map(fieldFn);
+    };
+    beforeEach(() => {
+      dd = table({
+        fields: fieldsFn
+      })({
+        foo: [
+          { title: 'First field', values: [0, 5, 6] },
+          { title: 'Second field', values: [1, 2] }
+        ]
+      });
+    });
 
-  it('should set cols accessor', () => {
-    expect(dd.cols(d => d[0].length).cols()).to.equal(2);
-  });
+    it('should find 2 fields', () => {
+      expect(dd.fields().length).to.eql(2);
+    });
 
-  it('should set fields accessor', () => {
-    expect(dd.fields(d => d[0].map(s => s)).fields()).to.deep.equal(['Country', 'Population']);
-  });
+    it('should have nice titles on fields', () => {
+      expect(dd.fields().map(f => f.title)).to.eql(['First field', 'Second field']);
+    });
 
-  it('should find a field', () => {
-    const fieldFactory = d => d[0].map(s => s);
-    expect(dd.fields(fieldFactory).findField('Population', (q, field) => q === field)).to.equal('Population');
+    it('should extract values from fields', () => {
+      expect(dd.fields().map(f => f.values)).to.eql([[0, 5, 6], [1, 2]]);
+    });
   });
 });

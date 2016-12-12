@@ -1,11 +1,6 @@
 import field from '../../../../src/core/data/field';
 
 describe('Field', () => {
-  let f;
-  beforeEach(() => {
-    f = field();
-  });
-
   describe('defaults', () => {
     const dd = {
       min: 1,
@@ -14,8 +9,9 @@ describe('Field', () => {
       title: 'wohoo',
       values: ['a', 'c', 'a']
     };
+    let f;
     beforeEach(() => {
-      f.data(dd);
+      f = field()(dd);
     });
 
     it('should return data', () => {
@@ -44,8 +40,15 @@ describe('Field', () => {
   });
 
   describe('custom accessors', () => {
+    let f;
     beforeEach(() => {
-      f.data({
+      f = field({
+        min: d => d.mm.qMin,
+        max: d => d.mm.maximum,
+        tags: d => d.meta.taggar.map(x => x.v),
+        title: d => d.label,
+        values: d => d.values.map(x => x.v)
+      })({
         mm: { qMin: -3, maximum: 2 },
         meta: {
           taggar: [{ v: 'numeric' }, { v: 'date' }]
@@ -56,23 +59,23 @@ describe('Field', () => {
     });
 
     it('should return min value', () => {
-      expect(f.min(d => d.mm.qMin).min()).to.equal(-3);
+      expect(f.min()).to.equal(-3);
     });
 
     it('should return max value', () => {
-      expect(f.max(d => d.mm.maximum).max()).to.equal(2);
+      expect(f.max()).to.equal(2);
     });
 
     it('should return tags', () => {
-      expect(f.tags(d => d.meta.taggar.map(x => x.v)).tags()).to.deep.equal(['numeric', 'date']);
+      expect(f.tags()).to.deep.equal(['numeric', 'date']);
     });
 
     it('should return title', () => {
-      expect(f.title(d => d.label).title()).to.equal('custom');
+      expect(f.title()).to.equal('custom');
     });
 
     it('should return values', () => {
-      expect(f.values(d => d.values.map(x => x.v)).values()).to.deep.equal([1, 6, 6]);
+      expect(f.values()).to.deep.equal([1, 6, 6]);
     });
   });
 });

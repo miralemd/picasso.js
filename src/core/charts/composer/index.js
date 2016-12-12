@@ -47,7 +47,7 @@ function flattenComponents(c) {
 export default function composer() {
   let scales = {},
     formatters = {},
-    tables = [],
+    dataset = [],
     comps = {},
     container = null,
     docker = dockLayout();
@@ -61,7 +61,7 @@ export default function composer() {
   };
 
   fn.data = function (meta, settings) {
-    tables = [data(meta)];
+    dataset = data(meta);
     const preComps = regPreComps.build(settings, fn);
     scales = preComps.scales;
     formatters = preComps.formatters;
@@ -69,7 +69,7 @@ export default function composer() {
   };
 
   fn.table = function () {
-    return tables[0];
+    return dataset.tables()[0];
   };
 
   fn.container = function () {
@@ -77,7 +77,7 @@ export default function composer() {
   };
 
   fn.scale = function (v) {
-    return getOrCreateScale(v, scales, tables);
+    return getOrCreateScale(v, scales, dataset.tables());
   };
 
   fn.components = function () {
