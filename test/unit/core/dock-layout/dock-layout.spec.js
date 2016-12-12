@@ -2,7 +2,7 @@ import dockLayout from '../../../../src/core/dock-layout/dock-layout';
 import dockConfig from '../../../../src/core/dock-layout/dock-config';
 
 describe('Dock Layout', () => {
-  const componentMock = function (dock, size, order = 0) {
+  const componentMock = function (dock, size, order = 0, edgeBleed = {}) {
     let outerRect = { x: 0, y: 0, width: 0, height: 0 };
     let innerRect = { x: 0, y: 0, width: 0, height: 0 };
     let containerRect = { x: 0, y: 0, width: 0, height: 0 };
@@ -11,6 +11,7 @@ describe('Dock Layout', () => {
 
     dummy.dockConfig = dockConfig(dock, order);
     dummy.dockConfig.requiredSize(rect => rect.width * size);
+    dummy.dockConfig.edgeBleed(edgeBleed);
     dummy.resize = function (...args) {
       if (!args.length) {
         return { innerRect, outerRect, containerRect };
@@ -111,5 +112,55 @@ describe('Dock Layout', () => {
     expect(leftComp2.resize().innerRect, 'leftComp2 innerRect had incorrect calculated size').to.deep.equal({ x: 0, y: 0, width: 0, height: 0 });
     expect(leftComp3.resize().innerRect, 'leftComp3 innerRect had incorrect calculated size').to.deep.equal({ x: 0, y: 0, width: 0, height: 0 });
     expect(mainComp.resize().innerRect, 'Main innerRect had incorrect calculated size').to.deep.equal({ x: 300, y: 0, width: 700, height: 1000 });
+  });
+
+  describe('edgeBleed', () => {
+    it("should remove component when edgebleed don't fit", () => {
+      const leftComp = componentMock('left', 0.10, undefined, { top: 700 });
+      const mainComp = componentMock('', 0);
+      const rect = { x: 0, y: 0, width: 1000, height: 1000 };
+      const dl = dockLayout();
+      dl.addComponent(leftComp);
+      dl.addComponent(mainComp);
+
+      dl.layout(rect);
+
+      expect(leftComp.resize().innerRect, 'leftComp innerRect had incorrect calculated size').to.deep.equal({ x: 0, y: 0, width: 0, height: 0 });
+      expect(mainComp.resize().innerRect, 'Main innerRect had incorrect calculated size').to.deep.equal({ x: 0, y: 0, width: 1000, height: 1000 });
+    });
+
+    it('should remove component because other components edgebleed', () => {
+      const leftComp = componentMock('left', 0.10, undefined, { top: 400 });
+      const bottomComp = componentMock('bottom', 0.30);
+      const mainComp = componentMock('', 0);
+      const rect = { x: 0, y: 0, width: 1000, height: 1000 };
+      const dl = dockLayout();
+      dl.addComponent(leftComp);
+      dl.addComponent(bottomComp);
+      dl.addComponent(mainComp);
+
+      dl.layout(rect);
+
+      expect(leftComp.resize().innerRect, 'leftComp innerRect had incorrect calculated size').to.deep.equal({ x: 0, y: 400, width: 100, height: 600 });
+      expect(bottomComp.resize().innerRect, 'bottomComp innerRect had incorrect calculated size').to.deep.equal({ x: 0, y: 0, width: 0, height: 0 });
+      expect(mainComp.resize().innerRect, 'Main innerRect had incorrect calculated size').to.deep.equal({ x: 100, y: 400, width: 900, height: 600 });
+    });
+
+    it('should overlap component and edgebleed on the same side', () => {
+      const leftComp = componentMock('left', 0.10, undefined, { bottom: 400 });
+      const bottomComp = componentMock('bottom', 0.30);
+      const mainComp = componentMock('', 0);
+      const rect = { x: 0, y: 0, width: 1000, height: 1000 };
+      const dl = dockLayout();
+      dl.addComponent(leftComp);
+      dl.addComponent(bottomComp);
+      dl.addComponent(mainComp);
+
+      dl.layout(rect);
+
+      expect(leftComp.resize().innerRect, 'leftComp innerRect had incorrect calculated size').to.deep.equal({ x: 0, y: 0, width: 100, height: 600 });
+      expect(bottomComp.resize().innerRect, 'bottomComp innerRect had incorrect calculated size').to.deep.equal({ x: 100, y: 600, width: 900, height: 300 });
+      expect(mainComp.resize().innerRect, 'Main innerRect had incorrect calculated size').to.deep.equal({ x: 100, y: 0, width: 900, height: 600 });
+    });
   });
 });

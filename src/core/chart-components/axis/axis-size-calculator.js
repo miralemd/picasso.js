@@ -43,7 +43,7 @@ function tiltedLabelOverlap({ majorTicks, measureText, rect }) {
   return false;
 }
 
-export default function calcRequiredSize({ type, data, formatter, renderer, scale, settings, ticksFn }) {
+export default function calcRequiredSize({ type, data, formatter, renderer, scale, settings, ticksFn, layoutConfig }) {
   return function (rect) {
     let size = 0;
 
@@ -51,8 +51,8 @@ export default function calcRequiredSize({ type, data, formatter, renderer, scal
       const align = settings.align;
       const horizontal = align === 'top' || align === 'bottom';
       const layered = horizontal && settings.labels.layered;
-      const tilted = horizontal && settings.labels.tilted && !layered;
 
+      const tilted = horizontal && settings.labels.tilted && !layered;
       const majorTicks = ticksFn({ settings, innerRect: rect, scale, data, formatter })
           .filter(isMajorTick);
 
@@ -63,8 +63,8 @@ export default function calcRequiredSize({ type, data, formatter, renderer, scal
       });
       let sizeFromTextRect;
       if (tilted) {
-        const radians = Math.PI / 3; // angle in radians
-        sizeFromTextRect = r => (r.height * Math.sin(radians)) + (r.width * Math.cos(radians));
+        const radians = settings.labels.tiltAngle * (Math.PI / 180); // angle in radians
+        sizeFromTextRect = r => (r.width * Math.sin(radians)) + (r.height * Math.cos(radians));
       } else if (horizontal) {
         sizeFromTextRect = r => r.height;
       } else {
@@ -89,7 +89,8 @@ export default function calcRequiredSize({ type, data, formatter, renderer, scal
       } else {
         labels = majorTicks.map(tick => tick.label);
       }
-      const labelSizes = labels.map(measureText).map(sizeFromTextRect);
+      const tickMeasures = labels.map(measureText);
+      const labelSizes = tickMeasures.map(sizeFromTextRect);
       const textSize = Math.min(settings.labels.maxSize, Math.max(...labelSizes));
 
       size += textSize;
@@ -97,6 +98,21 @@ export default function calcRequiredSize({ type, data, formatter, renderer, scal
 
       if (layered) {
         size *= 2;
+      }
+
+      if (tilted) {
+        const radians = settings.labels.tiltAngle * (Math.PI / 180); // angle in radians
+        const h = measureText('M').height;
+        const maxWidth = (textSize - (h * Math.cos(radians))) / Math.sin(radians);
+        const labelWidth = r => (Math.min(maxWidth, r.width) * Math.cos(radians)) + r.height;
+        const adjustByPosition = (s, i) =>
+            settings.align === 'bottom'
+              ? s - (majorTicks[i].position * rect.width)
+              : s - ((1 - majorTicks[i].position) * rect.width);
+
+        const bleedSize = Math.max(...tickMeasures.map(labelWidth).map(adjustByPosition)) + settings.paddingEnd;
+        const bleedDir = settings.align === 'bottom' ? 'left' : 'right';
+        layoutConfig.edgeBleed({ [bleedDir]: bleedSize });
       }
     }
     if (settings.ticks.show) {

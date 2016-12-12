@@ -20,41 +20,77 @@ function roundRect(rect) {
   };
 }
 
-function reduceSingleLayoutRect(containerRect, reducedRect, c) {
+function cacheSize(c, containerRect) {
+  c.cachedSize = typeof c.cachedSize === 'undefined' ? Math.ceil(c.config.requiredSize()(containerRect)) : c.cachedSize;
+  return c.cachedSize;
+}
+
+function validateReduceRect(containerRect, reducedRect) {
+  const minReduceWidth = containerRect.width * 0.5;
+  const minReduceHeight = containerRect.height * 0.5;
+  return reducedRect.width >= minReduceWidth && reducedRect.height >= minReduceHeight;
+}
+
+function reduceDocRect(reducedRect, c) {
   switch (c.config.dock()) {
     case 'top':
-      if (reducedRect.height >= c.cachedSize + (containerRect.height * 0.5)) {
-        reducedRect.y += c.cachedSize;
-        reducedRect.height -= c.cachedSize;
-        return true;
-      } else {
-        return false;
-      }
+      reducedRect.y += c.cachedSize;
+      reducedRect.height -= c.cachedSize;
+      break;
     case 'bottom':
-      if (reducedRect.height >= c.cachedSize + (containerRect.height * 0.5)) {
-        reducedRect.height -= c.cachedSize;
-        return true;
-      } else {
-        return false;
-      }
+      reducedRect.height -= c.cachedSize;
+      break;
     case 'left':
-      if (reducedRect.width >= c.cachedSize + (containerRect.width * 0.5)) {
-        reducedRect.x += c.cachedSize;
-        reducedRect.width -= c.cachedSize;
-        return true;
-      } else {
-        return false;
-      }
+      reducedRect.x += c.cachedSize;
+      reducedRect.width -= c.cachedSize;
+      break;
     case 'right':
-      if (reducedRect.width >= c.cachedSize + (containerRect.width * 0.5)) {
-        reducedRect.width -= c.cachedSize;
-        return true;
-      } else {
-        return false;
-      }
+      reducedRect.width -= c.cachedSize;
+      break;
     default:
-      return true;
   }
+}
+function addEdgeBleed(currentEdgeBleed, c) {
+  const edgeBleed = c.config.edgeBleed();
+  currentEdgeBleed.left = Math.max(currentEdgeBleed.left, edgeBleed.left);
+  currentEdgeBleed.right = Math.max(currentEdgeBleed.right, edgeBleed.right);
+  currentEdgeBleed.top = Math.max(currentEdgeBleed.top, edgeBleed.top);
+  currentEdgeBleed.bottom = Math.max(currentEdgeBleed.bottom, edgeBleed.bottom);
+}
+function reduceEdgeBleed(containerRect, reducedRect, edgeBleed) {
+  if (reducedRect.x < edgeBleed.left) {
+    reducedRect.width -= edgeBleed.left - reducedRect.x;
+    reducedRect.x = edgeBleed.left;
+  }
+  const reducedRectRightBoundary = containerRect.width - (reducedRect.x + reducedRect.width);
+  if (reducedRectRightBoundary < edgeBleed.right) {
+    reducedRect.width -= edgeBleed.right - reducedRectRightBoundary;
+  }
+  if (reducedRect.y < edgeBleed.top) {
+    reducedRect.height -= edgeBleed.top - reducedRect.y;
+    reducedRect.y = edgeBleed.top;
+  }
+  const reducedRectBottomBoundary = containerRect.height - (reducedRect.y + reducedRect.height);
+  if (reducedRectBottomBoundary < edgeBleed.bottom) {
+    reducedRect.height -= edgeBleed.bottom - reducedRectBottomBoundary;
+  }
+}
+
+function reduceSingleLayoutRect(containerRect, reducedRect, edgeBleed, c) {
+  const newReduceRect = extend({}, reducedRect);
+  const newEdgeBeed = extend({}, edgeBleed);
+  reduceDocRect(newReduceRect, c);
+  addEdgeBleed(newEdgeBeed, c);
+  reduceEdgeBleed(containerRect, newReduceRect, newEdgeBeed);
+
+  const isValid = validateReduceRect(containerRect, newReduceRect);
+  if (!isValid) {
+    return false;
+  }
+
+  reduceDocRect(reducedRect, c);
+  addEdgeBleed(edgeBleed, c);
+  return true;
 }
 
 function reduceLayoutRect(containerRect, components) {
@@ -64,18 +100,20 @@ function reduceLayoutRect(containerRect, components) {
     width: containerRect.width,
     height: containerRect.height
   };
+  const edgeBleed = { left: 0, right: 0, top: 0, bottom: 0 };
 
   components.sort((a, b) => a.config.prioOrder() - b.config.prioOrder());
 
   for (let i = 0; i < components.length; ++i) {
     const c = components[i];
-    c.cachedSize = Math.ceil(c.config.requiredSize()(containerRect));
+    cacheSize(c, containerRect);
 
-    if (!reduceSingleLayoutRect(containerRect, reducedRect, c)) {
+    if (!reduceSingleLayoutRect(containerRect, reducedRect, edgeBleed, c)) {
       components.splice(i, 1);
       --i;
     }
   }
+  reduceEdgeBleed(containerRect, reducedRect, edgeBleed);
   return reducedRect;
 }
 
@@ -84,7 +122,6 @@ function positionComponents(components, containerRect, reducedRect) {
     hRect = { x: reducedRect.x, y: reducedRect.y, width: reducedRect.width, height: reducedRect.height };
 
   components.sort((a, b) => a.config.displayOrder() - b.config.displayOrder()).forEach((c) => {
-    c.cachedSize = c.cachedSize === undefined ? Math.ceil(c.config.requiredSize()(containerRect)) : c.cachedSize;
     const outerRect = {};
     const rect = {};
 

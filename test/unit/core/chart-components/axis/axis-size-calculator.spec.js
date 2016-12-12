@@ -24,10 +24,13 @@ describe('AxisSizeCalculator', () => {
     const scale = null;
     const data = null;
     const formatter = null;
+    const layoutConfig = {
+      edgeBleed: () => {}
+    };
     renderer = {
       measureText: ({ text }) => ({ width: text.toString().length, height: 5 })
     };
-    sizeFn = calcRequiredSize({ settings, ticksFn, scale, data, formatter, renderer });
+    sizeFn = calcRequiredSize({ settings, ticksFn, scale, data, formatter, renderer, layoutConfig });
   });
 
   it('axis with no visible component have a margin of 10', () => {

@@ -54,7 +54,7 @@ export function abstractAxis(axisConfig, composer, renderer) {
     concreteNodeBuilder = nodeBuilder(type);
     dockAlignSetup(settings, type);
     layoutConfig.dock(settings.dock);
-    layoutConfig.requiredSize(calcRequiredSize({ type, data, formatter, renderer, scale, settings, ticksFn }));
+    layoutConfig.requiredSize(calcRequiredSize({ type, data, formatter, renderer, scale, settings, ticksFn, layoutConfig }));
     layoutConfig.displayOrder(settings.displayOrder);
     layoutConfig.prioOrder(settings.prioOrder);
 
