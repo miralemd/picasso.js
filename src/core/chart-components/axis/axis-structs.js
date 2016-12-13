@@ -154,7 +154,7 @@ export function buildLabel(tick, buildOpts) {
       }
 
       struct.transform = `rotate(${r}, ${struct.x}, ${struct.y})`;
-      struct.anchor = buildOpts.align === 'bottom' ? 'end' : 'start';
+      struct.anchor = (buildOpts.align === 'bottom') === (buildOpts.angle < 0) ? 'start' : 'end';
     }
   };
 
