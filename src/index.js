@@ -1,6 +1,5 @@
 import {
   chart,
-  render,
   renderer,
   data,
   registerComponent
@@ -17,7 +16,6 @@ import './q';
 export {
   config,
   chart,
-  render,
   renderer,
   data,
   registerComponent

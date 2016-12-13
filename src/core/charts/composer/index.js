@@ -35,7 +35,7 @@ export default function composer() {
   let dataset = [];
   let comps = {};
   let container = null;
-  const docker = dockLayout();
+  let docker = dockLayout();
 
   const fn = function () {};
 

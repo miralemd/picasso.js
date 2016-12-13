@@ -1,9 +1,10 @@
-import render from './render';
+import composerFn from './composer';
 
 /**
  * @typedef Chart.Props
  * @property {Chart.DataProps} data - Chart data
  * @property {Chart.SettingsProps} settings - Chart settings
+ * @property {HTMLElement} element - Element to mount the chart into
  * @property {Function} mounted - Lifecycle function called when the chart instance has been mounted into an element.
  * @property {Function} updated - Lifecycle function called when the chart instance has been updated.
  * @property {Object} on - Event listeners
@@ -57,70 +58,117 @@ import render from './render';
  * }
  */
 
+
 /**
- * Chart class holding the definition of a chart
+ * Chart instance factory function
  */
-export default class Chart {
+function instanceFn(definition) {
+  const {
+    element,
+    data = {},
+    settings = {},
+    on = {},
+    updated = () => {},
+    mounted = () => {}
+  } = definition;
+
+  let composer;
+  let currentData = data;
+  let currentSettings = settings;
+
+  function instance() {}
+
+  // Browser only
+  const mount = () => {
+    element.innerHTML = '';
+
+    composer = composerFn();
+    composer.build(element, data, settings);
+
+    if (typeof on === 'object') {
+      Object.keys(on).forEach((key) => {
+        const listener = on[key].bind(instance);
+        element.addEventListener(key, listener);
+      });
+    }
+
+    if (typeof mounted === 'function') {
+      mounted.call(instance, element);
+    }
+  };
+
   /**
-   * @constructor
-   * @param {HTMLElement} element
-   * @param {Chart.Props} props - Chart properties
-   * @returns {Chart}
+   * Update the chart with new settings and / or data
+   * @param {} chart - Chart definition
    */
-  constructor(props = {}) {
-    Object.keys(props).forEach((key) => {
-      this[key] = props[key];
-    });
-    if (!this.data) {
-      this.data = {};
+  instance.update = (newProps) => {
+    if (newProps.data) {
+      currentData = newProps.data;
     }
-    if (!this.settings) {
-      this.settings = {};
+    if (newProps.settings) {
+      currentSettings = newProps.settings;
     }
+
+    // TODO shouldn't rebuild the chart from scratch
+    element.innerHTML = '';
+
+    composer.build(element, currentData, currentSettings);
+
+    if (typeof updated === 'function') {
+      updated.call(instance);
+    }
+  };
+
+  if (element) {
+    mount(element);
+    instance.element = element;
   }
+
+  return instance;
 }
 
 /**
  * The chart creator
  * @memberof picasso
  * @alias chart
- * @param  {Chart.SettingsProps} settings - Settings
+ * @param  {Chart.Props} settings - Settings
  * @return {Chart}
  * @example
  * picasso.chart({
- *   scales: {
- *     x: {
- *       source: "/qHyperCube/qMeasureInfo/0"
- *     },
- *     y: {
- *       source: "/qHyperCube/qDimensionInfo/0"
- *     }
- *   },
- *   components: {
- *     markers: [
- *       {
- *         type: "point",
- *         settings: {
- *           fill: 'red'
+ *   element: document.getElementById('chart-container'),
+ *   data: { ... },
+ *   settings: {
+ *     scales: {
+ *         x: {
+ *           source: "/qHyperCube/qMeasureInfo/0"
+ *         },
+ *         y: {
+ *           source: "/qHyperCube/qDimensionInfo/0"
  *         }
+ *       },
+ *       components: {
+ *         markers: [
+ *           {
+ *             type: "point",
+ *             settings: {
+ *               fill: 'red'
+ *             }
+ *           }
+ *         ]
  *       }
- *     ]
+ *     }
  *   }
- * });
+ * );
  */
-function chartFn(definition, data, settings) {
+export default function chart(definition, data, settings) {
   if (definition.toString().match(/[HTML[\w\W]*?Element/)) {
     // Backward compatibility
-    const element = definition;
-    const chart = new Chart({
+    return instanceFn({
+      element: definition,
       data,
       settings
     });
-    render(element, chart);
-    return null;
   } else {
-    return new Chart(definition || {});
+    return instanceFn(definition);
   }
 }
-
-export const chart = chartFn;

@@ -39,20 +39,18 @@ describe('picasso.js', () => {
       const mountedFn = sinon.sandbox.stub();
       const element = createElement();
 
-      const chart = picasso.chart({
+      picasso.chart({
+        element,
         mounted: mountedFn
       });
-      picasso.render(element, chart);
 
       expect(mountedFn).to.have.been.calledWith(element);
     });
 
-    it('should not be able to access private chart instance properties', () => {
+    it('should expose the element', () => {
       const element = createElement();
-      const chart = picasso.chart({});
-      const chartInstance = picasso.render(element, chart);
-      expect(chartInstance.chart).to.be.undefined; // eslint-disable-line no-unused-expressions
-      expect(chartInstance.mount).to.be.undefined; // eslint-disable-line no-unused-expressions
+      const chart = picasso.chart({ element });
+      expect(chart.element).to.equal(element);
     });
 
     it('should call updated function', () => {
@@ -60,10 +58,10 @@ describe('picasso.js', () => {
       const element = createElement();
 
       const chart = picasso.chart({
+        element,
         updated: updatedFn
       });
-      const chartInstance = picasso.render(element, chart);
-      chartInstance.update({
+      chart.update({
         data: {}
       });
 
@@ -74,12 +72,12 @@ describe('picasso.js', () => {
       const clickFn = sinon.sandbox.stub();
       const element = createElement();
 
-      const chart = picasso.chart({
+      picasso.chart({
+        element,
         on: {
           click: clickFn
         }
       });
-      picasso.render(element, chart);
 
       const e = {};
       element.trigger('click', e);
