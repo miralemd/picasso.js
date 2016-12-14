@@ -190,7 +190,7 @@ describe('AxisStructs', () => {
         buildOpts.align = 'left';
         expected.x = innerRect.width - buildOpts.padding;
         expected.dy = textRect.height / 3;
-        //expected.baseline = 'central';
+        // expected.baseline = 'central';
       });
 
       it('middle label', () => {
@@ -369,9 +369,9 @@ describe('AxisStructs', () => {
       beforeEach(() => {
         buildOpts.tilted = true;
         buildOpts.angle = 45;
-        expected.y = (10+ (buildOpts.maxHeight * Math.cos(rad45)) / 2); // 10 is top of rect + padding
-        expected.x = (25 - (buildOpts.maxHeight * Math.sin(rad45)) / 2); // 25 is in the middle: width * tick.position
-        expected.transform = 'rotate(-45, '+expected.x+', '+expected.y+')';
+        expected.y = 10 + ((buildOpts.maxHeight * Math.cos(rad45)) / 2); // 10 is top of rect + padding
+        expected.x = 25 - ((buildOpts.maxHeight * Math.sin(rad45)) / 2); // 25 is in the middle: width * tick.position
+        expected.transform = `rotate(-45, ${expected.x}, ${expected.y})`;
         tick = { position: 0.5, label: 'mmmmmm' };
         expected.text = tick.label;
       });
@@ -384,46 +384,46 @@ describe('AxisStructs', () => {
           expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
         });
         it('60deg', () => {
-          expected.y = (10+ (buildOpts.maxHeight * Math.cos(rad60)) / 2);
-          expected.x = (25 - (buildOpts.maxHeight * Math.sin(rad60)) / 2);
-          expected.transform = 'rotate(-60, '+expected.x+', '+expected.y+')';
+          expected.y = 10 + ((buildOpts.maxHeight * Math.cos(rad60)) / 2);
+          expected.x = 25 - ((buildOpts.maxHeight * Math.sin(rad60)) / 2);
+          expected.transform = `rotate(-60, ${expected.x}, ${expected.y})`;
           buildOpts.angle = 60;
           expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
         });
         it('-45deg', () => {
-          expected.y = (10+ (buildOpts.maxHeight * Math.cos(-rad45)) / 2);
-          expected.x = (25 - (buildOpts.maxHeight * Math.sin(-rad45)) / 2);
-          expected.transform = 'rotate(45, '+expected.x+', '+expected.y+')';
+          expected.y = 10 + ((buildOpts.maxHeight * Math.cos(-rad45)) / 2);
+          expected.x = 25 - ((buildOpts.maxHeight * Math.sin(-rad45)) / 2);
+          expected.transform = `rotate(45, ${expected.x}, ${expected.y})`;
           expected.anchor = 'start';
           buildOpts.angle = -45;
           expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
         });
       });
       describe('align top', () => {
-         beforeEach(() => {
+        beforeEach(() => {
           buildOpts.align = 'top';
           expected.anchor = 'start';
-         });
+        });
         it('45deg', () => {
           buildOpts.angle = 45;
-          expected.x = (25 - (buildOpts.maxHeight * Math.sin(rad45)) / 3); 
+          expected.x = 25 - ((buildOpts.maxHeight * Math.sin(rad45)) / 3);
           expected.y = 90; // Bottom of the rect - padding
-          expected.transform = 'rotate(-45, '+expected.x+', 90)';
+          expected.transform = `rotate(-45, ${expected.x}, 90)`;
           expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
         });
         it('60deg', () => {
           buildOpts.angle = 60;
-          expected.x = (25 - (buildOpts.maxHeight * Math.sin(rad60)) / 3);
+          expected.x = 25 - ((buildOpts.maxHeight * Math.sin(rad60)) / 3);
           expected.y = 90;
-  	      expected.transform = 'rotate(-60, '+expected.x+', '+expected.y+')';
+          expected.transform = `rotate(-60, ${expected.x}, ${expected.y})`;
           expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
         });
         it('-45deg', () => {
           buildOpts.angle = -45;
           expected.anchor = 'end';
-          expected.x = (25 - (buildOpts.maxHeight * Math.sin(-rad45)) / 3); 
+          expected.x = 25 - ((buildOpts.maxHeight * Math.sin(-rad45)) / 3);
           expected.y = 90; // Bottom of the rect - padding
-          expected.transform = 'rotate(45, '+expected.x+', 90)';
+          expected.transform = `rotate(45, ${expected.x}, 90)`;
           expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
         });
       });
