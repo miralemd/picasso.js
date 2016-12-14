@@ -63,7 +63,7 @@ export default function calcRequiredSize({ type, data, formatter, renderer, scal
       });
       let sizeFromTextRect;
       if (tilted) {
-        const radians = settings.labels.tiltAngle * (Math.PI / 180); // angle in radians
+        const radians = Math.abs(settings.labels.tiltAngle) * (Math.PI / 180); // angle in radians
         sizeFromTextRect = r => (r.width * Math.sin(radians)) + (r.height * Math.cos(radians));
       } else if (horizontal) {
         sizeFromTextRect = r => r.height;

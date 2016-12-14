@@ -1,6 +1,6 @@
 import { buildTick, buildLabel, buildLine } from '../../../../../src/core/chart-components/axis/axis-structs';
 
-describe.skip('AxisStructs', () => {
+describe('AxisStructs', () => {
   const innerRect = { x: 0, y: 0, width: 0, height: 0 };
   const outerRect = { x: 0, y: 0, width: 0, height: 0 };
   const textRect = { width: 10, height: 10 };
@@ -44,8 +44,8 @@ describe.skip('AxisStructs', () => {
     describe('Left align', () => {
       beforeEach(() => {
         buildOpts.align = 'left';
-        expected.x1 = -buildOpts.padding;
-        expected.x2 = -buildOpts.padding - buildOpts.tickSize;
+        expected.x1 = innerRect.width - buildOpts.padding;
+        expected.x2 = innerRect.width - buildOpts.padding - buildOpts.tickSize;
       });
 
       it('middle tick', () => {
@@ -100,8 +100,8 @@ describe.skip('AxisStructs', () => {
     describe('Top align', () => {
       beforeEach(() => {
         buildOpts.align = 'top';
-        expected.y1 = -buildOpts.padding;
-        expected.y2 = -buildOpts.padding - buildOpts.tickSize;
+        expected.y1 = innerRect.height - buildOpts.padding;
+        expected.y2 = innerRect.height - buildOpts.padding - buildOpts.tickSize;
       });
 
       it('middle tick', () => {
@@ -188,8 +188,9 @@ describe.skip('AxisStructs', () => {
     describe('Left align', () => {
       beforeEach(() => {
         buildOpts.align = 'left';
-        expected.x = -10;
-        expected.baseline = 'central';
+        expected.x = innerRect.width - buildOpts.padding;
+        expected.dy = textRect.height / 3;
+        // expected.baseline = 'central';
       });
 
       it('middle label', () => {
@@ -200,7 +201,8 @@ describe.skip('AxisStructs', () => {
       it('end label', () => {
         tick.position = 1;
         expected.y = 100;
-        expected.baseline = 'text-after-edge';
+        expected.dy = 0;
+     //   expected.baseline = 'text-after-edge';
         expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
       });
 
@@ -208,14 +210,15 @@ describe.skip('AxisStructs', () => {
         outerRect.height = 105;
         tick.position = 1;
         expected.y = 100;
-        expected.baseline = 'central';
+       // expected.baseline = 'central';
         expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
       });
 
       it('start label', () => {
         tick.position = 0;
         expected.y = 0;
-        expected.baseline = 'text-before-edge';
+        expected.dy = 10;
+      //  expected.baseline = 'text-before-edge';
         expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
       });
 
@@ -223,7 +226,7 @@ describe.skip('AxisStructs', () => {
         innerRect.y = 5;
         tick.position = 0;
         expected.y = 5;
-        expected.baseline = 'central';
+       // expected.baseline = 'central';
         expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
       });
     });
@@ -232,8 +235,9 @@ describe.skip('AxisStructs', () => {
       beforeEach(() => {
         buildOpts.align = 'right';
         expected.x = 10;
+        expected.dy = textRect.height / 3;
         expected.anchor = 'start';
-        expected.baseline = 'central';
+       // expected.baseline = 'central';
       });
 
       it('middle label', () => {
@@ -244,7 +248,8 @@ describe.skip('AxisStructs', () => {
       it('end label', () => {
         tick.position = 1;
         expected.y = 100;
-        expected.baseline = 'text-after-edge';
+        expected.dy = 0;
+      //  expected.baseline = 'text-after-edge';
         expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
       });
 
@@ -258,7 +263,8 @@ describe.skip('AxisStructs', () => {
       it('start label', () => {
         tick.position = 0;
         expected.y = 0;
-        expected.baseline = 'text-before-edge';
+        expected.dy = 10;
+       // expected.baseline = 'text-before-edge';
         expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
       });
 
@@ -266,7 +272,7 @@ describe.skip('AxisStructs', () => {
         innerRect.y = 5;
         tick.position = 0;
         expected.y = 5;
-        expected.baseline = 'central';
+       // expected.baseline = 'central';
         expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
       });
     });
@@ -274,7 +280,7 @@ describe.skip('AxisStructs', () => {
     describe('Top align', () => {
       beforeEach(() => {
         buildOpts.align = 'top';
-        expected.y = -10;
+        expected.y = innerRect.height - buildOpts.padding;
         expected.anchor = 'middle';
       });
 
@@ -356,6 +362,72 @@ describe.skip('AxisStructs', () => {
         expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
       });
     });
+
+    describe('Tilted', () => {
+      const rad45 = -45 * (Math.PI / 180);
+      const rad60 = -60 * (Math.PI / 180);
+      beforeEach(() => {
+        buildOpts.tilted = true;
+        buildOpts.angle = 45;
+        expected.y = 10 + ((buildOpts.maxHeight * Math.cos(rad45)) / 2); // 10 is top of rect + padding
+        expected.x = 25 - ((buildOpts.maxHeight * Math.sin(rad45)) / 2); // 25 is in the middle: width * tick.position
+        expected.transform = `rotate(-45, ${expected.x}, ${expected.y})`;
+        tick = { position: 0.5, label: 'mmmmmm' };
+        expected.text = tick.label;
+      });
+      describe('align bottom', () => {
+        beforeEach(() => {
+          buildOpts.align = 'bottom';
+          expected.anchor = 'end';
+        });
+        it('45deg', () => {
+          expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
+        });
+        it('60deg', () => {
+          expected.y = 10 + ((buildOpts.maxHeight * Math.cos(rad60)) / 2);
+          expected.x = 25 - ((buildOpts.maxHeight * Math.sin(rad60)) / 2);
+          expected.transform = `rotate(-60, ${expected.x}, ${expected.y})`;
+          buildOpts.angle = 60;
+          expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
+        });
+        it('-45deg', () => {
+          expected.y = 10 + ((buildOpts.maxHeight * Math.cos(-rad45)) / 2);
+          expected.x = 25 - ((buildOpts.maxHeight * Math.sin(-rad45)) / 2);
+          expected.transform = `rotate(45, ${expected.x}, ${expected.y})`;
+          expected.anchor = 'start';
+          buildOpts.angle = -45;
+          expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
+        });
+      });
+      describe('align top', () => {
+        beforeEach(() => {
+          buildOpts.align = 'top';
+          expected.anchor = 'start';
+        });
+        it('45deg', () => {
+          buildOpts.angle = 45;
+          expected.x = 25 - ((buildOpts.maxHeight * Math.sin(rad45)) / 3);
+          expected.y = 90; // Bottom of the rect - padding
+          expected.transform = `rotate(-45, ${expected.x}, 90)`;
+          expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
+        });
+        it('60deg', () => {
+          buildOpts.angle = 60;
+          expected.x = 25 - ((buildOpts.maxHeight * Math.sin(rad60)) / 3);
+          expected.y = 90;
+          expected.transform = `rotate(-60, ${expected.x}, ${expected.y})`;
+          expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
+        });
+        it('-45deg', () => {
+          buildOpts.angle = -45;
+          expected.anchor = 'end';
+          expected.x = 25 - ((buildOpts.maxHeight * Math.sin(-rad45)) / 3);
+          expected.y = 90; // Bottom of the rect - padding
+          expected.transform = `rotate(45, ${expected.x}, 90)`;
+          expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
+        });
+      });
+    });
   });
 
   describe('Line', () => {
@@ -367,23 +439,24 @@ describe.skip('AxisStructs', () => {
         style: { stroke: 'red', strokeWidth: 1 },
         align: 'bottom',
         innerRect,
-        outerRect
+        outerRect,
+        padding: 10
       };
       expected = { type: 'line', strokeWidth: 1, stroke: 'red', x1: 0, x2: 0, y1: 0, y2: 0 };
     });
 
     it('Left align', () => {
       buildOpts.align = 'left';
-      expected.x1 = -0.5;
-      expected.x2 = -0.5;
+      expected.x1 = innerRect.width - buildOpts.padding - 0.5;
+      expected.x2 = innerRect.width - buildOpts.padding - 0.5;
       expected.y2 = 100;
       expect(buildLine(buildOpts)).to.deep.equal(expected);
     });
 
     it('Right align', () => {
       buildOpts.align = 'right';
-      expected.x1 = 0.5;
-      expected.x2 = 0.5;
+      expected.x1 = buildOpts.padding + 0.5;
+      expected.x2 = buildOpts.padding + 0.5;
       expected.y2 = 100;
       expect(buildLine(buildOpts)).to.deep.equal(expected);
     });
@@ -391,16 +464,16 @@ describe.skip('AxisStructs', () => {
     it('Top align', () => {
       buildOpts.align = 'top';
       expected.x2 = 50;
-      expected.y1 = -0.5;
-      expected.y2 = -0.5;
+      expected.y1 = innerRect.height - buildOpts.padding - 0.5;
+      expected.y2 = innerRect.height - buildOpts.padding - 0.5;
       expect(buildLine(buildOpts)).to.deep.equal(expected);
     });
 
     it('Bottom align', () => {
       buildOpts.align = 'bottom';
       expected.x2 = 50;
-      expected.y1 = 0.5;
-      expected.y2 = 0.5;
+      expected.y1 = buildOpts.padding + 0.5;
+      expected.y2 = buildOpts.padding + 0.5;
       expect(buildLine(buildOpts)).to.deep.equal(expected);
     });
   });
