@@ -42,7 +42,7 @@ function renderShapes(shapes, g, shapeToCanvasMap) {
       reg.get(s.type)(s, {
         g,
         doFill: 'fill' in s,
-        doStroke: 'stroke' in s && g.lineWidth !== 0
+        doStroke: 'stroke' in s && s['stroke-width'] !== 0
       });
     }
     if (s.children) {
@@ -64,7 +64,7 @@ export function renderer(sceneFn = sceneFactory) {
     ['stroke-width', 'lineWidth']
   ];
 
-  const canvasRenderer = function () {};
+  const canvasRenderer = () => {};
 
   canvasRenderer.element = () => el;
 
