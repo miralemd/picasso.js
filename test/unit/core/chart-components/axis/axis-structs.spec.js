@@ -356,6 +356,22 @@ describe.skip('AxisStructs', () => {
         expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
       });
     });
+
+    describe('Tilted', ()=> {
+      beforeEach(() => {
+        buildOpts.align = 'bottom';
+        buildOpts.tilted = true;
+        buildOpts.angle = 90;
+        buildOpts.maxHeight = 10;
+        expected.y = 10;
+        expected.anchor = 'end';
+        expected.transform = 'rotate(-90, 30, 10)'
+      });
+      it('middle label', () => {
+        expected.x = 30;
+        expect(buildLabel(tick, buildOpts)).to.deep.equal(expected);
+      });
+    })
   });
 
   describe('Line', () => {

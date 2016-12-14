@@ -10,7 +10,7 @@ export function discreteDefaultSettings() {
     {
       labels: {
         show: true,
-        tilted: true,
+        tilted: false,
         tiltAngle: 30,
         fontFamily: 'Arial',
         fontSize: '12px',
