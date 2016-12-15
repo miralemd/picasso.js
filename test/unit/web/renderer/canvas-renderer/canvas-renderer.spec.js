@@ -51,12 +51,17 @@ describe('canvas renderer', () => {
   });
 
   it('should return zero size when canvas is not initiated', () => {
-    expect(r.size()).to.deep.equal({ x: 0, y: 0, width: 0, height: 0 });
+    expect(r.size()).to.deep.equal({ x: 0, y: 0, width: 0, height: 0, scaleRatio: { x: 1, y: 1 } });
   });
 
   it('should return size when called', () => {
-    r.size({ x: 50, y: 100, width: 200, height: 400 });
-    expect(r.size()).to.deep.equal({ x: 50, y: 100, width: 200, height: 400 });
+    r.size({ x: 50, y: 100, width: 200, height: 400, scaleRatio: { x: 3, y: 4 } });
+    expect(r.size()).to.deep.equal({ x: 50, y: 100, width: 200, height: 400, scaleRatio: { x: 3, y: 4 } });
+  });
+
+  it('should ignore NaN values and fallback to default size value', () => {
+    r.size({ x: undefined, y: undefined, width: undefined, height: undefined, scaleRatio: { x: undefined, y: undefined } });
+    expect(r.size()).to.deep.equal({ x: 0, y: 0, width: 0, height: 0, scaleRatio: { x: 1, y: 1 } });
   });
 
   it('should attach to given position in the container', () => {
@@ -110,5 +115,71 @@ describe('canvas renderer', () => {
     expect(r.element().width).to.equal(200 * (1 / 2));
     expect(r.element().height).to.equal(400 * (1 / 2));
     expect(scene.args[0][0]).to.deep.equal(expectedInput);
+  });
+
+  it('should apply a scale ratio', () => {
+    const div = element('div');
+    const scaleRatio = { x: 2, y: 3 };
+    const size = { x: 50, y: 100, width: 200, height: 400, scaleRatio };
+    const inputShapes = [{ type: 'container' }];
+    const expectedInputShapes = {
+      items: [
+        {
+          type: 'container',
+          children: inputShapes,
+          transform: `scale(${scaleRatio.x}, ${scaleRatio.y})`
+        }
+      ],
+      dpi: 1
+    };
+    scene.returns({ children: [] });
+    r.appendTo(div);
+    r.size(size);
+
+    r.render(inputShapes);
+
+    const el = r.element();
+    expect(el.style.width).to.equal(`${size.width * scaleRatio.x}px`);
+    expect(el.style.height).to.equal(`${size.height * scaleRatio.y}px`);
+    expect(el.style.left).to.equal(`${size.x * scaleRatio.x}px`);
+    expect(el.style.top).to.equal(`${size.y * scaleRatio.y}px`);
+    expect(el.width).to.equal(size.width * scaleRatio.x);
+    expect(el.height).to.equal(size.height * scaleRatio.y);
+    expect(scene.args[0][0]).to.deep.equal(expectedInputShapes);
+  });
+
+  it('should account for screen dpi when applying scale ratio', () => {
+    const div = element('div');
+    const scaleRatio = { x: 2, y: 3 };
+    const dpiScale = 2;
+    const size = { x: 50, y: 100, width: 200, height: 400, scaleRatio };
+    const inputShapes = [{ type: 'container' }];
+    const expectedInputShapes = {
+      items: [
+        {
+          type: 'container',
+          children: inputShapes,
+          transform: `scale(${scaleRatio.x * dpiScale}, ${scaleRatio.y * dpiScale})`
+        }
+      ],
+      dpi: dpiScale
+    };
+    scene.returns({ children: [] });
+    r.appendTo(div);
+    r.size(size);
+
+    const ctxStub = sandbox.stub(div.children[0], 'getContext');
+    ctxStub.returns({ webkitBackingStorePixelRatio: 0.5 });
+
+    r.render(inputShapes);
+
+    const el = r.element();
+    expect(el.style.width).to.equal(`${size.width * scaleRatio.x}px`);
+    expect(el.style.height).to.equal(`${size.height * scaleRatio.y}px`);
+    expect(el.style.left).to.equal(`${size.x * scaleRatio.x}px`);
+    expect(el.style.top).to.equal(`${size.y * scaleRatio.y}px`);
+    expect(el.width).to.equal(size.width * scaleRatio.x * dpiScale);
+    expect(el.height).to.equal(size.height * scaleRatio.y * dpiScale);
+    expect(scene.args[0][0]).to.deep.equal(expectedInputShapes);
   });
 });

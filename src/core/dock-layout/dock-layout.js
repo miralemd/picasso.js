@@ -1,5 +1,6 @@
 import extend from 'extend';
 import dockConfig from './dock-config';
+import resolveLayout, { resolveSettings } from './dock-settings-resolver';
 
 function validateComponent(component) {
   const expectedProperties = ['resize'];
@@ -11,23 +12,15 @@ function validateComponent(component) {
   });
 }
 
-function roundRect(rect) {
-  return {
-    x: Math.ceil(rect.x),
-    y: Math.ceil(rect.y),
-    width: Math.ceil(rect.width),
-    height: Math.ceil(rect.height)
-  };
-}
 
 function cacheSize(c, containerRect) {
   c.cachedSize = typeof c.cachedSize === 'undefined' ? Math.ceil(c.config.requiredSize()(containerRect)) : c.cachedSize;
   return c.cachedSize;
 }
 
-function validateReduceRect(containerRect, reducedRect) {
-  const minReduceWidth = containerRect.width * 0.5;
-  const minReduceHeight = containerRect.height * 0.5;
+function validateReduceRect(logicalContainerRect, reducedRect) {
+  const minReduceWidth = logicalContainerRect.width * 0.5;
+  const minReduceHeight = logicalContainerRect.height * 0.5;
   return reducedRect.width >= minReduceWidth && reducedRect.height >= minReduceHeight;
 }
 
@@ -57,12 +50,12 @@ function addEdgeBleed(currentEdgeBleed, c) {
   currentEdgeBleed.top = Math.max(currentEdgeBleed.top, edgeBleed.top);
   currentEdgeBleed.bottom = Math.max(currentEdgeBleed.bottom, edgeBleed.bottom);
 }
-function reduceEdgeBleed(containerRect, reducedRect, edgeBleed) {
+function reduceEdgeBleed(logicalContainerRect, reducedRect, edgeBleed) {
   if (reducedRect.x < edgeBleed.left) {
     reducedRect.width -= edgeBleed.left - reducedRect.x;
     reducedRect.x = edgeBleed.left;
   }
-  const reducedRectRightBoundary = containerRect.width - (reducedRect.x + reducedRect.width);
+  const reducedRectRightBoundary = logicalContainerRect.width - (reducedRect.x + reducedRect.width);
   if (reducedRectRightBoundary < edgeBleed.right) {
     reducedRect.width -= edgeBleed.right - reducedRectRightBoundary;
   }
@@ -70,20 +63,20 @@ function reduceEdgeBleed(containerRect, reducedRect, edgeBleed) {
     reducedRect.height -= edgeBleed.top - reducedRect.y;
     reducedRect.y = edgeBleed.top;
   }
-  const reducedRectBottomBoundary = containerRect.height - (reducedRect.y + reducedRect.height);
+  const reducedRectBottomBoundary = logicalContainerRect.height - (reducedRect.y + reducedRect.height);
   if (reducedRectBottomBoundary < edgeBleed.bottom) {
     reducedRect.height -= edgeBleed.bottom - reducedRectBottomBoundary;
   }
 }
 
-function reduceSingleLayoutRect(containerRect, reducedRect, edgeBleed, c) {
+function reduceSingleLayoutRect(logicalContainerRect, reducedRect, edgeBleed, c) {
   const newReduceRect = extend({}, reducedRect);
   const newEdgeBeed = extend({}, edgeBleed);
   reduceDocRect(newReduceRect, c);
   addEdgeBleed(newEdgeBeed, c);
-  reduceEdgeBleed(containerRect, newReduceRect, newEdgeBeed);
+  reduceEdgeBleed(logicalContainerRect, newReduceRect, newEdgeBeed);
 
-  const isValid = validateReduceRect(containerRect, newReduceRect);
+  const isValid = validateReduceRect(logicalContainerRect, newReduceRect);
   if (!isValid) {
     return false;
   }
@@ -93,12 +86,12 @@ function reduceSingleLayoutRect(containerRect, reducedRect, edgeBleed, c) {
   return true;
 }
 
-function reduceLayoutRect(containerRect, components) {
+function reduceLayoutRect(logicalContainerRect, components) {
   const reducedRect = {
-    x: containerRect.x,
-    y: containerRect.y,
-    width: containerRect.width,
-    height: containerRect.height
+    x: logicalContainerRect.x,
+    y: logicalContainerRect.y,
+    width: logicalContainerRect.width,
+    height: logicalContainerRect.height
   };
   const edgeBleed = { left: 0, right: 0, top: 0, bottom: 0 };
 
@@ -106,20 +99,33 @@ function reduceLayoutRect(containerRect, components) {
 
   for (let i = 0; i < components.length; ++i) {
     const c = components[i];
-    cacheSize(c, containerRect);
+    cacheSize(c, logicalContainerRect);
 
-    if (!reduceSingleLayoutRect(containerRect, reducedRect, edgeBleed, c)) {
+    if (!reduceSingleLayoutRect(logicalContainerRect, reducedRect, edgeBleed, c)) {
       components.splice(i, 1);
       --i;
     }
   }
-  reduceEdgeBleed(containerRect, reducedRect, edgeBleed);
+  reduceEdgeBleed(logicalContainerRect, reducedRect, edgeBleed);
   return reducedRect;
 }
 
-function positionComponents(components, containerRect, reducedRect) {
-  let vRect = { x: reducedRect.x, y: reducedRect.y, width: reducedRect.width, height: reducedRect.height },
-    hRect = { x: reducedRect.x, y: reducedRect.y, width: reducedRect.width, height: reducedRect.height };
+function appendScaleRatio(rect, outerRect, logicalContainerRect, containerRect) {
+  const scaleX = containerRect.width / logicalContainerRect.width;
+  const scaleY = containerRect.height / logicalContainerRect.height;
+  const scaleRatio = {
+    x: logicalContainerRect.preserveAspectRatio ? Math.min(scaleX, scaleY) : scaleX,
+    y: logicalContainerRect.preserveAspectRatio ? Math.min(scaleX, scaleY) : scaleY
+  };
+
+  rect.scaleRatio = scaleRatio;
+  outerRect.scaleRatio = scaleRatio;
+  logicalContainerRect.scaleRatio = scaleRatio;
+}
+
+function positionComponents(components, logicalContainerRect, reducedRect, containerRect) {
+  let vRect = { x: reducedRect.x, y: reducedRect.y, width: reducedRect.width, height: reducedRect.height };
+  let hRect = { x: reducedRect.x, y: reducedRect.y, width: reducedRect.width, height: reducedRect.height };
 
   components.sort((a, b) => a.config.displayOrder() - b.config.displayOrder()).forEach((c) => {
     const outerRect = {};
@@ -128,9 +134,9 @@ function positionComponents(components, containerRect, reducedRect) {
     switch (c.config.dock()) {
       case 'top':
         outerRect.height = rect.height = c.cachedSize;
-        outerRect.width = containerRect.width;
+        outerRect.width = logicalContainerRect.width;
         rect.width = vRect.width;
-        outerRect.x = containerRect.x;
+        outerRect.x = logicalContainerRect.x;
         rect.x = vRect.x;
         outerRect.y = rect.y = vRect.y - c.cachedSize;
 
@@ -138,10 +144,10 @@ function positionComponents(components, containerRect, reducedRect) {
         vRect.height += c.cachedSize;
         break;
       case 'bottom':
-        outerRect.x = containerRect.x;
+        outerRect.x = logicalContainerRect.x;
         rect.x = vRect.x;
         outerRect.y = rect.y = vRect.y + vRect.height;
-        outerRect.width = containerRect.width;
+        outerRect.width = logicalContainerRect.width;
         rect.width = vRect.width;
         outerRect.height = rect.height = c.cachedSize;
 
@@ -149,10 +155,10 @@ function positionComponents(components, containerRect, reducedRect) {
         break;
       case 'left':
         outerRect.x = rect.x = hRect.x - c.cachedSize;
-        outerRect.y = containerRect.y;
+        outerRect.y = logicalContainerRect.y;
         rect.y = hRect.y;
         outerRect.width = rect.width = c.cachedSize;
-        outerRect.height = containerRect.height;
+        outerRect.height = logicalContainerRect.height;
         rect.height = hRect.height;
 
         hRect.x -= c.cachedSize;
@@ -160,10 +166,10 @@ function positionComponents(components, containerRect, reducedRect) {
         break;
       case 'right':
         outerRect.x = rect.x = hRect.x + hRect.width;
-        outerRect.y = containerRect.y;
+        outerRect.y = logicalContainerRect.y;
         rect.y = hRect.y;
         outerRect.width = rect.width = c.cachedSize;
-        outerRect.height = containerRect.height;
+        outerRect.height = logicalContainerRect.height;
         rect.height = hRect.height;
 
         hRect.width += c.cachedSize;
@@ -175,14 +181,15 @@ function positionComponents(components, containerRect, reducedRect) {
         outerRect.height = rect.height = reducedRect.height;
     }
 
-    c.instance.resize(rect, outerRect, containerRect);
+    appendScaleRatio(rect, outerRect, logicalContainerRect, containerRect);
+    c.instance.resize(rect, outerRect, logicalContainerRect);
     c.cachedSize = undefined;
   });
 }
 
 export default function dockLayout() {
-  const containerRect = { x: 0, y: 0, width: 0, height: 0 };
   const components = [];
+  let settings = {};
 
   const docker = function () {};
 
@@ -202,10 +209,14 @@ export default function dockLayout() {
     }
   };
 
-  docker.layout = function (rect) {
-    extend(containerRect, roundRect(rect));
-    const reduced = reduceLayoutRect(containerRect, components);
-    positionComponents(components, containerRect, reduced);
+  docker.layout = function (container) {
+    const [logicalContainerRect, containerRect] = resolveLayout(container, settings);
+    const reduced = reduceLayoutRect(logicalContainerRect, components);
+    positionComponents(components, logicalContainerRect, reduced, containerRect);
+  };
+
+  docker.settings = function (s) {
+    settings = resolveSettings(s);
   };
 
   return docker;

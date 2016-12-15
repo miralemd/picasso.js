@@ -80,14 +80,18 @@ describe('svg renderer', () => {
       scene.returns(s);
       svg.appendTo(element('div'));
       svg.render(items);
-      expect(scene.args[0][0]).to.deep.equal({ items });
+      const sceneContainer = {
+        type: 'container',
+        children: items
+      };
+      expect(scene.args[0][0]).to.deep.equal({ items: [sceneContainer] });
       expect(treeRenderer.render).to.have.been.calledWith(s.children, svg.root());
     });
 
     it('should attach to given position in the container', () => {
       scene.returns(s);
       svg.appendTo(element('div'));
-      svg.size({ x: 50, y: 100, width: 200, height: 400 });
+      svg.size({ x: 50, y: 100, width: 200, height: 400, scaleRatio: { x: 1, y: 1 } });
       svg.render(items);
 
       const el = svg.element();
@@ -96,6 +100,31 @@ describe('svg renderer', () => {
       expect(el.style.top).to.equal('100px');
       expect(el.attributes.width).to.equal(200);
       expect(el.attributes.height).to.equal(400);
+    });
+
+    it('should scale from logical size to physical size', () => {
+      const scaleRatio = { x: 2, y: 3 };
+      const size = { x: 50, y: 100, width: 200, height: 400, scaleRatio };
+      const expectedInputShapes = {
+        items: [
+          {
+            type: 'container',
+            children: s,
+            transform: `scale(${scaleRatio.x}, ${scaleRatio.y})`
+          }
+        ]
+      };
+      scene.returns(s);
+      svg.appendTo(element('div'));
+      svg.size(size);
+      svg.render(s);
+
+      const el = svg.element();
+      expect(el.style.left).to.equal(`${size.x * scaleRatio.x}px`);
+      expect(el.style.top).to.equal(`${size.y * scaleRatio.y}px`);
+      expect(el.attributes.width).to.equal(size.width * scaleRatio.x);
+      expect(el.attributes.height).to.equal(size.height * scaleRatio.y);
+      expect(scene.args[0][0]).to.deep.equal(expectedInputShapes);
     });
   });
 
@@ -135,7 +164,12 @@ describe('svg renderer', () => {
     it('should return current size if no parameters are given', () => {
       svg.appendTo(element('div'));
       svg.size({ x: 50, y: 100, width: 200, height: 400 });
-      expect(svg.size()).to.deep.equal({ x: 50, y: 100, width: 200, height: 400 });
+      expect(svg.size()).to.deep.equal({ x: 50, y: 100, width: 200, height: 400, scaleRatio: { x: 1, y: 1 } });
+    });
+
+    it('should ignore NaN values and fallback to default size value', () => {
+      svg.size({ x: undefined, y: undefined, width: undefined, height: undefined, scaleRatio: { x: undefined, y: undefined } });
+      expect(svg.size()).to.deep.equal({ x: 0, y: 0, width: 0, height: 0, scaleRatio: { x: 1, y: 1 } });
     });
   });
 });

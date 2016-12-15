@@ -55,7 +55,16 @@ function renderShapes(shapes, g, shapeToCanvasMap) {
 export function renderer(sceneFn = sceneFactory) {
   let el;
   let scene;
-  const rect = { x: 0, y: 0, width: 0, height: 0 };
+  const rect = {
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    scaleRatio: {
+      x: 1,
+      y: 1
+    }
+  };
   const shapeToCanvasMap = [
     ['fill', 'fillStyle'],
     ['stroke', 'strokeStyle'],
@@ -88,24 +97,25 @@ export function renderer(sceneFn = sceneFactory) {
 
     const g = el.getContext('2d');
     const dpiRatio = dpiScale(g);
-    el.style.left = `${rect.x}px`;
-    el.style.top = `${rect.y}px`;
-    el.style.width = `${rect.width}px`;
-    el.style.height = `${rect.height}px`;
-    el.width = rect.width * dpiRatio;
-    el.height = rect.height * dpiRatio;
+    const scaleX = rect.scaleRatio.x;
+    const scaleY = rect.scaleRatio.y;
+    el.style.left = `${Math.round(rect.x * scaleX)}px`;
+    el.style.top = `${Math.round(rect.y * scaleY)}px`;
+    el.style.width = `${Math.round(rect.width * scaleX)}px`;
+    el.style.height = `${Math.round(rect.height * scaleY)}px`;
+    el.width = Math.round(rect.width * dpiRatio * scaleX);
+    el.height = Math.round(rect.height * dpiRatio * scaleY);
 
-    if (dpiRatio === 1) {
-      scene = sceneFn({ items: shapes });
-    } else {
-      const items = [{
-        type: 'container',
-        children: shapes,
-        transform: `scale(${dpiRatio}, ${dpiRatio})`
-      }];
-      scene = sceneFn({ items, dpi: dpiRatio });
+    const sceneContainer = {
+      type: 'container',
+      children: shapes
+    };
+
+    if (dpiRatio !== 1 || scaleX !== 1 || scaleY !== 1) {
+      sceneContainer.transform = `scale(${dpiRatio * scaleX}, ${dpiRatio * scaleY})`;
     }
 
+    scene = sceneFn({ items: [sceneContainer], dpi: dpiRatio });
     renderShapes(scene.children, g, shapeToCanvasMap);
 
     return config.Promise.resolve();
@@ -118,11 +128,16 @@ export function renderer(sceneFn = sceneFactory) {
     el.width = el.width;
   };
 
-  canvasRenderer.size = ({ x, y, width, height } = {}) => {
+  canvasRenderer.size = ({ x, y, width, height, scaleRatio } = {}) => {
     rect.x = isNaN(x) ? rect.x : x;
-    rect.y = isNaN(x) ? rect.y : y;
+    rect.y = isNaN(y) ? rect.y : y;
     rect.width = isNaN(width) ? rect.width : width;
     rect.height = isNaN(height) ? rect.height : height;
+    if (typeof scaleRatio !== 'undefined') {
+      rect.scaleRatio.x = isNaN(scaleRatio.x) ? rect.scaleRatio.x : scaleRatio.x;
+      rect.scaleRatio.y = isNaN(scaleRatio.y) ? rect.scaleRatio.y : scaleRatio.y;
+    }
+
     return rect;
   };
 
