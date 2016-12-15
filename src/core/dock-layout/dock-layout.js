@@ -86,7 +86,7 @@ function reduceSingleLayoutRect(logicalContainerRect, reducedRect, edgeBleed, c)
   return true;
 }
 
-function reduceLayoutRect(logicalContainerRect, components) {
+function reduceLayoutRect(logicalContainerRect, components, hiddenComponents) {
   const reducedRect = {
     x: logicalContainerRect.x,
     y: logicalContainerRect.y,
@@ -103,6 +103,7 @@ function reduceLayoutRect(logicalContainerRect, components) {
 
     if (!reduceSingleLayoutRect(logicalContainerRect, reducedRect, edgeBleed, c)) {
       components.splice(i, 1);
+      hiddenComponents.push(c.instance);
       --i;
     }
   }
@@ -189,6 +190,7 @@ function positionComponents(components, logicalContainerRect, reducedRect, conta
 
 export default function dockLayout() {
   const components = [];
+  const hiddenComponents = [];
   let settings = {};
 
   const docker = function () {};
@@ -211,8 +213,12 @@ export default function dockLayout() {
 
   docker.layout = function (container) {
     const [logicalContainerRect, containerRect] = resolveLayout(container, settings);
-    const reduced = reduceLayoutRect(logicalContainerRect, components);
+    const reduced = reduceLayoutRect(logicalContainerRect, components, hiddenComponents);
     positionComponents(components, logicalContainerRect, reduced, containerRect);
+    return {
+      visible: components.map(c => c.instance),
+      hidden: hiddenComponents
+    };
   };
 
   docker.settings = function (s) {

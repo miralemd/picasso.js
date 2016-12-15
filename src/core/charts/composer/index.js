@@ -75,9 +75,9 @@ export default function composer() {
 
     cc.forEach((c) => { docker.addComponent(c); });
 
-    docker.layout(container);
-
-    cc.forEach((c) => { c.render(); });
+    const { visible, hidden } = docker.layout(container);
+    visible.forEach((c) => { c.render(); });
+    hidden.forEach((c) => { if (c.hide) { c.hide(); } });
   };
 
   fn.formatter = function (v) {
