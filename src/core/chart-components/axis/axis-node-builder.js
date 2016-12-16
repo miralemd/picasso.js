@@ -89,6 +89,11 @@ function continuousCalcMaxTextRect({ renderer, settings, innerRect, ticks }) {
   const textRect = { width: 0, height: h };
   if (settings.align === 'left' || settings.align === 'right') {
     textRect.width = innerRect.width - labelsSpacing(settings) - settings.paddingEnd;
+  } else if (settings.labels.layered) {
+    textRect.width = (innerRect.width / majorTicks(ticks).length) * 0.75 * 2;
+  } else if (!settings.labels.layered && settings.labels.tilted) {
+    const radians = Math.abs(settings.labels.tiltAngle) * (Math.PI / 180);
+    textRect.width = (innerRect.height - labelsSpacing(settings) - settings.paddingEnd - (h * Math.cos(radians))) / Math.sin(radians);
   } else {
     textRect.width = (innerRect.width / majorTicks(ticks).length) * 0.75;
   }
