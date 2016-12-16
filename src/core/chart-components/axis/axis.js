@@ -80,10 +80,23 @@ export function abstractAxis(axisConfig, composer, renderer) {
     return discrete;
   };
 
+  const textAnchorRTLMap = {
+    start: 'end',
+    end: 'start',
+    middle: 'middle'
+  };
+
   const render = function () {
     const ticks = ticksFn({ settings, innerRect, scale, data, formatter });
-
     nodes.push(...concreteNodeBuilder.build({ settings, scale, innerRect, outerRect, renderer, ticks }));
+    renderer.direction = settings.textDirection || 'ltr';
+    if (renderer.direction === 'rtl') {
+      nodes.forEach((node) => {
+        if (node.type === 'text' && node.anchor) {
+          node.anchor = textAnchorRTLMap[node.anchor];
+        }
+      });
+    }
     renderer.render(nodes);
   };
 

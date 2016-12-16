@@ -80,6 +80,17 @@ describe('AxisSizeCalculator', () => {
     expect(size).to.approximately(19.3301, 0.0001);
   });
 
+  it('tilted labels with max width', () => {
+    settings.dock = 'bottom';
+    settings.align = 'bottom';
+    settings.labels.show = true;
+    settings.labels.tilted = true;
+    settings.labels.maxWidth = 5;
+    ticks[0].label = 'AAAAAAAAAAAAAA';
+    const size = sizeFn(rect);
+    expect(size).to.approximately(20.83012, 0.0001);
+  });
+
   it('measure ticks', () => {
     settings.ticks.show = true;
     settings.ticks.margin = 4;

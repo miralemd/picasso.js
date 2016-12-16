@@ -56,11 +56,18 @@ export default function calcRequiredSize({ type, data, formatter, renderer, scal
       const majorTicks = ticksFn({ settings, innerRect: rect, scale, data, formatter })
           .filter(isMajorTick);
 
-      const measureText = text => renderer.measureText({
-        text,
-        fontSize: settings.labels.fontSize,
-        fontFamily: settings.labels.fontFamily
-      });
+      const measureText = (text) => {
+        const m = renderer.measureText({
+          text,
+          fontSize: settings.labels.fontSize,
+          fontFamily: settings.labels.fontFamily
+        });
+        if (settings.labels.maxWidth) {
+          m.width = Math.min(m.width, settings.labels.maxWidth);
+        }
+        return m;
+      };
+
       let sizeFromTextRect;
       if (tilted) {
         const radians = Math.abs(settings.labels.tiltAngle) * (Math.PI / 180); // angle in radians
