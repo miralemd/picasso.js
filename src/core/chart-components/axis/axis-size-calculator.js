@@ -101,17 +101,18 @@ export default function calcRequiredSize({ type, data, formatter, renderer, scal
       }
 
       if (tilted) {
-        const radians = settings.labels.tiltAngle * (Math.PI / 180); // angle in radians
+        const extendLeft = (settings.align === 'bottom') === (settings.labels.tiltAngle >= 0);
+        const radians = Math.abs(settings.labels.tiltAngle) * (Math.PI / 180); // angle in radians
         const h = measureText('M').height;
         const maxWidth = (textSize - (h * Math.cos(radians))) / Math.sin(radians);
         const labelWidth = r => (Math.min(maxWidth, r.width) * Math.cos(radians)) + r.height;
         const adjustByPosition = (s, i) =>
-            settings.align === 'bottom'
+            extendLeft
               ? s - (majorTicks[i].position * rect.width)
               : s - ((1 - majorTicks[i].position) * rect.width);
 
         const bleedSize = Math.max(...tickMeasures.map(labelWidth).map(adjustByPosition)) + settings.paddingEnd;
-        const bleedDir = settings.align === 'bottom' ? 'left' : 'right';
+        const bleedDir = extendLeft ? 'left' : 'right';
         layoutConfig.edgeBleed({ [bleedDir]: bleedSize });
       }
     }
