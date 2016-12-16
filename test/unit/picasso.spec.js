@@ -39,24 +39,45 @@ describe('picasso.js', () => {
       const mountedFn = sinon.sandbox.stub();
       const element = createElement();
 
-      const chart = picasso.chart({
+      picasso.chart({
+        element,
         mounted: mountedFn
       });
-      picasso.render(element, chart);
 
       expect(mountedFn).to.have.been.calledWith(element);
+    });
+
+    it('should expose the element', () => {
+      const element = createElement();
+      const chart = picasso.chart({ element });
+      expect(chart.element).to.equal(element);
+    });
+
+    it('should call updated function', () => {
+      const updatedFn = sinon.sandbox.stub();
+      const element = createElement();
+
+      const chart = picasso.chart({
+        element,
+        updated: updatedFn
+      });
+      chart.update({
+        data: {}
+      });
+
+      expect(updatedFn).to.have.been.called; // eslint-disable-line no-unused-expressions
     });
 
     it('should bind event listener', () => {
       const clickFn = sinon.sandbox.stub();
       const element = createElement();
 
-      const chart = picasso.chart({
+      picasso.chart({
+        element,
         on: {
           click: clickFn
         }
       });
-      picasso.render(element, chart);
 
       const e = {};
       element.trigger('click', e);
