@@ -1,41 +1,43 @@
 import Node from '../node';
 
 class DisplayObject extends Node {
-  constructor() {
-    super();
+  constructor(type) {
+    super(type);
     this._stage = null;
+    this._attrs = {};
   }
 
   set({ fill, stroke, strokeWidth, fontFamily, fontSize, baseline, anchor, maxWidth, opacity, transform }) {
+    const attrs = this.attrs;
     if (typeof fill !== 'undefined') {
-      this.fill = fill;
+      attrs.fill = fill;
     }
     if (typeof stroke !== 'undefined') {
-      this.stroke = stroke;
+      attrs.stroke = stroke;
     }
     if (typeof opacity !== 'undefined') {
-      this.opacity = opacity;
+      attrs.opacity = opacity;
     }
     if (typeof strokeWidth !== 'undefined') {
-      this['stroke-width'] = strokeWidth;
+      attrs['stroke-width'] = strokeWidth;
     }
     if (typeof fontFamily !== 'undefined') {
-      this['font-family'] = fontFamily;
+      attrs['font-family'] = fontFamily;
     }
     if (typeof fontSize !== 'undefined') {
-      this['font-size'] = fontSize;
+      attrs['font-size'] = fontSize;
     }
     if (typeof baseline !== 'undefined') {
-      this['dominant-baseline'] = baseline;
+      attrs['dominant-baseline'] = baseline;
     }
     if (typeof anchor !== 'undefined') {
-      this['text-anchor'] = anchor;
+      attrs['text-anchor'] = anchor;
     }
     if (typeof maxWidth !== 'undefined') {
-      this.maxWidth = maxWidth;
+      attrs.maxWidth = maxWidth;
     }
     if (typeof transform !== 'undefined') {
-      this.transform = transform;
+      attrs.transform = transform;
     }
   }
 
@@ -45,7 +47,38 @@ class DisplayObject extends Node {
    * @returns {*} The value of attribute a.
    */
   attr(a) {
-    return this[a];
+    return this.attrs[a];
+  }
+
+  equals(d) {
+    const attrs = this.attrs;
+    const attrKeys = Object.keys(attrs);
+    const dAttrs = d.attrs;
+    const dAttrKeys = Object.keys(dAttrs);
+    if (attrKeys.length !== dAttrKeys.length) {
+      return false;
+    }
+    for (let i = 0; i < attrKeys.length; i++) {
+      const key = attrKeys[i];
+      if (!Object.hasOwnProperty.call(dAttrs, key)) {
+        return false;
+      }
+      if (attrs[key] !== dAttrs[key]) {
+        return false;
+      }
+    }
+
+    return super.equals(d);
+  }
+
+  toJSON() {
+    const json = super.toJSON();
+    json.attrs = this.attrs;
+    return json;
+  }
+
+  get attrs() {
+    return this._attrs;
   }
 
   get stage() {

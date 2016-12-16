@@ -1,19 +1,8 @@
-import { registry } from '../../utils/registry';
-import components from '../../chart-components/index';
-import { data } from '../../data/index';
-import dockLayout from '../../dock-layout/dock-layout';
-import buildFormatters, { getOrCreateFormatter } from './formatter/index';
-import {
-  builder as buildScales,
-  getOrCreateScale
-} from './scales';
-
-const regComps = registry();
-regComps.add('components', components);
-
-const regPreComps = registry();
-regPreComps.add('scales', buildScales);
-regPreComps.add('formatters', buildFormatters);
+import buildComponents, { getComponent as getComponentFactory } from '../../chart-components/index';
+import buildData from '../../data/index';
+import createDockLayout from '../../dock-layout/dock-layout';
+import buildFormatters, { getOrCreateFormatter } from './formatter';
+import buildScales, { getOrCreateScale } from './scales';
 
 function flattenComponents(c) {
   const chartComponents = [];
@@ -29,29 +18,93 @@ function flattenComponents(c) {
   return chartComponents;
 }
 
-export default function composer() {
-  let scales = {};
-  let formatters = {};
+const findComponentByKey = (arr, key) => arr.filter(item => item.key === key)[0];
+
+function diff(componentsObj, newComponentsObj) {
+  const added = [];
+  const unknown = [];
+  const removed = [];
+
+  const components = flattenComponents(componentsObj);
+  const newComponents = flattenComponents(newComponentsObj);
+
+  components.forEach((comp) => {
+    // if(newComponents.indexOf(comp) === -1) {
+    if (!findComponentByKey(newComponents, comp.key)) {
+      removed.push(comp);
+    }
+  });
+
+  newComponents.forEach((newComp) => {
+    // if(components.indexOf(newComp) === -1) {
+    if (!findComponentByKey(components, newComp.key)) {
+      added.push(newComp);
+    } else {
+      unknown.push(newComp);
+    }
+  });
+
+  return {
+    added,
+    unknown,
+    removed
+  };
+}
+
+export default function composer(element) {
+  let currentData = null;
+  let currentScales = null;
+  let currentFormatters = null;
+  let currentComponents = null;
+
   let dataset = [];
   let comps = {};
-  let container = null;
-  let docker = dockLayout();
+  let dockLayout = null;
+
+  function render() {
+    const cc = flattenComponents(comps);
+    cc.forEach((c) => { dockLayout.addComponent(c); });
+
+    const { visible, hidden } = dockLayout.layout(element);
+    visible.forEach((c) => { c.render(); });
+    hidden.forEach((c) => { if (c.hide) { c.hide(); } });
+  }
 
   const fn = function () {};
 
-  fn.build = function (element, meta, settings) {
-    container = element;
-    docker.settings(settings.dockLayout);
-    fn.data(meta, settings);
-    fn.render();
-  };
+  fn.render = function (data, settings) {
+    const {
+      formatters,
+      scales,
+      components
+    } = settings;
+    dockLayout = createDockLayout();
+    dockLayout.settings(dockLayout);
 
-  fn.data = function (meta, settings) {
-    dataset = data(meta);
-    const preComps = regPreComps.build(settings, fn);
-    scales = preComps.scales;
-    formatters = preComps.formatters;
-    comps = regComps.build(settings, fn).components;
+    currentData = data;
+    dataset = buildData(data);
+    currentScales = buildScales(scales, fn);
+    currentFormatters = buildFormatters(formatters, fn);
+
+    if (Array.isArray(components)) {
+      let keyIdx = 0;
+      components.forEach((component) => {
+        if (!component.key) {
+          // throw new Error('No key found on component');
+          component.key = keyIdx; // TODO sync in update function
+          keyIdx++;
+        }
+        const factoryFn = getComponentFactory(component.type);
+        const componentInstance = factoryFn(component, fn);
+        comps[component.key] = componentInstance;
+      });
+      currentComponents = components;
+    } else {
+      comps = buildComponents(components, fn);
+      // Object.keys(builtComponents).forEach((key) => components[key] = buildComponents[key]);
+    }
+
+    render();
   };
 
   fn.table = function () {
@@ -62,30 +115,77 @@ export default function composer() {
     return dataset;
   };
 
+  fn.scales = function () {
+    return currentScales;
+  };
+
+  fn.formatters = function () {
+    return currentFormatters;
+  };
+
   fn.container = function () {
-    return container;
+    return element;
   };
 
   fn.scale = function (v) {
-    return getOrCreateScale(v, scales, dataset);
+    return getOrCreateScale(v, currentScales, dataset);
   };
 
-  fn.components = function () {
-    return comps;
-  };
+  // Only works for arrays of components
+  fn.update = function (data, settings) {
+    const {
+      formatters,
+      scales,
+      components
+    } = settings;
 
-  fn.render = function () {
-    const cc = flattenComponents(comps);
+    dockLayout = createDockLayout();
+    dockLayout.settings(settings.dockLayout);
 
-    cc.forEach((c) => { docker.addComponent(c); });
+    if (data !== currentData) {
+      currentData = data;
+      dataset = buildData(data);
+    }
 
-    const { visible, hidden } = docker.layout(container);
-    visible.forEach((c) => { c.render(); });
-    hidden.forEach((c) => { if (c.hide) { c.hide(); } });
+    if (data !== currentData || formatters !== currentFormatters) {
+      currentFormatters = buildFormatters(formatters, fn);
+    }
+    if (data !== currentData || scales !== currentScales) {
+      currentScales = buildScales(scales, fn);
+    }
+
+    const {
+      added,
+      unknown,
+      removed
+    } = diff(currentComponents, components);
+
+    // console.log('added', added);
+    // console.log('unknown', unknown);
+    // console.log('removed', removed);
+
+    added.forEach((compSettings) => {
+      const factoryFn = getComponentFactory(compSettings.type);
+      const componentInstance = factoryFn(compSettings, fn);
+      comps[compSettings.key] = componentInstance;
+    });
+    unknown.forEach((compSettings) => {
+      const componentInstance = comps[compSettings.key];
+      componentInstance.update({
+        settings: compSettings,
+        scales,
+        formatters,
+        dataset
+      });
+    });
+    removed.forEach((compSettings) => {
+      const componentInstance = comps[compSettings.key];
+      componentInstance.destroy(); // TODO
+    });
   };
 
   fn.formatter = function (v) {
-    return getOrCreateFormatter(v, formatters, fn.table());
+    return getOrCreateFormatter(v, currentFormatters, fn.table());
   };
 
   return fn;

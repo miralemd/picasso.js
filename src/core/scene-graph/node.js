@@ -2,10 +2,11 @@ class Node {
   /**
    * @private
    */
-  constructor() {
+  constructor(type) {
     this._parent = null;
     this._children = [];
     this._ancestors = null;
+    this.type = type;
     this.data = {};
   }
 
@@ -81,6 +82,32 @@ class Node {
       }
     }
     return r;
+  }
+
+  /**
+   *
+   * @returns {Boolean}
+   */
+  equals(n) {
+    const children = this.children;
+    const nChildren = n.children;
+    if (children.length !== nChildren.length) {
+      return false;
+    }
+    // Requires deterministic child order
+    for (let i = 0; i < children.length; i++) {
+      if (!children[i].equals(nChildren[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  toJSON() {
+    return {
+      type: this.type,
+      children: this.children.map(ch => ch.toJSON())
+    };
   }
 }
 

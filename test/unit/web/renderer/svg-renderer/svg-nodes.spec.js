@@ -68,28 +68,30 @@ describe('svg-nodes', () => {
 
   describe('maintainer', () => {
     it('should apply given attributes', () => {
-      let el = {
-          setAttribute: sinon.spy()
-        },
-        item = {
+      const el = {
+        setAttribute: sinon.spy()
+      };
+      const item = {
+        attrs: {
           cx: 13,
           fill: 'red'
-        };
+        }
+      };
       maintainer(el, item);
       expect(el.setAttribute.firstCall).to.have.been.calledWithExactly('cx', 13);
       expect(el.setAttribute.secondCall).to.have.been.calledWithExactly('fill', 'red');
     });
 
     it('should ignore attributes id, data, type, children', () => {
-      let el = {
-          setAttribute: sinon.spy()
-        },
-        item = {
-          id: 'a',
-          data: 'a',
-          type: 'a',
-          children: 'a'
-        };
+      const el = {
+        setAttribute: sinon.spy()
+      };
+      const item = {
+        id: 'a',
+        data: 'a',
+        type: 'a',
+        children: 'a'
+      };
       maintainer(el, item);
       expect(el.setAttribute.callCount).to.equal(0);
     });

@@ -21,42 +21,43 @@ class Registry {
   /**
    * Register a factory function
    * @deprecated - Use #add instead
-   * @param name
+   * @param key
    * @param fn
    */
-  register(name, fn) {
-    if (!name || typeof name !== 'string') {
-      throw new Error('Invalid name');
+  register(key, value) {
+    return this.add(key, value);
+  }
+
+  add(key, value) {
+    if (!key || typeof key !== 'string') {
+      throw new Error('Invalid key');
     }
-    if (typeof fn !== 'function') {
-      throw new TypeError('fn must be a function');
+    if (key in this.registry) {
+      return false;
     }
-    if (name in this.registry) {
-      throw new Error(`${name} already exists`);
-    }
-    this.registry[name] = fn;
+    this.registry[key] = value;
     return true;
   }
 
-  add(name, fn) {
-    return this.register(name, fn);
-  }
-
-  get(name) {
-    return this.registry[name];
+  get(key) {
+    return this.registry[key];
   }
 
   getKeys() {
     return Object.keys(this.registry);
   }
 
-  has(name) {
-    return !!this.registry[name];
+  getValues() {
+    return Object.keys(this.registry).map(key => this.registry[key]);
   }
 
-  remove(name) {
-    let d = this.registry[name];
-    delete this.registry[name];
+  has(key) {
+    return !!this.registry[key];
+  }
+
+  remove(key) {
+    let d = this.registry[key];
+    delete this.registry[key];
     return d;
   }
 
@@ -67,9 +68,9 @@ class Registry {
   build(obj, options) {
     let parts = {};
 
-    for (let name in obj) {
-      if (this.registry[name]) {
-        parts[name] = this.registry[name](obj[name], options);
+    for (let key in obj) {
+      if (this.registry[key]) {
+        parts[key] = this.registry[key](obj[key], options);
       }
     }
 

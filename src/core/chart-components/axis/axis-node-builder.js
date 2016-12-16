@@ -102,7 +102,6 @@ function continuousCalcMaxTextRect({ renderer, settings, innerRect, ticks }) {
 
 export default function nodeBuilder(type) {
   let calcMaxTextRectFn;
-  const nodes = [];
 
   function continuous() {
     calcMaxTextRectFn = continuousCalcMaxTextRect;
@@ -115,6 +114,7 @@ export default function nodeBuilder(type) {
   }
 
   function build({ settings, scale, innerRect, outerRect, renderer, ticks }) {
+    const nodes = [];
     const major = majorTicks(ticks);
     const minor = minorTicks(ticks);
     const buildOpts = {

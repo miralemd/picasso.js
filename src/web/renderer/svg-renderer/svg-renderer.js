@@ -1,14 +1,11 @@
 import config from '../../../config';
 import { tree as treeFactory } from './svg-tree';
 import { svgNs } from './svg-nodes';
-import scene from '../../../core/scene-graph/scene';
+import sceneFactory from '../../../core/scene-graph/scene';
 import { measureText } from '../text-metrics';
 
-export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = scene) {
-  let tree = treeFn();
-  let el;
-  let group;
-  let rect = {
+const createRect = ({ x, y, width, height, scaleRatio } = {}) => {
+  const rect = {
     x: 0,
     y: 0,
     width: 0,
@@ -18,6 +15,26 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
       y: 1
     }
   };
+
+  rect.x = isNaN(x) ? rect.x : x;
+  rect.y = isNaN(y) ? rect.y : y;
+  rect.width = isNaN(width) ? rect.width : width;
+  rect.height = isNaN(height) ? rect.height : height;
+  if (typeof scaleRatio !== 'undefined') {
+    rect.scaleRatio.x = isNaN(scaleRatio.x) ? rect.scaleRatio.x : scaleRatio.x;
+    rect.scaleRatio.y = isNaN(scaleRatio.y) ? rect.scaleRatio.y : scaleRatio.y;
+  }
+
+  return rect;
+};
+
+export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sceneFactory) {
+  let tree = treeFn();
+  let el;
+  let group;
+  let hasChangedRect = false;
+  let rect = createRect();
+  let scene;
 
   const svg = function () {};
 
@@ -36,6 +53,7 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
       el.appendChild(group);
     }
     element.appendChild(el);
+    return el;
   };
 
   svg.render = (items) => {
@@ -45,12 +63,13 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
 
     const scaleX = rect.scaleRatio.x;
     const scaleY = rect.scaleRatio.y;
-    el.style.left = `${Math.round(rect.x * scaleX)}px`;
-    el.style.top = `${Math.round(rect.y * scaleY)}px`;
-    el.setAttribute('width', Math.round(rect.width * scaleX));
-    el.setAttribute('height', Math.round(rect.height * scaleY));
 
-    svg.clear();
+    if (hasChangedRect) {
+      el.style.left = `${Math.round(rect.x * scaleX)}px`;
+      el.style.top = `${Math.round(rect.y * scaleY)}px`;
+      el.setAttribute('width', Math.round(rect.width * scaleX));
+      el.setAttribute('height', Math.round(rect.height * scaleY));
+    }
 
     const sceneContainer = {
       type: 'container',
@@ -60,10 +79,19 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
     if (scaleX !== 1 || scaleY !== 1) {
       sceneContainer.transform = `scale(${scaleX}, ${scaleY})`;
     }
-    const s = sceneFn({ items: [sceneContainer] });
-    tree.render(s.children, group);
 
-    return config.Promise.resolve();
+    const newScene = sceneFn({ items: [sceneContainer] });
+    const hasChangedScene = scene ? !newScene.equals(scene) : true;
+
+    const doRender = hasChangedRect || hasChangedScene;
+    if (doRender) {
+      svg.clear();
+      tree.render(newScene.children, group);
+    }
+
+    hasChangedRect = false;
+    scene = newScene;
+    return config.Promise.resolve(doRender);
   };
 
 
@@ -85,14 +113,14 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
     group = null;
   };
 
-  svg.size = ({ x, y, width, height, scaleRatio } = {}) => {
-    rect.x = isNaN(x) ? rect.x : x;
-    rect.y = isNaN(y) ? rect.y : y;
-    rect.width = isNaN(width) ? rect.width : width;
-    rect.height = isNaN(height) ? rect.height : height;
-    if (typeof scaleRatio !== 'undefined') {
-      rect.scaleRatio.x = isNaN(scaleRatio.x) ? rect.scaleRatio.x : scaleRatio.x;
-      rect.scaleRatio.y = isNaN(scaleRatio.y) ? rect.scaleRatio.y : scaleRatio.y;
+  svg.size = (opts) => {
+    if (opts) {
+      const newRect = createRect(opts);
+
+      if (JSON.stringify(rect) !== JSON.stringify(newRect)) {
+        hasChangedRect = true;
+        rect = newRect;
+      }
     }
 
     return rect;

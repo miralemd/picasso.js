@@ -37,23 +37,29 @@ function resolveInitialStyle(settings, baseStyles, composer) {
 export function abstractAxis(axisConfig, composer, renderer) {
   const innerRect = { width: 0, height: 0, x: 0, y: 0 };
   const outerRect = { width: 0, height: 0, x: 0, y: 0 };
-  const nodes = [];
-  const dataScale = composer.scale(axisConfig);
-  const scale = dataScale.scale;
-  const type = dataScale.type;
-  const formatter = composer.formatter(axisConfig.formatter || { source: dataScale.sources[0] });
+  let dataScale = composer.scale(axisConfig);
+  let scale = dataScale.scale;
+  let type = dataScale.type;
+  let formatter;
   let data;
   let concreteNodeBuilder;
   let settings;
   let styleSettings;
   let ticksFn;
-  const layoutConfig = dockConfig();
+  let layoutConfig = dockConfig();
 
   const init = function () {
+    formatter = composer.formatter(axisConfig.formatter || { source: dataScale.sources[0] });
     styleSettings = resolveInitialStyle(axisConfig.settings, styleSettings, composer);
+
+    if (type === 'ordinal') {
+      data = scale.domain();
+    }
+
     extend(true, settings, axisConfig.settings, styleSettings);
     concreteNodeBuilder = nodeBuilder(type);
     dockAlignSetup(settings, type);
+
     layoutConfig.dock(settings.dock);
     layoutConfig.requiredSize(calcRequiredSize({ type, data, formatter, renderer, scale, settings, ticksFn, layoutConfig }));
     layoutConfig.displayOrder(settings.displayOrder);
@@ -76,7 +82,6 @@ export function abstractAxis(axisConfig, composer, renderer) {
   const discrete = function () {
     [settings, styleSettings] = discreteDefaultSettings();
     ticksFn = generateDiscreteTicks;
-    data = scale.domain();
     init();
 
     return discrete;
@@ -84,11 +89,25 @@ export function abstractAxis(axisConfig, composer, renderer) {
 
   const render = function () {
     const ticks = ticksFn({ settings, innerRect, scale, data, formatter });
+
+    const nodes = [];
     nodes.push(...concreteNodeBuilder.build({ settings, scale, innerRect, outerRect, renderer, ticks }));
 
     crispify.multiple(nodes);
 
     renderer.render(nodes);
+  };
+
+  const update = function (opts = {}) {
+    axisConfig = opts.settings;
+    layoutConfig = dockConfig();
+    continuous.dockConfig = layoutConfig;
+    discrete.dockConfig = layoutConfig;
+    dataScale = composer.scale(axisConfig);
+    scale = dataScale.scale;
+    type = dataScale.type;
+    init();
+    render();
   };
 
   const onData = function () {
@@ -105,11 +124,13 @@ export function abstractAxis(axisConfig, composer, renderer) {
 
   // Declare public API
   continuous.render = render;
+  continuous.update = update;
   continuous.onData = onData;
   continuous.resize = resize;
   continuous.dockConfig = layoutConfig;
 
   discrete.render = render;
+  discrete.update = update;
   discrete.onData = onData;
   discrete.resize = resize;
   discrete.dockConfig = layoutConfig;

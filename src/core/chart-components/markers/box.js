@@ -91,8 +91,16 @@ const DEFAULT_STYLE_SETTINGS = {
  */
 
 export default class Box extends Dispersion {
-  constructor(obj, composer) {
-    super(obj, composer, DEFAULT_STYLE_SETTINGS);
+  constructor(settings, composer) {
+    super(composer, DEFAULT_STYLE_SETTINGS);
+
+    this.setOpts(settings);
+
+    this.onData(); // to be removed?
+  }
+
+  setOpts(opts) {
+    super.setOpts(opts);
 
     // Default to vertical
     if (this.settings.vertical === undefined) {
@@ -103,7 +111,6 @@ export default class Box extends Dispersion {
     if (this.settings.whiskers === undefined) {
       this.settings.whiskers = true;
     }
-    this.onData(); // to be removed?
   }
 
   render() {

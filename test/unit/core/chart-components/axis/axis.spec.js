@@ -45,7 +45,7 @@ describe('Axis', () => {
       composerMock.scale().type = 'linear';
       composerMock.scale().sources = ['fieldSource'];
 
-      axis = abstractAxis(config, composerMock, rendererMock);
+      axis = abstractAxis(config, composerMock, rendererMock)();
     });
 
     it('should instantiate a default formatter dervied from the first field', () => {
@@ -55,14 +55,14 @@ describe('Axis', () => {
     it('should instantiate a formatter referenced by name', () => {
       formatterSpy.reset(); // Reset spy here because init is done in beforeEach
       config.formatter = 'customFormatter';
-      axis = abstractAxis(config, composerMock, rendererMock);
+      axis = abstractAxis(config, composerMock, rendererMock)();
       expect(formatterSpy.args[0][0]).to.equal('customFormatter');
     });
 
     it('should instantiate a formatter derived from a configured field', () => {
       formatterSpy.reset(); // Reset spy here because init is done in beforeEach
       config.formatter = { source: 'customSource' };
-      axis = abstractAxis(config, composerMock, rendererMock);
+      axis = abstractAxis(config, composerMock, rendererMock)();
       expect(formatterSpy.args[0][0]).to.deep.equal({ source: 'customSource' });
     });
 

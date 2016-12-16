@@ -49,7 +49,7 @@ export function getOrCreateScale(v, scales, dataset) {
   return s || create(v, dataset);
 }
 
-export function builder(obj, composer) {
+export default function builder(obj, composer) {
   const scales = {};
   for (const s in obj) {
     scales[s] = create(obj[s], composer.dataset());

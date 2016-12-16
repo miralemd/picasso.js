@@ -2,7 +2,7 @@ import { registry } from '../utils/registry';
 
 const reg = registry();
 
-export function data(obj) {
+export default function data(obj) {
   if (obj.type in reg.registry) {
     return reg.registry[obj.type]()(obj.data);
   }

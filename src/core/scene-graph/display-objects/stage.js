@@ -14,7 +14,7 @@ function traverseFn(objects, fn, ary, ...args) {
 
 export default class Stage extends Container {
   constructor(dpi) {
-    super();
+    super('stage');
     this._stage = this;
     this._dpiRatio = dpi || 1;
   }

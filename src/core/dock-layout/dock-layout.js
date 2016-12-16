@@ -222,9 +222,14 @@ export default function dockLayout() {
   docker.addComponent = function (component) {
     validateComponent(component);
     docker.removeComponent(component);
+
+    // component.dockConfig can be undefined, a function or an object:
+    // if undefined: use default values from dockConfig()
+    // if function: use the function
+    // if object: wrap in dockConfig() function
     components.push({
       instance: component,
-      config: component.dockConfig || dockConfig(component.settings)
+      config: typeof component.dockConfig === 'function' ? component.dockConfig : dockConfig(component.dockConfig)
     });
   };
 

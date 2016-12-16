@@ -102,7 +102,18 @@ function generateTitle({ title, settings, dock, rect, renderer }) {
 }
 
 export default function text(config, composer, renderer) {
-  let settings = extend({
+  let rect = { x: 0, y: 0, width: 0, height: 0 };
+  let settings;
+  let dock;
+  let title;
+
+  const fn = function () {
+    setOpts(config); // eslint-disable-line no-use-before-define
+    return fn;
+  };
+
+  const setOpts = (opts) => {
+    settings = extend({
       dock: 'bottom',
       anchor: 'center',
       displayOrder: 99,
@@ -117,22 +128,18 @@ export default function text(config, composer, renderer) {
         fill: '#999'
       },
       join: ', '
-    }, config.settings),
-    table = composer.table(),
-    scale = config.scale ? composer.scale(config.scale) : undefined,
-    nodes = [],
-    rect = { x: 0, y: 0, width: 0, height: 0 },
-    dock = config.settings.dock,
-    title;
+    }, opts.settings);
 
-  const fn = function () {
+    dock = opts.settings.dock;
+
+    const table = composer.table();
+    const scale = config.scale ? composer.scale(config.scale) : undefined;
     title = parseTitle(config, table, scale);
     fn.dockConfig.requiredSize(calcRequiredSize(title, settings, renderer));
     fn.dockConfig.dock(dock);
     fn.dockConfig.displayOrder(settings.displayOrder);
     fn.dockConfig.prioOrder(settings.prioOrder);
     fn.dockConfig.minimumLayoutMode(settings.minimumLayoutMode);
-    return fn;
   };
 
   fn.resize = (inner) => {
@@ -141,8 +148,15 @@ export default function text(config, composer, renderer) {
   };
 
   fn.render = () => {
+    const nodes = [];
     nodes.push(generateTitle({ title, settings, dock, rect, renderer }));
     renderer.render(nodes);
+  };
+
+  fn.update = (opts) => {
+    setOpts(opts.settings);
+    fn.render();
+    console.log('update text');
   };
 
   fn.dockConfig = dockConfig();
