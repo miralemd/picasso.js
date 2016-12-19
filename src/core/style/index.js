@@ -27,15 +27,15 @@ function validateValue(globalFallback, value) {
   return value === null && globalFallback ? globalFallback : value;
 }
 
-function wrapper(globalFallback, fallbackVal, fn, item, index, array) {
-  const value = fn ? fn(item, index, array) : null;
+function wrapper(globalFallback, fallbackVal, fn, fnContext, ...args) {
+  const value = fn ? fn.call(fnContext, ...args) : null;
   if (typeof value !== 'undefined') {
     // Custom accessor returned a proper value
     return validateValue(globalFallback, value);
   }
   if (fallbackVal && typeof fallbackVal.fn === 'function') {
     // fallback has a custom function, run it
-    return fallbackVal.fn(item, index, array);
+    return fallbackVal.fn(fnContext, ...args);
   }
   // fallback is a value, return it
   return fallbackVal;
@@ -67,6 +67,8 @@ function attr(targets, attribute, defaultVal, index) {
     // Return function with fallback attribute value
     const inner = attr(targets, attribute, defaultVal, index + 1);
     target[attribute].fn = (...args) => wrapper(globalDefault, inner, target[attribute], ...args);
+    return target[attribute];
+  } else if (type === 'object') {
     return target[attribute];
   }
 
@@ -137,12 +139,43 @@ export function resolveForDataValues(styles, dataValues, index) {
   const ret = {};
   if (dataValues) {
     Object.keys(styles).forEach((s) => {
-      ret[s] = styles[s] && typeof styles[s].fn === 'function' ? styles[s].fn(dataValues[s][index], index, dataValues[s]) : styles[s];
+      ret[s] = styles[s] && typeof styles[s].fn === 'function' ? styles[s].fn(undefined, dataValues[s][index], index, dataValues[s]) : styles[s];
     });
   } else {
     Object.keys(styles).forEach((s) => {
       ret[s] = styles[s] && typeof styles[s].fn === 'function' ? styles[s].fn() : styles[s];
     });
   }
+  return ret;
+}
+
+export function resolveForDataObject(props, dataObj, index) {
+  const ret = {};
+  Object.keys(props).forEach((s) => {
+    const exists = typeof props[s] !== 'undefined';
+    const hasScale = exists && typeof props[s].scale === 'function';
+    const hasExplicitDataProp = exists && !!props[s].ref;
+    const hasImplicitDataProp = s in dataObj;
+    const propData = exists && props[s].ref ? dataObj[props[s].ref] : dataObj[s];
+    if (typeof props[s] === 'function') { // custom accessor function, not scale!
+      let fnContext = {
+        data: dataObj
+      };
+      if (hasScale) {
+        fnContext.scale = props[s].scale;
+      }
+      if (typeof props[s].fn === 'function') {
+        ret[s] = props[s].fn(fnContext, hasExplicitDataProp ? dataObj[props[s].ref] : undefined, index);
+      } else {
+        ret[s] = props[s].call(fnContext, hasExplicitDataProp ? dataObj[props[s].ref] : undefined, index);
+      }
+    } else if (hasScale && (hasImplicitDataProp || hasExplicitDataProp)) {
+      ret[s] = props[s].scale(propData);
+    } else if (hasExplicitDataProp) {
+      ret[s] = propData.value;
+    } else {
+      ret[s] = props[s];
+    }
+  });
   return ret;
 }

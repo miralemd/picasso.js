@@ -1,7 +1,7 @@
 import rendererFactory from '../../../renderer';
 import shapeFactory from './shapes';
-import resolveSettingsForPath from '../../settings-setup';
-import { resolveForDataValues } from '../../../style';
+import { resolveSettings } from '../../settings-setup';
+import { resolveForDataObject } from '../../../style';
 import notNumber from '../../../utils/undef';
 
 const DEFAULT_DATA_SETTINGS = {
@@ -32,18 +32,26 @@ const DEFAULT_ERROR_SETTINGS = {
 /**
  * @typedef marker-point
  * @property {string} type - "point"
- * @property {data-ref} data - Point data.
+ * @property {marker-point-data} data - Point data mapping.
  * @property {marker-point-settings} settings - Marker settings
  * @example
  * {
- *   type: "point",
- *   data: { source: "/qDimensionInfo/0" },
+ *  type: "point",
+ *  data: {
+ *    groupBy: {
+ *      source: "/qHyperCube/qDimensionInfo/0",
+ *    },
+ *    mapTo: {
+ *      color: { source: "/qHyperCube/qMeasureInfo/0" },
+ *      opacity: { source: "/qHyperCube/qMeasureInfo/1" }
+ *    }
+ *  },
  *  settings: {
- *    x: 0.2, // simple number, places all points at the same position along the x-axis (which assumes to have a range of [0,1])
- *    y: ( d, i, arr ) => i / arr.length, // function is called for each datum `d`
- *    fill: { source: "/qMeasureInfo/0", type: "color" }, // auto-constructs a color scale from the specified source
- *    opacity: { source: "/qMeasureInfo/1", fn: ( d, i ) => d.value },
- *    shape: ( d, i ) => ["rect", "circle"][i % 2]
+ *   x: 0.2, // simple number, places all points at the same position along the x-axis (which assumes to have a range of [0,1])
+ *   y: ( d, i, arr ) => i / arr.length, // function is called for each datum `d`
+ *   fill: { ref: "color", scale: { source: "/qHyperCube/qMeasureInfo/0", type: "color" }, // auto-constructs a color scale from the specified source
+ *   opacity: { ref: "opacity", fn: ( d ) => d.value },
+ *   shape: ( d, i ) => ["rect", "circle"][i % 2]
  *  }
  * }
  */
@@ -61,44 +69,100 @@ const DEFAULT_ERROR_SETTINGS = {
  */
 
 /**
- * @typedef {(string|marker-point-data-accessor|marker-point-data)} marker-point-string
+ * @typedef {(string|marker-point-data-accessor|marker-point-setting)} marker-point-string
  */
 
  /**
-  * @typedef {(number|marker-point-data-accessor|marker-point-data)} marker-point-number
+  * @typedef {(number|marker-point-data-accessor|marker-point-setting)} marker-point-number
   */
 
  /**
   * @callback marker-point-data-accessor
   * @param {object} datum - The datum object
-  * @param {string} datum.label - Label of datum
-  * @param {number} datum.value - Numeric value of datum
-  * @param {string|number} datum.id - Id of datum
+  * @param {number|string} datum.value - Value of datum
   * @param {integer} index - Index of datum in the data
-  * @param {datum[]} arr - Array of current data
+  * @this {marker-point-data-accessor-context}
+  */
+
+ /**
+  * typedef marker-point-data-accessor-context
+  * @property {object} data - The mapped data
+  * @property {object} scale - The referenced scale
   */
 
 /**
- * The data to use for encoding a property of the point.
+ * The specified definition will provide the point marker with data.
  *
- * The specified source will provide the point marker with data.
  * @typedef marker-point-data
- * @property {string} source - Data field
- * @property {marker-point-data-accessor} [fn] - Data accessor. Custom data accessor which will be called for each datum. The return value is used for the specified property.
- * @property {string} [scale] - Name of a predefined scale. Not used if fn is defined.
+ * @property {object} mapTo - Object containing the definition of how to map data
+ * @property {string} mapTo.source - Data field
+ * @property {object} groupBy - The data source to group data
+ * @property {string} groupBy.source - Reference to a data source
  * @example
- * // the following definition will provide data from the first measure in the form: [{value: 3, label: "$3", id: 0}, ...]
  * {
- *   source: "/qMeasureInfo/0"
+ *   mapTo: {
+ *    x: { source: "/qHyperCube/qMeasureInfo/0" },
+ *    y: { source: "/qHyperCube/qMeasureInfo/1", reducer: "avg" },
+ *    parent: { source: "/qHyperCube/qDimensionInfo/0", type: "qual", reducer: "first" }
+ *   },
+ *   groupBy: {
+ *    source: "/qHyperCube/qDimensionInfo/1"
+ *   }
  * }
+ *
+ * // will provide an output:
+ * [
+ *  {
+ *    x: { value: 3.2, source: {...} },
+ *    y: { value: 16.2, source: {...} },
+ *    parent: { value: 'Europe', source: {...} }
+ *  },
+ *  ...
+ * ]
  */
 
-function values(table, setting) {
-  if (setting && setting.source) {
-    return table.findField(setting.source).values();
-  }
-  return null;
-}
+ /**
+  * The data to use for encoding a property of the point.
+  *
+  * The specified source will provide the point marker with data.
+  * @typedef marker-point-setting
+  * @property {string} ref - A reference to a property in the mapped data.
+  * @property {object|string} scale - Object containing the definition of a scale. If a string is provided it is assumed to be a reference to an already existing scale.
+  * @property {string} scale.source - Data source
+  * @property {string} scale.type - Scale type
+  * @property {marker-point-data-accessor} [fn] - Data accessor. Custom data accessor which will be called for each datum. The return value is used for the specified property.
+  * @example
+  * // assuming a data mapping of:
+  * // {
+  * //  x: { source: "/qHyperCube/qMeasureInfo/0" }
+  * //  label: { source: "/qHyperCube/qDimensionInfo/0" }
+  * // }
+  * //
+  * // the data can be accessed in various ways:
+  * // the following definitions will all result in the same 'x' value
+  * {
+  *   x: { ref: "x" } // reference the 'x' value in the mapped data
+  *   x: { ref: "x", fn: (d) { return d.value; } }, // the referenced value in sent in as the first parameter in the callback
+  *   x: { fn: function(d) { return this.data.x.value; } }, // the mapped data can be accessed through <code>this.data</code>
+  *   x: function (d) { return this.data.x.value; }
+  * }
+  * @example
+  * // a scale will in some cases automatically be used when provided,
+  * // the following definitions will all result in the same 'x' value:
+  * {
+  *   x: { ref: "x", scale: "x" }, // automatically sends the 'x' value through the scale and returns that value
+  *   x: { ref: "x", scale: "x", fn: function(d) { return this.scale(d) } }, // the referenced 'scale' is accessible in the callback's 'this' context
+  *   x: { scale: "x", fn: function(d) { return this.scale(this.data.x) } },
+  * }
+  *
+  * @example
+  * // since all mapped data is accessible in all settings, the values can be used for more expressive representation of properties
+  * {
+  *   fill: { scale: "x", fn: function() { // color the maximum value red
+  *     return this.scale.max() >= this.data.x.value ? "red" : "grey";
+  *   } }
+  * }
+  */
 
 function getSpaceFromScale(s, space) {
   if (s && s.scale && typeof s.scale.step === 'function') { // some kind of ordinal scale
@@ -108,8 +172,8 @@ function getSpaceFromScale(s, space) {
 }
 
 function getPointSizeLimits(x, y, width, height) {
-  const xSpace = getSpaceFromScale(x, width);
-  const ySpace = getSpaceFromScale(y, height);
+  const xSpace = getSpaceFromScale(x ? x.scale : undefined, width);
+  const ySpace = getSpaceFromScale(y ? y.scale : undefined, height);
   const space = Math.min(xSpace, ySpace);
   const min = Math.max(1, Math.floor(space / 10)); // set min size to be 10 (arbitrary choice) times smaller than allowed space
   const max = Math.max(min, Math.min(Math.floor(space)));
@@ -117,48 +181,48 @@ function getPointSizeLimits(x, y, width, height) {
 }
 
 function calculateLocalSettings(stngs, composer) {
-  const local = resolveSettingsForPath(stngs, DEFAULT_DATA_SETTINGS, composer);
-  local.errorShape = resolveSettingsForPath(stngs, DEFAULT_ERROR_SETTINGS, composer, 'errorShape');
+  let local = resolveSettings(stngs, DEFAULT_DATA_SETTINGS, composer);
+  local.errorShape = resolveSettings(stngs.errorShape, DEFAULT_ERROR_SETTINGS.errorShape, composer);
   return local;
 }
 
 function createDisplayPoints(dataPoints, { x, y, width, height }, pointSize, shapeFn) {
   return dataPoints.filter(p =>
    !isNaN(p.x + p.y)
-).map((p) => {
-  const s = notNumber(p.size) ? p.errorShape : p;
-  const size = pointSize[0] + (s.size * (pointSize[1] - pointSize[0])); // TODO - replace with scale
-  return shapeFn(s.shape, {
-    label: p.label,
-    x: p.x * width,
-    y: p.y * height,
-    fill: p.fill,
-    size: Math.min(p.maxSize, Math.max(p.minSize, size)),
-    stroke: s.stroke,
-    strokeWidth: s.strokeWidth,
-    opacity: p.opacity
-  });
-}
-);
+  ).map((p) => {
+    const s = notNumber(p.size) ? p.errorShape : p;
+    const size = pointSize[0] + (s.size * (pointSize[1] - pointSize[0])); // TODO - replace with scale
+    return shapeFn(s.shape, {
+      label: p.label,
+      x: p.x * width,
+      y: p.y * height,
+      fill: p.fill,
+      size: Math.min(p.maxSize, Math.max(p.minSize, size)),
+      stroke: s.stroke,
+      strokeWidth: s.strokeWidth,
+      opacity: p.opacity
+    });
+  }
+  );
 }
 
 export function pointFn(rendererFn, shapeFn) {
   let rect = { x: 0, y: 0, width: 0, height: 0 },
     points,
-    dataInput,
     local,
     settings,
     composer,
-    table,
+    dataset,
+    data,
     renderer;
 
-  const fn = function (obj, comp) {
+  const fn = (obj, comp) => {
     rect = { x: 0, y: 0, width: 0, height: 0 };
     composer = comp;
 
     settings = obj.settings || {};
-    dataInput = obj.data;
-    table = composer.table();
+    data = obj.data;
+    dataset = composer.dataset();
 
     renderer = rendererFn();
     renderer.appendTo(composer.container());
@@ -167,35 +231,25 @@ export function pointFn(rendererFn, shapeFn) {
     return fn;
   };
 
-  fn.onData = function () {
+  fn.onData = () => {
     local = calculateLocalSettings(settings, composer);
+    const mapped = dataset.map(data.mapTo, data.groupBy); // TODO - the mapped data should be sent in as the argument
 
-    const data = values(table, dataInput);
-    const dataValues = { errorShape: {} };
-
-    for (const s in DEFAULT_DATA_SETTINGS) {
-      dataValues[s] = values(table, settings[s]) || data;
-    }
-    for (const s in DEFAULT_ERROR_SETTINGS.errorShape) {
-      dataValues.errorShape[s] = values(table, settings.errorShape && settings.errorShape[s]) || data;
-    }
-
-    points = data.map((p, i) => {
-      const obj = resolveForDataValues(local, dataValues, i);
-      obj.errorShape = resolveForDataValues(local.errorShape, dataValues.errorShape, i);
+    points = mapped.map((p, i) => {
+      const obj = resolveForDataObject(local, p, i);
+      obj.errorShape = resolveForDataObject(local.errorShape, p, i);
       return obj;
     });
   };
 
-  fn.render = function () {
+  fn.render = () => {
     const { width, height } = rect;
     const pointSize = getPointSizeLimits(local.x, local.y, width, height);
     const displayPoints = createDisplayPoints(points, rect, pointSize, shapeFn);
-
     renderer.render(displayPoints);
   };
 
-  fn.resize = function (r) {
+  fn.resize = (r) => {
     rect = r;
     renderer.size(rect);
   };

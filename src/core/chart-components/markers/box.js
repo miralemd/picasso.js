@@ -50,19 +50,29 @@ const DEFAULT_STYLE_SETTINGS = {
  * @example
  * {
  *   type: "box",
- *   data: { source: "/qDimensionInfo/0" },
+ *   data: {
+ *    mapTo: {
+ *     min: { source: "/qHyperCube/qMeasureInfo/0" },
+ *     start: { source: "/qHyperCube/qMeasureInfo/1" },
+ *     med: { source: "/qHyperCube/qMeasureInfo/2" },
+ *     end: { source: "/qHyperCube/qMeasureInfo/3" },
+ *     max: { source: "/qHyperCube/qMeasureInfo/4" },
+ *    },
+ *    groupBy: {
+ *     source: "/qHyperCube/qDimensionInfo/0"
+ *     }
+ *  },
  *  settings: {
- *    x: { source: "/qDimensionInfo/0" },
- *    y: { source: ["/qMeasureInfo/0",
- *                  "/qMeasureInfo/1",
- *                  "/qMeasureInfo/2",
- *                  "/qMeasureInfo/3",
- *                  "/qMeasureInfo/4"] },
- *    min: { source: "/qMeasureInfo/0" },
- *    max: { source: "/qMeasureInfo/1" },
- *    start: { source: "/qMeasureInfo/2" },
- *    end: { source: "/qMeasureInfo/3" },
- *    med: { source: "/qMeasureInfo/4" }
+ *    x: {
+ *      scale: { source: "/qHyperCube/qDimensionInfo/0" }
+ *    },
+ *    y: {
+ *      scale: { source: ["/qHyperCube/qMeasureInfo/0",
+ *               "/qHyperCube/qMeasureInfo/1",
+ *               "/qHyperCube/qMeasureInfo/2",
+ *               "/qHyperCube/qMeasureInfo/3",
+ *               "/qHyperCube/qMeasureInfo/4"] }
+ *    }
  *  }
  * }
  */

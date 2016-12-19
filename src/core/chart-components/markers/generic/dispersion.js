@@ -1,16 +1,8 @@
 import renderer from '../../../renderer';
 import doodler from './doodler';
 import { transposer } from '../../../transposer/transposer';
-import { resolveForDataValues } from '../../../style';
+import { resolveForDataObject } from '../../../style';
 import resolveSettingsForPath from '../../settings-setup';
-
-function values(table, setting) {
-  if (setting && setting.source) {
-    const field = table.findField(setting.source);
-    return field ? field.values() : null;
-  }
-  return null;
-}
 
 function resolveInitialStyle(settings, baseStyles, composer) {
   const ret = {};
@@ -31,7 +23,7 @@ export default class Dispersion {
 
     // Setup settings and data
     this.settings = obj.settings;
-    this.table = composer.table();
+    this.dataset = composer.dataset();
     this.obj = obj;
     this.defaultStyles = defaultStyles;
 
@@ -54,19 +46,14 @@ export default class Dispersion {
     this.items = [];
     this.resolvedStyle = resolveInitialStyle(this.settings, this.defaultStyles, this.composer);
 
-    const data = values(this.table, this.obj.data);
-    const startValues = values(this.table, this.settings.start);
-    const endValues = values(this.table, this.settings.end);
-    const minValues = values(this.table, this.settings.min);
-    const maxValues = values(this.table, this.settings.max);
-    const medValues = values(this.table, this.settings.med);
+    const data = this.dataset.map(this.obj.data.mapTo, this.obj.data.groupBy); // TODO - the mapped data should be sent in as the argument
 
     const x = this.x;
     const y = this.y;
 
     // Calculate the minimum data point distance
     if (!x.scale.step) {
-      let pointCoords = data.map(d => d.value);
+      let pointCoords = data.map(d => d.self.value);
 
       // Sort values
       pointCoords.sort();
@@ -83,28 +70,20 @@ export default class Dispersion {
       this.minDataPointDistance = minSpace;
     }
 
-    const dataValues = {};
-    Object.keys(this.resolvedStyle).forEach((s) => {
-      dataValues[s] = {};
-      Object.keys(this.resolvedStyle[s]).forEach((p) => {
-        dataValues[s][p] = values(this.table, this.resolvedStyle[s][p]) || data;
-      });
-    });
-
     data.forEach((d, i) => {
-      const obj = {};
+      let obj = {};
       Object.keys(this.resolvedStyle).forEach((part) => {
-        obj[part] = resolveForDataValues(this.resolvedStyle[part], dataValues[part], i);
+        obj[part] = resolveForDataObject(this.resolvedStyle[part], d, i);
       });
 
       this.items.push({
         style: obj,
-        x: x ? x(d) : 0.5,
-        min: y && minValues ? y(minValues[i]) : null,
-        max: y && maxValues ? y(maxValues[i]) : null,
-        start: y && startValues ? y(startValues[i]) : null,
-        end: y && endValues ? y(endValues[i]) : null,
-        med: y && medValues ? y(medValues[i]) : null
+        x: x ? x(d.self) : 0.5,
+        min: y && 'min' in d ? y(d.min) : null,
+        max: y && 'max' in d ? y(d.max) : null,
+        start: y && 'start' in d ? y(d.start) : null,
+        end: y && 'end' in d ? y(d.end) : null,
+        med: y && 'med' in d ? y(d.med) : null
       });
     });
   }

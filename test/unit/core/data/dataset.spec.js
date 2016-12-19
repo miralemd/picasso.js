@@ -46,34 +46,58 @@ describe('dataset', () => {
       ds = dataset()(data);
     });
 
+    it('should collect itself', () => {
+      let groupBy = {
+        source: '/0/0'
+      };
+
+      let values = ds.map({}, groupBy);
+      expect(values).to.eql([
+        {
+          self: { value: 'Cars', source: { field: '/0/0', indices: [0, 1] } }
+        },
+        {
+          self: { value: 'Bikes', source: { field: '/0/0', indices: [2] } }
+        },
+        {
+          self: { value: 'Shoes', source: { field: '/0/0', indices: [3, 4] } }
+        }
+      ]);
+    });
+
     it('should collect data by rows', () => {
       let groupBy = {
-        field: '/0/0', attribute: '$index'
+        source: '/0/0', attribute: '$index'
       };
       let mapper = {
-        sales: { field: '/0/3', reducer: 'sum' },
-        margin: { field: '/0/4', reducer: 'first' }
+        sales: { source: '/0/3', reducer: 'sum' },
+        margin: { source: '/0/4', reducer: 'first' }
       };
 
       let values = ds.map(mapper, groupBy);
       expect(values).to.eql([
         {
+          self: { value: 'Cars', source: { field: '/0/0', indices: [0] } },
           sales: { value: 56, source: { field: '/0/3', indices: [0] } },
           margin: { value: -2, source: { field: '/0/4', indices: [0] } }
         },
         {
+          self: { value: 'Cars', source: { field: '/0/0', indices: [1] } },
           sales: { value: 59, source: { field: '/0/3', indices: [1] } },
           margin: { value: -3, source: { field: '/0/4', indices: [1] } }
         },
         {
+          self: { value: 'Bikes', source: { field: '/0/0', indices: [2] } },
           sales: { value: 30, source: { field: '/0/3', indices: [2] } },
           margin: { value: 0.4, source: { field: '/0/4', indices: [2] } }
         },
         {
+          self: { value: 'Shoes', source: { field: '/0/0', indices: [3] } },
           sales: { value: 70, source: { field: '/0/3', indices: [3] } },
           margin: { value: 0.5, source: { field: '/0/4', indices: [3] } }
         },
         {
+          self: { value: 'Shoes', source: { field: '/0/0', indices: [4] } },
           sales: { value: 0, source: { field: '/0/3', indices: [4] } },
           margin: { value: -0.4, source: { field: '/0/4', indices: [4] } }
         }
@@ -82,66 +106,59 @@ describe('dataset', () => {
 
     it('should collect data by group', () => {
       let groupBy = {
-        field: '/0/0'
+        source: '/0/0'
       };
       let mapper = {
-        sales: { field: '/0/3', reducer: 'sum' },
-        margin: { field: '/0/4', reducer: 'first' }
+        sales: { source: '/0/3', reducer: 'sum' },
+        margin: { source: '/0/4', reducer: 'first' }
       };
 
       let values = ds.map(mapper, groupBy);
       expect(values).to.eql([
         {
+          self: { value: 'Cars', source: { field: '/0/0', indices: [0, 1] } },
           sales: { value: 115, source: { field: '/0/3', indices: [0, 1] } },
           margin: { value: -2, source: { field: '/0/4', indices: [0, 1] } }
         },
         {
+          self: { value: 'Bikes', source: { field: '/0/0', indices: [2] } },
           sales: { value: 30, source: { field: '/0/3', indices: [2] } },
           margin: { value: 0.4, source: { field: '/0/4', indices: [2] } }
         },
         {
+          self: { value: 'Shoes', source: { field: '/0/0', indices: [3, 4] } },
           sales: { value: 70, source: { field: '/0/3', indices: [3, 4] } },
           margin: { value: 0.5, source: { field: '/0/4', indices: [3, 4] } }
         }
       ]);
     });
 
-    it('should collect data without group', () => {
-      let mapper = {
-        sales: { field: '/0/3', reducer: 'sum' },
-        margin: { field: '/0/4', reducer: 'first' }
-      };
-
-      let values = ds.map(mapper);
-      expect(values).to.eql({
-        sales: { value: 215, source: { field: '/0/3', indices: [0, 1, 2, 3, 4] } },
-        margin: { value: -2, source: { field: '/0/4', indices: [0, 1, 2, 3, 4] } }
-      });
-    });
-
     it('should collect data from multiple tables', () => {
       let groupBy = {
-        field: '/0/0'
+        source: '/0/0'
       };
       let mapper = {
-        sales: { field: '/0/3', reducer: 'sum' },
-        margin: { field: '/0/4', reducer: 'first' },
-        color: { field: '/1/1', reducer: 'first', linkFrom: '/1/0' }
+        sales: { source: '/0/3', reducer: 'sum' },
+        margin: { source: '/0/4', reducer: 'first' },
+        color: { source: '/1/1', reducer: 'first', linkFrom: '/1/0' }
       };
 
       let values = ds.map(mapper, groupBy);
       expect(values).to.eql([
         {
+          self: { value: 'Cars', source: { field: '/0/0', indices: [0, 1] } },
           sales: { value: 115, source: { field: '/0/3', indices: [0, 1] } },
           margin: { value: -2, source: { field: '/0/4', indices: [0, 1] } },
           color: { value: 'red', source: { field: '/1/1', indices: [0] } }
         },
         {
+          self: { value: 'Bikes', source: { field: '/0/0', indices: [2] } },
           sales: { value: 30, source: { field: '/0/3', indices: [2] } },
           margin: { value: 0.4, source: { field: '/0/4', indices: [2] } },
           color: { value: 'blue', source: { field: '/1/1', indices: [1] } }
         },
         {
+          self: { value: 'Shoes', source: { field: '/0/0', indices: [3, 4] } },
           sales: { value: 70, source: { field: '/0/3', indices: [3, 4] } },
           margin: { value: 0.5, source: { field: '/0/4', indices: [3, 4] } },
           color: { value: 'green', source: { field: '/1/1', indices: [2] } }
@@ -151,22 +168,25 @@ describe('dataset', () => {
 
     it('should collect data using a custom reducer function', () => {
       let groupBy = {
-        field: '/0/0'
+        source: '/0/0'
       };
       let reducer = values => values.map(v => v).join(', ');
       let mapper = {
-        year: { field: '/0/2', reducer }
+        year: { source: '/0/2', reducer }
       };
 
       let values = ds.map(mapper, groupBy);
       expect(values).to.eql([
         {
+          self: { value: 'Cars', source: { field: '/0/0', indices: [0, 1] } },
           year: { value: '2012, 2013', source: { field: '/0/2', indices: [0, 1] } }
         },
         {
+          self: { value: 'Bikes', source: { field: '/0/0', indices: [2] } },
           year: { value: '2014', source: { field: '/0/2', indices: [2] } }
         },
         {
+          self: { value: 'Shoes', source: { field: '/0/0', indices: [3, 4] } },
           year: { value: '2014, 2012', source: { field: '/0/2', indices: [3, 4] } }
         }
       ]);

@@ -9,30 +9,33 @@ describe('Dispersion', () => {
   beforeEach(() => {
     const s = i => i;
     s.scale = { step: () => { } };
-    const tableMock = {
-      findField: (p = 1) => {
-        const values = () => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(item => item * p);
-        return { values };
-      }
+
+    const datasetMock = {
+      map: v => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((item) => {
+        let mapped = {};
+        Object.keys(v).forEach((key) => { mapped[key] = item * v[key]; });
+        return mapped;
+      })
     };
 
     composerMock = {
       scale: () => s,
-      table: () => tableMock,
+      dataset: () => datasetMock,
       container: () => { }
     };
 
     config = {
       settings: {
-        x: { source: 1 },
-        y: { source: 2 },
-        start: { source: 1 },
-        end: { source: 1 },
-        min: { source: -4 },
-        max: { source: 2 },
-        med: { source: 1 }
+        x: { scale: 'whatevz' },
+        y: { scale: 'whatevz' }
       },
-      data: { source: 1 }
+      data: { mapTo: {
+        start: 1,
+        end: 1,
+        min: -4,
+        max: 2,
+        med: 1
+      } }
     };
 
     rendererMock = {

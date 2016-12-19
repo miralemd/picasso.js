@@ -68,13 +68,13 @@ describe('Settings setup', () => {
   });
   it('should add fallback if custom fn', () => {
     const result = resolveSettingsForPath(settings, { box: { opacity: '!transparency' } }, composer, 'box');
-    expect(result.opacity.fn(2)).to.equal(0.5);
-    expect(result.opacity.fn(0)).to.equal('!transparency');
+    expect(result.opacity.fn(undefined, 2)).to.equal(0.5);
+    expect(result.opacity.fn(undefined, 0)).to.equal('!transparency');
   });
   it('should add fallback if custom fn no root', () => {
     const result = resolveSettingsForPath(settings, { box: { opacity: '!transparency' } }, composer, 'box');
-    expect(result.opacity.fn(2)).to.equal(0.5);
-    expect(result.opacity.fn(0)).to.equal('!transparency');
+    expect(result.opacity.fn(undefined, 2)).to.equal(0.5);
+    expect(result.opacity.fn(undefined, 0)).to.equal('!transparency');
   });
   it('should handle explicitly set null value', () => {
     const result = resolveSettingsForPath(settings, { title: { nullValue: '2' } }, composer, 'title');

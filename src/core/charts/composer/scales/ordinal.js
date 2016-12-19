@@ -42,7 +42,7 @@ export default function ordinal(fields, settings) {
   if (!isNaN(stgns.paddingOuter)) s.paddingOuter(stgns.paddingOuter);
   s.align(isNaN(stgns.align) ? 0.5 : stgns.align);
 
-  const fn = v => s.get(v.label);
+  const fn = v => s.get('label' in v ? v.label : v.value);
 
   fn.scale = s;
 

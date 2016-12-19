@@ -22,3 +22,37 @@ export default function resolveSettingsForPath(settings, defaults, composer, pat
   }
   return resolveStyle(defs, composition, path);
 }
+
+function isPrimitive(x) {
+  const type = typeof x;
+  return type !== 'object' && type !== 'function' && type !== 'undefined';
+}
+
+export function resolveSettings(settings, defaults, composer) {
+  const composition = extend(true, {}, settings);
+  const ext = composition;
+  const defs = defaults;
+  if (ext) {
+    Object.keys(composition).forEach((a) => {
+      if (a in ext && !isPrimitive(ext[a])) {
+        const obj = ext[a];
+        ext[a] = {};
+        if (typeof obj === 'function') {
+          ext[a] = obj;
+        } else if (obj.fn) {
+          ext[a] = obj.fn;
+        }
+        if (obj.scale) {
+          const scale = composer.scale(obj.scale);
+          if (scale) {
+            ext[a].scale = scale;
+          }
+        }
+        if (obj.ref) {
+          ext[a].ref = obj.ref;
+        }
+      }
+    });
+  }
+  return resolveStyle(defs, ext);
+}

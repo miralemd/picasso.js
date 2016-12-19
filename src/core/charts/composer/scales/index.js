@@ -14,21 +14,16 @@ function getTypeFromMeta(field) {
   return isNaN(field.min()) ? 'ordinal' : 'linear';
 }
 
-function fieldFinder(query, field) {
-  return field.title() === query;
+function findFields(dataset, sources) {
+  return sources.map((s) => {
+    const f = dataset.findField(s);
+    return f ? f.field : undefined;
+  });
 }
 
-function findFields(table, source) {
-  if (Array.isArray(source)) {
-    return source.map(s => table.findField(s, fieldFinder));
-  } else {
-    return [table.findField(source, fieldFinder)];
-  }
-}
-
-export function create(options, tables) {
+export function create(options, dataset) {
   const sources = Array.isArray(options.source) ? options.source : [options.source];
-  const fields = findFields(tables[0], sources);
+  const fields = findFields(dataset, sources);
   let type = options.type;
   if (!type) {
     type = options.colors ? 'color' : getTypeFromMeta(fields[0]);
@@ -43,7 +38,7 @@ export function create(options, tables) {
   return s;
 }
 
-export function getOrCreateScale(v, scales, tables) {
+export function getOrCreateScale(v, scales, dataset) {
   let s;
   if (typeof v === 'string' && scales[v]) { // return by name
     s = scales[v];
@@ -51,13 +46,13 @@ export function getOrCreateScale(v, scales, tables) {
     s = scales[v.scale];
   }
 
-  return s || create(v, tables);
+  return s || create(v, dataset);
 }
 
 export function builder(obj, composer) {
   const scales = {};
   for (const s in obj) {
-    scales[s] = create(obj[s], [composer.table()]);
+    scales[s] = create(obj[s], composer.dataset());
   }
   return scales;
 }

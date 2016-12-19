@@ -1,13 +1,32 @@
+import extend from 'extend';
 
-const reducers = { // TODO - handle null values
+const filters = {
+  numeric: values => values.filter(v => typeof v === 'number' && !isNaN(v))
+};
+
+const unfilteredReducers = {
+  sum: values => values.reduce((a, b) => a + b, 0)
+};
+
+export const reducers = {
   first: values => values[0],
   last: values => values[values.length - 1],
-  min: values => Math.min(...values),
-  max: values => Math.max(...values),
-  sum: values => values.reduce((a, b) => a + b, 0),
+  min: (values) => {
+    const filtered = filters.numeric(values);
+    return !filtered.length ? NaN : Math.min(...filtered);
+  },
+  max: (values) => {
+    const filtered = filters.numeric(values);
+    return !filtered.length ? NaN : Math.max(...filtered);
+  },
+  sum: (values) => {
+    const filtered = filters.numeric(values);
+    return !filtered.length ? NaN : filtered.reduce((a, b) => a + b, 0);
+  },
   avg: (values) => {
-    const len = values.length;
-    return reducers.sum(values) / len;
+    const filtered = filters.numeric(values);
+    const len = filtered.length;
+    return !len ? NaN : unfilteredReducers.sum(filtered) / len;
   }
 };
 
@@ -30,7 +49,7 @@ function collectRepeating(repeater, ds) {
   let fieldValues = [];
   let singleGroup;
   let idAttribute = repeater ? repeater.attribute || 'id' : 'id';
-  let gg = repeater ? ds.findField(repeater.field) : null;
+  let gg = repeater ? ds.findField(repeater.source) : null;
   if (gg && gg.field) {
     fieldValues = gg.field.values();
     fieldValues.forEach((v, i) => {
@@ -55,7 +74,7 @@ function collectRepeating(repeater, ds) {
 }
 
 function collectMapping(key, m, repeating, ds) {
-  let ff = findField(m.field, ds.tables());
+  let ff = findField(m.source, ds.tables());
   let fieldValues = [];
   let syncValues = repeating.fieldValues;
   let type = m.type || 'quant';
@@ -76,7 +95,7 @@ function collectMapping(key, m, repeating, ds) {
         g[key] = {
           values: [],
           source: {
-            field: m.field,
+            field: m.source,
             indices: []
           }
         };
@@ -90,8 +109,16 @@ function collectMapping(key, m, repeating, ds) {
 export function mapData(mapper, repeater, ds) {
   let collected = collectRepeating(repeater, ds);
 
-  Object.keys(mapper).forEach((key) => {
-    const m = mapper[key];
+  let mapping = extend(true, {}, mapper, {
+    self: {
+      source: repeater.source,
+      reducer: 'first',
+      type: 'qual'
+    }
+  });
+
+  Object.keys(mapping).forEach((key) => {
+    const m = mapping[key];
     collectMapping(key, m, collected, ds);
 
     let collection = collected.collection;

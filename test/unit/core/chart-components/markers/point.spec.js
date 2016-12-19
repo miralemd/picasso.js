@@ -1,3 +1,5 @@
+/* eslint object-shorthand: ["error", "never"] */
+
 import {
   pointFn
 } from '../../../../../src/core/chart-components/markers/point';
@@ -19,9 +21,13 @@ describe('point marker', () => {
     const table = {
       findField: sinon.stub()
     };
+    const dataset = {
+      map: sinon.stub()
+    };
     composer = {
       container: () => ({}),
       table: () => table,
+      dataset: () => dataset,
       scale: sinon.stub()
     };
     point = pointFn(renderFn, shape);
@@ -33,13 +39,9 @@ describe('point marker', () => {
 
   it('should render points with default settings', () => {
     const config = {
-      data: { source: 'foo' }
+      data: { mapTo: 'does not matter', groupBy: 'does not matter' }
     };
-    composer.table().findField.returns({
-      values: () => [
-         { value: 1, label: 'a' }
-      ]
-    });
+    composer.dataset().map.returns([{}]);
     point(config, composer);
     point.resize({ x: 10, y: 20, width: 100, height: 200 });
     point.render();
@@ -56,23 +58,19 @@ describe('point marker', () => {
     }]);
   });
 
-  it('should render points with default settings when input is invalid', () => {
+  it('should render points with default settings when settings properties are invalid', () => {
     const config = {
-      data: { source: 'foo' },
+      data: { mapTo: 'does not matter', groupBy: 'does not matter' },
       settings: {
         shape: 1,
         label: true,
         fill: 123,
         opacity: 'red',
         x: false,
-        y: /12345/
+        y: true
       }
     };
-    composer.table().findField.returns({
-      values: () => [
-         { value: 1, label: 'a' }
-      ]
-    });
+    composer.dataset().map.returns([{}]);
     point(config, composer);
     point.resize({ x: 10, y: 20, width: 100, height: 200 });
     point.render();
@@ -92,7 +90,7 @@ describe('point marker', () => {
 
   it('should render points with primitive value settings', () => {
     const config = {
-      data: { source: 'foo' },
+      data: { mapTo: 'does not matter', groupBy: 'does not matter' },
       settings: {
         shape: 'rect',
         label: 'etikett',
@@ -105,11 +103,7 @@ describe('point marker', () => {
         size: 4
       }
     };
-    composer.table().findField.returns({
-      values: () => [
-         { value: 1, label: 'a' }
-      ]
-    });
+    composer.dataset().map.returns([{}]);
     point(config, composer);
     point.resize({ x: 10, y: 20, width: 100, height: 200 });
     point.render();
@@ -128,9 +122,9 @@ describe('point marker', () => {
 
   it('should render points with function settings', () => {
     const config = {
-      data: { source: 'foo' },
+      data: { mapTo: 'does not matter', groupBy: 'does not matter' },
       settings: {
-        shape: d => d.label,
+        shape: function () { return this.data.label; },
         label: () => 'etikett',
         fill: () => 'red',
         stroke: () => 'blue',
@@ -141,11 +135,9 @@ describe('point marker', () => {
         size: () => 4
       }
     };
-    composer.table().findField.returns({
-      values: () => [
-         { value: 1, label: 'a' }
-      ]
-    });
+    composer.dataset().map.returns([{
+      label: 'a'
+    }]);
     point(config, composer);
     point.resize({ x: 10, y: 20, width: 100, height: 200 });
     point.render();
@@ -164,28 +156,36 @@ describe('point marker', () => {
 
   it('should render points with data settings', () => {
     const config = {
-      data: { source: 'foo' },
+      data: { mapTo: 'does not matter since returned data is mocked', groupBy: 'does not matter' },
       settings: {
-        shape: { source: 'shapes', fn: s => s },
-        label: { source: 'labels', fn: s => s },
-        fill: { source: 'fill', fn: s => s },
-        stroke: { source: 'fill', fn: s => `stroke:${s}` },
-        strokeWidth: { source: 'measure 1', fn: v => v },
-        opacity: { source: 'measure 1', fn: v => v / 10 },
-        x: { source: 'measure 2', fn: v => v },
-        y: { source: 'measure 3', fn: v => v },
-        size: { source: 'measure 1', fn: (v, i) => i },
+        shape: { ref: 'shape', fn: s => s },
+        label: { ref: 'label', fn: s => s },
+        fill: function () { return this.data.fill; },
+        stroke: { ref: 'fill', fn: s => `stroke:${s}` },
+        strokeWidth: { ref: 'm1', fn: v => v },
+        opacity: { ref: 'm1', fn: v => v / 10 },
+        x: { fn: function () { return this.data.m2; } },
+        y: { ref: 'm3', fn: v => v },
+        size: { ref: 'm1', fn: (v, i) => i },
         minSize: 0 // Set here to avoid hitting the limit
       }
     };
-    composer.table().findField.withArgs('foo').returns({ values: () => ['data 1', 'data 2'] });
 
-    composer.table().findField.withArgs('shapes').returns({ values: () => ['circle', 'rect'] });
-    composer.table().findField.withArgs('labels').returns({ values: () => ['etta', 'tvåa'] });
-    composer.table().findField.withArgs('fill').returns({ values: () => ['red', 'green'] });
-    composer.table().findField.withArgs('measure 1').returns({ values: () => [5, 4] });
-    composer.table().findField.withArgs('measure 2').returns({ values: () => [-0.2, 0.7] });
-    composer.table().findField.withArgs('measure 3').returns({ values: () => [0.3, 1.2] });
+    composer.dataset().map.returns([{
+      label: 'etta',
+      shape: 'circle',
+      fill: 'red',
+      m1: 5,
+      m2: -0.2,
+      m3: 0.3
+    }, {
+      label: 'tvåa',
+      shape: 'rect',
+      fill: 'green',
+      m1: 4,
+      m2: 0.7,
+      m3: 1.2
+    }]);
 
     point(config, composer);
     point.resize({ x: 10, y: 20, width: 100, height: 200 });
@@ -215,15 +215,20 @@ describe('point marker', () => {
 
   it('should render points with limited size when using discrete scale', () => {
     const config = {
-      data: { source: 'foo' },
+      data: { mapTo: '', groupBy: '' },
       settings: {
-        x: { source: 'measure 1' },
-        size: { source: 'measure 1', fn: v => v },
+        x: { scale: 'whatever', ref: 'm1', fn: v => v.value },
+        size: { ref: 'm1', fn: v => v.value },
         minSize: 0
       }
     };
-    composer.table().findField.withArgs('foo').returns({ values: () => ['data 1', 'data 2', 'data 3'] });
-    composer.table().findField.withArgs('measure 1').returns({ values: () => [0, 0.4, 1] });
+    // composer.table().findField.withArgs('foo').returns({ values: () => ['data 1', 'data 2', 'data 3'] });
+    // composer.table().findField.withArgs('measure 1').returns({ values: () => [0, 0.4, 1] });
+    composer.dataset().map.returns([
+      { m1: { value: 0 } },
+      { m1: { value: 0.4 } },
+      { m1: { value: 1 } }
+    ]);
     const xScale = v => v;
     xScale.scale = { step: () => 0.2 }; // max size: width * 0.2 -> 20
     composer.scale.onCall(0).returns(xScale);

@@ -58,12 +58,16 @@ export default function composer() {
     return dataset.tables()[0];
   };
 
+  fn.dataset = function () {
+    return dataset;
+  };
+
   fn.container = function () {
     return container;
   };
 
   fn.scale = function (v) {
-    return getOrCreateScale(v, scales, dataset.tables());
+    return getOrCreateScale(v, scales, dataset);
   };
 
   fn.components = function () {
