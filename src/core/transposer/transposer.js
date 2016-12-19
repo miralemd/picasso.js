@@ -1,3 +1,5 @@
+import crispify from './crispifier';
+
 class Transposer {
   /**
    * @private
@@ -5,6 +7,7 @@ class Transposer {
   constructor(...items) {
     this.storage = [];
     this.vertical = false;
+    this.crisp = false;
 
     this.flipX = false;
     this.flipY = false;
@@ -89,14 +92,18 @@ class Transposer {
    * @return {Array}   Array of objects
    */
   output() {
-    const items = this.storage.map((item) => {
-      const newItem = {};
+    let items = this.storage.map((item) => {
+      let newItem = {};
 
       Object.keys(item).forEach((key) => {
-        const nkey = this.vertical ? this.evaluateKey(key) : key;
+        const nkey = this.evaluateKey(key);
         const nval = this.transposeCoordinate(nkey, item[key]);
         newItem[nkey] = nval;
       });
+
+      if (this.crisp) {
+        crispify(newItem);
+      }
 
       return newItem;
     });

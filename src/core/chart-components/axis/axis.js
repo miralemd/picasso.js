@@ -6,6 +6,7 @@ import dockConfig from '../../dock-layout/dock-config';
 import calcRequiredSize from './axis-size-calculator';
 import resolveSettingsForPath from '../settings-setup';
 import { resolveForDataValues } from '../../style';
+import crispify from '../../transposer/crispifier';
 
 function alignTransform({ align, inner }) {
   if (align === 'left') {
@@ -84,6 +85,9 @@ export function abstractAxis(axisConfig, composer, renderer) {
     const ticks = ticksFn({ settings, innerRect, scale, data, formatter });
 
     nodes.push(...concreteNodeBuilder.build({ settings, scale, innerRect, outerRect, renderer, ticks }));
+
+    crispify.multiple(nodes);
+
     renderer.render(nodes);
   };
 

@@ -1,24 +1,10 @@
 # picasso
 ## In this file:
-* <a href="#Chart.DataProps">Chart.DataProps</a>
 * <a href="#Chart.SettingsProps">Chart.SettingsProps</a>
 * <a href="#Chart.ScaleProps">Chart.ScaleProps</a>
 * <a href="#Chart">Chart</a>
 * <a href="#picasso.chart">picasso.chart</a>
 
-#### <a name='Chart.DataProps' href='#Chart.DataProps'>#</a> DataProps
-|Name(s)|Type(s)|Description|Optional|
-|-------|-------|-----------|--------|
-| type | string | the type of data parser to use | No |
-| data | object | data property to send to data parser | No |
-
-#### Examples
-```js
-{
-  type: "q",
-  data: {...}
-}
-```
 #### <a name='Chart.SettingsProps' href='#Chart.SettingsProps'>#</a> SettingsProps
 |Name(s)|Type(s)|Description|Optional|
 |-------|-------|-----------|--------|
@@ -65,25 +51,18 @@
 | Returns | Chart |  | ... |
 
   
-#### <a name='picasso.chart' href='#picasso.chart'>#</a> **chart**(*DOMElement element, Chart.DataProps data, Chart.SettingsProps settings*)
+#### <a name='picasso.chart' href='#picasso.chart'>#</a> **chart**(*Chart.SettingsProps settings*)
 
 
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|
-| element | DOMElement | Element to draw the chart in |No|
-| data | Chart.DataProps | Data |No|
 | settings | Chart.SettingsProps | Settings |No|
 | Returns | Chart |  | ... |
 
 The chart creator  
 #### Examples
 ```js
-picasso.chart( element,
-{
-  type: "q",
-  data: layout.qHyperCube
-},
-{
+picasso.chart({
   scales: {
     x: {
       source: "/qHyperCube/qMeasureInfo/0"
@@ -102,5 +81,5 @@ picasso.chart( element,
       }
     ]
   }
-} );
+});
 ```

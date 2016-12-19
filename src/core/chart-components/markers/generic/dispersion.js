@@ -126,6 +126,7 @@ export default class Dispersion {
     this.blueprint.x = this.rect.x;
     this.blueprint.y = this.rect.y;
     this.blueprint.vertical = !this.settings.vertical;
+    this.blueprint.crisp = true;
 
     // Setup the doodler
     this.doodle.push = item => this.blueprint.push(item);
