@@ -25,8 +25,6 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
 
   svg.root = () => group;
 
-  svg.direction = 'ltr';
-
   svg.appendTo = (element) => {
     if (!el) {
       el = element.ownerDocument.createElementNS(ns, 'svg');
@@ -44,8 +42,6 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
     if (!el) {
       return config.Promise.reject();
     }
-
-    el.setAttribute('direction', svg.direction);
 
     const scaleX = rect.scaleRatio.x;
     const scaleY = rect.scaleRatio.y;

@@ -79,8 +79,6 @@ export function renderer(sceneFn = sceneFactory) {
 
   canvasRenderer.root = () => el;
 
-  canvasRenderer.direction = 'ltr';
-
   canvasRenderer.appendTo = (element) => {
     if (!el) {
       el = element.ownerDocument.createElement('canvas');
@@ -107,7 +105,6 @@ export function renderer(sceneFn = sceneFactory) {
     el.style.height = `${Math.round(rect.height * scaleY)}px`;
     el.width = Math.round(rect.width * dpiRatio * scaleX);
     el.height = Math.round(rect.height * dpiRatio * scaleY);
-   // el.setAttribute('dir', canvasRenderer.direction);
 
     const sceneContainer = {
       type: 'container',
