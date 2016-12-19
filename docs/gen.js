@@ -1,10 +1,12 @@
 "use strict"; // eslint-disable-line
 
+let rimraf = require('rimraf'); // eslint-disable-line import/no-unresolved
+let handlebars = require('handlebars'); // eslint-disable-line import/no-unresolved
+require('handlebars-helpers')({ handlebars });
 let fs = require('fs');
 let path = require('path');
 
-let rimraf = require('rimraf'); // eslint-disable-line import/no-unresolved
-let handlebars = require('handlebars'); // eslint-disable-line import/no-unresolved
+
 let glob = require('glob'); // eslint-disable-line import/no-unresolved
 
 let resolve = require('./json-path-resolver').resolve;
@@ -83,7 +85,11 @@ function registerTemplates(cb) {
     });
     cb();
   });
+
+  handlebars.registerPartial(undefined, '{{undefinedpartial}}');
 }
+
+handlebars.registerHelper('undefinedpartial', () => 'This partial does not exists. This may most certainly be caused by a missing file.');
 
 function compileMarkdownFiles(jsdocdata) {
   glob(`${MD_INPUT_FOLDER}/**/*.md`, {}, (err, files) => {

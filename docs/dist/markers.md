@@ -32,6 +32,7 @@
  }
 }
 ```
+
 #### <a name='marker-point-settings' href='#marker-point-settings'>#</a> marker-point-settings
 |Name(s)|Type(s)|Description|Optional|
 |-------|-------|-----------|--------|
@@ -44,14 +45,18 @@
 | opacity | marker-point-number | opacity of shape | Yes |
 | shape | marker-point-string | type of shape | Yes |
 
+
 #### <a name='marker-point-string' href='#marker-point-string'>#</a> marker-point-string
 Can be one of the following types: string, marker-point-data-accessor, marker-point-data
+
 
 #### <a name='marker-point-number' href='#marker-point-number'>#</a> marker-point-number
 Can be one of the following types: number, marker-point-data-accessor, marker-point-data
 
+
 #### <a name='marker-point-data-accessor' href='#marker-point-data-accessor'>#</a> marker-point-data-accessor
 Can be one of the following types: function
+
 
 #### <a name='marker-point-data' href='#marker-point-data'>#</a> marker-point-data
 |Name(s)|Type(s)|Description|Optional|
@@ -67,6 +72,7 @@ Can be one of the following types: function
   source: "/qMeasureInfo/0"
 }
 ```
+
 
 ## Box marker
 #### <a name='marker-box' href='#marker-box'>#</a> marker-box
@@ -96,6 +102,7 @@ Can be one of the following types: function
  }
 }
 ```
+
 #### <a name='marker-box-settings' href='#marker-box-settings'>#</a> marker-box-settings
 |Name(s)|Type(s)|Description|Optional|
 |-------|-------|-----------|--------|
@@ -105,6 +112,8 @@ Can be one of the following types: function
 | end | marker-box-data | end | No |
 | med | marker-box-data | med | No |
 
+
 #### <a name='marker-box-data' href='#marker-box-data'>#</a> marker-box-data
 Can be one of the following types: 
+
 

@@ -5,7 +5,7 @@
 {{/each}}
 
 ## Point marker
-{{>magic core.chart-components.markers.point.index-js}}
+{{>magic ctx='core.chart-components.markers.point.index-js' parent='test'}}
 
 ## Box marker
-{{>magic core.chart-components.markers.box-js}}
+{{>magic ctx='core.chart-components.markers.box-js'}}
