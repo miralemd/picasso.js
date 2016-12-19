@@ -5,9 +5,9 @@
  * @return {Function}          crispItem function
  *
  * @example
- * import crispifier from "core/crispifier";
+ * import { crispifierFactory } from "core/crispifier";
  *
- * let crispify = crispifier(customCrispMap);
+ * let crispify = crispifierFactory(customCrispMap);
  *
  * // For a single item
  * crispify(myItem);

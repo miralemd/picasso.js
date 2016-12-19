@@ -1,10 +1,41 @@
 # picasso
 ## In this file:
+* <a href="#Chart.Props">Chart.Props</a>
 * <a href="#Chart.SettingsProps">Chart.SettingsProps</a>
 * <a href="#Chart.ScaleProps">Chart.ScaleProps</a>
-* <a href="#Chart">Chart</a>
+* <a href="#instanceFn">instanceFn</a>
+* <a href="#instanceFn~instance.update">instanceFn~instance.update</a>
 * <a href="#picasso.chart">picasso.chart</a>
 
+#### <a name='Chart.Props' href='#Chart.Props'>#</a> Props
+|Name(s)|Type(s)|Description|Optional|
+|-------|-------|-----------|--------|
+| data | Chart.DataProps | Chart data | No |
+| settings | Chart.SettingsProps | Chart settings | No |
+| element | HTMLElement | Element to mount the chart into | No |
+| mounted | function | Lifecycle function called when the chart instance has been mounted into an element. | No |
+| updated | function | Lifecycle function called when the chart instance has been updated. | No |
+| on | Object | Event listeners | No |
+
+#### Examples
+```js
+{
+  data: {
+    ...
+  },
+  settings: {
+    ...
+  },
+  mounted: function(element) {
+
+  },
+  on: {
+    click: function(e) {
+
+    }
+  }
+}
+```
 #### <a name='Chart.SettingsProps' href='#Chart.SettingsProps'>#</a> SettingsProps
 |Name(s)|Type(s)|Description|Optional|
 |-------|-------|-----------|--------|
@@ -40,46 +71,55 @@
   invert: true
 }
 ```
-#### <a name='Chart' href='#Chart'>#</a> **Chart**(*HTMLElement element, Chart.DataProps data, Chart.SettingsProps settings*)
+#### <a name='instanceFn' href='#instanceFn'>#</a> **instanceFn**()
 
 
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|
-| element | HTMLElement |  |No|
-| data | Chart.DataProps |  |No|
-| settings | Chart.SettingsProps |  |No|
-| Returns | Chart |  | ... |
 
-  
-#### <a name='picasso.chart' href='#picasso.chart'>#</a> **chart**(*Chart.SettingsProps settings*)
+Chart instance factory function  
+#### <a name='instanceFn~instance.update' href='#instanceFn~instance.update'>#</a> instanceFn.**update**(* chart*)
 
 
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|
-| settings | Chart.SettingsProps | Settings |No|
+| chart |  | Chart definition |No|
+
+Update the chart with new settings and / or data  
+#### <a name='picasso.chart' href='#picasso.chart'>#</a> **chart**(*Chart.Props settings*)
+
+
+|Name|Type|Description|Optional|
+|----|----|-----------|--------|
+| settings | Chart.Props | Settings |No|
 | Returns | Chart |  | ... |
 
 The chart creator  
 #### Examples
 ```js
 picasso.chart({
-  scales: {
-    x: {
-      source: "/qHyperCube/qMeasureInfo/0"
-    },
-    y: {
-      source: "/qHyperCube/qDimensionInfo/0"
-    }
-  },
-  components: {
-    markers: [
-      {
-        type: "point",
-        settings: {
-          fill: 'red'
+  element: document.getElementById('chart-container'),
+  data: { ... },
+  settings: {
+    scales: {
+        x: {
+          source: "/qHyperCube/qMeasureInfo/0"
+        },
+        y: {
+          source: "/qHyperCube/qDimensionInfo/0"
         }
+      },
+      components: {
+        markers: [
+          {
+            type: "point",
+            settings: {
+              fill: 'red'
+            }
+          }
+        ]
       }
-    ]
+    }
   }
-});
+);
 ```
