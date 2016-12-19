@@ -1,1 +1,1 @@
-{{>magic ctx='core.transposer.crispifier-js.crispifier'}}
+{{>magic ctx='core.transposer.crispifier-js'}}

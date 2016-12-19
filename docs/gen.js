@@ -146,6 +146,6 @@ handlebars.registerHelper('anchor', (name) => {
 
 rimraf.sync(`${MD_OUTPUT_FOLDER}*`);
 
-// fs.writeFileSync('jsdoc-restruct.json', JSON.stringify(jsdoc));
+fs.writeFileSync('src/jsdoc-restruct.json', JSON.stringify(jsdoc));
 
 registerTemplates(() => { compileMarkdownFiles(jsdoc); });

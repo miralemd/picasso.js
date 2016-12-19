@@ -36,7 +36,6 @@
   }
 }
 ```
-
 #### <a name='Chart.SettingsProps' href='#Chart.SettingsProps'>#</a> SettingsProps
 |Name(s)|Type(s)|Description|Optional|
 |-------|-------|-----------|--------|
@@ -57,7 +56,6 @@
   }
 }
 ```
-
 #### <a name='Chart.ScaleProps' href='#Chart.ScaleProps'>#</a> ScaleProps
 |Name(s)|Type(s)|Description|Optional|
 |-------|-------|-----------|--------|
@@ -73,7 +71,6 @@
   invert: true
 }
 ```
-
 #### <a name='instanceFn' href='#instanceFn'>#</a> **instanceFn**()
 
 
@@ -89,7 +86,6 @@ Chart instance factory function
 | chart |  | Chart definition |No|
 
 Update the chart with new settings and / or data  
-
 #### <a name='picasso.chart' href='#picasso.chart'>#</a> **chart**(*Chart.Props settings*)
 
 
@@ -127,4 +123,3 @@ picasso.chart({
   }
 );
 ```
-

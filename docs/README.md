@@ -14,11 +14,11 @@ To renderer jsdoc data from a specific file, use `{{>magic ctx='file.path.separa
 
 If you want to renderer a specific function, you can place dots after the filename, as so: `{{>magic ctx='core.data.index-js.getDataFunc'}}`.
 
-The `{{>magic }}` template automatically detects if it's a file, factory, function, class or typedef (so far). If you want to manually specify a factory function, you can use the `{{>function }}` shorthand to not render it's children. All available templates can be found in the `docs/src/templates`-folder.
+The `{{>magic }}` template automatically detects if it's a file, factory, function, class or typedef (so far). If you want to manually specify a factory function, you can use the `{{>function }}` shorthand to not render it's children. All available templates can be found in the `docs/src/templates`-folder. They are also listed with a short description in this file, a bit down.
 
 When using `{{>function }}`, `{{>class }}` or *any* other partial except `{{>magic }}`, you should specify the context directly without commas, like this: `{{>function my.file-js.function}}`, please note the difference between `{{>magic ctx='my.file-js.function'}}`.
 
-This is to make it easier for the magic resolution to debug whenever a file changes data or name.
+This is to make it easier for the magic resolution to debug whenever a file changes data or name. The magic template resolution will move to the context `ctx` if it is not undefined, otherwise it'll show an error in the output file.
 
 ## Parameter overriding
 In some cases you may want to override parameters. For example, when using `export default function myFunction()`, the JSDOC will read it's path as `my.file-js.module-exports`, rather than it's real name.
@@ -37,14 +37,20 @@ In that scenario, you might want to override the `name` parameter to "myFunction
 * Output all compiled files to docs/output-folder
 
 ## Templates (partials)
+**All of these are listed under `docs/src/templates`**
 * Bool `{{>bool my.variable}}`, will print 'Yes' for a truthy value and 'No' for a falsey value.
 * Class `{{>class my.file-js.myclass}}`, shorthand for `function` template, to work with magic template resolution.
 * Examples `{{>examples my.file-js.myfunction.examples}}`, prints all examples with JavaScript Code tag to enable highlighting on supported markdown compilers.
 * Factory `{{>factory my.file-js.myfactory}}`, prints a function and all of it's child functions.
+* Function `{{>functio my.file-js.myfunction}}`, prints a function (no child functions).
+* Magic `{{>magic ctx='my.new.context-js'}}`, magic template resolving tries to figure out what you're trying to print and adapts to that. Prefer using this, but if it does not behave as expected, you can use templates manually.
+* Params `{{>magic my.file-js.myfunction.params}}`, prints all parameters for a function, given an array. Comma separated.
+* Typedef `{{>typedef my.file-js.mytypedef}}`, prints a typedef.
 
 ## Helpers
 * All helpers from `assemble/handlebars-helpers`, list here: https://github.com/assemble/handlebars-helpers
 *
 
-## Advanced
-You can view the output of the JSDOC in `src/docs.json`, and if you want to see the jsdoc data converted to a tree by filepaths that's used by the converter, you can uncomment the second to last line `fs.writeFileSync('jsdoc-restruct.json', JSON.stringify(jsdoc));` in `gen.js`
+## Debugging / Advanced
+* The context/data that is compiled using handlebars is available after running `npm run docs` under `docs/src/jsdoc-restruct.json`. Copy this information to a JSON reader such as jsoneditoronline.org to track the JSON tree and how variables look like.
+* If you're curious about the original data, pre-restruct, it is available under `docs/src/docs.json`.

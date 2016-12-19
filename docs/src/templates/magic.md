@@ -13,7 +13,6 @@
 {{else}}
 {{#if this.kind}}
 {{>(lookup . 'kind') this parent=parent}}
-{{log parent}}
 {{else}}
 Magic resolution of this file, function or object is not possible.
 {{/if}}
