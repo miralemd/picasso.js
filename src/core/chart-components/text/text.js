@@ -79,6 +79,9 @@ function generateTitle({ title, settings, dock, rect, renderer }) {
     struct.y = dock === 'top' ? rect.height - settings.paddingStart : settings.paddingStart + textRect.height;
     struct.dy = dock === 'top' ? -(textRect.height / 6) : -(textRect.height / 3);
     struct.maxWidth = rect.width * 0.8;
+    if (settings.maxWidth) {
+      struct.maxWidth = Math.min(struct.maxWidth, settings.maxWidth);
+    }
   } else {
     let y = rect.height / 2;
     if (settings.anchor === 'top') {

@@ -1,5 +1,6 @@
 import { measureText } from '../text-metrics';
 import { ellipsText } from '../text-manipulation';
+import { detectTextDirection, flipTextAnchor } from '../../../core/utils/rtl-util';
 
 const svgNs = 'http://www.w3.org/2000/svg';
 
@@ -27,6 +28,11 @@ const maintainer = (element, item) => {
     }
     if (attr === 'text') {
       element.textContent = ellipsText(item, measureText);
+      let dir = detectTextDirection(item.text);
+      if (dir === 'rtl') {
+        element.setAttribute('direction', 'rtl');
+        element.setAttribute('text-anchor', flipTextAnchor(element.getAttribute('text-anchor'), dir));
+      }
       continue;
     }
     element.setAttribute(attr, item[attr]);

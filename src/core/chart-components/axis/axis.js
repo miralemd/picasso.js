@@ -83,7 +83,6 @@ export function abstractAxis(axisConfig, composer, renderer) {
 
   const render = function () {
     const ticks = ticksFn({ settings, innerRect, scale, data, formatter });
-
     nodes.push(...concreteNodeBuilder.build({ settings, scale, innerRect, outerRect, renderer, ticks }));
 
     crispify.multiple(nodes);
