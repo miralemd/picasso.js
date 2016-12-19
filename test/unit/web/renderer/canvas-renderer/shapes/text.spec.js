@@ -12,7 +12,8 @@ describe('text', () => {
         font: '',
         textAlign: '',
         textBaseline: '',
-        fillText: sandbox.spy()
+        fillText: sandbox.spy(),
+        canvas: {}
       };
 
     sandbox.stub(textManipulation, 'ellipsText', () => '...');

@@ -136,11 +136,5 @@ describe('Axis', () => {
         verifyNumberOfNodes(3, 4);
       });
     });
-
-    it('should set direction from settings', () => {
-      config.settings.textDirection = 'rtl';
-      axis(dataMapperMock).render();
-      expect(rendererMock.direction).to.equal('rtl');
-    });
   });
 });

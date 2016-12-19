@@ -182,15 +182,4 @@ describe('canvas renderer', () => {
     expect(el.height).to.equal(size.height * scaleRatio.y * dpiScale);
     expect(scene.args[0][0]).to.deep.equal(expectedInputShapes);
   });
-
-  it('should set direction attribute', () => {
-    const div = element('div');
-    scene.returns({ children: [] });
-    r.appendTo(div);
-    r.render([{ type: 'container' }]);
-    expect(r.element().attributes.dir).to.equal('ltr');
-    r.direction = 'rtl';
-    r.render([{ type: 'container' }]);
-    expect(r.element().attributes.dir).to.equal('rtl');
-  });
 });
