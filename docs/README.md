@@ -1,3 +1,4 @@
+# Documentation
 This script utilizes JSDOC-JSON output & Handlebars to compile Documentation into Markdown files. Here's a short description of how to use it and how it works:
 
 ## Please note
