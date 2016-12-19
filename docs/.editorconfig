@@ -1,0 +1,5 @@
+# EditorConfig is awesome: http://EditorConfig.org
+root = false
+
+[*]
+insert_final_newline = auto
