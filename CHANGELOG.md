@@ -11,6 +11,9 @@
   - Include
 - Null data fallback
 - Data mapping
+- Crispifier
+  - Crisp setting for transposer
+- Documentation
 
 ### Changed
 
@@ -20,6 +23,7 @@
 
 - Scale invert now works as it is supposed to
 - Scale with same min and max automatically expands the values to ensure a range exists
+- Stroke-width works as intended on canvas
 
 ## 0.2.0
 
