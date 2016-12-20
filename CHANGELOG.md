@@ -1,15 +1,36 @@
 # Changelog
 
+## [Unreleased]
+
+## 0.3.0
+
+### Added
+
+- Scale settings
+  - Expand
+  - Include
+- Null data fallback
+- Data mapping
+
+### Changed
+
+- [BREAKING] - Marker configurations
+
+### Fixed
+
+- Scale invert now works as it is supposed to
+- Scale with same min and max automatically expands the values to ensure a range exists
+
 ## 0.2.0
 
-##### Added
+### Added
 
 - Axis component
 - Box marker component
 - Improved point marker component
 - Canvas rendering
 
-##### Changed
+### Changed
 
 - [BREAKING] Point marker configuration
 
