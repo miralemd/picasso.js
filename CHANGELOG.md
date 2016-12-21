@@ -14,6 +14,8 @@
 - Crispifier
   - Crisp setting for transposer
 - Documentation
+- RTL text rendering and ellipsis
+- Style inheritance
 
 ### Changed
 
