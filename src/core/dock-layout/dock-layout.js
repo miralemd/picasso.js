@@ -188,6 +188,30 @@ function positionComponents(components, logicalContainerRect, reducedRect, conta
   });
 }
 
+function checkShowSettings(components, hiddenComponents, settings, logicalContainerRect) {
+  const layoutModes = settings.layoutModes || {};
+  for (let i = 0; i < components.length; ++i) {
+    const c = components[i];
+    const minimumLayoutMode = c.config.minimumLayoutMode();
+    let show = true;
+    if (typeof minimumLayoutMode === 'object') {
+      show = layoutModes[minimumLayoutMode.width] &&
+        layoutModes[minimumLayoutMode.height] &&
+        logicalContainerRect.width >= layoutModes[minimumLayoutMode.width].width &&
+        logicalContainerRect.height >= layoutModes[minimumLayoutMode.height].height;
+    } else if (minimumLayoutMode !== undefined) {
+      show = layoutModes[minimumLayoutMode] &&
+        logicalContainerRect.width >= layoutModes[minimumLayoutMode].width &&
+        logicalContainerRect.height >= layoutModes[minimumLayoutMode].height;
+    }
+    if (!show) {
+      components.splice(i, 1);
+      hiddenComponents.push(c.instance);
+      --i;
+    }
+  }
+}
+
 export default function dockLayout() {
   const components = [];
   const hiddenComponents = [];
@@ -200,7 +224,7 @@ export default function dockLayout() {
     docker.removeComponent(component);
     components.push({
       instance: component,
-      config: component.dockConfig || dockConfig()
+      config: component.dockConfig || dockConfig(component.settings)
     });
   };
 
@@ -213,6 +237,7 @@ export default function dockLayout() {
 
   docker.layout = function (container) {
     const [logicalContainerRect, containerRect] = resolveLayout(container, settings);
+    checkShowSettings(components, hiddenComponents, settings, logicalContainerRect);
     const reduced = reduceLayoutRect(logicalContainerRect, components, hiddenComponents);
     positionComponents(components, logicalContainerRect, reduced, containerRect);
     return {

@@ -131,6 +131,7 @@ export default function text(config, composer, renderer) {
     fn.dockConfig.dock(dock);
     fn.dockConfig.displayOrder(settings.displayOrder);
     fn.dockConfig.prioOrder(settings.prioOrder);
+    fn.dockConfig.minimumLayoutMode(settings.minimumLayoutMode);
     return fn;
   };
 

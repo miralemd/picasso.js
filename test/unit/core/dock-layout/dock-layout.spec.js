@@ -9,7 +9,7 @@ describe('Dock Layout', () => {
 
     const dummy = function () {};
 
-    dummy.dockConfig = dockConfig(dock, order);
+    dummy.dockConfig = dockConfig({ dock, displayOrder: order });
     dummy.dockConfig.requiredSize(rect => rect.width * size);
     dummy.dockConfig.edgeBleed(edgeBleed);
     dummy.resize = function (...args) {

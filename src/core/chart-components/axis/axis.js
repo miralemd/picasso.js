@@ -58,6 +58,7 @@ export function abstractAxis(axisConfig, composer, renderer) {
     layoutConfig.requiredSize(calcRequiredSize({ type, data, formatter, renderer, scale, settings, ticksFn, layoutConfig }));
     layoutConfig.displayOrder(settings.displayOrder);
     layoutConfig.prioOrder(settings.prioOrder);
+    layoutConfig.minimumLayoutMode(settings.minimumLayoutMode);
 
     Object.keys(styleSettings).forEach((a) => {
       settings[a] = resolveForDataValues(settings[a]);

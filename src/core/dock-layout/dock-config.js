@@ -1,6 +1,12 @@
 import extend from 'extend';
 
-export default function dockConfig(dock = '', displayOrder = 0, prioOrder = 0, relevantSizeFn = () => 0) {
+export default function dockConfig({
+  dock = '',
+  displayOrder = 0,
+  prioOrder = 0,
+  relevantSizeFn = () => 0,
+  minimumLayoutMode
+} = {}) {
   const fn = function () {};
   const egdeBleed = { left: 0, right: 0, top: 0, bottom: 0 };
 
@@ -41,6 +47,14 @@ export default function dockConfig(dock = '', displayOrder = 0, prioOrder = 0, r
       return egdeBleed;
     }
     extend(egdeBleed, b);
+    return this;
+  };
+
+  fn.minimumLayoutMode = function (s) {
+    if (typeof s === 'undefined') {
+      return minimumLayoutMode;
+    }
+    minimumLayoutMode = s;
     return this;
   };
 
