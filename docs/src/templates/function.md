@@ -1,6 +1,5 @@
 #### {{anchor longname}} {{ parent }}{{#if parent}}.{{/if}}**{{ name }}**{{>params params}}
 {{#ifCond params '||' returns }}
-
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|
 {{#each params}}

@@ -1,5 +1,7 @@
 # Markers
+
 ## In this file:
+
 * <a href="#marker-point">marker-point</a>
 * <a href="#marker-point-settings">marker-point-settings</a>
 * <a href="#marker-point-string">marker-point-string</a>
@@ -11,7 +13,9 @@
 * <a href="#marker-box-data">marker-box-data</a>
 
 ## Point marker
+
 #### <a name='marker-point' href='#marker-point'>#</a> marker-point
+
 |Name(s)|Type(s)|Description|Optional|
 |-------|-------|-----------|--------|
 | type | string | &quot;point&quot; | No |
@@ -19,6 +23,7 @@
 | settings | marker-point-settings | Marker settings | No |
 
 #### Examples
+
 ```js
 {
   type: "point",
@@ -33,6 +38,7 @@
 }
 ```
 #### <a name='marker-point-settings' href='#marker-point-settings'>#</a> marker-point-settings
+
 |Name(s)|Type(s)|Description|Optional|
 |-------|-------|-----------|--------|
 | x | marker-point-number | x coordinate | Yes |
@@ -45,15 +51,19 @@
 | shape | marker-point-string | type of shape | Yes |
 
 #### <a name='marker-point-string' href='#marker-point-string'>#</a> marker-point-string
+
 Can be one of the following types: string, marker-point-data-accessor, marker-point-data
 
 #### <a name='marker-point-number' href='#marker-point-number'>#</a> marker-point-number
+
 Can be one of the following types: number, marker-point-data-accessor, marker-point-data
 
 #### <a name='marker-point-data-accessor' href='#marker-point-data-accessor'>#</a> marker-point-data-accessor
+
 Can be one of the following types: function
 
 #### <a name='marker-point-data' href='#marker-point-data'>#</a> marker-point-data
+
 |Name(s)|Type(s)|Description|Optional|
 |-------|-------|-----------|--------|
 | source | string | Data field | No |
@@ -61,6 +71,7 @@ Can be one of the following types: function
 | scale | string | Name of a predefined scale. Not used if fn is defined. | Yes |
 
 #### Examples
+
 ```js
 // the following definition will provide data from the first measure in the form: [{value: 3, label: "$3", id: 0}, ...]
 {
@@ -69,7 +80,9 @@ Can be one of the following types: function
 ```
 
 ## Box marker
+
 #### <a name='marker-box' href='#marker-box'>#</a> marker-box
+
 |Name(s)|Type(s)|Description|Optional|
 |-------|-------|-----------|--------|
 | type | string | &quot;box&quot; | No |
@@ -77,6 +90,7 @@ Can be one of the following types: function
 | settings | marker-box-settings | Box marker settings | No |
 
 #### Examples
+
 ```js
 {
   type: "box",
@@ -97,6 +111,7 @@ Can be one of the following types: function
 }
 ```
 #### <a name='marker-box-settings' href='#marker-box-settings'>#</a> marker-box-settings
+
 |Name(s)|Type(s)|Description|Optional|
 |-------|-------|-----------|--------|
 | min | marker-box-data | min | No |
@@ -106,5 +121,6 @@ Can be one of the following types: function
 | med | marker-box-data | med | No |
 
 #### <a name='marker-box-data' href='#marker-box-data'>#</a> marker-box-data
+
 Can be one of the following types: 
 
