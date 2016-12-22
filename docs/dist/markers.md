@@ -8,6 +8,7 @@
 * <a href="#marker-point-number">marker-point-number</a>
 * <a href="#marker-point-data-accessor">marker-point-data-accessor</a>
 * <a href="#marker-point-data">marker-point-data</a>
+* <a href="#marker-point-setting">marker-point-setting</a>
 * <a href="#marker-box">marker-box</a>
 * <a href="#marker-box-settings">marker-box-settings</a>
 * <a href="#marker-box-data">marker-box-data</a>
@@ -19,21 +20,29 @@
 |Name(s)|Type(s)|Description|Optional|
 |-------|-------|-----------|--------|
 | type | string | &quot;point&quot; | No |
-| data | data-ref | Point data. | No |
+| data | marker-point-data | Point data mapping. | No |
 | settings | marker-point-settings | Marker settings | No |
 
 #### Examples
 
 ```js
 {
-  type: "point",
-  data: { source: "/qDimensionInfo/0" },
+ type: "point",
+ data: {
+   groupBy: {
+     source: "/qHyperCube/qDimensionInfo/0",
+   },
+   mapTo: {
+     color: { source: "/qHyperCube/qMeasureInfo/0" },
+     opacity: { source: "/qHyperCube/qMeasureInfo/1" }
+   }
+ },
  settings: {
-   x: 0.2, // simple number, places all points at the same position along the x-axis (which assumes to have a range of [0,1])
-   y: ( d, i, arr ) => i / arr.length, // function is called for each datum `d`
-   fill: { source: "/qMeasureInfo/0", type: "color" }, // auto-constructs a color scale from the specified source
-   opacity: { source: "/qMeasureInfo/1", fn: ( d, i ) => d.value },
-   shape: ( d, i ) => ["rect", "circle"][i % 2]
+  x: 0.2, // simple number, places all points at the same position along the x-axis (which assumes to have a range of [0,1])
+  y: ( d, i, arr ) => i / arr.length, // function is called for each datum `d`
+  fill: { ref: "color", scale: { source: "/qHyperCube/qMeasureInfo/0", type: "color" }, // auto-constructs a color scale from the specified source
+  opacity: { ref: "opacity", fn: ( d ) => d.value },
+  shape: ( d, i ) => ["rect", "circle"][i % 2]
  }
 }
 ```
@@ -52,11 +61,11 @@
 
 #### <a name='marker-point-string' href='#marker-point-string'>#</a> marker-point-string
 
-Can be one of the following types: string, marker-point-data-accessor, marker-point-data
+Can be one of the following types: string, marker-point-data-accessor, marker-point-setting
 
 #### <a name='marker-point-number' href='#marker-point-number'>#</a> marker-point-number
 
-Can be one of the following types: number, marker-point-data-accessor, marker-point-data
+Can be one of the following types: number, marker-point-data-accessor, marker-point-setting
 
 #### <a name='marker-point-data-accessor' href='#marker-point-data-accessor'>#</a> marker-point-data-accessor
 
@@ -66,16 +75,78 @@ Can be one of the following types: function
 
 |Name(s)|Type(s)|Description|Optional|
 |-------|-------|-----------|--------|
-| source | string | Data field | No |
-| fn | marker-point-data-accessor | Data accessor. Custom data accessor which will be called for each datum. The return value is used for the specified property. | Yes |
-| scale | string | Name of a predefined scale. Not used if fn is defined. | Yes |
+| mapTo | object | Object containing the definition of how to map data | No |
+| mapTo.source | string | Data field | No |
+| groupBy | object | The data source to group data | No |
+| groupBy.source | string | Reference to a data source | No |
 
 #### Examples
 
 ```js
-// the following definition will provide data from the first measure in the form: [{value: 3, label: "$3", id: 0}, ...]
 {
-  source: "/qMeasureInfo/0"
+  mapTo: {
+   x: { source: "/qHyperCube/qMeasureInfo/0" },
+   y: { source: "/qHyperCube/qMeasureInfo/1", reducer: "avg" },
+   parent: { source: "/qHyperCube/qDimensionInfo/0", type: "qual", reducer: "first" }
+  },
+  groupBy: {
+   source: "/qHyperCube/qDimensionInfo/1"
+  }
+}
+
+// will provide an output:
+[
+ {
+   x: { value: 3.2, source: {...} },
+   y: { value: 16.2, source: {...} },
+   parent: { value: 'Europe', source: {...} }
+ },
+ ...
+]
+```
+#### <a name='marker-point-setting' href='#marker-point-setting'>#</a> marker-point-setting
+
+|Name(s)|Type(s)|Description|Optional|
+|-------|-------|-----------|--------|
+| ref | string | A reference to a property in the mapped data. | No |
+| scale | objectstring | Object containing the definition of a scale. If a string is provided it is assumed to be a reference to an already existing scale. | No |
+| scale.source | string | Data source | No |
+| scale.type | string | Scale type | No |
+| fn | marker-point-data-accessor | Data accessor. Custom data accessor which will be called for each datum. The return value is used for the specified property. | Yes |
+
+#### Examples
+
+```js
+// assuming a data mapping of:
+// {
+//  x: { source: "/qHyperCube/qMeasureInfo/0" }
+//  label: { source: "/qHyperCube/qDimensionInfo/0" }
+// }
+//
+// the data can be accessed in various ways:
+// the following definitions will all result in the same 'x' value
+{
+  x: { ref: "x" } // reference the 'x' value in the mapped data
+  x: { ref: "x", fn: (d) { return d.value; } }, // the referenced value in sent in as the first parameter in the callback
+  x: { fn: function(d) { return this.data.x.value; } }, // the mapped data can be accessed through <code>this.data</code>
+  x: function (d) { return this.data.x.value; }
+}
+```
+```js
+// a scale will in some cases automatically be used when provided,
+// the following definitions will all result in the same 'x' value:
+{
+  x: { ref: "x", scale: "x" }, // automatically sends the 'x' value through the scale and returns that value
+  x: { ref: "x", scale: "x", fn: function(d) { return this.scale(d) } }, // the referenced 'scale' is accessible in the callback's 'this' context
+  x: { scale: "x", fn: function(d) { return this.scale(this.data.x) } },
+}
+```
+```js
+// since all mapped data is accessible in all settings, the values can be used for more expressive representation of properties
+{
+  fill: { scale: "x", fn: function() { // color the maximum value red
+    return this.scale.max() >= this.data.x.value ? "red" : "grey";
+  } }
 }
 ```
 
@@ -94,19 +165,29 @@ Can be one of the following types: function
 ```js
 {
   type: "box",
-  data: { source: "/qDimensionInfo/0" },
+  data: {
+   mapTo: {
+    min: { source: "/qHyperCube/qMeasureInfo/0" },
+    start: { source: "/qHyperCube/qMeasureInfo/1" },
+    med: { source: "/qHyperCube/qMeasureInfo/2" },
+    end: { source: "/qHyperCube/qMeasureInfo/3" },
+    max: { source: "/qHyperCube/qMeasureInfo/4" },
+   },
+   groupBy: {
+    source: "/qHyperCube/qDimensionInfo/0"
+    }
+ },
  settings: {
-   x: { source: "/qDimensionInfo/0" },
-   y: { source: ["/qMeasureInfo/0",
-                 "/qMeasureInfo/1",
-                 "/qMeasureInfo/2",
-                 "/qMeasureInfo/3",
-                 "/qMeasureInfo/4"] },
-   min: { source: "/qMeasureInfo/0" },
-   max: { source: "/qMeasureInfo/1" },
-   start: { source: "/qMeasureInfo/2" },
-   end: { source: "/qMeasureInfo/3" },
-   med: { source: "/qMeasureInfo/4" }
+   x: {
+     scale: { source: "/qHyperCube/qDimensionInfo/0" }
+   },
+   y: {
+     scale: { source: ["/qHyperCube/qMeasureInfo/0",
+              "/qHyperCube/qMeasureInfo/1",
+              "/qHyperCube/qMeasureInfo/2",
+              "/qHyperCube/qMeasureInfo/3",
+              "/qHyperCube/qMeasureInfo/4"] }
+   }
  }
 }
 ```
