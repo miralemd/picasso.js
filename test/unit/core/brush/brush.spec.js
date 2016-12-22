@@ -124,6 +124,45 @@ describe('brush', () => {
     });
   });
 
+  describe('removeValue', () => {
+    let v;
+    let vcc;
+    let bb;
+    beforeEach(() => {
+      v = {
+        remove: sandbox.stub(),
+        add: sandbox.stub()
+      };
+      vcc = sandbox.stub().returns(v);
+      bb = brush({ vc: vcc, rc: noop });
+      bb.addValue('garage');
+    });
+
+    it('should call value.remove() with value "Car"', () => {
+      bb.removeValue('garage', 'Car');
+      expect(vcc.callCount).to.equal(1);
+      expect(v.remove).to.have.been.calledWith('Car');
+    });
+
+    it('should emit "update" event when state changes', () => {
+      let cb = sandbox.spy();
+      v.remove.returns(true);
+      bb.on('update', cb);
+      bb.removeValue('garage', 'Car');
+      expect(v.remove).to.have.been.calledWith('Car');
+      expect(cb.callCount).to.equal(1);
+    });
+
+    it('should not emit "update" event when state does not change', () => {
+      let cb = sandbox.spy();
+      v.remove.returns(false);
+      bb.on('update', cb);
+      bb.removeValue('garage', 'Car');
+      expect(v.remove).to.have.been.calledWith('Car');
+      expect(cb.callCount).to.equal(0);
+    });
+  });
+
   describe('addRange', () => {
     let v;
     let rcc;
@@ -234,6 +273,57 @@ describe('brush', () => {
       b.on('update', cb);
       b.clear();
       expect(cb.callCount).to.equal(1);
+    });
+  });
+
+  describe('containsData', () => {
+    let v;
+    let rcc;
+    let bb;
+    let d;
+
+    let val;
+    let vcc;
+
+    beforeEach(() => {
+      v = {
+        add: sandbox.stub(),
+        containsValue: sandbox.stub()
+      };
+      val = {
+        add: sandbox.stub(),
+        contains: sandbox.stub()
+      };
+      rcc = sandbox.stub().returns(v);
+      vcc = sandbox.stub().returns(val);
+      bb = brush({ vc: vcc, rc: rcc });
+      d = {
+        x: { value: 7, source: { field: 'sales' } },
+        self: { value: 'Cars', source: { field: 'products' } }
+      };
+    });
+
+    it('should return true when data contains a brushed range', () => {
+      bb.addRange('sales');
+      v.containsValue.returns(true);
+      expect(bb.containsMappedData(d)).to.equal(true);
+      expect(v.containsValue).to.have.been.calledWith(7);
+    });
+
+    it('should return true when data contains a brushed value', () => {
+      bb.addValue('products');
+      val.contains.returns(true);
+      expect(bb.containsMappedData(d)).to.equal(true);
+      expect(val.contains).to.have.been.calledWith('Cars');
+    });
+
+    it('should return false when data has no source', () => {
+      bb.addRange('sales');
+      v.containsValue.returns(true);
+      expect(bb.containsMappedData({
+        x: { value: 7 }
+      })).to.equal(false);
+      expect(v.containsValue.callCount).to.equal(0);
     });
   });
 });

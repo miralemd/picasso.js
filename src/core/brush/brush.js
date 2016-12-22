@@ -65,6 +65,16 @@ export default function brush({
     }
   };
 
+  fn.removeValue = (path, value) => {
+    if (!values[path]) {
+      return;
+    }
+
+    if (values[path].remove(value)) {
+      fn.emit('update');
+    }
+  };
+
   fn.containsRangeValue = (path, value) => {
     if (!ranges[path]) {
       return false;
@@ -77,6 +87,23 @@ export default function brush({
       return false;
     }
     return values[path].contains(value);
+  };
+
+  fn.containsMappedData = (d) => {
+    let b = false;
+    Object.keys(d).forEach((key) => {
+      let source = d[key].source && d[key].source.field;
+      if (!source) {
+        return;
+      }
+      let type = typeof d[key].value === 'number' ? 'range' : 'value'; // TODO - store type in mapped data
+      if (type === 'range' && ranges[source] && ranges[source].containsValue(d[key].value)) {
+        b = true;
+      } else if (type === 'value' && values[source] && values[source].contains(d[key].value)) {
+        b = true;
+      }
+    });
+    return b;
   };
 
   EventEmitter.mixin(fn);
