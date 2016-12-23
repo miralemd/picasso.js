@@ -2,9 +2,13 @@ import field from '../../core/data/field';
 import resolve from '../../core/data/json-path-resolver';
 import { formatter } from '../../core/formatter';
 
+const specialTextValues = {
+  '-3': meta => 'othersLabel' in meta ? meta.othersLabel : ''
+};
+
 // collect data over multiple pages
 // the pages are assumed bo be ordered from top to bottom
-function collectData(col, pages) {
+function collectData(col, pages, meta) {
   let values = [];
   pages.forEach((p) => {
     let matrixColIdx = col - p.qArea.qLeft;
@@ -12,7 +16,7 @@ function collectData(col, pages) {
       values = values.concat(resolve(`//${matrixColIdx}`, p.qMatrix).map(v =>
         ({
           value: v.qNum,
-          label: v.qText,
+          label: v.qElemNumber in specialTextValues ? specialTextValues[v.qElemNumber](meta) : v.qText,
           id: v.qElemNumber
         })));
     }
@@ -24,7 +28,7 @@ const minFn = d => d.meta.qMin;
 const maxFn = d => d.meta.qMax;
 const tagsFn = d => d.meta.qTags;
 const titleFn = d => d.meta.qFallbackTitle;
-const valuesFn = d => collectData(d.idx, d.pages);
+const valuesFn = d => collectData(d.idx, d.pages, d.meta);
 const formatterFn = (d) => {
   if (d.meta.qNumFormat && d.meta.qNumFormat.qType && ['U', 'I', 'R', 'F', 'M'].indexOf(d.meta.qNumFormat.qType) !== -1) {
     let pattern = d.meta.qNumFormat.qFmt;
