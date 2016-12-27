@@ -1,8 +1,21 @@
 import tableFn from './table';
-import { mapData, findField } from './data-mapper';
+import { mapData } from './data-mapper';
 
 function tablesFn(data) {
   return data.map((tableData, i) => tableFn({ id: `/${i}` })(tableData));
+}
+
+function findField(path, tables) {
+  let table = tables.filter(t => path.indexOf(t.id()) === 0)[0];
+  let field;
+  if (table) {
+    let subpath = path.replace(table.id(), '');
+    field = table.findField(subpath);
+  }
+  return {
+    table,
+    field
+  };
 }
 
 export default function dataset({
