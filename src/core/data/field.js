@@ -7,6 +7,7 @@ const accessors = {
   tags: data => data.tags,
   min: data => data.min,
   max: data => data.max,
+  type: data => data.type,
   title: data => data.title,
   values: data => data.values,
   formatter: () => formatterFn('d3')('number')('')
@@ -21,6 +22,7 @@ export default function field({
   id,
   min = accessors.min,
   max = accessors.max,
+  type = accessors.type,
   tags = accessors.tags,
   title = accessors.title,
   values = accessors.values,
@@ -46,6 +48,12 @@ export default function field({
    * @return {string[]}
    */
   fn.tags = () => tags(data);
+
+  /**
+   * Returns the type.
+   * @return {string[]}
+   */
+  fn.type = () => type(data);
 
   /**
    * Returns the min value of this field.

@@ -124,10 +124,16 @@ export function collectMapping(key, m, repeating, ds, collector = collectValues)
   let fieldValues = [];
   let syncValues = repeating.fieldValues;
   let type = m.type || 'quant';
-  let property = type === 'qual' ? 'label' : 'value';
+  let fieldType;
   if (ff.field) {
     fieldValues = ff.field.values();
+    fieldType = ff.field.type();
+    if (!m.type) {
+      type = fieldType === 'dimension' ? 'qual' : 'quant';
+    }
   }
+  let property = type === 'qual' ? 'label' : 'value';
+
   if (m.linkFrom) {
     let link = ds.findField(m.linkFrom);// , ds.tables());
     if (link.field) {

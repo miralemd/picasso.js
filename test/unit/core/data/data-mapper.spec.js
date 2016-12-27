@@ -287,7 +287,8 @@ describe('data-mapper', () => {
       let mapping = { source: 'dummy' };
       ds.findField.returns({
         field: {
-          values: () => 'dummyValues'
+          values: () => 'dummyValues',
+          type: () => 'dimension'
         }
       });
       let collector = sandbox.stub();
@@ -298,38 +299,12 @@ describe('data-mapper', () => {
         pool: 'idMap',
         values: 'dummyValues',
         syncValues: 'syncValues',
-        type: 'quant',
+        type: 'qual',
         attr: 'id',
         source: 'dummy',
-        property: 'value',
+        property: 'label',
         others: 'others'
       });
-      /*
-      expect(pool.ids['id:7']).to.eql({ x: {
-        values: [7, 7.2],
-        source: {
-          field: 'dummy',
-          indices: [0, 2],
-          type: 'quant'
-        }
-      } });
-      expect(pool.ids['id:2']).to.eql({ x: {
-        values: [2],
-        source: {
-          field: 'dummy',
-          indices: [1],
-          type: 'quant'
-        }
-      } });
-      expect(pool.ids['id:11']).to.eql({ x: {
-        values: [11],
-        source: {
-          field: 'dummy',
-          indices: [3],
-          type: 'quant'
-        }
-      } });
-      */
     });
 
     it('should call collector with proper arguments, again', () => {
@@ -346,7 +321,8 @@ describe('data-mapper', () => {
       };
       ds.findField.onCall(0).returns({
         field: {
-          values: () => 'dummyValues'
+          values: () => 'dummyValues',
+          type: () => 'measure'
         }
       });
       ds.findField.onCall(1).returns({
@@ -427,37 +403,43 @@ describe('data-mapper', () => {
 
       ds.findField.withArgs('/0/0').returns({
         field: {
-          values: () => productGroup
+          values: () => productGroup,
+          type: () => 'dimension'
         }
       });
 
       ds.findField.withArgs('/0/1').returns({
         field: {
-          values: () => product
+          values: () => product,
+          type: () => 'dimension'
         }
       });
 
       ds.findField.withArgs('/0/2').returns({
         field: {
-          values: () => year
+          values: () => year,
+          type: () => 'dimension'
         }
       });
 
       ds.findField.withArgs('/0/3').returns({
         field: {
-          values: () => sales
+          values: () => sales,
+          type: () => 'measure'
         }
       });
 
       ds.findField.withArgs('/0/4').returns({
         field: {
-          values: () => margin
+          values: () => margin,
+          type: () => 'measure'
         }
       });
 
       ds.findField.withArgs('/1/1').returns({
         field: {
-          values: () => color
+          values: () => color,
+          type: () => 'dimension'
         }
       });
 
@@ -572,7 +554,7 @@ describe('data-mapper', () => {
         source: '/0/0'
       };
       let mapper = {
-        color: { source: '/1/1', reducer: 'first', type: 'qual', linkFrom: '/1/0' }
+        color: { source: '/1/1', reducer: 'first', linkFrom: '/1/0' }
       };
 
       let values = mapData(mapper, groupBy, ds);
@@ -598,7 +580,7 @@ describe('data-mapper', () => {
       };
       let reducer = values => values.map(v => v).join(', ');
       let mapper = {
-        year: { source: '/0/2', reducer }
+        year: { source: '/0/2', type: 'quant', reducer }
       };
 
       let values = mapData(mapper, groupBy, ds);
