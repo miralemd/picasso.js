@@ -12,6 +12,7 @@ describe('brush', () => {
     sandbox = sinon.sandbox.create();
     // mock value collection
     vc = () => {};
+    vc.add = sandbox.stub();
     vcf = () => vc;
 
     // mock range collection
@@ -72,6 +73,17 @@ describe('brush', () => {
       expect(b.isActive()).to.equal(true);
       b.end();
       expect(b.isActive()).to.equal(false);
+    });
+  });
+
+  describe('brushes', () => {
+    it('should return all created brushes', () => {
+      b.addValue('products');
+      b.addRange('sales');
+      expect(b.brushes()).to.eql([
+        { type: 'range', id: 'sales', brush: rc },
+        { type: 'value', id: 'products', brush: vc }
+      ]);
     });
   });
 
@@ -298,7 +310,7 @@ describe('brush', () => {
       vcc = sandbox.stub().returns(val);
       bb = brush({ vc: vcc, rc: rcc });
       d = {
-        x: { value: 7, source: { field: 'sales' } },
+        x: { value: 7, source: { field: 'sales', type: 'quant' } },
         self: { value: 'Cars', source: { field: 'products' } }
       };
     });

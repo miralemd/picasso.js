@@ -36,6 +36,23 @@ export default function brush({
     fn.emit('update'); // TODO - do not emit update if state hasn't changed
   };
 
+  fn.brushes = () => {
+    let result = [];
+    result = result.concat(Object.keys(ranges).map(key => ({
+      type: 'range',
+      id: key,
+      brush: ranges[key]
+    })));
+
+    result = result.concat(Object.keys(values).map(key => ({
+      type: 'value',
+      id: key,
+      brush: values[key]
+    })));
+
+    return result;
+  };
+
   fn.addRange = (path, r) => {
     if (!ranges[path]) {
       ranges[path] = rc();
@@ -96,7 +113,7 @@ export default function brush({
       if (!source) {
         return;
       }
-      let type = typeof d[key].value === 'number' ? 'range' : 'value'; // TODO - store type in mapped data
+      let type = d[key].source.type === 'quant' ? 'range' : 'value';
       if (type === 'range' && ranges[source] && ranges[source].containsValue(d[key].value)) {
         b = true;
       } else if (type === 'value' && values[source] && values[source].contains(d[key].value)) {
