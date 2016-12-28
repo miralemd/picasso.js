@@ -12,7 +12,6 @@
   "extends": "airbnb/base",
   "rules": {
 	// Temporary rules
-    "guard-for-in": 0,
     "max-len": 0,
     "no-bitwise": 0,
     "no-restricted-properties": 0,

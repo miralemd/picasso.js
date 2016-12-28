@@ -8,7 +8,7 @@ describe('colorKeyWord', () => {
     const methods = ['test'];
 
     methods.forEach((method) => {
-      expect({}.hasOwnProperty.call(colorKeyWord, method)).to.equal(true);
+      expect(Object.prototype.hasOwnProperty.call(colorKeyWord, method)).to.equal(true);
       expect(typeof colorKeyWord[method] === 'function').to.equal(true);
     });
 

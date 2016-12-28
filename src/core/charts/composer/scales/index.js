@@ -52,7 +52,9 @@ export function getOrCreateScale(v, scales, dataset) {
 export default function builder(obj, composer) {
   const scales = {};
   for (const s in obj) {
-    scales[s] = create(obj[s], composer.dataset());
+    if (Object.prototype.hasOwnProperty.call(obj, s)) {
+      scales[s] = create(obj[s], composer.dataset());
+    }
   }
   return scales;
 }

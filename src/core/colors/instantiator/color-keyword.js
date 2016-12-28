@@ -180,5 +180,5 @@ colorKeyWord.test = (colStr) => {
     return false;
   }
   const key = colStr.toLowerCase().trim();
-  return {}.hasOwnProperty.call(colorStruct, key);
+  return Object.prototype.hasOwnProperty.call(colorStruct, key);
 };

@@ -7,7 +7,7 @@ import buildScales, { getOrCreateScale } from './scales';
 function flattenComponents(c) {
   const chartComponents = [];
   for (const prop in c) {
-    if ({}.hasOwnProperty.call(c, prop)) {
+    if (Object.prototype.hasOwnProperty.call(c, prop)) {
       if (Array.isArray(c[prop])) {
         c[prop].forEach(cc => chartComponents.push(cc));
       } else {

@@ -22,7 +22,9 @@ export function create(options, table) {
 export default function builder(obj, composer) {
   const formatters = {};
   for (const f in obj) {
-    formatters[f] = create(obj[f], composer.table());
+    if (Object.prototype.hasOwnProperty.call(obj, f)) {
+      formatters[f] = create(obj[f], composer.table());
+    }
   }
   return formatters;
 }
