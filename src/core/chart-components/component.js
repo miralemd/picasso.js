@@ -25,7 +25,8 @@ export default function componentFactory(definition) {
       settings: config,
       scales: composer.scales(),
       formatters: composer.formatters(),
-      dataset: composer.dataset()
+      dataset: composer.dataset(),
+      forceUpdate: () => {}
     };
 
     const rend = rendererFn(renderer);
@@ -73,12 +74,12 @@ export default function componentFactory(definition) {
       }
     };
 
-    fn.update = (opts) => {
+    fn.update = context.forceUpdate = (opts = {}) => {
       const {
-        settings,
-        scales,
-        formatters,
-        dataset
+        settings = context.settings,
+        scales = context.scales,
+        formatters = context.formatters,
+        dataset = context.dataset
       } = opts;
       beforeUpdate.call(context, {
         settings,
