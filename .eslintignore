@@ -1,1 +1,4 @@
+dist/*
+coverage/*
+docs/node_modules/*
 test/config/*.js
