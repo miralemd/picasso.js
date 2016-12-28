@@ -58,9 +58,8 @@ const utils = {
 
     if (l1 > l2) {
       return (l1 + 0.05) / (l2 + 0.05);
-    } else {
-      return (l2 + 0.05) / (l1 + 0.05);
     }
+    return (l2 + 0.05) / (l1 + 0.05);
   }
 };
 

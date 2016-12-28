@@ -13,9 +13,8 @@ function alignTransform({ align, inner }) {
     return { x: inner.width + inner.x };
   } else if (align === 'right' || align === 'bottom') {
     return inner;
-  } else {
-    return { y: inner.y + inner.height };
   }
+  return { y: inner.y + inner.height };
 }
 
 function dockAlignSetup(settings, type) {

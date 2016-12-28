@@ -6,14 +6,13 @@ function measureTextWidth({ text, fontSize, fontFamily }) {
   const match = widthMeasureCache[text + fontSize + fontFamily];
   if (match !== undefined) {
     return match;
-  } else {
-    canvasCache = canvasCache || document.createElement('canvas');
-    const g = canvasCache.getContext('2d');
-    g.font = `${fontSize} ${fontFamily}`;
-    const w = g.measureText(text).width;
-    widthMeasureCache[text + fontSize + fontFamily] = w;
-    return w;
   }
+  canvasCache = canvasCache || document.createElement('canvas');
+  const g = canvasCache.getContext('2d');
+  g.font = `${fontSize} ${fontFamily}`;
+  const w = g.measureText(text).width;
+  widthMeasureCache[text + fontSize + fontFamily] = w;
+  return w;
 }
 
 function measureTextHeight({ fontSize, fontFamily }) {
@@ -21,12 +20,11 @@ function measureTextHeight({ fontSize, fontFamily }) {
 
   if (match !== undefined) {
     return match;
-  } else {
-    const text = 'M';
-    const height = measureTextWidth({ text, fontSize, fontFamily }) * 1.2;
-    heightMeasureCache[fontSize + fontFamily] = height;
-    return height;
   }
+  const text = 'M';
+  const height = measureTextWidth({ text, fontSize, fontFamily }) * 1.2;
+  heightMeasureCache[fontSize + fontFamily] = height;
+  return height;
 }
 
 export function measureText({ text, fontSize, fontFamily }) { // eslint-disable-line import/prefer-default-export
