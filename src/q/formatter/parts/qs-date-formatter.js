@@ -247,7 +247,7 @@ class DateFormatter {
       pattern = this.pattern ? this.pattern : 'YYYY-MM-DD hh:mm:ss';
     }
 
-    pattern = pattern.replace(/\[.+\]|\[|\]/g, '');
+    pattern = pattern.replace(/\[.+]|\[|]/g, '');
     const hasTwelveFlag = /t+/ig.test(pattern);
     let parsedDate;
 

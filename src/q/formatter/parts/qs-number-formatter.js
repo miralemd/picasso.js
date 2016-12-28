@@ -1,7 +1,7 @@
 import formatter from 'number-format.js';
 
 function escapeRegExp(str) {
-  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+  return str.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
 }
 
 /*
@@ -427,7 +427,7 @@ class NumberFormatter {
         }
         return '';
       });
-      if (num < 0 && !/^\-/.test(value)) {
+      if (num < 0 && !/^-/.test(value)) {
         value = `-${value}`;
       }
     }
