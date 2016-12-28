@@ -163,7 +163,6 @@ export default function chart(definition, data, settings) {
       data,
       settings
     });
-  } else {
-    return instanceFn(definition);
   }
+  return instanceFn(definition);
 }

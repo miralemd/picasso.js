@@ -3,7 +3,12 @@ import resolve from '../../core/data/json-path-resolver';
 import { formatter } from '../../core/formatter';
 
 const specialTextValues = {
-  '-3': meta => 'othersLabel' in meta ? meta.othersLabel : ''
+  '-3': (meta) => {
+    if ('othersLabel' in meta) {
+      return meta.othersLabel;
+    }
+    return '';
+  }
 };
 
 // collect data over multiple pages
@@ -26,7 +31,12 @@ function collectData(col, pages, meta) {
 
 const minFn = d => d.meta.qMin;
 const maxFn = d => d.meta.qMax;
-const typeFn = d => 'qStateCounts' in d.meta ? 'dimension' : 'measure';
+const typeFn = (d) => {
+  if ('qStateCounts' in d.meta) {
+    return 'dimension';
+  }
+  return 'measure';
+};
 const tagsFn = d => d.meta.qTags;
 const titleFn = d => d.meta.qFallbackTitle;
 const valuesFn = d => collectData(d.idx, d.pages, d.meta);

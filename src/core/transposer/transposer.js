@@ -59,8 +59,6 @@ class Transposer {
         return coordinate * this.height;
       } else if (key === 'height') {
         return coordinate * this.height;
-      } else {
-        return coordinate;
       }
     }
 

@@ -65,7 +65,7 @@ color.register = (test, fn) => {
  */
 color.extend = (name, obj) => {
   if (color[name] !== undefined) {
-    throw `Property already exist with name: ${name}`;
+    throw new Error(`Property already exist with name: ${name}`);
   }
   color[name] = obj;
 };

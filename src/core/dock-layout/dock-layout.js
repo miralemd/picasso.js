@@ -7,7 +7,7 @@ function validateComponent(component) {
 
   expectedProperties.forEach((p) => {
     if (typeof component[p] !== 'function') {
-      throw `Component is missing required function "${p}"`;
+      throw new Error(`Component is missing required function "${p}"`);
     }
   });
 }

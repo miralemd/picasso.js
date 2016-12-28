@@ -1,4 +1,4 @@
-const transformRegEx = /(translate|scale|rotate|matrix)\(([0-9,\.eE+-\s]+)(?:,|\s?)+\)/g;
+const transformRegEx = /(translate|scale|rotate|matrix)\(([0-9,.eE+-\s]+)(?:,|\s?)+\)/g;
 
 function parseTransform(transform) {
   let m,

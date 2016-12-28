@@ -58,7 +58,12 @@ export default function linear(fields, settings) {
   const { min, max } = getMinMax(fields, stgns);
   s.domain([min, max]);
   s.range(stgns.invert ? [1, 0] : [0, 1]);
-  const fn = v => notNumber(v.value) ? NaN : s.get(v.value);
+  const fn = (v) => {
+    if (notNumber(v.value)) {
+      return NaN;
+    }
+    return s.get(v.value);
+  };
 
   fn.scale = s;
 

@@ -247,7 +247,7 @@ class DateFormatter {
       pattern = this.pattern ? this.pattern : 'YYYY-MM-DD hh:mm:ss';
     }
 
-    pattern = pattern.replace(/\[.+\]|\[|\]/g, '');
+    pattern = pattern.replace(/\[.+]|\[|]/g, '');
     const hasTwelveFlag = /t+/ig.test(pattern);
     let parsedDate;
 
@@ -262,7 +262,9 @@ class DateFormatter {
 
     const masksArr = [];
     for (let mask in masks) {
-      masksArr.push(mask);
+      if (Object.prototype.hasOwnProperty.call(masks, mask)) {
+        masksArr.push(mask);
+      }
     }
     const dateTimeRegex = new RegExp(masksArr.join('|'), 'g');
 
@@ -270,9 +272,11 @@ class DateFormatter {
       let r;
       let mask;
       for (mask in masks) {
-        r = new RegExp(mask);
-        if (r.test(m)) {
-          break;
+        if (Object.prototype.hasOwnProperty.call(masks, mask)) {
+          r = new RegExp(mask);
+          if (r.test(m)) {
+            break;
+          }
         }
       }
       if (!r) {

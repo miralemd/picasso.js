@@ -178,8 +178,7 @@ export default function colorKeyWord(colStr) {
 colorKeyWord.test = (colStr) => {
   if (colStr === null || colStr === undefined || typeof colStr !== 'string') {
     return false;
-  } else {
-    const key = colStr.toLowerCase().trim();
-    return {}.hasOwnProperty.call(colorStruct, key);
   }
+  const key = colStr.toLowerCase().trim();
+  return Object.prototype.hasOwnProperty.call(colorStruct, key);
 };

@@ -113,10 +113,12 @@ export default function calcRequiredSize({ type, data, formatter, renderer, scal
         const h = measureText('M').height;
         const maxWidth = (textSize - (h * Math.cos(radians))) / Math.sin(radians);
         const labelWidth = r => (Math.min(maxWidth, r.width) * Math.cos(radians)) + r.height;
-        const adjustByPosition = (s, i) =>
-            extendLeft
-              ? s - (majorTicks[i].position * rect.width)
-              : s - ((1 - majorTicks[i].position) * rect.width);
+        const adjustByPosition = (s, i) => {
+          if (extendLeft) {
+            return s - (majorTicks[i].position * rect.width);
+          }
+          return s - ((1 - majorTicks[i].position) * rect.width);
+        };
 
         const bleedSize = Math.max(...tickMeasures.map(labelWidth).map(adjustByPosition)) + settings.paddingEnd;
         const bleedDir = extendLeft ? 'left' : 'right';
