@@ -1,12 +1,15 @@
 "use strict"; // eslint-disable-line
-console.log('Generating docs...'); // eslint-disable-line no-console
 
-let rimraf = require('rimraf');
-let handlebars = require('handlebars');
 let fs = require('fs');
 let path = require('path');
-let glob = require('glob');
+
+let rimraf = require('rimraf'); // eslint-disable-line import/no-unresolved
+let handlebars = require('handlebars'); // eslint-disable-line import/no-unresolved
+let glob = require('glob'); // eslint-disable-line import/no-unresolved
+
 let resolve = require('./json-path-resolver').resolve;
+
+console.log('Generating docs...'); // eslint-disable-line no-console
 
 const JSDOC_INPUT = 'src/docs.json';
 const MD_TEMPLATES_FOLDER = 'src/templates/';
