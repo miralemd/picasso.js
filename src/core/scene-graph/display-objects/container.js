@@ -4,6 +4,10 @@ import NodeContainer from '../node-container';
 const NC = NodeContainer.prototype;
 
 export default class Container extends DisplayObject {
+  constructor() {
+    super('container');
+  }
+
   addChild(c) {
     return NC.addChild.call(this, c);
   }

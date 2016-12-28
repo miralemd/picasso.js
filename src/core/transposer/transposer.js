@@ -5,15 +5,7 @@ class Transposer {
    * @private
    */
   constructor(...items) {
-    this.storage = [];
-    this.vertical = false;
-    this.crisp = false;
-
-    this.flipX = false;
-    this.flipY = false;
-
-    this.width = 0;
-    this.height = 0;
+    this.reset();
 
     this.push(...items);
   }
@@ -109,6 +101,23 @@ class Transposer {
     });
 
     return items;
+  }
+
+  /**
+   * Reset the transposer
+   *
+   * @return {Undefined}  Does not return anything
+   */
+  reset() {
+    this.storage = [];
+    this.vertical = false;
+    this.crisp = false;
+
+    this.flipX = false;
+    this.flipY = false;
+
+    this.width = 0;
+    this.height = 0;
   }
 }
 

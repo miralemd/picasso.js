@@ -13,23 +13,26 @@ function resolveInitialStyle(settings, baseStyles, composer) {
 }
 
 export default class Dispersion {
-  constructor(obj, composer, defaultStyles, render) {
+  constructor(composer, defaultStyles, rend) {
     this.element = composer.container();
     this.composer = composer;
     // Setup the renderer
-    this.renderer = render || renderer();
+    this.renderer = rend || renderer();
     this.renderer.appendTo(this.element);
     this.rect = { x: 0, y: 0, width: 0, height: 0 };
 
-    // Setup settings and data
-    this.settings = obj.settings;
-    this.dataset = composer.dataset();
-    this.obj = obj;
     this.defaultStyles = defaultStyles;
+  }
+
+  setOpts(opts) {
+    // Setup settings and data
+    this.settings = opts.settings;
+    this.data = opts.data;
+    this.dataset = this.composer.dataset();
 
     // Setup scales
-    this.x = this.settings.x ? composer.scale(this.settings.x) : null;
-    this.y = this.settings.y ? composer.scale(this.settings.y) : null;
+    this.x = this.settings.x ? this.composer.scale(this.settings.x) : null;
+    this.y = this.settings.y ? this.composer.scale(this.settings.y) : null;
 
     // Set the default bandwidth
     this.bandwidth = 0;
@@ -42,11 +45,23 @@ export default class Dispersion {
     this.doodle = doodler(this.settings);
   }
 
+  update(opts) {
+    const {
+      settings
+    } = opts;
+
+    console.log('update dispersion');
+
+    this.setOpts(settings);
+    this.onData();
+    this.render();
+  }
+
   onData() {
     this.items = [];
     this.resolvedStyle = resolveInitialStyle(this.settings, this.defaultStyles, this.composer);
 
-    const data = this.dataset.map(this.obj.data.mapTo, this.obj.data.groupBy); // TODO - the mapped data should be sent in as the argument
+    const data = this.dataset.map(this.data.mapTo, this.data.groupBy); // TODO - the mapped data should be sent in as the argument
 
     const x = this.x;
     const y = this.y;
@@ -100,6 +115,7 @@ export default class Dispersion {
     }
 
     // Setup the blueprint
+    this.blueprint.reset();
     this.blueprint.width = this.rect.width;
     this.blueprint.height = this.rect.height;
     this.blueprint.x = this.rect.x;
@@ -126,8 +142,4 @@ export default class Dispersion {
     this.renderer.size(rect);
   }
 
-  remap(input, output) {
-    this.settings[output] = this.settings[input];
-    delete this.settings[input];
-  }
 }

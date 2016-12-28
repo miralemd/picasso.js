@@ -2,6 +2,7 @@ import {
   chart,
   renderer,
   data,
+  component,
   registerComponent
 } from './core';
 import config from './config';
@@ -18,5 +19,6 @@ export {
   chart,
   renderer,
   data,
+  component,
   registerComponent
 };

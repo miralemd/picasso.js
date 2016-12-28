@@ -2,7 +2,7 @@ import DisplayObject from './display-object';
 
 export default class Path extends DisplayObject {
   constructor(...s) {
-    super();
+    super('path');
     this.set(...s);
   }
 

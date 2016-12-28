@@ -46,10 +46,11 @@ describe('Dispersion', () => {
   });
 
   it('should instantiate properly', () => {
-    dispersion = new Dispersion(config, composerMock, {}, rendererMock);
+    dispersion = new Dispersion(composerMock, {}, rendererMock);
   });
   it('should fill items with data', () => {
-    dispersion = new Dispersion(config, composerMock, {}, rendererMock);
+    dispersion = new Dispersion(composerMock, {}, rendererMock);
+    dispersion.setOpts(config);
     dispersion.onData();
     dispersion.items.forEach((item, i) => {
       expect(item.max).to.equal(i * 2);

@@ -23,8 +23,8 @@ function applyContext(g, s, shapeToCanvasMap) {
   shapeToCanvasMap.forEach((cmd) => {
     const shapeCmd = cmd[0];
     const canvasCmd = cmd[1];
-    if (shapeCmd in s && g[canvasCmd] !== s[shapeCmd]) {
-      g[canvasCmd] = s[shapeCmd];
+    if (shapeCmd in s.attrs && g[canvasCmd] !== s.attrs[shapeCmd]) {
+      g[canvasCmd] = s.attrs[shapeCmd];
     }
   });
 }
@@ -39,10 +39,10 @@ function renderShapes(shapes, g, shapeToCanvasMap) {
     }
 
     if (reg.has(s.type)) {
-      reg.get(s.type)(s, {
+      reg.get(s.type)(s.attrs, {
         g,
-        doFill: 'fill' in s,
-        doStroke: 'stroke' in s && s['stroke-width'] !== 0
+        doFill: 'fill' in s.attrs,
+        doStroke: 'stroke' in s.attrs && s.attrs['stroke-width'] !== 0
       });
     }
     if (s.children) {
@@ -52,9 +52,7 @@ function renderShapes(shapes, g, shapeToCanvasMap) {
   });
 }
 
-export function renderer(sceneFn = sceneFactory) {
-  let el;
-  let scene;
+const createRect = ({ x, y, width, height, scaleRatio } = {}) => {
   const rect = {
     x: 0,
     y: 0,
@@ -65,6 +63,24 @@ export function renderer(sceneFn = sceneFactory) {
       y: 1
     }
   };
+
+  rect.x = isNaN(x) ? rect.x : x;
+  rect.y = isNaN(y) ? rect.y : y;
+  rect.width = isNaN(width) ? rect.width : width;
+  rect.height = isNaN(height) ? rect.height : height;
+  if (typeof scaleRatio !== 'undefined') {
+    rect.scaleRatio.x = isNaN(scaleRatio.x) ? rect.scaleRatio.x : scaleRatio.x;
+    rect.scaleRatio.y = isNaN(scaleRatio.y) ? rect.scaleRatio.y : scaleRatio.y;
+  }
+
+  return rect;
+};
+
+export function renderer(sceneFn = sceneFactory) {
+  let el;
+  let scene;
+  let hasChangedRect = false;
+  let rect = createRect();
   const shapeToCanvasMap = [
     ['fill', 'fillStyle'],
     ['stroke', 'strokeStyle'],
@@ -88,6 +104,7 @@ export function renderer(sceneFn = sceneFactory) {
     }
 
     element.appendChild(el);
+    return el;
   };
 
   canvasRenderer.render = (shapes) => {
@@ -99,12 +116,15 @@ export function renderer(sceneFn = sceneFactory) {
     const dpiRatio = dpiScale(g);
     const scaleX = rect.scaleRatio.x;
     const scaleY = rect.scaleRatio.y;
-    el.style.left = `${Math.round(rect.x * scaleX)}px`;
-    el.style.top = `${Math.round(rect.y * scaleY)}px`;
-    el.style.width = `${Math.round(rect.width * scaleX)}px`;
-    el.style.height = `${Math.round(rect.height * scaleY)}px`;
-    el.width = Math.round(rect.width * dpiRatio * scaleX);
-    el.height = Math.round(rect.height * dpiRatio * scaleY);
+
+    if (hasChangedRect) {
+      el.style.left = `${Math.round(rect.x * scaleX)}px`;
+      el.style.top = `${Math.round(rect.y * scaleY)}px`;
+      el.style.width = `${Math.round(rect.width * scaleX)}px`;
+      el.style.height = `${Math.round(rect.height * scaleY)}px`;
+      el.width = Math.round(rect.width * dpiRatio * scaleX);
+      el.height = Math.round(rect.height * dpiRatio * scaleY);
+    }
 
     const sceneContainer = {
       type: 'container',
@@ -115,10 +135,18 @@ export function renderer(sceneFn = sceneFactory) {
       sceneContainer.transform = `scale(${dpiRatio * scaleX}, ${dpiRatio * scaleY})`;
     }
 
-    scene = sceneFn({ items: [sceneContainer], dpi: dpiRatio });
-    renderShapes(scene.children, g, shapeToCanvasMap);
+    const newScene = sceneFn({ items: [sceneContainer], dpi: dpiRatio });
+    const hasChangedScene = scene ? !newScene.equals(scene) : true;
 
-    return config.Promise.resolve();
+    const doRender = hasChangedRect || hasChangedScene;
+    if (doRender) {
+      canvasRenderer.clear();
+      renderShapes(newScene.children, g, shapeToCanvasMap);
+    }
+
+    hasChangedRect = false;
+    scene = newScene;
+    return config.Promise.resolve(doRender);
   };
 
   canvasRenderer.clear = () => {
@@ -128,14 +156,14 @@ export function renderer(sceneFn = sceneFactory) {
     el.width = el.width;
   };
 
-  canvasRenderer.size = ({ x, y, width, height, scaleRatio } = {}) => {
-    rect.x = isNaN(x) ? rect.x : x;
-    rect.y = isNaN(y) ? rect.y : y;
-    rect.width = isNaN(width) ? rect.width : width;
-    rect.height = isNaN(height) ? rect.height : height;
-    if (typeof scaleRatio !== 'undefined') {
-      rect.scaleRatio.x = isNaN(scaleRatio.x) ? rect.scaleRatio.x : scaleRatio.x;
-      rect.scaleRatio.y = isNaN(scaleRatio.y) ? rect.scaleRatio.y : scaleRatio.y;
+  canvasRenderer.size = (opts) => {
+    if (opts) {
+      const newRect = createRect(opts);
+
+      if (JSON.stringify(rect) !== JSON.stringify(newRect)) {
+        hasChangedRect = true;
+        rect = newRect;
+      }
     }
 
     return rect;

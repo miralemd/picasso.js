@@ -82,15 +82,13 @@ function instanceFn(definition) {
   const mount = () => {
     element.innerHTML = '';
 
-    composer = composerFn();
-    composer.build(element, data, settings);
+    composer = composerFn(element);
+    composer.render(data, settings);
 
-    if (typeof on === 'object') {
-      Object.keys(on).forEach((key) => {
-        const listener = on[key].bind(instance);
-        element.addEventListener(key, listener);
-      });
-    }
+    Object.keys(on).forEach((key) => {
+      const listener = on[key].bind(instance);
+      element.addEventListener(key, listener);
+    });
 
     if (typeof mounted === 'function') {
       mounted.call(instance, element);
@@ -109,10 +107,7 @@ function instanceFn(definition) {
       currentSettings = newProps.settings;
     }
 
-    // TODO shouldn't rebuild the chart from scratch
-    element.innerHTML = '';
-
-    composer.build(element, currentData, currentSettings);
+    composer.update(currentData, currentSettings);
 
     if (typeof updated === 'function') {
       updated.call(instance);

@@ -22,20 +22,18 @@ const destroyer = (el) => {
 };
 
 const maintainer = (element, item) => {
-  for (const attr in item) {
-    if (/^_/.test(attr) || ['id', 'data', 'type', 'children'].indexOf(attr) !== -1) {
-      continue;
-    }
+  for (const attr in item.attrs) {
     if (attr === 'text') {
-      element.textContent = ellipsText(item, measureText);
-      let dir = detectTextDirection(item.text);
+      element.textContent = ellipsText(item.attrs, measureText);
+      let dir = detectTextDirection(item.attrs.text);
       if (dir === 'rtl') {
         element.setAttribute('direction', 'rtl');
         element.setAttribute('text-anchor', flipTextAnchor(element.getAttribute('text-anchor'), dir));
       }
       continue;
+    } else {
+      element.setAttribute(attr, item.attrs[attr]);
     }
-    element.setAttribute(attr, item[attr]);
   }
 };
 

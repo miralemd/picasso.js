@@ -1,21 +1,23 @@
 import extend from 'extend';
 
-export default function dockConfig({
-  dock = '',
-  displayOrder = 0,
-  prioOrder = 0,
-  relevantSizeFn = () => 0,
-  minimumLayoutMode
-} = {}) {
+export default function dockConfig(settings = {}) {
+  let {
+    dock = '',
+    displayOrder = 0,
+    prioOrder = 0,
+    requiredSize = () => 0,
+    minimumLayoutMode
+  } = settings;
+
   const fn = function () {};
   const egdeBleed = { left: 0, right: 0, top: 0, bottom: 0 };
 
   fn.requiredSize = function (calcFn) {
     if (typeof calcFn === 'function') {
-      relevantSizeFn = calcFn;
+      requiredSize = calcFn;
       return this;
     }
-    return relevantSizeFn;
+    return requiredSize;
   };
 
   fn.dock = function (d) {

@@ -15,10 +15,11 @@ describe('Registry', () => {
   describe('register', () => {
     it('should register a function', () => {
       const fn = () => {};
-      reg.register('foo', fn);
+      const registered = reg.register('foo', fn);
       expect(reg.registry.foo).to.equal(fn);
+      expect(registered).to.equal(true);
     });
-    it('should throw error if name is invalid', () => {
+    it('should throw error if key is invalid', () => {
       let fn = () => {
           reg.register('');
         },
@@ -26,22 +27,13 @@ describe('Registry', () => {
           reg.register(5);
         };
 
-      expect(fn).to.throw('Invalid name');
-      expect(fn2).to.throw('Invalid name');
+      expect(fn).to.throw('Invalid key');
+      expect(fn2).to.throw('Invalid key');
     });
-    it('should throw error if fn is not a function', () => {
-      const fn = () => {
-        reg.register('a');
-      };
-
-      expect(fn).to.throw('fn must be a function');
-    });
-    it('should throw error if name is taken', () => {
-      const fn = () => {
-        reg.register('a', () => {});
-      };
+    it('should not register if key is taken', () => {
       reg.register('a', () => {});
-      expect(fn).to.throw('a already exists');
+      const registered = reg.register('a', () => {});
+      expect(registered).to.equal(false);
     });
   });
 
