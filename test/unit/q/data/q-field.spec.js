@@ -26,7 +26,8 @@ describe('QField', () => {
         qMin: 1,
         qMax: 2,
         qTags: ['a', 'b'],
-        qFallbackTitle: 'wohoo'
+        qFallbackTitle: 'wohoo',
+        qStateCounts: {}
       },
       pages: [page, page2],
       idx: 1
@@ -49,6 +50,15 @@ describe('QField', () => {
 
     it('should return title', () => {
       expect(f.title()).to.equal('wohoo');
+    });
+
+    it('should identify when the field is a dimension', () => {
+      expect(f.type()).to.equal('dimension');
+    });
+
+    it('should identify when the field is a measure', () => {
+      const m = qField()({ meta: {} });
+      expect(m.type()).to.equal('measure');
     });
 
     it('should return values', () => {

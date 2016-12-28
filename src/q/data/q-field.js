@@ -26,6 +26,7 @@ function collectData(col, pages, meta) {
 
 const minFn = d => d.meta.qMin;
 const maxFn = d => d.meta.qMax;
+const typeFn = d => 'qStateCounts' in d.meta ? 'dimension' : 'measure';
 const tagsFn = d => d.meta.qTags;
 const titleFn = d => d.meta.qFallbackTitle;
 const valuesFn = d => collectData(d.idx, d.pages, d.meta);
@@ -52,6 +53,7 @@ export default function qField({ id } = {}) {
     formatter: formatterFn,
     min: minFn,
     max: maxFn,
+    type: typeFn,
     tags: tagsFn,
     title: titleFn,
     values: valuesFn

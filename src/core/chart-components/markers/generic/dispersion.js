@@ -52,7 +52,7 @@ export default class Dispersion {
     const y = this.y;
 
     // Calculate the minimum data point distance
-    if (!x.scale.step) {
+    if (x && x.scale && !x.scale.step) {
       let pointCoords = data.map(d => d.self.value);
 
       // Sort values
@@ -78,7 +78,7 @@ export default class Dispersion {
 
       this.items.push({
         style: obj,
-        x: x ? x(d.self) : 0.5,
+        x: x && d.self ? x(d.self) : 0.5,
         min: y && 'min' in d ? y(d.min) : null,
         max: y && 'max' in d ? y(d.max) : null,
         start: y && 'start' in d ? y(d.start) : null,
