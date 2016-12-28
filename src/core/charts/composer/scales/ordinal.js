@@ -10,7 +10,12 @@ const AVAILABLE_SETTINGS = [
 
 function unique(values) {
   const exists = {};
-  return values.filter(v => exists[v.id] ? false : (exists[v.id] = true));
+  return values.filter((v) => {
+    if (exists[v.id]) {
+      return false;
+    }
+    return (exists[v.id] = true);
+  });
 }
 
 function evalSetting(fields, settings, name) {

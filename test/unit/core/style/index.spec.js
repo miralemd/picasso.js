@@ -22,8 +22,12 @@ describe('Style resolver', () => {
         },
         whisker: {
           type: 'circle',
-          otherThing: (item, index) =>
-             index < 1 ? 'thing' : null,
+          otherThing: (item, index) => {
+            if (index < 1) {
+              return 'thing';
+            }
+            return null;
+          },
           fill: 'red',
           width: 1
         },

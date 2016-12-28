@@ -3,7 +3,12 @@ import resolve from '../../core/data/json-path-resolver';
 import { formatter } from '../../core/formatter';
 
 const specialTextValues = {
-  '-3': meta => 'othersLabel' in meta ? meta.othersLabel : ''
+  '-3': (meta) => {
+    if ('othersLabel' in meta) {
+      return meta.othersLabel;
+    }
+    return '';
+  }
 };
 
 // collect data over multiple pages

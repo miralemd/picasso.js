@@ -27,11 +27,15 @@ class HypercubeGenerator {
   }
 
   generateDimensionInfoFromData(data, label) {
-    let numUnique = this.arrayGetUnique.call(data).length,
-      glyphCount = Math.max(...data.map(text => text ? text.length : 0)),
-      info;
+    const numUnique = this.arrayGetUnique.call(data).length;
+    const glyphCount = Math.max(...data.map((text) => {
+      if (text) {
+        return text.length;
+      }
+      return 0;
+    }));
 
-    info = {
+    const info = {
       othersLabel: 'Otheeeeers',
       qApprMaxGlyphCount: glyphCount,
       qCardinal: numUnique,
@@ -224,9 +228,12 @@ class HypercubeGenerator {
    * @return {Array}     Modified array
    */
   static randomNullInsert(arr) {
-    return arr.map(v =>
-      Math.random() <= 0.1 ? null : v
-    );
+    return arr.map((v) => {
+      if (Math.random() <= 0.1) {
+        return null;
+      }
+      return v;
+    });
   }
 
   /**
