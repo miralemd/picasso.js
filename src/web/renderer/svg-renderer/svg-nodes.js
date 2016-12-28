@@ -30,7 +30,6 @@ const maintainer = (element, item) => {
         element.setAttribute('direction', 'rtl');
         element.setAttribute('text-anchor', flipTextAnchor(element.getAttribute('text-anchor'), dir));
       }
-      continue;
     } else {
       element.setAttribute(attr, item.attrs[attr]);
     }

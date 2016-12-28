@@ -16,11 +16,10 @@ class HypercubeGenerator {
       a = [];
 
     for (let i = 0, l = this.length; i < l; ++i) {
-      if ({}.hasOwnProperty.call(u, this[i])) {
-        continue;
+      if (!{}.hasOwnProperty.call(u, this[i])) {
+        a.push(this[i]);
+        u[this[i]] = 1;
       }
-      a.push(this[i]);
-      u[this[i]] = 1;
     }
 
     return a;

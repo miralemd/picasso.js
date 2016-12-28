@@ -28,13 +28,12 @@ const metaToData = [
 export default function metaToDataPath(path, meta) {
   let p = path;
   for (let i = 0; i < metaToData.length; i++) {
-    if (!metaToData[i].pattern.test(path)) {
-      continue;
+    if (metaToData[i].pattern.test(path)) {
+      if (metaToData[i].pre) {
+        p = metaToData[i].pre(p, meta);
+      }
+      p = p.replace(metaToData[i].pattern, metaToData[i].data);
     }
-    if (metaToData[i].pre) {
-      p = metaToData[i].pre(p, meta);
-    }
-    p = p.replace(metaToData[i].pattern, metaToData[i].data);
   }
 
   return p;
