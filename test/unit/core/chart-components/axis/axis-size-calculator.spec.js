@@ -8,7 +8,6 @@ describe('AxisSizeCalculator', () => {
   let ticks;
   let sizeFn;
   let ticksFn;
-  let renderer;
   let rect;
 
   beforeEach(() => {
@@ -24,13 +23,9 @@ describe('AxisSizeCalculator', () => {
     const scale = null;
     const data = null;
     const formatter = null;
-    const layoutConfig = {
-      edgeBleed: () => {}
-    };
-    renderer = {
-      measureText: ({ text }) => ({ width: text.toString().length, height: 5 })
-    };
-    sizeFn = calcRequiredSize({ settings, ticksFn, scale, data, formatter, renderer, layoutConfig });
+    const setEdgeBleed = () => {};
+    const measureText = ({ text = '' }) => ({ width: text.toString().length, height: 5 });
+    sizeFn = r => calcRequiredSize({ settings, rect: r, ticksFn, scale, data, formatter, measureText, setEdgeBleed });
   });
 
   it('axis with no visible component have a margin of 10', () => {

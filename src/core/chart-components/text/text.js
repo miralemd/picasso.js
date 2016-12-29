@@ -1,25 +1,17 @@
 import extend from 'extend';
-import dockConfig from '../../dock-layout/dock-config';
 
-function calcRequiredSize(title, settings, renderer) {
-  const fn = function () {
-    const args = { text: title, fontSize: settings.style.fontSize, fontFamily: settings.style.fontFamily };
-    return renderer.measureText(args).height + settings.paddingStart + settings.paddingEnd;
-  };
+import createComponentFactory from '../component';
 
-  return fn;
-}
-
-function parseTitle(config, table, scale) {
+function parseTitle(text, join, table, scale) {
   let title;
-  if (typeof config.text === 'function') {
-    title = config.text(table);
-  } else if (typeof config.text === 'string') {
-    title = config.text;
+  if (typeof text === 'function') {
+    title = text(table);
+  } else if (typeof text === 'string') {
+    title = text;
   } else if (scale && scale.sources) {
     if (Array.isArray(scale.sources)) {
       const titles = scale.sources.map(s => table.findField(s).title());
-      title = titles.join(config.settings.join || ', ');
+      title = titles.join(join || ', ');
     } else {
       title = table.findField(scale.sources).title();
     }
@@ -30,29 +22,35 @@ function parseTitle(config, table, scale) {
   return title;
 }
 
-function getTextAnchor(settings) {
-  let anchor = 'middle';
-  if (settings.dock === 'left') {
-    if (settings.anchor === 'top') {
-      anchor = 'end';
-    } else if (settings.anchor === 'bottom') {
-      anchor = 'start';
+function getTextAnchor(dock, anchor) {
+  let val = 'middle';
+  if (dock === 'left') {
+    if (anchor === 'top') {
+      val = 'end';
+    } else if (anchor === 'bottom') {
+      val = 'start';
     }
-  } else if (settings.dock === 'right') {
-    if (settings.anchor === 'top') {
-      anchor = 'start';
-    } else if (settings.anchor === 'bottom') {
-      anchor = 'end';
+  } else if (dock === 'right') {
+    if (anchor === 'top') {
+      val = 'start';
+    } else if (anchor === 'bottom') {
+      val = 'end';
     }
-  } else if (settings.anchor === 'left') {
-    anchor = 'start';
-  } else if (settings.anchor === 'right') {
-    anchor = 'end';
+  } else if (anchor === 'left') {
+    val = 'start';
+  } else if (anchor === 'right') {
+    val = 'end';
   }
-  return anchor;
+  return val;
 }
 
-function generateTitle({ title, settings, dock, rect, renderer }) {
+function generateTitle({
+  title,
+  settings,
+  dock,
+  rect,
+  measureText
+}) {
   const struct = {
     type: 'text',
     text: title,
@@ -60,12 +58,12 @@ function generateTitle({ title, settings, dock, rect, renderer }) {
     y: 0,
     dx: 0,
     dy: 0,
-    anchor: getTextAnchor(settings),
+    anchor: getTextAnchor(dock, settings.anchor),
     baseline: 'alphabetical'
   };
 
   extend(struct, settings.style);
-  const textRect = renderer.measureText(struct);
+  const textRect = measureText(struct);
 
   if (dock === 'top' || dock === 'bottom') {
     let x = rect.width / 2;
@@ -101,23 +99,11 @@ function generateTitle({ title, settings, dock, rect, renderer }) {
   return struct;
 }
 
-export default function text(config, composer, renderer) {
-  let rect = { x: 0, y: 0, width: 0, height: 0 };
-  let settings;
-  let dock;
-  let title;
 
-  const fn = function () {
-    setOpts(config); // eslint-disable-line no-use-before-define
-    return fn;
-  };
-
-  const setOpts = (opts) => {
-    settings = extend({
-      dock: 'bottom',
+const textComponent = {
+  created(opts) {
+    this.settings = {
       anchor: 'center',
-      displayOrder: 99,
-      prioOrder: 0,
       paddingStart: 5,
       paddingEnd: 5,
       paddingLeft: 0,
@@ -128,38 +114,65 @@ export default function text(config, composer, renderer) {
         fill: '#999'
       },
       join: ', '
-    }, opts.settings);
-
-    dock = opts.settings.dock;
-
-    const table = composer.table();
-    const scale = config.scale ? composer.scale(config.scale) : undefined;
-    title = parseTitle(config, table, scale);
-    fn.dockConfig.requiredSize(calcRequiredSize(title, settings, renderer));
-    fn.dockConfig.dock(dock);
-    fn.dockConfig.displayOrder(settings.displayOrder);
-    fn.dockConfig.prioOrder(settings.prioOrder);
-    fn.dockConfig.minimumLayoutMode(settings.minimumLayoutMode);
-  };
-
-  fn.resize = (inner) => {
-    renderer.size(inner);
-    extend(rect, inner);
-  };
-
-  fn.render = () => {
+    };
+    extend(this.settings, opts.settings.settings || {});
+    this.rect = {
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0
+    };
+    const table = this.dataset.tables()[0];
+    const text = opts.settings.text;
+    const join = opts.settings.settings && opts.settings.settings.join;
+    this.title = parseTitle(text, join, table, this.scale);
+  },
+  dock: 'bottom',
+  displayOrder: 99,
+  prioOrder: 0,
+  require: ['measureText'],
+  preferredSize() {
+    const height = this.measureText({
+      text: this.title,
+      fontSize: this.settings.style.fontSize,
+      fontFamily: this.settings.style.fontFamily
+    }).height;
+    return height + this.settings.paddingStart + this.settings.paddingEnd;
+  },
+  beforeRender(opts) {
+    const {
+      inner
+    } = opts;
+    extend(this.rect, inner);
+    return inner;
+  },
+  render() {
+    const {
+      measureText,
+      title,
+      settings,
+      rect,
+      dock
+    } = this;
     const nodes = [];
-    nodes.push(generateTitle({ title, settings, dock, rect, renderer }));
-    renderer.render(nodes);
-  };
+    nodes.push(generateTitle({
+      title,
+      dock,
+      settings,
+      rect,
+      measureText
+    }));
+    return nodes;
+  },
+  beforeUpdate(opts) {
+    if (opts.settings) {
+      extend(this.settings, opts.settings.settings || {});
+    }
+    const table = this.dataset.tables()[0];
+    const text = opts.settings.text;
+    const join = opts.settings.settings && opts.settings.settings.join;
+    this.title = parseTitle(text, join, table, this.scale);
+  }
+};
 
-  fn.update = (opts) => {
-    setOpts(opts.settings);
-    fn.render();
-    console.log('update text');
-  };
-
-  fn.dockConfig = dockConfig();
-
-  return fn();
-}
+export default createComponentFactory(textComponent);

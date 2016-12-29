@@ -58,11 +58,10 @@ import composerFn from './composer';
  * }
  */
 
-
 /**
  * Chart instance factory function
  */
-function instanceFn(definition) {
+function createInstance(definition) {
   const {
     element,
     data = {},
@@ -72,6 +71,7 @@ function instanceFn(definition) {
     mounted = () => {}
   } = definition;
 
+  const listeners = [];
   let composer;
   let currentData = data;
   let currentSettings = settings;
@@ -88,11 +88,19 @@ function instanceFn(definition) {
     Object.keys(on).forEach((key) => {
       const listener = on[key].bind(instance);
       element.addEventListener(key, listener);
+      listeners.push({
+        key,
+        listener
+      });
     });
 
     if (typeof mounted === 'function') {
       mounted.call(instance, element);
     }
+  };
+
+  const unmount = () => {
+    listeners.forEach(({ key, listener }) => element.removeEventListener(key, listener));
   };
 
   /**
@@ -112,6 +120,13 @@ function instanceFn(definition) {
     if (typeof updated === 'function') {
       updated.call(instance);
     }
+  };
+
+  instance.destroy = () => {
+    composer.destroy();
+    unmount();
+    delete instance.update;
+    delete instance.destroy;
   };
 
   if (element) {
@@ -155,14 +170,6 @@ function instanceFn(definition) {
  *   }
  * );
  */
-export default function chart(definition, data, settings) {
-  if (definition.toString().match(/[HTML[\w\W]*?Element/)) {
-    // Backward compatibility
-    return instanceFn({
-      element: definition,
-      data,
-      settings
-    });
-  }
-  return instanceFn(definition);
+export default function chart(definition) {
+  return createInstance(definition);
 }
