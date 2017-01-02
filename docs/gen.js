@@ -2,7 +2,7 @@
 
 let rimraf = require('rimraf'); // eslint-disable-line import/no-unresolved
 let handlebars = require('handlebars'); // eslint-disable-line import/no-unresolved
-require('handlebars-helpers')({ handlebars });
+require('handlebars-helpers')({ handlebars }); // eslint-disable-line import/no-unresolved
 let fs = require('fs');
 let path = require('path');
 
