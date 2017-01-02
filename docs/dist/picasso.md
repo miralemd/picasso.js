@@ -1,5 +1,7 @@
-# picasso
+# Picasso
+
 ## In this file:
+
 * <a href="#Chart.Props">Chart.Props</a>
 * <a href="#Chart.SettingsProps">Chart.SettingsProps</a>
 * <a href="#Chart.ScaleProps">Chart.ScaleProps</a>
@@ -8,6 +10,7 @@
 * <a href="#picasso.chart">picasso.chart</a>
 
 #### <a name='Chart.Props' href='#Chart.Props'>#</a> Props
+
 |Name(s)|Type(s)|Description|Optional|
 |-------|-------|-----------|--------|
 | data | Chart.DataProps | Chart data | No |
@@ -18,6 +21,7 @@
 | on | Object | Event listeners | No |
 
 #### Examples
+
 ```js
 {
   data: {
@@ -37,6 +41,7 @@
 }
 ```
 #### <a name='Chart.SettingsProps' href='#Chart.SettingsProps'>#</a> SettingsProps
+
 |Name(s)|Type(s)|Description|Optional|
 |-------|-------|-----------|--------|
 | scales | Chart.ScaleProps |  | No |
@@ -45,6 +50,7 @@
 | components.axes | Array.&lt;axis&gt; |  | No |
 
 #### Examples
+
 ```js
 {
   scales: {
@@ -57,6 +63,7 @@
 }
 ```
 #### <a name='Chart.ScaleProps' href='#Chart.ScaleProps'>#</a> ScaleProps
+
 |Name(s)|Type(s)|Description|Optional|
 |-------|-------|-----------|--------|
 | source | string | The data source used as input when creating the scale | No |
@@ -64,6 +71,7 @@
 | invert | boolean | Whether to invert the scale&#x27;s output | No |
 
 #### Examples
+
 ```js
 {
   source: "whatever is accepted by the data parser",
@@ -73,13 +81,11 @@
 ```
 #### <a name='instanceFn' href='#instanceFn'>#</a> **instanceFn**()
 
-
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|
 
 Chart instance factory function  
 #### <a name='instanceFn~instance.update' href='#instanceFn~instance.update'>#</a> instanceFn.**update**(* chart*)
-
 
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|
@@ -88,7 +94,6 @@ Chart instance factory function
 Update the chart with new settings and / or data  
 #### <a name='picasso.chart' href='#picasso.chart'>#</a> **chart**(*Chart.Props settings*)
 
-
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|
 | settings | Chart.Props | Settings |No|
@@ -96,6 +101,7 @@ Update the chart with new settings and / or data
 
 The chart creator  
 #### Examples
+
 ```js
 picasso.chart({
   element: document.getElementById('chart-container'),

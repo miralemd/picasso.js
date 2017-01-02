@@ -1,3 +1,5 @@
+{{#if (get ctx this)}}
+{{#with (get ctx this) parent=parent}}
 {{#if this.children}}
 {{#if this.name}}
 {{>factory this }}
@@ -9,5 +11,14 @@
 {{/each}}
 {{/if}}
 {{else}}
+{{#if this.kind}}
 {{>(lookup . 'kind') this parent=parent}}
+{{else}}
+Magic resolution of this file, function or object is not possible.
+{{/if}}
+{{/if}}
+{{/with}}
+{{else}}
+Context {{ ctx }} is not available {{get ctx this}}
+{{log 'Context unavailable ' ctx}}
 {{/if}}

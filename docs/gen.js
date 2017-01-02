@@ -1,10 +1,12 @@
 "use strict"; // eslint-disable-line
 
+let rimraf = require('rimraf'); // eslint-disable-line import/no-unresolved
+let handlebars = require('handlebars'); // eslint-disable-line import/no-unresolved
+require('handlebars-helpers')({ handlebars }); // eslint-disable-line import/no-unresolved
 let fs = require('fs');
 let path = require('path');
 
-let rimraf = require('rimraf'); // eslint-disable-line import/no-unresolved
-let handlebars = require('handlebars'); // eslint-disable-line import/no-unresolved
+
 let glob = require('glob'); // eslint-disable-line import/no-unresolved
 
 let resolve = require('./json-path-resolver').resolve;
@@ -83,21 +85,39 @@ function registerTemplates(cb) {
     });
     cb();
   });
+
+  handlebars.registerPartial(undefined, '{{undefinedpartial}}');
 }
 
+handlebars.registerHelper('undefinedpartial', () => 'This partial does not exists. This may most certainly be caused by a missing file.');
+
 function compileMarkdownFiles(jsdocdata) {
+  let header = handlebars.compile(fs.readFileSync(path.resolve('./src/header.md')).toString());
+
   glob(`${MD_INPUT_FOLDER}/**/*.md`, {}, (err, files) => {
     files.forEach((file) => {
       file = path.resolve(file);
       let inputBasepath = path.resolve(MD_INPUT_FOLDER);
       let relativePath = file.replace(inputBasepath, '');
       let template = handlebars.compile(`${fs.readFileSync(file)}`);
+      let title = path.basename(file, '.md');
+
+      title = title.charAt(0).toUpperCase() + title.substr(1);
 
       domkdir(MD_OUTPUT_FOLDER + relativePath, true);
 
       jsdocdata.registry = [];
-      fs.writeFileSync(MD_OUTPUT_FOLDER + relativePath, template(jsdocdata)); // Yes this is rendered twice,
-      fs.writeFileSync(MD_OUTPUT_FOLDER + relativePath, template(jsdocdata)); // To generate the right registry (needs to be re-thought)
+
+      let output = template(jsdocdata);
+
+      let headerData = {
+        registry: jsdocdata.registry,
+        title
+      };
+
+      output = header(headerData) + output;
+
+      fs.writeFileSync(MD_OUTPUT_FOLDER + relativePath, output);
     });
   });
 }
@@ -140,6 +160,6 @@ handlebars.registerHelper('anchor', (name) => {
 
 rimraf.sync(`${MD_OUTPUT_FOLDER}*`);
 
-// fs.writeFileSync('jsdoc-restruct.json', JSON.stringify(jsdoc));
+fs.writeFileSync('src/jsdoc-restruct.json', JSON.stringify(jsdoc));
 
 registerTemplates(() => { compileMarkdownFiles(jsdoc); });
