@@ -8,8 +8,9 @@ export default class Rect extends DisplayObject {
     this.set(...s);
   }
 
-  set({ x, y, width, height, fill, stroke, strokeWidth, opacity, transform }) {
-    super.set({ fill, stroke, strokeWidth, opacity, transform });
+  set(v) {
+    const { x, y, width, height } = v;
+    super.set(v);
     this.attrs.x = x;
     this.attrs.y = y;
     this.attrs.width = width;

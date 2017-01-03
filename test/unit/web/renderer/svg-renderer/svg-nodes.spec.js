@@ -82,18 +82,48 @@ describe('svg-nodes', () => {
       expect(el.setAttribute.secondCall).to.have.been.calledWithExactly('fill', 'red');
     });
 
-    it('should ignore attributes id, data, type, children', () => {
+    it('should ignore attributes id, type, children, and complex data objects', () => {
       const el = {
         setAttribute: sinon.spy()
       };
       const item = {
         id: 'a',
-        data: 'a',
+        data: {},
         type: 'a',
         children: 'a'
       };
       maintainer(el, item);
       expect(el.setAttribute.callCount).to.equal(0);
+    });
+
+    it('should set data attribute if data value is a primitive', () => {
+      const el = {
+        setAttribute: sinon.spy()
+      };
+      const item = {
+        data: 'foo'
+      };
+      maintainer(el, item);
+      expect(el.setAttribute).to.have.been.calledWith('data', 'foo');
+    });
+
+    it('should set data attributes if data object contains primitives', () => {
+      const el = {
+        setAttribute: sinon.spy()
+      };
+      const item = {
+        data: {
+          x: 123,
+          label: 'etikett',
+          really: true,
+          complex: {}
+        }
+      };
+      maintainer(el, item);
+      expect(el.setAttribute.callCount).to.equal(3);
+      expect(el.setAttribute.getCall(0)).to.have.been.calledWith('data-x', 123);
+      expect(el.setAttribute.getCall(1)).to.have.been.calledWith('data-label', 'etikett');
+      expect(el.setAttribute.getCall(2)).to.have.been.calledWith('data-really', true);
     });
   });
 });

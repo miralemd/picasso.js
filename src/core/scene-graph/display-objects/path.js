@@ -6,9 +6,9 @@ export default class Path extends DisplayObject {
     this.set(...s);
   }
 
-  set({ d, strokeWidth, stroke, opacity, transform }) {
-    super.set({ strokeWidth, stroke, opacity, transform });
-    this.d = d;
+  set(v) {
+    super.set(v);
+    this.d = v.d;
   }
 }
 
