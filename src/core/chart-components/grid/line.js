@@ -1,22 +1,19 @@
-import renderer from '../../../web/renderer/svg-renderer/svg-renderer';
+import createComponentFactory from '../component';
 
-export default class Line {
-  constructor(obj, composer) {
-    this.element = composer.element;
-
-    this.renderer = renderer();
-    this.renderer.appendTo(this.element);
+const gridLineComponent = {
+  created(obj) {
+    this.element = this.composer.element;
 
     this.settings = obj.settings;
-    this.data = composer.data;
+    this.data = this.composer.data;
     this.obj = obj;
 
-    this.x = this.settings.x ? composer.scales[this.settings.x.scale] : null;
-    this.y = this.settings.y ? composer.scales[this.settings.y.scale] : null;
+    this.x = this.settings.x ? this.composer.scales[this.settings.x.scale] : null;
+    this.y = this.settings.y ? this.composer.scales[this.settings.y.scale] : null;
 
     this.onData();
-  }
-
+  },
+  require: ['composer', 'renderer'],
   onData() {
     this.lines = [];
 
@@ -25,13 +22,13 @@ export default class Line {
     this.y && this.y.update();
 
     this.resize();
-  }
+  },
 
-  resize() {
+  beforeRender() {
     this.renderer.rect.width = this.element.clientWidth;
     this.renderer.rect.height = this.element.clientHeight;
-    this.render();
-  }
+    // this.render();
+  },
 
   render() {
     const { width, height } = this.renderer.rect;
@@ -40,7 +37,7 @@ export default class Line {
     this.lines.y = (this.y && this.y.scale.magicTicks(this.renderer.rect.height - this.renderer.rect.y)) || [];
 
     if (!Object.keys(this.settings.styles)[0]) {
-      return;
+      return [];
     }
 
     let style = {};
@@ -71,11 +68,8 @@ export default class Line {
       };
     });
 
-    this.renderer.render([...displayLinesX, ...displayLinesY]);
+    return [...displayLinesX, ...displayLinesY];
   }
+};
 
-}
-
-export function line(obj, composer) {
-  return new Line(obj, composer);
-}
+export default createComponentFactory(gridLineComponent);

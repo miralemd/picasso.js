@@ -130,6 +130,8 @@ export default function componentFactory(definition) {
         context.composer = composer;
       } else if (req === 'dockConfig') {
         context.dockConfig = fn.dockConfig;
+      } else if (req === 'renderer') {
+        context.renderer = rend;
       }
     });
 
