@@ -18,12 +18,13 @@ function alignTransform({ align, inner }) {
   return { y: inner.y + inner.height };
 }
 
-function dockAlignSetup(dock, settings, type) {
-  if (dock && !settings.align) {
-    settings.align = dock;
-  } else if (!dock && !settings.align) {
-    settings.align = type === 'ordinal' ? 'bottom' : 'left';
+function getAlign(dock, align, type) {
+  if (dock && !align) {
+    return dock;
+  } else if (!dock && !align) {
+    return type === 'ordinal' ? 'bottom' : 'left';
   }
+  return align;
 }
 
 function resolveInitialStyle(settings, baseStyles, composer) {
@@ -34,22 +35,11 @@ function resolveInitialStyle(settings, baseStyles, composer) {
   return ret;
 }
 
-// (axisConfig, composer, renderer)
 const axisComponent = {
+  require: ['composer', 'measureText', 'dockConfig'],
   created(opts) {
     this.innerRect = { width: 0, height: 0, x: 0, y: 0 };
     this.outerRect = { width: 0, height: 0, x: 0, y: 0 };
-
-    /*
-    let dataScale = composer.scale(axisConfig);
-    let scale = dataScale.scale;
-    let type = dataScale.type;
-    let data;
-    let concreteNodeBuilder;
-    let settings;
-    let styleSettings;
-    let ticksFn;
-    */
 
     let settings;
     let styleSettings;
@@ -60,18 +50,11 @@ const axisComponent = {
       [settings, styleSettings] = continuousDefaultSettings();
       this.ticksFn = generateContinuousTicks;
     }
-    this.settings = settings;
+    this.settings = extend(true, {}, settings);
     this.styleSettings = styleSettings;
-
-     // Override the dock setting (TODO should be removed)
-    if (typeof settings.dock !== 'undefined') {
-      this.dock = settings.dock;
-    }
-    this.dockConfig.dock = this.dock;
 
     this.init(opts.settings);
   },
-  require: ['composer', 'measureText', 'dockConfig'],
   init(axisConfig) {
     // formatter = composer.formatter(axisConfig.formatter || { source: dataScale.sources[0] });
     this.styleSettings = resolveInitialStyle(axisConfig.settings, this.styleSettings, this.composer);
@@ -81,8 +64,23 @@ const axisComponent = {
     }
 
     extend(true, this.settings, axisConfig.settings, this.styleSettings);
+
+    ['dock', 'displayOrder', 'prioOrder'].forEach((prop) => {
+      if (typeof axisConfig[prop] !== 'undefined') {
+        this.settings[prop] = axisConfig[prop];
+      }
+      // Override the dock config (TODO should be refactored)
+      this.dockConfig[prop] = this.settings[prop];
+    });
+
     this.concreteNodeBuilder = nodeBuilder(this.scale.type);
-    dockAlignSetup(this.dock, this.settings, this.scale.type);
+
+    this.settings.align = getAlign(this.settings.dock, this.settings.align, this.scale.type);
+
+    // Override the dock settings (TODO should be removed)
+    ['dock', 'displayOrder', 'prioOrder'].forEach((prop) => {
+      this.dockConfig[prop] = this.settings[prop];
+    });
 
     Object.keys(this.styleSettings).forEach((a) => {
       this.settings[a] = resolveForDataValues(this.settings[a]);
