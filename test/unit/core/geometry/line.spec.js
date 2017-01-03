@@ -1,9 +1,9 @@
-import Line from '../../../../src/core/geometry/line';
+import GeoLine from '../../../../src/core/geometry/line';
 
-describe('Line', () => {
+describe('GeoLine', () => {
   describe('constructor', () => {
     it('should set correct default values when no arguments passed', () => {
-      const l = new Line();
+      const l = new GeoLine();
 
       expect(l.x1).to.equal(0);
       expect(l.y1).to.equal(0);
@@ -12,7 +12,7 @@ describe('Line', () => {
     });
 
     it('should set the correct values when arguments passed', () => {
-      const l = new Line(1, 2, 3, 4);
+      const l = new GeoLine(1, 2, 3, 4);
 
       expect(l.x1).to.equal(1);
       expect(l.y1).to.equal(2);
@@ -23,7 +23,7 @@ describe('Line', () => {
 
   describe('set', () => {
     it('should set the correct values', () => {
-      const l = new Line();
+      const l = new GeoLine();
       l.set(6, 7, 8, 9);
 
       expect(l.x1).to.equal(6);
@@ -35,7 +35,7 @@ describe('Line', () => {
 
   describe('points', () => {
     it('should return the correct points', () => {
-      const l = new Line(5, 6, 7, 8),
+      const l = new GeoLine(5, 6, 7, 8),
         points = l.points();
 
       expect(points[0]).to.deep.equal({ x: 5, y: 6 });
