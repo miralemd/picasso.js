@@ -1,4 +1,5 @@
-import Dispersion from './generic/dispersion';
+import createComponentFactory from '../component';
+import dispersion from './generic/dispersion';
 import notNumber from '../../utils/undef';
 /*
 const DEFAULT_DATA_SETTINGS = {
@@ -90,17 +91,17 @@ const DEFAULT_STYLE_SETTINGS = {
  * @typedef marker-box-data
  */
 
-export default class Box extends Dispersion {
-  constructor(settings, composer) {
-    super(composer, DEFAULT_STYLE_SETTINGS);
-
-    this.setOpts(settings);
-
-    this.onData(); // to be removed?
-  }
-
+const boxMarker = {
+  require: ['composer'],
+  created(opts) {
+    this.rect = { x: 0, y: 0, width: 0, height: 0 };
+    this.dispersion = dispersion(this.composer, DEFAULT_STYLE_SETTINGS, opts.settings.settings);
+    this.setOpts(opts.settings);
+    this.dispersion.onData(); // to be removed?
+  },
   setOpts(opts) {
-    super.setOpts(opts);
+    this.settings = opts.settings;
+    this.dispersion.setOpts(opts);
 
     // Default to vertical
     if (this.settings.vertical === undefined) {
@@ -111,20 +112,33 @@ export default class Box extends Dispersion {
     if (this.settings.whiskers === undefined) {
       this.settings.whiskers = true;
     }
-  }
-
+  },
+  beforeRender(opts) {
+    const {
+      inner
+    } = opts;
+    this.rect = inner;
+    return inner;
+  },
   render() {
     // Filter out points we cannot render
-    const items = this.items.filter(item =>
+    /* const items = this.items.filter(item =>
       [item.min, item.max].indexOf(null) === -1 || [item.start, item.end].indexOf(null) === -1
-    );
+    );*/
 
     // Calculate box width
-    this.boxWidth = this.bandwidth * this.rect.width;
+    this.boxWidth = this.dispersion.bandwidth() * this.rect.width;
 
-    super.render(items);
-  }
+    return this.dispersion.render(this.rect, this.renderDataPoint);
+  },
+  beforeUpdate(opts) {
+    const {
+      settings
+    } = opts;
 
+    this.setOpts(settings);
+    this.dispersion.onData();
+  },
   renderDataPoint(item) {
     if (notNumber(item.x)) {
       return;
@@ -132,27 +146,27 @@ export default class Box extends Dispersion {
 
     item.style.box.width = Math.max(item.style.box.minWidth,
       Math.min(item.style.box.maxWidth,
-        item.style.box.width * this.bandwidth * this.rect.width))
+        item.style.box.width * this.dispersion.bandwidth() * this.rect.width))
       / this.rect.width;
 
     item.style.whisker.width = Math.max(item.style.box.minWidth,
       Math.min(item.style.box.maxWidth,
-        item.style.whisker.width * this.bandwidth * 0.5 * this.rect.width))
+        item.style.whisker.width * this.dispersion.bandwidth() * 0.5 * this.rect.width))
       / this.rect.width;
 
     if (item.style.line.show && !notNumber(item.min) && !notNumber(item.start)) {
       // Draw the line min - start
-      this.doodle.verticalLine(item.x, item.start, item.min, 'line', item.style);
+      this.dispersion.doodle().verticalLine(item.x, item.start, item.min, 'line', item.style);
     }
     if (item.style.line.show && !notNumber(item.max) && !notNumber(item.end)) {
       // Draw the line end - max (high)
-      this.doodle.verticalLine(item.x, item.max, item.end, 'line', item.style);
+      this.dispersion.doodle().verticalLine(item.x, item.max, item.end, 'line', item.style);
     }
     // Draw the box
     if (item.style.box.show && !notNumber(item.start) && !notNumber(item.end)) {
       const high = Math.max(item.start, item.end);
       const low = Math.min(item.start, item.end);
-      this.doodle.box(
+      this.dispersion.doodle().box(
         item.x,
         low,
         (high - low),
@@ -162,20 +176,18 @@ export default class Box extends Dispersion {
 
     // Draw the median line
     if (item.style.median.show && !notNumber(item.med)) {
-      this.doodle.median(item.x, item.med, item.style);
+      this.dispersion.doodle().median(item.x, item.med, item.style);
     }
 
     // Draw the whiskers
     if (item.style.whisker.show && !notNumber(item.min) && !notNumber(item.max)) {
       // Low whisker
-      this.doodle.whisker(item.x, item.min, item.style);
+      this.dispersion.doodle().whisker(item.x, item.min, item.style);
 
       // High whisker
-      this.doodle.whisker(item.x, item.max, item.style);
+      this.dispersion.doodle().whisker(item.x, item.max, item.style);
     }
   }
-}
+};
 
-export function box(...args) {
-  return new Box(...args);
-}
+export default createComponentFactory(boxMarker);

@@ -1,48 +1,40 @@
-/* eslint object-shorthand: ["error", "never"] */
 
-import {
-  pointFn
-} from '../../../../../src/core/chart-components/markers/point';
+import pointComponent from '../../../../../src/core/chart-components/markers/point';
 
 describe('point marker', () => {
-  let point,
-    renderer,
-    renderedPoints,
-    composer;
+  let point;
+  let renderedPoints;
+  let composer;
+  let shapeFn;
 
   beforeEach(() => {
-    const shape = (type, p) => { p.type = type; return p; };
-    renderer = {
-      appendTo: () => {},
-      render: p => (renderedPoints = p),
-      size: () => {}
-    };
-    const renderFn = () => renderer;
     const table = {
       findField: sinon.stub()
     };
     const dataset = {
       map: sinon.stub()
     };
+    shapeFn = (type, p) => { p.type = type; return p; };
     composer = {
+      renderer: {
+        appendTo: () => {},
+        render: p => (renderedPoints = p),
+        size: () => {}
+      },
       container: () => ({}),
       table: () => table,
       dataset: () => dataset,
       scale: sinon.stub()
     };
-    point = pointFn(renderFn, shape);
-  });
-
-  it('should create a function object', () => {
-    expect(point).to.be.a('function');
   });
 
   it('should render points with default settings', () => {
     const config = {
+      shapeFn,
       data: { mapTo: 'does not matter', groupBy: 'does not matter' }
     };
     composer.dataset().map.returns([{}]);
-    point(config, composer);
+    point = pointComponent(config, composer);
     point.resize({ x: 10, y: 20, width: 100, height: 200 });
     point.render();
     expect(renderedPoints).to.deep.equal([{
@@ -60,6 +52,7 @@ describe('point marker', () => {
 
   it('should render points with default settings when settings properties are invalid', () => {
     const config = {
+      shapeFn,
       data: { mapTo: 'does not matter', groupBy: 'does not matter' },
       settings: {
         shape: 1,
@@ -71,7 +64,7 @@ describe('point marker', () => {
       }
     };
     composer.dataset().map.returns([{}]);
-    point(config, composer);
+    point = pointComponent(config, composer);
     point.resize({ x: 10, y: 20, width: 100, height: 200 });
     point.render();
     expect(renderedPoints).to.deep.equal([{
@@ -90,6 +83,7 @@ describe('point marker', () => {
 
   it('should render points with primitive value settings', () => {
     const config = {
+      shapeFn,
       data: { mapTo: 'does not matter', groupBy: 'does not matter' },
       settings: {
         shape: 'rect',
@@ -104,7 +98,7 @@ describe('point marker', () => {
       }
     };
     composer.dataset().map.returns([{}]);
-    point(config, composer);
+    point = pointComponent(config, composer);
     point.resize({ x: 10, y: 20, width: 100, height: 200 });
     point.render();
     expect(renderedPoints).to.deep.equal([{
@@ -122,9 +116,10 @@ describe('point marker', () => {
 
   it('should render points with function settings', () => {
     const config = {
+      shapeFn,
       data: { mapTo: 'does not matter', groupBy: 'does not matter' },
       settings: {
-        shape: function () { return this.data.label; },
+        shape() { return this.data.label; },
         label: () => 'etikett',
         fill: () => 'red',
         stroke: () => 'blue',
@@ -138,7 +133,7 @@ describe('point marker', () => {
     composer.dataset().map.returns([{
       label: 'a'
     }]);
-    point(config, composer);
+    point = pointComponent(config, composer);
     point.resize({ x: 10, y: 20, width: 100, height: 200 });
     point.render();
     expect(renderedPoints).to.deep.equal([{
@@ -156,15 +151,16 @@ describe('point marker', () => {
 
   it('should render points with data settings', () => {
     const config = {
+      shapeFn,
       data: { mapTo: 'does not matter since returned data is mocked', groupBy: 'does not matter' },
       settings: {
         shape: { ref: 'shape', fn: s => s },
         label: { ref: 'label', fn: s => s },
-        fill: function () { return this.data.fill; },
+        fill() { return this.data.fill; },
         stroke: { ref: 'fill', fn: s => `stroke:${s}` },
         strokeWidth: { ref: 'm1', fn: v => v },
         opacity: { ref: 'm1', fn: v => v / 10 },
-        x: { fn: function () { return this.data.m2; } },
+        x: { fn() { return this.data.m2; } },
         y: { ref: 'm3', fn: v => v },
         size: { ref: 'm1', fn: (v, i) => i },
         minSize: 0 // Set here to avoid hitting the limit
@@ -187,7 +183,7 @@ describe('point marker', () => {
       m3: 1.2
     }]);
 
-    point(config, composer);
+    point = pointComponent(config, composer);
     point.resize({ x: 10, y: 20, width: 100, height: 200 });
     point.render();
     expect(renderedPoints).to.deep.equal([{
@@ -215,6 +211,7 @@ describe('point marker', () => {
 
   it('should render points with limited size when using discrete scale', () => {
     const config = {
+      shapeFn,
       data: { mapTo: '', groupBy: '' },
       settings: {
         x: { scale: 'whatever', ref: 'm1', fn: v => v.value },
@@ -233,7 +230,7 @@ describe('point marker', () => {
     xScale.scale = { step: () => 0.2 }; // max size: width * 0.2 -> 20
     composer.scale.onCall(0).returns(xScale);
 
-    point(config, composer);
+    point = pointComponent(config, composer);
     point.resize({ x: 10, y: 20, width: 100, height: 200 }); // point size limits: [2,20]
     point.render();
 

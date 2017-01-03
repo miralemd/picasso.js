@@ -1,4 +1,4 @@
-import rendererFactory from '../../../renderer';
+import createComponentFactory from '../../component';
 import shapeFactory from './shapes';
 import { resolveSettings } from '../../settings-setup';
 import { resolveForDataObject } from '../../../style';
@@ -206,57 +206,44 @@ function createDisplayPoints(dataPoints, { x, y, width, height }, pointSize, sha
   );
 }
 
-export function pointFn(rendererFn, shapeFn) {
-  let rect = { x: 0, y: 0, width: 0, height: 0 },
-    points,
-    local,
-    settings,
-    composer,
-    dataset,
-    data,
-    renderer;
+const pointMarker = {
+  require: ['composer'],
+  created(opts) {
+    this.rect = { x: 0, y: 0, width: 0, height: 0 };
+    this.settings = opts.settings.settings || {};
+    this.data = opts.settings.data || {};
+    this.shapeFn = opts.settings.shapeFn || shapeFactory;
+    this.onData();
+  },
+  onData() {
+    const composer = this.composer;
+    this.local = calculateLocalSettings(this.settings, composer);
+    const mapped = composer.dataset().map(this.data.mapTo, this.data.groupBy); // TODO - the mapped data should be sent in as the argument
 
-  const fn = (obj, comp) => {
-    rect = { x: 0, y: 0, width: 0, height: 0 };
-    composer = comp;
-
-    settings = obj.settings || {};
-    data = obj.data;
-    dataset = composer.dataset();
-
-    renderer = rendererFn();
-    renderer.appendTo(composer.container());
-
-    fn.onData();
-    return fn;
-  };
-
-  fn.onData = () => {
-    local = calculateLocalSettings(settings, composer);
-    const mapped = dataset.map(data.mapTo, data.groupBy); // TODO - the mapped data should be sent in as the argument
-
-    points = mapped.map((p, i) => {
-      const obj = resolveForDataObject(local, p, i);
-      obj.errorShape = resolveForDataObject(local.errorShape, p, i);
+    this.points = mapped.map((p, i) => {
+      const obj = resolveForDataObject(this.local, p, i);
+      obj.errorShape = resolveForDataObject(this.local.errorShape, p, i);
       return obj;
     });
-  };
+  },
+  beforeRender(opts) {
+    const {
+      inner
+    } = opts;
+    this.rect = inner;
+    return inner;
+  },
+  render() {
+    const { width, height } = this.rect;
+    const pointSize = getPointSizeLimits(this.local.x, this.local.y, width, height);
+    return createDisplayPoints(this.points, this.rect, pointSize, this.shapeFn);
+  }
+};
 
-  fn.render = () => {
-    const { width, height } = rect;
-    const pointSize = getPointSizeLimits(local.x, local.y, width, height);
-    const displayPoints = createDisplayPoints(points, rect, pointSize, shapeFn);
-    renderer.render(displayPoints);
-  };
+export default createComponentFactory(pointMarker);
 
-  fn.resize = (r) => {
-    rect = r;
-    renderer.size(rect);
-  };
-
-  return fn;
-}
-
+/*
 export function point(obj, composer) {
   return pointFn(rendererFactory, shapeFactory)(obj, composer);
 }
+*/
