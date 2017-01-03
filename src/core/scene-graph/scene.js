@@ -1,9 +1,25 @@
 import { create } from './display-objects';
 import Matrix from '../math/matrix';
 import resolveTransform from './transform-resolver';
+import contextFactory from './context';
+
+let styleContext = contextFactory(
+  [
+    'stroke',
+    'fill',
+    'strokeWidth',
+    'opacity',
+    'fontFamily',
+    'fontSize',
+    'baseline'
+  ]
+);
 
 function traverse(items, parent, matrix) {
   items.forEach((s) => {
+    // Save the current style context to be able to inherit styles
+    s = styleContext.save(s);
+
     const obj = create(s.type, s);
     if (obj) {
       obj.set(s);
@@ -22,10 +38,14 @@ function traverse(items, parent, matrix) {
       if (s.children) {
         traverse(s.children, obj, matrix);
       }
+
       if (s.transform) {
         matrix.restore();
       }
     }
+
+    // Revert to previous style context
+    styleContext.restore();
   });
 }
 
