@@ -50,8 +50,6 @@ export default class Dispersion {
       settings
     } = opts;
 
-    console.log('update dispersion');
-
     this.setOpts(settings);
     this.onData();
     this.render();
@@ -135,6 +133,10 @@ export default class Dispersion {
 
   static renderDataPoint(item) { // Static marker prevents eslint error
     return item;
+  }
+
+  destroy() {
+    this.renderer.destroy();
   }
 
   resize(rect) {

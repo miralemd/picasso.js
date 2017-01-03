@@ -19,8 +19,8 @@ function labelsSpacing(settings) {
   return spacing;
 }
 
-function calcActualTextRect({ style, renderer, tick }) {
-  return renderer.measureText({
+function calcActualTextRect({ style, measureText, tick }) {
+  return measureText({
     text: tick.label,
     fontSize: style.fontSize,
     fontFamily: style.fontFamily
@@ -41,25 +41,25 @@ function tickBuilder(ticks, buildOpts) {
 );
 }
 
-function labelBuilder(ticks, buildOpts, renderer) {
+function labelBuilder(ticks, buildOpts, measureText) {
   return ticks.map((tick) => {
-    buildOpts.textRect = calcActualTextRect({ tick, renderer, style: buildOpts });
+    buildOpts.textRect = calcActualTextRect({ tick, measureText, style: buildOpts });
     return buildLabel(tick, buildOpts);
   });
 }
 
-function layeredLabelBuilder(ticks, buildOpts, settings, renderer) {
+function layeredLabelBuilder(ticks, buildOpts, settings, measureText) {
   const padding = buildOpts.padding;
   const padding2 = labelsSpacing(settings) + buildOpts.maxHeight + settings.labels.margin;
   return ticks.map((tick, i) => {
     buildOpts.padding = i % 2 === 0 ? padding : padding2;
-    buildOpts.textRect = calcActualTextRect({ tick, renderer, style: buildOpts });
+    buildOpts.textRect = calcActualTextRect({ tick, measureText, style: buildOpts });
     return buildLabel(tick, buildOpts);
   });
 }
 
-function discreteCalcMaxTextRect({ renderer, settings, innerRect, scale }) {
-  const h = renderer.measureText({
+function discreteCalcMaxTextRect({ measureText, settings, innerRect, scale }) {
+  const h = measureText({
     text: 'M',
     fontSize: settings.labels.fontSize,
     fontFamily: settings.labels.fontFamily
@@ -79,8 +79,8 @@ function discreteCalcMaxTextRect({ renderer, settings, innerRect, scale }) {
   return textRect;
 }
 
-function continuousCalcMaxTextRect({ renderer, settings, innerRect, ticks }) {
-  const h = renderer.measureText({
+function continuousCalcMaxTextRect({ measureText, settings, innerRect, ticks }) {
+  const h = measureText({
     text: 'M',
     fontSize: settings.labels.fontSize,
     fontFamily: settings.labels.fontFamily
@@ -113,7 +113,7 @@ export default function nodeBuilder(type) {
     return discrete;
   }
 
-  function build({ settings, scale, innerRect, outerRect, renderer, ticks }) {
+  function build({ settings, scale, innerRect, outerRect, measureText, ticks }) {
     const nodes = [];
     const major = majorTicks(ticks);
     const minor = minorTicks(ticks);
@@ -144,7 +144,7 @@ export default function nodeBuilder(type) {
       nodes.push(...tickBuilder(minor, buildOpts));
     }
     if (settings.labels.show) {
-      const textRect = calcMaxTextRectFn({ renderer, settings, innerRect, ticks, scale });
+      const textRect = calcMaxTextRectFn({ measureText, settings, innerRect, ticks, scale });
       const padding = labelsSpacing(settings);
       buildOpts.style = settings.labels;
       buildOpts.padding = padding;
@@ -155,9 +155,9 @@ export default function nodeBuilder(type) {
       buildOpts.angle = settings.labels.tiltAngle;
 
       if (settings.labels.layered && (settings.align === 'top' || settings.align === 'bottom')) {
-        nodes.push(...layeredLabelBuilder(major, buildOpts, settings, renderer));
+        nodes.push(...layeredLabelBuilder(major, buildOpts, settings, measureText));
       } else {
-        nodes.push(...labelBuilder(major, buildOpts, renderer));
+        nodes.push(...labelBuilder(major, buildOpts, measureText));
       }
     }
     return nodes;

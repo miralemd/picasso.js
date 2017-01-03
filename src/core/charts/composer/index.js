@@ -1,4 +1,4 @@
-import buildComponents, { getComponent as getComponentFactory } from '../../chart-components/index';
+import getComponentFactory from '../../chart-components/index';
 import buildData from '../../data/index';
 import createDockLayout from '../../dock-layout/dock-layout';
 import buildFormatters, { getOrCreateFormatter } from './formatter';
@@ -55,7 +55,7 @@ export default function composer(element) {
   let currentData = null;
   let currentScales = null;
   let currentFormatters = null;
-  let currentComponents = null;
+  let currentComponents = {};
 
   let dataset = [];
   let comps = {};
@@ -66,17 +66,23 @@ export default function composer(element) {
     cc.forEach((c) => { dockLayout.addComponent(c); });
 
     const { visible, hidden } = dockLayout.layout(element);
-    visible.forEach((c) => { c.render(); });
-    hidden.forEach((c) => { if (c.hide) { c.hide(); } });
+    visible.forEach((c) => {
+      c.render();
+    });
+    hidden.forEach((c) => {
+      if (c.hide) {
+        c.hide();
+      }
+    });
   }
 
   const fn = function () {};
 
   fn.render = function (data, settings) {
     const {
-      formatters,
-      scales,
-      components
+      formatters = {},
+      scales = {},
+      components = []
     } = settings;
     dockLayout = createDockLayout();
     dockLayout.settings(dockLayout);
@@ -86,23 +92,18 @@ export default function composer(element) {
     currentScales = buildScales(scales, fn);
     currentFormatters = buildFormatters(formatters, fn);
 
-    if (Array.isArray(components)) {
-      let keyIdx = 0;
-      components.forEach((component) => {
-        if (!component.key) {
-          // throw new Error('No key found on component');
-          component.key = keyIdx; // TODO sync in update function
-          keyIdx++;
-        }
-        const factoryFn = getComponentFactory(component.type);
-        const componentInstance = factoryFn(component, fn);
-        comps[component.key] = componentInstance;
-      });
-      currentComponents = components;
-    } else {
-      comps = buildComponents(components, fn);
-      // Object.keys(builtComponents).forEach((key) => components[key] = buildComponents[key]);
-    }
+    let keyIdx = 0;
+    components.forEach((component) => {
+      if (!component.key) {
+        // throw new Error('No key found on component');
+        component.key = keyIdx; // TODO sync in update function
+        keyIdx++;
+      }
+      const factoryFn = getComponentFactory(component.type);
+      const componentInstance = factoryFn(component, fn);
+      comps[component.key] = componentInstance;
+    });
+    currentComponents = components;
 
     render();
   };
@@ -180,7 +181,14 @@ export default function composer(element) {
     });
     removed.forEach((compSettings) => {
       const componentInstance = comps[compSettings.key];
-      componentInstance.destroy(); // TODO
+      componentInstance.destroy();
+    });
+  };
+
+  fn.destroy = () => {
+    Object.keys(comps).forEach((key) => {
+      const comp = comps[key];
+      comp.destroy();
     });
   };
 
