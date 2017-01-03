@@ -52,4 +52,20 @@ describe('Context', () => {
     expect(context.notInherited).to.be.equal(2);
     expect(context.onlyOnSecondLevel).to.be.equal(undefined);
   });
+
+  it('should handle overwriting values correctly', () => {
+    let session = contextFactory(['inherited', 'inheritedTwo']);
+
+    let context = session();
+
+    // First level
+    context = session.save({ inherited: true, inheritedTwo: 2 });
+
+    // Second level
+    context = session.save({ inherited: 'test123' });
+
+    // inherited should be overwritten while inheritedTwo should remain the same
+    expect(context.inherited).to.be.equal('test123');
+    expect(context.inheritedTwo).to.be.equal(2);
+  });
 });
