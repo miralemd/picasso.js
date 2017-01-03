@@ -7,7 +7,19 @@ class DisplayObject extends Node {
     this._attrs = {};
   }
 
-  set({ fill, stroke, strokeWidth, fontFamily, fontSize, baseline, anchor, maxWidth, opacity, transform }) {
+  set({
+    fill,
+    stroke,
+    strokeWidth,
+    fontFamily,
+    fontSize,
+    baseline,
+    anchor,
+    maxWidth,
+    opacity,
+    transform,
+    data
+  }) {
     const attrs = this.attrs;
     if (typeof fill !== 'undefined') {
       attrs.fill = fill;
@@ -38,6 +50,9 @@ class DisplayObject extends Node {
     }
     if (typeof transform !== 'undefined') {
       attrs.transform = transform;
+    }
+    if (typeof data !== 'undefined') {
+      this.data = data;
     }
   }
 

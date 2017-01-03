@@ -8,8 +8,9 @@ export default class Line extends DisplayObject {
     this.set(...s);
   }
 
-  set({ x1, y1, x2, y2, strokeWidth, stroke, opacity, transform }) {
-    super.set({ strokeWidth, stroke, opacity, transform });
+  set(v) {
+    const { x1, y1, x2, y2 } = v;
+    super.set(v);
     this.attrs.x1 = x1;
     this.attrs.y1 = y1;
     this.attrs.x2 = x2;

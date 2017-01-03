@@ -34,6 +34,16 @@ const maintainer = (element, item) => {
       element.setAttribute(attr, item.attrs[attr]);
     }
   }
+
+  if (typeof item.data === 'string' || typeof item.data === 'number' || typeof item.data === 'boolean') {
+    element.setAttribute('data', item.data);
+  } else if (typeof item.data === 'object' && item.data !== null) {
+    for (const d in item.data) {
+      if (typeof item.data[d] === 'string' || typeof item.data[d] === 'number' || typeof item.data[d] === 'boolean') {
+        element.setAttribute(`data-${d}`, item.data[d]);
+      }
+    }
+  }
 };
 
 export {

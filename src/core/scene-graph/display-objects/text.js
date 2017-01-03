@@ -6,8 +6,9 @@ export default class Text extends DisplayObject {
     this.set(...s);
   }
 
-  set({ x, y, dx, dy, text, anchor, fontFamily, fontSize, fill, baseline, maxWidth, opacity, transform }) {
-    super.set({ anchor, fontFamily, fontSize, fill, baseline, maxWidth, opacity, transform });
+  set(v) {
+    const { x, y, dx, dy, text } = v;
+    super.set(v);
     this.attrs.x = x;
     this.attrs.y = y;
     this.attrs.dx = dx || 0;

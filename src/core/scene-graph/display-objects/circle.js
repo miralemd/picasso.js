@@ -8,8 +8,9 @@ export default class Circle extends DisplayObject {
     this.set(...s);
   }
 
-  set({ cx, cy, r, fill, stroke, strokeWidth, opacity, transform }) {
-    super.set({ fill, stroke, strokeWidth, opacity, transform });
+  set(v) {
+    const { cx, cy, r } = v;
+    super.set(v);
     this.attrs.cx = cx;
     this.attrs.cy = cy;
     this.attrs.r = r;
