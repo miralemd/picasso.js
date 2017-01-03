@@ -102,15 +102,18 @@ export default function componentFactory(definition) {
       });
       if (newSize) { // TODO temporary
         rend.size(newSize);
+      } else {
+        rend.size(inner);
       }
     };
 
     fn.render = () => {
-      let renderArg = {};
+      const renderArgs = rend.renderArgs ? rend.renderArgs.slice(0) : [];
+      renderArgs.push({});
       if (settings.data) {
-        renderArg.data = brushArgs.data = composer.dataset().map(settings.data.mapTo, settings.data.groupBy);
+        renderArgs[renderArgs.length - 1].data = brushArgs.data = composer.dataset().map(settings.data.mapTo, settings.data.groupBy);
       }
-      const nodes = brushArgs.nodes = render.call(context, renderArg);
+      const nodes = brushArgs.nodes = render.call(context, ...renderArgs);
       rend.render(nodes);
 
       if (!hasRendered) {
@@ -136,7 +139,8 @@ export default function componentFactory(definition) {
         dataset: context.dataset
       });
 
-      const nodes = render.call(context);
+      const renderArgs = rend.renderArgs || [];
+      const nodes = render.call(context, ...renderArgs);
       rend.render(nodes);
 
       updated.call(context);

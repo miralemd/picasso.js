@@ -33,6 +33,9 @@ function element(name) {
       el.parentNode = this;
       el.parentElement = this;
     },
+    get firstChild() {
+      return this.children[0];
+    },
     removeChild(el) {
       this.children.splice(this.children.indexOf(el), 1);
       el.parentNode = null;
