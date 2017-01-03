@@ -1,4 +1,4 @@
-import { getComponent as getComponentFactory } from '../../chart-components/index';
+import getComponentFactory from '../../chart-components/index';
 import buildData from '../../data/index';
 import createDockLayout from '../../dock-layout/dock-layout';
 import buildFormatters, { getOrCreateFormatter } from './formatter';

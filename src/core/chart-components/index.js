@@ -19,21 +19,9 @@ reg.register('grid-line', (settings, composer) => gridFactory([extend({}, settin
 reg.register('text', textComponent);
 reg.register('axis', axisComponent);
 
-function register(name, componentFactory) {
-  reg.register(name, componentFactory);
-}
-
-function component(name, definition) {
-  reg.register(name, createComponentFactory(definition));
-}
-
-function getComponent(name) {
+export default function component(name, definition) {
+  if (definition) {
+    reg.register(name, createComponentFactory(definition));
+  }
   return reg.get(name);
 }
-
-export {
-  component,
-  getComponent,
-  register
-};
-
