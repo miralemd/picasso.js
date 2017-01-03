@@ -7,7 +7,7 @@ import extend from 'extend';
  * @return {Function}               A context function
  */
 export default function contextFactory(whitelist = []) {
-  let contexts = [{}];
+  let states = [{}];
 
   /**
    * Returns the current context as an object. The object is mutable.
@@ -16,7 +16,7 @@ export default function contextFactory(whitelist = []) {
    */
   function context() {
     // Returns the current context, the last in the stack.
-    let item = contexts[contexts.length - 1];
+    let item = states[states.length - 1];
     return item;
   }
 
@@ -41,7 +41,7 @@ export default function contextFactory(whitelist = []) {
     extend(obj, item);
 
     // Push it to the stack
-    contexts.push(obj);
+    states.push(obj);
 
     // Return the new current context
     return context();
@@ -50,14 +50,11 @@ export default function contextFactory(whitelist = []) {
   /**
    * Restore the previous context. Returns the context.
    *
-   * @return {Object}   Returns the current context, just as context()
+   * @return {Undefined}   Returns nothing
    */
   context.restore = function restore() {
-    // Pop the last element from the stack
-    contexts.pop();
-
-    // Return the new current context
-    return context();
+    // Remove the last element from the stack
+    states.splice(states.length - 1, 1);
   };
 
   return context;

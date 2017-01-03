@@ -22,7 +22,8 @@ describe('Context', () => {
     expect(context.onlyOnSecondLevel).to.be.equal(1337);
 
     // First level again
-    context = session.restore();
+    session.restore();
+    context = session();
 
     expect(context.inherited).to.be.equal(true);
     expect(context.notInherited).to.be.equal(2);
@@ -46,7 +47,8 @@ describe('Context', () => {
     expect(context.onlyOnSecondLevel).to.be.equal(1337);
 
     // First level again
-    context = session.restore();
+    session.restore();
+    context = session();
 
     expect(context.inherited).to.be.equal(true);
     expect(context.notInherited).to.be.equal(2);
