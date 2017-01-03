@@ -40,6 +40,16 @@ describe('Tick generators', () => {
       expect(ticks[1].position).to.equal(0.3);
     });
 
+    it('should only generate ticks by values that are witin the domain', () => {
+      settings.ticks.values = [-100, -0.1, 0.1, 0.3, 1.1, 123, 2130];
+      const ticks = generateContinuousTicks(input);
+      const expected = [
+        { position: 0.1, label: '0.1', isMinor: false },
+        { position: 0.3, label: '0.3', isMinor: false }
+      ];
+      expect(ticks).to.deep.equal(expected);
+    });
+
     it('should generate ticks by count', () => {
       settings.ticks.count = 10;
       const ticks = generateContinuousTicks(input);

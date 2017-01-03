@@ -1,23 +1,23 @@
 import { looseDistanceBasedGenerator, tightDistanceBasedGenerator } from '../../scales/linear';
 
 function ticksByCount({ count, minorCount, scale, formatter }) {
-  return scale._scale.ticks(((count - 1) * minorCount) + count).map((tick, i) =>
-   ({
-     position: scale.get(tick),
-     label: formatter(tick),
-     isMinor: i % (minorCount + 1) !== 0
-   })
-);
+  return scale._scale
+  .ticks(((count - 1) * minorCount) + count)
+  .map((tick, i) => ({
+    position: scale.get(tick),
+    label: formatter(tick),
+    isMinor: i % (minorCount + 1) !== 0
+  }));
 }
 
 function ticksByValue({ values, scale, formatter }) {
-  return values.map(tick =>
- ({
-   position: scale.get(tick),
-   label: formatter(tick),
-   isMinor: false
- })
-);
+  return values
+    .filter(v => v <= scale.max() && v >= scale.min())
+    .map(tick => ({
+      position: scale.get(tick),
+      label: formatter(tick),
+      isMinor: false
+    }));
 }
 
 function forceTicksAtBounds(ticks, scale, formatter) {
