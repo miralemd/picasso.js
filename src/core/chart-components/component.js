@@ -39,7 +39,6 @@ export default function componentFactory(definition) {
     const rend = renderer ? rendererFn(renderer) : composer.renderer || rendererFn();
 
     const context = {
-      dock,
       dataset: composer.dataset()
       // measureText: rend.measureText,
       // forceUpdate: () => {}

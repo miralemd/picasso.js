@@ -101,8 +101,12 @@ function generateTitle({
 
 
 const textComponent = {
+  require: ['measureText', 'dockConfig'],
   created(opts) {
     this.settings = {
+      dock: 'bottom',
+      displayOrder: 99,
+      prioOrder: 0,
       anchor: 'center',
       paddingStart: 5,
       paddingEnd: 5,
@@ -115,7 +119,17 @@ const textComponent = {
       },
       join: ', '
     };
+
     extend(this.settings, opts.settings.settings || {});
+
+    ['dock', 'displayOrder', 'prioOrder'].forEach((prop) => {
+      if (typeof opts.settings[prop] !== 'undefined') {
+        this.settings[prop] = opts.settings[prop];
+      }
+      // Override the dock config (TODO should be refactored)
+      this.dockConfig[prop] = this.settings[prop];
+    });
+
     this.rect = {
       x: 0,
       y: 0,
@@ -127,10 +141,6 @@ const textComponent = {
     const join = opts.settings.settings && opts.settings.settings.join;
     this.title = parseTitle(text, join, table, this.scale);
   },
-  dock: 'bottom',
-  displayOrder: 99,
-  prioOrder: 0,
-  require: ['measureText'],
   preferredSize() {
     const height = this.measureText({
       text: this.title,
@@ -151,13 +161,12 @@ const textComponent = {
       measureText,
       title,
       settings,
-      rect,
-      dock
+      rect
     } = this;
     const nodes = [];
     nodes.push(generateTitle({
       title,
-      dock,
+      dock: this.dockConfig.dock,
       settings,
       rect,
       measureText
