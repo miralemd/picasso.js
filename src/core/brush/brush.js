@@ -132,6 +132,24 @@ export default function brush({
   };
 
   /**
+   * Toggles a primitive value in this brush context
+   *
+   * If the given value exist in this brush context, it will be removed. If it does not exist it will be added.
+   *
+   * @param  {string} key  An identifier that represents the data source of the value
+   * @param  {string|number} value The value to toggle
+   * @example
+   * brush.toggleValue('countries', 'Sweden');
+   */
+  fn.toggleValue = (key, value) => {
+    if (!values[key] || !values[key].contains(value)) {
+      fn.addValue(key, value);
+    } else {
+      fn.removeValue(key, value);
+    }
+  };
+
+  /**
    * Checks if a certain value exists in this brush context
    *
    * Returns true if the values exists for the provided key, returns false otherwise.

@@ -1,6 +1,6 @@
 import brush from '../../../../src/core/brush/brush';
 
-describe('brush', () => {
+describe.only('brush', () => {
   const noop = () => {};
   let sandbox;
   let vc;
@@ -172,6 +172,44 @@ describe('brush', () => {
       bb.removeValue('garage', 'Car');
       expect(v.remove).to.have.been.calledWith('Car');
       expect(cb.callCount).to.equal(0);
+    });
+  });
+
+  describe('toggleValue', () => {
+    let v;
+    let vcc;
+    let bb;
+    beforeEach(() => {
+      v = {
+        add: sandbox.stub(),
+        contains: sandbox.stub()
+      };
+      vcc = sandbox.stub().returns(v);
+      bb = brush({ vc: vcc, rc: noop });
+    });
+
+    it('should call addValue if key does not exist', () => {
+      let addValue = sandbox.stub(bb, 'addValue');
+      bb.toggleValue('garage', 'Car');
+      expect(addValue).to.have.been.calledWith('garage', 'Car');
+    });
+
+    it('should call addValue if value does not exist', () => {
+      bb.addValue('garage', 'Car');
+      let addValue = sandbox.stub(bb, 'addValue');
+      v.contains.returns(false);
+      bb.toggleValue('garage', 'Bike');
+      expect(addValue).to.have.been.calledWith('garage', 'Bike');
+      expect(v.contains).to.have.been.calledWith('Bike');
+    });
+
+    it('should call removeValue if value exists', () => {
+      bb.addValue('garage', 'Car');
+      let removeValue = sandbox.stub(bb, 'removeValue');
+      v.contains.returns(true);
+      bb.toggleValue('garage', 'Bike');
+      expect(removeValue).to.have.been.calledWith('garage', 'Bike');
+      expect(v.contains).to.have.been.calledWith('Bike');
     });
   });
 
