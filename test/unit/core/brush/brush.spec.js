@@ -1,6 +1,6 @@
 import brush from '../../../../src/core/brush/brush';
 
-describe.only('brush', () => {
+describe('brush', () => {
   const noop = () => {};
   let sandbox;
   let vc;
