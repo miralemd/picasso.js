@@ -13,6 +13,7 @@ dependencies:
         - npm install
     post:
         - npm run build
+        - cd docs && npm run docs
 
 test:
     override:
