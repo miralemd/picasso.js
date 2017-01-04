@@ -110,6 +110,27 @@ const axisComponent = {
 
     return reqSize;
   },
+  beforeUpdate(opts = {}) {
+    const {
+      settings
+    } = opts;
+    this.init(settings);
+  },
+  beforeRender(opts) {
+    const {
+      inner,
+      outer
+    } = opts;
+    const extendedInner = {};
+    extend(extendedInner, inner, alignTransform({
+      align: this.settings.align,
+      inner
+    }));
+    const finalOuter = outer || extendedInner;
+    extend(this.innerRect, extendedInner);
+    extend(this.outerRect, finalOuter);
+    return outer;
+  },
   render() {
     const {
       formatter,
@@ -141,31 +162,6 @@ const axisComponent = {
     crispify.multiple(nodes);
 
     return nodes;
-  },
-  update(opts = {}) {
-    // axisConfig = opts.settings;
-    // layoutConfig = dockConfig();
-    // continuous.dockConfig = layoutConfig;
-    // discrete.dockConfig = layoutConfig;
-    // dataScale = composer.scale(axisConfig);
-    // scale = dataScale.scale;
-    // type = dataScale.type;
-    this.init(opts.settings);
-  },
-  beforeRender(opts) {
-    const {
-      inner,
-      outer
-    } = opts;
-    const extendedInner = {};
-    extend(extendedInner, inner, alignTransform({
-      align: this.settings.align,
-      inner
-    }));
-    const finalOuter = outer || extendedInner;
-    extend(this.innerRect, extendedInner);
-    extend(this.outerRect, finalOuter);
-    return outer;
   }
 };
 
