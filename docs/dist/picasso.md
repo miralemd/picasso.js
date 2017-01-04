@@ -92,13 +92,6 @@ Chart instance factory function
 | chart |  | Chart definition |No|
 
 Update the chart with new settings and / or data  
-#### <a name='instanceFn~instance.brush' href='#instanceFn~instance.brush'>#</a> instanceFn.**brush**()
-
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| Returns | data-brush |  | ... |
-
-The brush context for this chart  
 #### <a name='picasso.chart' href='#picasso.chart'>#</a> **chart**(*Chart.Props settings*)
 
 |Name|Type|Description|Optional|
