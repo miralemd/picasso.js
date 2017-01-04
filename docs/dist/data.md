@@ -1,10 +1,5 @@
-# Data
-
-## In this file:
-
 * <a href="#module.exports">module.exports</a>
 
-## Fields
 
 #### <a name='module.exports' href='#module.exports'>#</a> **field**()
 
