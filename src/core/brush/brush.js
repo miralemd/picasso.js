@@ -56,9 +56,13 @@ export default function brush({
    * Clears this brush context
    */
   fn.clear = () => {
+    const hasChanged = Object.keys(ranges).length + Object.keys(values).length > 0;
+    let removed = fn.brushes().filter(b => b.type === 'value').map(b => ({ id: b.id, values: b.values }));
     ranges = {};
     values = {};
-    fn.emit('update'); // TODO - do not emit update if state hasn't changed
+    if (hasChanged) {
+      fn.emit('update', [], removed); // TODO - do not emit update if state hasn't changed
+    }
   };
 
   /**
@@ -107,7 +111,7 @@ export default function brush({
     }
 
     if (values[key].add(value)) {
-      fn.emit('update');
+      fn.emit('update', [{ id: key, values: [value] }], []);
     }
   };
 
@@ -127,7 +131,7 @@ export default function brush({
     }
 
     if (values[key].remove(value)) {
-      fn.emit('update');
+      fn.emit('update', [], [{ id: key, values: [value] }]);
     }
   };
 

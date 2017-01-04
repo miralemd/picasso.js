@@ -74,6 +74,14 @@ describe('brush', () => {
       b.end();
       expect(b.isActive()).to.equal(false);
     });
+
+    it('should emit an "update" event when state changes', () => {
+      const cb = sandbox.spy();
+      b.on('update', cb);
+      vc.add.returns(true);
+      b.addValue('products', 'cars');
+      expect(cb).to.have.been.calledWith([{ id: 'products', values: ['cars'] }], []);
+    });
   });
 
   describe('brushes', () => {
@@ -318,8 +326,16 @@ describe('brush', () => {
   });
 
   describe('clear', () => {
-    it('should emit an "update" event', () => {
+    it('should not emit an "update" event when state has not changed', () => {
       const cb = sandbox.spy();
+      b.on('update', cb);
+      b.clear();
+      expect(cb.callCount).to.equal(0);
+    });
+
+    it('should emit an "update" event when state changed', () => {
+      const cb = sandbox.spy();
+      b.addValue('products', 'whatevz');
       b.on('update', cb);
       b.clear();
       expect(cb.callCount).to.equal(1);
