@@ -1,6 +1,8 @@
-// import extend from 'extend';
-
 import rendererFn from '../renderer/index';
+import {
+  highlighter
+  // brushDataPoint
+} from './brushing';
 
 const isReservedProperty = prop => ['on', 'dock', 'displayOrder', 'prioOrder', 'minimumLayoutMode', 'renderer', 'preferredSize', 'created', 'beforeMount', 'mounted',
   'beforeUpdate', 'updated', 'beforeRender', 'render', 'beforeDestroy', 'destroyed'
@@ -27,6 +29,12 @@ export default function componentFactory(definition) {
 
     let settings = config;
     let element;
+    let brushArgs = {
+      data: [],
+      nodes: [],
+      composer,
+      renderer: null
+    };
     let hasRendered = false;
 
     // General settings variables (reserved properties)
@@ -38,6 +46,7 @@ export default function componentFactory(definition) {
     } = settings;
 
     const rend = renderer ? rendererFn(renderer) : composer.renderer || rendererFn();
+    brushArgs.renderer = rend;
 
     const context = {
       dataset: composer.dataset()
@@ -97,11 +106,16 @@ export default function componentFactory(definition) {
     };
 
     fn.render = () => {
-      const nodes = render.call(context);
+      let renderArg = {};
+      if (settings.data) {
+        renderArg.data = brushArgs.data = composer.dataset().map(settings.data.mapTo, settings.data.groupBy);
+      }
+      const nodes = brushArgs.nodes = render.call(context, renderArg);
       rend.render(nodes);
 
       if (!hasRendered) {
         hasRendered = true;
+        highlighter(brushArgs);
         mounted.call(context, element);
       }
     };
@@ -165,6 +179,17 @@ export default function componentFactory(definition) {
       };
       element.addEventListener(key, listener);
     });
+
+    // // ===== temporary solution to try out interactive brushing (assuming svg renderer)
+    // element.addEventListener('click', (e) => {
+    //   brushDataPoint({ e, brushType: 'highlight', action: 'toggle', composer, data: brushArgs.data });
+    // });
+    //
+    // element.addEventListener('mousemove', (e) => {
+    //   brushDataPoint({ e, brushType: 'hover', action: 'add', composer, data: brushArgs.data });
+    // });
+    // ===== end temporary solution
+
     // end skip
 
     return fn;

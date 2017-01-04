@@ -3,6 +3,7 @@ import buildData from '../../data/index';
 import createDockLayout from '../../dock-layout/dock-layout';
 import buildFormatters, { getOrCreateFormatter } from './formatter';
 import buildScales, { getOrCreateScale } from './scales';
+import brush from '../../brush';
 
 function flattenComponents(c) {
   const chartComponents = [];
@@ -59,6 +60,7 @@ export default function composer(element) {
 
   let dataset = [];
   let comps = {};
+  let brushes = {};
   let dockLayout = null;
 
   function render() {
@@ -89,6 +91,7 @@ export default function composer(element) {
 
     currentData = data;
     dataset = buildData(data);
+    brushes = {};
     currentScales = buildScales(scales, fn);
     currentFormatters = buildFormatters(formatters, fn);
 
@@ -122,6 +125,13 @@ export default function composer(element) {
 
   fn.formatters = function () {
     return currentFormatters;
+  };
+
+  fn.brush = function (name = 'default') {
+    if (!brushes[name]) {
+      brushes[name] = brush();
+    }
+    return brushes[name];
   };
 
   fn.container = function () {

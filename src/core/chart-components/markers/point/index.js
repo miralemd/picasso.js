@@ -192,7 +192,7 @@ function createDisplayPoints(dataPoints, { x, y, width, height }, pointSize, sha
   ).map((p) => {
     const s = notNumber(p.size) ? p.errorShape : p;
     const size = pointSize[0] + (s.size * (pointSize[1] - pointSize[0])); // TODO - replace with scale
-    return shapeFn(s.shape, {
+    let shape = shapeFn(s.shape, {
       label: p.label,
       x: p.x * width,
       y: p.y * height,
@@ -202,8 +202,10 @@ function createDisplayPoints(dataPoints, { x, y, width, height }, pointSize, sha
       strokeWidth: s.strokeWidth,
       opacity: p.opacity
     });
-  }
-  );
+
+    shape.data = p.dataIndex;
+    return shape;
+  });
 }
 
 const pointMarker = {
@@ -218,13 +220,6 @@ const pointMarker = {
   onData() {
     const composer = this.composer;
     this.local = calculateLocalSettings(this.settings, composer);
-    const mapped = composer.dataset().map(this.data.mapTo, this.data.groupBy); // TODO - the mapped data should be sent in as the argument
-
-    this.points = mapped.map((p, i) => {
-      const obj = resolveForDataObject(this.local, p, i);
-      obj.errorShape = resolveForDataObject(this.local.errorShape, p, i);
-      return obj;
-    });
   },
   beforeUpdate(opts) {
     const {
@@ -241,10 +236,16 @@ const pointMarker = {
     this.rect = inner;
     return inner;
   },
-  render() {
+  render({ data }) {
     const { width, height } = this.rect;
+    const points = data.map((p, i) => {
+      const obj = resolveForDataObject(this.local, p, i);
+      obj.errorShape = resolveForDataObject(this.local.errorShape, p, i);
+      obj.dataIndex = i;
+      return obj;
+    });
     const pointSize = getPointSizeLimits(this.local.x, this.local.y, width, height);
-    return createDisplayPoints(this.points, this.rect, pointSize, this.shapeFn);
+    return createDisplayPoints(points, this.rect, pointSize, this.shapeFn);
   }
 };
 
