@@ -5,8 +5,8 @@
 * <a href="#Chart.Props">Chart.Props</a>
 * <a href="#Chart.SettingsProps">Chart.SettingsProps</a>
 * <a href="#Chart.ScaleProps">Chart.ScaleProps</a>
-* <a href="#instanceFn">instanceFn</a>
-* <a href="#instanceFn~instance.update">instanceFn~instance.update</a>
+* <a href="#createInstance">createInstance</a>
+* <a href="#createInstance~instance.update">createInstance~instance.update</a>
 * <a href="#picasso.chart">picasso.chart</a>
 
 #### <a name='Chart.Props' href='#Chart.Props'>#</a> Props
@@ -79,13 +79,13 @@
   invert: true
 }
 ```
-#### <a name='instanceFn' href='#instanceFn'>#</a> **instanceFn**()
+#### <a name='createInstance' href='#createInstance'>#</a> **createInstance**()
 
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|
 
 Chart instance factory function  
-#### <a name='instanceFn~instance.update' href='#instanceFn~instance.update'>#</a> instanceFn.**update**(* chart*)
+#### <a name='createInstance~instance.update' href='#createInstance~instance.update'>#</a> createInstance.**update**(* chart*)
 
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|
