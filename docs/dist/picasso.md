@@ -9,6 +9,7 @@
 * <a href="#createInstance~instance.update">createInstance~instance.update</a>
 * <a href="#picasso.chart">picasso.chart</a>
 
+
 #### <a name='Chart.Props' href='#Chart.Props'>#</a> Props
 
 |Name(s)|Type(s)|Description|Optional|

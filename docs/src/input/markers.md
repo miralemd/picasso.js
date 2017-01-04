@@ -1,3 +1,8 @@
+# Markers
+
+## Table of contents:
+{{postprocess 'index'}}
+
 ## Point marker
 
 {{>magic ctx='core.chart-components.markers.point.index-js'}}

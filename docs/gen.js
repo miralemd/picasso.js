@@ -17,6 +17,9 @@ const JSDOC_INPUT = 'src/docs.json';
 const MD_TEMPLATES_FOLDER = 'src/templates/';
 const MD_INPUT_FOLDER = 'src/input/';
 const MD_OUTPUT_FOLDER = 'dist/';
+const POSTPROCESS_ROOT = 'src/';
+
+let toPostProcess = [];
 
 function fixPath(str) {
   let find = '/picasso.js/src';
@@ -76,6 +79,9 @@ function getJSDOCData(inputFile) {
 
 let jsdoc = getJSDOCData(JSDOC_INPUT);
 
+/**
+ * TEMPLATES
+ */
 function registerTemplates(cb) {
   glob(`${MD_TEMPLATES_FOLDER}**/*.md`, {}, (err, files) => {
     files.forEach((file) => {
@@ -91,9 +97,32 @@ function registerTemplates(cb) {
 
 handlebars.registerHelper('undefinedpartial', () => 'This partial does not exists. This may most certainly be caused by a missing file.');
 
-function compileMarkdownFiles(jsdocdata) {
-  let header = handlebars.compile(fs.readFileSync(path.resolve('./src/header.md')).toString());
+/**
+ * POSTPROCESS
+ */
+function postProcessTemplate(item) {
+  return `#%#%#%#%# DOCS-GEN-POSTPROCESS: ${item} #%#%#%#%#`;
+}
 
+handlebars.registerHelper('postprocess', (item) => {
+  toPostProcess.push(item);
+
+  return postProcessTemplate(item);
+});
+
+function doPostProcess(content, jsdocdata) {
+  toPostProcess.forEach((item) => {
+    let itemTemplate = handlebars.compile(fs.readFileSync(path.resolve(`${POSTPROCESS_ROOT}${item}.md`)).toString());
+
+    content = content.replace(postProcessTemplate(item), itemTemplate(jsdocdata));
+  });
+  return content;
+}
+
+/**
+ * COMPILATION OF INPUT FOLDER FILES
+ */
+function compileMarkdownFiles(jsdocdata) {
   glob(`${MD_INPUT_FOLDER}/**/*.md`, {}, (err, files) => {
     files.forEach((file) => {
       file = path.resolve(file);
@@ -107,15 +136,11 @@ function compileMarkdownFiles(jsdocdata) {
       domkdir(MD_OUTPUT_FOLDER + relativePath, true);
 
       jsdocdata.registry = [];
+      jsdocdata.title = title;
 
       let output = template(jsdocdata);
 
-      let headerData = {
-        registry: jsdocdata.registry,
-        title
-      };
-
-      output = header(headerData) + output;
+      output = doPostProcess(output, jsdocdata);
 
       fs.writeFileSync(MD_OUTPUT_FOLDER + relativePath, output);
     });

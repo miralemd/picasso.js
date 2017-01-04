@@ -1,7 +1,6 @@
 # Markers
 
-## In this file:
-
+## Table of contents:
 * <a href="#marker-point">marker-point</a>
 * <a href="#marker-point-settings">marker-point-settings</a>
 * <a href="#marker-point-string">marker-point-string</a>
@@ -12,6 +11,7 @@
 * <a href="#marker-box">marker-box</a>
 * <a href="#marker-box-settings">marker-box-settings</a>
 * <a href="#marker-box-data">marker-box-data</a>
+
 
 ## Point marker
 
