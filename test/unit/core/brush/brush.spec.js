@@ -74,6 +74,14 @@ describe('brush', () => {
       b.end();
       expect(b.isActive()).to.equal(false);
     });
+
+    it('should emit an "update" event when state changes', () => {
+      const cb = sandbox.spy();
+      b.on('update', cb);
+      vc.add.returns(true);
+      b.addValue('products', 'cars');
+      expect(cb).to.have.been.calledWith([{ id: 'products', values: ['cars'] }], []);
+    });
   });
 
   describe('brushes', () => {
@@ -172,6 +180,44 @@ describe('brush', () => {
       bb.removeValue('garage', 'Car');
       expect(v.remove).to.have.been.calledWith('Car');
       expect(cb.callCount).to.equal(0);
+    });
+  });
+
+  describe('toggleValue', () => {
+    let v;
+    let vcc;
+    let bb;
+    beforeEach(() => {
+      v = {
+        add: sandbox.stub(),
+        contains: sandbox.stub()
+      };
+      vcc = sandbox.stub().returns(v);
+      bb = brush({ vc: vcc, rc: noop });
+    });
+
+    it('should call addValue if key does not exist', () => {
+      let addValue = sandbox.stub(bb, 'addValue');
+      bb.toggleValue('garage', 'Car');
+      expect(addValue).to.have.been.calledWith('garage', 'Car');
+    });
+
+    it('should call addValue if value does not exist', () => {
+      bb.addValue('garage', 'Car');
+      let addValue = sandbox.stub(bb, 'addValue');
+      v.contains.returns(false);
+      bb.toggleValue('garage', 'Bike');
+      expect(addValue).to.have.been.calledWith('garage', 'Bike');
+      expect(v.contains).to.have.been.calledWith('Bike');
+    });
+
+    it('should call removeValue if value exists', () => {
+      bb.addValue('garage', 'Car');
+      let removeValue = sandbox.stub(bb, 'removeValue');
+      v.contains.returns(true);
+      bb.toggleValue('garage', 'Bike');
+      expect(removeValue).to.have.been.calledWith('garage', 'Bike');
+      expect(v.contains).to.have.been.calledWith('Bike');
     });
   });
 
@@ -280,8 +326,16 @@ describe('brush', () => {
   });
 
   describe('clear', () => {
-    it('should emit an "update" event', () => {
+    it('should not emit an "update" event when state has not changed', () => {
       const cb = sandbox.spy();
+      b.on('update', cb);
+      b.clear();
+      expect(cb.callCount).to.equal(0);
+    });
+
+    it('should emit an "update" event when state changed', () => {
+      const cb = sandbox.spy();
+      b.addValue('products', 'whatevz');
       b.on('update', cb);
       b.clear();
       expect(cb.callCount).to.equal(1);

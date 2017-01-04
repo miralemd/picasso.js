@@ -21,6 +21,9 @@ describe('point marker', () => {
         render: p => (renderedPoints = p),
         size: () => {}
       },
+      brush: () => ({
+        on: () => {}
+      }),
       container: () => ({}),
       table: () => table,
       dataset: () => dataset,
@@ -46,7 +49,8 @@ describe('point marker', () => {
       size: 7.75,
       stroke: '#ccc',
       strokeWidth: 0,
-      opacity: 1
+      opacity: 1,
+      data: 0
     }]);
   });
 
@@ -76,7 +80,8 @@ describe('point marker', () => {
       size: 7.75,
       stroke: '#ccc',
       strokeWidth: 0,
-      opacity: 1
+      opacity: 1,
+      data: 0
     }]);
   });
 
@@ -110,7 +115,8 @@ describe('point marker', () => {
       size: 37,
       stroke: 'blue',
       strokeWidth: 2,
-      opacity: 0.7
+      opacity: 0.7,
+      data: 0
     }]);
   });
 
@@ -145,7 +151,8 @@ describe('point marker', () => {
       size: 37,
       stroke: 'blue',
       strokeWidth: 2,
-      opacity: 0.7
+      opacity: 0.7,
+      data: 0
     }]);
   });
 
@@ -195,7 +202,8 @@ describe('point marker', () => {
       size: 1, // min value of [1,10]
       stroke: 'stroke:red',
       strokeWidth: 5,
-      opacity: 0.5
+      opacity: 0.5,
+      data: 0
     }, {
       type: 'rect',
       label: 'tvåa',
@@ -205,7 +213,8 @@ describe('point marker', () => {
       size: 10, // max value of [1,10]
       stroke: 'stroke:green',
       strokeWidth: 4,
-      opacity: 0.4
+      opacity: 0.4,
+      data: 1
     }]);
   });
 

@@ -129,6 +129,12 @@ function createInstance(definition) {
     delete instance.destroy;
   };
 
+  /**
+   * The brush context for this chart
+   * @return {data-brush}
+   */
+  instance.brush = (...v) => composer.brush(...v);
+
   if (element) {
     mount(element);
     instance.element = element;

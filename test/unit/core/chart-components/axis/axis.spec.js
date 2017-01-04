@@ -31,6 +31,9 @@ describe('Axis', () => {
           height: 5
         })
       },
+      brush: () => ({
+        on: () => {}
+      }),
       scale: () => s,
       dataset: () => {},
       container: () => {},
