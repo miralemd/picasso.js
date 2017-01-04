@@ -56,21 +56,29 @@ export default function componentFactory(definition) {
       }
     });
 
-    if (typeof settings.scale === 'string') {
-      context.scale = composer.scale(settings.scale);
-    }
-    if (typeof settings.formatter === 'string') {
-      context.formatter = composer.formatter(settings.formatter);
-    } else if (context.scale) {
-      context.formatter = composer.formatter({ source: context.scale.sources[0] });
-    }
+    const updateScale = () => {
+      if (typeof settings.scale === 'string') {
+        context.scale = composer.scale(settings.scale);
+      }
+    };
+    const updateFormatter = () => {
+      if (typeof settings.formatter === 'string') {
+        context.formatter = composer.formatter(settings.formatter);
+      } else if (context.scale) {
+        context.formatter = composer.formatter({ source: context.scale.sources[0] });
+      }
+    };
+
+    updateScale();
+    updateFormatter();
 
     const fn = () => {};
 
     fn.dockConfig = {
       requiredSize: (inner, outer) => preferredSize.call(context, {
         inner,
-        outer
+        outer,
+        dock: fn.dockConfig.dock
       }),
       displayOrder,
       prioOrder,
@@ -105,6 +113,9 @@ export default function componentFactory(definition) {
       if (opts.dataset) {
         context.dataset = opts.dataset;
       }
+
+      updateScale();
+      updateFormatter();
 
       beforeUpdate.call(context, {
         settings,
