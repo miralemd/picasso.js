@@ -1,10 +1,9 @@
-import Dispersion from '../../../../../../src/core/chart-components/markers/generic/dispersion';
+import dispersion from '../../../../../../src/core/chart-components/markers/generic/dispersion';
 
 describe('Dispersion', () => {
   let composerMock;
   let config;
-  let rendererMock;
-  let dispersion;
+  let d;
 
   beforeEach(() => {
     const s = i => i;
@@ -37,22 +36,16 @@ describe('Dispersion', () => {
         med: 1
       } }
     };
-
-    rendererMock = {
-      size: () => ({ width: 100, height: 100 }),
-      render: sinon.spy(),
-      appendTo: () => { }
-    };
   });
 
   it('should instantiate properly', () => {
-    dispersion = new Dispersion(composerMock, {}, rendererMock);
+    d = dispersion(composerMock);
   });
   it('should fill items with data', () => {
-    dispersion = new Dispersion(composerMock, {}, rendererMock);
-    dispersion.setOpts(config);
-    dispersion.onData();
-    dispersion.items.forEach((item, i) => {
+    d = dispersion(composerMock);
+    d.setOpts(config);
+    d.onData();
+    d.items().forEach((item, i) => {
       expect(item.max).to.equal(i * 2);
       expect(item.min).to.equal(-i * 4);
     });

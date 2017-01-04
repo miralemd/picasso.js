@@ -8,6 +8,7 @@ const isReservedProperty = prop => ['on', 'dock', 'displayOrder', 'prioOrder', '
 
 export default function componentFactory(definition) {
   return (config, composer) => {
+    // TODO support es6 classes
     const {
       on = {},
       require = [],
@@ -47,7 +48,11 @@ export default function componentFactory(definition) {
     Object.keys(definition).forEach((key) => {
       if (!isReservedProperty(key)) {
         // Add non-lifecycle methods to the context
-        context[key] = definition[key];
+        if (typeof definition[key] === 'function') {
+          context[key] = definition[key].bind(context);
+        } else {
+          context[key] = definition[key];
+        }
       }
     });
 
