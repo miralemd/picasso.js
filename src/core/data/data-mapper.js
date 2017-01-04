@@ -72,15 +72,15 @@ export function collectRepeating(repeater, ds) {
 
 /**
  * [collectValues description]
- * @param  {[type]} key        [description]
- * @param  {[type]} pool       [description]
- * @param  {[type]} values     [description]
- * @param  {[type]} syncValues [description]
- * @param  {[type]} type       [description]
- * @param  {[type]} attr       [description]
- * @param  {[type]} source     [description]
+ * @param  {String} key        [description]
+ * @param  {String} pool       [description]
+ * @param  {String} values     [description]
+ * @param  {String} syncValues [description]
+ * @param  {String} type       [description]
+ * @param  {String} attr       [description]
+ * @param  {String} source     [description]
  * @private
- * @return {[type]}            [description]
+ * @return {String}            [description]
  */
 // export function collectValues(key, pool, values, syncValues, type, attr, source) {
 export function collectValues({
@@ -112,12 +112,12 @@ export function collectValues({
 
 /**
  * [collectMapping description]
- * @param  {[type]} key       [description]
- * @param  {[type]} m         [description]
- * @param  {[type]} repeating [description]
- * @param  {[type]} ds        [description]
+ * @param  {String} key       [description]
+ * @param  {String} m         [description]
+ * @param  {String} repeating [description]
+ * @param  {String} ds        [description]
  * @private
- * @return {[type]}           [description]
+ * @return {String}           [description]
  */
 export function collectMapping(key, m, repeating, ds, collector = collectValues) {
   let ff = ds.findField(m.source); // , ds.tables());
@@ -170,10 +170,10 @@ function reduceValues(key, values, reducer) {
 
 /**
  * [mapData description]
- * @param  {[type]} mapper   [description]
- * @param  {[type]} repeater [description]
- * @param  {[type]} ds       [description]
- * @return {[type]}          [description]
+ * @param  {String} mapper   [description]
+ * @param  {String} repeater [description]
+ * @param  {String} ds       [description]
+ * @return {String}          [description]
  */
 export function mapData(mapper, repeater, ds) {
   let collected = collectRepeating(repeater, ds);
