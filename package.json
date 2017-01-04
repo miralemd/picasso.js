@@ -12,6 +12,7 @@
     "url": "ssh://git@github.com:qlik-trial/picasso.js.git"
   },
   "scripts": {
+    "postinstall": "cd docs && npm install",
     "build": "webpack -p --output-filename [name].min.js",
     "build:debug": "webpack -d",
     "build:watch": "webpack -d --watch",
