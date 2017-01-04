@@ -113,7 +113,7 @@ describe('Axis', () => {
       config.settings.minorTicks = { show: true, count: 2 };
       axis = axisComponent(config, composerMock);
       axis.render();
-      verifyNumberOfNodes(2, 7);
+      verifyNumberOfNodes(3, 8);
     });
   });
 

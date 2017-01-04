@@ -87,8 +87,8 @@ describe('Tick generators', () => {
       settings.minorTicks.show = true;
       settings.minorTicks.count = 1;
       const ticks = generateContinuousTicks(input);
-      expect(ticks.length).to.equal(3);
-      expect(ticks.filter(t => t.isMinor).length).to.equal(1);
+      expect(ticks.length).to.equal(5);
+      expect(ticks.filter(t => t.isMinor).length).to.equal(2);
     });
 
     it('should be able to force ticks at bounds', () => {

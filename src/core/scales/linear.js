@@ -212,6 +212,42 @@ export function linear(...a) {
 }
 
 
+function minorTicksGenerator(count, start, end) {
+  const r = Math.abs(start - end);
+  const interval = r / (count + 1);
+  const ticks = [];
+  for (let i = 1; i <= count; i++) {
+    const v = i * interval;
+    ticks.push(start < end ? start + v : start - v);
+  }
+  return ticks;
+}
+
+function appendMinorTicks(majorTicks, minorCount, scale) {
+  if (majorTicks.length === 1) return majorTicks;
+
+  const ticks = majorTicks.concat([]);
+
+  for (let i = 0; i < majorTicks.length; i++) {
+    let start = majorTicks[i];
+    let end = majorTicks[i + 1];
+
+    if (i === 0 && start !== scale.start()) { // Before and after first major tick
+      ticks.push(...minorTicksGenerator(minorCount, start, end));
+      start -= end - start;
+      end = majorTicks[i];
+      ticks.push(...minorTicksGenerator(minorCount, start, end));
+    } else if (i === majorTicks.length - 1 && end !== scale.end()) { // After last major tick
+      end = start + (start - majorTicks[i - 1]);
+      ticks.push(...minorTicksGenerator(minorCount, start, end));
+    } else {
+      ticks.push(...minorTicksGenerator(minorCount, start, end));
+    }
+  }
+
+  return ticks.filter(t => t >= scale.min() && t <= scale.max()).sort();
+}
+
 /**
 * Generate ticks based on a distance, for each 100th unit, one additional tick may be added
 * @private
@@ -222,24 +258,21 @@ export function linear(...a) {
 * @return {Array}               Array of ticks
 */
 export function looseDistanceBasedGenerator({ distance, scale, minorCount = 0, unitDivider = 100, formatter = undefined }) {
-  const fraction = Math.max(distance / unitDivider, 2);
-  const count = ((fraction - 1) * minorCount) + fraction;
-  let ticks = scale.ticks(count);
-  if (ticks.length <= 1) {
-    ticks = scale.ticks(count + 1);
+  const count = Math.max(Math.round(distance / unitDivider), 2);
+  let majorTicks = scale.ticks(count);
+  if (majorTicks.length <= 1) {
+    majorTicks = scale.ticks(count + 1);
   }
 
-  // console.log( end );
+  const ticks = appendMinorTicks(majorTicks, minorCount, scale);
 
   const ticksFormatted = ticks.map(applyFormat(formatter));
 
-  return ticks.map((tick, i) =>
- ({
-   position: scale.get(tick),
-   label: ticksFormatted[i],
-   isMinor: i % (minorCount + 1) !== 0
- })
-);
+  return ticks.map((tick, i) => ({
+    position: scale.get(tick),
+    label: ticksFormatted[i],
+    isMinor: majorTicks.indexOf(tick) === -1
+  }));
 }
 
 /**
@@ -254,20 +287,19 @@ export function looseDistanceBasedGenerator({ distance, scale, minorCount = 0, u
 */
 export function tightDistanceBasedGenerator({ distance, scale, minorCount = 0, unitDivider = 100, formatter = undefined }) {
   const count = Math.max(distance / unitDivider, 2);
-  const ticksCount = Math.round(((count - 1) * minorCount) + count);
-  const n = ticksCount > 10 ? 10 : ticksCount;
+  const n = count > 10 ? 10 : count;
   scale.nice(n);
 
-  const ticks = scale.ticks(ticksCount);
+  const majorTicks = scale.ticks(count);
+  const ticks = appendMinorTicks(majorTicks, minorCount, scale);
+
   const ticksFormatted = ticks.map(applyFormat(formatter));
 
-  return ticks.map((tick, i) =>
-   ({
-     position: scale.get(tick),
-     label: ticksFormatted[i],
-     isMinor: i % (minorCount + 1) !== 0
-   })
-);
+  return ticks.map((tick, i) => ({
+    position: scale.get(tick),
+    label: ticksFormatted[i],
+    isMinor: majorTicks.indexOf(tick) === -1
+  }));
 }
 
 export default LinearScale;
