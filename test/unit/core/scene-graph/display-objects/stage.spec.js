@@ -15,22 +15,22 @@ describe('Stage', () => {
     stage.addChildren(children);
   });
 
-  describe('pointInside', () => {
+  describe('containsPoint', () => {
     it('should handle a call when there are no children', () => {
       stage = create();
-      const r = stage.pointInside({ x: 60, y: 60 });
+      const r = stage.containsPoint({ x: 60, y: 60 });
 
       expect(r).to.be.empty; // eslint-disable-line no-unused-expressions
     });
 
     it('should return an empty array when there are no hits', () => {
-      const r = stage.pointInside({ x: 6000, y: 6000 });
+      const r = stage.containsPoint({ x: 6000, y: 6000 });
 
       expect(r).to.be.empty; // eslint-disable-line no-unused-expressions
     });
 
     it('should return child objects that intersect with a point', () => {
-      const r = stage.pointInside({ x: 60, y: 60 });
+      const r = stage.containsPoint({ x: 60, y: 60 });
 
       expect(r.map(rr => rr.attrs.fill)).to.deep.equal(['rect1', 'rect2']);
     });
@@ -41,7 +41,7 @@ describe('Stage', () => {
       container.addChild(createRect({ x: 500, y: 500, width: 200, height: 200, fill: 'containerRect2' }));
       stage.addChild(container);
 
-      const r = stage.pointInside({ x: 550, y: 550 });
+      const r = stage.containsPoint({ x: 550, y: 550 });
 
       expect(r.map(rr => rr.attrs.fill)).to.deep.equal(['rect3', 'containerRect1', 'containerRect2']);
     });
@@ -50,29 +50,29 @@ describe('Stage', () => {
       stage = create(2);
       stage.addChild(createRect({ x: 50, y: 50, width: 100, height: 100, fill: 'hit' }));
       stage.addChild(createRect({ x: 20, y: 20, width: 20, height: 20, fill: 'miss' }));
-      const r = stage.pointInside({ x: 30, y: 30 });
+      const r = stage.containsPoint({ x: 30, y: 30 });
 
       expect(r.map(rr => rr.attrs.fill)).to.deep.equal(['hit']);
       expect(r.length).to.equal(1);
     });
   });
 
-  describe('lineIntersect', () => {
+  describe('intersectsLine', () => {
     it('should handle a call when there are no children', () => {
       stage = create();
-      const r = stage.lineIntersect({ x1: 60, y1: 60, x2: 120, y: 120 });
+      const r = stage.intersectsLine({ x1: 60, y1: 60, x2: 120, y: 120 });
 
       expect(r).to.be.empty; // eslint-disable-line no-unused-expressions
     });
 
     it('should return an empty array when there are no hits', () => {
-      const r = stage.lineIntersect({ x1: 6000, y1: 6000, x2: 12000, y: 12000 });
+      const r = stage.intersectsLine({ x1: 6000, y1: 6000, x2: 12000, y: 12000 });
 
       expect(r).to.be.empty; // eslint-disable-line no-unused-expressions
     });
 
     it('should return child objects that intersect with a line', () => {
-      const r = stage.lineIntersect({ x1: 60, y1: 60, x2: 120, y: 120 });
+      const r = stage.intersectsLine({ x1: 60, y1: 60, x2: 120, y: 120 });
 
       expect(r.map(rr => rr.attrs.fill)).to.deep.equal(['rect1', 'rect2']);
     });
@@ -82,29 +82,29 @@ describe('Stage', () => {
       stage.addChild(createRect({ x: 50, y: 50, width: 100, height: 100, fill: 'hit' }));
       stage.addChild(createRect({ x: 20, y: 20, width: 20, height: 20, fill: 'miss' }));
 
-      const r = stage.lineIntersect({ x1: 30, y1: 0, x2: 30, y2: 30 });
+      const r = stage.intersectsLine({ x1: 30, y1: 0, x2: 30, y2: 30 });
 
       expect(r[0].attrs.fill).to.equal('hit');
       expect(r.length).to.equal(1);
     });
   });
 
-  describe('rectIntersect', () => {
+  describe('intersectsRect', () => {
     it('should handle a call when there are no children', () => {
       stage = create();
-      const r = stage.rectIntersect({ x: 60, y: 60, width: 120, height: 120 });
+      const r = stage.intersectsRect({ x: 60, y: 60, width: 120, height: 120 });
 
       expect(r).to.be.empty; // eslint-disable-line no-unused-expressions
     });
 
     it('should return an empty array when there are no hits', () => {
-      const r = stage.rectIntersect({ x: 6000, y: 6000, width: 120, height: 120 });
+      const r = stage.intersectsRect({ x: 6000, y: 6000, width: 120, height: 120 });
 
       expect(r).to.be.empty; // eslint-disable-line no-unused-expressions
     });
 
     it('should return child objects that intersect with a rect', () => {
-      const r = stage.rectIntersect({ x: 60, y: 60, width: 120, height: 120 });
+      const r = stage.intersectsRect({ x: 60, y: 60, width: 120, height: 120 });
 
       expect(r.map(rr => rr.attrs.fill)).to.deep.equal(['rect1', 'rect2']);
     });
@@ -114,7 +114,7 @@ describe('Stage', () => {
       stage.addChild(createRect({ x: 50, y: 50, width: 100, height: 100, fill: 'hit' }));
       stage.addChild(createRect({ x: 20, y: 20, width: 20, height: 20, fill: 'miss' }));
 
-      const r = stage.rectIntersect({ x: 30, y: 0, width: 30, height: 30 });
+      const r = stage.intersectsRect({ x: 30, y: 0, width: 30, height: 30 });
 
       expect(r[0].attrs.fill).to.equal('hit');
       expect(r.length).to.equal(1);

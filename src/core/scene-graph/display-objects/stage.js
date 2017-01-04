@@ -22,23 +22,23 @@ export default class Stage extends Container {
     this._dpiRatio = dpi || 1;
   }
 
-  pointInside(p) {
+  containsPoint(p) {
     const result = [];
-    traverseFn(this.children, 'isPointInside', result, scalarMultiply(p, this._dpiRatio));
+    traverseFn(this.children, 'containsPoint', result, scalarMultiply(p, this._dpiRatio));
     return result;
   }
 
-  lineIntersect(line) {
+  intersectsLine(line) {
     const result = [];
     const points = convertLineToPoints(line).map(p => scalarMultiply(p, this._dpiRatio));
-    traverseFn(this.children, 'isLineIntersecting', result, points);
+    traverseFn(this.children, 'intersectsLine', result, points);
     return result;
   }
 
-  rectIntersect(rect) {
+  intersectsRect(rect) {
     const result = [];
     const points = convertRectToPoints(rect).map(p => scalarMultiply(p, this._dpiRatio));
-    traverseFn(this.children, 'isRectIntersecting', result, points);
+    traverseFn(this.children, 'intersectsRect', result, points);
     return result;
   }
 }

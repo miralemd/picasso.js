@@ -17,3 +17,7 @@ export default class GeoLine {
     ];
   }
 }
+
+export function create(...args) {
+  return new GeoLine(...args);
+}

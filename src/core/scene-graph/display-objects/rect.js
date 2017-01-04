@@ -1,36 +1,32 @@
+import extend from 'extend';
 import DisplayObject from './display-object';
-import GeoRect from '../../geometry/rect';
 
 export default class Rect extends DisplayObject {
   constructor(...s) {
     super('rect');
-    this.geoRect = new GeoRect();
     this.set(...s);
   }
 
   set(v) {
-    const { x, y, width, height } = v;
+    const { x, y, width, height, collider } = v;
     super.set(v);
-    this.attrs.x = x;
-    this.attrs.y = y;
-    this.attrs.width = width;
-    this.attrs.height = height;
-    this.geoRect.set(x, y, width, height);
-  }
+    super.collider(extend({ type: 'rect', x, y, width, height }, collider));
 
-  isPointInside(p) {
-    let pt = this.modelViewMatrix ? this.inverseModelViewMatrix.transformPoint(p) : p;
-    return this.geoRect.isPointInside(pt);
-  }
+    if (width >= 0) {
+      this.attrs.x = x;
+      this.attrs.width = width;
+    } else {
+      this.attrs.x = x + width;
+      this.attrs.width = -width;
+    }
 
-  isLineIntersecting(points) {
-    const pts = this.modelViewMatrix ? this.inverseModelViewMatrix.transformPoints(points) : points;
-    return this.geoRect.isLineIntersecting(pts);
-  }
-
-  isRectIntersecting(points) {
-    const pts = this.modelViewMatrix ? this.inverseModelViewMatrix.transformPoints(points) : points;
-    return this.geoRect.isRectIntersecting(pts);
+    if (height >= 0) {
+      this.attrs.y = y;
+      this.attrs.height = height;
+    } else {
+      this.attrs.y = y + height;
+      this.attrs.height = -height;
+    }
   }
 }
 

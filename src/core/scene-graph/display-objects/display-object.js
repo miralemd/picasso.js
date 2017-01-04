@@ -1,9 +1,11 @@
 import Node from '../node';
+import { create as geometry } from '../../geometry';
 
 class DisplayObject extends Node {
   constructor(type) {
     super(type);
     this._stage = null;
+    this._collider = null;
     this._attrs = {};
   }
 
@@ -54,6 +56,30 @@ class DisplayObject extends Node {
     if (typeof data !== 'undefined') {
       this.data = data;
     }
+  }
+
+  collider({ type, cx = 0, cy = 0, r = 0, minRadius = 0, x = 0, y = 0, width = 0, minWidth = 0, height = 0, minHeight = 0 }) {
+    if (type === 'circle') this._collider = geometry(type, cx, cy, r, minRadius);
+    else if (type === 'rect') this._collider = geometry(type, x, y, width, height, minWidth, minHeight);
+    else this._collider = null;
+  }
+
+  containsPoint(p) {
+    if (this._collider === null) return false;
+    const pt = this.modelViewMatrix ? this.inverseModelViewMatrix.transformPoint(p) : p;
+    return this._collider.containsPoint(pt);
+  }
+
+  intersectsLine(points) {
+    if (this._collider === null) return false;
+    const pts = this.modelViewMatrix ? this.inverseModelViewMatrix.transformPoints(points) : points;
+    return this._collider.intersectsLine(pts);
+  }
+
+  intersectsRect(points) {
+    if (this._collider === null) return false;
+    const pts = this.modelViewMatrix ? this.inverseModelViewMatrix.transformPoints(points) : points;
+    return this._collider.intersectsRect(pts);
   }
 
   /**

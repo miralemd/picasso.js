@@ -89,13 +89,13 @@ describe('GeoRect', () => {
       it('should intersect if point is within the circumference', () => {
         const r = new GeoRect(50, 100, 150, 200);
         const p = { x: 100, y: 200 };
-        expect(r.isPointInside(p)).to.equal(true);
+        expect(r.containsPoint(p)).to.equal(true);
       });
 
       it('should intersect if point is on the circumference', () => {
         const r = new GeoRect(50, 100, 150, 200);
         const p = { x: 50, y: 100 };
-        expect(r.isPointInside(p)).to.equal(true);
+        expect(r.containsPoint(p)).to.equal(true);
       });
 
       it('should not intersect if point is outside the circumference', () => {
@@ -105,10 +105,10 @@ describe('GeoRect', () => {
         const p3 = { x: 201, y: 300 };
         const p4 = { x: 200, y: 301 };
 
-        expect(r.isPointInside(p1)).to.equal(false);
-        expect(r.isPointInside(p2)).to.equal(false);
-        expect(r.isPointInside(p3)).to.equal(false);
-        expect(r.isPointInside(p4)).to.equal(false);
+        expect(r.containsPoint(p1)).to.equal(false);
+        expect(r.containsPoint(p2)).to.equal(false);
+        expect(r.containsPoint(p3)).to.equal(false);
+        expect(r.containsPoint(p4)).to.equal(false);
       });
     });
 
@@ -116,25 +116,25 @@ describe('GeoRect', () => {
       it('should intersect if circumferences are crossing', () => {
         const r = new GeoRect(100, 200, 300, 400);
         const collider = new GeoRect(150, 250, 300, 400);
-        expect(r.isRectIntersecting(collider.points())).to.equal(true);
+        expect(r.intersectsRect(collider.points())).to.equal(true);
       });
 
       it('should intersect if circumferences are touching', () => {
         const r = new GeoRect(100, 200, 300, 400);
         const collider = new GeoRect(400, 600, 300, 400);
-        expect(r.isRectIntersecting(collider.points())).to.equal(true);
+        expect(r.intersectsRect(collider.points())).to.equal(true);
       });
 
       it('should intersect if target rect is contained within the circumference', () => {
         const r = new GeoRect(100, 200, 300, 400);
         const collider = new GeoRect(150, 250, 50, 100);
-        expect(r.isRectIntersecting(collider.points())).to.equal(true);
+        expect(r.intersectsRect(collider.points())).to.equal(true);
       });
 
       it('should not intersect if circumferences are not crossing', () => {
         const r = new GeoRect(100, 200, 300, 400);
         const collider = new GeoRect(401, 601, 100, 200);
-        expect(r.isRectIntersecting(collider.points())).to.equal(false);
+        expect(r.intersectsRect(collider.points())).to.equal(false);
       });
     });
 
@@ -143,28 +143,28 @@ describe('GeoRect', () => {
         const r = new GeoRect(50, 100, 150, 200);
         const points = [{ x: 70, y: 0 }, { x: 70, y: 400 }];
 
-        expect(r.isLineIntersecting(points)).to.equal(true);
+        expect(r.intersectsLine(points)).to.equal(true);
       });
 
       it('should intersect if a parrallel horizontal line is crossing the circumference', () => {
         const r = new GeoRect(50, 100, 150, 200);
         const points = [{ x: 0, y: 250 }, { x: 250, y: 250 }];
 
-        expect(r.isLineIntersecting(points)).to.equal(true);
+        expect(r.intersectsLine(points)).to.equal(true);
       });
 
       it('should intersect if diagonal line is crossing the circumference', () => {
         const r = new GeoRect(50, 100, 150, 200);
         const points = [{ x: 0, y: 0 }, { x: 250, y: 400 }];
 
-        expect(r.isLineIntersecting(points)).to.equal(true);
+        expect(r.intersectsLine(points)).to.equal(true);
       });
 
       it('should intersect if line is inside the circumference', () => {
         const r = new GeoRect(50, 100, 150, 200);
         const points = [{ x: 100, y: 250 }, { x: 150, y: 250 }];
 
-        expect(r.isLineIntersecting(points)).to.equal(true);
+        expect(r.intersectsLine(points)).to.equal(true);
       });
 
       it('should intersect if a line point is inside the circumference', () => {
@@ -172,29 +172,29 @@ describe('GeoRect', () => {
         const points1 = [{ x: 100, y: 250 }, { x: 250, y: 250 }];
         const points2 = [{ x: 0, y: 250 }, { x: 150, y: 250 }];
 
-        expect(r.isLineIntersecting(points1)).to.equal(true);
-        expect(r.isLineIntersecting(points2)).to.equal(true);
+        expect(r.intersectsLine(points1)).to.equal(true);
+        expect(r.intersectsLine(points2)).to.equal(true);
       });
 
       it('should intersect if a line is on the circumference', () => {
         const r = new GeoRect(50, 100, 150, 200);
         const points = [{ x: 50, y: 100 }, { x: 200, y: 100 }];
 
-        expect(r.isLineIntersecting(points)).to.equal(true);
+        expect(r.intersectsLine(points)).to.equal(true);
       });
 
       it('should intersect if a line start point is on the circumference and points outwards', () => {
         const r = new GeoRect(50, 100, 150, 200);
         const points = [{ x: 50, y: 100 }, { x: 0, y: 0 }];
 
-        expect(r.isLineIntersecting(points)).to.equal(true);
+        expect(r.intersectsLine(points)).to.equal(true);
       });
 
       it('should intersect if a line end point is on the circumference and points outwards', () => {
         const r = new GeoRect(50, 100, 150, 200);
         const points = [{ x: 0, y: 0 }, { x: 50, y: 100 }];
 
-        expect(r.isLineIntersecting(points)).to.equal(true);
+        expect(r.intersectsLine(points)).to.equal(true);
       });
     });
   });
