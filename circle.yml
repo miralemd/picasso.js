@@ -1,10 +1,14 @@
 machine:
     node:
         version: 4.4.7
+    environment:
+        DBUS_SESSION_BUS_ADDRESS: /dev/null
+
 general:
     artifacts:
         - "coverage/"
         - "dist/"
+        - "docs/dist/"
         - "test/component/artifacts/"
 
 dependencies:
