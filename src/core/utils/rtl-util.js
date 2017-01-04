@@ -43,8 +43,39 @@ const textAnchorRTLMap = {
   middle: 'middle'
 };
 
-export function flipTextAnchor(value, dir) {
-  if (dir === 'rtl') {
+let flippedTextAnchor = true;
+let detected = false;
+export function detectRtlSvgSupport(ns, ownerDoc) {
+  if (!detected) {
+    const body = ownerDoc.body;
+    if (body) {
+      const rtlTestSVG = ownerDoc.createElementNS(ns, 'svg');
+      const textNode = ownerDoc.createElementNS(ns, 'text');
+      const group = ownerDoc.createElementNS(ns, 'g');
+
+      rtlTestSVG.setAttribute('xmlns', ns);
+      rtlTestSVG.setAttribute('style', 'position: absolute; width: 100px; height: 100px; top: -100px; left: 0px');
+
+      textNode.setAttribute('text-anchor', 'start');
+      textNode.setAttribute('direction', 'rtl');
+      textNode.setAttribute('font-size', '14px');
+      textNode.setAttribute('x', 50);
+      textNode.setAttribute('y', 50);
+      textNode.textContent = 'ثعبان';
+
+      group.appendChild(textNode);
+      rtlTestSVG.appendChild(group);
+      body.appendChild(rtlTestSVG);
+
+      flippedTextAnchor = textNode.getBoundingClientRect().left < 50;
+      body.removeChild(rtlTestSVG);
+    }
+  }
+  detected = true;
+}
+
+export function flipTextAnchor(value, dir, svg = false) {
+  if (dir === 'rtl' && (flippedTextAnchor || !svg)) {
     return textAnchorRTLMap[value];
   }
   return value;
