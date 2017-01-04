@@ -28,7 +28,7 @@ const maintainer = (element, item) => {
       let dir = detectTextDirection(item.attrs.text);
       if (dir === 'rtl') {
         element.setAttribute('direction', 'rtl');
-        element.setAttribute('text-anchor', flipTextAnchor(element.getAttribute('text-anchor'), dir));
+        element.setAttribute('text-anchor', flipTextAnchor(element.getAttribute('text-anchor'), dir, true));
       }
     } else {
       element.setAttribute(attr, item.attrs[attr]);
