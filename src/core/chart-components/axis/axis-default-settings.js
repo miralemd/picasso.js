@@ -11,7 +11,7 @@ export function discreteDefaultSettings() {
       labels: {
         show: true,
         tilted: false,
-        tiltAngle: 30,
+        tiltAngle: 45,
         fontFamily: 'Arial',
         fontSize: '12px',
         fill: '#595959',
@@ -48,7 +48,7 @@ export function continuousDefaultSettings() {
       labels: {
         show: true,
         tilted: false,
-        tiltAngle: 30,
+        tiltAngle: 45,
         fontFamily: 'Arial',
         fontSize: '12px',
         fill: '#595959',
