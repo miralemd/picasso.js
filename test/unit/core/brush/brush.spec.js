@@ -1,4 +1,4 @@
-import brush from '../../../../src/core/brush/brush';
+import brush, { toggle } from '../../../../src/core/brush/brush';
 
 describe('brush', () => {
   const noop = () => {};
@@ -122,6 +122,7 @@ describe('brush', () => {
     it('should emit "start" event if not activated', () => {
       let cb = sandbox.spy();
       bb.on('start', cb);
+      v.add.returns(true);
       bb.addValue('garage', 'Car');
       bb.addValue('garage', 'Bike');
       expect(cb.callCount).to.equal(1);
@@ -180,44 +181,6 @@ describe('brush', () => {
       bb.removeValue('garage', 'Car');
       expect(v.remove).to.have.been.calledWith('Car');
       expect(cb.callCount).to.equal(0);
-    });
-  });
-
-  describe('toggleValue', () => {
-    let v;
-    let vcc;
-    let bb;
-    beforeEach(() => {
-      v = {
-        add: sandbox.stub(),
-        contains: sandbox.stub()
-      };
-      vcc = sandbox.stub().returns(v);
-      bb = brush({ vc: vcc, rc: noop });
-    });
-
-    it('should call addValue if key does not exist', () => {
-      let addValue = sandbox.stub(bb, 'addValue');
-      bb.toggleValue('garage', 'Car');
-      expect(addValue).to.have.been.calledWith('garage', 'Car');
-    });
-
-    it('should call addValue if value does not exist', () => {
-      bb.addValue('garage', 'Car');
-      let addValue = sandbox.stub(bb, 'addValue');
-      v.contains.returns(false);
-      bb.toggleValue('garage', 'Bike');
-      expect(addValue).to.have.been.calledWith('garage', 'Bike');
-      expect(v.contains).to.have.been.calledWith('Bike');
-    });
-
-    it('should call removeValue if value exists', () => {
-      bb.addValue('garage', 'Car');
-      let removeValue = sandbox.stub(bb, 'removeValue');
-      v.contains.returns(true);
-      bb.toggleValue('garage', 'Bike');
-      expect(removeValue).to.have.been.calledWith('garage', 'Bike');
-      expect(v.contains).to.have.been.calledWith('Bike');
     });
   });
 
@@ -390,6 +353,81 @@ describe('brush', () => {
         x: { value: 7 }
       })).to.equal(false);
       expect(v.containsValue.callCount).to.equal(0);
+    });
+
+    it('should return false when brushed data is not part of property filter', () => {
+      bb.addValue('products');
+      val.contains.returns(true);
+      expect(bb.containsMappedData(d, ['nope'])).to.equal(false);
+      expect(val.contains).to.have.been.calledWith('Cars');
+    });
+  });
+
+  describe('toggle', () => {
+    let v;
+    let vcoll;
+
+    beforeEach(() => {
+      v = {
+        add: sandbox.stub(),
+        remove: sandbox.stub(),
+        contains: sandbox.stub()
+      };
+      vcoll = sandbox.stub().returns(v);
+    });
+
+    it('should not toggle duplicate values', () => {
+      let items = [
+        { key: 'products', value: 'Bike' },
+        { key: 'regions', value: 'south' },
+        { key: 'regions', value: 'south' },
+        { key: 'products', value: 'Bike' },
+        { key: 'products', value: 'Bike' },
+        { key: 'products', value: 'Bike' }
+      ];
+      let toggled = toggle({
+        items,
+        vc: vcoll,
+        values: {}
+      });
+
+      expect(toggled).to.eql([[], []]);
+    });
+
+    it('should toggle on new values', () => {
+      let items = [
+        { key: 'products', value: 'Bike' },
+        { key: 'products', value: 0 }
+      ];
+      let toggled = toggle({
+        items,
+        vc: vcoll,
+        values: {}
+      });
+
+      let expectAdded = [
+        { id: 'products', values: ['Bike', 0] }
+      ];
+      expect(toggled[0]).to.eql(expectAdded);
+    });
+
+    it('should toggle off existing values', () => {
+      let items = [
+        { key: 'products', value: 'Bike' },
+        { key: 'products', value: 'Existing' },
+        { key: 'products', value: 'Car' }
+      ];
+      v.contains.withArgs('Existing').returns(true);
+      let toggled = toggle({
+        items,
+        vc: vcoll,
+        values: {}
+      });
+
+      let expectRemoved = [
+        { id: 'products', values: ['Existing'] }
+      ];
+      expect(toggled[1]).to.eql(expectRemoved);
     });
   });
 });
