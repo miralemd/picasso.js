@@ -2,7 +2,13 @@ import dockLayout from '../../../../src/core/dock-layout/dock-layout';
 import dockConfig from '../../../../src/core/dock-layout/dock-config';
 
 describe('Dock Layout', () => {
-  const componentMock = function componentMock({ dock = '', size = 0, order = 0, edgeBleed = {} } = {}) {
+  const componentMock = function componentMock({
+    dock = '',
+    size = 0,
+    order = 0,
+    edgeBleed = {},
+    minimumLayoutMode
+  } = {}) {
     let outerRect = { x: 0, y: 0, width: 0, height: 0 };
     let innerRect = { x: 0, y: 0, width: 0, height: 0 };
     let containerRect = { x: 0, y: 0, width: 0, height: 0 };
@@ -12,6 +18,8 @@ describe('Dock Layout', () => {
     dummy.dockConfig = dockConfig({ dock, displayOrder: order });
     dummy.dockConfig.requiredSize(rect => rect.width * size);
     dummy.dockConfig.edgeBleed(edgeBleed);
+    dummy.dockConfig.minimumLayoutMode(minimumLayoutMode);
+
     dummy.resize = function resize(...args) {
       if (!args.length) {
         return { innerRect, outerRect, containerRect };
@@ -188,6 +196,64 @@ describe('Dock Layout', () => {
       const output = mainComp.resize();
 
       expect(output.containerRect, 'ContainerRect had incorrect size').to.deep.include({ x: 0, y: 0, width: 1000, height: 1200 });
+    });
+  });
+
+  describe('minimumLayoutMode', () => {
+    it('normal visible', () => {
+      const mainComp = componentMock({ minimumLayoutMode: 'L' });
+      const rect = { x: 0, y: 0, width: 1000, height: 1000 };
+      const settings = {
+        layoutModes: {
+          L: { width: 500, height: 500 }
+        }
+      };
+      const dl = dockLayout();
+
+      dl.addComponent(mainComp);
+
+      dl.settings(settings);
+      dl.layout(rect);
+      const output = mainComp.resize();
+
+      expect(output.containerRect, 'ContainerRect had incorrect size').to.deep.include({ x: 0, y: 0, width: 1000, height: 1000 });
+    });
+    it('normal to small', () => {
+      const mainComp = componentMock({ minimumLayoutMode: 'L' });
+      const rect = { x: 0, y: 0, width: 1000, height: 1000 };
+      const settings = {
+        layoutModes: {
+          L: { width: 1100, height: 500 }
+        }
+      };
+      const dl = dockLayout();
+
+      dl.addComponent(mainComp);
+
+      dl.settings(settings);
+      dl.layout(rect);
+      const output = mainComp.resize();
+
+      expect(output.containerRect, 'ContainerRect had incorrect size').to.deep.include({ x: 0, y: 0, width: 0, height: 0 });
+    });
+    it('complex visible', () => {
+      const mainComp = componentMock({ minimumLayoutMode: { width: 'S', height: 'L' } });
+      const rect = { x: 0, y: 0, width: 1000, height: 1000 };
+      const settings = {
+        layoutModes: {
+          S: { width: 100, height: 100 },
+          L: { width: 1100, height: 500 }
+        }
+      };
+      const dl = dockLayout();
+
+      dl.addComponent(mainComp);
+
+      dl.settings(settings);
+      dl.layout(rect);
+      const output = mainComp.resize();
+
+      expect(output.containerRect, 'ContainerRect had incorrect size').to.deep.include({ x: 0, y: 0, width: 1000, height: 1000 });
     });
   });
 
