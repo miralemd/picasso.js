@@ -151,7 +151,7 @@ export default function nodeBuilder(type) {
       buildOpts.maxWidth = textRect.width;
       buildOpts.maxHeight = textRect.height;
       buildOpts.layered = settings.labels.layered;
-      buildOpts.tilted = !settings.labels.layered && settings.labels.tilted;
+      buildOpts.tilted = !settings.labels.layered && settings.labels.tilted && (settings.align === 'top' || settings.align === 'bottom');
       buildOpts.angle = settings.labels.tiltAngle;
 
       if (settings.labels.layered && (settings.align === 'top' || settings.align === 'bottom')) {
