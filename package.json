@@ -45,6 +45,7 @@
     "node-event-emitter": "0.0.1",
     "number-format.js": "^1.1.10",
     "rimraf": "^2.5.2",
+    "snabbdom": "^0.5.4",
     "webpack": "^1.13.2"
   },
   "dependencies": {}
