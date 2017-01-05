@@ -107,13 +107,17 @@ export default function componentFactory(definition) {
       }
     };
 
-    fn.render = () => {
+    const getRenderArgs = () => {
       const renderArgs = rend.renderArgs ? rend.renderArgs.slice(0) : [];
       renderArgs.push({});
       if (settings.data) {
         renderArgs[renderArgs.length - 1].data = brushArgs.data = composer.dataset().map(settings.data.mapTo, settings.data.groupBy);
       }
-      const nodes = brushArgs.nodes = render.call(context, ...renderArgs);
+      return renderArgs;
+    };
+
+    fn.render = () => {
+      const nodes = brushArgs.nodes = render.call(context, ...getRenderArgs());
       rend.render(nodes);
 
       if (!hasRendered) {
@@ -139,8 +143,7 @@ export default function componentFactory(definition) {
         dataset: context.dataset
       });
 
-      const renderArgs = rend.renderArgs || [];
-      const nodes = render.call(context, ...renderArgs);
+      const nodes = brushArgs.nodes = render.call(context, ...getRenderArgs());
       rend.render(nodes);
 
       updated.call(context);

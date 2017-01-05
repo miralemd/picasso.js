@@ -19,11 +19,18 @@ function flattenComponents(c) {
   return chartComponents;
 }
 
+const createComponentInstance = (component, fn) => {
+  const factoryFn = getComponentFactory(component.type);
+  const instance = factoryFn(component, fn);
+  instance.key = component.key;
+  return instance;
+};
+
 const findComponentByKey = (arr, key) => arr.filter(item => item.key === key)[0];
 
 function diff(componentsObj, newComponentsObj) {
   const added = [];
-  const unknown = [];
+  const updated = [];
   const removed = [];
 
   const components = flattenComponents(componentsObj);
@@ -41,13 +48,13 @@ function diff(componentsObj, newComponentsObj) {
     if (!findComponentByKey(components, newComp.key)) {
       added.push(newComp);
     } else {
-      unknown.push(newComp);
+      updated.push(newComp);
     }
   });
 
   return {
     added,
-    unknown,
+    updated,
     removed
   };
 }
@@ -56,7 +63,7 @@ export default function composer(element) {
   let currentData = null;
   let currentScales = null;
   let currentFormatters = null;
-  let currentComponents = {};
+  let currentComponents = [];
 
   let dataset = [];
   let comps = {};
@@ -69,7 +76,16 @@ export default function composer(element) {
 
     const { visible, hidden } = dockLayout.layout(element);
     visible.forEach((c) => {
-      c.render();
+      if (c.shouldUpdate) {
+        c.update({
+          data: currentData,
+          settings: currentComponents.filter(comp => comp.key === c.key)[0],
+          formatters: currentFormatters
+        });
+        delete c.shouldUpdate;
+      } else {
+        c.render();
+      }
     });
     hidden.forEach((c) => {
       if (c.hide) {
@@ -97,14 +113,11 @@ export default function composer(element) {
 
     let keyIdx = 0;
     components.forEach((component) => {
-      if (!component.key) {
-        // throw new Error('No key found on component');
+      if (typeof component.key === 'undefined') {
         component.key = keyIdx; // TODO sync in update function
         keyIdx++;
       }
-      const factoryFn = getComponentFactory(component.type);
-      const componentInstance = factoryFn(component, fn);
-      comps[component.key] = componentInstance;
+      comps[component.key] = createComponentInstance(component, fn);
     });
     currentComponents = components;
 
@@ -142,7 +155,6 @@ export default function composer(element) {
     return getOrCreateScale(v, currentScales, dataset);
   };
 
-  // Only works for arrays of components
   fn.update = function (data, settings) {
     const {
       formatters,
@@ -167,32 +179,39 @@ export default function composer(element) {
 
     const {
       added,
-      unknown,
+      updated,
       removed
     } = diff(currentComponents, components);
 
-    // console.log('added', added);
-    // console.log('unknown', unknown);
-    // console.log('removed', removed);
+    console.log('added', added);
+    console.log('updated', updated);
+    console.log('removed', removed);
 
-    added.forEach((compSettings) => {
-      const factoryFn = getComponentFactory(compSettings.type);
-      const componentInstance = factoryFn(compSettings, fn);
-      comps[compSettings.key] = componentInstance;
-    });
-    unknown.forEach((compSettings) => {
-      const componentInstance = comps[compSettings.key];
-      componentInstance.update({
-        settings: compSettings,
-        scales,
-        formatters,
-        dataset
-      });
-    });
     removed.forEach((compSettings) => {
       const componentInstance = comps[compSettings.key];
       componentInstance.destroy();
+      delete comps[compSettings.key];
     });
+    let keyIdx = currentComponents.reduce((comp, nextComp) => {
+      const maxKey = Math.max(comp.key || Number.MIN_VALUE, nextComp.key || Number.MIN_VALUE);
+      return maxKey === Number.MIN_VALUE ? 0 : maxKey;
+    }, {});
+    added.forEach((component) => {
+      if (typeof component.key === 'undefined') {
+        component.key = keyIdx; // TODO sync in update function
+        keyIdx++;
+      }
+      comps[component.key] = createComponentInstance(component, fn);
+    });
+    updated.forEach((compSettings) => {
+      const componentInstance = comps[compSettings.key];
+      // extend(comps[compSettings.key], );
+      // componentInstance.key = compSettings.key;
+      componentInstance.shouldUpdate = true;
+    });
+    currentComponents = components;
+
+    render();
   };
 
   fn.destroy = () => {
