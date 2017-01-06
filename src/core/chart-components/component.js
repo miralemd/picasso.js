@@ -9,7 +9,7 @@ const isReservedProperty = prop => ['on', 'dock', 'displayOrder', 'prioOrder', '
 ].some(name => name === prop);
 
 export default function componentFactory(definition) {
-  return (config, composer) => {
+  return (config, composer, container) => {
     // TODO support es6 classes
     const {
       on = {},
@@ -127,6 +127,16 @@ export default function componentFactory(definition) {
       }
     };
 
+    fn.hide = () => {
+      rend.size({
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0
+      });
+      rend.clear();
+    };
+
     fn.update = (opts = {}) => {
       if (opts.settings) {
         settings = opts.settings;
@@ -168,6 +178,8 @@ export default function componentFactory(definition) {
         context.dockConfig = fn.dockConfig;
       } else if (req === 'renderer') {
         context.renderer = rend;
+      } else if (req === 'element') {
+        context.element = element;
       }
     });
 
@@ -178,7 +190,7 @@ export default function componentFactory(definition) {
     // TODO skip for SSR
     beforeMount.call(context);
 
-    element = rend.appendTo(composer.container());
+    element = rend.appendTo(container);
 
     Object.keys(on).forEach((key) => {
       const listener = (e) => {

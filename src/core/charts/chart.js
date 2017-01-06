@@ -1,4 +1,5 @@
 import composerFn from './composer';
+import createDockLayout from '../dock-layout/dock-layout';
 
 /**
  * @typedef Chart.Props
@@ -8,23 +9,6 @@ import composerFn from './composer';
  * @property {Function} mounted - Lifecycle function called when the chart instance has been mounted into an element.
  * @property {Function} updated - Lifecycle function called when the chart instance has been updated.
  * @property {Object} on - Event listeners
- * @example
- * {
- *   data: {
- *     ...
- *   },
- *   settings: {
- *     ...
- *   },
- *   mounted: function(element) {
- *
- *   },
- *   on: {
- *     click: function(e) {
- *
- *     }
- *   }
- * }
  */
 
 /**
@@ -33,16 +17,6 @@ import composerFn from './composer';
  * @property {object} components
  * @property {marker[]} components.markers,
  * @property {axis[]} components.axes
- * @example
- * {
- *   scales: {
- *     x: {...}
- *   },
- *   components: {
- *     axes: [...]
- *     markers: [...]
- *   }
- * }
  */
 
 /**
@@ -50,31 +24,63 @@ import composerFn from './composer';
  * @property {string} source - The data source used as input when creating the scale
  * @property {string} [type] - The type of scale to create
  * @property {boolean} invert - Whether to invert the scale's output
- * @example
- * {
- *   source: "whatever is accepted by the data parser",
- *   type: "color",
- *   invert: true
- * }
  */
 
 /**
  * Chart instance factory function
  */
 function createInstance(definition) {
-  const {
+  let {
     element,
     data = {},
     settings = {},
     on = {},
+    created = () => {},
     updated = () => {},
     mounted = () => {}
   } = definition;
 
   const listeners = [];
-  let composer;
-  let currentData = data;
-  let currentSettings = settings;
+  let composer = composerFn();
+  let dockLayout = null;
+  let currentComponents = []; // Augmented components
+
+  function renderComponents() {
+    currentComponents.forEach((c) => { dockLayout.addComponent(c.instance); });
+
+    const { visible, hidden } = dockLayout.layout(element);
+    visible.forEach((compInstance) => {
+      const comp = currentComponents.filter(c => c.instance === compInstance)[0];
+      if (comp.shouldUpdate) {
+        compInstance.update(comp.updateWith);
+        delete comp.shouldUpdate;
+        delete comp.updateWith;
+      } else {
+        compInstance.render();
+      }
+    });
+    hidden.forEach((compInstance) => {
+      compInstance.hide();
+    });
+  }
+
+  function render(isInitial) {
+    const {
+      components = []
+    } = settings;
+    dockLayout = createDockLayout();
+    dockLayout.settings(dockLayout);
+
+    composer.set(data, settings);
+
+    if (isInitial) {
+      currentComponents = components.map(component => (
+        composer.createComponent(component, element)
+      ));
+    }
+
+    renderComponents();
+  }
 
   function instance() {}
 
@@ -82,8 +88,7 @@ function createInstance(definition) {
   const mount = () => {
     element.innerHTML = '';
 
-    composer = composerFn(element);
-    composer.render(data, settings);
+    render(true);
 
     Object.keys(on).forEach((key) => {
       const listener = on[key].bind(instance);
@@ -109,13 +114,63 @@ function createInstance(definition) {
    */
   instance.update = (newProps) => {
     if (newProps.data) {
-      currentData = newProps.data;
+      data = newProps.data;
     }
     if (newProps.settings) {
-      currentSettings = newProps.settings;
+      settings = newProps.settings;
     }
 
-    composer.update(currentData, currentSettings);
+    composer.set(data, settings);
+
+    const {
+      formatters,
+      scales,
+      components = []
+    } = settings;
+
+    dockLayout = createDockLayout();
+    dockLayout.settings(settings.dockLayout);
+
+    for (let i = currentComponents.length - 1; i >= 0; i--) {
+      const currComp = currentComponents[i];
+      // TODO warn when there is no key
+      if (!components.some(c => currComp.hasKey && currComp.key === c.key)) {
+        // Component is removed
+        console.log('Remove', currComp);
+        currComp.instance.destroy();
+        currentComponents.splice(i, 1);
+      }
+    }
+
+    for (let i = 0; i < components.length; i++) {
+      let idx = -1;
+      const comp = components[i];
+      for (let j = 0; j < currentComponents.length; j++) {
+        const currComp = currentComponents[j];
+        // TODO warn when there is no key
+        if (currComp.hasKey && currComp.key === comp.key) {
+          idx = j;
+          break;
+        }
+      }
+      if (idx === -1) {
+        // Component is added
+        console.log('Add', comp);
+        currentComponents.push(composer.createComponent(comp, element));
+      } else {
+        // Component is (potentially) updated
+        console.log('Update', comp);
+        currentComponents[idx].shouldUpdate = true;
+        currentComponents[idx].updateWith = {
+          formatters,
+          scales,
+          data,
+          settings: comp
+        };
+      }
+    }
+
+    render(false);
 
     if (typeof updated === 'function') {
       updated.call(instance);
@@ -123,7 +178,8 @@ function createInstance(definition) {
   };
 
   instance.destroy = () => {
-    composer.destroy();
+    currentComponents.forEach(comp => comp.instance.destroy());
+    currentComponents = [];
     unmount();
     delete instance.update;
     delete instance.destroy;
@@ -134,6 +190,8 @@ function createInstance(definition) {
    * @return {data-brush}
    */
   instance.brush = (...v) => composer.brush(...v);
+
+  created.call(instance);
 
   if (element) {
     mount(element);
@@ -149,32 +207,6 @@ function createInstance(definition) {
  * @alias chart
  * @param  {Chart.Props} settings - Settings
  * @return {Chart}
- * @example
- * picasso.chart({
- *   element: document.getElementById('chart-container'),
- *   data: { ... },
- *   settings: {
- *     scales: {
- *         x: {
- *           source: "/qHyperCube/qMeasureInfo/0"
- *         },
- *         y: {
- *           source: "/qHyperCube/qDimensionInfo/0"
- *         }
- *       },
- *       components: {
- *         markers: [
- *           {
- *             type: "point",
- *             settings: {
- *               fill: 'red'
- *             }
- *           }
- *         ]
- *       }
- *     }
- *   }
- * );
  */
 export default function chart(definition) {
   return createInstance(definition);
