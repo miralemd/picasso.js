@@ -12,41 +12,11 @@ const createComponent = (settings, fn) => {
   const instance = factoryFn(settings, fn);
   return {
     instance,
-    settings,
+    settings: extend(true, {}, settings),
     key: settings.key,
     hasKey: typeof settings.key !== 'undefined'
   };
 };
-
-const findComponentByKey = (arr, key) => arr.filter(item => item.key === key)[0];
-
-function diff(components, newComponents) {
-  const added = [];
-  const updated = [];
-  const removed = [];
-
-  components.forEach((comp) => {
-    // if(newComponents.indexOf(comp) === -1) {
-    if (!findComponentByKey(newComponents, comp.key)) {
-      removed.push(comp);
-    }
-  });
-
-  newComponents.forEach((newComp) => {
-    // if(components.indexOf(newComp) === -1) {
-    if (!findComponentByKey(components, newComp.key)) {
-      added.push(newComp);
-    } else {
-      updated.push(newComp);
-    }
-  });
-
-  return {
-    added,
-    updated,
-    removed
-  };
-}
 
 export default function composer(element) {
   let currentData = null; // Unmodified data
@@ -62,21 +32,19 @@ export default function composer(element) {
     currentComponents.forEach((c) => { dockLayout.addComponent(c.instance); });
 
     const { visible, hidden } = dockLayout.layout(element);
-    visible.forEach((c) => {
-      if (c.shouldUpdate) {
-        c.instance.update({
-          data: currentData,
-          settings: c.settings,
-          formatters: currentFormatters
-        });
-        delete c.shouldUpdate;
+    visible.forEach((instance) => {
+      const comp = currentComponents.filter(c => c.instance === instance)[0];
+      if (comp.shouldUpdate) {
+        instance.update(comp.updateWith);
+        delete comp.shouldUpdate;
+        delete comp.updateWith;
       } else {
-        c.instance.render();
+        instance.render();
       }
     });
-    hidden.forEach((c) => {
-      if (c.instance.hide) {
-        c.instance.hide();
+    hidden.forEach((instance) => {
+      if (instance.hide) {
+        instance.hide();
       }
     });
   }
@@ -98,7 +66,7 @@ export default function composer(element) {
     currentScales = buildScales(scales, fn);
     currentFormatters = buildFormatters(formatters, fn);
 
-    currentComponents = components.map(component => createComponent(component));
+    currentComponents = components.map(component => createComponent(component, fn));
 
     render();
   };
@@ -138,7 +106,7 @@ export default function composer(element) {
     const {
       formatters,
       scales,
-      components
+      components = []
     } = settings;
 
     dockLayout = createDockLayout();
@@ -149,40 +117,51 @@ export default function composer(element) {
     currentFormatters = buildFormatters(formatters, fn);
     currentScales = buildScales(scales, fn);
 
-    const {
-      added,
-      updated,
-      removed
-    } = diff(currentComponents.map(comp => comp.settings), components);
-
-    // console.log('added', added);
-    // console.log('updated', updated);
-    // console.log('removed', removed);
-
-    removed.forEach((comp) => {
-      let idx = currentComponents.map(cc => cc.settings).indexOf(comp);
-      if (idx > -1) {
-        currentComponents[idx].instance.destroy();
-        currentComponents.splice(idx, 1);
+    for (let i = currentComponents.length - 1; i >= 0; i--) {
+      const currComp = currentComponents[i];
+      // TODO warn when there is no key
+      if (!components.some(c => currComp.hasKey && currComp.key === c.key)) {
+        // Component is removed
+        console.log('Remove', currComp);
+        currComp.instance.destroy();
+        currentComponents.splice(i, 1);
       }
-    });
-    added.forEach((component) => {
-      currentComponents.push(createComponent(component));
-    });
-    updated.forEach((comp) => {
-      let idx = currentComponents.map(cc => cc.settings).indexOf(comp);
-      if (idx > -1) {
-        currentComponents[idx].settings = comp;
+    }
+
+    for (let i = 0; i < components.length; i++) {
+      let idx = -1;
+      const comp = components[i];
+      for (let j = 0; j < currentComponents.length; j++) {
+        const currComp = currentComponents[j];
+        // TODO warn when there is no key
+        if (currComp.hasKey && currComp.key === comp.key) {
+          idx = j;
+          break;
+        }
+      }
+      if (idx === -1) {
+        // Component is added
+        console.log('Add', comp);
+        currentComponents.push(createComponent(comp, fn));
+      } else {
+        // Component is (potentially) updated
+        console.log('Update', comp);
         currentComponents[idx].shouldUpdate = true;
+        currentComponents[idx].updateWith = {
+          formatters,
+          scales,
+          data,
+          settings: comp
+        };
       }
-    });
-    currentComponents = components;
+    }
 
     render();
   };
 
   fn.destroy = () => {
     currentComponents.forEach(comp => comp.instance.destroy());
+    currentComponents = [];
   };
 
   fn.formatter = function (v) {
