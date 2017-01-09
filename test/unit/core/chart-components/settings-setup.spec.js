@@ -49,12 +49,12 @@ describe('Settings setup', () => {
 
     nullComposer = {
       scale() {
-        return function () { return undefined; };
+        return function scale() { return undefined; };
       }
     };
     composer = {
       scale() {
-        return function () { return 'compost'; };
+        return function scale() { return 'compost'; };
       }
     };
   });

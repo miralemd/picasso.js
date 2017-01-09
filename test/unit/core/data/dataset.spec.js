@@ -6,7 +6,7 @@ describe('dataset', () => {
     { name: 'othercube', data: {} }
   ];
 
-  const tablesFn = function (data) {
+  const tablesFn = function tablesFn(data) {
     return data.map(t => t.name);
   };
 

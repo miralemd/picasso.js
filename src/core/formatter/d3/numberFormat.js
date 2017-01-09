@@ -20,7 +20,7 @@ export default function formatter(pattern, thousand, decimal) {
     * @param  {Object} args   Locale object for formatting
     * @return {Undefined}      Returns nothing
     */
-  format.locale = function (settings) {
+  format.locale = function localeFn(settings) {
     locale = formatLocale(settings);
     d3format = locale.format(pattern);
 
@@ -50,7 +50,7 @@ export default function formatter(pattern, thousand, decimal) {
     * @param  {String} d   Decimal
     * @return {String}     Formatted value
     */
-  format.format = function (p, v, t, d) {
+  format.format = function formatFn(p, v, t, d) {
     if (t || d) {
       thousand = t;
       decimal = d;
@@ -65,7 +65,7 @@ export default function formatter(pattern, thousand, decimal) {
    * @param  {String} p     Pattern (optional)
    * @return {String}       Returns the pattern
    */
-  format.pattern = function (p) {
+  format.pattern = function patternFn(p) {
     if (p) {
       pattern = p;
       d3format = locale.format(p);

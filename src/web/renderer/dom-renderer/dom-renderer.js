@@ -35,7 +35,7 @@ export default function renderer(opts = {}) {
   let rect = createRect();
   let vnode;
 
-  const dom = function () {};
+  const dom = function dom() {};
 
   dom.element = () => el;
 

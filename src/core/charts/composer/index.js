@@ -14,9 +14,9 @@ export default function composer() {
   let dataset = [];
   let brushes = {};
 
-  const fn = function () {};
+  const fn = function fn() {};
 
-  fn.set = function (data, settings) {
+  fn.set = function set(data, settings) {
     const {
       formatters = {},
       scales = {}
@@ -28,34 +28,34 @@ export default function composer() {
     currentFormatters = buildFormatters(formatters, fn);
   };
 
-  fn.table = function () {
+  fn.table = function table() {
     return dataset.tables()[0];
   };
 
-  fn.dataset = function () {
+  fn.dataset = function datasetFn() {
     return dataset;
   };
 
-  fn.scales = function () {
+  fn.scales = function scales() {
     return currentScales;
   };
 
-  fn.formatters = function () {
+  fn.formatters = function formatters() {
     return currentFormatters;
   };
 
-  fn.brush = function (name = 'default') {
+  fn.brush = function brushFn(name = 'default') {
     if (!brushes[name]) {
       brushes[name] = brush();
     }
     return brushes[name];
   };
 
-  fn.scale = function (v) {
+  fn.scale = function scale(v) {
     return getOrCreateScale(v, currentScales, dataset);
   };
 
-  fn.formatter = function (v) {
+  fn.formatter = function formatter(v) {
     return getOrCreateFormatter(v, currentFormatters, fn.table());
   };
 

@@ -136,7 +136,7 @@ function createInstance(definition) {
       // TODO warn when there is no key
       if (!components.some(c => currComp.hasKey && currComp.key === c.key)) {
         // Component is removed
-        console.log('Remove', currComp);
+        // console.log('Remove', currComp);
         currComp.instance.destroy();
         currentComponents.splice(i, 1);
       }
@@ -155,11 +155,11 @@ function createInstance(definition) {
       }
       if (idx === -1) {
         // Component is added
-        console.log('Add', comp);
+        // console.log('Add', comp);
         currentComponents.push(composer.createComponent(comp, element));
       } else {
         // Component is (potentially) updated
-        console.log('Update', comp);
+        // console.log('Update', comp);
         currentComponents[idx].shouldUpdate = true;
         currentComponents[idx].updateWith = {
           formatters,

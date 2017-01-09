@@ -217,9 +217,9 @@ export default function dockLayout() {
   const hiddenComponents = [];
   let settings = {};
 
-  const docker = function () {};
+  const docker = function docker() {};
 
-  docker.addComponent = function (component) {
+  docker.addComponent = function addComponent(component) {
     validateComponent(component);
     docker.removeComponent(component);
 
@@ -233,14 +233,14 @@ export default function dockLayout() {
     });
   };
 
-  docker.removeComponent = function (component) {
+  docker.removeComponent = function removeComponent(component) {
     const idx = components.map(c => c.instance).indexOf(component);
     if (idx > -1) {
       components.splice(idx, 1);
     }
   };
 
-  docker.layout = function (container) {
+  docker.layout = function layout(container) {
     const [logicalContainerRect, containerRect] = resolveLayout(container, settings);
     checkShowSettings(components, hiddenComponents, settings, logicalContainerRect);
     const reduced = reduceLayoutRect(logicalContainerRect, components, hiddenComponents);
@@ -251,7 +251,7 @@ export default function dockLayout() {
     };
   };
 
-  docker.settings = function (s) {
+  docker.settings = function settingsFn(s) {
     settings = resolveSettings(s);
   };
 

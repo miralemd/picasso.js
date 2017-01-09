@@ -13,7 +13,7 @@ export default function color(fields, settings) {
   let { min, max } = getMinMax(fields);
   s.domain([min, max]);
   s.range(settings.invert ? [1, 0] : [0, 1]);
-  const fn = function (v) {
+  const fn = function fn(v) {
     return interpolateViridis(s.get(v.value));
   };
 
