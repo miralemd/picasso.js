@@ -69,7 +69,7 @@ function createInstance(definition) {
       components = []
     } = settings;
     dockLayout = createDockLayout();
-    dockLayout.settings(dockLayout);
+    dockLayout.settings(settings.dockLayout);
 
     composer.set(data, settings);
 
