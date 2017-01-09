@@ -35,7 +35,7 @@ export default function renderer(opts = {}) {
   let rect = createRect();
   let vnode;
 
-  const dom = function () {};
+  const dom = function dom() {};
 
   dom.element = () => el;
 
@@ -52,7 +52,7 @@ export default function renderer(opts = {}) {
     return el;
   };
 
-  dom.render = (node) => {
+  dom.render = (nodes) => {
     if (!el) {
       return config.Promise.reject();
     }
@@ -62,8 +62,12 @@ export default function renderer(opts = {}) {
 
     el.style.left = `${Math.round(rect.x * scaleX)}px`;
     el.style.top = `${Math.round(rect.y * scaleY)}px`;
-    el.setAttribute('width', Math.round(rect.width * scaleX));
-    el.setAttribute('height', Math.round(rect.height * scaleY));
+    el.style.width = `${Math.round(rect.width * scaleX)}px`;
+    el.style.height = `${Math.round(rect.height * scaleY)}px`;
+
+    const node = h('div', {
+      style: { height: '100%' }
+    }, Array.isArray(nodes) ? nodes : [nodes]);
 
     if (vnode) {
       patch(vnode, node);

@@ -32,7 +32,7 @@ export default function formatter(pattern) { // eslint-disable-line import/prefe
     * @param  {Date} v   Value
     * @return {String}     Formatted value
     */
-  format.format = function (p, v) {
+  format.format = function formatFn(p, v) {
     return locale.format(p)(v);
   };
 
@@ -42,7 +42,7 @@ export default function formatter(pattern) { // eslint-disable-line import/prefe
    * @param  {Object} args   Locale object for formatting
    * @return {Undefined}      Returns nothing
    */
-  format.locale = function (...args) {
+  format.locale = function localeFn(...args) {
     locale = timeFormatLocale(...args);
     d3format = locale.format(pattern);
 
@@ -56,7 +56,7 @@ export default function formatter(pattern) { // eslint-disable-line import/prefe
    * @param  {String} v   Value
    * @return {Date}     Date
    */
-  format.parse = function (p, v) {
+  format.parse = function parse(p, v) {
     return locale.parse(p)(v);
   };
 
@@ -66,7 +66,7 @@ export default function formatter(pattern) { // eslint-disable-line import/prefe
    * @param  {String} p   Pattern
    * @return {Function}   Parser
    */
-  format.parsePattern = function (p) {
+  format.parsePattern = function parsePattern(p) {
     return locale.parse(p);
   };
 

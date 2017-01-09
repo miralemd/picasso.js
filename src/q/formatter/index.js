@@ -12,7 +12,7 @@ export default function () {
     return reg.has(t) && reg.get(t);
   }
 
-  type.has = function (t) {
+  type.has = function has(t) {
     return reg.has(t);
   };
 

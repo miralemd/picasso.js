@@ -7,6 +7,7 @@
 * <a href="#Chart.ScaleProps">Chart.ScaleProps</a>
 * <a href="#createInstance">createInstance</a>
 * <a href="#createInstance~instance.update">createInstance~instance.update</a>
+* <a href="#createInstance~instance.brush">createInstance~instance.brush</a>
 * <a href="#picasso.chart">picasso.chart</a>
 
 
@@ -21,26 +22,6 @@
 | updated | function | Lifecycle function called when the chart instance has been updated. | No |
 | on | Object | Event listeners | No |
 
-#### Examples
-
-```js
-{
-  data: {
-    ...
-  },
-  settings: {
-    ...
-  },
-  mounted: function(element) {
-
-  },
-  on: {
-    click: function(e) {
-
-    }
-  }
-}
-```
 #### <a name='Chart.SettingsProps' href='#Chart.SettingsProps'>#</a> SettingsProps
 
 |Name(s)|Type(s)|Description|Optional|
@@ -50,19 +31,6 @@
 | components.markers, | Array.&lt;marker&gt; |  | No |
 | components.axes | Array.&lt;axis&gt; |  | No |
 
-#### Examples
-
-```js
-{
-  scales: {
-    x: {...}
-  },
-  components: {
-    axes: [...]
-    markers: [...]
-  }
-}
-```
 #### <a name='Chart.ScaleProps' href='#Chart.ScaleProps'>#</a> ScaleProps
 
 |Name(s)|Type(s)|Description|Optional|
@@ -71,15 +39,6 @@
 | type | string | The type of scale to create | Yes |
 | invert | boolean | Whether to invert the scale&#x27;s output | No |
 
-#### Examples
-
-```js
-{
-  source: "whatever is accepted by the data parser",
-  type: "color",
-  invert: true
-}
-```
 #### <a name='createInstance' href='#createInstance'>#</a> **createInstance**()
 
 |Name|Type|Description|Optional|
@@ -93,6 +52,13 @@ Chart instance factory function
 | chart |  | Chart definition |No|
 
 Update the chart with new settings and / or data  
+#### <a name='createInstance~instance.brush' href='#createInstance~instance.brush'>#</a> createInstance.**brush**()
+
+|Name|Type|Description|Optional|
+|----|----|-----------|--------|
+| Returns | data-brush |  | ... |
+
+The brush context for this chart  
 #### <a name='picasso.chart' href='#picasso.chart'>#</a> **chart**(*Chart.Props settings*)
 
 |Name|Type|Description|Optional|
@@ -101,32 +67,3 @@ Update the chart with new settings and / or data
 | Returns | Chart |  | ... |
 
 The chart creator  
-#### Examples
-
-```js
-picasso.chart({
-  element: document.getElementById('chart-container'),
-  data: { ... },
-  settings: {
-    scales: {
-        x: {
-          source: "/qHyperCube/qMeasureInfo/0"
-        },
-        y: {
-          source: "/qHyperCube/qDimensionInfo/0"
-        }
-      },
-      components: {
-        markers: [
-          {
-            type: "point",
-            settings: {
-              fill: 'red'
-            }
-          }
-        ]
-      }
-    }
-  }
-);
-```

@@ -7,11 +7,11 @@ export default function doodler(settings) {
     return doodle;
   }
 
-  doodle.style = function (object, styleName, style = {}) {
+  doodle.style = function styleFn(object, styleName, style = {}) {
     return extend(object, style[styleName] || {});
   };
 
-  doodle.horizontalLine = function (x, y, width, styleName, style = {}) {
+  doodle.horizontalLine = function horizontalLine(x, y, width, styleName, style = {}) {
     return doodle.push(
       doodle.style({
         type: 'line',
@@ -26,7 +26,7 @@ export default function doodler(settings) {
     );
   };
 
-  doodle.verticalLine = function (x, y1, y2, styleName, style = {}) {
+  doodle.verticalLine = function verticalLine(x, y1, y2, styleName, style = {}) {
     return doodle.push(
       doodle.style({
         type: 'line',
@@ -41,7 +41,7 @@ export default function doodler(settings) {
     );
   };
 
-  doodle.whisker = function (x, y, style = { whisker: {} }) {
+  doodle.whisker = function whisker(x, y, style = { whisker: {} }) {
     const width = style.whisker.width || 1;
     return doodle.push(
       doodle.style({
@@ -60,7 +60,7 @@ export default function doodler(settings) {
     );
   };
 
-  doodle.openwhisker = function (x, y, style = { whisker: {} }) {
+  doodle.openwhisker = function openwhisker(x, y, style = { whisker: {} }) {
     const width = style.whisker.width || 1;
     return doodle.whisker(
       x - (width / 2),
@@ -69,7 +69,7 @@ export default function doodler(settings) {
     );
   };
 
-  doodle.closewhisker = function (x, y, style = { whisker: {} }) {
+  doodle.closewhisker = function closewhisker(x, y, style = { whisker: {} }) {
     const width = style.whisker.width || 1;
     return doodle.whisker(
       x + (width / 2),
@@ -78,7 +78,7 @@ export default function doodler(settings) {
     );
   };
 
-  doodle.median = function (x, y, style = { box: {} }) {
+  doodle.median = function median(x, y, style = { box: {} }) {
     const width = style.box.width || 1;
     return doodle.horizontalLine(
       x,
@@ -89,7 +89,7 @@ export default function doodler(settings) {
     );
   };
 
-  doodle.box = function (x, y, height, style = { box: {} }) {
+  doodle.box = function box(x, y, height, style = { box: {} }) {
     const width = style.box.width || 1;
     return doodle.push(
       doodle.style({

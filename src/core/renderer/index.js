@@ -11,14 +11,14 @@ export default function renderer(type = prio[0]) {
   return reg.get(type)();
 }
 
-renderer.register = function (type, fn) {
+renderer.register = function register(type, fn) {
   if (reg.add(type, fn)) {
     prio.push(type);
   }
   return this;
 };
 
-renderer.deregister = function (type) {
+renderer.deregister = function deregister(type) {
   reg.remove(type);
   let idx = prio.indexOf(type);
   if (idx !== -1) {
@@ -27,11 +27,11 @@ renderer.deregister = function (type) {
   return this;
 };
 
-renderer.types = function () {
+renderer.types = function types() {
   return reg.getKeys().slice();
 };
 
-renderer.prio = function (p) {
+renderer.prio = function prioFn(p) {
   if (p) {
     prio = p.slice();
     return this;

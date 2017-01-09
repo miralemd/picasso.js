@@ -38,7 +38,7 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
   let scene;
 
 
-  const svg = function () {};
+  const svg = function svg() {};
 
   svg.element = () => el;
 

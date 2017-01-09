@@ -2,10 +2,8 @@ import createComponentFactory from '../component';
 
 const gridLineComponent = {
   created(obj) {
-    this.element = this.composer.element;
-
     this.settings = obj.settings;
-    this.data = this.composer.data;
+    this.data = obj.data; // TODO composer
     this.obj = obj;
 
     this.x = this.settings.x ? this.composer.scales[this.settings.x.scale] : null;
@@ -13,7 +11,7 @@ const gridLineComponent = {
 
     this.onData();
   },
-  require: ['composer', 'renderer'],
+  require: ['composer', 'renderer', 'element'],
   onData() {
     this.lines = [];
 

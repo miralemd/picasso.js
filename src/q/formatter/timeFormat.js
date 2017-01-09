@@ -51,7 +51,7 @@ export default function formatter(pattern, qtype = 'TS', localeInfo = null) {
     * @param  {Date} v   Value
     * @return {String}     Formatted value
     */
-  format.format = function (p, v) {
+  format.format = function formatFn(p, v) {
     v = prepare(v);
     return qformat.format(v, p);
   };
@@ -62,7 +62,7 @@ export default function formatter(pattern, qtype = 'TS', localeInfo = null) {
    * @param  {Object} args   Locale object for formatting
    * @return {Undefined}      Returns nothing
    */
-  format.locale = function (li) {
+  format.locale = function locale(li) {
     qformat = dateFormatFactory(li, pattern, qtype);
 
     return this;
@@ -74,7 +74,7 @@ export default function formatter(pattern, qtype = 'TS', localeInfo = null) {
    * @param  {String} nqt New qType (optional)
    * @return {String}     Current qtype
    */
-  format.qtype = function (nqt) {
+  format.qtype = function qtypeFn(nqt) {
     if (nqt !== undefined) {
       qtype = nqt;
     }

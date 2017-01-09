@@ -23,7 +23,7 @@ export default function formatter(pattern, thousand, decimal, qType) {
     * @param  {String} d   Decimal
     * @return {String}     Formatted value
     */
-  format.format = function (p, v, t, d) {
+  format.format = function formatFn(p, v, t, d) {
     return qformat.format(v, p, t, d);
   };
 
@@ -33,7 +33,7 @@ export default function formatter(pattern, thousand, decimal, qType) {
     * @param  {String} p     Pattern (optional)
     * @return {String}       Returns the pattern
     */
-  format.pattern = function (p) {
+  format.pattern = function patternFn(p) {
     if (p) {
       qformat.pattern = p;
       qformat.prepare();

@@ -2,17 +2,17 @@ import dockLayout from '../../../../src/core/dock-layout/dock-layout';
 import dockConfig from '../../../../src/core/dock-layout/dock-config';
 
 describe('Dock Layout', () => {
-  const componentMock = function (dock, size, order = 0, edgeBleed = {}) {
+  const componentMock = function componentMock(dock, size, order = 0, edgeBleed = {}) {
     let outerRect = { x: 0, y: 0, width: 0, height: 0 };
     let innerRect = { x: 0, y: 0, width: 0, height: 0 };
     let containerRect = { x: 0, y: 0, width: 0, height: 0 };
 
-    const dummy = function () {};
+    const dummy = function dummy() {};
 
     dummy.dockConfig = dockConfig({ dock, displayOrder: order });
     dummy.dockConfig.requiredSize(rect => rect.width * size);
     dummy.dockConfig.edgeBleed(edgeBleed);
-    dummy.resize = function (...args) {
+    dummy.resize = function resize(...args) {
       if (!args.length) {
         return { innerRect, outerRect, containerRect };
       }
