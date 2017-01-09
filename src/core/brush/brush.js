@@ -3,7 +3,7 @@ import EventEmitter from '../utils/event-emitter';
 import rangeCollection from './range-collection';
 import valueCollection from './value-collection';
 
-export function add({
+function add({
   items,
   values,
   vc
@@ -27,7 +27,7 @@ export function add({
   return changed;
 }
 
-export function remove({
+function remove({
   items,
   values
 }) {

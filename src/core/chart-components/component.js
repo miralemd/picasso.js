@@ -1,7 +1,7 @@
 import rendererFn from '../renderer/index';
 import {
-  highlighter
-  // brushDataPoint
+  styler,
+  brushFromDomElement
 } from './brushing';
 
 const isReservedProperty = prop => ['on', 'dock', 'displayOrder', 'prioOrder', 'minimumLayoutMode', 'renderer', 'preferredSize', 'created', 'beforeMount', 'mounted',
@@ -33,6 +33,7 @@ export default function componentFactory(definition) {
       data: [],
       nodes: [],
       composer,
+      config: config.brushes || {},
       renderer: null
     };
     let hasRendered = false;
@@ -122,7 +123,13 @@ export default function componentFactory(definition) {
 
       if (!hasRendered) {
         hasRendered = true;
-        highlighter(brushArgs);
+        styler(brushArgs, 'highlight', {
+          active: { opacity: 1 },
+          inactive: { opacity: 0.3 }
+        });
+        styler(brushArgs, 'tooltip', {
+          active: { strokeWidth: 4, stroke: '#333' }
+        });
         mounted.call(context, element);
       }
     };
@@ -199,14 +206,24 @@ export default function componentFactory(definition) {
       element.addEventListener(key, listener);
     });
 
-    // // ===== temporary solution to try out interactive brushing (assuming svg renderer)
-    // element.addEventListener('click', (e) => {
-    //   brushDataPoint({ e, brushType: 'highlight', action: 'toggle', composer, data: brushArgs.data });
-    // });
+    // ===== temporary solution to try out interactive brushing (assuming svg renderer)
+/*    element.addEventListener('click', (e) => {
+      if (!brushArgs.config.trigger) {
+        return;
+      }
+      brushArgs.config.trigger.filter(t => t.action === 'tap').forEach((t) => {
+        brushFromDomElement({ e, action: 'toggle', composer, data: brushArgs.data, config: t });
+      });
+    });
     //
-    // element.addEventListener('mousemove', (e) => {
-    //   brushDataPoint({ e, brushType: 'hover', action: 'add', composer, data: brushArgs.data });
-    // });
+    element.addEventListener('mousemove', (e) => {
+      if (!brushArgs.config.trigger) {
+        return;
+      }
+      brushArgs.config.trigger.filter(t => t.action === 'over').forEach((t) => {
+        brushFromDomElement({ e, action: 'hover', composer, data: brushArgs.data, config: t });
+      });
+    });*/
     // ===== end temporary solution
 
     // end skip

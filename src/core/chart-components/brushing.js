@@ -1,15 +1,24 @@
-const ALPHA_MULTIPLIER = 0.3;
+export function styler(context, name, style) {
+  let consumers = context.config.consume || [];
+  consumers = consumers.filter(c => c.context === name);
+  if (!consumers.length) {
+    return;
+  }
+  const brusher = context.composer.brush(name);
+  const dataProps = consumers[0].data || ['self'];
 
-// TODO - allow configuration of how to style highlighted shapes
-export function highlighter(context) {
-  const brusher = context.composer.brush('highlight');
   brusher.on('start', () => {
     const nodes = context.nodes;
     const len = nodes.length;
 
     for (let i = 0; i < len; i++) {
-      nodes[i].__opacity = nodes[i].opacity; // store original value
-      nodes[i].opacity = nodes[i].__opacity * ALPHA_MULTIPLIER;
+      nodes[i].__style = nodes[i].__style || {}; // store original value
+      Object.keys(style.active).forEach((s) => {
+        nodes[i].__style[s] = nodes[i][s];
+        if (style.inactive) {
+          nodes[i][s] = style.inactive[s];
+        }
+      });
     }
     context.renderer.render(nodes);
   });
@@ -18,59 +27,93 @@ export function highlighter(context) {
     const len = nodes.length;
 
     for (let i = 0; i < len; i++) {
-      nodes[i].opacity = nodes[i].__opacity; // restore original value
+      Object.keys(nodes[i].__style).forEach((s) => {
+        nodes[i][s] = nodes[i].__style[s];
+      });
+      delete nodes[i].__style;
     }
     context.renderer.render(nodes);
   });
   brusher.on('update', (/* added, removed */) => {
-    // console.log(added, removed);
+    // TODO - render nodes only once, i.e. don't render for each brush, update nodes for all brushes and then render
     const nodes = context.nodes;
     const len = nodes.length;
     const mappedData = context.data;
 
-    for (let i = 0; i < len; i++) { // TODO - find a more efficient way to update opacity
+    for (let i = 0; i < len; i++) { // TODO - update only added and removed nodes
       let nodeData = mappedData[nodes[i].data];
-      if (nodeData && brusher.containsMappedData(nodeData)) {
-        nodes[i].opacity = nodes[i].__opacity;
+      if (nodeData && brusher.containsMappedData(nodeData, dataProps)) {
+        Object.keys(style.active).forEach((s) => {
+          nodes[i][s] = style.active[s];
+        });
+      } else if (!style.inactive) {
+        Object.keys(style.active).forEach((s) => {
+          nodes[i][s] = nodes[i].__style[s];
+        });
       } else {
-        nodes[i].opacity = nodes[i].__opacity * ALPHA_MULTIPLIER;
+        Object.keys(style.inactive).forEach((s) => {
+          nodes[i][s] = style.inactive[s];
+        });
       }
     }
     context.renderer.render(nodes);
   });
 }
 
-// export function hoverer(context) {
-//   const brusher = context.composer.brush('hover');
-//   brusher.on('update', () => {
-//     const brushes = brusher.brushes().filter(b => b.type === 'value');
-//     const hoveredData = brushes[0] ? brushes[0].brush.values() : [];
-//     console.log('hovered data', hoveredData);
-//   });
-// }
+function getPointData(e) {
+  const target = e.target;
+  return target.getAttribute('data');
+}
 
 export function brushDataPoint({
-  e,
-  brushType,
+  dataPoint,
   action,
   composer,
-  data
+  config
 }) {
-  const target = e.target;
-  const dataAttrib = target.getAttribute('data');
-  const b = composer.brush(brushType);
-  let actionFn = 'toggleValue';
-  if (action === 'add') {
-    actionFn = 'addValue';
+  if (typeof dataPoint === 'undefined' || !config) {
+    return;
+  }
+
+  const dataProps = config.data || ['self'];
+  let items = [];
+
+  let actionFn = 'toggleValues';
+  if (action === 'add' || action === 'hover') {
+    actionFn = 'addValues';
   } else if (action === 'remove') {
-    actionFn = 'removeValue';
+    actionFn = 'removeValues';
   }
-  if (dataAttrib !== null) {
-    if (data) {
-      const dataPoint = data[+dataAttrib];
-      b[actionFn](dataPoint.self.source.field, dataPoint.self.value);
-    }
-  } else if (brushType === 'hover') {
-    b.clear();
+
+  if (dataPoint !== null) {
+    dataProps.forEach((p) => {
+      items.push({ key: dataPoint[p].source.field, value: dataPoint[p].value });
+    });
+
+    config.contexts.forEach((c) => {
+      composer.brush(c)[actionFn](items);
+    });
+  } else if (action === 'hover') {
+    config.contexts.forEach((c) => {
+      composer.brush(c).clear();
+    });
   }
+}
+
+export function brushFromDomElement({
+  e,
+  action,
+  composer,
+  data,
+  config
+}) {
+  const dataAttrib = getPointData(e);
+  const dataPoint = dataAttrib !== null ? data[+dataAttrib] : null;
+
+  brushDataPoint({
+    dataPoint,
+    action,
+    composer,
+    config
+  });
 }
