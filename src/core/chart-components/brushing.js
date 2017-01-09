@@ -5,7 +5,7 @@ export function styler(context, name, style) {
     return;
   }
   const brusher = context.composer.brush(name);
-  const dataProps = consumers[0].data || ['self'];
+  const dataProps = consumers[0].data;
 
   brusher.on('start', () => {
     const nodes = context.nodes;
