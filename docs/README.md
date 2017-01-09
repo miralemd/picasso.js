@@ -43,7 +43,7 @@ In that scenario, you might want to override the `name` parameter to "myFunction
 * Class `{{>class my.file-js.myclass}}`, shorthand for `function` template, to work with magic template resolution.
 * Examples `{{>examples my.file-js.myfunction.examples}}`, prints all examples with JavaScript Code tag to enable highlighting on supported markdown compilers.
 * Factory `{{>factory my.file-js.myfactory}}`, prints a function and all of it's child functions.
-* Function `{{>functio my.file-js.myfunction}}`, prints a function (no child functions).
+* Function `{{>function my.file-js.myfunction}}`, prints a function (no child functions).
 * Magic `{{>magic ctx='my.new.context-js'}}`, magic template resolving tries to figure out what you're trying to print and adapts to that. Prefer using this, but if it does not behave as expected, you can use templates manually.
 * Params `{{>magic my.file-js.myfunction.params}}`, prints all parameters for a function, given an array. Comma separated.
 * Typedef `{{>typedef my.file-js.mytypedef}}`, prints a typedef.
