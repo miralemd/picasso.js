@@ -3,6 +3,104 @@ import EventEmitter from '../utils/event-emitter';
 import rangeCollection from './range-collection';
 import valueCollection from './value-collection';
 
+function add({
+  items,
+  values,
+  vc
+}) {
+  let changedMap = {};
+  let changed = [];
+  items.forEach(({ key, value }) => {
+    if (!values[key]) {
+      values[key] = vc();
+    }
+
+    if (values[key].add(value)) {
+      changedMap[key] = changedMap[key] || [];
+      changedMap[key].push(value);
+    }
+  });
+
+  Object.keys(changedMap).forEach((key) => {
+    changed.push({ id: key, values: changedMap[key] });
+  });
+  return changed;
+}
+
+function remove({
+  items,
+  values
+}) {
+  let changedMap = {};
+  let changed = [];
+  items.forEach(({ key, value }) => {
+    if (!values[key]) {
+      return;
+    }
+
+    if (values[key].remove(value)) {
+      changedMap[key] = changedMap[key] || [];
+      changedMap[key].push(value);
+    }
+  });
+
+  Object.keys(changedMap).forEach((key) => {
+    changed.push({ id: key, values: changedMap[key] });
+  });
+  return changed;
+}
+
+export function toggle({
+  items,
+  values,
+  vc
+}) {
+  let addedMap = {};
+  let removedMap = {};
+  let added = [];
+  let removed = [];
+  let filteredSet = {};
+  items.forEach(({ key, value }) => {
+    if (!filteredSet[key]) {
+      filteredSet[key] = [];
+    }
+    let idx = filteredSet[key].indexOf(value);
+
+    if (idx === -1) {
+      filteredSet[key].push(value);
+    } else {
+      filteredSet[key].splice(idx, 1);
+    }
+  });
+
+  Object.keys(filteredSet).forEach((key) => {
+    filteredSet[key].forEach((value) => {
+      if (!values[key] || !values[key].contains(value)) {
+        if (!values[key]) {
+          values[key] = vc();
+        }
+        addedMap[key] = addedMap[key] || [];
+        addedMap[key].push(value);
+        values[key].add(value);
+      } else if (values[key] && values[key].contains(value)) {
+        removedMap[key] = removedMap[key] || [];
+        removedMap[key].push(value);
+        values[key].remove(value);
+      }
+    });
+  });
+
+  Object.keys(addedMap).forEach((key) => {
+    added.push({ id: key, values: addedMap[key] });
+  });
+
+  Object.keys(removedMap).forEach((key) => {
+    removed.push({ id: key, values: removedMap[key] });
+  });
+
+  return [added, removed];
+}
+
 export default function brush({
   vc = valueCollection,
   rc = rangeCollection
@@ -101,17 +199,21 @@ export default function brush({
    * brush.addValue('/qHyperCube/qDimensionInfo/0', 3);
    */
   fn.addValue = (key, value) => {
-    if (!values[key]) {
-      values[key] = vc();
-    }
+    fn.addValues([{ key, value }]);
+  };
 
-    if (!activated) {
-      activated = true;
-      fn.emit('start');
-    }
-
-    if (values[key].add(value)) {
-      fn.emit('update', [{ id: key, values: [value] }], []);
+  fn.addValues = (items) => {
+    const added = add({
+      vc,
+      values,
+      items
+    });
+    if (added.length) {
+      if (!activated) {
+        activated = true;
+        fn.emit('start');
+      }
+      fn.emit('update', added, []);
     }
   };
 
@@ -126,12 +228,17 @@ export default function brush({
    * brush.removeValue('countries', 'Sweden');
    */
   fn.removeValue = (key, value) => {
-    if (!values[key]) {
-      return;
-    }
+    fn.removeValues([{ key, value }]);
+  };
 
-    if (values[key].remove(value)) {
-      fn.emit('update', [], [{ id: key, values: [value] }]);
+  fn.removeValues = (items) => {
+    const removed = remove({
+      values,
+      items
+    });
+    if (removed.length) {
+      fn.emit('update', [], removed);
+      // TODO - emit 'end' event if there are no remaining active brushes
     }
   };
 
@@ -146,10 +253,22 @@ export default function brush({
    * brush.toggleValue('countries', 'Sweden');
    */
   fn.toggleValue = (key, value) => {
-    if (!values[key] || !values[key].contains(value)) {
-      fn.addValue(key, value);
-    } else {
-      fn.removeValue(key, value);
+    fn.toggleValues([{ key, value }]);
+  };
+
+  fn.toggleValues = (items) => {
+    let toggled = toggle({
+      items,
+      values,
+      vc
+    });
+
+    if (toggled[0].length > 0 || toggled[1].length > 0) {
+      if (!activated) {
+        activated = true;
+        fn.emit('start');
+      }
+      fn.emit('update', toggled[0], toggled[1]);
     }
   };
 
@@ -195,21 +314,30 @@ export default function brush({
     return ranges[path].containsValue(value);
   };
 
-  fn.containsMappedData = (d) => {
-    let b = false;
-    Object.keys(d).forEach((key) => {
+  fn.containsMappedData = (d, props) => {
+    let status = [];
+    Object.keys(d).forEach((key, i) => {
+      status[i] = { key, i, bool: false };
       let source = d[key].source && d[key].source.field;
       if (!source) {
         return;
       }
+
       let type = d[key].source.type === 'quant' ? 'range' : 'value';
       if (type === 'range' && ranges[source] && ranges[source].containsValue(d[key].value)) {
-        b = true;
+        status[i].bool = true;
       } else if (type === 'value' && values[source] && values[source].contains(d[key].value)) {
-        b = true;
+        status[i].bool = true;
       }
     });
-    return b;
+
+    if (props) {
+      status = status.filter(b => props.indexOf(b.key) !== -1);
+      // if (operation === 'and') {
+      //   return !status.some(s => s.bool === false);
+      // }
+    }
+    return status.some(s => s.bool);
   };
 
   EventEmitter.mixin(fn);
