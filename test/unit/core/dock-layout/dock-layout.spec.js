@@ -2,7 +2,7 @@ import dockLayout from '../../../../src/core/dock-layout/dock-layout';
 import dockConfig from '../../../../src/core/dock-layout/dock-config';
 
 describe('Dock Layout', () => {
-  const componentMock = function componentMock(dock, size, order = 0, edgeBleed = {}) {
+  const componentMock = function componentMock({ dock = '', size = 0, order = 0, edgeBleed = {} } = {}) {
     let outerRect = { x: 0, y: 0, width: 0, height: 0 };
     let innerRect = { x: 0, y: 0, width: 0, height: 0 };
     let containerRect = { x: 0, y: 0, width: 0, height: 0 };
@@ -24,11 +24,11 @@ describe('Dock Layout', () => {
   };
 
   it('should always return an inner, outer and a container rect', () => {
-    const leftComp = componentMock('left', 0.05);
-    const rightComp = componentMock('right', 0.1);
-    const mainComp = componentMock('', 0);
-    const topComp = componentMock('top', 0.15);
-    const bottomComp = componentMock('bottom', 0.2);
+    const leftComp = componentMock({ dock: 'left', size: 0.05 });
+    const rightComp = componentMock({ dock: 'right', size: 0.1 });
+    const mainComp = componentMock();
+    const topComp = componentMock({ dock: 'top', size: 0.15 });
+    const bottomComp = componentMock({ dock: 'bottom', size: 0.2 });
     const rect = { x: 0, y: 0, width: 1000, height: 1000 };
     const dl = dockLayout();
     dl.addComponent(leftComp);
@@ -55,10 +55,10 @@ describe('Dock Layout', () => {
   });
 
   it('should allow multiple components to dock on same side', () => {
-    const leftComp = componentMock('left', 0.05);
-    const leftComp2 = componentMock('left', 0.1);
-    const leftComp3 = componentMock('left', 0.15);
-    const mainComp = componentMock('', 0);
+    const leftComp = componentMock({ dock: 'left', size: 0.05 });
+    const leftComp2 = componentMock({ dock: 'left', size: 0.1 });
+    const leftComp3 = componentMock({ dock: 'left', size: 0.15 });
+    const mainComp = componentMock();
     const rect = { x: 0, y: 0, width: 1000, height: 1000 };
     const dl = dockLayout();
     dl.addComponent(leftComp);
@@ -95,10 +95,10 @@ describe('Dock Layout', () => {
   });
 
   it("should remove components that don't fit", () => {
-    const leftComp = componentMock('left', 0.30);
-    const leftComp2 = componentMock('left', 0.30);
-    const leftComp3 = componentMock('left', 0.30);
-    const mainComp = componentMock('', 0);
+    const leftComp = componentMock({ dock: 'left', size: 0.30 });
+    const leftComp2 = componentMock({ dock: 'left', size: 0.30 });
+    const leftComp3 = componentMock({ dock: 'left', size: 0.30 });
+    const mainComp = componentMock();
     const rect = { x: 0, y: 0, width: 1000, height: 1000 };
     const dl = dockLayout();
     dl.addComponent(leftComp);
@@ -193,8 +193,8 @@ describe('Dock Layout', () => {
 
   describe('edgeBleed', () => {
     it("should remove component when edgebleed don't fit", () => {
-      const leftComp = componentMock('left', 0.10, undefined, { top: 700 });
-      const mainComp = componentMock('', 0);
+      const leftComp = componentMock({ dock: 'left', size: 0.10, edgeBleed: { top: 700 } });
+      const mainComp = componentMock();
       const rect = { x: 0, y: 0, width: 1000, height: 1000 };
       const dl = dockLayout();
       dl.addComponent(leftComp);
@@ -207,9 +207,9 @@ describe('Dock Layout', () => {
     });
 
     it('should remove component because other components edgebleed', () => {
-      const leftComp = componentMock('left', 0.10, undefined, { top: 400 });
-      const bottomComp = componentMock('bottom', 0.30);
-      const mainComp = componentMock('', 0);
+      const leftComp = componentMock({ dock: 'left', size: 0.10, edgeBleed: { top: 400 } });
+      const bottomComp = componentMock({ dock: 'bottom', size: 0.30 });
+      const mainComp = componentMock();
       const rect = { x: 0, y: 0, width: 1000, height: 1000 };
       const dl = dockLayout();
       dl.addComponent(leftComp);
@@ -224,9 +224,9 @@ describe('Dock Layout', () => {
     });
 
     it('should overlap component and edgebleed on the same side', () => {
-      const leftComp = componentMock('left', 0.10, undefined, { bottom: 400 });
-      const bottomComp = componentMock('bottom', 0.30);
-      const mainComp = componentMock('', 0);
+      const leftComp = componentMock({ dock: 'left', size: 0.10, edgeBleed: { bottom: 400 } });
+      const bottomComp = componentMock({ dock: 'bottom', size: 0.30 });
+      const mainComp = componentMock();
       const rect = { x: 0, y: 0, width: 1000, height: 1000 };
       const dl = dockLayout();
       dl.addComponent(leftComp);
