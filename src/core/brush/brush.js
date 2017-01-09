@@ -50,15 +50,7 @@ function remove({
   return changed;
 }
 
-export function toggle({
-  items,
-  values,
-  vc
-}) {
-  let addedMap = {};
-  let removedMap = {};
-  let added = [];
-  let removed = [];
+function collectUnique(items) {
   let filteredSet = {};
   items.forEach(({ key, value }) => {
     if (!filteredSet[key]) {
@@ -72,16 +64,45 @@ export function toggle({
       filteredSet[key].splice(idx, 1);
     }
   });
+  return filteredSet;
+}
+
+function createValueCollection({
+  key,
+  collection,
+  obj,
+  fn,
+  value
+}) {
+  if (!collection[key]) {
+    collection[key] = fn();
+  }
+  obj[key] = obj[key] || [];
+  obj[key].push(value);
+  collection[key].add(value);
+}
+
+export function toggle({
+  items,
+  values,
+  vc
+}) {
+  let addedMap = {};
+  let removedMap = {};
+  let added = [];
+  let removed = [];
+  let filteredSet = collectUnique(items);
 
   Object.keys(filteredSet).forEach((key) => {
     filteredSet[key].forEach((value) => {
       if (!values[key] || !values[key].contains(value)) {
-        if (!values[key]) {
-          values[key] = vc();
-        }
-        addedMap[key] = addedMap[key] || [];
-        addedMap[key].push(value);
-        values[key].add(value);
+        createValueCollection({
+          key,
+          value,
+          collection: values,
+          obj: addedMap,
+          fn: vc
+        });
       } else if (values[key] && values[key].contains(value)) {
         removedMap[key] = removedMap[key] || [];
         removedMap[key].push(value);
@@ -97,6 +118,58 @@ export function toggle({
   Object.keys(removedMap).forEach((key) => {
     removed.push({ id: key, values: removedMap[key] });
   });
+
+  return [added, removed];
+}
+
+function diff(old, current) {
+  let changed = [];
+  Object.keys(old).forEach((key) => {
+    if (!current[key]) {
+      changed.push({ id: key, values: old[key] });
+    } else {
+      let changedValues = old[key].filter(v => current[key].indexOf(v) === -1);
+      if (changedValues.length) {
+        changed.push({ id: key, values: changedValues });
+      }
+    }
+  });
+
+  return changed;
+}
+
+export function set({
+  items,
+  vCollection,
+  vc
+}) {
+  let addedMap = {};
+  let added = [];
+  let removed = [];
+  let filteredSet = collectUnique(items);
+
+  let oldMap = {};
+  Object.keys(vCollection).forEach((key) => {
+    oldMap[key] = vCollection[key].values().slice();
+    vCollection[key] = undefined;
+  });
+
+  Object.keys(filteredSet).forEach((key) => {
+    filteredSet[key].forEach((value) => {
+      if (!vCollection[key] || !vCollection[key].contains(value)) {
+        createValueCollection({
+          key,
+          value,
+          collection: vCollection,
+          obj: addedMap,
+          fn: vc
+        });
+      }
+    });
+  });
+
+  removed = diff(oldMap, addedMap);
+  added = diff(addedMap, oldMap);
 
   return [added, removed];
 }
@@ -214,6 +287,22 @@ export default function brush({
         fn.emit('start');
       }
       fn.emit('update', added, []);
+    }
+  };
+
+  fn.setValues = (items) => {
+    let changed = set({
+      items,
+      vCollection: values,
+      vc
+    });
+
+    if (changed[0].length > 0 || changed[1].length > 0) {
+      if (!activated) {
+        activated = true;
+        fn.emit('start');
+      }
+      fn.emit('update', changed[0], changed[1]);
     }
   };
 
