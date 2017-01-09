@@ -22,6 +22,10 @@ const POSTPROCESS_ROOT = 'src/';
 let toPostProcess = [];
 
 function fixPath(str) {
+  if (path.sep === '\\') {
+    // change path separator for windows paths
+    str = str.replace(/\\/g, '/');
+  }
   let find = '/picasso.js/src';
   let cut = str.indexOf(find) + find.length;
   return str.length === cut ? '' : str.substr(cut);
