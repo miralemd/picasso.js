@@ -149,6 +149,8 @@ export function renderer(sceneFn = sceneFactory) {
     return config.Promise.resolve(doRender);
   };
 
+  canvasRenderer.itemsAt = options => scene.getItemsFrom(options);
+
   canvasRenderer.clear = () => {
     if (!el) {
       return;

@@ -95,6 +95,7 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
     return config.Promise.resolve(doRender);
   };
 
+  svg.itemsAt = options => scene.getItemsFrom(options);
 
   svg.clear = () => {
     if (!group) {
