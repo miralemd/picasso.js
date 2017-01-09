@@ -6,18 +6,27 @@ export function styler(context, name, style) {
   }
   const brusher = context.composer.brush(name);
   const dataProps = consumers[0].data;
+  const active = style.active || {};
+  const inactive = style.inactive || {};
+  let styleProps = [];
+  Object.keys(active).forEach((key) => {
+    styleProps.push(key);
+  });
+
+  Object.keys(inactive).forEach((key) => {
+    if (styleProps.indexOf(key) === -1) {
+      styleProps.push(key);
+    }
+  });
 
   brusher.on('start', () => {
     const nodes = context.nodes;
     const len = nodes.length;
 
     for (let i = 0; i < len; i++) {
-      nodes[i].__style = nodes[i].__style || {}; // store original value
-      Object.keys(style.active).forEach((s) => {
-        nodes[i].__style[s] = nodes[i][s];
-        if (style.inactive) {
-          nodes[i][s] = style.inactive[s];
-        }
+      nodes[i].__style = nodes[i].__style || {};
+      styleProps.forEach((s) => {
+        nodes[i].__style[s] = nodes[i][s]; // store original value
       });
     }
     context.renderer.render(nodes);
@@ -30,7 +39,7 @@ export function styler(context, name, style) {
       Object.keys(nodes[i].__style).forEach((s) => {
         nodes[i][s] = nodes[i].__style[s];
       });
-      delete nodes[i].__style;
+      nodes[i].__style = undefined;
     }
     context.renderer.render(nodes);
   });
@@ -42,19 +51,16 @@ export function styler(context, name, style) {
 
     for (let i = 0; i < len; i++) { // TODO - update only added and removed nodes
       let nodeData = mappedData[nodes[i].data];
-      if (nodeData && brusher.containsMappedData(nodeData, dataProps)) {
-        Object.keys(style.active).forEach((s) => {
-          nodes[i][s] = style.active[s];
-        });
-      } else if (!style.inactive) {
-        Object.keys(style.active).forEach((s) => {
+      let isActive = nodeData && brusher.containsMappedData(nodeData, dataProps);
+      styleProps.forEach((s) => {
+        if (isActive && s in active) {
+          nodes[i][s] = active[s];
+        } else if (!isActive && s in inactive) {
+          nodes[i][s] = inactive[s];
+        } else {
           nodes[i][s] = nodes[i].__style[s];
-        });
-      } else {
-        Object.keys(style.inactive).forEach((s) => {
-          nodes[i][s] = style.inactive[s];
-        });
-      }
+        }
+      });
     }
     context.renderer.render(nodes);
   });
