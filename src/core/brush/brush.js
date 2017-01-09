@@ -228,7 +228,7 @@ export default function brush({
    */
   fn.clear = () => {
     const hasChanged = Object.keys(ranges).length + Object.keys(values).length > 0;
-    let removed = fn.brushes().filter(b => b.type === 'value').map(b => ({ id: b.id, values: b.values }));
+    let removed = fn.brushes().filter(b => b.type === 'value').map(b => ({ id: b.id, values: b.brush.values() }));
     ranges = {};
     values = {};
     if (hasChanged) {
