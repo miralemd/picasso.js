@@ -210,24 +210,23 @@ function createDisplayPoints(dataPoints, { x, y, width, height }, pointSize, sha
 
 const pointMarker = {
   require: ['composer'],
-  created(opts) {
-    this.rect = { x: 0, y: 0, width: 0, height: 0 };
-    this.settings = opts.settings.settings || {};
-    this.data = opts.settings.data || {};
-    this.shapeFn = opts.settings.shapeFn || shapeFactory;
-    this.onData();
+  defaultSettings: {
+    settings: {},
+    data: {}
   },
-  onData() {
+  created() {
+    this.rect = { x: 0, y: 0, width: 0, height: 0 };
+    this.updateSettings(this.settings);
+  },
+  updateSettings(settings) {
     const composer = this.composer;
-    this.local = calculateLocalSettings(this.settings, composer);
+    this.local = calculateLocalSettings(settings.settings, composer);
   },
   beforeUpdate(opts) {
     const {
       settings
     } = opts;
-    this.data = settings.data;
-    this.settings = settings.settings;
-    this.onData();
+    this.updateSettings(settings);
   },
   beforeRender(opts) {
     const {
@@ -245,7 +244,7 @@ const pointMarker = {
       return obj;
     });
     const pointSize = getPointSizeLimits(this.local.x, this.local.y, width, height);
-    return createDisplayPoints(points, this.rect, pointSize, this.shapeFn);
+    return createDisplayPoints(points, this.rect, pointSize, this.settings.shapeFn || shapeFactory);
   }
 };
 

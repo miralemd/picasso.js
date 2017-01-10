@@ -26,10 +26,10 @@ export default function dispersion(composer, defaultStyles = {}, initialSettings
 
   const fn = () => fn;
 
-  fn.setOpts = (opts) => {
+  fn.updateSettings = (stngs) => {
     // Setup settings and data
-    settings = opts.settings;
-    data = opts.data;
+    settings = stngs.settings;
+    data = stngs.data;
     dataset = composer.dataset();
 
     // Setup scales

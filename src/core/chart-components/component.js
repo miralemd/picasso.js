@@ -8,7 +8,7 @@ import {
 } from './brushing';
 
 const isReservedProperty = prop => ['on', 'dock', 'displayOrder', 'prioOrder', 'minimumLayoutMode', 'renderer', 'preferredSize', 'created', 'beforeMount', 'mounted',
-  'beforeUpdate', 'updated', 'beforeRender', 'render', 'beforeDestroy', 'destroyed'
+  'beforeUpdate', 'updated', 'beforeRender', 'render', 'beforeDestroy', 'destroyed', 'defaultSettings'
 ].some(name => name === prop);
 
 export default function componentFactory(definition) {
@@ -45,7 +45,7 @@ export default function componentFactory(definition) {
     const destroyed = createCallback('destroyed');
     const render = definition.render;
 
-    let settings = config;
+    let settings = extend(true, {}, definition.defaultSettings || {}, config);
     let element;
     let brushArgs = {
       data: [],
@@ -56,13 +56,7 @@ export default function componentFactory(definition) {
     };
     let hasRendered = false;
 
-    // General settings variables (reserved properties)
-    let {
-      dock = definition.dock,
-      displayOrder = definition.displayOrder,
-      prioOrder = definition.prioOrder,
-      minimumLayoutMode = definition.minimumLayoutMode
-    } = settings;
+    // Dock settings
 
     const rend = renderer ? rendererFn(renderer) : composer.renderer || rendererFn();
     brushArgs.renderer = rend;
@@ -70,6 +64,7 @@ export default function componentFactory(definition) {
     const context = {
       itemsAt: rend.itemsAt,
       dataset: composer.dataset(),
+      settings,
       getMappedData: idx => brushArgs.data && brushArgs.data[idx]
       // measureText: rend.measureText,
       // forceUpdate: () => {}
@@ -110,10 +105,10 @@ export default function componentFactory(definition) {
         outer,
         dock: fn.dockConfig.dock
       }),
-      displayOrder,
-      prioOrder,
-      minimumLayoutMode,
-      dock
+      displayOrder: settings.displayOrder,
+      prioOrder: settings.prioOrder,
+      minimumLayoutMode: settings.minimumLayoutMode,
+      dock: settings.dock
     };
 
     fn.resize = (inner, outer) => {

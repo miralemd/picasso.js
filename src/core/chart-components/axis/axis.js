@@ -37,38 +37,35 @@ function resolveInitialStyle(settings, baseStyles, composer) {
 
 const axisComponent = {
   require: ['composer', 'measureText', 'dockConfig'],
-  created(opts) {
+  created() {
     this.innerRect = { width: 0, height: 0, x: 0, y: 0 };
     this.outerRect = { width: 0, height: 0, x: 0, y: 0 };
 
-    let settings;
+    let defaultSettings;
     let styleSettings;
     if (this.scale.type === 'ordinal') {
-      [settings, styleSettings] = discreteDefaultSettings();
+      [defaultSettings, styleSettings] = discreteDefaultSettings();
       this.ticksFn = generateDiscreteTicks;
     } else {
-      [settings, styleSettings] = continuousDefaultSettings();
+      [defaultSettings, styleSettings] = continuousDefaultSettings();
       this.ticksFn = generateContinuousTicks;
     }
-    this.settings = extend(true, {}, settings);
+    this.settings = extend(true, {}, defaultSettings, this.settings);
     this.styleSettings = styleSettings;
 
-    this.init(opts.settings);
+    this.init(this.settings);
   },
-  init(axisConfig) {
+  init(settings) {
     // formatter = composer.formatter(axisConfig.formatter || { source: dataScale.sources[0] });
-    this.styleSettings = resolveInitialStyle(axisConfig.settings, this.styleSettings, this.composer);
+    this.styleSettings = resolveInitialStyle(settings.settings, this.styleSettings, this.composer);
 
     if (this.scale.type === 'ordinal') {
       this.data = this.scale.scale.domain();
     }
 
-    extend(true, this.settings, axisConfig.settings, this.styleSettings);
+    extend(true, this.settings, settings.settings, this.styleSettings);
 
     ['dock', 'displayOrder', 'prioOrder'].forEach((prop) => {
-      if (typeof axisConfig[prop] !== 'undefined') {
-        this.settings[prop] = axisConfig[prop];
-      }
       // Override the dock config (TODO should be refactored)
       this.dockConfig[prop] = this.settings[prop];
     });

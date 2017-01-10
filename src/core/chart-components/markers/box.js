@@ -92,25 +92,28 @@ const DEFAULT_STYLE_SETTINGS = {
  */
 
 const boxMarker = {
-  require: ['composer', 'renderer'],
-  created(opts) {
+  require: ['composer'],
+  defaultSettings: {
+    settings: {},
+    data: {}
+  },
+  created() {
     this.rect = { x: 0, y: 0, width: 0, height: 0 };
-    this.dispersion = dispersion(this.composer, DEFAULT_STYLE_SETTINGS, opts.settings.settings);
-    this.setOpts(opts.settings);
+    this.dispersion = dispersion(this.composer, DEFAULT_STYLE_SETTINGS, this.settings.settings);
+    this.updateSettings(this.settings);
     this.dispersion.onData(); // to be removed?
   },
-  setOpts(opts) {
-    this.settings = opts.settings;
-    this.dispersion.setOpts(opts);
+  updateSettings(settings) {
+    this.dispersion.updateSettings(settings);
 
     // Default to vertical
-    if (this.settings.vertical === undefined) {
-      this.settings.vertical = true;
+    if (this.settings.settings.vertical === undefined) {
+      this.settings.settings.vertical = true;
     }
 
     // Default to show whiskers
-    if (this.settings.whiskers === undefined) {
-      this.settings.whiskers = true;
+    if (this.settings.settings.whiskers === undefined) {
+      this.settings.settings.whiskers = true;
     }
   },
   beforeRender(opts) {
@@ -136,8 +139,8 @@ const boxMarker = {
       settings
     } = opts;
 
-    this.setOpts(settings);
-    this.dispersion.onData();
+    this.updateSettings(settings);
+    this.dispersion.updateSettings(settings);
   },
   renderDataPoint(item) {
     if (notNumber(item.x)) {
