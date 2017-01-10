@@ -5,12 +5,15 @@ import { convertLineToPoints, convertRectToPoints } from '../../math/intersectio
 function traverseFn(objects, fn, ary, ...args) {
   for (let i = 0; i < objects.length; i++) {
     const o = objects[i];
-    if (o.children) {
-      traverseFn(o.children, fn, ary, ...args);
-    }
+    let m = false;
 
     if (o[fn] && o[fn](...args)) {
       ary.push(o);
+      m = true;
+    }
+
+    if (o.children && !m) { // Only traverse children if no match is found on parent
+      traverseFn(o.children, fn, ary, ...args);
     }
   }
 }

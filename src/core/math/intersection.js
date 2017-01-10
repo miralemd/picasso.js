@@ -51,6 +51,22 @@ export function convertRectToPoints(rect) {
   ];
 }
 
+export function getMinMax(points) {
+  const num = points.length;
+  let xMin = NaN;
+  let xMax = NaN;
+  let yMin = NaN;
+  let yMax = NaN;
+
+  for (let i = 0; i < num; i++) {
+    xMin = isNaN(xMin) ? points[i].x : Math.min(xMin, points[i].x);
+    xMax = isNaN(xMax) ? points[i].x : Math.max(xMax, points[i].x);
+    yMin = isNaN(yMin) ? points[i].y : Math.min(yMin, points[i].y);
+    yMax = isNaN(yMax) ? points[i].y : Math.max(yMax, points[i].y);
+  }
+  return [xMin, yMin, xMax, yMax];
+}
+
 export default {
   closestPointToLine,
   isPointOnLine,

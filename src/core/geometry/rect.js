@@ -23,34 +23,20 @@ export default class GeoRect {
     }
 
     this.vectors = this.points();
+    this.zeroSize = this.width <= 0 || this.height <= 0;
   }
 
   containsPoint(p) {
-    const xBoundary = p.x >= this.x && p.x <= this.x + this.width;
-    const yBoundary = p.y >= this.y && p.y <= this.y + this.height;
-    if (xBoundary && yBoundary) {
-      return true;
-    }
-    return false;
-  }
+    if (this.zeroSize) return false;
 
-  isLineIntersecting(points) {
-    if (this.isPointInside(points[0]) || this.isPointInside(points[1])) return true;
-
-    for (let i = 0; i < 4; i++) {
-      if (isLineIntersectingLine(this.vectors[i], this.vectors[i !== 3 ? i + 1 : 0], ...points)) return true;
-    }
-    return false;
-  }
-
-  isRectIntersecting(points) {
-    return this.x <= points[1].x && // this.left <= target.right
-    points[0].x <= this.x + this.width && // target.left <= this.right
-    this.y <= points[2].y && // this.top <= target.bottom
-    points[0].y <= this.y + this.height; // target.top <= this.bottom
+    return p.x >= this.x &&
+      p.x <= this.x + this.width &&
+      p.y >= this.y &&
+      p.y <= this.y + this.height;
   }
 
   intersectsLine(points) {
+    if (this.zeroSize) return false;
     if (this.containsPoint(points[0]) || this.containsPoint(points[1])) return true;
 
     for (let i = 0; i < 4; i++) {
@@ -60,10 +46,12 @@ export default class GeoRect {
   }
 
   intersectsRect(points) {
-    return this.x <= points[1].x && // this.left <= target.right
-    points[0].x <= this.x + this.width && // target.left <= this.right
-    this.y <= points[2].y && // this.top <= target.bottom
-    points[0].y <= this.y + this.height; // target.top <= this.bottom
+    if (this.zeroSize) return false;
+
+    return this.x <= points[2].x && // this.left <= target.right
+      points[0].x <= this.x + this.width && // target.left <= this.right
+      this.y <= points[2].y && // this.top <= target.bottom
+      points[0].y <= this.y + this.height; // target.top <= this.bottom
   }
 
   points() {

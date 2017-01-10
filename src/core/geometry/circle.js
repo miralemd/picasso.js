@@ -11,10 +11,14 @@ export default class GeoCircle {
     this.cy = cy;
     this.r = Math.max(r, minRadius);
     this.vector = { x: this.cx, y: this.cy };
+    this.zeroSize = r <= 0;
   }
 
   containsPoint(p) {
+    if (this.zeroSize) return false;
+
     const sqrDist = sqrDistance(this.vector, p);
+
     if (sqrDist <= Math.pow(this.r, 2)) {
       return true;
     }
@@ -22,7 +26,10 @@ export default class GeoCircle {
   }
 
   intersectsLine(points) {
+    if (this.zeroSize) return false;
+
     const [p1, p2] = points;
+
     if (this.containsPoint(p1) || this.containsPoint(p2)) return true;
 
     const pointOnLine = closestPointToLine(p1, p2, this.vector);
@@ -32,13 +39,15 @@ export default class GeoCircle {
   }
 
   intersectsRect(points) {
+    if (this.zeroSize) return false;
     if (this.cy < points[0].y - this.r || this.cy > points[2].y + this.r) return false;
     if (this.cx < points[0].x - this.r || this.cx > points[2].x + this.r) return false;
 
-    const vBoundary = this.cy >= points[0].y && this.cy <= points[2].y;
-    const hBoundary = this.cx >= points[0].x && this.cx <= points[2].x;
-
-    return (vBoundary && hBoundary) || this.intersectsLine([points[0], points[1]]) ||
+    return (this.cy >= points[0].y &&
+      this.cy <= points[2].y &&
+      this.cx >= points[0].x &&
+      this.cx <= points[2].x) ||
+      this.intersectsLine([points[0], points[1]]) ||
       this.intersectsLine([points[1], points[2]]) ||
       this.intersectsLine([points[2], points[3]]) ||
       this.intersectsLine([points[3], points[0]]);

@@ -76,6 +76,13 @@ describe('GeoCircle', () => {
         expect(c.containsPoint(p3)).to.equal(true);
         expect(c.containsPoint(p4)).to.equal(true);
       });
+
+      it('should not intersect if the size of the circle is zero', () => {
+        const c = new GeoCircle(10, 20, 0);
+        const p1 = { x: 10, y: 20 };
+
+        expect(c.containsPoint(p1)).to.equal(false);
+      });
     });
 
     describe('Rect', () => {
@@ -144,6 +151,27 @@ describe('GeoCircle', () => {
         expect(c2.intersectsRect(rect)).to.equal(false);
         expect(c3.intersectsRect(rect)).to.equal(false);
         expect(c4.intersectsRect(rect)).to.equal(false);
+      });
+
+      it('should not intersect if the size of the circle is zero', () => {
+        const c = new GeoCircle(10, 20, 0);
+        const rect = convertRectToPoints({ x: 0, y: 0, width: 100, height: 200 });
+
+        expect(c.intersectsRect(rect)).to.equal(false);
+      });
+
+      it('should not intersect if the width of the rect is zero', () => {
+        const c = new GeoCircle(10, 20, 0);
+        const rect = convertRectToPoints({ x: 10, y: 20, width: 0, height: 200 });
+
+        expect(c.intersectsRect(rect)).to.equal(false);
+      });
+
+      it('should not intersect if the height of the rect is zero', () => {
+        const c = new GeoCircle(10, 20, 0);
+        const rect = convertRectToPoints({ x: 10, y: 20, width: 100, height: 0 });
+
+        expect(c.intersectsRect(rect)).to.equal(false);
       });
     });
 
@@ -263,6 +291,14 @@ describe('GeoCircle', () => {
         const p2 = { x: 90, y: 190 };
 
         expect(c.intersectsLine([p1, p2])).to.equal(true);
+      });
+
+      it('should not intersect if the size of the circle is zero', () => {
+        const c = new GeoCircle(10, 20, 0);
+        const p1 = { x: 10, y: 20 };
+        const p2 = { x: 90, y: 190 };
+
+        expect(c.intersectsLine([p1, p2])).to.equal(false);
       });
     });
   });

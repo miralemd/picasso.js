@@ -110,6 +110,18 @@ describe('GeoRect', () => {
         expect(r.containsPoint(p3)).to.equal(false);
         expect(r.containsPoint(p4)).to.equal(false);
       });
+
+      it('should not intersect if the width is zero', () => {
+        const r = new GeoRect(50, 100, 0, 200);
+        const p = { x: 50, y: 100 };
+        expect(r.containsPoint(p)).to.equal(false);
+      });
+
+      it('should not intersect if the height is zero', () => {
+        const r = new GeoRect(50, 100, 150, 0);
+        const p = { x: 50, y: 100 };
+        expect(r.containsPoint(p)).to.equal(false);
+      });
     });
 
     describe('Rect', () => {
@@ -134,6 +146,18 @@ describe('GeoRect', () => {
       it('should not intersect if circumferences are not crossing', () => {
         const r = new GeoRect(100, 200, 300, 400);
         const collider = new GeoRect(401, 601, 100, 200);
+        expect(r.intersectsRect(collider.points())).to.equal(false);
+      });
+
+      it('should not intersect if the width is zero', () => {
+        const r = new GeoRect(50, 100, 0, 200);
+        const collider = new GeoRect(50, 100, 100, 200);
+        expect(r.intersectsRect(collider.points())).to.equal(false);
+      });
+
+      it('should not intersect if the height is zero', () => {
+        const r = new GeoRect(50, 100, 150, 0);
+        const collider = new GeoRect(50, 100, 100, 200);
         expect(r.intersectsRect(collider.points())).to.equal(false);
       });
     });
@@ -195,6 +219,18 @@ describe('GeoRect', () => {
         const points = [{ x: 0, y: 0 }, { x: 50, y: 100 }];
 
         expect(r.intersectsLine(points)).to.equal(true);
+      });
+
+      it('should not intersect if the width is zero', () => {
+        const r = new GeoRect(50, 100, 0, 200);
+        const points = [{ x: 0, y: 0 }, { x: 50, y: 100 }];
+        expect(r.intersectsLine(points)).to.equal(false);
+      });
+
+      it('should not intersect if the height is zero', () => {
+        const r = new GeoRect(50, 100, 150, 0);
+        const points = [{ x: 0, y: 0 }, { x: 50, y: 100 }];
+        expect(r.intersectsLine(points)).to.equal(false);
       });
     });
   });

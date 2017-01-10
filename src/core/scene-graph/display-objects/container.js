@@ -1,19 +1,78 @@
+import extend from 'extend';
 import DisplayObject from './display-object';
 import NodeContainer from '../node-container';
 
 const NC = NodeContainer.prototype;
 
+function reCalcBoundingRect(c, child, includeTransform = false) {
+  if (typeof child.bounds !== 'undefined') {
+    const [p0, , p2] = child.bounds(includeTransform);
+    const { x: xMin, y: yMin } = p0;
+    const { x: xMax, y: yMax } = p2;
+
+    const _xMax = isNaN(c._boundingRect.width) ? xMax : Math.max(xMax, c._boundingRect.width + c._boundingRect.x);
+    const _yMax = isNaN(c._boundingRect.height) ? yMax : Math.max(yMax, c._boundingRect.height + c._boundingRect.y);
+
+    c._boundingRect.x = isNaN(c._boundingRect.x) ? xMin : Math.min(xMin, c._boundingRect.x);
+    c._boundingRect.y = isNaN(c._boundingRect.y) ? yMin : Math.min(yMin, c._boundingRect.y);
+    c._boundingRect.width = _xMax - c._boundingRect.x;
+    c._boundingRect.height = _yMax - c._boundingRect.y;
+  }
+}
+
 export default class Container extends DisplayObject {
-  constructor() {
+  constructor(...s) {
     super('container');
+    this.set(...s);
+    this._boundingRect = {};
+  }
+
+  set(v = {}) {
+    super.set(v);
+
+    const { collider } = v;
+    const opts = extend({
+      type: null
+    }, collider);
+
+    super.collider(opts);
+  }
+
+  boundingRect(includeTransform = false) {
+    const num = this.children.length;
+    this._boundingRect = {};
+
+    for (let i = 0; i < num; i++) {
+      reCalcBoundingRect(this, this.children[i], includeTransform);
+    }
+    return extend({ x: 0, y: 0, width: 0, height: 0 }, this._boundingRect);
   }
 
   addChild(c) {
-    return NC.addChild.call(this, c);
+    const r = NC.addChild.call(this, c);
+
+    if (this._collider && this._collider.type === 'bounds') {
+      reCalcBoundingRect(this, c, true);
+      const opts = extend({ x: 0, y: 0, width: 0, height: 0 }, this._boundingRect, this._collider);
+      super.collider(opts);
+    }
+
+    return r;
   }
 
   addChildren(children) {
-    return NC.addChildren.call(this, children);
+    const r = NC.addChildren.call(this, children);
+    const num = children.length;
+
+    if (this._collider && this._collider.type === 'bounds' && num > 0) {
+      for (let i = 0; i < num; i++) {
+        reCalcBoundingRect(this, children[i], true);
+      }
+      const opts = extend({ x: 0, y: 0, width: 0, height: 0 }, this._boundingRect, this._collider);
+      super.collider(opts);
+    }
+
+    return r;
   }
 
   removeChild(c) {
@@ -27,14 +86,27 @@ export default class Container extends DisplayObject {
     }
 
     NC.removeChild.call(this, c);
+
+    if (this._collider && this._collider.type === 'bounds') {
+      const opts = extend(this.boundingRect(true), this._collider);
+      super.collider(opts);
+    }
+
     return this;
   }
 
   removeChildren(children) {
-    return NC.removeChildren.call(this, children);
+    NC.removeChildren.call(this, children);
+
+    if (this._collider && this._collider.type === 'bounds') {
+      const opts = extend(this.boundingRect(true), this._collider);
+      super.collider(opts);
+    }
+
+    return this;
   }
 }
 
-export function create() {
-  return new Container();
+export function create(...s) {
+  return new Container(...s);
 }

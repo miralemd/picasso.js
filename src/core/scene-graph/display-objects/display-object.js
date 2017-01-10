@@ -1,5 +1,7 @@
 import Node from '../node';
 import { create as geometry } from '../../geometry';
+import Matrix from '../../math/matrix';
+import resolveTransform from './../transform-resolver';
 
 class DisplayObject extends Node {
   constructor(type) {
@@ -58,28 +60,100 @@ class DisplayObject extends Node {
     }
   }
 
-  collider({ type, cx = 0, cy = 0, r = 0, minRadius = 0, x = 0, y = 0, width = 0, minWidth = 0, height = 0, minHeight = 0 }) {
-    if (type === 'circle') this._collider = geometry(type, cx, cy, r, minRadius);
-    else if (type === 'rect') this._collider = geometry(type, x, y, width, height, minWidth, minHeight);
-    else this._collider = null;
+  collider(opts) {
+    if (typeof opts === 'undefined') return this._collider;
+
+    const { type = null } = opts;
+    const c = { type };
+
+    if (!type) {
+      this._collider = null;
+    } else if (type === 'children') {
+      this._collider = c;
+    } else if (type === 'bounds' && typeof this.boundingRect !== 'undefined') {
+      const { x, y, width, height } = this.boundingRect(true);
+      c.fn = geometry('rect', x, y, width, height);
+      this._collider = c;
+    } else if (type === 'circle') {
+      const { cx, cy, r, minRadius } = opts;
+      c.fn = geometry(type, cx, cy, r, minRadius);
+      this._collider = c;
+    } else if (type === 'rect') {
+      const { x, y, width, height, minWidth, minHeight } = opts;
+      c.fn = geometry(type, x, y, width, height, minWidth, minHeight);
+      this._collider = c;
+    }
+
+    return this._collider;
   }
 
   containsPoint(p) {
     if (this._collider === null) return false;
+
+    if (this._collider.type === 'children') {
+      const num = this.children.length;
+      for (let i = 0; i < num; i++) {
+        if (this.children[i].containsPoint(p)) return true;
+      }
+      return false;
+    } else if (this._collider.type === 'bounds') {
+      return this._collider.fn.containsPoint(p);
+    }
+
     const pt = this.modelViewMatrix ? this.inverseModelViewMatrix.transformPoint(p) : p;
-    return this._collider.containsPoint(pt);
+    return this._collider.fn.containsPoint(pt);
   }
 
   intersectsLine(points) {
     if (this._collider === null) return false;
+
+    if (this._collider.type === 'children') {
+      const num = this.children.length;
+      for (let i = 0; i < num; i++) {
+        if (this.children[i].intersectsLine(points)) return true;
+      }
+      return false;
+    } else if (this._collider.type === 'bounds') {
+      return this._collider.fn.intersectsLine(points);
+    }
+
     const pts = this.modelViewMatrix ? this.inverseModelViewMatrix.transformPoints(points) : points;
-    return this._collider.intersectsLine(pts);
+    return this._collider.fn.intersectsLine(pts);
   }
 
   intersectsRect(points) {
     if (this._collider === null) return false;
+
+    if (this._collider.type === 'children') {
+      const num = this.children.length;
+      for (let i = 0; i < num; i++) {
+        if (this.children[i].intersectsRect(points)) return true;
+      }
+      return false;
+    } else if (this._collider.type === 'bounds') {
+      return this._collider.fn.intersectsRect(points);
+    }
+
     const pts = this.modelViewMatrix ? this.inverseModelViewMatrix.transformPoints(points) : points;
-    return this._collider.intersectsRect(pts);
+    return this._collider.fn.intersectsRect(pts);
+  }
+
+  resolveLocalTransform(m = new Matrix()) {
+    if (typeof this.attrs.transform !== 'undefined') resolveTransform(this.attrs.transform, m);
+    this.modelViewMatrix = m.clone();
+  }
+
+  resolveGlobalTransform(m = new Matrix()) {
+    const a = this.ancestors.reverse();
+
+    if (a.length > 0) {
+      for (let i = 0; i < a.length; i++) {
+        a[i].resolveLocalTransform(m);
+        m = a[i].modelViewMatrix;
+      }
+    }
+
+    this.resolveLocalTransform(m);
   }
 
   /**
