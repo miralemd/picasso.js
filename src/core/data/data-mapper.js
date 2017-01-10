@@ -185,7 +185,7 @@ export function mapData(mapper, repeater, ds) {
       self: {
         source: repeater.source,
         reducer: 'first',
-        type: 'qual'
+        type: 'qual' // TODO - configurable?
       }
     });
   }

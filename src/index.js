@@ -5,8 +5,9 @@ import {
   component
 } from './core';
 import config from './config';
+import q from './q';
 import './web';
-import './q';
+
 
 /**
  * The mother of all namespaces
@@ -18,5 +19,6 @@ export {
   chart,
   renderer,
   data,
-  component
+  component,
+  q
 };
