@@ -216,15 +216,24 @@ export default function componentFactory(definition) {
           brushFromDomElement({ e, action: 'toggle', composer, data: brushArgs.data, config: t });
         });
       });
-      //
-      // element.addEventListener('mousemove', (e) => {
-      //   if (!brushArgs.config.trigger) {
-      //     return;
-      //   }
-      //   brushArgs.config.trigger.filter(t => t.action === 'over').forEach((t) => {
-      //     brushFromDomElement({ e, action: 'hover', composer, data: brushArgs.data, config: t });
-      //   });
-      // });
+
+      element.addEventListener('mousemove', (e) => {
+        if (!brushArgs.config.trigger) {
+          return;
+        }
+        brushArgs.config.trigger.filter(t => t.action === 'over').forEach((t) => {
+          brushFromDomElement({ e, action: 'hover', composer, data: brushArgs.data, config: t });
+        });
+      });
+
+      element.addEventListener('mouseleave', (e) => {
+        if (!brushArgs.config.trigger) {
+          return;
+        }
+        brushArgs.config.trigger.filter(t => t.action === 'over').forEach((t) => {
+          brushFromDomElement({ e, action: 'hover', composer, data: brushArgs.data, config: t });
+        });
+      });
     }
     // ===== end temporary solution
 
