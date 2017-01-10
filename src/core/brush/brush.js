@@ -151,7 +151,7 @@ export function set({
   let oldMap = {};
   Object.keys(vCollection).forEach((key) => {
     oldMap[key] = vCollection[key].values().slice();
-    vCollection[key] = undefined;
+    delete vCollection[key];
   });
 
   Object.keys(filteredSet).forEach((key) => {
