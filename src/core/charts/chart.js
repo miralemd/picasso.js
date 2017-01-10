@@ -15,8 +15,9 @@ import createDockLayout from '../dock-layout/dock-layout';
  * @typedef Chart.SettingsProps
  * @property {Chart.ScaleProps} scales
  * @property {object} components
- * @property {marker[]} components.markers,
+ * @property {marker[]} components.markers
  * @property {axis[]} components.axes
+ * @property {dock-layout-settings} [dockLayout]
  */
 
 /**
@@ -24,6 +25,18 @@ import createDockLayout from '../dock-layout/dock-layout';
  * @property {string} source - The data source used as input when creating the scale
  * @property {string} [type] - The type of scale to create
  * @property {boolean} invert - Whether to invert the scale's output
+ */
+
+/**
+ * @typedef dock-layout-settings
+ * @property {boolean} [size] Phyiscal size. Default to size of the container
+ * @property {boolean} [size.width]
+ * @property {boolean} [size.height]
+ * @property {boolean} [logicalSize] Logical size represent the size given to the dock layout to work with.
+ * @property {boolean} [logicalSize.width]
+ * @property {boolean} [logicalSize.height]
+ * @property {boolean} [logicalSize.preserveAspectRatio = false]
+ * @property {Object.<string, {width: number, height: number}>} [layoutModes={}] Dictionary with named sizes
  */
 
 /**
