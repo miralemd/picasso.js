@@ -3,7 +3,6 @@ import { tree as treeFactory } from './svg-tree';
 import { svgNs } from './svg-nodes';
 import sceneFactory from '../../../core/scene-graph/scene';
 import { measureText } from '../text-metrics';
-import { detectRtlSvgSupport } from '../../../core/utils/rtl-util';
 
 const createRect = ({ x, y, width, height, scaleRatio } = {}) => {
   const rect = {
@@ -45,7 +44,6 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
   svg.root = () => group;
 
   svg.appendTo = (element) => {
-    detectRtlSvgSupport(ns, element.ownerDocument);
     if (!el) {
       el = element.ownerDocument.createElementNS(ns, 'svg');
       el.style.position = 'absolute';
