@@ -13,6 +13,7 @@ describe('brush', () => {
     // mock value collection
     vc = () => {};
     vc.add = sandbox.stub();
+    vc.values = sandbox.stub();
     vcf = () => vc;
 
     // mock range collection
