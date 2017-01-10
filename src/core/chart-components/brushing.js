@@ -85,10 +85,12 @@ export function brushDataPoint({
   let items = [];
 
   let actionFn = 'toggleValues';
-  if (action === 'add' || action === 'hover') {
+  if (action === 'add') {
     actionFn = 'addValues';
   } else if (action === 'remove') {
     actionFn = 'removeValues';
+  } else if (action === 'set' || action === 'hover') {
+    actionFn = 'setValues';
   }
 
   if (dataPoint !== null) {

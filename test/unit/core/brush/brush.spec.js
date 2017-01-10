@@ -1,4 +1,4 @@
-import brush, { toggle } from '../../../../src/core/brush/brush';
+import brush, { toggle, set } from '../../../../src/core/brush/brush';
 
 describe('brush', () => {
   const noop = () => {};
@@ -13,6 +13,7 @@ describe('brush', () => {
     // mock value collection
     vc = () => {};
     vc.add = sandbox.stub();
+    vc.values = sandbox.stub();
     vcf = () => vc;
 
     // mock range collection
@@ -428,6 +429,101 @@ describe('brush', () => {
         { id: 'products', values: ['Existing'] }
       ];
       expect(toggled[1]).to.eql(expectRemoved);
+    });
+  });
+
+  describe('set', () => {
+    let v;
+    let vcoll;
+
+    beforeEach(() => {
+      v = {
+        add: sandbox.stub(),
+        remove: sandbox.stub(),
+        contains: sandbox.stub(),
+        values: sandbox.stub()
+      };
+      vcoll = sandbox.stub().returns(v);
+    });
+
+    it('should add the new values', () => {
+      let items = [
+        { key: 'products', value: 'Bike' }
+      ];
+      let changed = set({
+        items,
+        vc: vcoll,
+        vCollection: {}
+      });
+
+      expect(changed[0]).to.eql([{ id: 'products', values: ['Bike'] }]);
+    });
+
+    it('should not add existing values', () => {
+      v.values.returns(['Bike']); // existing values
+      let items = [
+        { key: 'products', value: 'Bike' } // new values
+      ];
+      v.contains.withArgs('Bike').returns(true);
+      let changed = set({
+        items,
+        vc: vcoll,
+        vCollection: {
+          products: v
+        }
+      });
+
+      expect(changed[0]).to.eql([]);
+    });
+
+    it('should not remove existing values', () => {
+      v.values.returns(['Bike']); // existing values
+      let items = [
+        { key: 'products', value: 'Bike' } // new values
+      ];
+      v.contains.withArgs('Bike').returns(true);
+      let changed = set({
+        items,
+        vc: vcoll,
+        vCollection: {
+          products: v
+        }
+      });
+
+      expect(changed[1]).to.eql([]);
+    });
+
+    it('should remove old values from same collection', () => {
+      v.values.returns([0, 'Cars', 'Skateboards']); // existing values
+      let items = [
+        { key: 'products', value: 'Bike' }, // new value
+        { key: 'products', value: 'Skateboards' } // add existing value
+      ];
+      v.contains.withArgs('Cars').returns(true);
+      v.contains.withArgs(0).returns(true);
+      let changed = set({
+        items,
+        vc: vcoll,
+        vCollection: {
+          products: v
+        }
+      });
+
+      expect(changed[1]).to.eql([{ id: 'products', values: [0, 'Cars'] }]);
+    });
+
+    it('should remove old values', () => {
+      v.values.returns(['Cars', 'Skateboards']); // existing values
+      let items = [];
+      let changed = set({
+        items,
+        vc: vcoll,
+        vCollection: {
+          products: v
+        }
+      });
+
+      expect(changed[1]).to.eql([{ id: 'products', values: ['Cars', 'Skateboards'] }]);
     });
   });
 });
