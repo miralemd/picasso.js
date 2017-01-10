@@ -43,7 +43,7 @@ const textAnchorRTLMap = {
   middle: 'middle'
 };
 
-let flippedTextAnchor = true;
+/* let flippedTextAnchor = true;
 let detected = false;
 export function detectRtlSvgSupport(ns, ownerDoc) {
   if (!detected) {
@@ -72,10 +72,10 @@ export function detectRtlSvgSupport(ns, ownerDoc) {
     }
   }
   detected = true;
-}
+}*/
 
-export function flipTextAnchor(value, dir, svg = false) {
-  if (dir === 'rtl' && (flippedTextAnchor || !svg)) {
+export function flipTextAnchor(value, dir) {
+  if (dir === 'rtl') {
     return textAnchorRTLMap[value];
   }
   return value;
