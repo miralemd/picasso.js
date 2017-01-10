@@ -1,7 +1,8 @@
 import rendererFn from '../renderer/index';
 import {
   styler,
-  brushFromDomElement
+  brushFromDomElement,
+  endBrush
 } from './brushing';
 
 const isReservedProperty = prop => ['on', 'dock', 'displayOrder', 'prioOrder', 'minimumLayoutMode', 'renderer', 'preferredSize', 'created', 'beforeMount', 'mounted',
@@ -226,12 +227,12 @@ export default function componentFactory(definition) {
         });
       });
 
-      element.addEventListener('mouseleave', (e) => {
+      element.addEventListener('mouseleave', () => {
         if (!brushArgs.config.trigger) {
           return;
         }
         brushArgs.config.trigger.filter(t => t.action === 'over').forEach((t) => {
-          brushFromDomElement({ e, action: 'hover', composer, data: brushArgs.data, config: t });
+          endBrush({ composer, config: t });
         });
       });
     }

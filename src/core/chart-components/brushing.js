@@ -125,3 +125,15 @@ export function brushFromDomElement({
     config
   });
 }
+
+export function endBrush({
+  composer,
+  config
+}) {
+  if (!config) {
+    return;
+  }
+  (config.contexts || []).forEach((c) => {
+    composer.brush(c).end();
+  });
+}
