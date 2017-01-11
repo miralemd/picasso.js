@@ -158,7 +158,7 @@ export default function componentFactory(definition) {
       rend.clear();
     };
 
-    fn.update = (opts = {}) => {
+    fn.update = context.update = (opts = {}) => {
       if (opts.settings) {
         settings = extend(true, {}, defaultSettings, opts.settings);
         context.settings = settings;
@@ -188,22 +188,17 @@ export default function componentFactory(definition) {
     };
 
     // Add properties to context
-
     require.forEach((req) => {
       if (req === 'measureText') {
         context.measureText = rend.measureText;
-      } else if (req === 'forceUpdate') {
-        context.forceUpdate = fn.update;
       } else if (req === 'composer') {
         context.composer = composer;
       } else if (req === 'dockConfig') {
         context.dockConfig = fn.dockConfig;
-      } else if (req === 'renderer') {
-        context.renderer = rend;
-      } else if (req === 'element') {
-        context.element = element;
       }
     });
+
+    // Start calling lifecycle methods
 
     created.call(context, {
       settings

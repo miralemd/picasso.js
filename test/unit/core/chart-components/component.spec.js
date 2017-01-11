@@ -24,9 +24,7 @@ describe('Component', () => {
       }),
       container: () => ({}),
       table: () => ({}),
-      dataset: () => ({
-        datasetMock: {}
-      }),
+      dataset: () => ({}),
       scale: sinon.stub()
     };
     created = sinon.spy();
@@ -53,15 +51,13 @@ describe('Component', () => {
   });
 
   it('should only call the created lifecycle method', () => {
-    customComponent({
+    const instance = customComponent({
       key1: 'override',
       key2: false
     }, composerMock);
     expect(created).to.have.been.called.once;
     expect(created.thisValues[0]).to.deep.equal({
-      dataset: {
-        datasetMock: {}
-      },
+      dataset: {},
       settings: {
         dock: 'top',
         style: {
@@ -69,7 +65,8 @@ describe('Component', () => {
         },
         key1: 'override',
         key2: false
-      }
+      },
+      update: instance.update
     });
     expect(mounted).to.not.have.been.called;
     expect(beforeRender).to.not.have.been.called;
