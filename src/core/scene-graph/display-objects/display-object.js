@@ -2,6 +2,7 @@ import Node from '../node';
 import { create as geometry } from '../../geometry';
 import Matrix from '../../math/matrix';
 import resolveTransform from './../transform-resolver';
+import resolveCollision, { resolveCollionsOnNodes } from '../collision-resolver';
 
 class DisplayObject extends Node {
   constructor(type) {
@@ -9,22 +10,28 @@ class DisplayObject extends Node {
     this._stage = null;
     this._collider = null;
     this._attrs = {};
+    this._node = null;
   }
 
-  set({
-    fill,
-    stroke,
-    strokeWidth,
-    fontFamily,
-    fontSize,
-    baseline,
-    anchor,
-    maxWidth,
-    opacity,
-    transform,
-    data
-  }) {
+  set(v = {}) {
+    this.node = v;
+
+    const {
+      fill,
+      stroke,
+      strokeWidth,
+      fontFamily,
+      fontSize,
+      baseline,
+      anchor,
+      maxWidth,
+      opacity,
+      transform,
+      data
+    } = v;
+
     const attrs = this.attrs;
+
     if (typeof fill !== 'undefined') {
       attrs.fill = fill;
     }
@@ -68,11 +75,11 @@ class DisplayObject extends Node {
 
     if (!type) {
       this._collider = null;
-    } else if (type === 'children') {
+    } else if (type === 'children' || type === 'frontChild') {
       this._collider = c;
-    } else if (type === 'bounds' && typeof this.boundingRect !== 'undefined') {
-      const { x, y, width, height } = this.boundingRect(true);
-      c.fn = geometry('rect', x, y, width, height);
+    } else if (type === 'bounds') {
+      const { x, y, width, height, minWidth, minHeight } = opts;
+      c.fn = geometry('rect', x, y, width, height, minWidth, minHeight);
       this._collider = c;
     } else if (type === 'circle') {
       const { cx, cy, r, minRadius } = opts;
@@ -87,55 +94,20 @@ class DisplayObject extends Node {
     return this._collider;
   }
 
+  getItemsFrom(shape) {
+    return resolveCollionsOnNodes(this, shape);
+  }
+
   containsPoint(p) {
-    if (this._collider === null) return false;
-
-    if (this._collider.type === 'children') {
-      const num = this.children.length;
-      for (let i = 0; i < num; i++) {
-        if (this.children[i].containsPoint(p)) return true;
-      }
-      return false;
-    } else if (this._collider.type === 'bounds') {
-      return this._collider.fn.containsPoint(p);
-    }
-
-    const pt = this.modelViewMatrix ? this.inverseModelViewMatrix.transformPoint(p) : p;
-    return this._collider.fn.containsPoint(pt);
+    return resolveCollision(this, 'containsPoint', p) !== null; // Optimize his so that it doesnt need to create the collision objects
   }
 
   intersectsLine(points) {
-    if (this._collider === null) return false;
-
-    if (this._collider.type === 'children') {
-      const num = this.children.length;
-      for (let i = 0; i < num; i++) {
-        if (this.children[i].intersectsLine(points)) return true;
-      }
-      return false;
-    } else if (this._collider.type === 'bounds') {
-      return this._collider.fn.intersectsLine(points);
-    }
-
-    const pts = this.modelViewMatrix ? this.inverseModelViewMatrix.transformPoints(points) : points;
-    return this._collider.fn.intersectsLine(pts);
+    return resolveCollision(this, 'intersectsLine', points) !== null; // Optimize his so that it doesnt need to create the collision objects
   }
 
   intersectsRect(points) {
-    if (this._collider === null) return false;
-
-    if (this._collider.type === 'children') {
-      const num = this.children.length;
-      for (let i = 0; i < num; i++) {
-        if (this.children[i].intersectsRect(points)) return true;
-      }
-      return false;
-    } else if (this._collider.type === 'bounds') {
-      return this._collider.fn.intersectsRect(points);
-    }
-
-    const pts = this.modelViewMatrix ? this.inverseModelViewMatrix.transformPoints(points) : points;
-    return this._collider.fn.intersectsRect(pts);
+    return resolveCollision(this, 'intersectsRect', points) !== null; // Optimize his so that it doesnt need to create the collision objects
   }
 
   resolveLocalTransform(m = new Matrix()) {
@@ -144,10 +116,10 @@ class DisplayObject extends Node {
   }
 
   resolveGlobalTransform(m = new Matrix()) {
-    const a = this.ancestors.reverse();
+    const a = this.ancestors;
 
     if (a.length > 0) {
-      for (let i = 0; i < a.length; i++) {
+      for (let i = a.length - 1; i >= 0; i--) {
         a[i].resolveLocalTransform(m);
         m = a[i].modelViewMatrix;
       }
@@ -217,6 +189,14 @@ class DisplayObject extends Node {
   get inverseModelViewMatrix() {
     this._imvm = this._imvm ? this._imvm : this._mvm.clone().invert();
     return this._imvm;
+  }
+
+  set node(n) {
+    this._node = n;
+  }
+
+  get node() {
+    return this._node;
   }
 }
 
