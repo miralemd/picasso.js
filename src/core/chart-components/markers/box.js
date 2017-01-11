@@ -140,7 +140,7 @@ const boxMarker = {
     } = opts;
 
     this.updateSettings(settings);
-    this.dispersion.updateSettings(settings);
+    this.dispersion.onData(); // to be removed?
   },
   renderDataPoint(item) {
     if (notNumber(item.x)) {
