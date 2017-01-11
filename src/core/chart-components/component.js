@@ -29,6 +29,7 @@ export default function componentFactory(definition) {
 
     // TODO support es6 classes
     const {
+      defaultSettings = {},
       on = {},
       require = [],
       renderer
@@ -45,7 +46,7 @@ export default function componentFactory(definition) {
     const destroyed = createCallback('destroyed');
     const render = definition.render;
 
-    let settings = extend(true, {}, definition.defaultSettings || {}, config);
+    let settings = extend(true, {}, defaultSettings, config);
     let element;
     let brushArgs = {
       data: [],
@@ -55,8 +56,6 @@ export default function componentFactory(definition) {
       renderer: null
     };
     let hasRendered = false;
-
-    // Dock settings
 
     const rend = renderer ? rendererFn(renderer) : composer.renderer || rendererFn();
     brushArgs.renderer = rend;
@@ -161,7 +160,8 @@ export default function componentFactory(definition) {
 
     fn.update = (opts = {}) => {
       if (opts.settings) {
-        settings = opts.settings;
+        settings = extend(true, {}, defaultSettings, opts.settings);
+        context.settings = settings;
       }
       if (opts.dataset) {
         context.dataset = opts.dataset;
