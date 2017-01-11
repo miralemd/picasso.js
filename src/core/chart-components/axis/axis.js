@@ -37,57 +37,57 @@ function resolveInitialStyle(settings, baseStyles, composer) {
 
 const axisComponent = {
   require: ['composer', 'measureText', 'dockConfig'],
+  defaultSettings: {
+    displayOrder: 0,
+    prioOrder: 0,
+    paddingStart: 0,
+    paddingEnd: 10
+  },
   created() {
     this.innerRect = { width: 0, height: 0, x: 0, y: 0 };
     this.outerRect = { width: 0, height: 0, x: 0, y: 0 };
 
-    let defaultSettings;
-    let styleSettings;
     if (this.scale.type === 'ordinal') {
-      [defaultSettings, styleSettings] = discreteDefaultSettings();
+      this.defaultStyleSettings = discreteDefaultSettings();
+      this.defaultDock = 'bottom';
       this.ticksFn = generateDiscreteTicks;
     } else {
-      [defaultSettings, styleSettings] = continuousDefaultSettings();
+      this.defaultStyleSettings = continuousDefaultSettings();
+      this.defaultDock = 'left';
       this.ticksFn = generateContinuousTicks;
     }
-    this.settings = extend(true, {}, defaultSettings, this.settings);
-    this.styleSettings = styleSettings;
 
     this.init(this.settings);
   },
   init(settings) {
-    // formatter = composer.formatter(axisConfig.formatter || { source: dataScale.sources[0] });
-    this.styleSettings = resolveInitialStyle(settings.settings, this.styleSettings, this.composer);
+    const styleSettings = resolveInitialStyle(settings.settings, this.defaultStyleSettings, this.composer);
+    const axisSettings = extend(true, {}, this.settings, settings.settings, styleSettings);
+
+    const dock = typeof axisSettings.dock !== 'undefined' ? axisSettings.dock : this.defaultDock;
+    const align = getAlign(dock, axisSettings.align, this.scale.type);
 
     if (this.scale.type === 'ordinal') {
       this.data = this.scale.scale.domain();
     }
 
-    extend(true, this.settings, settings.settings, this.styleSettings);
-
-    ['dock', 'displayOrder', 'prioOrder'].forEach((prop) => {
-      // Override the dock config (TODO should be refactored)
-      this.dockConfig[prop] = this.settings[prop];
-    });
-
     this.concreteNodeBuilder = nodeBuilder(this.scale.type);
 
-    this.settings.align = getAlign(this.settings.dock, this.settings.align, this.scale.type);
+    axisSettings.dock = dock;
+    axisSettings.align = align;
+    this.dockConfig.dock = dock; // Override the dock setting (TODO should be removed)
+    this.align = align;
 
-    // Override the dock settings (TODO should be removed)
-    ['dock', 'displayOrder', 'prioOrder'].forEach((prop) => {
-      this.dockConfig[prop] = this.settings[prop];
+    Object.keys(styleSettings).forEach((a) => {
+      axisSettings[a] = resolveForDataValues(axisSettings[a]);
     });
 
-    Object.keys(this.styleSettings).forEach((a) => {
-      this.settings[a] = resolveForDataValues(this.settings[a]);
-    });
+    this.axisSettings = axisSettings;
   },
   preferredSize(opts) {
     const {
       formatter,
       ticksFn,
-      settings,
+      axisSettings,
       data,
       measureText
     } = this;
@@ -98,7 +98,7 @@ const axisComponent = {
       formatter,
       measureText,
       scale: this.scale.scale,
-      settings,
+      settings: axisSettings,
       ticksFn,
       setEdgeBleed: (val) => {
         this.dockConfig.edgeBleed = val;
@@ -120,7 +120,7 @@ const axisComponent = {
     } = opts;
     const extendedInner = {};
     extend(extendedInner, inner, alignTransform({
-      align: this.settings.align,
+      align: this.align,
       inner
     }));
     const finalOuter = outer || extendedInner;
@@ -132,14 +132,14 @@ const axisComponent = {
     const {
       formatter,
       ticksFn,
-      settings,
+      axisSettings,
       data,
       innerRect,
       outerRect,
       measureText
     } = this;
     const ticks = ticksFn({
-      settings,
+      settings: axisSettings,
       innerRect,
       scale: this.scale.scale,
       data,
@@ -148,7 +148,7 @@ const axisComponent = {
 
     const nodes = [];
     nodes.push(...this.concreteNodeBuilder.build({
-      settings,
+      settings: axisSettings,
       scale: this.scale.scale,
       innerRect,
       outerRect,

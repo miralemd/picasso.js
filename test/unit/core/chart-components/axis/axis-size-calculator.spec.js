@@ -1,21 +1,20 @@
-import extend from 'extend';
 import calcRequiredSize from '../../../../../src/core/chart-components/axis/axis-size-calculator';
 import { continuousDefaultSettings } from '../../../../../src/core/chart-components/axis/axis-default-settings';
 
 describe('AxisSizeCalculator', () => {
   let settings;
-  let styleSettings;
   let ticks;
   let sizeFn;
   let ticksFn;
   let rect;
 
   beforeEach(() => {
-    [settings, styleSettings] = continuousDefaultSettings();
-    extend(true, settings, styleSettings);
+    settings = continuousDefaultSettings();
     settings.labels.show = false;
     settings.line.show = false;
     settings.ticks.show = false;
+    settings.paddingStart = 0;
+    settings.paddingEnd = 10;
 
     ticks = [{ label: 'AA' }, { label: 'BB' }, { label: 'CC' }];
     ticksFn = sinon.stub().returns(ticks);
