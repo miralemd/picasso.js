@@ -174,6 +174,10 @@ export function set({
   return [added, removed];
 }
 
+function intercept(handlers, items) {
+  return handlers && handlers.length ? handlers.reduce((value, interceptor) => interceptor(value), items) : items;
+}
+
 export default function brush({
   vc = valueCollection,
   rc = rangeCollection
@@ -181,6 +185,12 @@ export default function brush({
   let activated = false;
   let ranges = {};
   let values = {};
+  let interceptors = {
+    addValues: [],
+    removeValues: [],
+    toggleValues: [],
+    setValues: []
+  };
 
   /**
    * The brush context
@@ -275,12 +285,19 @@ export default function brush({
     fn.addValues([{ key, value }]);
   };
 
+  /**
+   * @param {object[]} items Items to add
+   */
   fn.addValues = (items) => {
+    const its = intercept(interceptors.addValues, items);
     const added = add({
       vc,
       values,
-      items
+      items: its
     });
+
+    fn.emit('add-values', its);
+
     if (added.length) {
       if (!activated) {
         activated = true;
@@ -290,12 +307,18 @@ export default function brush({
     }
   };
 
+  /**
+   * @param {object[]} items Items to set
+   */
   fn.setValues = (items) => {
+    const its = intercept(interceptors.setValues, items);
     let changed = set({
-      items,
+      items: its,
       vCollection: values,
       vc
     });
+
+    fn.emit('set-values', its);
 
     if (changed[0].length > 0 || changed[1].length > 0) {
       if (!activated) {
@@ -320,11 +343,18 @@ export default function brush({
     fn.removeValues([{ key, value }]);
   };
 
+  /**
+   * @param {object[]} items Items to remove
+   */
   fn.removeValues = (items) => {
+    const its = intercept(interceptors.removeValues, items);
     const removed = remove({
       values,
-      items
+      items: its
     });
+
+    fn.emit('remove-values', its);
+
     if (removed.length) {
       fn.emit('update', [], removed);
       // TODO - emit 'end' event if there are no remaining active brushes
@@ -345,12 +375,18 @@ export default function brush({
     fn.toggleValues([{ key, value }]);
   };
 
+  /**
+   * @param {object[]} items Items to toggle
+   */
   fn.toggleValues = (items) => {
+    const its = intercept(interceptors.toggleValues, items);
     let toggled = toggle({
-      items,
+      items: its,
       values,
       vc
     });
+
+    fn.emit('toggle-values', its);
 
     if (toggled[0].length > 0 || toggled[1].length > 0) {
       if (!activated) {
@@ -427,6 +463,25 @@ export default function brush({
       // }
     }
     return status.some(s => s.bool);
+  };
+
+  /**
+   * Adds an event interceptor
+   *
+   * @param {string} name Name of the event to intercept
+   * @param {function} ic Handler to call before event is triggered
+   * @example
+   * brush.intercept('add-values', items => {
+   *  console.log('about to add the following items', items);
+   *  return items;
+   * });
+   */
+  fn.intercept = (name, ic) => {
+    let s = name.replace(/(-[a-z])/g, $1 => $1.toUpperCase().replace('-', ''));
+    if (!interceptors[s]) {
+      return;
+    }
+    interceptors[s].push(ic);
   };
 
   EventEmitter.mixin(fn);
