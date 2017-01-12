@@ -7,7 +7,7 @@ class Node {
     this._children = [];
     this._ancestors = null;
     this.type = type;
-    this.data = {};
+    this.data = null;
   }
 
   /**

@@ -50,7 +50,15 @@ function element(name) {
   };
 
   if (name === 'canvas') {
-    e.getContext = () => ({});
+    e.getContext = () => ({
+      save: () => {},
+      beginPath: () => {},
+      moveTo: () => {},
+      arc: () => {},
+      fill: () => {},
+      restore: () => {},
+      rect: () => {}
+    });
   }
 
   return e;

@@ -1,3 +1,5 @@
+import extend from 'extend';
+
 import rendererFn from '../renderer/index';
 import {
   styler,
@@ -11,22 +13,37 @@ const isReservedProperty = prop => ['on', 'dock', 'displayOrder', 'prioOrder', '
 
 export default function componentFactory(definition) {
   return (config, composer, container) => {
+    // Create a callback that calls lifecycle functions in the definition and config (if they exist).
+    function createCallback(method, defaultReturnValue) {
+      return function cb(...args) {
+        let returnValue = defaultReturnValue;
+        if (typeof definition[method] === 'function') {
+          returnValue = definition[method].call(this, ...args);
+        }
+        if (typeof config[method] === 'function') {
+          returnValue = config[method].call(this, ...args);
+        }
+        return returnValue;
+      };
+    }
+
     // TODO support es6 classes
     const {
       on = {},
       require = [],
-      renderer,
-      preferredSize = () => 0,
-      created = () => {},
-      beforeMount = () => {},
-      mounted = () => {},
-      beforeUpdate = () => {},
-      updated = () => {},
-      beforeRender = () => {},
-      beforeDestroy = () => {},
-      destroyed = () => {},
-      render
-    } = definition;
+      renderer
+    } = extend({}, definition, config);
+
+    const preferredSize = createCallback('preferredSize', 0);
+    const created = createCallback('created');
+    const beforeMount = createCallback('beforeMount');
+    const mounted = createCallback('mounted');
+    const beforeUpdate = createCallback('beforeUpdate');
+    const updated = createCallback('updated');
+    const beforeRender = createCallback('beforeRender');
+    const beforeDestroy = createCallback('beforeDestroy');
+    const destroyed = createCallback('destroyed');
+    const render = definition.render;
 
     let settings = config;
     let element;
@@ -51,7 +68,9 @@ export default function componentFactory(definition) {
     brushArgs.renderer = rend;
 
     const context = {
-      dataset: composer.dataset()
+      itemsAt: rend.itemsAt,
+      dataset: composer.dataset(),
+      getMappedData: idx => brushArgs.data && brushArgs.data[idx]
       // measureText: rend.measureText,
       // forceUpdate: () => {}
     };

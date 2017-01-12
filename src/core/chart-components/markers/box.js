@@ -92,7 +92,7 @@ const DEFAULT_STYLE_SETTINGS = {
  */
 
 const boxMarker = {
-  require: ['composer'],
+  require: ['composer', 'renderer'],
   created(opts) {
     this.rect = { x: 0, y: 0, width: 0, height: 0 };
     this.dispersion = dispersion(this.composer, DEFAULT_STYLE_SETTINGS, opts.settings.settings);
