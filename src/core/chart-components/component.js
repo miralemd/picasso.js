@@ -28,6 +28,7 @@ function prepareContext(ctx, definition, opts) {
     dockConfig
   } = opts;
 
+  // TODO add setters and log warnings / errors to console
   Object.defineProperty(ctx, 'settings', {
     get: settings
   });
@@ -163,7 +164,7 @@ export default function componentFactory(definition) {
       if (settings.data) {
         data = composer.dataset().map(settings.data.mapTo, settings.data.groupBy);
       } else {
-        data = composer.dataset();
+        data = [];
       }
 
       const newSize = beforeRender({
