@@ -7,8 +7,11 @@ import {
   endBrush
 } from './brushing';
 
-const isReservedProperty = prop => ['on', 'dock', 'displayOrder', 'prioOrder', 'minimumLayoutMode', 'renderer', 'preferredSize', 'created', 'beforeMount', 'mounted',
-  'beforeUpdate', 'updated', 'beforeRender', 'render', 'beforeDestroy', 'destroyed', 'defaultSettings'
+const isReservedProperty = prop => [
+  'on', 'preferredSize', 'created', 'beforeMount', 'mounted',
+  'beforeUpdate', 'updated', 'beforeRender', 'render', 'beforeDestroy',
+  'destroyed', 'defaultSettings', 'data', 'settings', 'formatter',
+  'scale', 'composer', 'dockConfig'
 ].some(name => name === prop);
 
 function prepareContext(ctx, definition, opts) {
@@ -26,19 +29,15 @@ function prepareContext(ctx, definition, opts) {
   } = opts;
 
   Object.defineProperty(ctx, 'settings', {
-    set: () => {},
     get: settings
   });
   Object.defineProperty(ctx, 'data', {
-    set: () => {},
     get: data
   });
   Object.defineProperty(ctx, 'formatter', {
-    set: () => {},
     get: formatter
   });
   Object.defineProperty(ctx, 'scale', {
-    set: () => {},
     get: scale
   });
 
@@ -57,18 +56,15 @@ function prepareContext(ctx, definition, opts) {
   require.forEach((req) => {
     if (req === 'renderer') {
       Object.defineProperty(ctx, 'renderer', {
-        set: () => {},
         get: renderer
       });
     } else if (req === 'composer') {
       ctx.composer = composer;
       Object.defineProperty(ctx, 'composer', {
-        set: () => {},
         get: composer
       });
     } else if (req === 'dockConfig') {
       Object.defineProperty(ctx, 'dockConfig', {
-        set: () => {},
         get: dockConfig
       });
     }
