@@ -88,6 +88,72 @@ describe('canvas renderer', () => {
     expect(div.children.length).to.equal(0);
   });
 
+  describe('itemsAt', () => {
+    let items;
+
+    beforeEach(() => {
+      items = [{
+        type: 'circle',
+        cx: 138.2,
+        cy: 80.1,
+        r: 10.14121384712747,
+        opacity: 0.0850144505610413,
+        fill: '#440154',
+        stroke: '#ccc',
+        strokeWidth: 0
+      }, {
+        type: 'rect',
+        x: 109.87669609109648,
+        y: 131.87669609109648,
+        width: 56.64660781780709,
+        height: 56.64660781780709,
+        opacity: 0.30146790367742315,
+        fill: '#482979',
+        stroke: '#ccc',
+        strokeWidth: 0
+      }];
+      r = renderer(); // Don't mock the scene
+    });
+
+    it('should return shapes at a point', () => {
+      r.appendTo(element('div'));
+      r.size({ x: 100, y: 100, width: 400, height: 400 });
+      r.render(items);
+
+      const shapes = r.itemsAt({ x: 120, y: 135 });
+      expect(shapes.length).to.equal(1);
+    });
+
+    /*
+    it('should return shapes at a circle', () => {
+      r.appendTo(element('div'));
+      r.size({ x: 100, y: 100, width: 400, height: 400 });
+      r.render(items);
+
+      const shapes = r.itemsAt({ cx: 120, cy: 135, r: 3 });
+      expect(shapes.length).to.equal(1);
+    });
+    */
+
+    it('should return shapes at a line', () => {
+      r.appendTo(element('div'));
+      r.size({ x: 100, y: 100, width: 400, height: 400 });
+      r.render(items);
+
+      const shapes = r.itemsAt({ x1: 130, x2: 130, y1: 0, y2: 320 });
+      expect(shapes.length).to.equal(2);
+    });
+
+    it('should return shapes at a rect', () => {
+      r.appendTo(element('div'));
+      r.size({ x: 100, y: 100, width: 400, height: 400 });
+      r.render(items);
+
+      const shapes = r.itemsAt({ x: 100, y: 100, width: 50, height: 50 });
+      expect(shapes.length).to.equal(1);
+    });
+  });
+
   it('should scale canvas to adjust for HiDPI screens', () => {
     const div = element('div');
     const inputShapes = [{ type: 'container' }];
