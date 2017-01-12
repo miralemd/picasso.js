@@ -56,18 +56,16 @@ describe('Component', () => {
       key2: false
     }, composerMock);
     expect(created).to.have.been.called.once;
-    expect(created.thisValues[0]).to.deep.equal({
-      dataset: {},
-      settings: {
-        dock: 'top',
-        style: {
-          strokeWidth: 5
-        },
-        key1: 'override',
-        key2: false
+    expect(created.thisValues[0].data).to.deep.equal([]);
+    expect(created.thisValues[0].settings).to.deep.equal({
+      dock: 'top',
+      style: {
+        strokeWidth: 5
       },
-      update: instance.update
+      key1: 'override',
+      key2: false
     });
+    expect(created.thisValues[0].update).to.equal(instance.update);
     expect(mounted).to.not.have.been.called;
     expect(beforeRender).to.not.have.been.called;
     expect(render).to.not.have.been.called;

@@ -7,7 +7,7 @@ const gridLineComponent = {
 
     this.onData();
   },
-  require: ['composer', 'renderer', 'element'], // TODO renderer and element are not available, use getPreferredSize and beforeRender to give the renderer a size
+  require: ['composer', 'renderer', 'element'], // TODO element is not available, use getPreferredSize and beforeRender to give the renderer a size
   defaultSettings: {
     settings: {},
     data: {}

@@ -36,7 +36,7 @@ function resolveInitialStyle(settings, baseStyles, composer) {
 }
 
 const axisComponent = {
-  require: ['composer', 'measureText', 'dockConfig'],
+  require: ['composer', 'renderer', 'dockConfig'],
   defaultSettings: {
     displayOrder: 0,
     prioOrder: 0,
@@ -67,7 +67,7 @@ const axisComponent = {
     const align = getAlign(dock, axisSettings.align, this.scale.type);
 
     if (this.scale.type === 'ordinal') {
-      this.data = this.scale.scale.domain();
+      this.domain = this.scale.scale.domain();
     }
 
     this.concreteNodeBuilder = nodeBuilder(this.scale.type);
@@ -87,16 +87,14 @@ const axisComponent = {
     const {
       formatter,
       ticksFn,
-      axisSettings,
-      data,
-      measureText
+      axisSettings
     } = this;
     const reqSize = calcRequiredSize({
       type: this.scale.type,
       rect: opts.inner,
-      data,
+      data: this.domain,
       formatter,
-      measureText,
+      measureText: this.renderer.measureText,
       scale: this.scale.scale,
       settings: axisSettings,
       ticksFn,
@@ -133,16 +131,14 @@ const axisComponent = {
       formatter,
       ticksFn,
       axisSettings,
-      data,
       innerRect,
-      outerRect,
-      measureText
+      outerRect
     } = this;
     const ticks = ticksFn({
       settings: axisSettings,
       innerRect,
       scale: this.scale.scale,
-      data,
+      data: this.domain,
       formatter
     });
 
@@ -152,7 +148,7 @@ const axisComponent = {
       scale: this.scale.scale,
       innerRect,
       outerRect,
-      measureText,
+      measureText: this.renderer.measureText,
       ticks
     }));
 

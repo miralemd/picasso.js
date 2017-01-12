@@ -101,7 +101,7 @@ function generateTitle({
 
 
 const textComponent = {
-  require: ['measureText'],
+  require: ['renderer', 'composer'],
   defaultSettings: {
     dock: 'bottom',
     displayOrder: 99,
@@ -129,13 +129,14 @@ const textComponent = {
 
     extend(this.settings, this.settings.settings || {});
 
+    this.dataset = this.composer.dataset();
     const table = this.dataset.tables()[0];
     const text = this.settings.text;
     const join = this.settings.settings && this.settings.settings.join;
     this.title = parseTitle(text, join, table, this.scale);
   },
   preferredSize() {
-    const height = this.measureText({
+    const height = this.renderer.measureText({
       text: this.title,
       fontSize: this.settings.style.fontSize,
       fontFamily: this.settings.style.fontFamily
@@ -151,7 +152,6 @@ const textComponent = {
   },
   render() {
     const {
-      measureText,
       title,
       settings,
       rect
@@ -162,7 +162,7 @@ const textComponent = {
       dock: this.settings.dock,
       settings,
       rect,
-      measureText
+      measureText: this.renderer.measureText
     }));
     return nodes;
   },
