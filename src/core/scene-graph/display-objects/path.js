@@ -8,7 +8,7 @@ export default class Path extends DisplayObject {
 
   set(v) {
     super.set(v);
-    this.d = v.d;
+    this.attrs.d = v.d;
   }
 }
 
