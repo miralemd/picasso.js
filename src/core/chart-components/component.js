@@ -7,32 +7,99 @@ import {
   endBrush
 } from './brushing';
 
-const isReservedProperty = prop => ['on', 'dock', 'displayOrder', 'prioOrder', 'minimumLayoutMode', 'renderer', 'preferredSize', 'created', 'beforeMount', 'mounted',
-  'beforeUpdate', 'updated', 'beforeRender', 'render', 'beforeDestroy', 'destroyed'
+const isReservedProperty = prop => [
+  'on', 'preferredSize', 'created', 'beforeMount', 'mounted',
+  'beforeUpdate', 'updated', 'beforeRender', 'render', 'beforeDestroy',
+  'destroyed', 'defaultSettings', 'data', 'settings', 'formatter',
+  'scale', 'composer', 'dockConfig'
 ].some(name => name === prop);
 
+function prepareContext(ctx, definition, opts) {
+  const {
+    require = []
+  } = definition;
+  const {
+    settings,
+    formatter,
+    scale,
+    data,
+    renderer,
+    composer,
+    dockConfig
+  } = opts;
+
+  // TODO add setters and log warnings / errors to console
+  Object.defineProperty(ctx, 'settings', {
+    get: settings
+  });
+  Object.defineProperty(ctx, 'data', {
+    get: data
+  });
+  Object.defineProperty(ctx, 'formatter', {
+    get: formatter
+  });
+  Object.defineProperty(ctx, 'scale', {
+    get: scale
+  });
+
+  Object.keys(definition).forEach((key) => {
+    if (!isReservedProperty(key)) {
+      // Add non-lifecycle methods to the context
+      if (typeof definition[key] === 'function') {
+        ctx[key] = definition[key].bind(ctx);
+      } else {
+        ctx[key] = definition[key];
+      }
+    }
+  });
+
+  // Add properties to context
+  require.forEach((req) => {
+    if (req === 'renderer') {
+      Object.defineProperty(ctx, 'renderer', {
+        get: renderer
+      });
+    } else if (req === 'composer') {
+      ctx.composer = composer;
+      Object.defineProperty(ctx, 'composer', {
+        get: composer
+      });
+    } else if (req === 'dockConfig') {
+      Object.defineProperty(ctx, 'dockConfig', {
+        get: dockConfig
+      });
+    }
+  });
+}
+
+// TODO support es6 classes
 export default function componentFactory(definition) {
+  const {
+    defaultSettings = {}
+  } = definition;
+
   return (config, composer, container) => {
+    let settings = extend(true, {}, defaultSettings, config);
+    let data = [];
+    let scale;
+    let formatter;
+
+    const definitionContext = {};
+    const instanceContext = {};
+
     // Create a callback that calls lifecycle functions in the definition and config (if they exist).
     function createCallback(method, defaultReturnValue) {
       return function cb(...args) {
         let returnValue = defaultReturnValue;
         if (typeof definition[method] === 'function') {
-          returnValue = definition[method].call(this, ...args);
+          returnValue = definition[method].call(definitionContext, ...args);
         }
         if (typeof config[method] === 'function') {
-          returnValue = config[method].call(this, ...args);
+          returnValue = config[method].call(instanceContext, ...args);
         }
         return returnValue;
       };
     }
-
-    // TODO support es6 classes
-    const {
-      on = {},
-      require = [],
-      renderer
-    } = extend({}, definition, config);
 
     const preferredSize = createCallback('preferredSize', 0);
     const created = createCallback('created');
@@ -43,59 +110,45 @@ export default function componentFactory(definition) {
     const beforeRender = createCallback('beforeRender');
     const beforeDestroy = createCallback('beforeDestroy');
     const destroyed = createCallback('destroyed');
-    const render = definition.render;
+    const render = definition.render; // Do not allow overriding of this function
 
-    let settings = config;
     let element;
     let brushArgs = {
-      data: [],
       nodes: [],
       composer,
       config: config.brushes || {},
       renderer: null
     };
+    Object.defineProperty(brushArgs, 'data', {
+      get: () => data
+    });
     let hasRendered = false;
 
-    // General settings variables (reserved properties)
-    let {
-      dock = definition.dock,
-      displayOrder = definition.displayOrder,
-      prioOrder = definition.prioOrder,
-      minimumLayoutMode = definition.minimumLayoutMode
-    } = settings;
-
-    const rend = renderer ? rendererFn(renderer) : composer.renderer || rendererFn();
+    const rend = definition.renderer ? rendererFn(definition.renderer) : composer.renderer || rendererFn();
     brushArgs.renderer = rend;
 
-    const context = {
-      itemsAt: rend.itemsAt,
-      dataset: composer.dataset(),
-      getMappedData: idx => brushArgs.data && brushArgs.data[idx]
-      // measureText: rend.measureText,
-      // forceUpdate: () => {}
+    const dockConfig = {
+      requiredSize: (inner, outer) => preferredSize({
+        inner,
+        outer,
+        dock: dockConfig.dock
+      }),
+      displayOrder: settings.displayOrder,
+      prioOrder: settings.prioOrder,
+      minimumLayoutMode: settings.minimumLayoutMode,
+      dock: settings.dock
     };
-
-    Object.keys(definition).forEach((key) => {
-      if (!isReservedProperty(key)) {
-        // Add non-lifecycle methods to the context
-        if (typeof definition[key] === 'function') {
-          context[key] = definition[key].bind(context);
-        } else {
-          context[key] = definition[key];
-        }
-      }
-    });
 
     const updateScale = () => {
       if (typeof settings.scale === 'string') {
-        context.scale = composer.scale(settings.scale);
+        scale = composer.scale(settings.scale);
       }
     };
     const updateFormatter = () => {
       if (typeof settings.formatter === 'string') {
-        context.formatter = composer.formatter(settings.formatter);
-      } else if (context.scale) {
-        context.formatter = composer.formatter({ source: context.scale.sources[0] });
+        formatter = composer.formatter(settings.formatter);
+      } else if (typeof settings.scale === 'string') {
+        formatter = composer.formatter({ source: scale.sources[0] });
       }
     };
 
@@ -104,20 +157,17 @@ export default function componentFactory(definition) {
 
     const fn = () => {};
 
-    fn.dockConfig = {
-      requiredSize: (inner, outer) => preferredSize.call(context, {
-        inner,
-        outer,
-        dock: fn.dockConfig.dock
-      }),
-      displayOrder,
-      prioOrder,
-      minimumLayoutMode,
-      dock
-    };
+    fn.dockConfig = dockConfig;
 
+    // Treated as beforeRender
     fn.resize = (inner, outer) => {
-      const newSize = beforeRender.call(context, {
+      if (settings.data) {
+        data = composer.dataset().map(settings.data.mapTo, settings.data.groupBy);
+      } else {
+        data = [];
+      }
+
+      const newSize = beforeRender({
         inner,
         outer
       });
@@ -130,15 +180,14 @@ export default function componentFactory(definition) {
 
     const getRenderArgs = () => {
       const renderArgs = rend.renderArgs ? rend.renderArgs.slice(0) : [];
-      renderArgs.push({});
-      if (settings.data) {
-        renderArgs[renderArgs.length - 1].data = brushArgs.data = composer.dataset().map(settings.data.mapTo, settings.data.groupBy);
-      }
+      renderArgs.push({
+        data
+      });
       return renderArgs;
     };
 
     fn.render = () => {
-      const nodes = brushArgs.nodes = render.call(context, ...getRenderArgs());
+      const nodes = brushArgs.nodes = render.call(definitionContext, ...getRenderArgs());
       rend.render(nodes);
 
       if (!hasRendered) {
@@ -150,7 +199,7 @@ export default function componentFactory(definition) {
             }
           });
         }
-        mounted.call(context, element);
+        mounted(element);
       }
     };
 
@@ -166,62 +215,72 @@ export default function componentFactory(definition) {
 
     fn.update = (opts = {}) => {
       if (opts.settings) {
-        settings = opts.settings;
-      }
-      if (opts.dataset) {
-        context.dataset = opts.dataset;
+        settings = extend(true, {}, defaultSettings, opts.settings);
       }
 
       updateScale();
       updateFormatter();
 
-      beforeUpdate.call(context, {
+      beforeUpdate({
         settings,
-        dataset: context.dataset
+        data
       });
 
-      const nodes = brushArgs.nodes = render.call(context, ...getRenderArgs());
+      const nodes = brushArgs.nodes = render.call(definitionContext, ...getRenderArgs());
       rend.render(nodes);
 
-      updated.call(context);
+      updated();
     };
 
     fn.destroy = () => {
-      beforeDestroy.call(context, element);
+      beforeDestroy.call(element);
       rend.destroy();
-      destroyed.call(context);
+      destroyed();
     };
 
-    // Add properties to context
-
-    require.forEach((req) => {
-      if (req === 'measureText') {
-        context.measureText = rend.measureText;
-      } else if (req === 'forceUpdate') {
-        context.forceUpdate = fn.update;
-      } else if (req === 'composer') {
-        context.composer = composer;
-      } else if (req === 'dockConfig') {
-        context.dockConfig = fn.dockConfig;
-      } else if (req === 'renderer') {
-        context.renderer = rend;
-      } else if (req === 'element') {
-        context.element = element;
-      }
+    // Set contexts, note that the definition and instance need different contexts (for example if they have different 'require' props)
+    prepareContext(definitionContext, definition, {
+      settings: () => settings,
+      data: () => data,
+      scale: () => scale,
+      formatter: () => formatter,
+      renderer: () => rend,
+      composer: () => composer,
+      dockConfig: () => dockConfig
     });
+    definitionContext.update = fn.update;
 
-    created.call(context, {
+    prepareContext(instanceContext, config, {
+      settings: () => settings,
+      data: () => data,
+      scale: () => scale,
+      formatter: () => formatter,
+      renderer: () => rend,
+      composer: () => composer,
+      dockConfig: () => dockConfig
+    });
+    instanceContext.update = fn.update;
+
+    // Start calling lifecycle methods
+    created({
       settings
     });
 
     // TODO skip for SSR
-    beforeMount.call(context);
+    beforeMount();
 
     element = rend.appendTo(container);
 
-    Object.keys(on).forEach((key) => {
+    // Bind event listeners
+    Object.keys(definition.on || {}).forEach((key) => {
       const listener = (e) => {
-        on[key].call(context, e);
+        definition.on[key].call(definitionContext, e);
+      };
+      element.addEventListener(key, listener);
+    });
+    Object.keys(config.on || {}).forEach((key) => {
+      const listener = (e) => {
+        config.on[key].call(instanceContext, e);
       };
       element.addEventListener(key, listener);
     });

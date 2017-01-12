@@ -101,48 +101,42 @@ function generateTitle({
 
 
 const textComponent = {
-  require: ['measureText', 'dockConfig'],
-  created(opts) {
-    this.settings = {
-      dock: 'bottom',
-      displayOrder: 99,
-      prioOrder: 0,
-      anchor: 'center',
-      paddingStart: 5,
-      paddingEnd: 5,
-      paddingLeft: 0,
-      paddingRight: 0,
-      style: {
-        fontSize: '15px',
-        fontFamily: 'Arial',
-        fill: '#999'
-      },
-      join: ', '
-    };
-
-    extend(this.settings, opts.settings.settings || {});
-
-    ['dock', 'displayOrder', 'prioOrder'].forEach((prop) => {
-      if (typeof opts.settings[prop] !== 'undefined') {
-        this.settings[prop] = opts.settings[prop];
-      }
-      // Override the dock config (TODO should be refactored)
-      this.dockConfig[prop] = this.settings[prop];
-    });
-
+  require: ['renderer', 'composer'],
+  defaultSettings: {
+    dock: 'bottom',
+    displayOrder: 99,
+    prioOrder: 0,
+    anchor: 'center',
+    paddingStart: 5,
+    paddingEnd: 5,
+    paddingLeft: 0,
+    paddingRight: 0,
+    style: {
+      fontSize: '15px',
+      fontFamily: 'Arial',
+      fill: '#999'
+    },
+    settings: {},
+    join: ', '
+  },
+  created() {
     this.rect = {
       x: 0,
       y: 0,
       width: 0,
       height: 0
     };
+
+    extend(this.settings, this.settings.settings || {});
+
+    this.dataset = this.composer.dataset();
     const table = this.dataset.tables()[0];
-    const text = opts.settings.text;
-    const join = opts.settings.settings && opts.settings.settings.join;
+    const text = this.settings.text;
+    const join = this.settings.settings && this.settings.settings.join;
     this.title = parseTitle(text, join, table, this.scale);
   },
   preferredSize() {
-    const height = this.measureText({
+    const height = this.renderer.measureText({
       text: this.title,
       fontSize: this.settings.style.fontSize,
       fontFamily: this.settings.style.fontFamily
@@ -158,7 +152,6 @@ const textComponent = {
   },
   render() {
     const {
-      measureText,
       title,
       settings,
       rect
@@ -166,10 +159,10 @@ const textComponent = {
     const nodes = [];
     nodes.push(generateTitle({
       title,
-      dock: this.dockConfig.dock,
+      dock: this.settings.dock,
       settings,
       rect,
-      measureText
+      measureText: this.renderer.measureText
     }));
     return nodes;
   },

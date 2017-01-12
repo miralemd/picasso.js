@@ -2,7 +2,7 @@ import dispersion from '../../../../../../src/core/chart-components/markers/gene
 
 describe('Dispersion', () => {
   let composerMock;
-  let config;
+  let settings;
   let d;
 
   beforeEach(() => {
@@ -23,7 +23,7 @@ describe('Dispersion', () => {
       container: () => { }
     };
 
-    config = {
+    settings = {
       settings: {
         x: { scale: 'whatevz' },
         y: { scale: 'whatevz' }
@@ -43,7 +43,7 @@ describe('Dispersion', () => {
   });
   it('should fill items with data', () => {
     d = dispersion(composerMock);
-    d.setOpts(config);
+    d.updateSettings(settings);
     d.onData();
     d.items().forEach((item, i) => {
       expect(item.max).to.equal(i * 2);

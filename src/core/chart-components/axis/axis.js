@@ -36,72 +36,67 @@ function resolveInitialStyle(settings, baseStyles, composer) {
 }
 
 const axisComponent = {
-  require: ['composer', 'measureText', 'dockConfig'],
-  created(opts) {
+  require: ['composer', 'renderer', 'dockConfig'],
+  defaultSettings: {
+    displayOrder: 0,
+    prioOrder: 0,
+    paddingStart: 0,
+    paddingEnd: 10
+  },
+  created() {
     this.innerRect = { width: 0, height: 0, x: 0, y: 0 };
     this.outerRect = { width: 0, height: 0, x: 0, y: 0 };
 
-    let settings;
-    let styleSettings;
     if (this.scale.type === 'ordinal') {
-      [settings, styleSettings] = discreteDefaultSettings();
+      this.defaultStyleSettings = discreteDefaultSettings();
+      this.defaultDock = 'bottom';
       this.ticksFn = generateDiscreteTicks;
     } else {
-      [settings, styleSettings] = continuousDefaultSettings();
+      this.defaultStyleSettings = continuousDefaultSettings();
+      this.defaultDock = 'left';
       this.ticksFn = generateContinuousTicks;
     }
-    this.settings = extend(true, {}, settings);
-    this.styleSettings = styleSettings;
 
-    this.init(opts.settings);
+    this.init(this.settings);
   },
-  init(axisConfig) {
-    // formatter = composer.formatter(axisConfig.formatter || { source: dataScale.sources[0] });
-    this.styleSettings = resolveInitialStyle(axisConfig.settings, this.styleSettings, this.composer);
+  init(settings) {
+    const styleSettings = resolveInitialStyle(settings.settings, this.defaultStyleSettings, this.composer);
+    const axisSettings = extend(true, {}, this.settings, settings.settings, styleSettings);
+
+    const dock = typeof axisSettings.dock !== 'undefined' ? axisSettings.dock : this.defaultDock;
+    const align = getAlign(dock, axisSettings.align, this.scale.type);
 
     if (this.scale.type === 'ordinal') {
-      this.data = this.scale.scale.domain();
+      this.domain = this.scale.scale.domain();
     }
-
-    extend(true, this.settings, axisConfig.settings, this.styleSettings);
-
-    ['dock', 'displayOrder', 'prioOrder'].forEach((prop) => {
-      if (typeof axisConfig[prop] !== 'undefined') {
-        this.settings[prop] = axisConfig[prop];
-      }
-      // Override the dock config (TODO should be refactored)
-      this.dockConfig[prop] = this.settings[prop];
-    });
 
     this.concreteNodeBuilder = nodeBuilder(this.scale.type);
 
-    this.settings.align = getAlign(this.settings.dock, this.settings.align, this.scale.type);
+    axisSettings.dock = dock;
+    axisSettings.align = align;
+    this.dockConfig.dock = dock; // Override the dock setting (TODO should be removed)
+    this.align = align;
 
-    // Override the dock settings (TODO should be removed)
-    ['dock', 'displayOrder', 'prioOrder'].forEach((prop) => {
-      this.dockConfig[prop] = this.settings[prop];
+    Object.keys(styleSettings).forEach((a) => {
+      axisSettings[a] = resolveForDataValues(axisSettings[a]);
     });
 
-    Object.keys(this.styleSettings).forEach((a) => {
-      this.settings[a] = resolveForDataValues(this.settings[a]);
-    });
+    this.axisSettings = axisSettings;
   },
   preferredSize(opts) {
     const {
       formatter,
       ticksFn,
-      settings,
-      data,
-      measureText
+      axisSettings
     } = this;
     const reqSize = calcRequiredSize({
       type: this.scale.type,
       rect: opts.inner,
-      data,
+      data: this.domain,
       formatter,
-      measureText,
+      measureText: this.renderer.measureText,
       scale: this.scale.scale,
-      settings,
+      settings: axisSettings,
       ticksFn,
       setEdgeBleed: (val) => {
         this.dockConfig.edgeBleed = val;
@@ -123,7 +118,7 @@ const axisComponent = {
     } = opts;
     const extendedInner = {};
     extend(extendedInner, inner, alignTransform({
-      align: this.settings.align,
+      align: this.align,
       inner
     }));
     const finalOuter = outer || extendedInner;
@@ -135,27 +130,25 @@ const axisComponent = {
     const {
       formatter,
       ticksFn,
-      settings,
-      data,
+      axisSettings,
       innerRect,
-      outerRect,
-      measureText
+      outerRect
     } = this;
     const ticks = ticksFn({
-      settings,
+      settings: axisSettings,
       innerRect,
       scale: this.scale.scale,
-      data,
+      data: this.domain,
       formatter
     });
 
     const nodes = [];
     nodes.push(...this.concreteNodeBuilder.build({
-      settings,
+      settings: axisSettings,
       scale: this.scale.scale,
       innerRect,
       outerRect,
-      measureText,
+      measureText: this.renderer.measureText,
       ticks
     }));
 

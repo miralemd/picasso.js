@@ -1,17 +1,17 @@
 import createComponentFactory from '../component';
 
 const gridLineComponent = {
-  created(obj) {
-    this.settings = obj.settings;
-    this.data = obj.data; // TODO composer
-    this.obj = obj;
-
-    this.x = this.settings.x ? this.composer.scales[this.settings.x.scale] : null;
-    this.y = this.settings.y ? this.composer.scales[this.settings.y.scale] : null;
+  created() {
+    this.x = this.settings.settings.x ? this.composer.scales[this.settings.settings.x.scale] : null;
+    this.y = this.settings.settings.y ? this.composer.scales[this.settings.settings.y.scale] : null;
 
     this.onData();
   },
-  require: ['composer', 'renderer', 'element'],
+  require: ['composer', 'renderer', 'element'], // TODO element is not available, use getPreferredSize and beforeRender to give the renderer a size
+  defaultSettings: {
+    settings: {},
+    data: {}
+  },
   onData() {
     this.lines = [];
 
@@ -34,14 +34,14 @@ const gridLineComponent = {
     this.lines.x = (this.x && this.x.scale.magicTicks(this.renderer.rect.width - this.renderer.rect.x)) || [];
     this.lines.y = (this.y && this.y.scale.magicTicks(this.renderer.rect.height - this.renderer.rect.y)) || [];
 
-    if (!Object.keys(this.settings.styles)[0]) {
+    if (!Object.keys(this.settings.settings.styles)[0]) {
       return [];
     }
 
     let style = {};
 
     const displayLinesX = this.lines.x.map((p) => {
-      style = p.isMinor ? this.settings.styles.minor : this.settings.styles.major;
+      style = p.isMinor ? this.settings.settings.styles.minor : this.settings.settings.styles.major;
 
       return {
         type: 'line',
@@ -54,7 +54,7 @@ const gridLineComponent = {
     });
 
     const displayLinesY = this.lines.y.map((p) => {
-      style = p.isMinor ? this.settings.styles.minor : this.settings.styles.major;
+      style = p.isMinor ? this.settings.settings.styles.minor : this.settings.settings.styles.major;
 
       return {
         type: 'line',
