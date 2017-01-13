@@ -31,7 +31,7 @@
 | components | object |  | No |
 | components.markers | Array.&lt;marker&gt; |  | No |
 | components.axes | Array.&lt;axis&gt; |  | No |
-| dockLayout | Chart.LayoutProps |  | Yes |
+| dockLayout | dock-layout-settings |  | Yes |
 
 #### <a name='Chart.ScaleProps' href='#Chart.ScaleProps'>#</a> ScaleProps
 
