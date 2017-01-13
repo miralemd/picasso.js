@@ -1,11 +1,6 @@
-export function styler(context, name, style) {
-  let consumers = context.config.consume || [];
-  consumers = consumers.filter(c => c.context === name);
-  if (!consumers.length) {
-    return;
-  }
-  const brusher = context.composer.brush(name);
-  const dataProps = consumers[0].data;
+export function styler(obj, { context, data, style }) {
+  const brusher = obj.composer.brush(context);
+  const dataProps = data;
   const active = style.active || {};
   const inactive = style.inactive || {};
   let styleProps = [];
@@ -20,7 +15,7 @@ export function styler(context, name, style) {
   });
 
   brusher.on('start', () => {
-    const nodes = context.nodes;
+    const nodes = obj.nodes;
     const len = nodes.length;
 
     for (let i = 0; i < len; i++) {
@@ -29,10 +24,10 @@ export function styler(context, name, style) {
         nodes[i].__style[s] = nodes[i][s]; // store original value
       });
     }
-    context.renderer.render(nodes);
+    obj.renderer.render(nodes);
   });
   brusher.on('end', () => {
-    const nodes = context.nodes;
+    const nodes = obj.nodes;
     const len = nodes.length;
 
     for (let i = 0; i < len; i++) {
@@ -41,13 +36,13 @@ export function styler(context, name, style) {
       });
       nodes[i].__style = undefined;
     }
-    context.renderer.render(nodes);
+    obj.renderer.render(nodes);
   });
   brusher.on('update', (/* added, removed */) => {
     // TODO - render nodes only once, i.e. don't render for each brush, update nodes for all brushes and then render
-    const nodes = context.nodes;
+    const nodes = obj.nodes;
     const len = nodes.length;
-    const mappedData = context.data;
+    const mappedData = obj.data;
 
     for (let i = 0; i < len; i++) { // TODO - update only added and removed nodes
       let nodeData = mappedData[nodes[i].data];
@@ -62,7 +57,7 @@ export function styler(context, name, style) {
         }
       });
     }
-    context.renderer.render(nodes);
+    obj.renderer.render(nodes);
   });
 }
 

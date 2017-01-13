@@ -116,7 +116,7 @@ export default function componentFactory(definition) {
     let brushArgs = {
       nodes: [],
       composer,
-      config: config.brushes || {},
+      config: config.brush || {},
       renderer: null
     };
     Object.defineProperty(brushArgs, 'data', {
@@ -192,10 +192,10 @@ export default function componentFactory(definition) {
 
       if (!hasRendered) {
         hasRendered = true;
-        if (config.brushes && config.brushes.contexts) {
-          Object.keys(config.brushes.contexts).forEach((key) => {
-            if (config.brushes.contexts[key].style) {
-              styler(brushArgs, key, config.brushes.contexts[key].style);
+        if (config.brush && config.brush.consume) {
+          config.brush.consume.forEach((b) => {
+            if (b.context && b.style) {
+              styler(brushArgs, b);
             }
           });
         }
