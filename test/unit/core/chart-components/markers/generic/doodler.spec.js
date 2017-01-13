@@ -4,11 +4,9 @@ import doodler from '../../../../../../src/core/chart-components/markers/generic
 
 describe('Doodler', () => {
   let doodle;
-  let latestPush;
 
   beforeEach(() => {
     doodle = doodler();
-    latestPush = null;
   });
 
   it('should doodle horizontal lines correctly', () => {
@@ -22,12 +20,8 @@ describe('Doodler', () => {
     });
   });
 
-  it('should doodle vertical lines correctly with custom push function', () => {
-    doodle.push = (v) => { latestPush = v; };
-
-    doodle.verticalLine(1, 2, 3, 'line2');
-
-    expect(latestPush).to.eql({
+  it('should doodle vertical lines correctly', () => {
+    expect(doodle.verticalLine(1, 2, 3, 'line2')).to.eql({
       type: 'line',
       y1: 2,
       x1: 1,

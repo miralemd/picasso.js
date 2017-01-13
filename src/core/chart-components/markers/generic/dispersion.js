@@ -91,7 +91,7 @@ export default function dispersion(composer, defaultStyles = {}, initialSettings
 
   fn.doodle = () => doodle;
 
-  fn.render = (rect, renderDataPoint) => {
+  fn.render = (rect, buildShapes) => {
     if (minDataPointDistance !== null) {
       if (minDataPointDistance === 0) {
         minDataPointDistance = 0.000000001;
@@ -111,11 +111,12 @@ export default function dispersion(composer, defaultStyles = {}, initialSettings
     blueprint.vertical = !settings.vertical;
     blueprint.crisp = true;
 
-    // Setup the doodler
-    doodle.push = item => blueprint.push(item);
-
-    items.forEach((item) => {
-      renderDataPoint(item);
+    items.forEach((item, idx) => {
+      const shapes = buildShapes(item);
+      shapes.forEach((shape) => {
+        shape.data = idx;
+        blueprint.push(shape);
+      });
     });
 
     return blueprint.output();
