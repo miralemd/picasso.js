@@ -3,8 +3,7 @@ import extend from 'extend';
 import rendererFn from '../renderer/index';
 import {
   styler,
-  brushFromDomElement,
-  endBrush
+  observeBrushOnElement
 } from './brushing';
 
 const isReservedProperty = prop => [
@@ -116,7 +115,7 @@ export default function componentFactory(definition) {
     let brushArgs = {
       nodes: [],
       composer,
-      config: config.brushes || {},
+      config: config.brush || {},
       renderer: null
     };
     Object.defineProperty(brushArgs, 'data', {
@@ -192,10 +191,10 @@ export default function componentFactory(definition) {
 
       if (!hasRendered) {
         hasRendered = true;
-        if (config.brushes && config.brushes.contexts) {
-          Object.keys(config.brushes.contexts).forEach((key) => {
-            if (config.brushes.contexts[key].style) {
-              styler(brushArgs, key, config.brushes.contexts[key].style);
+        if (config.brush && config.brush.consume) {
+          config.brush.consume.forEach((b) => {
+            if (b.context && b.style) {
+              styler(brushArgs, b);
             }
           });
         }
@@ -286,33 +285,8 @@ export default function componentFactory(definition) {
     });
 
     // ===== temporary solution to try out interactive brushing (assuming svg renderer)
-    if (element && element.addEventListener) {
-      element.addEventListener('click', (e) => {
-        if (!brushArgs.config.trigger) {
-          return;
-        }
-        brushArgs.config.trigger.filter(t => t.action === 'tap').forEach((t) => {
-          brushFromDomElement({ e, action: 'toggle', composer, data: brushArgs.data, config: t });
-        });
-      });
-
-      element.addEventListener('mousemove', (e) => {
-        if (!brushArgs.config.trigger) {
-          return;
-        }
-        brushArgs.config.trigger.filter(t => t.action === 'over').forEach((t) => {
-          brushFromDomElement({ e, action: 'hover', composer, data: brushArgs.data, config: t });
-        });
-      });
-
-      element.addEventListener('mouseleave', () => {
-        if (!brushArgs.config.trigger) {
-          return;
-        }
-        brushArgs.config.trigger.filter(t => t.action === 'over').forEach((t) => {
-          endBrush({ composer, config: t });
-        });
-      });
+    if (brushArgs.config.trigger) {
+      observeBrushOnElement({ element, config: brushArgs });
     }
     // ===== end temporary solution
 
