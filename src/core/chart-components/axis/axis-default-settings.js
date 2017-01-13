@@ -3,7 +3,7 @@ export function discreteDefaultSettings() {
     labels: {
       show: true,
       tilted: false,
-      tiltAngle: 45,
+      tiltAngle: 40,
       fontFamily: 'Arial',
       fontSize: '12px',
       fill: '#595959',
@@ -31,7 +31,7 @@ export function continuousDefaultSettings() {
     labels: {
       show: true,
       tilted: false,
-      tiltAngle: 45,
+      tiltAngle: 40,
       fontFamily: 'Arial',
       fontSize: '12px',
       fill: '#595959',
