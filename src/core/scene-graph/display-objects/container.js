@@ -49,6 +49,17 @@ export default class Container extends DisplayObject {
     return extend({ x: 0, y: 0, width: 0, height: 0 }, this._boundingRect);
   }
 
+  bounds(includeTransform = false) {
+    const rect = this.boundingRect(includeTransform);
+
+    return [
+      { x: rect.x, y: rect.y },
+      { x: rect.x + rect.width, y: rect.y },
+      { x: rect.x + rect.width, y: rect.y + rect.height },
+      { x: rect.x, y: rect.y + rect.height }
+    ];
+  }
+
   addChild(c) {
     const r = NC.addChild.call(this, c);
 

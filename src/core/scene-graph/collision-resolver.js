@@ -2,14 +2,18 @@ import createCollision from './collision';
 import { scalarMultiply } from '../math/vector';
 import { convertLineToPoints, convertRectToPoints } from '../math/intersection';
 
+function createNodeCollsion(node) {
+  return createCollision({
+    node: node.node,
+    bounds: node.boundingRect ? node.boundingRect(true) : { x: 0, y: 0, width: 0, height: 0 }
+  });
+}
+
 function appendParentNode(node, collision) {
   const p = node.parent;
 
   if (p && p.type !== 'stage') {
-    collision.parent = createCollision({
-      node: p.node,
-      bounds: p.boundingRect(true)
-    });
+    collision.parent = createNodeCollsion(node);
 
     const pp = p.parent;
     if (pp && pp.type !== 'stage') {
@@ -22,20 +26,17 @@ function appendInputShape(shape, collisions) {
   collisions.forEach((c) => { c.input = shape; });
 }
 
-// TODO Actually care about the order of the children to ensure FRONT
 function resolveFrontChildCollision(node, type, input) {
-  const num = node.children.length;
+  const num = node.descendants.length;
 
-  for (let i = num - 1; i > 0; i--) {
-    const child = node.children[i];
+  for (let i = num - 1; i >= 0; i--) {
+    const desc = node.descendants[i];
+    const collider = desc._collider;
 
-    if (child[type](input)) {
-      const collision = createCollision({
-        node: child.node,
-        bounds: child.boundingRect(true)
-      });
+    if (collider && collider.fn[type](input)) {
+      const collision = createNodeCollsion(desc);
 
-      appendParentNode(child, collision);
+      appendParentNode(desc, collision);
 
       return collision;
     }
@@ -43,36 +44,12 @@ function resolveFrontChildCollision(node, type, input) {
   return null;
 }
 
-function resolveChildrenCollisions(o, type, input) {
-  const num = o.children.length;
-  const collisions = [];
-
-  for (let i = 0; i < num; i++) {
-    const child = o.children[i];
-
-    if (child[type](input)) {
-      const collision = createCollision({
-        node: child.node,
-        bounds: child.boundingRect(true)
-      });
-
-      appendParentNode(child, collision);
-
-      collisions.push(collision);
-    }
-  }
-  return collisions;
-}
-
-function resolveBoundsCollision(o, type, input) {
-  const collider = o._collider.fn;
+function resolveBoundsCollision(node, type, input) {
+  const collider = node._collider.fn;
   if (collider[type](input)) {
-    const c = createCollision({
-      node: o.node,
-      bounds: o.boundingRect(true)
-    });
+    const c = createNodeCollsion(node);
 
-    appendParentNode(o, c);
+    appendParentNode(node, c);
 
     return c;
   }
@@ -91,10 +68,7 @@ function resolveGeometryCollision(node, type, input) {
 
   const collider = node._collider.fn;
   if (collider[type](transformedInput)) {
-    const c = createCollision({
-      node: node.node,
-      bounds: node.boundingRect(true)
-    });
+    const c = createNodeCollsion(node);
 
     appendParentNode(node, c);
 
@@ -104,13 +78,11 @@ function resolveGeometryCollision(node, type, input) {
   return null;
 }
 
-export default function resolveCollision(node, intersectionType, input) {
+function resolveCollision(node, intersectionType, input) {
   const collider = node._collider;
   if (collider === null) return null;
 
-  if (collider.type === 'children') {
-    return resolveChildrenCollisions(node, intersectionType, input);
-  } else if (collider.type === 'frontChild') {
+  if (collider.type === 'frontChild') {
     return resolveFrontChildCollision(node, intersectionType, input);
   } else if (collider.type === 'bounds') {
     return resolveBoundsCollision(node, intersectionType, input);
@@ -119,20 +91,36 @@ export default function resolveCollision(node, intersectionType, input) {
   return resolveGeometryCollision(node, intersectionType, input);
 }
 
-function traverseNodes(nodes, intersectionType, ary, input) {
+function findAllCollisions(nodes, intersectionType, ary, input) {
   const num = nodes.length;
   for (let i = 0; i < num; i++) {
     const node = nodes[i];
 
     const collision = resolveCollision(node, intersectionType, input);
 
-    if (collision && Array.isArray(collision)) ary.push(...collision);
-    else if (collision) ary.push(collision);
+    if (collision) ary.push(collision);
 
-    if (node.children && (collision === null || collision.length > 0)) { // Only traverse children if no match is found on parent
-      traverseNodes(node.children, intersectionType, ary, input);
+    // Only traverse children if no match is found on parent and it doesnt have any custom collider
+    if (node.children && !collision && !node._collider) {
+      findAllCollisions(node.children, intersectionType, ary, input);
     }
   }
+}
+
+function hasCollision(nodes, intersectionType, input) {
+  const num = nodes.length;
+  for (let i = 0; i < num; i++) {
+    const node = nodes[i];
+
+    const collision = resolveCollision(node, intersectionType, input);
+
+    if (collision !== null) return true;
+
+    if (node.children && !node._collider) {
+      return hasCollision(node.children, intersectionType, input);
+    }
+  }
+  return false;
 }
 
 function shapeToPoints(shape, ratio = 1) {
@@ -141,7 +129,7 @@ function shapeToPoints(shape, ratio = 1) {
     width, height,
     x1, x2, y1, y2,
     cx, cy, r
-  } = shape;
+  } = shape || {};
   let points;
 
   const isNumber = v => typeof v === 'number' && !isNaN(v);
@@ -161,13 +149,19 @@ function shapeToPoints(shape, ratio = 1) {
   return [];
 }
 
-export function resolveCollionsOnNodes(parentNode, shape) {
-  const [intersectionType, points] = shapeToPoints(shape, parentNode.dpi);
+export function resolveCollionsOnNode(node, shape) {
+  const [intersectionType, points] = shapeToPoints(shape, node.dpi);
   const collisions = [];
 
   if (intersectionType) {
-    traverseNodes(parentNode.children, intersectionType, collisions, points);
+    findAllCollisions([node], intersectionType, collisions, points);
     appendInputShape(shape, collisions);
   }
   return collisions;
+}
+
+export function hasCollisionOnNode(node, shape) {
+  const [intersectionType, points] = shapeToPoints(shape, node.dpi);
+
+  return hasCollision([node], intersectionType, points);
 }

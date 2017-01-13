@@ -231,4 +231,43 @@ describe('Circle', () => {
       expect(circle.bounds()).to.deep.equal(e);
     });
   });
+
+  describe('containsPoint', () => {
+    it('should include transformation when resolving point', () => {
+      shape.cx = 10;
+      shape.cy = 20;
+      shape.r = 1;
+      shape.transform = 'translate(5, 10)';
+      circle = createCircle(shape);
+      circle.resolveLocalTransform();
+
+      expect(circle.containsPoint({ x: 15, y: 30 })).to.equal(true);
+    });
+  });
+
+  describe('intersectsLine', () => {
+    it('should include transformation when resolving line', () => {
+      shape.cx = 10;
+      shape.cy = 20;
+      shape.r = 1;
+      shape.transform = 'translate(5, 10)';
+      circle = createCircle(shape);
+      circle.resolveLocalTransform();
+
+      expect(circle.intersectsLine({ x1: 15, y1: 30, x2: 16, y2: 31 })).to.equal(true);
+    });
+  });
+
+  describe('intersectsRect', () => {
+    it('should include transformation when resolving rect', () => {
+      shape.cx = 10;
+      shape.cy = 20;
+      shape.r = 1;
+      shape.transform = 'translate(5, 10)';
+      circle = createCircle(shape);
+      circle.resolveLocalTransform();
+
+      expect(circle.intersectsLine({ x: 15, y: 30, width: 1, height: 1 })).to.equal(true);
+    });
+  });
 });

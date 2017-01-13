@@ -226,4 +226,46 @@ describe('Rect', () => {
       expect(rect.bounds()).to.deep.equal(e);
     });
   });
+
+  describe('containsPoint', () => {
+    it('should include transformation when resolving point', () => {
+      shape.x = 10;
+      shape.y = 20;
+      shape.width = 1;
+      shape.height = 1;
+      shape.transform = 'translate(5, 10)';
+      rect = createRect(shape);
+      rect.resolveLocalTransform();
+
+      expect(rect.containsPoint({ x: 15, y: 30 })).to.equal(true);
+    });
+  });
+
+  describe('intersectsLine', () => {
+    it('should include transformation when resolving line', () => {
+      shape.x = 10;
+      shape.y = 20;
+      shape.width = 1;
+      shape.height = 1;
+      shape.transform = 'translate(5, 10)';
+      rect = createRect(shape);
+      rect.resolveLocalTransform();
+
+      expect(rect.intersectsLine({ x1: 15, y1: 30, x2: 16, y2: 31 })).to.equal(true);
+    });
+  });
+
+  describe('intersectsRect', () => {
+    it('should include transformation when resolving rect', () => {
+      shape.x = 10;
+      shape.y = 20;
+      shape.width = 1;
+      shape.height = 1;
+      shape.transform = 'translate(5, 10)';
+      rect = createRect(shape);
+      rect.resolveLocalTransform();
+
+      expect(rect.intersectsLine({ x: 15, y: 30, width: 1, height: 1 })).to.equal(true);
+    });
+  });
 });

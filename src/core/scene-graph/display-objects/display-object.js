@@ -2,7 +2,7 @@ import Node from '../node';
 import { create as geometry } from '../../geometry';
 import Matrix from '../../math/matrix';
 import resolveTransform from './../transform-resolver';
-import resolveCollision, { resolveCollionsOnNodes } from '../collision-resolver';
+import { resolveCollionsOnNode, hasCollisionOnNode } from '../collision-resolver';
 
 class DisplayObject extends Node {
   constructor(type) {
@@ -75,7 +75,7 @@ class DisplayObject extends Node {
 
     if (!type) {
       this._collider = null;
-    } else if (type === 'children' || type === 'frontChild') {
+    } else if (type === 'frontChild') {
       this._collider = c;
     } else if (type === 'bounds') {
       const { x, y, width, height, minWidth, minHeight } = opts;
@@ -95,19 +95,19 @@ class DisplayObject extends Node {
   }
 
   getItemsFrom(shape) {
-    return resolveCollionsOnNodes(this, shape);
+    return resolveCollionsOnNode(this, shape);
   }
 
   containsPoint(p) {
-    return resolveCollision(this, 'containsPoint', p) !== null; // Optimize his so that it doesnt need to create the collision objects
+    return hasCollisionOnNode(this, p);
   }
 
-  intersectsLine(points) {
-    return resolveCollision(this, 'intersectsLine', points) !== null; // Optimize his so that it doesnt need to create the collision objects
+  intersectsLine(line) {
+    return hasCollisionOnNode(this, line);
   }
 
-  intersectsRect(points) {
-    return resolveCollision(this, 'intersectsRect', points) !== null; // Optimize his so that it doesnt need to create the collision objects
+  intersectsRect(rect) {
+    return hasCollisionOnNode(this, rect);
   }
 
   resolveLocalTransform(m = new Matrix()) {
