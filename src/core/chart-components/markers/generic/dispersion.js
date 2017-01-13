@@ -13,8 +13,6 @@ function resolveInitialStyle(settings, baseStyles, composer) {
 
 export default function dispersion(composer, defaultStyles = {}, initialSettings = {}) {
   let settings = initialSettings;
-  let data;
-  let dataset;
   let x;
   let y;
   let bandwidth;
@@ -29,8 +27,6 @@ export default function dispersion(composer, defaultStyles = {}, initialSettings
   fn.updateSettings = (stngs) => {
     // Setup settings and data
     settings = stngs.settings;
-    data = stngs.data;
-    dataset = composer.dataset();
 
     // Setup scales
     x = settings.x ? composer.scale(settings.x) : null;
@@ -47,15 +43,13 @@ export default function dispersion(composer, defaultStyles = {}, initialSettings
     doodle = doodler(settings);
   };
 
-  fn.onData = () => {
+  fn.onData = (data) => {
     items = [];
     resolvedStyle = resolveInitialStyle(settings, defaultStyles, composer);
 
-    const mappedData = dataset.map(data.mapTo, data.groupBy); // TODO - the mapped data should be sent in as the argument
-
     // Calculate the minimum data point distance
     if (x && x.scale && !x.scale.step) {
-      let pointCoords = mappedData.map(d => d.self.value);
+      let pointCoords = data.map(d => d.self.value);
 
       // Sort values
       pointCoords.sort();
@@ -72,7 +66,7 @@ export default function dispersion(composer, defaultStyles = {}, initialSettings
       minDataPointDistance = minSpace;
     }
 
-    mappedData.forEach((d, i) => {
+    data.forEach((d, i) => {
       let obj = {};
       Object.keys(resolvedStyle).forEach((part) => {
         obj[part] = resolveForDataObject(resolvedStyle[part], d, i);
@@ -85,7 +79,8 @@ export default function dispersion(composer, defaultStyles = {}, initialSettings
         max: y && 'max' in d ? y(d.max) : null,
         start: y && 'start' in d ? y(d.start) : null,
         end: y && 'end' in d ? y(d.end) : null,
-        med: y && 'med' in d ? y(d.med) : null
+        med: y && 'med' in d ? y(d.med) : null,
+        data: i
       });
     });
   };

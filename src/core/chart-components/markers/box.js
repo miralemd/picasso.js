@@ -101,7 +101,6 @@ const boxMarker = {
     this.rect = { x: 0, y: 0, width: 0, height: 0 };
     this.dispersion = dispersion(this.composer, DEFAULT_STYLE_SETTINGS, this.settings.settings);
     this.updateSettings(this.settings);
-    this.dispersion.onData(); // to be removed?
   },
   updateSettings(settings) {
     this.dispersion.updateSettings(settings);
@@ -123,7 +122,7 @@ const boxMarker = {
     this.rect = inner;
     return inner;
   },
-  render() {
+  render({ data }) {
     // Filter out points we cannot render
     /* const items = this.items.filter(item =>
       [item.min, item.max].indexOf(null) === -1 || [item.start, item.end].indexOf(null) === -1
@@ -131,6 +130,8 @@ const boxMarker = {
 
     // Calculate box width
     this.boxWidth = this.dispersion.bandwidth() * this.rect.width;
+
+    this.dispersion.onData(data);
 
     return this.dispersion.render(this.rect, this.renderDataPoint);
   },
@@ -140,7 +141,6 @@ const boxMarker = {
     } = opts;
 
     this.updateSettings(settings);
-    this.dispersion.onData(); // to be removed?
   },
   renderDataPoint(item) {
     if (notNumber(item.x)) {
