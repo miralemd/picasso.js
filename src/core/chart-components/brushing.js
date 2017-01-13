@@ -66,7 +66,7 @@ function getPointData(e) {
   return target.getAttribute('data');
 }
 
-export function brushDataPoint({
+function brushDataPoint({
   dataPoint,
   action,
   composer,
@@ -103,7 +103,7 @@ export function brushDataPoint({
   }
 }
 
-export function brushFromDomElement({
+function brushFromDomElement({
   e,
   action,
   composer,
@@ -121,7 +121,7 @@ export function brushFromDomElement({
   });
 }
 
-export function endBrush({
+function endBrush({
   composer,
   config
 }) {
@@ -131,4 +131,37 @@ export function endBrush({
   (config.contexts || []).forEach((c) => {
     composer.brush(c).end();
   });
+}
+
+export function observeBrushOnElement({
+  element,
+  config
+}) {
+  let brushActions = {};
+  config.config.trigger.forEach((t) => {
+    brushActions[t.action] = brushActions[t.action] || [];
+    brushActions[t.action].push(t);
+  });
+
+  if (brushActions.tap) {
+    element.addEventListener('click', (e) => {
+      brushActions.tap.forEach((t) => {
+        brushFromDomElement({ e, action: 'toggle', composer: config.composer, data: config.data, config: t });
+      });
+    });
+  }
+
+  if (brushActions.over) {
+    element.addEventListener('mousemove', (e) => {
+      brushActions.over.forEach((t) => {
+        brushFromDomElement({ e, action: 'hover', composer: config.composer, data: config.data, config: t });
+      });
+    });
+
+    element.addEventListener('mouseleave', () => {
+      brushActions.over.forEach((t) => {
+        endBrush({ composer: config.composer, config: t });
+      });
+    });
+  }
 }
