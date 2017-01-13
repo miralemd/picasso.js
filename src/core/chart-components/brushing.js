@@ -31,10 +31,12 @@ export function styler(obj, { context, data, style }) {
     const len = nodes.length;
 
     for (let i = 0; i < len; i++) {
-      Object.keys(nodes[i].__style).forEach((s) => {
-        nodes[i][s] = nodes[i].__style[s];
-      });
-      nodes[i].__style = undefined;
+      if (nodes[i].__style) {
+        Object.keys(nodes[i].__style).forEach((s) => {
+          nodes[i][s] = nodes[i].__style[s];
+        });
+        nodes[i].__style = undefined;
+      }
     }
     obj.renderer.render(nodes);
   });
