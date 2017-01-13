@@ -2,6 +2,7 @@ import dispersion from '../../../../../../src/core/chart-components/markers/gene
 
 describe('Dispersion', () => {
   let composerMock;
+  let data;
   let settings;
   let d;
 
@@ -18,24 +19,23 @@ describe('Dispersion', () => {
     };
 
     composerMock = {
-      scale: () => s,
-      dataset: () => datasetMock,
-      container: () => { }
+      scale: () => s
     };
 
     settings = {
       settings: {
         x: { scale: 'whatevz' },
         y: { scale: 'whatevz' }
-      },
-      data: { mapTo: {
-        start: 1,
-        end: 1,
-        min: -4,
-        max: 2,
-        med: 1
-      } }
+      }
     };
+
+    data = datasetMock.map({
+      start: 1,
+      end: 1,
+      min: -4,
+      max: 2,
+      med: 1
+    });
   });
 
   it('should instantiate properly', () => {
@@ -44,7 +44,7 @@ describe('Dispersion', () => {
   it('should fill items with data', () => {
     d = dispersion(composerMock);
     d.updateSettings(settings);
-    d.onData();
+    d.onData(data);
     d.items().forEach((item, i) => {
       expect(item.max).to.equal(i * 2);
       expect(item.min).to.equal(-i * 4);

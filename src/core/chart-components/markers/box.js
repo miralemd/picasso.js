@@ -101,7 +101,6 @@ const boxMarker = {
     this.rect = { x: 0, y: 0, width: 0, height: 0 };
     this.dispersion = dispersion(this.composer, DEFAULT_STYLE_SETTINGS, this.settings.settings);
     this.updateSettings(this.settings);
-    this.dispersion.onData(); // to be removed?
   },
   updateSettings(settings) {
     this.dispersion.updateSettings(settings);
@@ -123,7 +122,7 @@ const boxMarker = {
     this.rect = inner;
     return inner;
   },
-  render() {
+  render({ data }) {
     // Filter out points we cannot render
     /* const items = this.items.filter(item =>
       [item.min, item.max].indexOf(null) === -1 || [item.start, item.end].indexOf(null) === -1
@@ -132,7 +131,9 @@ const boxMarker = {
     // Calculate box width
     this.boxWidth = this.dispersion.bandwidth() * this.rect.width;
 
-    return this.dispersion.render(this.rect, this.renderDataPoint);
+    this.dispersion.onData(data);
+
+    return this.dispersion.render(this.rect, this.buildShapes);
   },
   beforeUpdate(opts) {
     const {
@@ -140,12 +141,14 @@ const boxMarker = {
     } = opts;
 
     this.updateSettings(settings);
-    this.dispersion.onData(); // to be removed?
   },
-  renderDataPoint(item) {
+  buildShapes(item) {
     if (notNumber(item.x)) {
-      return;
+      return [];
     }
+
+    const doodle = this.dispersion.doodle();
+    const shapes = [];
 
     item.style.box.width = Math.max(item.style.box.minWidth,
       Math.min(item.style.box.maxWidth,
@@ -159,37 +162,40 @@ const boxMarker = {
 
     if (item.style.line.show && !notNumber(item.min) && !notNumber(item.start)) {
       // Draw the line min - start
-      this.dispersion.doodle().verticalLine(item.x, item.start, item.min, 'line', item.style);
+      shapes.push(doodle.verticalLine(item.x, item.start, item.min, 'line', item.style, item.data));
     }
     if (item.style.line.show && !notNumber(item.max) && !notNumber(item.end)) {
       // Draw the line end - max (high)
-      this.dispersion.doodle().verticalLine(item.x, item.max, item.end, 'line', item.style);
+      shapes.push(doodle.verticalLine(item.x, item.max, item.end, 'line', item.style, item.data));
     }
     // Draw the box
     if (item.style.box.show && !notNumber(item.start) && !notNumber(item.end)) {
       const high = Math.max(item.start, item.end);
       const low = Math.min(item.start, item.end);
-      this.dispersion.doodle().box(
+      shapes.push(doodle.box(
         item.x,
         low,
         (high - low),
-        item.style
-      );
+        item.style,
+        item.data
+      ));
     }
 
     // Draw the median line
     if (item.style.median.show && !notNumber(item.med)) {
-      this.dispersion.doodle().median(item.x, item.med, item.style);
+      shapes.push(doodle.median(item.x, item.med, item.style, item.data));
     }
 
     // Draw the whiskers
     if (item.style.whisker.show && !notNumber(item.min) && !notNumber(item.max)) {
       // Low whisker
-      this.dispersion.doodle().whisker(item.x, item.min, item.style);
+      shapes.push(doodle.whisker(item.x, item.min, item.style, item.data));
 
       // High whisker
-      this.dispersion.doodle().whisker(item.x, item.max, item.style);
+      shapes.push(doodle.whisker(item.x, item.max, item.style, item.data));
     }
+
+    return shapes;
   }
 };
 
