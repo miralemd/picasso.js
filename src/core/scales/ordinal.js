@@ -35,13 +35,25 @@ function generateSettings(fields, settings) {
   return calcSettings;
 }
 
+ /**
+ * @function ordinal
+ * @param { Array } fields
+ * @param { Object } settings
+ * @return { function } Instance of ordinal scale
+ */
+
 export default function ordinal(fields, settings) {
   const d3Scale = scaleBand();
+
+  /**
+   * @param { Object } Object item with value
+   * @return { Number } Value position in scale 
+   */
   const fn = v => d3Scale('label' in v ? v.label : v.value);
 
  /**
  * @param { Object[] } [values] Set or Get domain values
- * @return { BandScale | Object[] } The instance this method was called on if a parameter is provided, otherwise the current domain is returned
+ * @return { function | Object[] } The instance this method was called on if a parameter is provided, otherwise the current domain is returned
  */
   fn.domain = function domain(v) {
     if (arguments.length) {
@@ -52,7 +64,7 @@ export default function ordinal(fields, settings) {
   };
   /**
    * @param { Number[] } [values] Set or Get range values
-   * @return { BandScale | Number[] } The instance this method was called on if a parameter is provided, otherwise the current range is returned
+   * @return { function | Number[] } The instance this method was called on if a parameter is provided, otherwise the current range is returned
    */
   fn.range = function range(v) {
     if (arguments.length) {
@@ -64,7 +76,7 @@ export default function ordinal(fields, settings) {
   /**
    * {@link https://github.com/d3/d3-scale#band_paddingOuter }
    * @param { Number } value A value within 0-1
-   * @return { BandScale } The instance this method was called on
+   * @return { function } The instance this method was called on
    */
   fn.paddingOuter = function paddingOuter(p = 0) {
     d3Scale.paddingOuter(p);
@@ -73,7 +85,7 @@ export default function ordinal(fields, settings) {
   /**
    * {@link https://github.com/d3/d3-scale#band_paddingInner }
    * @param { Number } value A value within 0-1
-   * @return { BandScale } The instance this method was called on
+   * @return { function } The instance this method was called on
    */
   fn.paddingInner = function paddingInner(p = 0) {
     d3Scale.paddingInner(p);
@@ -82,7 +94,7 @@ export default function ordinal(fields, settings) {
   /**
    * {@link https://github.com/d3/d3-scale#band_padding }
    * @param { Number } value A value within 0-1
-   * @return { BandScale } The instance this method was called on
+   * @return { function } The instance this method was called on
    */
   fn.padding = function padding(p = 0) {
     d3Scale.padding(p);
@@ -91,7 +103,7 @@ export default function ordinal(fields, settings) {
   /**
    * {@link https://github.com/d3/d3-scale#band_padding }
    * @param { Number } value A value within 0-1
-   * @return { BandScale } The instance this method was called on
+   * @return { function } The instance this method was called on
    */
   fn.align = function align(a) {
     d3Scale.align(a);

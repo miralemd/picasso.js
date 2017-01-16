@@ -56,10 +56,21 @@ function getMinMax(fields, settings) {
   };
 }
 
+ /**
+ * @function linear
+ * @param { Array } fields
+ * @param { Object } settings
+ * @return { function } Instance of linear scale
+ */
+
 export default function linear(fields, settings) {
   const d3Scale = scaleLinear();
   let tG;
 
+  /**
+   * @param { Object } Object item with value
+   * @return { Number } The scaled value
+   */
   const fn = (v) => {
     if (notNumber(v.value)) {
       return NaN;
@@ -70,7 +81,7 @@ export default function linear(fields, settings) {
   /**
    * {@link https://github.com/d3/d3-scale#continuous_invert }
    * @param { Number } value The inverted value
-   * @return { Number } The inverted value
+   * @return { Number } The inverted scaled value
    */
   fn.invert = function invert(value) {
     return d3Scale.invert(value);
@@ -79,7 +90,7 @@ export default function linear(fields, settings) {
   /**
    * {@link https://github.com/d3/d3-scale#continuous_rangeRound }
    * @param { Number[] } values Range values
-   * @return { LinearScale } The instance this method was called on
+   * @return { function } The instance this method was called on
    */
   fn.rangeRound = function rangeRound(values) {
     d3Scale.rangeRound(values);
@@ -89,7 +100,7 @@ export default function linear(fields, settings) {
   /**
    * {@link https://github.com/d3/d3-scale#continuous_clamp }
    * @param { Boolean } [ value=true ] TRUE if clamping should be enabled
-   * @return { LinearScale } The instance this method was called on
+   * @return { function } The instance this method was called on
    */
   fn.clamp = function clamp(value = true) {
     d3Scale.clamp(value);
@@ -111,7 +122,7 @@ export default function linear(fields, settings) {
   /**
    * {@link https://github.com/d3/d3-scale#continuous_nice }
    * @param { Number } count
-   * @return { LinearScale } The instance this method was called on
+   * @return { function } The instance this method was called on
    */
   fn.nice = function nice(count) {
     d3Scale.nice(count);
@@ -131,7 +142,7 @@ export default function linear(fields, settings) {
 
   /**
    * @param { Number[] } [values] Set or Get domain values
-   * @return { LinearScale | Number[] } The instance this method was called on if a parameter is provided, otherwise the current domain is returned
+   * @return { function | Number[] } The instance this method was called on if a parameter is provided, otherwise the current domain is returned
    */
   fn.domain = function domain(values) {
     if (arguments.length) {
@@ -144,7 +155,7 @@ export default function linear(fields, settings) {
 
   /**
    * @param { Number[] } [values] Set or Get range values
-   * @return { LinearScale | Number[] } The instance this method was called on if a parameter is provided, otherwise the current range is returned
+   * @return { function | Number[] } The instance this method was called on if a parameter is provided, otherwise the current range is returned
    */
   fn.range = function range(values) {
     if (arguments.length) {
@@ -199,7 +210,7 @@ export default function linear(fields, settings) {
   /**
    * Assign a tick generator. Will be used when calling ticks function
    * @param  { Function } generator Tick generator function
-   * @return { LinearScale } The instance this method was called on
+   * @return { function } The instance this method was called on
    */
   fn.tickGenerator = function tickGenerator(generator) {
     tG = generator;
@@ -209,9 +220,11 @@ export default function linear(fields, settings) {
   /**
    * Divides the domain and range into uniform segments, based on start and end value
    * @param  { Number } segments The number of segments
-   * @return { LinearScale } The instance this method was called on
+   * @return { function } The instance this method was called on
    * @example
-   * let s = new LinearScale( [0, 10], [0, 1] );
+   * let s = linear();
+   * s.domain([0, 10]);
+   * s.range([0, 1]);
    * s.classify( 2 );
    * s.domain(); // [10, 5, 5, 0]
    * s.range(); // [0.75, 0.75, 0.25, 0.25]
