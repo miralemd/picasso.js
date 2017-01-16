@@ -67,7 +67,7 @@ const axisComponent = {
     const align = getAlign(dock, axisSettings.align, this.scale.type);
 
     if (this.scale.type === 'ordinal') {
-      this.domain = this.scale.scale.domain();
+      this.domain = this.scale.domain();
     }
 
     this.concreteNodeBuilder = nodeBuilder(this.scale.type);
@@ -95,7 +95,7 @@ const axisComponent = {
       data: this.domain,
       formatter,
       measureText: this.renderer.measureText,
-      scale: this.scale.scale,
+      scale: this.scale,
       settings: axisSettings,
       ticksFn,
       setEdgeBleed: (val) => {
@@ -137,7 +137,7 @@ const axisComponent = {
     const ticks = ticksFn({
       settings: axisSettings,
       innerRect,
-      scale: this.scale.scale,
+      scale: this.scale,
       data: this.domain,
       formatter
     });
@@ -145,7 +145,7 @@ const axisComponent = {
     const nodes = [];
     nodes.push(...this.concreteNodeBuilder.build({
       settings: axisSettings,
-      scale: this.scale.scale,
+      scale: this.scale,
       innerRect,
       outerRect,
       measureText: this.renderer.measureText,

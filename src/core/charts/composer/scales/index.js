@@ -1,7 +1,7 @@
 import { registry } from '../../../utils/registry';
-import linear from './linear';
-import ordinal from './ordinal';
-import color from './color';
+import linear from '../../../scales/linear';
+import ordinal from '../../../scales/ordinal';
+import color from '../../../scales/color';
 
 const reg = registry();
 

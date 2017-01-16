@@ -1,5 +1,6 @@
+import extend from 'extend';
 import { interpolateViridis } from 'd3-scale';
-import { linear } from '../../../scales/linear';
+import linear from './linear';
 
 function getMinMax(fields) {
   return {
@@ -9,15 +10,16 @@ function getMinMax(fields) {
 }
 
 export default function color(fields, settings) {
-  const s = linear();
+  const s = linear(fields, settings);
   let { min, max } = getMinMax(fields);
-  s.domain([min, max]);
-  s.range(settings.invert ? [1, 0] : [0, 1]);
   const fn = function fn(v) {
-    return interpolateViridis(s.get(v.value));
+    return interpolateViridis(fn.get(v.value));
   };
+  extend(true, fn, s);
 
-  fn.scale = s;
+  fn.range(settings.invert ? [1, 0] : [0, 1]);
+  fn.domain([min, max]);
+  // fn.scale = s;
 
   return fn;
 }

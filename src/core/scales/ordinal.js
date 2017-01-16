@@ -1,96 +1,151 @@
-import { scaleOrdinal } from 'd3-scale';
-import Events from '../utils/event-emitter';
+import { scaleBand } from 'd3-scale';
 
-class OrdinalScale {
-  /**
-   * Class representing a OrdinalScale
-   * @private
-   * @param { Object[] } [ domain=[] ] The domain values
-   * @param { Object[] } [ range=[] ] The range values
-   */
-  constructor(domain = [], range = []) {
-    this._scale = scaleOrdinal();
-    this.domain(domain);
-    this.range(range);
-  }
+const AVAILABLE_SETTINGS = [
+  'padding',
+  'paddingOuter',
+  'paddingInner',
+  'align',
+  'invert'
+];
 
-  /**
-   * @param { Object[] } [values] Set or Get domain values
-   * @return { OrdinalScale | Object[] } The instance this method was called on if a parameter is provided, otherwise the current domain is returned
-   */
-  domain(values) {
-    if (arguments.length) {
-      this._scale.domain(values);
-      this.emit('changed');
-      return this;
+function unique(values) {
+  const exists = {};
+  return values.filter((v) => {
+    if (exists[v.id]) {
+      return false;
     }
-    return this._scale.domain();
+    return (exists[v.id] = true);
+  });
+}
+
+function evalSetting(fields, settings, name) {
+  if (typeof settings[name] === 'function') {
+    return settings[name](fields);
   }
 
-  /**
-   * @param { Object[] } [values] Set or Get range values
-   * @return { OrdinalScale | Object[] } The instance this method was called on if a parameter is provided, otherwise the current range is returned
-   */
-  range(values) {
+  return settings[name];
+}
+
+
+function generateSettings(fields, settings) {
+  const calcSettings = {};
+  AVAILABLE_SETTINGS.forEach((s) => {
+    calcSettings[s] = evalSetting(fields, settings, s);
+  });
+  return calcSettings;
+}
+
+export default function ordinal(fields, settings) {
+  const d3Scale = scaleBand();
+  const fn = v => d3Scale('label' in v ? v.label : v.value);
+
+ /**
+ * @param { Object[] } [values] Set or Get domain values
+ * @return { BandScale | Object[] } The instance this method was called on if a parameter is provided, otherwise the current domain is returned
+ */
+  fn.domain = function domain(v) {
     if (arguments.length) {
-      this._scale.range(values);
-      this.emit('changed');
-      return this;
+      d3Scale.domain(v);
+      return fn;
     }
-    return this._scale.range();
-  }
-
+    return d3Scale.domain();
+  };
   /**
-   * {@link https://github.com/d3/d3-scale#ordinal_unknown }
-   * @param { Number } value
-   * @return { Number }
+   * @param { Number[] } [values] Set or Get range values
+   * @return { BandScale | Number[] } The instance this method was called on if a parameter is provided, otherwise the current range is returned
    */
-  unknown(value) {
+  fn.range = function range(v) {
     if (arguments.length) {
-      this._scale.unknown(value);
-      this.emit('changed');
-      return this;
+      d3Scale.range(v);
+      return fn;
     }
-    return this._scale.unknown();
-  }
-
+    return d3Scale.range();
+  };
+  /**
+   * {@link https://github.com/d3/d3-scale#band_paddingOuter }
+   * @param { Number } value A value within 0-1
+   * @return { BandScale } The instance this method was called on
+   */
+  fn.paddingOuter = function paddingOuter(p = 0) {
+    d3Scale.paddingOuter(p);
+    return fn;
+  };
+  /**
+   * {@link https://github.com/d3/d3-scale#band_paddingInner }
+   * @param { Number } value A value within 0-1
+   * @return { BandScale } The instance this method was called on
+   */
+  fn.paddingInner = function paddingInner(p = 0) {
+    d3Scale.paddingInner(p);
+    return fn;
+  };
+  /**
+   * {@link https://github.com/d3/d3-scale#band_padding }
+   * @param { Number } value A value within 0-1
+   * @return { BandScale } The instance this method was called on
+   */
+  fn.padding = function padding(p = 0) {
+    d3Scale.padding(p);
+    return fn;
+  };
+  /**
+   * {@link https://github.com/d3/d3-scale#band_padding }
+   * @param { Number } value A value within 0-1
+   * @return { BandScale } The instance this method was called on
+   */
+  fn.align = function align(a) {
+    d3Scale.align(a);
+    return fn;
+  };
+  /**
+   * {@link https://github.com/d3/d3-scale#band_align }
+   * @return { Number } Bandwith of each band
+   */
+  fn.bandWidth = function bandWidth() {
+    return d3Scale.bandwidth();
+  };
+  /**
+   * {@link https://github.com/d3/d3-scale#band_step }
+   * @return { Number } Step distance
+   */
+  fn.step = function step() {
+    return d3Scale.step();
+  };
   /**
    * {@link https://github.com/d3/d3-scale#_ordinal }
    * @param { Number } value
    * @return { Number }
    */
-  get(value) {
-    return this._scale(value);
-  }
-
+  fn.get = function get(value) {
+    return d3Scale(value);
+  };
   /**
    * Get the first value of the domain
    * @return { Number }
    */
-  get start() {
-    return this.domain()[0];
-  }
-
+  fn.start = function start() {
+    return fn.domain()[0];
+  };
   /**
    * Get the last value of the domain
    * @return { Number }
    */
-  get end() {
-    return this.domain()[this.domain().length - 1];
+  fn.end = function end() {
+    return fn.domain()[fn.domain().length - 1];
+  };
+
+  if (fields) {
+    const values = fields[0].values();
+    const stgns = generateSettings(fields, settings);
+    const uniq = unique(values).map(v => v.label);
+
+    fn.domain(uniq);
+    fn.range(stgns.invert ? [1, 0] : [0, 1]);
+
+    fn.padding(isNaN(stgns.padding) ? 1 : stgns.padding);
+    if (!isNaN(stgns.paddingInner)) fn.paddingInner(stgns.paddingInner);
+    if (!isNaN(stgns.paddingOuter)) fn.paddingOuter(stgns.paddingOuter);
+    fn.align(isNaN(stgns.align) ? 0.5 : stgns.align);
   }
+  return fn;
 }
-
-Events.mixin(OrdinalScale.prototype);
-
-/**
- * OrdinalScale instantiator
- * @private
- * @param { Object[] } [ domain=[] ] The domain values
- * @param { Object[] } [ range=[] ] The range values
- * @return { OrdinalScale } OrdinalScale instance
- */
-export function ordinal(...a) {
-  return new OrdinalScale(...a);
-}
-
-export default OrdinalScale;

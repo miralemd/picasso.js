@@ -1,6 +1,7 @@
+// import { scaleLinear as linear, scaleBand as band } from 'd3-scale';
 import axisComponent from '../../../../../src/core/chart-components/axis/axis';
-import { linear } from '../../../../../src/core/scales/linear';
-import { band } from '../../../../../src/core/scales/band';
+import linear from '../../../../../src/core/scales/linear';
+import ordinal from '../../../../../src/core/scales/ordinal';
 import { formatter } from '../../../../../src/core/formatter';
 
 describe('Axis', () => {
@@ -8,6 +9,7 @@ describe('Axis', () => {
   let config;
   let renderSpy;
   let axis;
+  let scale = {};
 
   function verifyNumberOfNodes(tNodes, lNodes) {
     const nodes = renderSpy.args[0][0];
@@ -18,7 +20,6 @@ describe('Axis', () => {
   }
 
   beforeEach(() => {
-    const s = {};
     const f = formatter('d3')('number')(' ');
     renderSpy = sinon.spy();
     composerMock = {
@@ -34,7 +35,7 @@ describe('Axis', () => {
       brush: () => ({
         on: () => {}
       }),
-      scale: () => s,
+      scale: () => scale,
       dataset: () => {},
       container: () => {},
       formatter: () => f
@@ -49,9 +50,9 @@ describe('Axis', () => {
 
   describe('continuous', () => {
     beforeEach(() => {
-      composerMock.scale().scale = linear();
-      composerMock.scale().type = 'linear';
-      composerMock.scale().sources = ['fieldSource'];
+      scale = linear();
+      /* composerMock.scale.type = 'linear';
+      composerMock.scale.sources = ['fieldSource'];*/
     });
 
     /*
@@ -126,9 +127,11 @@ describe('Axis', () => {
     beforeEach(() => {
       data = ['d1', 'd2', 'd3'];
       composerMock.data = data;
-      composerMock.scale().scale = band([0, 1, 2], [0, 1]);
+      scale = ordinal();
+      scale.domain([0, 1, 2]);
+      scale.range([0, 1]);
       composerMock.scale().type = 'ordinal';
-      composerMock.scale().sources = ['source'];
+      /* composerMock.scale().sources = ['source'];*/
       axis = axisComponent(config, composerMock);
     });
 

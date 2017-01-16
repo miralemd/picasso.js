@@ -1,7 +1,7 @@
 import { generateContinuousTicks, generateDiscreteTicks } from '../../../../../src/core/chart-components/axis/axis-tick-generators';
 import { continuousDefaultSettings } from '../../../../../src/core/chart-components/axis/axis-default-settings';
-import { linear } from '../../../../../src/core/scales/linear';
-import { band } from '../../../../../src/core/scales/band';
+import linear from '../../../../../src/core/scales/linear';
+import band from '../../../../../src/core/scales/ordinal';
 import { formatter } from '../../../../../src/core/formatter';
 
 describe('Tick generators', () => {
@@ -108,7 +108,10 @@ describe('Tick generators', () => {
     });
 
     it('should generate ticks by data', () => {
-      scale = band(data, [0, 1]);
+      scale = band();
+      scale.domain(data);
+      scale.range([0, 1]);
+
       const ticks = generateDiscreteTicks({ data, scale });
       const expected = [
         { position: 0, label: 'd1' },
@@ -119,7 +122,10 @@ describe('Tick generators', () => {
     });
 
     it('should generate ticks by index', () => {
-      scale = band([0, 1, 2], [0, 1]);
+      scale = band();
+      scale.domain([0, 1, 2]);
+      scale.range([0, 1]);
+
       const ticks = generateDiscreteTicks({ data, scale });
       const expected = [
         { position: 0, label: 'd1' },

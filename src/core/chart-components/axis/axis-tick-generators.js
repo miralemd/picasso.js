@@ -1,7 +1,7 @@
 import { looseDistanceBasedGenerator, tightDistanceBasedGenerator } from '../../scales/linear';
 
 function ticksByCount({ count, minorCount, scale, formatter }) {
-  return scale._scale
+  return scale
   .ticks(((count - 1) * minorCount) + count)
   .map((tick, i) => ({
     position: scale.get(tick),

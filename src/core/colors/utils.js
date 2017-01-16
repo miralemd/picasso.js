@@ -16,8 +16,7 @@ const utils = {
      */
   linearGradient: (direction, colors, percentage) => {
     let cssColors;
-
-    if (typeof colors === 'object' && colors.constructor.name === 'LinearScale') {
+    if (typeof colors === 'function' && colors.domain) {
       const inputDomain = colors.domain();
 
       cssColors = inputDomain.map(d =>
