@@ -2,11 +2,14 @@
 
 ## [Unreleased]
 
-### Changed
+## 0.4.0
+
+### Breaking changes
 
 - `picasso.chart` now takes an object as its single parameter
-   ```js
-   // before
+
+    ```js
+    // before
     var settings = {
       components: {
         markers: [
@@ -28,14 +31,16 @@
         dock: 'left',
         settings: {
           anotherSetting: 'x'
-        }
-      ]
+      }
+    ]
     };
     var chartInstance = picasso.chart({
       element: element,
       data: data,
       settings: settings
-  ```
+    }};
+    ```
+
 - `components` is now a flat array
 - `dock` property has been moved out one level (the same applies for `displayOrder` and `prioOrder`)
 
@@ -43,64 +48,72 @@
 
 - DOM renderer
 - `update` method on the chart instance can be used to update settings and/or data
-  ```js
-  var pic = picasso.chart({...});
-  pic.update({
-    data: {...} 
-  });
-  ```
+
+   ```js
+   var pic = picasso.chart({...});
+   pic.update({
+     data: {...} 
+   });
+   ```
+
 - Event listeners can be bound on component and chart level
-  ```js
-  {
-    type: 'point-marker',
-    on: {
-      click: function() {
-        console.log('clicked');
+
+    ```js
+    {
+      type: 'point-marker',
+      on: {
+        click: function() {
+          console.log('clicked');
+        }
       }
     }
-  }
-  ```
-- Lifecycle hooks on components:
-  ```js
-  {
-    type: 'point-marker',
-    created: () => {},
-    mounted: () => {},
-    beforeRender: () => {},
-    beforeUpdate: () => {},
-    updated: () => {},
-    beforeDestroy: () => {},
-    destroyed: () => {}
-  }
-  ```
-- Brushing supported by components:
-  ```js
-  {
-    type: 'point-marker',
-    data: {...},
-    settings: {...},
-    brush: {
-      trigger: [{
-        action: 'tap',
-        contexts: ['highlight']
-      }],
-      consume: [{
-        context: 'highlight',
-        style: {
-          inactive: {
-            opacity: 0.3
-          }
-        }
-      }]
-    }
-  }
+    ```
 
-  ```
+- Lifecycle hooks on components:
+
+    ```js
+    {
+      type: 'point-marker',
+      created: () => {},
+      mounted: () => {},
+      beforeRender: () => {},
+      beforeUpdate: () => {},
+      updated: () => {},
+      beforeDestroy: () => {},
+      destroyed: () => {}
+    }
+    ```
+
+- Brushing supported by components:
+
+    ```js
+    {
+      type: 'point-marker',
+      data: {...},
+      settings: {...},
+      brush: {
+        trigger: [{
+          action: 'tap',
+          contexts: ['highlight']
+        }],
+        consume: [{
+          context: 'highlight',
+          style: {
+            inactive: {
+              opacity: 0.3
+            }
+          }
+        }]
+      }
+    }
+    ```
+
 - Data brushing API
-  ```js
-    var pic = picasso.chart(...);
-    pic.brush('highlight').addValue('products', 'Bike');
-  ```
+
+    ```js
+      var pic = picasso.chart(...);
+      pic.brush('highlight').addValue('products', 'Bike');
+    ```
 
 ## 0.3.0
 
