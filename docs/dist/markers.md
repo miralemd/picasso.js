@@ -17,13 +17,13 @@
 
 #### <a name='marker-point' href='#marker-point'>#</a> marker-point
 
-|Name(s)|Type(s)|Description|Optional|
-|-------|-------|-----------|--------|
-| type | string | &quot;point&quot; | No |
-| data | marker-point-data | Point data mapping. | No |
-| settings | marker-point-settings | Marker settings | No |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| type | string | &quot;point&quot; | No | No |
+| data | marker-point-data | Point data mapping. | No | No |
+| settings | marker-point-settings | Marker settings | No | No |
 
-
+No description  
 #### Examples
 
 ```js
@@ -49,43 +49,43 @@
 ```
 #### <a name='marker-point-settings' href='#marker-point-settings'>#</a> marker-point-settings
 
-|Name(s)|Type(s)|Description|Optional|
-|-------|-------|-----------|--------|
-| x | marker-point-number | x coordinate | Yes |
-| y | marker-point-number | y coordinate | Yes |
-| fill | marker-point-string | fill color | Yes |
-| stroke | marker-point-string | stroke color | Yes |
-| strokeWidth | marker-point-number | stroke width | Yes |
-| size | marker-point-number | size of shape | Yes |
-| opacity | marker-point-number | opacity of shape | Yes |
-| shape | marker-point-string | type of shape | Yes |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| x | marker-point-number | x coordinate | Yes | 0.5 |
+| y | marker-point-number | y coordinate | Yes | 0.5 |
+| fill | marker-point-string | fill color | Yes | &quot;#999&quot; |
+| stroke | marker-point-string | stroke color | Yes | &quot;#ccc&quot; |
+| strokeWidth | marker-point-number | stroke width | Yes | No |
+| size | marker-point-number | size of shape | Yes | 1 |
+| opacity | marker-point-number | opacity of shape | Yes | 1 |
+| shape | marker-point-string | type of shape | Yes | &quot;circle&quot; |
 
-
+No description  
 #### <a name='marker-point-string' href='#marker-point-string'>#</a> marker-point-string
 
 Can be one of the following types: string, marker-point-data-accessor, marker-point-setting
 
-
+No description  
 #### <a name='marker-point-number' href='#marker-point-number'>#</a> marker-point-number
 
 Can be one of the following types: number, marker-point-data-accessor, marker-point-setting
 
-
+No description  
 #### <a name='marker-point-data-accessor' href='#marker-point-data-accessor'>#</a> marker-point-data-accessor
 
 Can be one of the following types: function
 
-
+No description  
 #### <a name='marker-point-data' href='#marker-point-data'>#</a> marker-point-data
 
-|Name(s)|Type(s)|Description|Optional|
-|-------|-------|-----------|--------|
-| mapTo | object | Object containing the definition of how to map data | No |
-| mapTo.source | string | Data field | No |
-| groupBy | object | The data source to group data | No |
-| groupBy.source | string | Reference to a data source | No |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| mapTo | object | Object containing the definition of how to map data | No | No |
+| mapTo.source | string | Data field | No | No |
+| groupBy | object | The data source to group data | No | No |
+| groupBy.source | string | Reference to a data source | No | No |
 
-The specified definition will provide the point marker with data.
+The specified definition will provide the point marker with data.  
 #### Examples
 
 ```js
@@ -112,17 +112,17 @@ The specified definition will provide the point marker with data.
 ```
 #### <a name='marker-point-setting' href='#marker-point-setting'>#</a> marker-point-setting
 
-|Name(s)|Type(s)|Description|Optional|
-|-------|-------|-----------|--------|
-| ref | string | A reference to a property in the mapped data. | No |
-| scale | objectstring | Object containing the definition of a scale. If a string is provided it is assumed to be a reference to an already existing scale. | No |
-| scale.source | string | Data source | No |
-| scale.type | string | Scale type | No |
-| fn | marker-point-data-accessor | Data accessor. Custom data accessor which will be called for each datum. The return value is used for the specified property. | Yes |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| ref | string | A reference to a property in the mapped data. | No | No |
+| scale | objectstring | Object containing the definition of a scale. If a string is provided it is assumed to be a reference to an already existing scale. | No | No |
+| scale.source | string | Data source | No | No |
+| scale.type | string | Scale type | No | No |
+| fn | marker-point-data-accessor | Data accessor. Custom data accessor which will be called for each datum. The return value is used for the specified property. | Yes | No |
 
 The data to use for encoding a property of the point.
 
-The specified source will provide the point marker with data.
+The specified source will provide the point marker with data.  
 #### Examples
 
 ```js
@@ -163,13 +163,13 @@ The specified source will provide the point marker with data.
 
 #### <a name='marker-box' href='#marker-box'>#</a> marker-box
 
-|Name(s)|Type(s)|Description|Optional|
-|-------|-------|-----------|--------|
-| type | string | &quot;box&quot; | No |
-| data | data-ref | Box data | No |
-| settings | marker-box-settings | Box marker settings | No |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| type | string | &quot;box&quot; | No | No |
+| data | data-ref | Box data | No | No |
+| settings | marker-box-settings | Box marker settings | No | No |
 
-
+No description  
 #### Examples
 
 ```js
@@ -203,17 +203,17 @@ The specified source will provide the point marker with data.
 ```
 #### <a name='marker-box-settings' href='#marker-box-settings'>#</a> marker-box-settings
 
-|Name(s)|Type(s)|Description|Optional|
-|-------|-------|-----------|--------|
-| min | marker-box-data | min | No |
-| max | marker-box-data | max | No |
-| start | marker-box-data | start | No |
-| end | marker-box-data | end | No |
-| med | marker-box-data | med | No |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| min | marker-box-data | min | No | No |
+| max | marker-box-data | max | No | No |
+| start | marker-box-data | start | No | No |
+| end | marker-box-data | end | No | No |
+| med | marker-box-data | med | No | No |
 
-
+No description  
 #### <a name='marker-box-data' href='#marker-box-data'>#</a> marker-box-data
 
 Can be one of the following types: 
 
-
+No description  

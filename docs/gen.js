@@ -11,7 +11,11 @@ let glob = require('glob'); // eslint-disable-line import/no-unresolved
 
 let resolve = require('./json-path-resolver').resolve;
 
-console.log('Generating docs...'); // eslint-disable-line no-console
+function log(msg) {
+  console.log(msg);// eslint-disable-line no-console
+}
+
+log('Generating docs...');
 
 const JSDOC_INPUT = 'src/docs.json';
 const MD_TEMPLATES_FOLDER = 'src/templates/';
@@ -142,6 +146,8 @@ function compileMarkdownFiles(jsdocdata) {
       jsdocdata.registry = [];
       jsdocdata.title = title;
 
+      log(`Processing file ${relativePath}`);
+
       let output = template(jsdocdata);
 
       output = doPostProcess(output, jsdocdata);
@@ -185,6 +191,14 @@ handlebars.registerHelper('anchor', (name) => {
   return new handlebars.SafeString(
     `<a name='${name}' href='#${name}'>#</a>`
   );
+});
+
+handlebars.registerHelper('no', v => v || 'No');
+handlebars.registerHelper('nocust', (v, fb) => v || (fb || 'No'));
+
+handlebars.registerHelper('helperMissing', (context) => {
+  log(`Template defines {{ ${context.name} }}, but not provided in context`);
+  return '';
 });
 
 rimraf.sync(`${MD_OUTPUT_FOLDER}*`);

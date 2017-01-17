@@ -73,7 +73,7 @@ export default function dataset({
    *  me: { field: '/qHyperCube/qDimensionInfo/1', reducer: 'first', type: 'qual' },
    *  parent: { field: '/qHyperCube/qDimensionInfo/0', reducer: 'first', type: 'qual' }
    * }, {
-   *  field: '/qHyperCube/qDimensionInfo/1
+   *  field: '/qHyperCube/qDimensionInfo/1'
    * });
    * // output:
    * // [
