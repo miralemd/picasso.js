@@ -18,12 +18,23 @@ function findField(path, tables) {
   };
 }
 
+/**
+ * Create a new dataset with default settings
+ * @alias dataset
+ * @memberof picasso.data
+ * @ignore
+ * @return {dataset}
+ */
 export default function dataset({
   tables = tablesFn
 } = {}) {
   let cache = {},
     data = [];
 
+  /**
+   * @alias dataset
+   * @param {object} d The data
+   */
   function ds(d) {
     data = d;
     cache = {};
