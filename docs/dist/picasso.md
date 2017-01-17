@@ -5,6 +5,7 @@
 * <a href="#Chart.Props">Chart.Props</a>
 * <a href="#Chart.SettingsProps">Chart.SettingsProps</a>
 * <a href="#Chart.ScaleProps">Chart.ScaleProps</a>
+* <a href="#component-settings">component-settings</a>
 * <a href="#dock-layout-settings">dock-layout-settings</a>
 * <a href="#createInstance">createInstance</a>
 * <a href="#createInstance~instance.update">createInstance~instance.update</a>
@@ -23,16 +24,16 @@
 | updated | function | Lifecycle function called when the chart instance has been updated. | No | No |
 | on | Object | Event listeners | No | No |
 
+No description  
 #### <a name='Chart.SettingsProps' href='#Chart.SettingsProps'>#</a> SettingsProps
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
 | scales | Chart.ScaleProps | No | No | No |
-| components | object | No | No | No |
-| components.markers | Array.&lt;marker&gt; | No | No | No |
-| components.axes | Array.&lt;axis&gt; | No | No | No |
+| components | Array.&lt;component-settings&gt; | No | No | No |
 | dockLayout | dock-layout-settings | No | Yes | No |
 
+No description  
 #### <a name='Chart.ScaleProps' href='#Chart.ScaleProps'>#</a> ScaleProps
 
 |Name(s)|Type(s)|Description|Optional|Default value|
@@ -41,19 +42,47 @@
 | type | string | The type of scale to create | Yes | No |
 | invert | boolean | Whether to invert the scale&#x27;s output | No | No |
 
+No description  
+#### <a name='component-settings' href='#component-settings'>#</a> component-settings
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| type | string | Component type (ex: axis, point-marker, ...) | No | No |
+| preferredSize | function | Function returing preferred size | Yes | No |
+| created | function | No | Yes | No |
+| beforeMount | function | No | Yes | No |
+| mounted | function | No | Yes | No |
+| beforeUpdate | function | No | Yes | No |
+| updated | function | No | Yes | No |
+| beforeRender | function | No | Yes | No |
+| beforeDestroy | function | No | Yes | No |
+| destroyed | function | No | Yes | No |
+| brush | brush-setting | see [brushing](./brushing.md) | Yes | No |
+| displayOrder | number | No | Yes | No |
+| prioOrder | number | No | Yes | No |
+| minimumLayoutMode | stringObject | Refer to layout sizes defined by layoutModes in dockLayout | Yes | No |
+| dock | string | left, right, top or bottom | Yes | No |
+| scale | string | Named scale. Will be provided to the component if it ask for it. | Yes | No |
+| formatter | string | Named formatter. Fallback to create formatter from scale. Will be provided to the component if it ask for it. | Yes | No |
+
+Will also include component specific settings depending on type
+             ex: [marker-point-settings](./markers.md#marker-point-settings),
+                 [marker-box-settings](./markers.md#marker-box-settings),
+                 [axis-settings](./axis.md#axis-settings),  
 #### <a name='dock-layout-settings' href='#dock-layout-settings'>#</a> dock-layout-settings
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| size | boolean | Phyiscal size. Default to size of the container | Yes | No |
-| size.width | boolean | No | Yes | No |
-| size.height | boolean | No | Yes | No |
-| logicalSize | boolean | Logical size represent the size given to the dock layout to work with. | Yes | No |
-| logicalSize.width | boolean | No | Yes | No |
-| logicalSize.height | boolean | No | Yes | No |
+| size | object | Phyiscal size. Default to size of the container | Yes | No |
+| size.width | number | No | Yes | No |
+| size.height | number | No | Yes | No |
+| logicalSize | object | Logical size represent the size given to the dock layout to work with. | Yes | No |
+| logicalSize.width | number | No | Yes | No |
+| logicalSize.height | number | No | Yes | No |
 | logicalSize.preserveAspectRatio | boolean | No | Yes | No |
 | layoutModes | Object.&lt;string, {width: number, height: number}&gt; | Dictionary with named sizes | Yes | {} |
 
+No description  
 #### <a name='createInstance' href='#createInstance'>#</a> **createInstance**()
 
 |Name(s)|Type(s)|Description|Optional|Default value|

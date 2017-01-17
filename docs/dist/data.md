@@ -99,6 +99,7 @@ ds.map({
 | field | string | Path to a field | No | No |
 | reducer | string | Option to specify how to reduce values | Yes | &#x27;sum&#x27; |
 
+No description  
 #### <a name='data-repeater' href='#data-repeater'>#</a> data-repeater
 
 |Name(s)|Type(s)|Description|Optional|Default value|
@@ -106,6 +107,7 @@ ds.map({
 | field | string | Path to a field | No | No |
 | attribute | string | Attribute to use as identifier when collecting data | Yes | No |
 
+No description  
 
 ## Table
 
