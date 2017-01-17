@@ -5,6 +5,7 @@
 * <a href="#Chart.Props">Chart.Props</a>
 * <a href="#Chart.SettingsProps">Chart.SettingsProps</a>
 * <a href="#Chart.ScaleProps">Chart.ScaleProps</a>
+* <a href="#component-settings">component-settings</a>
 * <a href="#dock-layout-settings">dock-layout-settings</a>
 * <a href="#createInstance">createInstance</a>
 * <a href="#createInstance~instance.update">createInstance~instance.update</a>
@@ -23,15 +24,15 @@
 | updated | function | Lifecycle function called when the chart instance has been updated. | No |
 | on | Object | Event listeners | No |
 
+
 #### <a name='Chart.SettingsProps' href='#Chart.SettingsProps'>#</a> SettingsProps
 
 |Name(s)|Type(s)|Description|Optional|
 |-------|-------|-----------|--------|
 | scales | Chart.ScaleProps |  | No |
-| components | object |  | No |
-| components.markers | Array.&lt;marker&gt; |  | No |
-| components.axes | Array.&lt;axis&gt; |  | No |
+| components | Array.&lt;component-settings&gt; |  | No |
 | dockLayout | dock-layout-settings |  | Yes |
+
 
 #### <a name='Chart.ScaleProps' href='#Chart.ScaleProps'>#</a> ScaleProps
 
@@ -41,18 +42,46 @@
 | type | string | The type of scale to create | Yes |
 | invert | boolean | Whether to invert the scale&#x27;s output | No |
 
+
+#### <a name='component-settings' href='#component-settings'>#</a> component-settings
+
+|Name(s)|Type(s)|Description|Optional|
+|-------|-------|-----------|--------|
+| type | string | Component type (ex: axis, point-marker, ...) | No |
+| preferredSize | function | Function returing preferred size | Yes |
+| created | function |  | Yes |
+| beforeMount | function |  | Yes |
+| mounted | function |  | Yes |
+| beforeUpdate | function |  | Yes |
+| updated | function |  | Yes |
+| beforeRender | function |  | Yes |
+| beforeDestroy | function |  | Yes |
+| destroyed | function |  | Yes |
+| brush | brush-setting | see [brushing](./brushing.md) | Yes |
+| displayOrder | number |  | Yes |
+| prioOrder | number |  | Yes |
+| minimumLayoutMode | stringObject | Refer to layout sizes defined by layoutModes in dockLayout | Yes |
+| dock | string | left, right, top or bottom | Yes |
+| scale | string | Named scale. Will be provided to the component if it ask for it. | Yes |
+| formatter | string | Named formatter. Fallback to create formatter from scale. Will be provided to the component if it ask for it. | Yes |
+
+Will also include component specific settings depending on type
+             ex: [marker-point-settings](./markers.md#marker-point-settings),
+                 [marker-box-settings](./markers.md#marker-box-settings),
+                 [axis-settings](./axis.md#axis-settings),
 #### <a name='dock-layout-settings' href='#dock-layout-settings'>#</a> dock-layout-settings
 
 |Name(s)|Type(s)|Description|Optional|
 |-------|-------|-----------|--------|
-| size | boolean | Phyiscal size. Default to size of the container | Yes |
-| size.width | boolean |  | Yes |
-| size.height | boolean |  | Yes |
-| logicalSize | boolean | Logical size represent the size given to the dock layout to work with. | Yes |
-| logicalSize.width | boolean |  | Yes |
-| logicalSize.height | boolean |  | Yes |
+| size | object | Phyiscal size. Default to size of the container | Yes |
+| size.width | number |  | Yes |
+| size.height | number |  | Yes |
+| logicalSize | object | Logical size represent the size given to the dock layout to work with. | Yes |
+| logicalSize.width | number |  | Yes |
+| logicalSize.height | number |  | Yes |
 | logicalSize.preserveAspectRatio | boolean |  | Yes |
 | layoutModes | Object.&lt;string, {width: number, height: number}&gt; | Dictionary with named sizes | Yes |
+
 
 #### <a name='createInstance' href='#createInstance'>#</a> **createInstance**()
 

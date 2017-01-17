@@ -14,9 +14,7 @@ import createDockLayout from '../dock-layout/dock-layout';
 /**
  * @typedef Chart.SettingsProps
  * @property {Chart.ScaleProps} scales
- * @property {object} components
- * @property {marker[]} components.markers
- * @property {axis[]} components.axes
+ * @property {component-settings[]} components
  * @property {dock-layout-settings} [dockLayout]
  */
 
@@ -28,13 +26,38 @@ import createDockLayout from '../dock-layout/dock-layout';
  */
 
 /**
+ * @typedef component-settings
+ * @description Will also include component specific settings depending on type
+ *              ex: [marker-point-settings](./markers.md#marker-point-settings),
+ *                  [marker-box-settings](./markers.md#marker-box-settings),
+ *                  [axis-settings](./axis.md#axis-settings),
+ * @property {string} type - Component type (ex: axis, point-marker, ...)
+ * @property {function} [preferredSize] Function returing preferred size
+ * @property {function} [created]
+ * @property {function} [beforeMount]
+ * @property {function} [mounted]
+ * @property {function} [beforeUpdate]
+ * @property {function} [updated]
+ * @property {function} [beforeRender]
+ * @property {function} [beforeDestroy]
+ * @property {function} [destroyed]
+ * @property {brush-setting} [brush] see [brushing](./brushing.md)
+ * @property {number} [displayOrder = 0]
+ * @property {number} [prioOrder = 0]
+ * @property {string | {width: string, height: string}} [minimumLayoutMode] Refer to layout sizes defined by layoutModes in dockLayout
+ * @property {string} [dock] left, right, top or bottom
+ * @property {string} [scale] Named scale. Will be provided to the component if it ask for it.
+ * @property {string} [formatter] Named formatter. Fallback to create formatter from scale. Will be provided to the component if it ask for it.
+ */
+
+/**
  * @typedef dock-layout-settings
- * @property {boolean} [size] Phyiscal size. Default to size of the container
- * @property {boolean} [size.width]
- * @property {boolean} [size.height]
- * @property {boolean} [logicalSize] Logical size represent the size given to the dock layout to work with.
- * @property {boolean} [logicalSize.width]
- * @property {boolean} [logicalSize.height]
+ * @property {object} [size] Phyiscal size. Default to size of the container
+ * @property {number} [size.width]
+ * @property {number} [size.height]
+ * @property {object} [logicalSize] Logical size represent the size given to the dock layout to work with.
+ * @property {number} [logicalSize.width]
+ * @property {number} [logicalSize.height]
  * @property {boolean} [logicalSize.preserveAspectRatio = false]
  * @property {Object.<string, {width: number, height: number}>} [layoutModes={}] Dictionary with named sizes
  */

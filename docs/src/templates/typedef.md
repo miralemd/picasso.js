@@ -10,4 +10,5 @@
 Can be one of the following types: {{#each type.names}}{{ this }}{{#unless @last}}, {{/unless}}{{/each}}
 {{/if}}
 
+{{ description }}
 {{>examples examples}}

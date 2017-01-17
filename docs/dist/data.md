@@ -74,7 +74,7 @@ ds.map({
  me: { field: '/qHyperCube/qDimensionInfo/1', reducer: 'first', type: 'qual' },
  parent: { field: '/qHyperCube/qDimensionInfo/0', reducer: 'first', type: 'qual' }
 }, {
- field: '/qHyperCube/qDimensionInfo/1'
+ field: '/qHyperCube/qDimensionInfo/1
 });
 // output:
 // [
@@ -99,12 +99,14 @@ ds.map({
 | field | string | Path to a field | No |
 | reducer | string | Option to specify how to reduce values | Yes |
 
+
 #### <a name='data-repeater' href='#data-repeater'>#</a> data-repeater
 
 |Name(s)|Type(s)|Description|Optional|
 |-------|-------|-----------|--------|
 | field | string | Path to a field | No |
 | attribute | string | Attribute to use as identifier when collecting data | Yes |
+
 
 
 ## Table

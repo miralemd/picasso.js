@@ -23,6 +23,7 @@
 | data | marker-point-data | Point data mapping. | No |
 | settings | marker-point-settings | Marker settings | No |
 
+
 #### Examples
 
 ```js
@@ -59,17 +60,21 @@
 | opacity | marker-point-number | opacity of shape | Yes |
 | shape | marker-point-string | type of shape | Yes |
 
+
 #### <a name='marker-point-string' href='#marker-point-string'>#</a> marker-point-string
 
 Can be one of the following types: string, marker-point-data-accessor, marker-point-setting
+
 
 #### <a name='marker-point-number' href='#marker-point-number'>#</a> marker-point-number
 
 Can be one of the following types: number, marker-point-data-accessor, marker-point-setting
 
+
 #### <a name='marker-point-data-accessor' href='#marker-point-data-accessor'>#</a> marker-point-data-accessor
 
 Can be one of the following types: function
+
 
 #### <a name='marker-point-data' href='#marker-point-data'>#</a> marker-point-data
 
@@ -80,6 +85,7 @@ Can be one of the following types: function
 | groupBy | object | The data source to group data | No |
 | groupBy.source | string | Reference to a data source | No |
 
+The specified definition will provide the point marker with data.
 #### Examples
 
 ```js
@@ -114,6 +120,9 @@ Can be one of the following types: function
 | scale.type | string | Scale type | No |
 | fn | marker-point-data-accessor | Data accessor. Custom data accessor which will be called for each datum. The return value is used for the specified property. | Yes |
 
+The data to use for encoding a property of the point.
+
+The specified source will provide the point marker with data.
 #### Examples
 
 ```js
@@ -160,6 +169,7 @@ Can be one of the following types: function
 | data | data-ref | Box data | No |
 | settings | marker-box-settings | Box marker settings | No |
 
+
 #### Examples
 
 ```js
@@ -201,7 +211,9 @@ Can be one of the following types: function
 | end | marker-box-data | end | No |
 | med | marker-box-data | med | No |
 
+
 #### <a name='marker-box-data' href='#marker-box-data'>#</a> marker-box-data
 
 Can be one of the following types: 
+
 
