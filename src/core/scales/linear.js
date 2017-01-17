@@ -57,10 +57,11 @@ function getMinMax(fields, settings) {
 }
 
  /**
- * @function linear
+ * @alias linear
+ * @memberof picasso.scales
  * @param { Array } fields
  * @param { Object } settings
- * @return { function } Instance of linear scale
+ * @return { linearScale } Instance of linear scale
  */
 
 export default function linear(fields, settings) {
@@ -68,10 +69,11 @@ export default function linear(fields, settings) {
   let tG;
 
   /**
-   * @param { Object } Object item with value
+   * @alias linearScale
+   * @param { Object } Item item object with value property
    * @return { Number } The scaled value
    */
-  const fn = (v) => {
+  function fn(v) {
     if (notNumber(v.value)) {
       return NaN;
     }
@@ -90,7 +92,7 @@ export default function linear(fields, settings) {
   /**
    * {@link https://github.com/d3/d3-scale#continuous_rangeRound }
    * @param { Number[] } values Range values
-   * @return { function } The instance this method was called on
+   * @return { linearScale } The instance this method was called on
    */
   fn.rangeRound = function rangeRound(values) {
     d3Scale.rangeRound(values);
@@ -100,7 +102,7 @@ export default function linear(fields, settings) {
   /**
    * {@link https://github.com/d3/d3-scale#continuous_clamp }
    * @param { Boolean } [ value=true ] TRUE if clamping should be enabled
-   * @return { function } The instance this method was called on
+   * @return { linearScale } The instance this method was called on
    */
   fn.clamp = function clamp(value = true) {
     d3Scale.clamp(value);
@@ -122,7 +124,7 @@ export default function linear(fields, settings) {
   /**
    * {@link https://github.com/d3/d3-scale#continuous_nice }
    * @param { Number } count
-   * @return { function } The instance this method was called on
+   * @return { linearScale } The instance this method was called on
    */
   fn.nice = function nice(count) {
     d3Scale.nice(count);
@@ -142,7 +144,7 @@ export default function linear(fields, settings) {
 
   /**
    * @param { Number[] } [values] Set or Get domain values
-   * @return { function | Number[] } The instance this method was called on if a parameter is provided, otherwise the current domain is returned
+   * @return { linearScale | Number[] } The instance this method was called on if a parameter is provided, otherwise the current domain is returned
    */
   fn.domain = function domain(values) {
     if (arguments.length) {
@@ -155,7 +157,7 @@ export default function linear(fields, settings) {
 
   /**
    * @param { Number[] } [values] Set or Get range values
-   * @return { function | Number[] } The instance this method was called on if a parameter is provided, otherwise the current range is returned
+   * @return { linearScale | Number[] } The instance this method was called on if a parameter is provided, otherwise the current range is returned
    */
   fn.range = function range(values) {
     if (arguments.length) {
