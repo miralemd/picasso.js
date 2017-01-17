@@ -8,16 +8,16 @@ export function discreteDefaultSettings() {
       fontSize: '12px',
       fill: '#595959',
       margin: 6,
-      layered: false, // TODO support auto, true and false?
+      layered: false,
       maxSize: 250
     },
     line: {
-      show: true,
+      show: false,
       strokeWidth: 1,
       stroke: '#cccccc'
     },
     ticks: {
-      show: true,
+      show: false,
       margin: 0,
       tickSize: 4,
       stroke: '#cccccc',

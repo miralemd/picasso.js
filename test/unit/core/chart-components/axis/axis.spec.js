@@ -136,7 +136,7 @@ describe('Axis', () => {
       it(`should align to ${d}`, () => {
         config.settings.align = d;
         axis.render();
-        verifyNumberOfNodes(3, 4);
+        verifyNumberOfNodes(3, 0);
       });
     });
 
@@ -145,7 +145,7 @@ describe('Axis', () => {
         config.settings.align = d;
         config.settings.labels = { layered: true };
         axis.render();
-        verifyNumberOfNodes(3, 4);
+        verifyNumberOfNodes(3, 0);
       });
     });
   });
