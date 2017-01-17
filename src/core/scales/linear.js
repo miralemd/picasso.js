@@ -78,7 +78,7 @@ export default function linear(fields, settings) {
       return NaN;
     }
     return d3Scale(v.value);
-  };
+  }
 
   /**
    * {@link https://github.com/d3/d3-scale#continuous_invert }
