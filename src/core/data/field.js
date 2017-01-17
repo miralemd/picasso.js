@@ -14,9 +14,11 @@ const accessors = {
 };
 
 /**
- * Factory-function, constructs a new field accessor with default settings
- *
- * @return {Object}   Object with accessors
+ * Create a new field with default settings
+ * @alias field
+ * @memberof picasso.data
+ * @ignore
+ * @return {field} Data field
  */
 export default function field({
   id,
@@ -30,6 +32,10 @@ export default function field({
 } = {}) {
   let data = {};
 
+  /**
+   * @alias field
+   * @param {object} d Field data
+   */
   function fn(d) {
     data = d;
     return fn;
@@ -50,8 +56,8 @@ export default function field({
   fn.tags = () => tags(data);
 
   /**
-   * Returns the type.
-   * @return {string[]}
+   * Returns this field's type: 'dimension' or 'measure'.
+   * @return {string}
    */
   fn.type = () => type(data);
 

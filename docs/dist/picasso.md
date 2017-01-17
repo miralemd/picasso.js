@@ -60,21 +60,21 @@
 |----|----|-----------|--------|
 
 Chart instance factory function  
-#### <a name='createInstance~instance.update' href='#createInstance~instance.update'>#</a> createInstance.**update**(* chart*)
+#### <a name='createInstance~instance.update' href='#createInstance~instance.update'>#</a> createInstance.**createInstance~instance.update**(* chart*)
 
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|
 | chart |  | Chart definition |No|
 
 Update the chart with new settings and / or data  
-#### <a name='createInstance~instance.brush' href='#createInstance~instance.brush'>#</a> createInstance.**brush**()
+#### <a name='createInstance~instance.brush' href='#createInstance~instance.brush'>#</a> createInstance.**createInstance~instance.brush**()
 
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|
 | Returns | data-brush |  | ... |
 
 The brush context for this chart  
-#### <a name='picasso.chart' href='#picasso.chart'>#</a> **chart**(*Chart.Props settings*)
+#### <a name='picasso.chart' href='#picasso.chart'>#</a> **picasso.chart**(*Chart.Props settings*)
 
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|

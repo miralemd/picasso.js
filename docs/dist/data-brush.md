@@ -61,19 +61,19 @@ brush.addValues([
 |----|----|-----------|--------|
 
 The brush context  
-#### <a name='brush.start' href='#brush.start'>#</a> **start**()
+#### <a name='brush.start' href='#brush.start'>#</a> **brush.start**()
 
 
 Starts this brush context
 
 Starts this brush context and emits a &#x27;start&#x27; event if it is not already started.  
-#### <a name='brush.end' href='#brush.end'>#</a> **end**()
+#### <a name='brush.end' href='#brush.end'>#</a> **brush.end**()
 
 
 Ends this brush context
 
 Ends this brush context and emits an &#x27;end&#x27; event if it is not already ended.  
-#### <a name='brush.isActive' href='#brush.isActive'>#</a> **isActive**()
+#### <a name='brush.isActive' href='#brush.isActive'>#</a> **brush.isActive**()
 
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|
@@ -82,18 +82,18 @@ Ends this brush context and emits an &#x27;end&#x27; event if it is not already 
 Checks if this brush is activated
 
 Returns true if started, false otherwise  
-#### <a name='brush.clear' href='#brush.clear'>#</a> **clear**()
+#### <a name='brush.clear' href='#brush.clear'>#</a> **brush.clear**()
 
 
 Clears this brush context  
-#### <a name='brush.brushes' href='#brush.brushes'>#</a> **brushes**()
+#### <a name='brush.brushes' href='#brush.brushes'>#</a> **brush.brushes**()
 
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|
 | Returns | object |  | ... |
 
 Returns all brushes within this context  
-#### <a name='brush.addValue' href='#brush.addValue'>#</a> **addValue**(*string key, string value*)
+#### <a name='brush.addValue' href='#brush.addValue'>#</a> **brush.addValue**(*string key, string value*)
 
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|
@@ -110,21 +110,21 @@ If the state of the brush changes, ie. if the added value does not already exist
 brush.addValue('countries', 'Sweden');
 brush.addValue('/qHyperCube/qDimensionInfo/0', 3);
 ```
-#### <a name='brush.addValues' href='#brush.addValues'>#</a> **addValues**(*Array.&lt;object&gt; items*)
+#### <a name='brush.addValues' href='#brush.addValues'>#</a> **brush.addValues**(*Array.&lt;object&gt; items*)
 
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|
 | items | Array.&lt;object&gt; | Items to add |No|
 
   
-#### <a name='brush.setValues' href='#brush.setValues'>#</a> **setValues**(*Array.&lt;object&gt; items*)
+#### <a name='brush.setValues' href='#brush.setValues'>#</a> **brush.setValues**(*Array.&lt;object&gt; items*)
 
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|
 | items | Array.&lt;object&gt; | Items to set |No|
 
   
-#### <a name='brush.removeValue' href='#brush.removeValue'>#</a> **removeValue**(*string key, string value*)
+#### <a name='brush.removeValue' href='#brush.removeValue'>#</a> **brush.removeValue**(*string key, string value*)
 
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|
@@ -139,14 +139,14 @@ If the state of the brush changes, ie. if the removed value does exist, an &#x27
 ```js
 brush.removeValue('countries', 'Sweden');
 ```
-#### <a name='brush.removeValues' href='#brush.removeValues'>#</a> **removeValues**(*Array.&lt;object&gt; items*)
+#### <a name='brush.removeValues' href='#brush.removeValues'>#</a> **brush.removeValues**(*Array.&lt;object&gt; items*)
 
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|
 | items | Array.&lt;object&gt; | Items to remove |No|
 
   
-#### <a name='brush.toggleValue' href='#brush.toggleValue'>#</a> **toggleValue**(*string key, string value*)
+#### <a name='brush.toggleValue' href='#brush.toggleValue'>#</a> **brush.toggleValue**(*string key, string value*)
 
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|
@@ -161,14 +161,14 @@ If the given value exist in this brush context, it will be removed. If it does n
 ```js
 brush.toggleValue('countries', 'Sweden');
 ```
-#### <a name='brush.toggleValues' href='#brush.toggleValues'>#</a> **toggleValues**(*Array.&lt;object&gt; items*)
+#### <a name='brush.toggleValues' href='#brush.toggleValues'>#</a> **brush.toggleValues**(*Array.&lt;object&gt; items*)
 
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|
 | items | Array.&lt;object&gt; | Items to toggle |No|
 
   
-#### <a name='brush.containsValue' href='#brush.containsValue'>#</a> **containsValue**(*string key, string value*)
+#### <a name='brush.containsValue' href='#brush.containsValue'>#</a> **brush.containsValue**(*string key, string value*)
 
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|
@@ -187,7 +187,7 @@ brush.containsValue('countries', 'Sweden'); // true
 brush.toggleValue('countries', 'Sweden'); // remove 'Sweden'
 brush.containsValue('countries', 'Sweden'); // false
 ```
-#### <a name='brush.intercept' href='#brush.intercept'>#</a> **intercept**(*string name, function ic*)
+#### <a name='brush.intercept' href='#brush.intercept'>#</a> **brush.intercept**(*string name, function ic*)
 
 |Name|Type|Description|Optional|
 |----|----|-----------|--------|
