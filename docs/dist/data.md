@@ -29,40 +29,40 @@
 
 #### <a name='picasso.data.dataset' href='#picasso.data.dataset'>#</a> **picasso.data.dataset**()
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| Returns | dataset |  | ... |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | dataset | No | ... | ... |
 
 Create a new dataset with default settings  
 #### <a name='dataset' href='#dataset'>#</a> **dataset**(*object d*)
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| d | object | The data |No|
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| d | object | The data | No | No |
 
-  
+No description  
 #### <a name='dataset.tables' href='#dataset.tables'>#</a> **dataset.tables**()
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| Returns | Array.&lt;table&gt; | All tables found in this dataset | ... |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | Array.&lt;table&gt; | All tables found in this dataset | ... | ... |
 
 Get all tables in this dataset  
 #### <a name='dataset.table' href='#dataset.table'>#</a> **dataset.table**(*string query*)
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| query | string | Table identifier |No|
-| Returns | table | A table | ... |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| query | string | Table identifier | No | No |
+| Returns | table | A table | ... | ... |
 
 Find a table in this dataset  
 #### <a name='dataset.map' href='#dataset.map'>#</a> **dataset.map**(*data-map mapper, data-repeater repeater*)
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| mapper | data-map | An object specifing how to map the data |No|
-| repeater | data-repeater | An object specifing which data to loop over when aggregating |No|
-| Returns | Array.&lt;object&gt; | Mapped data | ... |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| mapper | data-map | An object specifing how to map the data | No | No |
+| repeater | data-repeater | An object specifing which data to loop over when aggregating | No | No |
+| Returns | Array.&lt;object&gt; | Mapped data | ... | ... |
 
 Map data from multiple sources into a specified structure  
 #### Examples
@@ -94,61 +94,61 @@ ds.map({
 ```
 #### <a name='data-map' href='#data-map'>#</a> data-map
 
-|Name(s)|Type(s)|Description|Optional|
-|-------|-------|-----------|--------|
-| field | string | Path to a field | No |
-| reducer | string | Option to specify how to reduce values | Yes |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| field | string | Path to a field | No | No |
+| reducer | string | Option to specify how to reduce values | Yes | &#x27;sum&#x27; |
 
 #### <a name='data-repeater' href='#data-repeater'>#</a> data-repeater
 
-|Name(s)|Type(s)|Description|Optional|
-|-------|-------|-----------|--------|
-| field | string | Path to a field | No |
-| attribute | string | Attribute to use as identifier when collecting data | Yes |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| field | string | Path to a field | No | No |
+| attribute | string | Attribute to use as identifier when collecting data | Yes | No |
 
 
 ## Table
 
 #### <a name='picasso.data.table' href='#picasso.data.table'>#</a> **picasso.data.table**()
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| Returns | table |  | ... |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | table | No | ... | ... |
 
 Create a new table with default acessors  
 #### <a name='table' href='#table'>#</a> **table**(*object d*)
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| d | object | Sets data content for this table |No|
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| d | object | Sets data content for this table | No | No |
 
-  
+No description  
 #### <a name='table.data' href='#table.data'>#</a> **table.data**()
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| Returns | object |  | ... |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | object | No | ... | ... |
 
 Returns this table&#x27;s data  
 #### <a name='table.id' href='#table.id'>#</a> **table.id**()
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| Returns | string |  | ... |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | string | No | ... | ... |
 
 Returns this table&#x27;s id  
 #### <a name='table.fields' href='#table.fields'>#</a> **table.fields**()
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| Returns | Array.&lt;field&gt; |  | ... |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | Array.&lt;field&gt; | No | ... | ... |
 
 Returns the fields in this table  
 #### <a name='table.findField' href='#table.findField'>#</a> **table.findField**()
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| Returns | field |  | ... |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | field | No | ... | ... |
 
 Finds the field based on the specified query  
 
@@ -157,65 +157,65 @@ Finds the field based on the specified query
 
 #### <a name='picasso.data.field' href='#picasso.data.field'>#</a> **picasso.data.field**()
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| Returns | field | Data field | ... |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | field | Data field | ... | ... |
 
 Create a new field with default settings  
 #### <a name='field' href='#field'>#</a> **field**(*object d*)
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| d | object | Field data |No|
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| d | object | Field data | No | No |
 
-  
+No description  
 #### <a name='field.data' href='#field.data'>#</a> **field.data**()
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| Returns | object |  | ... |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | object | No | ... | ... |
 
 Returns the current data used in this field.  
 #### <a name='field.tags' href='#field.tags'>#</a> **field.tags**()
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| Returns | Array.&lt;string&gt; |  | ... |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | Array.&lt;string&gt; | No | ... | ... |
 
 Returns the tags.  
 #### <a name='field.type' href='#field.type'>#</a> **field.type**()
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| Returns | string |  | ... |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | string | No | ... | ... |
 
 Returns this field&#x27;s type: &#x27;dimension&#x27; or &#x27;measure&#x27;.  
 #### <a name='field.min' href='#field.min'>#</a> **field.min**()
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| Returns | number |  | ... |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | number | No | ... | ... |
 
 Returns the min value of this field.  
 #### <a name='field.max' href='#field.max'>#</a> **field.max**()
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| Returns | number |  | ... |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | number | No | ... | ... |
 
 Returns the max value of this field.  
 #### <a name='field.title' href='#field.title'>#</a> **field.title**()
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| Returns | string | [description] | ... |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | string | [description] | ... | ... |
 
 Returns this field&#x27;s title.  
 #### <a name='field.values' href='#field.values'>#</a> **field.values**()
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| Returns | Array.&lt;object&gt; |  | ... |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | Array.&lt;object&gt; | No | ... | ... |
 
 Returns the values of this field.  
 #### <a name='field.formatter' href='#field.formatter'>#</a> **field.formatter**()

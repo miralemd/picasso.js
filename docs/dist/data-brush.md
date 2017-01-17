@@ -57,8 +57,8 @@ brush.addValues([
 
 #### <a name='brush' href='#brush'>#</a> **brush**()
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
 
 The brush context  
 #### <a name='brush.start' href='#brush.start'>#</a> **brush.start**()
@@ -75,9 +75,9 @@ Ends this brush context
 Ends this brush context and emits an &#x27;end&#x27; event if it is not already ended.  
 #### <a name='brush.isActive' href='#brush.isActive'>#</a> **brush.isActive**()
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| Returns | boolean |  | ... |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | boolean | No | ... | ... |
 
 Checks if this brush is activated
 
@@ -88,17 +88,17 @@ Returns true if started, false otherwise
 Clears this brush context  
 #### <a name='brush.brushes' href='#brush.brushes'>#</a> **brush.brushes**()
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| Returns | object |  | ... |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | object | No | ... | ... |
 
 Returns all brushes within this context  
 #### <a name='brush.addValue' href='#brush.addValue'>#</a> **brush.addValue**(*string key, string value*)
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| key | string | An identifier that represents the data source of the value |No|
-| value | string | The value to add |No|
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| key | string | An identifier that represents the data source of the value | No | No |
+| value | string | The value to add | No | No |
 
 Adds a primitive value to this brush context
 
@@ -112,24 +112,24 @@ brush.addValue('/qHyperCube/qDimensionInfo/0', 3);
 ```
 #### <a name='brush.addValues' href='#brush.addValues'>#</a> **brush.addValues**(*Array.&lt;object&gt; items*)
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| items | Array.&lt;object&gt; | Items to add |No|
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| items | Array.&lt;object&gt; | Items to add | No | No |
 
-  
+No description  
 #### <a name='brush.setValues' href='#brush.setValues'>#</a> **brush.setValues**(*Array.&lt;object&gt; items*)
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| items | Array.&lt;object&gt; | Items to set |No|
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| items | Array.&lt;object&gt; | Items to set | No | No |
 
-  
+No description  
 #### <a name='brush.removeValue' href='#brush.removeValue'>#</a> **brush.removeValue**(*string key, string value*)
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| key | string | An identifier that represents the data source of the value |No|
-| value | string | The value to remove |No|
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| key | string | An identifier that represents the data source of the value | No | No |
+| value | string | The value to remove | No | No |
 
 Removes a primitive values from this brush context
 
@@ -141,17 +141,17 @@ brush.removeValue('countries', 'Sweden');
 ```
 #### <a name='brush.removeValues' href='#brush.removeValues'>#</a> **brush.removeValues**(*Array.&lt;object&gt; items*)
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| items | Array.&lt;object&gt; | Items to remove |No|
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| items | Array.&lt;object&gt; | Items to remove | No | No |
 
-  
+No description  
 #### <a name='brush.toggleValue' href='#brush.toggleValue'>#</a> **brush.toggleValue**(*string key, string value*)
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| key | string | An identifier that represents the data source of the value |No|
-| value | string | The value to toggle |No|
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| key | string | An identifier that represents the data source of the value | No | No |
+| value | string | The value to toggle | No | No |
 
 Toggles a primitive value in this brush context
 
@@ -163,18 +163,18 @@ brush.toggleValue('countries', 'Sweden');
 ```
 #### <a name='brush.toggleValues' href='#brush.toggleValues'>#</a> **brush.toggleValues**(*Array.&lt;object&gt; items*)
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| items | Array.&lt;object&gt; | Items to toggle |No|
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| items | Array.&lt;object&gt; | Items to toggle | No | No |
 
-  
+No description  
 #### <a name='brush.containsValue' href='#brush.containsValue'>#</a> **brush.containsValue**(*string key, string value*)
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| key | string | An identifier that represents the data source of the value |No|
-| value | string | The value to check for |No|
-| Returns | boolean |  | ... |
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| key | string | An identifier that represents the data source of the value | No | No |
+| value | string | The value to check for | No | No |
+| Returns | boolean | No | ... | ... |
 
 Checks if a certain value exists in this brush context
 
@@ -189,10 +189,10 @@ brush.containsValue('countries', 'Sweden'); // false
 ```
 #### <a name='brush.intercept' href='#brush.intercept'>#</a> **brush.intercept**(*string name, function ic*)
 
-|Name|Type|Description|Optional|
-|----|----|-----------|--------|
-| name | string | Name of the event to intercept |No|
-| ic | function | Handler to call before event is triggered |No|
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| name | string | Name of the event to intercept | No | No |
+| ic | function | Handler to call before event is triggered | No | No |
 
 Adds an event interceptor  
 #### Examples
