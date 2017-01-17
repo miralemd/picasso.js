@@ -47,7 +47,7 @@ export default function ordinal(fields, settings) {
 
   /**
    * @param { Object } Object item with value
-   * @return { Number } Value position in scale 
+   * @return { Number } Value position in scale
    */
   const fn = v => d3Scale('label' in v ? v.label : v.value);
 
