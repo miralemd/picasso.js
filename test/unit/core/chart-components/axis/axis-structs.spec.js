@@ -428,6 +428,243 @@ describe('AxisStructs', () => {
         });
       });
     });
+
+    describe('Collider', () => {
+      it('should not have a collider if stepSize is undefined', () => {
+        buildOpts.stepSize = undefined;
+        const label = buildLabel(tick, buildOpts);
+
+        expect(label.collider).to.equal(undefined);
+      });
+
+      it('should not have a collider if layered', () => {
+        buildOpts.stepSize = 0.2;
+        buildOpts.layered = true;
+        const label = buildLabel(tick, buildOpts);
+
+        expect(label.collider).to.equal(undefined);
+      });
+
+      it('should not have a collider if titled', () => {
+        buildOpts.stepSize = 0.2;
+        buildOpts.tilted = true;
+        const label = buildLabel(tick, buildOpts);
+
+        expect(label.collider).to.equal(undefined);
+      });
+
+      describe('align left', () => {
+        beforeEach(() => {
+          buildOpts.align = 'left';
+        });
+
+        it('should have a collider', () => {
+          buildOpts.stepSize = 0.2;
+          const label = buildLabel(tick, buildOpts);
+
+          expected = {
+            type: 'rect',
+            x: 0,
+            y: 49.9,
+            width: buildOpts.innerRect.width,
+            height: buildOpts.stepSize
+          };
+
+          expect(label.collider).to.deep.equal(expected);
+        });
+
+        it('should clip collider at the bottom boundary of outerRect', () => {
+          buildOpts.stepSize = 0.2;
+          tick.position = 0;
+          const label = buildLabel(tick, buildOpts);
+
+          expected = {
+            type: 'rect',
+            x: 0,
+            y: 0,
+            width: buildOpts.innerRect.width,
+            height: buildOpts.stepSize / 2
+          };
+
+          expect(label.collider).to.deep.equal(expected);
+        });
+
+        it('should clip collider at the top boundary of outerRect', () => {
+          buildOpts.stepSize = 0.2;
+          tick.position = 1;
+          const label = buildLabel(tick, buildOpts);
+
+          expected = {
+            type: 'rect',
+            x: 0,
+            y: 99.9,
+            width: buildOpts.innerRect.width,
+            height: 0.09999999999999148
+          };
+
+          expect(label.collider).to.deep.equal(expected);
+        });
+      });
+
+      describe('align right', () => {
+        beforeEach(() => {
+          buildOpts.align = 'right';
+        });
+
+        it('should have a collider', () => {
+          buildOpts.stepSize = 0.2;
+          const label = buildLabel(tick, buildOpts);
+
+          expected = {
+            type: 'rect',
+            x: 0,
+            y: 49.9,
+            width: buildOpts.innerRect.width,
+            height: buildOpts.stepSize
+          };
+
+          expect(label.collider).to.deep.equal(expected);
+        });
+
+        it('should clip collider at the bottom boundary of outerRect', () => {
+          buildOpts.stepSize = 0.2;
+          tick.position = 0;
+          const label = buildLabel(tick, buildOpts);
+
+          expected = {
+            type: 'rect',
+            x: 0,
+            y: 0,
+            width: buildOpts.innerRect.width,
+            height: buildOpts.stepSize / 2
+          };
+
+          expect(label.collider).to.deep.equal(expected);
+        });
+
+        it('should clip collider at the top boundary of outerRect', () => {
+          buildOpts.stepSize = 0.2;
+          tick.position = 1;
+          const label = buildLabel(tick, buildOpts);
+
+          expected = {
+            type: 'rect',
+            x: 0,
+            y: 99.9,
+            width: buildOpts.innerRect.width,
+            height: 0.09999999999999148
+          };
+
+          expect(label.collider).to.deep.equal(expected);
+        });
+      });
+
+      describe('align top', () => {
+        beforeEach(() => {
+          buildOpts.align = 'top';
+        });
+
+        it('should have a collider', () => {
+          buildOpts.stepSize = 0.2;
+          const label = buildLabel(tick, buildOpts);
+
+          expected = {
+            type: 'rect',
+            x: 24.9,
+            y: 0,
+            width: buildOpts.stepSize,
+            height: buildOpts.innerRect.height
+          };
+
+          expect(label.collider).to.deep.equal(expected);
+        });
+
+        it('should clip collider at the bottom boundary of outerRect', () => {
+          buildOpts.stepSize = 0.2;
+          tick.position = 0;
+          const label = buildLabel(tick, buildOpts);
+
+          expected = {
+            type: 'rect',
+            x: 0,
+            y: 0,
+            width: buildOpts.stepSize / 2,
+            height: buildOpts.innerRect.height
+          };
+
+          expect(label.collider).to.deep.equal(expected);
+        });
+
+        it('should clip collider at the top boundary of outerRect', () => {
+          buildOpts.stepSize = 0.2;
+          tick.position = 1;
+          const label = buildLabel(tick, buildOpts);
+
+          expected = {
+            type: 'rect',
+            x: 49.9,
+            y: 0,
+            width: 0.09999999999999859,
+            height: buildOpts.innerRect.height
+          };
+
+          expect(label.collider).to.deep.equal(expected);
+        });
+      });
+
+      describe('align bottom', () => {
+        beforeEach(() => {
+          buildOpts.align = 'bottom';
+        });
+
+        it('should have a collider', () => {
+          buildOpts.stepSize = 0.2;
+          const label = buildLabel(tick, buildOpts);
+
+          expected = {
+            type: 'rect',
+            x: 24.9,
+            y: 0,
+            width: buildOpts.stepSize,
+            height: buildOpts.innerRect.height
+          };
+
+          expect(label.collider).to.deep.equal(expected);
+        });
+
+        it('should clip collider at the bottom boundary of outerRect', () => {
+          buildOpts.stepSize = 0.2;
+          tick.position = 0;
+          const label = buildLabel(tick, buildOpts);
+
+          expected = {
+            type: 'rect',
+            x: 0,
+            y: 0,
+            width: buildOpts.stepSize / 2,
+            height: buildOpts.innerRect.height
+          };
+
+          expect(label.collider).to.deep.equal(expected);
+        });
+
+        it('should clip collider at the top boundary of outerRect', () => {
+          buildOpts.stepSize = 0.2;
+          tick.position = 1;
+          const label = buildLabel(tick, buildOpts);
+
+          expected = {
+            type: 'rect',
+            x: 49.9,
+            y: 0,
+            width: 0.09999999999999859,
+            height: buildOpts.innerRect.height
+          };
+
+          expect(label.collider).to.deep.equal(expected);
+        });
+      });
+    });
   });
 
   describe('Line', () => {

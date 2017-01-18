@@ -42,9 +42,11 @@ function tickBuilder(ticks, buildOpts) {
 }
 
 function labelBuilder(ticks, buildOpts, measureText) {
-  return ticks.map((tick) => {
+  return ticks.map((tick, i) => {
     buildOpts.textRect = calcActualTextRect({ tick, measureText, style: buildOpts });
-    return buildLabel(tick, buildOpts);
+    const label = buildLabel(tick, buildOpts);
+    label.data = i;
+    return label;
   });
 }
 
@@ -52,9 +54,12 @@ function layeredLabelBuilder(ticks, buildOpts, settings, measureText) {
   const padding = buildOpts.padding;
   const padding2 = labelsSpacing(settings) + buildOpts.maxHeight + settings.labels.margin;
   return ticks.map((tick, i) => {
+    buildOpts.layer = i % 2;
     buildOpts.padding = i % 2 === 0 ? padding : padding2;
     buildOpts.textRect = calcActualTextRect({ tick, measureText, style: buildOpts });
-    return buildLabel(tick, buildOpts);
+    const label = buildLabel(tick, buildOpts);
+    label.data = i;
+    return label;
   });
 }
 
@@ -102,14 +107,20 @@ function continuousCalcMaxTextRect({ measureText, settings, innerRect, ticks }) 
 
 export default function nodeBuilder(type) {
   let calcMaxTextRectFn;
+  let getStepSizeFn;
 
   function continuous() {
     calcMaxTextRectFn = continuousCalcMaxTextRect;
+    getStepSizeFn = () => null;
     return continuous;
   }
 
   function discrete() {
     calcMaxTextRectFn = discreteCalcMaxTextRect;
+    getStepSizeFn = ({ innerRect, scale, settings }) => {
+      const size = settings.align === 'top' || settings.align === 'bottom' ? innerRect.width : innerRect.height;
+      return size * scale.step();
+    };
     return discrete;
   }
 
@@ -146,6 +157,7 @@ export default function nodeBuilder(type) {
     if (settings.labels.show) {
       const textRect = calcMaxTextRectFn({ measureText, settings, innerRect, ticks, scale });
       const padding = labelsSpacing(settings);
+      buildOpts.stepSize = getStepSizeFn({ innerRect, scale, ticks, settings });
       buildOpts.style = settings.labels;
       buildOpts.padding = padding;
       buildOpts.maxWidth = textRect.width;

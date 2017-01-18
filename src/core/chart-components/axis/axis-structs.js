@@ -162,10 +162,46 @@ export function buildLabel(tick, buildOpts) {
     extend(struct, buildOpts.style);
   };
 
+  const labelApplyCollider = () => {
+    if (!buildOpts.stepSize || buildOpts.layered || buildOpts.tilted) return;
+
+    if (buildOpts.align === 'bottom' || buildOpts.align === 'top') {
+      const tickCenter = tick.position * buildOpts.innerRect.width;
+      const leftBoundary = tickCenter + (buildOpts.innerRect.x - buildOpts.outerRect.x - (buildOpts.stepSize / 2));
+      struct.collider = {
+        type: 'rect',
+        x: leftBoundary,
+        y: 0,
+        width: leftBoundary < 0 ? buildOpts.stepSize + leftBoundary : buildOpts.stepSize, // Adjust collider so that it doesnt extend onto neighbor collider
+        height: buildOpts.innerRect.height
+      };
+    } else {
+      const tickCenter = tick.position * buildOpts.innerRect.height;
+      const topBoundary = tickCenter + (buildOpts.innerRect.y - buildOpts.outerRect.y - (buildOpts.stepSize / 2));
+      struct.collider = {
+        type: 'rect',
+        x: 0,
+        y: topBoundary,
+        width: buildOpts.innerRect.width,
+        height: topBoundary < 0 ? buildOpts.stepSize + topBoundary : buildOpts.stepSize // Adjust collider so that it doesnt extend onto neighbor collider
+      };
+    }
+
+    // Clip edges of the collider, should not extend beyoned the outerRect
+    const collider = struct.collider;
+    collider.x = Math.max(collider.x, 0);
+    collider.y = Math.max(collider.y, 0);
+    const widthClip = (collider.x + collider.width) - (buildOpts.outerRect.x + buildOpts.outerRect.width);
+    collider.width = widthClip > 0 ? collider.width - widthClip : collider.width;
+    const heightClip = (collider.y + collider.height) - (buildOpts.outerRect.y + buildOpts.outerRect.height);
+    collider.height = heightClip > 0 ? collider.height - heightClip : collider.height;
+  };
+
   labelApplyStyle();
   labelAdjustForEnds();
   labelApplyPadding();
   labelApplyTilting();
+  labelApplyCollider();
 
   return struct;
 }
