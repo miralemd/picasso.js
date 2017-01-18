@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## 0.4.1
+
+### Changes
+
+- Transpile es6 versions of d3 modules
+
 ## 0.4.0
 
 ### Breaking changes
