@@ -1,178 +1,239 @@
 import { scaleLinear } from 'd3-scale';
-import Events from '../utils/event-emitter';
 import notNumber from '../utils/undef';
+
+const AVAILABLE_SETTINGS = ['min', 'max', 'expand', 'include', 'invert'];
 
 function applyFormat(formatter) {
   return typeof formatter === 'undefined' ? t => t : t => formatter(t);
 }
 
-class LinearScale {
+function evalSetting(fields, settings, name) {
+  if (typeof settings[name] === 'function') {
+    return settings[name](fields);
+  }
+
+  return settings[name];
+}
+
+function generateSettings(fields, settings) {
+  const calcSettings = {};
+  AVAILABLE_SETTINGS.forEach((s) => {
+    calcSettings[s] = evalSetting(fields, settings, s);
+  });
+  return calcSettings;
+}
+
+function getMinMax(fields, settings) {
+  const min = Number(settings.min);
+  const max = Number(settings.max);
+  let fieldMin = Math.min(...fields.map(m => m.min()));
+  let fieldMax = Math.max(...fields.map(m => m.max()));
+
+  if (isNaN(fieldMin) || isNaN(fieldMax)) {
+    fieldMin = -1;
+    fieldMax = 1;
+  } else if (fieldMin === fieldMax && fieldMin === 0) {
+    fieldMin = -1;
+    fieldMax = 1;
+  } else if (fieldMin === fieldMax && fieldMin) {
+    fieldMin -= Math.abs(fieldMin * 0.1);
+    fieldMax += Math.abs(fieldMax * 0.1);
+  } else if (!isNaN(settings.expand)) {
+    const range = fieldMax - fieldMin;
+    fieldMin -= range * settings.expand;
+    fieldMax += range * settings.expand;
+  }
+
+  if (Array.isArray(settings.include)) {
+    const i = settings.include.filter(n => !isNaN(n));
+    fieldMin = Math.min(...i, fieldMin);
+    fieldMax = Math.max(...i, fieldMax);
+  }
+
+  return {
+    mini: !isNaN(min) ? min : fieldMin,
+    maxi: !isNaN(max) ? max : fieldMax
+  };
+}
+
+ /**
+ * @alias linear
+ * @memberof picasso.scales
+ * @param { Array } fields
+ * @param { Object } settings
+ * @return { linearScale } Instance of linear scale
+ */
+
+export default function linear(fields, settings) {
+  const d3Scale = scaleLinear();
+  let tG;
+
   /**
-   * Class representing a linear scale
-   * @private
-   * @param { Number[] } [ domain=[0,1] ] The domain values
-   * @param { Number[] } [ range=[0,1] ] The range values
+   * @alias linearScale
+   * @param { Object } Item item object with value property
+   * @return { Number } The scaled value
    */
-  constructor(domain = [0, 1], range = [0, 1]) {
-    this._scale = scaleLinear();
-    this.domain(domain);
-    this.range(range);
+  function fn(v) {
+    if (notNumber(v.value)) {
+      return NaN;
+    }
+    return d3Scale(v.value);
   }
 
   /**
    * {@link https://github.com/d3/d3-scale#continuous_invert }
    * @param { Number } value The inverted value
-   * @return { Number } The inverted value
+   * @return { Number } The inverted scaled value
    */
-  invert(value) {
-    return this._scale.invert(value);
-  }
+  fn.invert = function invert(value) {
+    return d3Scale.invert(value);
+  };
 
   /**
    * {@link https://github.com/d3/d3-scale#continuous_rangeRound }
    * @param { Number[] } values Range values
-   * @return { LinearScale } The instance this method was called on
+   * @return { linearScale } The instance this method was called on
    */
-  rangeRound(values) {
-    this._scale.rangeRound(values);
-    this.emit('changed');
-    return this;
-  }
+  fn.rangeRound = function rangeRound(values) {
+    d3Scale.rangeRound(values);
+    return fn;
+  };
 
   /**
    * {@link https://github.com/d3/d3-scale#continuous_clamp }
    * @param { Boolean } [ value=true ] TRUE if clamping should be enabled
-   * @return { LinearScale } The instance this method was called on
+   * @return { linearScale } The instance this method was called on
    */
-  clamp(value = true) {
-    this._scale.clamp(value);
-    this.emit('changed');
-    return this;
-  }
+  fn.clamp = function clamp(value = true) {
+    d3Scale.clamp(value);
+    return fn;
+  };
 
   /**
    * {@link https://github.com/d3/d3-scale#continuous_ticks }
    * @param { Object } input Number of ticks to generate or an object passed to tick generator
    * @return { Number[] | Object } Array of ticks or any type the custom tick generator returns
    */
-  ticks(input) {
-    if (typeof this._tickGenerator === 'function') {
-      return this._tickGenerator.call(null, input);
+  fn.ticks = function ticks(input) {
+    if (typeof tG === 'function') {
+      return tG.call(null, input);
     }
-    return this._scale.ticks(input);
-  }
+    return d3Scale.ticks(input);
+  };
 
   /**
    * {@link https://github.com/d3/d3-scale#continuous_nice }
    * @param { Number } count
-   * @return { LinearScale } The instance this method was called on
+   * @return { linearScale } The instance this method was called on
    */
-  nice(count) {
-    this._scale.nice(count);
-    this.emit('changed');
-    return this;
-  }
+  fn.nice = function nice(count) {
+    d3Scale.nice(count);
+
+    return fn;
+  };
 
   // TODO Support this?
-  tickFormat(count, format) {
-    return this._scale.tickFormat(count, format);
-  }
+  fn.tickFormat = function tickFormat(count, format) {
+    return d3Scale.tickFormat(count, format);
+  };
 
   // TODO Support this?
-  interpolate(fn) {
-    this._scale.interpolate(fn);
-  }
+  fn.interpolate = function interpolate(func) {
+    d3Scale.interpolate(func);
+  };
 
   /**
    * @param { Number[] } [values] Set or Get domain values
-   * @return { LinearScale | Number[] } The instance this method was called on if a parameter is provided, otherwise the current domain is returned
+   * @return { linearScale | Number[] } The instance this method was called on if a parameter is provided, otherwise the current domain is returned
    */
-  domain(values) {
+  fn.domain = function domain(values) {
     if (arguments.length) {
-      this._scale.domain(values);
-      this.emit('changed');
-      return this;
+      d3Scale.domain(values);
+
+      return fn;
     }
-    return this._scale.domain();
-  }
+    return d3Scale.domain();
+  };
 
   /**
    * @param { Number[] } [values] Set or Get range values
-   * @return { LinearScale | Number[] } The instance this method was called on if a parameter is provided, otherwise the current range is returned
+   * @return { linearScale | Number[] } The instance this method was called on if a parameter is provided, otherwise the current range is returned
    */
-  range(values) {
+  fn.range = function range(values) {
     if (arguments.length) {
-      this._scale.range(values);
-      this.emit('changed');
-      return this;
+      d3Scale.range(values);
+
+      return fn;
     }
-    return this._scale.range();
-  }
+    return d3Scale.range();
+  };
 
   /**
    * {@link https://github.com/d3/d3-scale#_continuous }
    * @param { Number } value A value within the domain value span
    * @return { Number } Interpolated from the range
    */
-  get(value) {
-    return notNumber(value) ? NaN : this._scale(value);
-  }
+  fn.get = function get(value) {
+    return notNumber(value) ? NaN : d3Scale(value);
+  };
 
   /**
    * Get the first value of the domain
    * @return { Number }
    */
-  start() {
-    return this.domain()[0];
-  }
+  fn.start = function start() {
+    return fn.domain()[0];
+  };
 
   /**
    * Get the last value of the domain
    * @return { Number }
    */
-  end() {
-    return this.domain()[this.domain().length - 1];
-  }
+  fn.end = function end() {
+    return fn.domain()[this.domain().length - 1];
+  };
 
   /**
    * Get the minimum value of the domain
    * @return { Number }
    */
-  min() {
+  fn.min = function min() {
     return Math.min(this.start(), this.end());
-  }
+  };
 
   /**
    * Get the maximum value of the domain
    * @return { Number }
    */
-  max() {
+  fn.max = function max() {
     return Math.max(this.start(), this.end());
-  }
+  };
 
   /**
    * Assign a tick generator. Will be used when calling ticks function
    * @param  { Function } generator Tick generator function
-   * @return { LinearScale } The instance this method was called on
+   * @return { function } The instance this method was called on
    */
-  tickGenerator(generator) {
-    this._tickGenerator = generator;
-    return this;
-  }
+  fn.tickGenerator = function tickGenerator(generator) {
+    tG = generator;
+    return fn;
+  };
 
   /**
    * Divides the domain and range into uniform segments, based on start and end value
    * @param  { Number } segments The number of segments
-   * @return { LinearScale } The instance this method was called on
+   * @return { function } The instance this method was called on
    * @example
-   * let s = new LinearScale( [0, 10], [0, 1] );
+   * let s = linear();
+   * s.domain([0, 10]);
+   * s.range([0, 1]);
    * s.classify( 2 );
    * s.domain(); // [10, 5, 5, 0]
    * s.range(); // [0.75, 0.75, 0.25, 0.25]
    */
-  classify(segments) {
-    let valueRange = (this.start() - this.end()) / segments,
-      domain = [this.end()],
+  fn.classify = function classify(segments) {
+    let valueRange = (fn.start() - fn.end()) / segments,
+      domain = [fn.end()],
       range = [],
       samplePos = valueRange / 2;
 
@@ -180,37 +241,34 @@ class LinearScale {
       let lastVal = domain[domain.length - 1] || 0,
         calIntervalPos = lastVal + valueRange,
         calSamplePos = lastVal + samplePos,
-        sampleColValue = this.get(calSamplePos);
+        sampleColValue = fn.get(calSamplePos);
 
       domain.push(...[calIntervalPos, calIntervalPos]);
       range.push(...[sampleColValue, sampleColValue]);
     }
     domain.pop();
-    this.domain(domain);
-    this.range(range);
+    fn.domain(domain);
+    fn.range(range);
 
-    return this;
+    return fn;
+  };
+
+  fn.copy = function copy() {
+    const cop = linear(fields, settings);
+    cop.domain(fn.domain());
+    cop.range(fn.range());
+    cop.clamp(d3Scale.clamp());
+    return cop;
+  };
+  if (fields) {
+    const stgns = generateSettings(fields, settings);
+    const { mini, maxi } = getMinMax(fields, stgns);
+
+    fn.domain([mini, maxi]);
+    fn.range(stgns.invert ? [1, 0] : [0, 1]);
   }
-
-  copy() {
-    return new LinearScale(this.domain(), this.range())
-      .clamp(this._scale.clamp());
-  }
+  return fn;
 }
-
-Events.mixin(LinearScale.prototype);
-
-/**
- * LinearScale instantiator
- * @private
- * @param { Number[] } [ domain=[0,1] ] The domain values
- * @param { Number[] } [ range=[0,1] ] The range values
- * @return { LinearScale } LinearScale instance
- */
-export function linear(...a) {
-  return new LinearScale(...a);
-}
-
 
 function minorTicksGenerator(count, start, end) {
   const r = Math.abs(start - end);
@@ -301,5 +359,3 @@ export function tightDistanceBasedGenerator({ distance, scale, minorCount = 0, u
     isMinor: majorTicks.indexOf(tick) === -1
   }));
 }
-
-export default LinearScale;

@@ -1,4 +1,4 @@
-import linear from '../../../../../../src/core/charts/composer/scales/linear';
+import linear from '../../../../../../src/core/scales/linear';
 import field from '../../../../../../src/core/data/field';
 
 describe('Linear data scale', () => {
@@ -27,20 +27,16 @@ describe('Linear data scale', () => {
     expect(dataScale({ value: 100 })).to.equal(1);
   });
 
-  it('should expose the underlaying scale object', () => {
-    dataScale = linear(fields, settings);
-    expect(dataScale.scale).to.be.a('object');
-  });
 
   it('should use a normalized range', () => {
     dataScale = linear(fields, settings);
-    expect(dataScale.scale.range()).to.deep.equal([0, 1]);
+    expect(dataScale.range()).to.deep.equal([0, 1]);
   });
 
   it('should generate a domain based on the min and max of all fields', () => {
     fields.push(field()({ min: -20, max: 10 }));
     dataScale = linear(fields, settings);
-    expect(dataScale.scale.domain()).to.deep.equal([-20, 100]);
+    expect(dataScale.domain()).to.deep.equal([-20, 100]);
   });
 
   it('should default to -1 and 1 as domain if data range and data value is equal to zero', () => {
@@ -48,7 +44,7 @@ describe('Linear data scale', () => {
       field()({ min: 0, max: 0 })
     ];
     dataScale = linear(fields, settings);
-    expect(dataScale.scale.domain()).to.deep.equal([-1, 1]);
+    expect(dataScale.domain()).to.deep.equal([-1, 1]);
   });
 
   it('should default to -1 and 1 as domain if data range is NaN', () => {
@@ -56,7 +52,7 @@ describe('Linear data scale', () => {
       field()({ min: NaN, max: NaN })
     ];
     dataScale = linear(fields, settings);
-    expect(dataScale.scale.domain()).to.deep.equal([-1, 1]);
+    expect(dataScale.domain()).to.deep.equal([-1, 1]);
   });
 
   it('should default expand by 10% if data range is equal to zero', () => {
@@ -64,13 +60,13 @@ describe('Linear data scale', () => {
       field()({ min: 10, max: 10 })
     ];
     dataScale = linear(fields, settings);
-    expect(dataScale.scale.domain()).to.deep.equal([9, 11]);
+    expect(dataScale.domain()).to.deep.equal([9, 11]);
 
     fields = [
       field()({ min: -10, max: -10 })
     ];
     dataScale = linear(fields, settings);
-    expect(dataScale.scale.domain()).to.deep.equal([-11, -9]);
+    expect(dataScale.domain()).to.deep.equal([-11, -9]);
   });
 
   describe('Settings', () => {
@@ -79,32 +75,32 @@ describe('Linear data scale', () => {
       settings.expand = 1; // Takes predence over default domain
       settings.include = [-500, 500]; // Takes predence over expand
       dataScale = linear(fields, settings);
-      expect(dataScale.scale.domain()).to.deep.equal([-500, 500]);
+      expect(dataScale.domain()).to.deep.equal([-500, 500]);
 
       settings.min = -555; // Takes predence over expand and include
       settings.max = 555; // Takes predence over expand and include
       dataScale = linear(fields, settings);
-      expect(dataScale.scale.domain()).to.deep.equal([-555, 555]);
+      expect(dataScale.domain()).to.deep.equal([-555, 555]);
     });
 
     describe('Invert', () => {
       it('should be possible to invert the scale using a boolean', () => {
         settings.invert = true;
         dataScale = linear(fields, settings);
-        expect(dataScale.scale.range()).to.deep.equal([1, 0]);
+        expect(dataScale.range()).to.deep.equal([1, 0]);
       });
 
       it('should be possible to invert the scale using a function', () => {
         settings.invert = () => true;
         dataScale = linear(fields, settings);
-        expect(dataScale.scale.range()).to.deep.equal([1, 0]);
+        expect(dataScale.range()).to.deep.equal([1, 0]);
       });
 
       it('should handle truty values', () => {
         truty.forEach((t) => {
           settings.invert = t;
           dataScale = linear(fields, settings);
-          expect(dataScale.scale.range()).to.deep.equal([1, 0], `truty value ${t} was not handled correctly`);
+          expect(dataScale.range()).to.deep.equal([1, 0], `truty value ${t} was not handled correctly`);
         });
       });
 
@@ -112,7 +108,7 @@ describe('Linear data scale', () => {
         falsy.forEach((t) => {
           settings.invert = t;
           dataScale = linear(fields, settings);
-          expect(dataScale.scale.range()).to.deep.equal([0, 1], `falsy value ${t} was not handled correctly`);
+          expect(dataScale.range()).to.deep.equal([0, 1], `falsy value ${t} was not handled correctly`);
         });
       });
     });
@@ -121,20 +117,20 @@ describe('Linear data scale', () => {
       it('should be possible to expand the domain using a number', () => {
         settings.expand = 0.1;
         dataScale = linear(fields, settings);
-        expect(dataScale.scale.domain()).to.deep.equal([-10, 110]);
+        expect(dataScale.domain()).to.deep.equal([-10, 110]);
       });
 
       it('should be possible to expand the domain using a function', () => {
         settings.expand = () => 1;
         dataScale = linear(fields, settings);
-        expect(dataScale.scale.domain()).to.deep.equal([-100, 200]);
+        expect(dataScale.domain()).to.deep.equal([-100, 200]);
       });
 
       it('should ignore non-numeric values', () => {
         notNumbers.forEach((n) => {
           settings.expand = n;
           dataScale = linear(fields, settings);
-          expect(dataScale.scale.domain()).to.deep.equal([0, 100]);
+          expect(dataScale.domain()).to.deep.equal([0, 100]);
         });
       });
 
@@ -144,7 +140,7 @@ describe('Linear data scale', () => {
         ];
         settings.expand = 10;
         dataScale = linear(fields, settings);
-        expect(dataScale.scale.domain()).to.deep.equal([-1, 1]);
+        expect(dataScale.domain()).to.deep.equal([-1, 1]);
       });
 
       it('should not be applied if data range is equal to zero', () => {
@@ -153,7 +149,7 @@ describe('Linear data scale', () => {
         ];
         settings.expand = 10;
         dataScale = linear(fields, settings);
-        expect(dataScale.scale.domain()).to.deep.equal([9, 11]);
+        expect(dataScale.domain()).to.deep.equal([9, 11]);
       });
     });
 
@@ -162,14 +158,14 @@ describe('Linear data scale', () => {
         settings.min = -200;
         settings.max = 300;
         dataScale = linear(fields, settings);
-        expect(dataScale.scale.domain()).to.deep.equal([-200, 300]);
+        expect(dataScale.domain()).to.deep.equal([-200, 300]);
       });
 
       it('should be possible to set min/max the domain using a function', () => {
         settings.min = () => -250;
         settings.max = () => -100;
         dataScale = linear(fields, settings);
-        expect(dataScale.scale.domain()).to.deep.equal([-250, -100]);
+        expect(dataScale.domain()).to.deep.equal([-250, -100]);
       });
 
       it('should ignore non-numeric values', () => {
@@ -177,7 +173,7 @@ describe('Linear data scale', () => {
           settings.min = () => n;
           settings.max = () => n;
           dataScale = linear(fields, settings);
-          expect(dataScale.scale.domain()).to.deep.equal([0, 100]);
+          expect(dataScale.domain()).to.deep.equal([0, 100]);
         });
       });
 
@@ -188,7 +184,7 @@ describe('Linear data scale', () => {
         settings.min = -250;
         settings.max = -100;
         dataScale = linear(fields, settings);
-        expect(dataScale.scale.domain()).to.deep.equal([-250, -100]);
+        expect(dataScale.domain()).to.deep.equal([-250, -100]);
       });
 
       it('should be applied if data range is equal to zero', () => {
@@ -198,7 +194,7 @@ describe('Linear data scale', () => {
         settings.min = -250;
         settings.max = -100;
         dataScale = linear(fields, settings);
-        expect(dataScale.scale.domain()).to.deep.equal([-250, -100]);
+        expect(dataScale.domain()).to.deep.equal([-250, -100]);
       });
     });
 
@@ -206,19 +202,19 @@ describe('Linear data scale', () => {
       it('should be possible to set a range of values to include in the domain using an Array', () => {
         settings.include = [-250, 0, 10, 2000];
         dataScale = linear(fields, settings);
-        expect(dataScale.scale.domain()).to.deep.equal([-250, 2000]);
+        expect(dataScale.domain()).to.deep.equal([-250, 2000]);
       });
 
       it('should be possible to set a range of values to include in the domain using a function', () => {
         settings.include = () => [-250, 0, 10, 2000];
         dataScale = linear(fields, settings);
-        expect(dataScale.scale.domain()).to.deep.equal([-250, 2000]);
+        expect(dataScale.domain()).to.deep.equal([-250, 2000]);
       });
 
       it('should handle when input array contains non-numeric values', () => {
         settings.include = () => [-250].concat(notNumbers);
         dataScale = linear(fields, settings);
-        expect(dataScale.scale.domain()).to.deep.equal([-250, 100]);
+        expect(dataScale.domain()).to.deep.equal([-250, 100]);
       });
 
       it('should be applied if data range and data value is equal to zero', () => {
@@ -227,7 +223,7 @@ describe('Linear data scale', () => {
         ];
         settings.include = [-250, 0, 10, 100];
         dataScale = linear(fields, settings);
-        expect(dataScale.scale.domain()).to.deep.equal([-250, 100]);
+        expect(dataScale.domain()).to.deep.equal([-250, 100]);
       });
 
       it('should be applied if data range is equal to zero', () => {
@@ -236,18 +232,18 @@ describe('Linear data scale', () => {
         ];
         settings.include = [-250, 0, 10, 100];
         dataScale = linear(fields, settings);
-        expect(dataScale.scale.domain()).to.deep.equal([-250, 100]);
+        expect(dataScale.domain()).to.deep.equal([-250, 100]);
       });
 
       it('should only extend domain if included values are above or below current domain range', () => {
         // Default range is 0-100
         settings.include = () => [-250, 0];
         dataScale = linear(fields, settings);
-        expect(dataScale.scale.domain()).to.deep.equal([-250, 100]);
+        expect(dataScale.domain()).to.deep.equal([-250, 100]);
 
         settings.include = () => [10, 500];
         dataScale = linear(fields, settings);
-        expect(dataScale.scale.domain()).to.deep.equal([0, 500]);
+        expect(dataScale.domain()).to.deep.equal([0, 500]);
       });
     });
   });

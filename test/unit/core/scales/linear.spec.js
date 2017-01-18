@@ -1,4 +1,4 @@
-import { linear, looseDistanceBasedGenerator } from '../../../../src/core/scales/linear';
+import linear, { looseDistanceBasedGenerator } from '../../../../src/core/scales/linear';
 
 describe('LinearScale', () => {
   let lin;
@@ -9,12 +9,6 @@ describe('LinearScale', () => {
   it('should have 0-1 as defaults', () => {
     expect(lin.domain()).to.deep.equal([0, 1]);
     expect(lin.range()).to.deep.equal([0, 1]);
-  });
-
-  it('should accept domain and range parameters', () => {
-    lin = linear([1, 3], [-1, 1]);
-    expect(lin.domain()).to.deep.equal([1, 3]);
-    expect(lin.range()).to.deep.equal([-1, 1]);
   });
 
   it('should have min/max depend on domain', () => {
@@ -127,29 +121,6 @@ describe('LinearScale', () => {
     expect(lin.range().length).to.equal(4);
     expect(lin.get(10)).to.equal(-50);
     expect(lin.get(-10)).to.equal(50);
-  });
-
-  it('should notify on changed events', () => {
-    const fn = sinon.sandbox.spy();
-    lin.on('changed', () => fn());
-
-    lin.domain([10, -10]);
-    expect(fn.callCount).to.equal(1);
-
-    lin.range([-100, 100]);
-    expect(fn.callCount).to.equal(2);
-
-    lin.classify(2);
-    expect(fn.callCount).to.equal(4);
-
-    lin.rangeRound([-100, 100]);
-    expect(fn.callCount).to.equal(5);
-
-    lin.clamp(true);
-    expect(fn.callCount).to.equal(6);
-
-    lin.nice(10);
-    expect(fn.callCount).to.equal(7);
   });
 
   describe('Color Scale', () => {

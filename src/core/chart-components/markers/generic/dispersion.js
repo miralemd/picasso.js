@@ -48,7 +48,7 @@ export default function dispersion(composer, defaultStyles = {}, initialSettings
     resolvedStyle = resolveInitialStyle(settings, defaultStyles, composer);
 
     // Calculate the minimum data point distance
-    if (x && x.scale && !x.scale.step) {
+    if (x && !x.step) {
       let pointCoords = data.map(d => d.self.value);
 
       // Sort values
@@ -96,10 +96,10 @@ export default function dispersion(composer, defaultStyles = {}, initialSettings
       if (minDataPointDistance === 0) {
         minDataPointDistance = 0.000000001;
       }
-      let normalizedWidth = x({ value: x.scale.domain()[0] }) - x({ value: x.scale.domain()[0] + minDataPointDistance });
+      let normalizedWidth = x({ value: x.domain()[0] }) - x({ value: x.domain()[0] + minDataPointDistance });
       bandwidth = Math.abs(normalizedWidth);
     } else {
-      bandwidth = x && x.scale.step ? x.scale.step() : 0.5;
+      bandwidth = x && x.step ? x.step() : 0.5;
     }
 
     // Setup the blueprint

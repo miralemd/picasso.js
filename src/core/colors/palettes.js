@@ -1,4 +1,4 @@
-import { linear } from '../scales/linear';
+import linear from '../scales/linear';
 import color from './color';
 
 function rangeCal(min, max, colors) {
