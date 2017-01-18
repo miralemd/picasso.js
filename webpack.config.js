@@ -15,6 +15,9 @@ module.exports = {
     library: '[name]',
     libraryTarget: 'umd'
   },
+  resolve: {
+    packageMains: ['jsnext:main', 'main']
+  },
   module: {
     loaders: [{
       test: /\.js$/,
@@ -22,7 +25,10 @@ module.exports = {
       query: {
         presets: ['es2015'] // need to have this here instead of in .babelrc until after-work bumps babel dependecy to ^6.0.0
       },
-      exclude: /node_modules/
+      include: [
+        path.resolve(__dirname, 'src'),
+        /node_modules\/d3-/
+      ]
     }]
   }
 };
