@@ -165,8 +165,8 @@ const DEFAULT_ERROR_SETTINGS = {
   */
 
 function getSpaceFromScale(s, space) {
-  if (s && s.scale && typeof s.scale.step === 'function') { // some kind of ordinal scale
-    return Math.max(1, s.scale.step() * space);
+  if (s && typeof s.step === 'function') { // some kind of ordinal scale
+    return Math.max(1, s.step() * space);
   }
   return Math.max(1, space / 10);
 }

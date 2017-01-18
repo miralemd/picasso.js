@@ -236,7 +236,7 @@ describe('point marker', () => {
       { m1: { value: 1 } }
     ]);
     const xScale = v => v;
-    xScale.scale = { step: () => 0.2 }; // max size: width * 0.2 -> 20
+    xScale.step = () => 0.2; // max size: width * 0.2 -> 20
     composer.scale.onCall(0).returns(xScale);
 
     point = pointComponent(config, composer);
