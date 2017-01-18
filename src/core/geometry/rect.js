@@ -1,4 +1,4 @@
-import { isLineIntersectingLine } from '../math/intersection';
+import { isLineIntersectingLine, isCircleIntersectingRect } from '../math/intersection';
 
 export default class GeoRect {
   constructor(x = 0, y = 0, width = 0, height = 0, minWidth = 0, minHeight = 0) {
@@ -24,6 +24,10 @@ export default class GeoRect {
 
     this.vectors = this.points();
     this.zeroSize = this.width <= 0 || this.height <= 0;
+    this.center = {
+      x: this.x + (this.width / 2),
+      y: this.y + (this.height / 2)
+    };
   }
 
   containsPoint(p) {
@@ -52,6 +56,12 @@ export default class GeoRect {
       points[0].x <= this.x + this.width && // target.left <= this.right
       this.y <= points[2].y && // this.top <= target.bottom
       points[0].y <= this.y + this.height; // target.top <= this.bottom
+  }
+
+  intersectsCircle(c) {
+    if (this.zeroSize || c.r <= 0) return false;
+
+    return isCircleIntersectingRect(c.x, c.y, c.r, this.center.x, this.center.y, this.width, this.height);
   }
 
   points() {

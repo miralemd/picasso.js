@@ -265,7 +265,21 @@ describe('Rect', () => {
       rect = createRect(shape);
       rect.resolveLocalTransform();
 
-      expect(rect.intersectsLine({ x: 15, y: 30, width: 1, height: 1 })).to.equal(true);
+      expect(rect.intersectsRect({ x: 15, y: 30, width: 1, height: 1 })).to.equal(true);
+    });
+  });
+
+  describe('intersectsCircle', () => {
+    it('should include transformation when resolving rect', () => {
+      shape.x = 10;
+      shape.y = 20;
+      shape.width = 1;
+      shape.height = 1;
+      shape.transform = 'translate(5, 10)';
+      rect = createRect(shape);
+      rect.resolveLocalTransform();
+
+      expect(rect.intersectsCircle({ x: 15, y: 30, r: 1 })).to.equal(true);
     });
   });
 });

@@ -97,6 +97,19 @@ describe('Display Object', () => {
         input: shape
       }));
     });
+
+    it('should return a collision with it self, if it intersects circle', () => {
+      const shape = { x: 50, y: 50, r: 1 };
+      const collisions = _displayObject.getItemsFrom(shape);
+      expect(collisions).to.be.of.length(1);
+      expect(collisions[0]).to.be.an.instanceof(Collision);
+      expect(collisions[0]).to.deep.equal(new Collision({
+        node: _displayObject.attrs,
+        parent: null,
+        bounds: { x: 0, y: 0, width: 0, height: 0 },
+        input: shape
+      }));
+    });
   });
 
   describe('containsPoint', () => {
@@ -143,6 +156,22 @@ describe('Display Object', () => {
 
     it('should return a false if it doesnt intersect rect', () => {
       const r = _displayObject.intersectsRect({ x: -50, y: -50, width: 1, height: 1 });
+      expect(r).to.equal(false);
+    });
+  });
+
+  describe('intersectsCircle', () => {
+    beforeEach(() => {
+      _displayObject.collider({ type: 'rect', x: 0, y: 0, width: 100, height: 100 });
+    });
+
+    it('should return a true if it intersect circle', () => {
+      const r = _displayObject.intersectsCircle({ x: 50, y: 50, r: 1 });
+      expect(r).to.equal(true);
+    });
+
+    it('should return a false if it doesnt intersect circle', () => {
+      const r = _displayObject.intersectsCircle({ x: -50, y: -50, r: 1 });
       expect(r).to.equal(false);
     });
   });

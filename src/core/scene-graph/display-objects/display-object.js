@@ -110,6 +110,10 @@ class DisplayObject extends Node {
     return hasCollisionOnNode(this, rect);
   }
 
+  intersectsCircle(circle) {
+    return hasCollisionOnNode(this, circle);
+  }
+
   resolveLocalTransform(m = new Matrix()) {
     if (typeof this.attrs.transform !== 'undefined') resolveTransform(this.attrs.transform, m);
     this.modelViewMatrix = m.clone();

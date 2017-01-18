@@ -1,5 +1,5 @@
 import { sqrDistance } from '../math/vector';
-import { closestPointToLine, isPointOnLine } from '../math/intersection';
+import { closestPointToLine, isPointOnLine, isCircleIntersectingRect } from '../math/intersection';
 
 export default class GeoCircle {
   constructor(cx = 0, cy = 0, r = 0, minRadius = 0) {
@@ -40,17 +40,25 @@ export default class GeoCircle {
 
   intersectsRect(points) {
     if (this.zeroSize) return false;
-    if (this.cy < points[0].y - this.r || this.cy > points[2].y + this.r) return false;
-    if (this.cx < points[0].x - this.r || this.cx > points[2].x + this.r) return false;
+    const width = points[2].x - points[0].x;
+    const height = points[2].y - points[0].y;
+    const centerX = points[0].x + (width / 2);
+    const centerY = points[0].y + (height / 2);
 
-    return (this.cy >= points[0].y &&
-      this.cy <= points[2].y &&
-      this.cx >= points[0].x &&
-      this.cx <= points[2].x) ||
-      this.intersectsLine([points[0], points[1]]) ||
-      this.intersectsLine([points[1], points[2]]) ||
-      this.intersectsLine([points[2], points[3]]) ||
-      this.intersectsLine([points[3], points[0]]);
+    return isCircleIntersectingRect(this.cx, this.cy, this.r, centerX, centerY, width, height);
+  }
+
+  intersectsCircle(c) {
+    if (this.zeroSize || c.r <= 0) return false;
+
+    const dx = this.cx - c.x;
+    const dy = this.cy - c.y;
+    const sqrDist = Math.pow(dx, 2) + Math.pow(dy, 2);
+
+    if (sqrDist <= Math.pow(this.r + c.r, 2)) {
+      return true;
+    }
+    return false;
   }
 }
 

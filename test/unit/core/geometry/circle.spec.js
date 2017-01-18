@@ -301,5 +301,66 @@ describe('GeoCircle', () => {
         expect(c.intersectsLine([p1, p2])).to.equal(false);
       });
     });
+
+    describe('Circle', () => {
+      it('should intersect with a circle center inside its circumference ', () => {
+        const r = 30;
+        const c = new GeoCircle(10, 20, r);
+        const rInside = r - 1;
+        const c1 = { x: 10, y: 20 - rInside, r: 10 };
+        const c2 = { x: 10 + rInside, y: 20, r: 10 };
+        const c3 = { x: 10, y: 20 + rInside, r: 10 };
+        const c4 = { x: 10 - rInside, y: 20, r: 10 };
+
+        expect(c.intersectsCircle(c1)).to.equal(true);
+        expect(c.intersectsCircle(c2)).to.equal(true);
+        expect(c.intersectsCircle(c3)).to.equal(true);
+        expect(c.intersectsCircle(c4)).to.equal(true);
+      });
+
+      it('should not intersect with a circle outside its circumference ', () => {
+        const r = 30;
+        const c = new GeoCircle(10, 20, r);
+        const rOutside = r + 10;
+        const c1 = { x: 10, y: 20 - rOutside, r: 9 };
+        const c2 = { x: 10 + rOutside, y: 20, r: 9 };
+        const c3 = { x: 10, y: 20 + rOutside, r: 9 };
+        const c4 = { x: 10 - rOutside, y: 20, r: 9 };
+
+        expect(c.intersectsCircle(c1)).to.equal(false);
+        expect(c.intersectsCircle(c2)).to.equal(false);
+        expect(c.intersectsCircle(c3)).to.equal(false);
+        expect(c.intersectsCircle(c4)).to.equal(false);
+      });
+
+      it('should intersect with a circle on its circumference', () => {
+        const r = 30;
+        const c = new GeoCircle(10, 20, r);
+        const rOutside = r + 9;
+        const c1 = { x: 10, y: 20 - rOutside, r: 9 };
+        const c2 = { x: 10 + rOutside, y: 20, r: 9 };
+        const c3 = { x: 10, y: 20 + rOutside, r: 9 };
+        const c4 = { x: 10 - rOutside, y: 20, r: 9 };
+
+        expect(c.intersectsCircle(c1)).to.equal(true);
+        expect(c.intersectsCircle(c2)).to.equal(true);
+        expect(c.intersectsCircle(c3)).to.equal(true);
+        expect(c.intersectsCircle(c4)).to.equal(true);
+      });
+
+      it('should not intersect if the size of the circle is zero', () => {
+        const c = new GeoCircle(10, 20, 0);
+        const c1 = { x: 10, y: 20, r: 1 };
+
+        expect(c.intersectsCircle(c1)).to.equal(false);
+      });
+
+      it('should not intersect if the size of the colliding circle is zero', () => {
+        const c = new GeoCircle(10, 20, 10);
+        const c1 = { x: 10, y: 20, r: 0 };
+
+        expect(c.intersectsCircle(c1)).to.equal(false);
+      });
+    });
   });
 });

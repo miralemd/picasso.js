@@ -13,7 +13,7 @@ function appendParentNode(node, collision) {
   const p = node.parent;
 
   if (p && p.type !== 'stage') {
-    collision.parent = createNodeCollsion(node);
+    collision.parent = createNodeCollsion(p);
 
     const pp = p.parent;
     if (pp && pp.type !== 'stage') {
@@ -63,6 +63,7 @@ function resolveGeometryCollision(node, type, input) {
       transformedInput = node.inverseModelViewMatrix.transformPoints(input);
     } else {
       transformedInput = node.inverseModelViewMatrix.transformPoint(input);
+      transformedInput.r = input.r;
     }
   }
 
@@ -123,45 +124,48 @@ function hasCollision(nodes, intersectionType, input) {
   return false;
 }
 
-function shapeToPoints(shape, ratio = 1) {
+function resolveShape(shape, ratio = 1) {
   const {
     x, y,
     width, height,
     x1, x2, y1, y2,
     cx, cy, r
   } = shape || {};
-  let points;
+  let _shape;
 
   const isNumber = v => typeof v === 'number' && !isNaN(v);
 
   if (isNumber(cx) && isNumber(cy) && isNumber(r)) {
-    return []; // Not supported
+    _shape.x = cx * ratio;
+    _shape.y = cy * ratio;
+    _shape.r = r;
+    return ['intersectsCircle', _shape];
   } else if (isNumber(x1) && isNumber(x2) && isNumber(y1) && isNumber(y2)) {
-    points = convertLineToPoints(shape).map(p => scalarMultiply(p, ratio));
-    return ['intersectsLine', points];
+    _shape = convertLineToPoints(shape).map(p => scalarMultiply(p, ratio));
+    return ['intersectsLine', _shape];
   } else if (isNumber(x) && isNumber(y) && isNumber(width) && isNumber(height)) {
-    points = convertRectToPoints(shape).map(p => scalarMultiply(p, ratio));
-    return ['intersectsRect', points];
+    _shape = convertRectToPoints(shape).map(p => scalarMultiply(p, ratio));
+    return ['intersectsRect', _shape];
   } else if (isNumber(x) && isNumber(y)) {
-    points = scalarMultiply(shape, ratio);
-    return ['containsPoint', points];
+    _shape = scalarMultiply(shape, ratio);
+    return ['containsPoint', _shape];
   }
   return [];
 }
 
 export function resolveCollionsOnNode(node, shape) {
-  const [intersectionType, points] = shapeToPoints(shape, node.dpi);
+  const [intersectionType, _shape] = resolveShape(shape, node.dpi);
   const collisions = [];
 
   if (intersectionType) {
-    findAllCollisions([node], intersectionType, collisions, points);
+    findAllCollisions([node], intersectionType, collisions, _shape);
     appendInputShape(shape, collisions);
   }
   return collisions;
 }
 
 export function hasCollisionOnNode(node, shape) {
-  const [intersectionType, points] = shapeToPoints(shape, node.dpi);
+  const [intersectionType, _shape] = resolveShape(shape, node.dpi);
 
-  return hasCollision([node], intersectionType, points);
+  return hasCollision([node], intersectionType, _shape);
 }

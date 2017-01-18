@@ -34,6 +34,21 @@ export function isLineIntersectingLine(lineStart, lineEnd, targetLineStart, targ
   return isPointOnLine(lineStart, lineEnd, p) && isPointOnLine(targetLineStart, targetLineEnd, p);
 }
 
+export function isCircleIntersectingRect(cx, cy, r, rectCenterX, rectCenterY, width, height) {
+  const rX = (width / 2);
+  const rY = (height / 2);
+  const dX = Math.abs(cx - rectCenterX);
+  const dY = Math.abs(cy - rectCenterY);
+
+  if (dX > rX + r || dY > rY + r) return false;
+
+  if (dX <= rX || dY <= rY) return true;
+
+  const sqrDist = Math.pow(dX - rX, 2) + Math.pow(dY - rY, 2);
+
+  return sqrDist <= Math.pow(r, 2);
+}
+
 export function convertLineToPoints(line) {
   const x1 = line.x1 || 0;
   const y1 = line.y1 || 0;

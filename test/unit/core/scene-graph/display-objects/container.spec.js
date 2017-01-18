@@ -350,7 +350,7 @@ describe('Container', () => {
   });
 
   describe('intersectsRect', () => {
-    it('should return true if any child intersects line', () => {
+    it('should return true if any child intersects rect', () => {
       container = createContainer();
       container.addChild(createRect({ x: 500, y: 500, width: 100, height: 100 }));
       container.addChild(createRect({ x: 500, y: 500, width: 200, height: 200 }));
@@ -386,7 +386,7 @@ describe('Container', () => {
       expect(r).to.equal(true);
     });
 
-    it('should return true if any childs child intersects line', () => {
+    it('should return true if any childs child intersects rect', () => {
       container = createContainer();
       container.addChild(createRect({ x: 500, y: 500, width: 100, height: 100 }));
       container.addChild(createRect({ x: 500, y: 500, width: 200, height: 200 }));
@@ -399,7 +399,7 @@ describe('Container', () => {
       expect(r).to.equal(true);
     });
 
-    it('should return false if no child intersects line', () => {
+    it('should return false if no child intersects rect', () => {
       container = createContainer();
       container.addChild(createRect({ x: 500, y: 500, width: 100, height: 100 }));
       container.addChild(createRect({ x: 500, y: 500, width: 200, height: 200 }));
@@ -407,6 +407,68 @@ describe('Container', () => {
       childContainer.addChild(createRect({ x: 1500, y: 1500, width: 200, height: 200 }));
 
       const r = container.intersectsRect({ x: 0, y: 0, width: 100, height: 100 });
+      expect(r).to.equal(false);
+    });
+  });
+
+  describe('intersectsCircle', () => {
+    it('should return true if any child intersects circle', () => {
+      container = createContainer();
+      container.addChild(createRect({ x: 500, y: 500, width: 100, height: 100 }));
+      container.addChild(createRect({ x: 500, y: 500, width: 200, height: 200 }));
+
+      const r = container.intersectsCircle({ x: 550, y: 550, r: 10 });
+      expect(r).to.equal(true);
+    });
+
+    it('should return true if bounds intersects circle', () => {
+      container = createContainer({ collider: { type: 'bounds' } });
+      container.addChild(createRect({ x: 0, y: 0, width: 100, height: 100 }));
+      container.addChild(createRect({ x: 1500, y: 1500, width: 200, height: 200 }));
+
+      const r = container.intersectsCircle({ x: 550, y: 550, r: 100 });
+      expect(r).to.equal(true);
+    });
+
+    it('should return true if custom collider intersects circle', () => {
+      container = createContainer({ collider: { type: 'rect', x: 0, y: 0, width: 100, height: 100 } });
+      container.addChild(createRect({ x: 0, y: 0, width: 100, height: 100 }));
+      container.addChild(createRect({ x: 1500, y: 1500, width: 200, height: 200 }));
+
+      const r = container.intersectsCircle({ x: 2, y: 2, r: 2 });
+      expect(r).to.equal(true);
+    });
+
+    it('should return true if frontChild intersects circle', () => {
+      container = createContainer({ collider: { type: 'frontChild' } });
+      container.addChild(createRect({ x: 0, y: 0, width: 100, height: 100 }));
+      container.addChild(createRect({ x: 1500, y: 1500, width: 200, height: 200 }));
+
+      const r = container.intersectsCircle({ x: 20, y: 20, r: 2 });
+      expect(r).to.equal(true);
+    });
+
+    it('should return true if any childs child intersects circle', () => {
+      container = createContainer();
+      container.addChild(createRect({ x: 500, y: 500, width: 100, height: 100 }));
+      container.addChild(createRect({ x: 500, y: 500, width: 200, height: 200 }));
+      const childContainer = createContainer();
+      childContainer.addChild(createRect({ x: 0, y: 0, width: 200, height: 200 }));
+      childContainer.addChild(createRect({ x: 1500, y: 1500, width: 200, height: 200 }));
+      container.addChild(childContainer);
+
+      const r = container.intersectsCircle({ x: 1550, y: 1550, r: 100 });
+      expect(r).to.equal(true);
+    });
+
+    it('should return false if no child intersects circle', () => {
+      container = createContainer();
+      container.addChild(createRect({ x: 500, y: 500, width: 100, height: 100 }));
+      container.addChild(createRect({ x: 500, y: 500, width: 200, height: 200 }));
+      const childContainer = createContainer();
+      childContainer.addChild(createRect({ x: 1500, y: 1500, width: 200, height: 200 }));
+
+      const r = container.intersectsCircle({ x: 0, y: 0, r: 100 });
       expect(r).to.equal(false);
     });
   });

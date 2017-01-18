@@ -233,5 +233,71 @@ describe('GeoRect', () => {
         expect(r.intersectsLine(points)).to.equal(false);
       });
     });
+
+    describe('Circle', () => {
+      it('should intersect if circle center is within the circumference', () => {
+        const r = new GeoRect(50, 100, 150, 200);
+        const c = { x: 100, y: 200, r: 10 };
+        expect(r.intersectsCircle(c)).to.equal(true);
+      });
+
+      it('should intersect if circle circumference is on the rect circumference', () => {
+        const r = new GeoRect(50, 100, 150, 200);
+        const c = { x: 40, y: 100, r: 10 };
+        expect(r.intersectsCircle(c)).to.equal(true);
+      });
+
+      it('should intersect if circle circumference is inside the rect circumference', () => {
+        const r = new GeoRect(50, 100, 150, 200);
+        const c = { x: 40, y: 100, r: 15 };
+        expect(r.intersectsCircle(c)).to.equal(true);
+      });
+
+      it('should intersect if circle circumference is inside the rect circumference while circle is proportional with a rect bound', () => {
+        const rect = new GeoRect(50, 100, 150, 200);
+        const radius = 10;
+        const dX = Math.cos(45 * (Math.PI / 180)) * radius;
+        const dY = Math.sin(45 * (Math.PI / 180)) * radius;
+
+        // Circle is touching the edge
+        let c = { x: 51 - dX, y: 101 - dY, r: radius };
+        expect(rect.intersectsCircle(c)).to.equal(true);
+
+        // Circle is just outside the edge
+        c = { x: 49 - dX, y: 99 - dY, r: radius };
+        expect(rect.intersectsCircle(c)).to.equal(false);
+      });
+
+      it('should not intersect if point is outside the circumference', () => {
+        const r = new GeoRect(50, 100, 150, 200);
+        const c1 = { x: 39, y: 100, r: 10 };
+        const c2 = { x: 50, y: 89, r: 10 };
+        const c3 = { x: 211, y: 300, r: 10 };
+        const c4 = { x: 200, y: 311, r: 10 };
+
+        expect(r.intersectsCircle(c1)).to.equal(false);
+        expect(r.intersectsCircle(c2)).to.equal(false);
+        expect(r.intersectsCircle(c3)).to.equal(false);
+        expect(r.intersectsCircle(c4)).to.equal(false);
+      });
+
+      it('should not intersect if the width is zero', () => {
+        const r = new GeoRect(50, 100, 0, 200);
+        const c = { x: 50, y: 100, r: 10 };
+        expect(r.intersectsCircle(c)).to.equal(false);
+      });
+
+      it('should not intersect if the height is zero', () => {
+        const r = new GeoRect(50, 100, 150, 0);
+        const c = { x: 50, y: 100, r: 10 };
+        expect(r.intersectsCircle(c)).to.equal(false);
+      });
+
+      it('should not intersect if the radius is zero', () => {
+        const r = new GeoRect(50, 100, 150, 200);
+        const c = { x: 50, y: 100, r: 0 };
+        expect(r.intersectsCircle(c)).to.equal(false);
+      });
+    });
   });
 });

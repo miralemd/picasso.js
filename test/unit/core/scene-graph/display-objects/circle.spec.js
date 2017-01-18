@@ -267,7 +267,20 @@ describe('Circle', () => {
       circle = createCircle(shape);
       circle.resolveLocalTransform();
 
-      expect(circle.intersectsLine({ x: 15, y: 30, width: 1, height: 1 })).to.equal(true);
+      expect(circle.intersectsRect({ x: 15, y: 30, width: 1, height: 1 })).to.equal(true);
+    });
+  });
+
+  describe('intersectsCircle', () => {
+    it('should include transformation when resolving circle', () => {
+      shape.cx = 10;
+      shape.cy = 20;
+      shape.r = 1;
+      shape.transform = 'translate(5, 10)';
+      circle = createCircle(shape);
+      circle.resolveLocalTransform();
+
+      expect(circle.intersectsCircle({ x: 15, y: 30, r: 1 })).to.equal(true);
     });
   });
 });
