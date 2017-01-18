@@ -27,7 +27,7 @@ module.exports = {
       },
       include: [
         path.resolve(__dirname, 'src'),
-        /node_modules\/d3-/
+        /node_modules\/|\\d3-/
       ]
     }]
   }
