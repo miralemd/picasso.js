@@ -51,7 +51,8 @@ export function continuousDefaultSettings() {
       tight: false,
       forceBounds: false,
       stroke: '#cccccc',
-      strokeWidth: 1
+      strokeWidth: 1,
+      distance: 100
     },
     minorTicks: {
       show: false,

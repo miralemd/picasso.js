@@ -59,6 +59,7 @@ export function generateContinuousTicks({ settings, scale, innerRect, formatter 
     ticks = scale.ticks({
       distance,
       minorCount,
+      unitDivider: settings.ticks.distance,
       scale: scale.copy(),
       formatter
     });
