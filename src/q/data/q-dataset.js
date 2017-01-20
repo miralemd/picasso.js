@@ -8,7 +8,7 @@ function findCubes(layout) {
   function traverse(obj, p) {
     if (Array.isArray(obj)) {
       obj.forEach((o, i) => traverse(o, `${p}/${i}`));
-    } else {
+    } else if (obj && typeof obj === 'object') {
       Object.keys(obj).forEach((key) => {
         const type = typeof obj[key];
         if (key === 'qHyperCube' || key === 'qListObject') {

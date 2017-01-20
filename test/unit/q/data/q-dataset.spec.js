@@ -16,6 +16,9 @@ describe('qdataset', () => {
         }
       }
     ],
+    simple: true,
+    fn: () => {},
+    nil: null,
     qDummy: {
       qHyperCube: 'foo-nope'
     },
