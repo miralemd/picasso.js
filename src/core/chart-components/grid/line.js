@@ -1,72 +1,118 @@
+import extend from 'extend';
 import createComponentFactory from '../component';
+import { transposer } from '../../transposer/transposer';
+import { generateContinuousTicks, generateDiscreteTicks } from '../axis/axis-tick-generators';
+import { continuousDefaultSettings } from '../axis/axis-default-settings';
+
+/**
+ * Generate array of lines (ticks) from scale
+ *
+ * @param  {Object} scale    A scale supplied by the composer
+ * @param  {Object} settings The settings object from the grid line component
+ * @param  {Object} rect     The rect containing width and height to renderer in
+ * @return {Array}           Returns an array of ticks
+ */
+function lineGen(scale, settings, innerRect) {
+  let lines = [];
+
+  if (scale && scale.type === 'ordinal') {
+    lines = generateDiscreteTicks({ data: scale.domain(), scale }) || [];
+  } else if (scale) {
+    lines = (scale.cachedTicks && scale.cachedTicks()) || [];
+    if (!lines.length) {
+      lines = generateContinuousTicks({ settings: extend(continuousDefaultSettings(), settings, { align: 'bottom' }), scale, innerRect }) || [];
+    }
+  }
+
+  return lines;
+}
 
 const gridLineComponent = {
   created() {
-    this.x = this.settings.settings.x ? this.composer.scales[this.settings.settings.x.scale] : null;
-    this.y = this.settings.settings.y ? this.composer.scales[this.settings.settings.y.scale] : null;
-
-    this.onData();
   },
-  require: ['composer', 'renderer', 'element'], // TODO element is not available, use getPreferredSize and beforeRender to give the renderer a size
+
+  require: ['composer', 'renderer'],
   defaultSettings: {
-    settings: {},
-    data: {}
-  },
-  onData() {
-    this.lines = [];
-
-    /* eslint no-unused-expressions: 0*/
-    this.x && this.x.update();
-    this.y && this.y.update();
-
-    this.resize();
+    displayOrder: -1,
+    styles: {}
   },
 
-  beforeRender() {
-    this.renderer.rect.width = this.element.clientWidth;
-    this.renderer.rect.height = this.element.clientHeight;
-    // this.render();
+  beforeUpdate(opts) {
+    const { settings } = opts;
+
+    this.data = settings.data;
+    this.settings = settings.settings;
+  },
+
+  beforeRender(opts) {
+    const { inner } = opts;
+
+    this.rect = inner;
+
+    this.blueprint = transposer();
+
+    this.blueprint.width = this.rect.width;
+    this.blueprint.height = this.rect.height;
+    this.blueprint.x = this.rect.x;
+    this.blueprint.y = this.rect.y;
+    this.blueprint.crisp = true;
+
+    return inner;
   },
 
   render() {
-    const { width, height } = this.renderer.rect;
+    // Setup scales
+    this.x = this.settings.x ? this.composer.scale(this.settings.x.scale) : null;
+    this.y = this.settings.y ? this.composer.scale(this.settings.y.scale) : null;
 
-    this.lines.x = (this.x && this.x.scale.magicTicks(this.renderer.rect.width - this.renderer.rect.x)) || [];
-    this.lines.y = (this.y && this.y.scale.magicTicks(this.renderer.rect.height - this.renderer.rect.y)) || [];
-
-    if (!Object.keys(this.settings.settings.styles)[0]) {
+    // Return an empty array to abort rendering when no scales are available to renderer
+    if (!this.x && !this.y) {
       return [];
     }
 
+    // Base the styling upon the axis defaults
+    let axisDefaults = continuousDefaultSettings();
+    this.settings.styles.ticks = extend({}, axisDefaults.ticks, this.settings.styles.ticks || {});
+    this.settings.styles.minorTicks = extend({}, axisDefaults.minorTicks, this.settings.styles.minorTicks || {});
+
+    // Setup lines for X and Y
+    this.lines = {
+      x: [],
+      y: []
+    };
+
+    // Use the lineGen function to generate appropriate ticks
+    this.lines.x = lineGen(this.x, this.settings, this.rect);
+    this.lines.y = lineGen(this.y, this.settings, this.rect);
+
+    // Set all Y lines to vertical by default
+    // This makes the transposer flip them individually
+    this.lines.y = this.lines.y.map(i => extend(i, { vertical: true }));
+
+    // Define a style that differs between major and minor ticks.
     let style = {};
 
-    const displayLinesX = this.lines.x.map((p) => {
-      style = p.isMinor ? this.settings.settings.styles.minor : this.settings.settings.styles.major;
+    // Loop through all X and Y lines
+    [...this.lines.x, ...this.lines.y].forEach((p) => {
+      style = p.isMinor ? this.settings.styles.minorTicks : this.settings.styles.ticks;
 
-      return {
-        type: 'line',
-        x1: p.position * width,
-        y1: 0,
-        x2: p.position * width,
-        y2: height,
-        style: `stroke: ${style.color}; stroke-width: ${style.lineWidth}`
-      };
+      // If the style's show is falsy, don't renderer this item (to respect axis settings).
+      if (style.show) {
+        // Use the transposer to handle actual positioning
+        this.blueprint.push({
+          type: 'line',
+          x1: p.position,
+          y1: 0,
+          x2: p.position,
+          y2: 1,
+          stroke: style.stroke || 'black',
+          strokeWidth: style.strokeWidth || 1,
+          vertical: p.vertical || false // This flips individual points (Y-lines)
+        });
+      }
     });
 
-    const displayLinesY = this.lines.y.map((p) => {
-      style = p.isMinor ? this.settings.settings.styles.minor : this.settings.settings.styles.major;
-
-      return {
-        type: 'line',
-        x1: 0,
-        y1: (1 - p.position) * height,
-        x2: width,
-        y2: (1 - p.position) * height,
-        style: `stroke: ${style.color}; stroke-width: ${style.lineWidth}`
-      };
-    });
-
-    return [...displayLinesX, ...displayLinesY];
+    return this.blueprint.output();
   }
 };
 

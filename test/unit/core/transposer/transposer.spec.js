@@ -9,20 +9,20 @@ describe('transposer', () => {
     draw.vertical = true;
 
     // Get the opposite key to what you put in, height when you put in width etc
-    expect(draw.evaluateKey('width')).to.equal('height');
-    expect(draw.evaluateKey('height')).to.equal('width');
+    expect(draw.constructor.evaluateKey('width', true)).to.equal('height');
+    expect(draw.constructor.evaluateKey('height', true)).to.equal('width');
 
     // Same applies to coordinates
-    expect(draw.evaluateKey('x')).to.equal('y');
-    expect(draw.evaluateKey('y')).to.equal('x');
+    expect(draw.constructor.evaluateKey('x', true)).to.equal('y');
+    expect(draw.constructor.evaluateKey('y', true)).to.equal('x');
 
     // With multiple X and Ys
-    expect(draw.evaluateKey('x1')).to.equal('y1');
-    expect(draw.evaluateKey('y2')).to.equal('x2');
+    expect(draw.constructor.evaluateKey('x1', true)).to.equal('y1');
+    expect(draw.constructor.evaluateKey('y2', true)).to.equal('x2');
 
     // With CX and CY
-    expect(draw.evaluateKey('cx')).to.equal('cy');
-    expect(draw.evaluateKey('cy')).to.equal('cx');
+    expect(draw.constructor.evaluateKey('cx', true)).to.equal('cy');
+    expect(draw.constructor.evaluateKey('cy', true)).to.equal('cx');
   });
 
   it('should return correct coordinates', () => {

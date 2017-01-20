@@ -67,6 +67,7 @@ function getMinMax(fields, settings) {
 export default function linear(fields, settings) {
   const d3Scale = scaleLinear();
   let tG;
+  let tickCache;
 
   /**
    * @alias linearScale
@@ -110,15 +111,34 @@ export default function linear(fields, settings) {
   };
 
   /**
+   * Get cached ticks (if any)
+   * @return { Number | Undefined }
+   */
+  fn.cachedTicks = function fnCachedTicks() {
+    return tickCache;
+  };
+
+  /**
+   * Clear the tick cache
+   * @return {Number | Undefined}
+   */
+  fn.clearTicksCache = function fnClearTicks() {
+    tickCache = undefined;
+    return this;
+  };
+
+  /**
    * {@link https://github.com/d3/d3-scale#continuous_ticks }
    * @param { Object } input Number of ticks to generate or an object passed to tick generator
    * @return { Number[] | Object } Array of ticks or any type the custom tick generator returns
    */
   fn.ticks = function ticks(input) {
     if (typeof tG === 'function') {
-      return tG.call(null, input);
+      tickCache = tG.call(null, input);
+      return tickCache;
     }
-    return d3Scale.ticks(input);
+    tickCache = d3Scale.ticks(input);
+    return tickCache;
   };
 
   /**

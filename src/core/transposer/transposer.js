@@ -16,8 +16,8 @@ class Transposer {
    * @param  {String} key   Key
    * @return {String}         Actual key
    */
-  evaluateKey(key) {
-    if (this.vertical) {
+  static evaluateKey(key, vertical) {
+    if (vertical) {
       const firstChar = key.substring(0, 1);
       const rest = key.substring(1);
 
@@ -84,9 +84,10 @@ class Transposer {
   output() {
     let items = this.storage.map((item) => {
       let newItem = {};
+      const vertical = (typeof item.vertical !== 'undefined' ? item.vertical : this.vertical);
 
       Object.keys(item).forEach((key) => {
-        const nkey = this.evaluateKey(key);
+        const nkey = Transposer.evaluateKey(key, vertical);
         const nval = this.transposeCoordinate(nkey, item[key]);
         newItem[nkey] = nval;
       });
