@@ -11,16 +11,26 @@ const specialTextValues = {
   }
 };
 
+function normalizeValues(path, data, meta) {
+  let values = resolve(path, data);
+  let normalized = new Array(values.length);
+  let cell;
+  for (let i = 0; i < values.length; i++) {
+    cell = values[i];
+    normalized[i] = {
+      value: cell.qNum,
+      label: cell.qElemNumber in specialTextValues ? specialTextValues[cell.qElemNumber](meta) : cell.qText,
+      id: cell.qElemNumber
+    };
+  }
+  return normalized;
+}
+
 function collectStraightData(col, page, meta) {
   let values = [];
   let matrixColIdx = col - page.qArea.qLeft;
   if (matrixColIdx >= 0 && matrixColIdx < (page.qArea.qLeft + page.qArea.qWidth) && page.qArea.qHeight > 0) {
-    values = values.concat(resolve(`//${matrixColIdx}`, page.qMatrix).map(v =>
-      ({
-        value: v.qNum,
-        label: v.qElemNumber in specialTextValues ? specialTextValues[v.qElemNumber](meta) : v.qText,
-        id: v.qElemNumber
-      })));
+    values = normalizeValues(`//${matrixColIdx}`, page.qMatrix, meta);
   }
   return values;
 }
@@ -86,16 +96,8 @@ function transformStackedToStraight(root) {
 }
 
 function collectStackedData(col, page, meta) {
-  let values = [];
   let matrix = transformStackedToStraight(page.qData[0]);
-
-  values = values.concat(resolve(`//${col}`, matrix).map(v =>
-      ({
-        value: v.qNum,
-        label: v.qElemNumber in specialTextValues ? specialTextValues[v.qElemNumber](meta) : v.qText,
-        id: v.qElemNumber
-      })));
-  return values;
+  return normalizeValues(`//${col}`, matrix, meta);
 }
 
 // collect data over multiple pages
