@@ -11,19 +11,104 @@ const specialTextValues = {
   }
 };
 
+function normalizeValues(path, data, meta) {
+  let values = resolve(path, data);
+  let normalized = new Array(values.length);
+  let cell;
+  for (let i = 0; i < values.length; i++) {
+    cell = values[i];
+    normalized[i] = {
+      value: cell.qNum,
+      label: cell.qElemNumber in specialTextValues ? specialTextValues[cell.qElemNumber](meta) : cell.qText,
+      id: cell.qElemNumber
+    };
+  }
+  return normalized;
+}
+
+function collectStraightData(col, page, meta) {
+  let values = [];
+  let matrixColIdx = col - page.qArea.qLeft;
+  if (matrixColIdx >= 0 && matrixColIdx < (page.qArea.qLeft + page.qArea.qWidth) && page.qArea.qHeight > 0) {
+    values = normalizeValues(`//${matrixColIdx}`, page.qMatrix, meta);
+  }
+  return values;
+}
+
+// function log(...x) {
+//   let xx = x.map(v => JSON.stringify(v, null, 2));
+//   console.log(...xx);
+// }
+
+function traverseNode(node) {
+  let rows = [];
+  let children = node.qSubNodes || [];
+  let pseudos = [];
+
+  let n = {
+    qNum: node.qValue,
+    qElemNumber: node.qElemNo,
+    qText: node.qText
+  };
+  if (!children.length) {
+    return [[n]];
+  }
+
+  if (children[0].qType === 'P') {
+    // rows = rows.concat(children[0].qSubNodes.map(traverseNode)[0]);
+    for (let i = 0; i < children.length; i++) {
+      let pp = children[i].qSubNodes.map(traverseNode).map(v => v[0]);
+      pseudos.push(pp);
+    }
+    let first = pseudos[0];
+    pseudos.slice(1).forEach((p) => {
+      // log(n.qText, 'pesudorodfsdfws', p);
+      first.forEach((row, r) => {
+        // log('a', r, p[r]);
+        let lastRowValue = p[r].slice(-1)[0];
+        row.push(lastRowValue);
+      });
+    });
+    rows = rows.concat(pseudos[0]);
+    // log('rows', rows);
+  } else {
+    for (let i = 0; i < children.length; i++) {
+      if (children[i].qType !== 'T') {
+        rows = rows.concat(traverseNode(children[i]));
+      }
+    }
+  }
+
+  for (let i = 0; i < rows.length; i++) {
+    rows[i].unshift(n);
+  }
+
+  return rows;
+}
+
+function transformStackedToStraight(root) {
+  let nodes = root.qSubNodes;
+  let matrix = [];
+  for (let i = 0; i < nodes.length; i++) {
+    matrix = matrix.concat(traverseNode(nodes[i]));
+  }
+  return matrix;
+}
+
+function collectStackedData(col, page, meta) {
+  let matrix = transformStackedToStraight(page.qData[0]);
+  return normalizeValues(`//${col}`, matrix, meta);
+}
+
 // collect data over multiple pages
-// the pages are assumed bo be ordered from top to bottom
+// the pages are assumed to be ordered from top to bottom
 function collectData(col, pages, meta) {
   let values = [];
   pages.forEach((p) => {
-    let matrixColIdx = col - p.qArea.qLeft;
-    if (matrixColIdx >= 0 && matrixColIdx < (p.qArea.qLeft + p.qArea.qWidth) && p.qArea.qHeight > 0) {
-      values = values.concat(resolve(`//${matrixColIdx}`, p.qMatrix).map(v =>
-        ({
-          value: v.qNum,
-          label: v.qElemNumber in specialTextValues ? specialTextValues[v.qElemNumber](meta) : v.qText,
-          id: v.qElemNumber
-        })));
+    if (p.qMatrix) {
+      values = values.concat(collectStraightData(col, p, meta));
+    } else if (p.qData) { // assume stacked data
+      values = values.concat(collectStackedData(col, p, meta));
     }
   });
   return values;

@@ -15,6 +15,17 @@ function hyperCubeFieldsFn(hc) {
   );
 }
 
+function stackedHyperCubeFieldsFn(hc) {
+  let dimz = hc.qDimensionInfo.length;
+  return hc.qDimensionInfo.concat(hc.qMeasureInfo).map((f, idx) =>
+     qField({ id: idx < dimz ? `/qDimensionInfo/${idx}` : `/qMeasureInfo/${idx - dimz}` })({
+       meta: f,
+       pages: hc.qStackedDataPages,
+       idx
+     })
+  );
+}
+
 function listObjectFieldsFn(lo) {
   return [qField({ id: '/qDimensionInfo' })({
     meta: lo.qDimensionInfo,
@@ -25,6 +36,9 @@ function listObjectFieldsFn(lo) {
 
 function fieldsFn(hc) {
   if (Array.isArray(hc.qDimensionInfo)) {
+    if (hc.qMode === 'K') {
+      return stackedHyperCubeFieldsFn(hc);
+    }
     return hyperCubeFieldsFn(hc);
   }
   return listObjectFieldsFn(hc);

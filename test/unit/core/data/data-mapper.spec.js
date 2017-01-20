@@ -599,5 +599,37 @@ describe('data-mapper', () => {
         }
       ]);
     });
+
+    it('should accept constant values', () => {
+      let groupBy = {
+        source: '/0/0'
+      };
+      let mapper = {
+        num: 3,
+        s: 'foo',
+        b: false
+      };
+      let values = mapData(mapper, groupBy, ds);
+      expect(values).to.eql([
+        {
+          self: { value: 'Cars', source: { field: '/0/0', indices: [0, 1], type: 'qual' } },
+          num: { value: 3 },
+          s: { value: 'foo' },
+          b: { value: false }
+        },
+        {
+          self: { value: 'Bikes', source: { field: '/0/0', indices: [2], type: 'qual' } },
+          num: { value: 3 },
+          s: { value: 'foo' },
+          b: { value: false }
+        },
+        {
+          self: { value: 'Shoes', source: { field: '/0/0', indices: [3, 4], type: 'qual' } },
+          num: { value: 3 },
+          s: { value: 'foo' },
+          b: { value: false }
+        }
+      ]);
+    });
   });
 });

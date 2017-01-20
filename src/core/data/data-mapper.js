@@ -8,6 +8,11 @@ const unfilteredReducers = {
   sum: values => values.reduce((a, b) => a + b, 0)
 };
 
+function isPrimitive(x) {
+  const type = typeof x;
+  return (type !== 'object' && type !== 'function');
+}
+
 /**
  * [reducers description]
  * @type {Object}
@@ -192,8 +197,16 @@ export function mapData(mapper, repeater, ds) {
 
   Object.keys(mapping).forEach((key) => {
     const m = mapping[key];
-    collectMapping(key, m, collected, ds);
-    reduceValues(key, collected.collection, m.reducer);
+    if (isPrimitive(m)) {
+      collected.collection.forEach((c) => {
+        c[key] = {
+          value: m
+        };
+      });
+    } else {
+      collectMapping(key, m, collected, ds);
+      reduceValues(key, collected.collection, m.reducer);
+    }
   });
   return collected.collection;
 }
