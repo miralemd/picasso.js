@@ -2,6 +2,23 @@
 
 ## [Unreleased]
 
+### Added
+
+- Support for qHyperCube in "K" mode
+- Support primitive values in data mapping:
+    ```js
+    data: {
+      mapTo: {
+        start: 0,
+        parent: 'Zeus'
+      }
+    }
+    ````
+
+### Fixed
+
+- Crash when traversing 'null'
+
 ## 0.4.1
 
 ### Changes
