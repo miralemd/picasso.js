@@ -13,11 +13,19 @@
         parent: 'Zeus'
       }
     }
-    ````
+    ```
 
 ### Fixed
 
 - Crash when traversing 'null'
+- Grid lines actually work again, a basic grid line can be added to components like this:
+```js
+{
+  type: 'grid-line',
+  x: { scale: 'x' },
+  y: { scale: 'y' }
+}
+```
 
 ## 0.4.1
 
@@ -75,7 +83,7 @@
    ```js
    var pic = picasso.chart({...});
    pic.update({
-     data: {...} 
+     data: {...}
    });
    ```
 
