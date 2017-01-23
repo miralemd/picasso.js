@@ -30,7 +30,7 @@ const DEFAULT_STYLE_SETTINGS = {
     strokeWidth: 1,
     fill: '',
     type: 'line',
-    width: 1
+    width: 0.5
   },
   box: {
     show: true,
@@ -150,7 +150,17 @@ const boxMarker = {
     const doodle = this.dispersion.doodle();
     const shapes = [];
 
-    item.style.box.width = Math.max(item.style.box.minWidth,
+    let measureWidth = this.dispersion.blueprint().vertical ? this.rect.width : this.rect.height;
+
+    let computeWidth = (minWidth, maxWidth, myWidth) => (Math.max(
+      minWidth,
+      Math.min(maxWidth, myWidth * this.dispersion.bandwidth() * measureWidth)
+    ) / measureWidth);
+
+    item.style.box.width = computeWidth(item.style.box.minWidth, item.style.box.maxWidth, item.style.box.width);
+    item.style.whisker.width = computeWidth(item.style.box.minWidth, item.style.box.maxWidth, item.style.whisker.width);
+
+    /* item.style.box.width = Math.max(item.style.box.minWidth,
       Math.min(item.style.box.maxWidth,
         item.style.box.width * this.dispersion.bandwidth() * this.rect.width))
       / this.rect.width;
@@ -158,7 +168,7 @@ const boxMarker = {
     item.style.whisker.width = Math.max(item.style.box.minWidth,
       Math.min(item.style.box.maxWidth,
         item.style.whisker.width * this.dispersion.bandwidth() * 0.5 * this.rect.width))
-      / this.rect.width;
+      / this.rect.width; */
 
     if (item.style.line.show && !notNumber(item.min) && !notNumber(item.start)) {
       // Draw the line min - start
