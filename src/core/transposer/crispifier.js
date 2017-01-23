@@ -33,7 +33,8 @@ export function crispifierFactory(crispMap) {
     crispMap.rect = {
       append: ['x', 'y'],
       round: ['width', 'height'],
-      condition: () => true
+      condition: () => true,
+      conditionAppend: item => item.strokeWidth % 2 !== 0
     };
   }
 
