@@ -160,16 +160,6 @@ const boxMarker = {
     item.style.box.width = computeWidth(item.style.box.minWidth, item.style.box.maxWidth, item.style.box.width);
     item.style.whisker.width = computeWidth(item.style.box.minWidth, item.style.box.maxWidth, item.style.whisker.width);
 
-    /* item.style.box.width = Math.max(item.style.box.minWidth,
-      Math.min(item.style.box.maxWidth,
-        item.style.box.width * this.dispersion.bandwidth() * this.rect.width))
-      / this.rect.width;
-
-    item.style.whisker.width = Math.max(item.style.box.minWidth,
-      Math.min(item.style.box.maxWidth,
-        item.style.whisker.width * this.dispersion.bandwidth() * 0.5 * this.rect.width))
-      / this.rect.width; */
-
     if (item.style.line.show && !notNumber(item.min) && !notNumber(item.start)) {
       // Draw the line min - start
       shapes.push(doodle.verticalLine(item.x, item.start, item.min, 'line', item.style, item.data));
