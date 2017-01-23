@@ -6,6 +6,7 @@
 
 - Support for qHyperCube in "K" mode
 - Support primitive values in data mapping:
+
     ```js
     data: {
       mapTo: {
@@ -15,17 +16,20 @@
     }
     ```
 
+- Discrete axis supports brushing
+
 ### Fixed
 
 - Crash when traversing 'null'
 - Grid lines actually work again, a basic grid line can be added to components like this:
-```js
-{
-  type: 'grid-line',
-  x: { scale: 'x' },
-  y: { scale: 'y' }
-}
-```
+
+    ```js
+    {
+      type: 'grid-line',
+      x: { scale: 'x' },
+      y: { scale: 'y' }
+    }
+    ```
 
 ## 0.4.1
 
