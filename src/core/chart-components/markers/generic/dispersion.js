@@ -91,6 +91,8 @@ export default function dispersion(composer, defaultStyles = {}, initialSettings
 
   fn.doodle = () => doodle;
 
+  fn.blueprint = () => blueprint;
+
   fn.render = (rect, buildShapes) => {
     if (minDataPointDistance !== null) {
       if (minDataPointDistance === 0) {

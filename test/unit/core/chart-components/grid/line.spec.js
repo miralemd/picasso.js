@@ -3,7 +3,7 @@ import lineComponent from '../../../../../src/core/chart-components/grid/line';
 
 describe('line marker', () => {
   let line;
-  let renderedPoints;
+  let rendererOutput;
   let composer;
   let shapeFn;
 
@@ -18,7 +18,7 @@ describe('line marker', () => {
     composer = {
       renderer: {
         appendTo: () => {},
-        render: p => (renderedPoints = p),
+        render: p => (rendererOutput = p),
         size: () => {}
       },
       brush: () => ({
@@ -44,7 +44,7 @@ describe('line marker', () => {
     line.resize({ x: 10, y: 20, width: 100, height: 200 });
     line.render();
 
-    expect(renderedPoints).to.deep.equal([]);
+    expect(rendererOutput).to.deep.equal([]);
   });
 
   it('should render lines with default settings and scales', () => {
@@ -76,7 +76,7 @@ describe('line marker', () => {
     line.resize({ x: 10, y: 20, width: 100, height: 200 });
     line.render();
 
-    expect(renderedPoints).to.deep.equal([
+    expect(rendererOutput).to.deep.equal([
       {
         stroke: '#cccccc',
         strokeWidth: 1,
@@ -121,7 +121,7 @@ describe('line marker', () => {
     line.resize({ x: 10, y: 20, width: 100, height: 200 });
     line.render();
 
-    expect(renderedPoints).to.deep.equal([
+    expect(rendererOutput).to.deep.equal([
       {
         stroke: '#cccccc',
         strokeWidth: 1,
@@ -156,7 +156,7 @@ describe('line marker', () => {
     line.resize({ x: 10, y: 20, width: 100, height: 200 });
     line.render();
 
-    expect(renderedPoints).to.deep.equal([
+    expect(rendererOutput).to.deep.equal([
       {
         stroke: '#cccccc',
         strokeWidth: 1,
@@ -204,7 +204,7 @@ describe('line marker', () => {
     line.resize({ x: 10, y: 20, width: 100, height: 200 });
     line.render();
 
-    expect(renderedPoints).to.deep.equal([
+    expect(rendererOutput).to.deep.equal([
       {
         stroke: '#E6E6E6',
         strokeWidth: 1,
@@ -265,6 +265,6 @@ describe('line marker', () => {
     line.resize({ x: 10, y: 20, width: 100, height: 200 });
     line.render();
 
-    expect(renderedPoints).to.deep.equal([]);
+    expect(rendererOutput).to.deep.equal([]);
   });
 });
