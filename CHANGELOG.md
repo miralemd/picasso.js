@@ -32,6 +32,8 @@
       y: { scale: 'y' }
     }
     ```
+- Crispifier now produces non-fuzzy rects even if the strokeWidth is even
+- "Sponge-effect" bug in the boxplot has been removed
 
 ## 0.4.1
 
