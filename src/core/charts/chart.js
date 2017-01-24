@@ -227,6 +227,14 @@ function createInstance(definition) {
    */
   instance.brush = (...v) => composer.brush(...v);
 
+  instance.getAffectedShapes = (context, key) => {
+    const shapes = [];
+    currentComponents.filter(comp => !key || comp.key === key).forEach((comp) => {
+      shapes.push(...comp.instance.getBrushedShapes(context));
+    });
+    return shapes;
+  };
+
   /**
    * @return {scroll-api}
    */

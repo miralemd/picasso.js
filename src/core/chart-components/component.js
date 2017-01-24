@@ -154,7 +154,7 @@ export default function componentFactory(definition) {
     updateScale();
     updateFormatter();
 
-    const fn = () => {};
+    const fn = () => { };
 
     fn.dockConfig = dockConfig;
 
@@ -259,6 +259,24 @@ export default function componentFactory(definition) {
       dockConfig: () => dockConfig
     });
     instanceContext.update = fn.update;
+
+    fn.getBrushedShapes = function getBrushedShapes(context) {
+      const shapes = [];
+      if (config.brush && config.brush.consume) {
+        const brusher = composer.brush(context);
+        const nodes = brushArgs.nodes;
+        const len = nodes.length;
+        config.brush.consume.forEach((b) => {
+          for (let i = 0; i < len; i++) {
+            let nodeData = data[nodes[i].data];
+            if (nodeData && brusher.containsMappedData(nodeData, b.data)) {
+              shapes.push(nodes[i]);
+            }
+          }
+        });
+      }
+      return shapes;
+    };
 
     // Start calling lifecycle methods
     created({
