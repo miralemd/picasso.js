@@ -4,12 +4,14 @@ import buildData from '../../data/index';
 import buildFormatters, { getOrCreateFormatter } from './formatter';
 import buildScales, { getOrCreateScale } from './scales';
 import brush from '../../brush';
+import buildScroll, { getScrollApi } from './scroll-api';
 
 import getComponentFactory from '../../chart-components/index';
 
 export default function composer() {
   let currentScales = null; // Built scales
   let currentFormatters = null; // Built formatters
+  let currentScrollApis = null; // Build scroll apis
 
   let dataset = [];
   let brushes = {};
@@ -19,13 +21,15 @@ export default function composer() {
   fn.set = function set(data, settings) {
     const {
       formatters = {},
-      scales = {}
+      scales = {},
+      scroll = {}
     } = settings;
 
     dataset = buildData(data);
     brushes = {};
     currentScales = buildScales(scales, fn);
     currentFormatters = buildFormatters(formatters, fn);
+    currentScrollApis = buildScroll(scroll, fn, currentScrollApis);
   };
 
   fn.table = function table() {
@@ -49,6 +53,10 @@ export default function composer() {
       brushes[name] = brush();
     }
     return brushes[name];
+  };
+
+  fn.scroll = function scrollFn(name = 'default') {
+    return getScrollApi(name, currentScrollApis);
   };
 
   fn.scale = function scale(v) {

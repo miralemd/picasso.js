@@ -65,9 +65,7 @@ export default function renderer(opts = {}) {
     el.style.width = `${Math.round(rect.width * scaleX)}px`;
     el.style.height = `${Math.round(rect.height * scaleY)}px`;
 
-    const node = h('div', {
-      style: { height: '100%' }
-    }, Array.isArray(nodes) ? nodes : [nodes]);
+    const node = h('div', {}, Array.isArray(nodes) ? nodes : [nodes]);
 
     if (vnode) {
       patch(vnode, node);

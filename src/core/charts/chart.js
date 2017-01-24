@@ -227,6 +227,11 @@ function createInstance(definition) {
    */
   instance.brush = (...v) => composer.brush(...v);
 
+  /**
+   * @return {scroll-api}
+   */
+  instance.scroll = (...v) => composer.scroll(...v);
+
   created.call(instance);
 
   if (element) {
