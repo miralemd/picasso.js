@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## 0.5.0
+
 ### Added
 
 - Support for qHyperCube in "K" mode
@@ -16,7 +18,7 @@
     }
     ```
 
-- Discrete axis supports brushing
+- Support brushing in discrete axis
 
 ### Fixed
 
