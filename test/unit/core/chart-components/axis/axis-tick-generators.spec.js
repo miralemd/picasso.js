@@ -23,11 +23,12 @@ describe('Tick generators', () => {
 
     it('should output ticks in the correct format', () => {
       settings.ticks.count = 2;
+      input.formatter = formatter('d3')('number')('-1.0%');
       const ticks = generateContinuousTicks(input);
       const expected = [
-        { position: 0, label: '0', isMinor: false },
-        { position: 0.5, label: '0.5', isMinor: false },
-        { position: 1, label: '1', isMinor: false }
+        { position: 0, label: '0%', isMinor: false },
+        { position: 0.5, label: '50%', isMinor: false },
+        { position: 1, label: '100%', isMinor: false }
       ];
       expect(ticks).to.deep.equal(expected);
     });
@@ -80,6 +81,20 @@ describe('Tick generators', () => {
       const ticks = generateContinuousTicks(input);
       expect(ticks[0].position).to.equal(scale.range()[0]);
       expect(ticks[ticks.length - 1].position).to.equal(scale.range()[1]);
+      expect(ticks).to.be.of.length(3);
+    });
+
+    it('should generate tight ticks by a custom distance', () => {
+      settings.ticks.tight = true;
+      settings.ticks.distance = 20;
+      const ticks = generateContinuousTicks(input);
+      expect(ticks).to.be.of.length(6);
+    });
+
+    it('should generate loose ticks by a custom distance', () => {
+      settings.ticks.distance = 20;
+      const ticks = generateContinuousTicks(input);
+      expect(ticks).to.be.of.length(6);
     });
 
     it('should generate ticks by distance with minor ticks', () => {

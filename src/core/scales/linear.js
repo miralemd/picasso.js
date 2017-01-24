@@ -336,13 +336,14 @@ function appendMinorTicks(majorTicks, minorCount, scale) {
 * @return {Array}               Array of ticks
 */
 export function looseDistanceBasedGenerator({ distance, scale, minorCount = 0, unitDivider = 100, formatter = undefined }) {
-  const count = Math.max(Math.round(distance / unitDivider), 2);
+  const isNumber = v => typeof v === 'number' && !isNaN(v);
+  const count = isNumber(unitDivider) ? Math.max(Math.round(distance / unitDivider), 2) : 2;
   let majorTicks = scale.ticks(count);
   if (majorTicks.length <= 1) {
     majorTicks = scale.ticks(count + 1);
   }
 
-  const ticks = appendMinorTicks(majorTicks, minorCount, scale);
+  const ticks = minorCount > 0 ? appendMinorTicks(majorTicks, minorCount, scale) : majorTicks;
 
   const ticksFormatted = ticks.map(applyFormat(formatter));
 
@@ -364,12 +365,13 @@ export function looseDistanceBasedGenerator({ distance, scale, minorCount = 0, u
 * @return {Array}               Array of ticks
 */
 export function tightDistanceBasedGenerator({ distance, scale, minorCount = 0, unitDivider = 100, formatter = undefined }) {
-  const count = Math.max(distance / unitDivider, 2);
+  const isNumber = v => typeof v === 'number' && !isNaN(v);
+  const count = isNumber(unitDivider) ? Math.max(Math.round(distance / unitDivider), 2) : 2;
   const n = count > 10 ? 10 : count;
   scale.nice(n);
 
   const majorTicks = scale.ticks(count);
-  const ticks = appendMinorTicks(majorTicks, minorCount, scale);
+  const ticks = minorCount > 0 ? appendMinorTicks(majorTicks, minorCount, scale) : majorTicks;
 
   const ticksFormatted = ticks.map(applyFormat(formatter));
 

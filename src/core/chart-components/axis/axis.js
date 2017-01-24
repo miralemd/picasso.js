@@ -33,6 +33,7 @@ import crispify from '../../transposer/crispifier';
  * @property {boolean} [ticks.strokeWidth = 1]
  * @property {boolean} [ticks.tight = false] Only on a continuous axis
  * @property {boolean} [ticks.forceBounds = false] Only on a continuous axis
+ * @property {boolean} [ticks.distance = 100] Approximate distance between each tick. Only on a continuous axis
  * @property {boolean} [minorTicks] Only on a continuous axis
  * @property {boolean} [minorTicks.show = true]
  * @property {boolean} [minorTicks.margin = 0]

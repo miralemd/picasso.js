@@ -1,4 +1,4 @@
-import linear, { looseDistanceBasedGenerator } from '../../../../src/core/scales/linear';
+import linear, { looseDistanceBasedGenerator, tightDistanceBasedGenerator } from '../../../../src/core/scales/linear';
 
 describe('LinearScale', () => {
   let lin;
@@ -169,23 +169,17 @@ describe('LinearScale', () => {
     });
 
     it('should pass correct arguments to tick generator function', () => {
-      let tickG = ([a, b, c]) =>
-         [a, b, c]
-      ;
+      let tickG = ([a, b, c]) => [a, b, c];
       lin.tickGenerator(tickG);
       expect(lin.ticks([1, 2, 3])).to.deep.equal([1, 2, 3]);
 
-      tickG = ({ a, b, c }) =>
-         [a, b, c]
-      ;
+      tickG = ({ a, b, c }) => [a, b, c];
       lin.tickGenerator(tickG);
       expect(lin.ticks({ a: 1, b: 2, c: 3 })).to.deep.equal([1, 2, 3]);
     });
 
     it('should be possible to reset tick generator', () => {
-      const tickG = ({ a, b, c }) =>
-         [a, b, c]
-      ;
+      const tickG = ({ a, b, c }) => [a, b, c];
       lin.tickGenerator(tickG);
       lin.tickGenerator();
       expect(lin.ticks(2)).to.deep.equal([0, 0.5, 1]);
@@ -198,6 +192,74 @@ describe('LinearScale', () => {
         { isMinor: false, position: 0.5, label: 0.5 },
         { isMinor: false, position: 1, label: 1 }
       ]);
+    });
+
+    describe('looseDistanceBasedGenerator', () => {
+      let scale;
+      let sandbox = sinon.sandbox.create();
+
+      beforeEach(() => {
+        scale = lin.copy();
+        sandbox.spy(scale, 'ticks');
+      });
+
+      afterEach(() => {
+        sandbox.restore();
+      });
+
+      it('should use fallback divider if unitDivider is not a number', () => {
+        lin.tickGenerator(looseDistanceBasedGenerator);
+        ['3', 'asd', null, false, true, NaN, () => {}, undefined, ' ', {}].forEach((type) => {
+          lin.ticks({ distance: 100, unitDivider: type, scale });
+          expect(scale.ticks).to.have.been.calledWith(2);
+        });
+      });
+
+      it('should use fallback divider if unitDivider is a negative number', () => {
+        lin.tickGenerator(looseDistanceBasedGenerator);
+        lin.ticks({ distance: 100, unitDivider: -123, scale });
+        expect(scale.ticks).to.have.been.calledWith(2);
+      });
+
+      it('should use unitDivider if it is a positive number', () => {
+        lin.tickGenerator(looseDistanceBasedGenerator);
+        lin.ticks({ distance: 100, unitDivider: 20, scale });
+        expect(scale.ticks).to.have.been.calledWith(100 / 20);
+      });
+    });
+
+    describe('tightDistanceBasedGenerator', () => {
+      let scale;
+      let sandbox = sinon.sandbox.create();
+
+      beforeEach(() => {
+        scale = lin.copy();
+        sandbox.spy(scale, 'ticks');
+      });
+
+      afterEach(() => {
+        sandbox.restore();
+      });
+
+      it('should use fallback divider if unitDivider is not a number', () => {
+        lin.tickGenerator(tightDistanceBasedGenerator);
+        ['3', 'asd', null, false, true, NaN, () => {}, undefined, ' ', {}].forEach((type) => {
+          lin.ticks({ distance: 100, unitDivider: type, scale });
+          expect(scale.ticks).to.have.been.calledWith(2);
+        });
+      });
+
+      it('should use fallback divider if unitDivider is a negative number', () => {
+        lin.tickGenerator(tightDistanceBasedGenerator);
+        lin.ticks({ distance: 100, unitDivider: -123, scale });
+        expect(scale.ticks).to.have.been.calledWith(2);
+      });
+
+      it('should use unitDivider if it is a positive number', () => {
+        lin.tickGenerator(tightDistanceBasedGenerator);
+        lin.ticks({ distance: 100, unitDivider: 20, scale });
+        expect(scale.ticks).to.have.been.calledWith(100 / 20);
+      });
     });
   });
 });
