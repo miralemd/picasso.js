@@ -260,16 +260,16 @@ export default function componentFactory(definition) {
     });
     instanceContext.update = fn.update;
 
-    fn.getBrushedShapes = function getBrushedShapes(context) {
+    fn.getBrushedShapes = function getBrushedShapes(context, all) {
       const shapes = [];
-      if (config.brush && config.brush.consume) {
+      if (config.brush && config.brush.trigger) {
         const brusher = composer.brush(context);
         const nodes = brushArgs.nodes;
         const len = nodes.length;
-        config.brush.consume.forEach((b) => {
+        config.brush.trigger.forEach((b) => {
           for (let i = 0; i < len; i++) {
             let nodeData = data[nodes[i].data];
-            if (nodeData && brusher.containsMappedData(nodeData, b.data)) {
+            if (nodeData && brusher.containsMappedData(nodeData, b.data, all)) {
               shapes.push(nodes[i]);
             }
           }
