@@ -113,6 +113,14 @@ describe('Tick generators', () => {
       expect(ticks[0].position).to.equal(scale.range()[0]);
       expect(ticks[ticks.length - 1].position).to.equal(scale.range()[1]);
     });
+
+    it('should update scale instance if the domain has changed', () => {
+      settings.ticks.tight = true;
+      settings.align = 'bottom';
+      input.scale.domain([-10, 911]); // A known issue could be reproduced with this interval
+      generateContinuousTicks(input);
+      expect(input.scale.domain()).to.deep.equal([-200, 1000]);
+    });
   });
 
   describe('discrete tick generator', () => {

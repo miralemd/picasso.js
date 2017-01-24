@@ -186,12 +186,11 @@ describe('LinearScale', () => {
     });
 
     it('should be able to assign and run a custom tick generator', () => {
-      lin.tickGenerator(looseDistanceBasedGenerator);
-      expect(lin.ticks({ distance: 100, scale: lin.copy() })).to.deep.equal([
-        { isMinor: false, position: 0, label: 0 },
-        { isMinor: false, position: 0.5, label: 0.5 },
-        { isMinor: false, position: 1, label: 1 }
-      ]);
+      const tickG = ({ a, b, c }) => [a, b, c];
+      const spy = sinon.spy(tickG);
+      lin.tickGenerator(spy);
+      lin.ticks({ a: 1, b: 2, c: 3 });
+      expect(spy).to.have.been.calledOnce; // eslint-disable-line no-unused-expressions
     });
 
     describe('looseDistanceBasedGenerator', () => {

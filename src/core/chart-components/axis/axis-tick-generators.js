@@ -64,8 +64,8 @@ export function generateContinuousTicks({ settings, scale, innerRect, formatter 
       formatter
     });
 
-    if (settings.ticks.tight) {
-      scale.domain([ticks[0].label, ticks[ticks.length - 1].label]);
+    if (settings.ticks.tight && ticks.length > 0) {
+      scale.domain(ticks[0].scale.domain()); // TODO find a better way to expose and determine if scale has changed
     }
 
     if (settings.ticks.forceBounds) {

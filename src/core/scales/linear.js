@@ -350,7 +350,9 @@ export function looseDistanceBasedGenerator({ distance, scale, minorCount = 0, u
   return ticks.map((tick, i) => ({
     position: scale.get(tick),
     label: ticksFormatted[i],
-    isMinor: majorTicks.indexOf(tick) === -1
+    value: tick,
+    isMinor: majorTicks.indexOf(tick) === -1,
+    scale
   }));
 }
 
@@ -378,6 +380,8 @@ export function tightDistanceBasedGenerator({ distance, scale, minorCount = 0, u
   return ticks.map((tick, i) => ({
     position: scale.get(tick),
     label: ticksFormatted[i],
-    isMinor: majorTicks.indexOf(tick) === -1
+    value: tick,
+    isMinor: majorTicks.indexOf(tick) === -1,
+    scale
   }));
 }
