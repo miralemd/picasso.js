@@ -19,9 +19,23 @@ export default function scrollApi() {
       }
     },
     update(settings) {
-      ({ min = min, max = max, viewSize = viewSize } = settings);
+      let triggerUpdate = false;
+      ({ min = min, max = max } = settings);
+      if (settings.viewSize !== undefined && settings.viewSize !== viewSize) {
+        viewSize = settings.viewSize;
+        triggerUpdate = true;
+      }
+
       // update scroll to be within the new bounds
-      this.moveTo(start);
+      let newStart = Math.max(min, Math.min(max - viewSize, start));
+      if (start !== newStart) {
+        start = newStart;
+        triggerUpdate = true;
+      }
+
+      if (triggerUpdate) {
+        s.emit('update');
+      }
     },
     getState() {
       return { min, max, start, viewSize };

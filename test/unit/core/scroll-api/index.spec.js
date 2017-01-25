@@ -27,4 +27,21 @@ describe('Scroll api', () => {
     scroll.update({ viewSize: 20 });
     expect(scroll.getState()).to.deep.equals({ start: 100, viewSize: 20, min: 100, max: 200 });
   });
+
+  it('trigger update event on viewSize change', () => {
+    const fn = sinon.stub();
+    scroll.on('update', fn);
+    scroll.update({ min: 0, max: 200, viewSize: 10 });
+
+    // eslint-disable-next-line no-unused-expressions
+    expect(fn).to.have.been.calledOnce;
+  });
+  it('should only trigger update once if viewSize and start changes', () => {
+    const fn = sinon.stub();
+    scroll.on('update', fn);
+    scroll.update({ min: 100, max: 200, viewSize: 10 });
+
+    // eslint-disable-next-line no-unused-expressions
+    expect(fn).to.have.been.calledOnce;
+  });
 });
