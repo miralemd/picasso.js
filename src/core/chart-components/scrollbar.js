@@ -25,11 +25,20 @@ const scrollbar = {
       { // local scope to allow reuse of variable names later
         const offset = event[horizontal ? 'clientX' : 'clientY'] - containerStart;
         const scrollState = scroll.getState();
+
         currentMove = {
           startOffset: offset,
           startScroll: scrollState.start,
           swipe: false
         };
+
+        // Detect swipe start outsize the thumb & change startScroll to jump the scroll there.
+        const scrollPoint = ((offset / length) * (scrollState.max - scrollState.min)) + scrollState.min;
+        if (scrollPoint < scrollState.start) {
+          currentMove.startScroll = scrollPoint;
+        } else if (scrollPoint > scrollState.start + scrollState.viewSize) {
+          currentMove.startScroll = scrollPoint - scrollState.viewSize;
+        }
       }
 
       const mousemove = (e) => {
@@ -42,7 +51,7 @@ const scrollbar = {
         }
 
         const scrollState = scroll.getState();
-        const scrollMove = ((offset - currentMove.startOffset) / length) * scrollState.max;
+        const scrollMove = ((offset - currentMove.startOffset) / length) * (scrollState.max - scrollState.min);
         const scrollStart = currentMove.startScroll + scrollMove;
         scroll.moveTo(scrollStart);
       };
@@ -53,11 +62,11 @@ const scrollbar = {
         const offset = e[horizontal ? 'clientX' : 'clientY'] - containerStart;
         const scrollState = scroll.getState();
         if (currentMove.swipe) {
-          const scrollMove = ((offset - currentMove.startOffset) / length) * scrollState.max;
+          const scrollMove = ((offset - currentMove.startOffset) / length) * (scrollState.max - scrollState.min);
           const scrollStart = currentMove.startScroll + scrollMove;
           scroll.moveTo(scrollStart);
         } else {
-          const scrollCenter = (offset / length) * scrollState.max;
+          const scrollCenter = ((offset / length) * (scrollState.max - scrollState.min)) + scrollState.min;
           const scrollStart = scrollCenter - (scrollState.viewSize / 2);
           scroll.moveTo(scrollStart);
         }
@@ -101,8 +110,8 @@ const scrollbar = {
     const length = _rect[lengthAttr];
 
     const scrollState = this.composer.scroll(this.settings.scroll).getState();
-    const thumbStart = Math.max((length * scrollState.start) / scrollState.max, scrollState.min);
-    const thumbRange = Math.min((length * scrollState.viewSize) / (scrollState.max - scrollState.min), scrollState.max);
+    const thumbStart = (length * (scrollState.start - scrollState.min)) / (scrollState.max - scrollState.min);
+    const thumbRange = (length * scrollState.viewSize) / (scrollState.max - scrollState.min);
 
     return h(
       'div',

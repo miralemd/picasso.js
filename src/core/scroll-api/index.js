@@ -12,14 +12,16 @@ export default function scrollApi() {
       this.moveTo(start + value);
     },
     moveTo(value) {
-      let newStart = Math.max(0, Math.min(max - min - viewSize, value));
+      let newStart = Math.max(min, Math.min(max - viewSize, value));
       if (start !== newStart) {
         start = newStart;
         s.emit('update');
       }
     },
     update(settings) {
-      ({ min, max, viewSize } = settings);
+      ({ min = min, max = max, viewSize = viewSize } = settings);
+      // update scroll to be within the new bounds
+      this.moveTo(start);
     },
     getState() {
       return { min, max, start, viewSize };

@@ -1,7 +1,7 @@
 import scrollApi from '../../../scroll-api';
 
 export function createOrUpdate(options, oldApi) {
-  let min = 0;
+  let min = options.min || 0;
   let max = options.max || 0;
   const viewSize = options.viewSize || 0;
 
