@@ -80,6 +80,7 @@ describe('Axis', () => {
       it(`should align to ${d}`, () => {
         config.settings.align = d;
         axis = axisComponent(config, composerMock);
+        axis.resize({ width: 100, height: 200 }, { width: 100, height: 200 });
         axis.render();
         verifyNumberOfNodes(3, 4);
       });
@@ -88,6 +89,7 @@ describe('Axis', () => {
     it('should not render labels when disabled', () => {
       config.settings.labels = { show: false };
       axis = axisComponent(config, composerMock);
+      axis.resize({ width: 100, height: 200 }, { width: 100, height: 200 });
       axis.render();
       verifyNumberOfNodes(0, 4);
     });
@@ -95,6 +97,7 @@ describe('Axis', () => {
     it('should not render axis line when disabled', () => {
       config.settings.line = { show: false };
       axis = axisComponent(config, composerMock);
+      axis.resize({ width: 100, height: 200 }, { width: 100, height: 200 });
       axis.render();
       verifyNumberOfNodes(3, 3);
     });
@@ -102,6 +105,7 @@ describe('Axis', () => {
     it('should not render ticks when disabled', () => {
       config.settings.ticks = { show: false };
       axis = axisComponent(config, composerMock);
+      axis.resize({ width: 100, height: 200 }, { width: 100, height: 200 });
       axis.render();
       verifyNumberOfNodes(3, 1);
     });
@@ -109,6 +113,7 @@ describe('Axis', () => {
     it('should render a custom number of ticks', () => {
       config.settings.ticks = { count: 5 };
       axis = axisComponent(config, composerMock);
+      axis.resize({ width: 100, height: 200 }, { width: 100, height: 200 });
       axis.render();
       verifyNumberOfNodes(6, 7);
     });
@@ -116,6 +121,7 @@ describe('Axis', () => {
     it('should render minor ticks', () => {
       config.settings.minorTicks = { show: true, count: 2 };
       axis = axisComponent(config, composerMock);
+      axis.resize({ width: 100, height: 200 }, { width: 100, height: 200 });
       axis.render();
       verifyNumberOfNodes(3, 8);
     });
@@ -138,6 +144,7 @@ describe('Axis', () => {
     ['left', 'right', 'top', 'bottom'].forEach((d) => {
       it(`should align to ${d}`, () => {
         config.settings.align = d;
+        axis.resize({ width: 100, height: 200 }, { width: 100, height: 200 });
         axis.render();
         verifyNumberOfNodes(3, 0);
       });
@@ -147,6 +154,7 @@ describe('Axis', () => {
       it(`should support layered labels for ${d} aligned axis`, () => {
         config.settings.align = d;
         config.settings.labels = { layered: true };
+        axis.resize({ width: 100, height: 200 }, { width: 100, height: 200 });
         axis.render();
         verifyNumberOfNodes(3, 0);
       });

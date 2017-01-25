@@ -150,31 +150,40 @@ const axisComponent = {
       inner,
       outer
     } = opts;
+
     const extendedInner = {};
     extend(extendedInner, inner, alignTransform({
       align: this.align,
       inner
     }));
+
     const finalOuter = outer || extendedInner;
     extend(this.innerRect, extendedInner);
     extend(this.outerRect, finalOuter);
-    return outer;
-  },
-  render() {
+
     const {
       formatter,
       ticksFn,
-      axisSettings,
-      innerRect,
-      outerRect
+      axisSettings
     } = this;
-    const ticks = ticksFn({
+
+    this.ticks = ticksFn({
       settings: axisSettings,
-      innerRect,
+      innerRect: this.innerRect,
       scale: this.scale,
       data: this.domain,
       formatter
     });
+
+    return outer;
+  },
+  render() {
+    const {
+      axisSettings,
+      innerRect,
+      outerRect,
+      ticks
+    } = this;
 
     const nodes = [];
     nodes.push(...this.concreteNodeBuilder.build({

@@ -33,7 +33,7 @@ const gridLineComponent = {
 
   require: ['composer', 'renderer'],
   defaultSettings: {
-    displayOrder: -1,
+    displayOrder: 0,
     styles: {}
   },
 
@@ -56,7 +56,6 @@ const gridLineComponent = {
     this.blueprint.x = this.rect.x;
     this.blueprint.y = this.rect.y;
     this.blueprint.crisp = true;
-
     return inner;
   },
 
