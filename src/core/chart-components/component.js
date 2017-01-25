@@ -270,7 +270,7 @@ export default function componentFactory(definition) {
           for (let i = 0; i < len; i++) {
             let nodeData = data[nodes[i].data];
             if (nodeData && brusher.containsMappedData(nodeData, b.data, all)) {
-              shapes.push(nodes[i]);
+              shapes.push({ shape: nodes[i], parent: element });
             }
           }
         });
