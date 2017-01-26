@@ -439,7 +439,7 @@ export default function brush({
     return ranges[path].containsValue(value);
   };
 
-  fn.containsMappedData = (d, props, all = false) => {
+  fn.containsMappedData = (d, props, mode) => {
     let status = [];
     Object.keys(d).forEach((key, i) => {
       status[i] = { key, i, bool: false };
@@ -458,11 +458,15 @@ export default function brush({
 
     if (props) {
       status = status.filter(b => props.indexOf(b.key) !== -1);
-      // if (operation === 'and') {
-      //   return !status.some(s => s.bool === false);
-      // }
+      if(mode === 'and') {
+        return !status.some(s => s.bool === false);
+      } else if(mode === 'xor') {
+        return status.some(s => s.bool) && status.some(s => s.bool === false);
+      }
+      // !mode || mode === 'or'
+      return status.some(s => s.bool);
     }
-    return all ? status.every(s => s.bool) : status.some(s => s.bool);
+    return status.some(s => s.bool);
   };
 
   /**

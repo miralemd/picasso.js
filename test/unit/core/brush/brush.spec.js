@@ -340,6 +340,22 @@ describe('brush', () => {
       expect(v.containsValue).to.have.been.calledWith(7);
     });
 
+    it('should return false when data contains only a brushed range and mode=and', () => {
+      bb.addRange('sales');
+      v.containsValue.returns(true);
+      val.contains.returns(false);
+      expect(bb.containsMappedData(d, ['x', 'self'], 'and' )).to.equal(false);
+      expect(v.containsValue).to.have.been.calledWith(7);
+    });
+
+    it('should return true when data contains only a brushed range and mode=xor', () => {
+      bb.addRange('sales');
+      v.containsValue.returns(true);
+      val.contains.returns(false);
+      expect(bb.containsMappedData(d, ['x', 'self'], 'xor' )).to.equal(true);
+      expect(v.containsValue).to.have.been.calledWith(7);
+    });
+
     it('should return true when data contains a brushed value', () => {
       bb.addValue('products');
       val.contains.returns(true);
