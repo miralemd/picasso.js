@@ -77,7 +77,7 @@ export default function dispersion(composer, defaultStyles = {}, initialSettings
         x: x && d.self ? x(d.self) : 0.5,
         min: y && 'min' in d ? y(d.min) : null,
         max: y && 'max' in d ? y(d.max) : null,
-        start: y && 'start' in d ? y(d.start) : null,
+        start: y && 'start' in d ? y(d.start) : y && y({ value: 0 }),
         end: y && 'end' in d ? y(d.end) : null,
         med: y && 'med' in d ? y(d.med) : null,
         data: i

@@ -47,14 +47,16 @@ class Transposer {
    * @param  {Number} coordinate The coordinate
    * @return {Number}            The actual location of the coordinate
    */
-  transposeCoordinate(key, coordinate) {
+  transposeCoordinate(key, coordinate, vertical) {
     if (typeof coordinate === 'number' && isFinite(coordinate)) {
       const firstChar = key.substring(0, 1);
 
       if (firstChar === 'x' || key === 'cx') {
         return coordinate * this.width;
-      } else if (key === 'width' || key === 'r') {
+      } else if (key === 'width') {
         return coordinate * this.width;
+      } else if (key === 'r') {
+        return coordinate * (!vertical ? this.width : this.height);
       } else if (firstChar === 'y' || key === 'cy') {
         return coordinate * this.height;
       } else if (key === 'height') {
@@ -88,7 +90,7 @@ class Transposer {
 
       Object.keys(item).forEach((key) => {
         const nkey = Transposer.evaluateKey(key, vertical);
-        const nval = this.transposeCoordinate(nkey, item[key]);
+        const nval = this.transposeCoordinate(nkey, item[key], vertical);
         newItem[nkey] = nval;
       });
 
