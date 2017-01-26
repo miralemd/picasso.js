@@ -230,7 +230,7 @@ function createInstance(definition) {
   instance.getAffectedShapes = (context, key, mode = 'and') => {
     const shapes = [];
     currentComponents.filter(comp => key === undefined || comp.key === key).forEach((comp) => {
-      shapes.push(...comp.instance.getBrushedShapes(context, all));
+      shapes.push(...comp.instance.getBrushedShapes(context, mode));
     });
     return shapes;
   };

@@ -458,9 +458,9 @@ export default function brush({
 
     if (props) {
       status = status.filter(b => props.indexOf(b.key) !== -1);
-      if(mode === 'and') {
+      if (mode === 'and') {
         return !status.some(s => s.bool === false);
-      } else if(mode === 'xor') {
+      } else if (mode === 'xor') {
         return status.some(s => s.bool) && status.some(s => s.bool === false);
       }
       // !mode || mode === 'or'

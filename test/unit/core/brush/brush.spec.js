@@ -344,7 +344,7 @@ describe('brush', () => {
       bb.addRange('sales');
       v.containsValue.returns(true);
       val.contains.returns(false);
-      expect(bb.containsMappedData(d, ['x', 'self'], 'and' )).to.equal(false);
+      expect(bb.containsMappedData(d, ['x', 'self'], 'and')).to.equal(false);
       expect(v.containsValue).to.have.been.calledWith(7);
     });
 
@@ -352,7 +352,7 @@ describe('brush', () => {
       bb.addRange('sales');
       v.containsValue.returns(true);
       val.contains.returns(false);
-      expect(bb.containsMappedData(d, ['x', 'self'], 'xor' )).to.equal(true);
+      expect(bb.containsMappedData(d, ['x', 'self'], 'xor')).to.equal(true);
       expect(v.containsValue).to.have.been.calledWith(7);
     });
 
