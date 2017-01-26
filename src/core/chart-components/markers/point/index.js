@@ -228,7 +228,7 @@ const pointMarker = {
     } = opts;
     this.updateSettings(settings);
   },
-  beforeRender(opts) {
+  resize(opts) {
     const {
       inner
     } = opts;

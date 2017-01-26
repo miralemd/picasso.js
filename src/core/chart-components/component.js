@@ -7,7 +7,7 @@ import {
 } from './brushing';
 
 const isReservedProperty = prop => [
-  'on', 'preferredSize', 'created', 'beforeMount', 'mounted',
+  'on', 'preferredSize', 'created', 'beforeMount', 'mounted', 'resize',
   'beforeUpdate', 'updated', 'beforeRender', 'render', 'beforeDestroy',
   'destroyed', 'defaultSettings', 'data', 'settings', 'formatter',
   'scale', 'composer', 'dockConfig'
@@ -110,6 +110,8 @@ export default function componentFactory(definition) {
     const beforeRender = createCallback('beforeRender');
     const beforeDestroy = createCallback('beforeDestroy');
     const destroyed = createCallback('destroyed');
+     // Do not allow overriding of these function§
+    const resize = definition.resize || function defaultResize({ inner }) { return inner; };
     const render = definition.render; // Do not allow overriding of this function
 
     let element;
@@ -158,19 +160,13 @@ export default function componentFactory(definition) {
 
     fn.dockConfig = dockConfig;
 
-    // Treated as beforeRender
+    // resize -> beforeRender -> render
     fn.resize = (inner, outer) => {
-      if (settings.data) {
-        data = composer.dataset().map(settings.data.mapTo, settings.data.groupBy);
-      } else {
-        data = [];
-      }
-
-      const newSize = beforeRender({
+      const newSize = resize.call(definitionContext, {
         inner,
         outer
       });
-      if (newSize) { // TODO temporary
+      if (newSize) {
         rend.size(newSize);
       } else {
         rend.size(inner);
@@ -187,6 +183,15 @@ export default function componentFactory(definition) {
 
     fn.render = () => {
       element = rend.element && rend.element() ? element : rend.appendTo(container);
+
+      if (settings.data) {
+        data = composer.dataset().map(settings.data.mapTo, settings.data.groupBy);
+      } else {
+        data = [];
+      }
+
+      beforeRender();
+
       const nodes = brushArgs.nodes = render.call(definitionContext, ...getRenderArgs());
       rend.render(nodes);
 
@@ -213,12 +218,21 @@ export default function componentFactory(definition) {
       updateScale();
       updateFormatter();
 
+      if (settings.data) {
+        data = composer.dataset().map(settings.data.mapTo, settings.data.groupBy);
+      } else {
+        data = [];
+      }
+
       beforeUpdate({
         settings,
         data
       });
 
       element = rend.element && rend.element() ? element : rend.appendTo(container);
+
+      beforeRender();
+
       const nodes = brushArgs.nodes = render.call(definitionContext, ...getRenderArgs());
       rend.render(nodes);
 
@@ -226,7 +240,7 @@ export default function componentFactory(definition) {
     };
 
     fn.destroy = () => {
-      beforeDestroy.call(element);
+      beforeDestroy(element);
       rend.destroy();
       destroyed();
       element = null;

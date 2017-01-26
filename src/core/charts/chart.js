@@ -81,41 +81,23 @@ function createInstance(definition) {
   let dockLayout = null;
   let currentComponents = []; // Augmented components
 
-  function renderComponents() {
-    currentComponents.forEach((c) => { dockLayout.addComponent(c.instance); });
-
-    const { visible, hidden } = dockLayout.layout(element);
-    visible.forEach((compInstance) => {
-      const comp = currentComponents.filter(c => c.instance === compInstance)[0];
-      if (comp.shouldUpdate) {
-        compInstance.update(comp.updateWith);
-        delete comp.shouldUpdate;
-        delete comp.updateWith;
-      } else {
-        compInstance.render();
-      }
-    });
-    hidden.forEach((compInstance) => {
-      compInstance.hide();
-    });
-  }
-
-  function render(isInitial) {
+  function render() {
     const {
       components = []
     } = settings;
-    dockLayout = createDockLayout();
-    dockLayout.settings(settings.dockLayout);
-
     composer.set(data, settings);
 
-    if (isInitial) {
-      currentComponents = components.map(component => (
-        composer.createComponent(component, element)
-      ));
-    }
+    currentComponents = components.map(component => (
+      composer.createComponent(component, element)
+    ));
 
-    renderComponents();
+    dockLayout = createDockLayout();
+    dockLayout.settings(settings.dockLayout);
+    currentComponents.forEach((c) => { dockLayout.addComponent(c.instance); });
+
+    const { visible, hidden } = dockLayout.layout(element);
+    visible.forEach((compInstance) => { compInstance.render(); });
+    hidden.forEach((compInstance) => { compInstance.hide(); });
   }
 
   function instance() {}
@@ -124,7 +106,7 @@ function createInstance(definition) {
   const mount = () => {
     element.innerHTML = '';
 
-    render(true);
+    render();
 
     Object.keys(on).forEach((key) => {
       const listener = on[key].bind(instance);
@@ -148,7 +130,7 @@ function createInstance(definition) {
    * Update the chart with new settings and / or data
    * @param {} chart - Chart definition
    */
-  instance.update = (newProps) => {
+  instance.update = (newProps, relayout = true) => {
     if (newProps.data) {
       data = newProps.data;
     }
@@ -164,49 +146,81 @@ function createInstance(definition) {
       components = []
     } = settings;
 
-    dockLayout = createDockLayout();
-    dockLayout.settings(settings.dockLayout);
+    if (relayout) {
+      dockLayout = createDockLayout();
+      dockLayout.settings(settings.dockLayout);
 
-    for (let i = currentComponents.length - 1; i >= 0; i--) {
-      const currComp = currentComponents[i];
-      // TODO warn when there is no key
-      if (!components.some(c => currComp.hasKey && currComp.key === c.key)) {
-        // Component is removed
-        // console.log('Remove', currComp);
-        currComp.instance.destroy();
-        currentComponents.splice(i, 1);
-      }
-    }
+      const componentsToUpdate = [];
+      const componentsToRender = [];
 
-    for (let i = 0; i < components.length; i++) {
-      let idx = -1;
-      const comp = components[i];
-      for (let j = 0; j < currentComponents.length; j++) {
-        const currComp = currentComponents[j];
+      for (let i = currentComponents.length - 1; i >= 0; i--) {
+        const currComp = currentComponents[i];
         // TODO warn when there is no key
-        if (currComp.hasKey && currComp.key === comp.key) {
-          idx = j;
-          break;
+        if (!components.some(c => currComp.hasKey && currComp.key === c.key)) {
+          // Component is removed
+          currentComponents.splice(i, 1);
+          currComp.instance.destroy();
         }
       }
-      if (idx === -1) {
-        // Component is added
-        // console.log('Add', comp);
-        currentComponents.push(composer.createComponent(comp, element));
-      } else {
-        // Component is (potentially) updated
-        // console.log('Update', comp);
-        currentComponents[idx].shouldUpdate = true;
-        currentComponents[idx].updateWith = {
+
+      for (let i = 0; i < components.length; i++) {
+        let idx = -1;
+        const comp = components[i];
+        for (let j = 0; j < currentComponents.length; j++) {
+          const currComp = currentComponents[j];
+          // TODO warn when there is no key
+          if (currComp.hasKey && currComp.key === comp.key) {
+            idx = j;
+            break;
+          }
+        }
+        if (idx === -1) {
+          // Component is added
+          const currComp = composer.createComponent(comp, element);
+          currentComponents.push(currComp);
+          componentsToRender.push(currComp);
+        } else {
+          // Component is (potentially) updated
+          componentsToUpdate.push(currentComponents[idx], {
+            formatters,
+            scales,
+            data,
+            settings: comp
+          });
+        }
+      }
+
+      currentComponents.forEach((c) => { dockLayout.addComponent(c.instance); });
+
+      const { visible, hidden } = dockLayout.layout(element);
+      visible.forEach((compInstance) => {
+        const comp = currentComponents.filter(c => c.instance === compInstance)[0];
+        compInstance.update(comp.updateWith);
+      });
+      hidden.forEach((compInstance) => { compInstance.hide(); });
+    } else {
+      for (let i = 0; i < components.length; i++) {
+        let idx = -1;
+        const comp = components[i];
+        for (let j = 0; j < currentComponents.length; j++) {
+          const currComp = currentComponents[j];
+          // TODO warn when there is no key
+          if (currComp.hasKey && currComp.key === comp.key) {
+            idx = j;
+            break;
+          }
+        }
+        if (idx === -1) {
+          idx = i;
+        }
+        currentComponents[idx].instance.update({
           formatters,
           scales,
           data,
-          settings: comp
-        };
+          settings: components[idx]
+        });
       }
     }
-
-    render(false);
 
     if (typeof updated === 'function') {
       updated.call(instance);

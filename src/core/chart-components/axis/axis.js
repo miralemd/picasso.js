@@ -145,7 +145,7 @@ const axisComponent = {
     } = opts;
     this.init(settings);
   },
-  beforeRender(opts) {
+  resize(opts) {
     const {
       inner,
       outer
@@ -161,6 +161,9 @@ const axisComponent = {
     extend(this.innerRect, extendedInner);
     extend(this.outerRect, finalOuter);
 
+    return outer;
+  },
+  beforeRender() {
     const {
       formatter,
       ticksFn,
@@ -174,8 +177,6 @@ const axisComponent = {
       data: this.domain,
       formatter
     });
-
-    return outer;
   },
   render() {
     const {
