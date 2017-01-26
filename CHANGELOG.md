@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Added
+
+### Fixed
+- Box marker's whisker circles now size correctly in both vertical and non-vertical mode.
+
 ## 0.5.0
 
 ### Added
