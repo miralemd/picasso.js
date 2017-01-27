@@ -26,9 +26,9 @@ describe('Tick generators', () => {
       input.formatter = formatter('d3')('number')('-1.0%');
       const ticks = generateContinuousTicks(input);
       const expected = [
-        { position: 0, label: '0%', isMinor: false },
-        { position: 0.5, label: '50%', isMinor: false },
-        { position: 1, label: '100%', isMinor: false }
+        { position: 0, label: '0%', isMinor: false, value: 0 },
+        { position: 0.5, label: '50%', isMinor: false, value: 0.5 },
+        { position: 1, label: '100%', isMinor: false, value: 1 }
       ];
       expect(ticks).to.deep.equal(expected);
     });
@@ -44,10 +44,22 @@ describe('Tick generators', () => {
       settings.ticks.values = [-100, -0.1, 0.1, 0.3, 1.1, 123, 2130];
       const ticks = generateContinuousTicks(input);
       const expected = [
-        { position: 0.1, label: '0.1', isMinor: false },
-        { position: 0.3, label: '0.3', isMinor: false }
+        { position: 0.1, label: '0.1', isMinor: false, value: 0.1 },
+        { position: 0.3, label: '0.3', isMinor: false, value: 0.3 }
       ];
       expect(ticks).to.deep.equal(expected);
+    });
+
+    it('should only generate unique ticks by values', () => {
+      settings.ticks.values = [0.1, 0.1, 0.3, 0.4, 0.3, 0.5];
+      const ticks = generateContinuousTicks(input);
+      expect(ticks.map(t => t.value)).to.deep.equal([0.1, 0.3, 0.4, 0.5]);
+    });
+
+    it('should sort ticks by values', () => {
+      settings.ticks.values = [0.3, 0.1, 0.5, 0.4];
+      const ticks = generateContinuousTicks(input);
+      expect(ticks.map(t => t.value)).to.deep.equal([0.1, 0.3, 0.4, 0.5]);
     });
 
     it('should generate ticks by count', () => {

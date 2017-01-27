@@ -6,22 +6,24 @@ function ticksByCount({ count, minorCount, scale, formatter }) {
   .map((tick, i) => ({
     position: scale.get(tick),
     label: formatter(tick),
-    isMinor: i % (minorCount + 1) !== 0
+    isMinor: i % (minorCount + 1) !== 0,
+    value: tick
   }));
 }
 
 function ticksByValue({ values, scale, formatter }) {
   return values
-    .filter(v => v <= scale.max() && v >= scale.min())
+    .sort((a, b) => a - b)
+    .filter((v, i, ary) => v <= scale.max() && v >= scale.min() && ary.indexOf(v) === i)
     .map(tick => ({
       position: scale.get(tick),
       label: formatter(tick),
-      isMinor: false
+      isMinor: false,
+      value: tick
     }));
 }
 
 function forceTicksAtBounds(ticks, scale, formatter) {
-  // let bounds = [];
   const ticksP = ticks.map(t => t.position);
   const range = scale.range();
 
@@ -47,7 +49,6 @@ export function generateContinuousTicks({ settings, scale, innerRect, formatter 
   const minorCount = settings.minorTicks && settings.minorTicks.show ? settings.minorTicks.count : 0;
 
   if (settings.ticks.values) {
-    // TODO With custom tick values, dont care if its within the domain?
     scale.tickGenerator(ticksByValue);
     ticks = scale.ticks({ values: settings.ticks.values, scale: scale.copy(), formatter });
   } else if (settings.ticks.count !== undefined) {

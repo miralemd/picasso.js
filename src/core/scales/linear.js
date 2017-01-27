@@ -323,7 +323,7 @@ function appendMinorTicks(majorTicks, minorCount, scale) {
     }
   }
 
-  return ticks.filter(t => t >= scale.min() && t <= scale.max()).sort();
+  return ticks.filter(t => t >= scale.min() && t <= scale.max());
 }
 
 /**
@@ -344,6 +344,7 @@ export function looseDistanceBasedGenerator({ distance, scale, minorCount = 0, u
   }
 
   const ticks = minorCount > 0 ? appendMinorTicks(majorTicks, minorCount, scale) : majorTicks;
+  ticks.sort((a, b) => a - b);
 
   const ticksFormatted = ticks.map(applyFormat(formatter));
 
@@ -374,6 +375,7 @@ export function tightDistanceBasedGenerator({ distance, scale, minorCount = 0, u
 
   const majorTicks = scale.ticks(count);
   const ticks = minorCount > 0 ? appendMinorTicks(majorTicks, minorCount, scale) : majorTicks;
+  ticks.sort((a, b) => a - b);
 
   const ticksFormatted = ticks.map(applyFormat(formatter));
 

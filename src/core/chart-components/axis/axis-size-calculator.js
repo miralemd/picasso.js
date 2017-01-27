@@ -58,6 +58,45 @@ function tiltedLabelOverlap({
   return false;
 }
 
+function isToLarge({
+  rect,
+  type,
+  scale,
+  settings,
+  tilted,
+  majorTicks,
+  measure,
+  horizontal
+}) {
+  const tiltedOverlap = tilted && tiltedLabelOverlap({
+    majorTicks,
+    measureText: measure,
+    rect
+  });
+  const horizontalOverlap =
+    type === 'ordinal' &&
+    !tilted &&
+    horizontal &&
+    horizontalLabelOverlap({
+      majorTicks,
+      measureText: measure,
+      rect,
+      scale,
+      settings
+    });
+  const verticalOverlap =
+    type === 'ordinal' &&
+    !horizontal &&
+    verticalLabelOverlap({
+      majorTicks,
+      measureText: measure,
+      rect,
+      settings
+    });
+
+  return tiltedOverlap || horizontalOverlap || verticalOverlap;
+}
+
 export default function calcRequiredSize({
   rect,
   type,
@@ -108,29 +147,7 @@ export default function calcRequiredSize({
       sizeFromTextRect = r => r.width;
     }
 
-    const tiltedOverlap = tilted && tiltedLabelOverlap({
-      majorTicks,
-      measureText: measure,
-      rect
-    });
-    const horizontalOverlap =
-      type === 'ordinal' &&
-      !tilted &&
-      horizontal &&
-      horizontalLabelOverlap({
-        majorTicks,
-        measureText: measure,
-        rect,
-        scale,
-        settings
-      });
-    const verticalOverlap = !horizontal && verticalLabelOverlap({
-      majorTicks,
-      measureText: measure,
-      rect,
-      settings
-    });
-    if (tiltedOverlap || horizontalOverlap || verticalOverlap) {
+    if (isToLarge({ rect, type, scale, settings, tilted, majorTicks, measure, horizontal })) {
       const toLargeSize = Math.max(rect.width, rect.height); // used to hide the axis
       return toLargeSize;
     }
