@@ -300,10 +300,10 @@ function createInstance(definition) {
    */
   instance.brush = (...v) => composer.brush(...v);
 
-  instance.getAffectedShapes = (context, key, mode = 'and') => {
+  instance.getAffectedShapes = (context, mode = 'and', props, key) => {
     const shapes = [];
-    currentComponents.filter(comp => key === undefined || comp.key === key).forEach((comp) => {
-      shapes.push(...comp.instance.getBrushedShapes(context, mode));
+    currentComponents.filter(comp => key === undefined || key === null || comp.key === key).forEach((comp) => {
+      shapes.push(...comp.instance.getBrushedShapes(context, mode, props));
     });
     return shapes;
   };
