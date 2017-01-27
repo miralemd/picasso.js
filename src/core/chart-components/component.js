@@ -162,6 +162,12 @@ export default function componentFactory(definition) {
 
     // resize -> beforeRender -> render
     fn.resize = (inner, outer) => {
+      if (settings.data) {
+        data = composer.dataset().map(settings.data.mapTo, settings.data.groupBy);
+      } else {
+        data = [];
+      }
+
       const newSize = resize.call(definitionContext, {
         inner,
         outer

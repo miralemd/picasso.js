@@ -85,14 +85,14 @@ function createInstance(definition) {
     const {
       components = []
     } = settings;
+
     composer.set(data, settings);
 
     currentComponents = components.map(component => (
       composer.createComponent(component, element)
     ));
 
-    dockLayout = createDockLayout();
-    dockLayout.settings(settings.dockLayout);
+    dockLayout = createDockLayout(settings.dockLayout);
     currentComponents.forEach((c) => { dockLayout.addComponent(c.instance); });
 
     const { visible, hidden } = dockLayout.layout(element);
@@ -126,6 +126,16 @@ function createInstance(definition) {
     listeners.forEach(({ key, listener }) => element.removeEventListener(key, listener));
   };
 
+  const findComponentIndexByKey = (key) => {
+    for (let i = 0; i < currentComponents.length; i++) {
+      const currComp = currentComponents[i];
+      if (currComp.hasKey && currComp.key === key) {
+        return i;
+      }
+    }
+    return -1;
+  };
+
   /**
    * Update the chart with new settings and / or data
    * @param {} chart - Chart definition
@@ -147,11 +157,7 @@ function createInstance(definition) {
     } = settings;
 
     if (relayout) {
-      dockLayout = createDockLayout();
-      dockLayout.settings(settings.dockLayout);
-
-      const componentsToUpdate = [];
-      const componentsToRender = [];
+      dockLayout = createDockLayout(settings.dockLayout);
 
       for (let i = currentComponents.length - 1; i >= 0; i--) {
         const currComp = currentComponents[i];
@@ -164,52 +170,39 @@ function createInstance(definition) {
       }
 
       for (let i = 0; i < components.length; i++) {
-        let idx = -1;
         const comp = components[i];
-        for (let j = 0; j < currentComponents.length; j++) {
-          const currComp = currentComponents[j];
-          // TODO warn when there is no key
-          if (currComp.hasKey && currComp.key === comp.key) {
-            idx = j;
-            break;
-          }
-        }
+        const idx = findComponentIndexByKey(comp.key);
         if (idx === -1) {
           // Component is added
           const currComp = composer.createComponent(comp, element);
           currentComponents.push(currComp);
-          componentsToRender.push(currComp);
         } else {
           // Component is (potentially) updated
-          componentsToUpdate.push(currentComponents[idx], {
+          currentComponents[idx].updateWith = {
             formatters,
             scales,
             data,
             settings: comp
-          });
+          };
         }
       }
 
       currentComponents.forEach((c) => { dockLayout.addComponent(c.instance); });
-
       const { visible, hidden } = dockLayout.layout(element);
       visible.forEach((compInstance) => {
         const comp = currentComponents.filter(c => c.instance === compInstance)[0];
-        compInstance.update(comp.updateWith);
+        if (comp.updateWith) {
+          compInstance.update(comp.updateWith);
+          delete comp.updateWith;
+        } else {
+          compInstance.render();
+        }
       });
       hidden.forEach((compInstance) => { compInstance.hide(); });
     } else {
       for (let i = 0; i < components.length; i++) {
-        let idx = -1;
         const comp = components[i];
-        for (let j = 0; j < currentComponents.length; j++) {
-          const currComp = currentComponents[j];
-          // TODO warn when there is no key
-          if (currComp.hasKey && currComp.key === comp.key) {
-            idx = j;
-            break;
-          }
-        }
+        let idx = findComponentIndexByKey(comp.key);
         if (idx === -1) {
           idx = i;
         }
