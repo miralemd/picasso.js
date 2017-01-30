@@ -62,8 +62,8 @@ const gridLineComponent = {
 
   render() {
     // Setup scales
-    this.x = this.settings.x ? this.composer.scale(this.settings.x.scale) : null;
-    this.y = this.settings.y ? this.composer.scale(this.settings.y.scale) : null;
+    this.x = this.settings.x ? this.composer.scale(this.settings.x) : null;
+    this.y = this.settings.y ? this.composer.scale(this.settings.y) : null;
 
     // Return an empty array to abort rendering when no scales are available to renderer
     if (!this.x && !this.y) {
@@ -72,8 +72,8 @@ const gridLineComponent = {
 
     // Base the styling upon the axis defaults
     let axisDefaults = continuousDefaultSettings();
-    this.settings.styles.ticks = extend({}, axisDefaults.ticks, this.settings.styles.ticks || {});
-    this.settings.styles.minorTicks = extend({}, axisDefaults.minorTicks, this.settings.styles.minorTicks || {});
+    this.settings.ticks = extend({}, axisDefaults.ticks, this.settings.ticks || {});
+    this.settings.minorTicks = extend({}, axisDefaults.minorTicks, this.settings.minorTicks || {});
 
     // Setup lines for X and Y
     this.lines = {
@@ -94,7 +94,7 @@ const gridLineComponent = {
 
     // Loop through all X and Y lines
     [...this.lines.x, ...this.lines.y].forEach((p) => {
-      style = p.isMinor ? this.settings.styles.minorTicks : this.settings.styles.ticks;
+      style = p.isMinor ? this.settings.minorTicks : this.settings.ticks;
 
       // If the style's show is falsy, don't renderer this item (to respect axis settings).
       if (style.show) {

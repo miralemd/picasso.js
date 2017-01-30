@@ -62,14 +62,14 @@ describe('line marker', () => {
       position: 0.5,
       isMinor: false
     }];
-    composer.scale.onCall(0).returns(xScale);
+    composer.scale.withArgs({ scale: 'x' }).returns(xScale);
 
     const yScale = v => v;
     yScale.cachedTicks = () => [{
       position: 0.5,
       isMinor: false
     }];
-    composer.scale.onCall(1).returns(yScale);
+    composer.scale.withArgs({ scale: 'y' }).returns(yScale);
 
     line = lineComponent(config, composer);
 
@@ -114,7 +114,7 @@ describe('line marker', () => {
       position: 0.5,
       isMinor: false
     }];
-    composer.scale.onCall(0).returns(xScale);
+    composer.scale.withArgs({ scale: 'x' }).returns(xScale);
 
     line = lineComponent(config, composer);
 
@@ -149,7 +149,7 @@ describe('line marker', () => {
       position: 0.5,
       isMinor: false
     }];
-    composer.scale.onCall(0).returns(yScale);
+    composer.scale.withArgs({ scale: 'y' }).returns(yScale);
 
     line = lineComponent(config, composer);
 
@@ -176,10 +176,8 @@ describe('line marker', () => {
       data: { mapTo: 'does not matter', groupBy: 'does not matter' },
       x: { scale: 'x' },
       y: { scale: 'y' },
-      styles: {
-        minorTicks: {
-          show: true
-        }
+      minorTicks: {
+        show: true
       }
     };
 
@@ -190,14 +188,14 @@ describe('line marker', () => {
       position: 0.5,
       isMinor: true
     }];
-    composer.scale.onCall(0).returns(xScale);
+    composer.scale.withArgs({ scale: 'x' }).returns(xScale);
 
     const yScale = v => v;
     yScale.cachedTicks = () => [{
       position: 0.5,
       isMinor: true
     }];
-    composer.scale.onCall(1).returns(yScale);
+    composer.scale.withArgs({ scale: 'y' }).returns(yScale);
 
     line = lineComponent(config, composer);
 
@@ -234,13 +232,11 @@ describe('line marker', () => {
       data: { mapTo: 'does not matter', groupBy: 'does not matter' },
       x: { scale: 'x' },
       y: { scale: 'y' },
-      styles: {
-        minorTicks: {
-          show: false
-        },
-        ticks: {
-          show: false
-        }
+      minorTicks: {
+        show: false
+      },
+      ticks: {
+        show: false
       }
     };
 
@@ -251,14 +247,14 @@ describe('line marker', () => {
       position: 0.5,
       isMinor: true
     }];
-    composer.scale.onCall(0).returns(xScale);
+    composer.scale.withArgs({ scale: 'x' }).returns(xScale);
 
     const yScale = v => v;
     yScale.cachedTicks = () => [{
       position: 0.5,
       isMinor: false
     }];
-    composer.scale.onCall(1).returns(yScale);
+    composer.scale.withArgs({ scale: 'y' }).returns(yScale);
 
     line = lineComponent(config, composer);
 

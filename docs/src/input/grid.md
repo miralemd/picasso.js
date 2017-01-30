@@ -28,17 +28,15 @@ You do not have to specify both the X and Y in case you're drawing a box plot or
   y: {
     scale: 'y'
   },
-  styles: {
-    ticks: {
-      show: true,
-      stroke: 'red',
-      strokeWidth: 5,
-    },
-    minorTicks: {
-      show: false,
-      stroke: 'blue',
-      strokeWidth: 1
-    }
+  ticks: {
+    show: true,
+    stroke: 'red',
+    strokeWidth: 5,
+  },
+  minorTicks: {
+    show: false,
+    stroke: 'blue',
+    strokeWidth: 1
   }
 }
 ```
