@@ -158,7 +158,8 @@ function createInstance(definition) {
    * Update the chart with new settings and / or data
    * @param {} chart - Chart definition
    */
-  instance.update = (newProps, relayout = true) => {
+  instance.update = (newProps = {}) => {
+    const { partialData } = newProps;
     if (newProps.data) {
       data = newProps.data;
     }
@@ -174,7 +175,20 @@ function createInstance(definition) {
       components = []
     } = settings;
 
-    if (relayout) {
+    if (partialData) {
+      // Update without relayouting - assumes the compoents array has been left intact (no additions, removals or moving of items)
+      for (let i = 0; i < components.length; i++) {
+        currentComponents[i].instance.beforeUpdate({
+          formatters,
+          scales,
+          data,
+          settings: components[i]
+        });
+        if (currentComponents[i].visible) {
+          currentComponents[i].instance.update();
+        }
+      }
+    } else {
       for (let i = currentComponents.length - 1; i >= 0; i--) {
         const currComp = currentComponents[i];
         // TODO warn when there is no key
@@ -221,19 +235,6 @@ function createInstance(definition) {
         comp.visible = false;
         delete comp.updateWith;
       });
-    } else {
-      // Update without relayouting - assumes the compoents array has been left intact (no additions, removals or moving of items)
-      for (let i = 0; i < components.length; i++) {
-        currentComponents[i].instance.beforeUpdate({
-          formatters,
-          scales,
-          data,
-          settings: components[i]
-        });
-        if (currentComponents[i].visible) {
-          currentComponents[i].instance.update();
-        }
-      }
     }
 
     if (typeof updated === 'function') {
