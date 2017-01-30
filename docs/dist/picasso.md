@@ -10,6 +10,7 @@
 * <a href="#createInstance">createInstance</a>
 * <a href="#createInstance~instance.update">createInstance~instance.update</a>
 * <a href="#createInstance~instance.brush">createInstance~instance.brush</a>
+* <a href="#createInstance~instance.scroll">createInstance~instance.scroll</a>
 * <a href="#picasso.chart">picasso.chart</a>
 
 
@@ -103,6 +104,13 @@ Update the chart with new settings and / or data
 | Returns | data-brush | No | ... | ... |
 
 The brush context for this chart  
+#### <a name='createInstance~instance.scroll' href='#createInstance~instance.scroll'>#</a> createInstance.**createInstance~instance.scroll**()
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | scroll-api | No | ... | ... |
+
+No description  
 #### <a name='picasso.chart' href='#picasso.chart'>#</a> **picasso.chart**(*Chart.Props settings*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|

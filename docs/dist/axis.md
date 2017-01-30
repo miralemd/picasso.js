@@ -31,6 +31,7 @@
 | ticks.strokeWidth | boolean | No | Yes | 1 |
 | ticks.tight | boolean | Only on a continuous axis | Yes | No |
 | ticks.forceBounds | boolean | Only on a continuous axis | Yes | No |
+| ticks.distance | boolean | Approximate distance between each tick. Only on a continuous axis | Yes | 100 |
 | minorTicks | boolean | Only on a continuous axis | Yes | No |
 | minorTicks.show | boolean | No | Yes | true |
 | minorTicks.margin | boolean | No | Yes | No |
