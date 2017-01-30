@@ -301,6 +301,15 @@ function createInstance(definition) {
   instance.brush = (...v) => composer.brush(...v);
 
   /**
+   * Get a field associated with the provided brush
+   * @param {data-brush} - A data brush
+   * @return {data-field}
+   */
+  instance.field = brush =>
+     composer.dataset().findField(brush.id)
+  ;
+
+  /**
    * Get all shapes associated with the provided context
    * @param {String} context The brush context
    * @param {String} mode Property comparasion mode.
