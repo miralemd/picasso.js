@@ -80,6 +80,7 @@ export default function componentFactory(definition) {
   return (config, composer, container) => {
     let settings = extend(true, {}, defaultSettings, config);
     let data = [];
+    let listeners = [];
     let scale;
     let formatter;
 
@@ -121,7 +122,6 @@ export default function componentFactory(definition) {
     Object.defineProperty(brushArgs, 'data', {
       get: () => data
     });
-    let hasRendered = false;
 
     const rend = definition.renderer ? rendererFn(definition.renderer) : composer.renderer || rendererFn();
     brushArgs.renderer = rend;
@@ -186,23 +186,16 @@ export default function componentFactory(definition) {
     };
 
     fn.render = () => {
+      element = rend.element && rend.element() ? element : rend.appendTo(container);
       const nodes = brushArgs.nodes = render.call(definitionContext, ...getRenderArgs());
       rend.render(nodes);
 
-      if (!hasRendered) {
-        hasRendered = true;
-        if (config.brush && config.brush.consume) {
-          config.brush.consume.forEach((b) => {
-            if (b.context && b.style) {
-              styler(brushArgs, b);
-            }
-          });
-        }
-        mounted(element);
-      }
+      fn.mount();
+      mounted(element);
     };
 
     fn.hide = () => {
+      fn.unmount();
       rend.size({
         x: 0,
         y: 0,
@@ -225,6 +218,7 @@ export default function componentFactory(definition) {
         data
       });
 
+      element = rend.element && rend.element() ? element : rend.appendTo(container);
       const nodes = brushArgs.nodes = render.call(definitionContext, ...getRenderArgs());
       rend.render(nodes);
 
@@ -235,6 +229,7 @@ export default function componentFactory(definition) {
       beforeDestroy.call(element);
       rend.destroy();
       destroyed();
+      element = null;
     };
 
     // Set contexts, note that the definition and instance need different contexts (for example if they have different 'require' props)
@@ -278,6 +273,51 @@ export default function componentFactory(definition) {
       return shapes;
     };
 
+    fn.mount = () => {
+      if (config.brush && config.brush.consume) {
+        config.brush.consume.forEach((b) => {
+          if (b.context && b.style) {
+            styler(brushArgs, b);
+          }
+        });
+      }
+
+      Object.keys(definition.on || {}).forEach((key) => {
+        const listener = (e) => {
+          definition.on[key].call(definitionContext, e);
+        };
+        element.addEventListener(key, listener);
+        listeners.push({
+          key,
+          listener
+        });
+      });
+
+      Object.keys(config.on || {}).forEach((key) => {
+        const listener = (e) => {
+          config.on[key].call(instanceContext, e);
+        };
+        element.addEventListener(key, listener);
+        listeners.push({
+          key,
+          listener
+        });
+      });
+
+      // ===== temporary solution to try out interactive brushing (assuming svg renderer)
+      if (brushArgs.config.trigger) {
+        observeBrushOnElement({ element, config: brushArgs });
+      }
+      // ===== end temporary solution
+    };
+
+    fn.unmount = () => {
+      if (element) {
+        listeners.forEach(({ key, listener }) => element.removeEventListener(key, listener));
+        listeners = [];
+      }
+    };
+
     // Start calling lifecycle methods
     created({
       settings
@@ -285,28 +325,6 @@ export default function componentFactory(definition) {
 
     // TODO skip for SSR
     beforeMount();
-
-    element = rend.appendTo(container);
-
-    // Bind event listeners
-    Object.keys(definition.on || {}).forEach((key) => {
-      const listener = (e) => {
-        definition.on[key].call(definitionContext, e);
-      };
-      element.addEventListener(key, listener);
-    });
-    Object.keys(config.on || {}).forEach((key) => {
-      const listener = (e) => {
-        config.on[key].call(instanceContext, e);
-      };
-      element.addEventListener(key, listener);
-    });
-
-    // ===== temporary solution to try out interactive brushing (assuming svg renderer)
-    if (brushArgs.config.trigger) {
-      observeBrushOnElement({ element, config: brushArgs });
-    }
-    // ===== end temporary solution
 
     // end skip
 
