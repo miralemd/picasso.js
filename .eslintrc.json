@@ -23,6 +23,7 @@
 	// Overrides
     "import/no-extraneous-dependencies": [2, { "devDependencies": true }],
     "no-plusplus": 0,
-    "comma-dangle": [2, "never"]
+    "comma-dangle": [2, "never"],
+    "curly": [2, "all"]
   }
 }

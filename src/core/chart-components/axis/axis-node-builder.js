@@ -79,10 +79,10 @@ export function filterOverlappingLabels(labels, ticks) {
       if (labels[i] && labels[k] && isOverlapping(labels[i], labels[k])) {
         if (k === labels.length - 1) { // On collition with last label, remove current label instead
           labels.splice(i, 1);
-          if (ticks) ticks.splice(i, 1);
+          if (ticks) { ticks.splice(i, 1); }
         } else {
           labels.splice(k, 1);
-          if (ticks) ticks.splice(k, 1);
+          if (ticks) { ticks.splice(k, 1); }
         }
         k--;
         i--;

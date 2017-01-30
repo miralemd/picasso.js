@@ -42,7 +42,7 @@ export default function colorObject(colorObj) {
  * colorObject.test( { r:255, g: 123, b: 123 } );
  */
 colorObject.test = (obj) => {
-  if (obj === null || obj === undefined || typeof obj !== 'object') return false;
+  if (obj === null || obj === undefined || typeof obj !== 'object') { return false; }
 
   // Doesnt really work out well if any of the proparties have invalid values
   return typeof colorObject.getColorType(obj) !== 'undefined';
@@ -58,11 +58,11 @@ colorObject.test = (obj) => {
  * colorObject.getColorType( { r:255, g: 123, b: 123 } )
  */
 colorObject.getColorType = (obj) => {
-  if (obj === null || typeof obj !== 'object') return undefined;
+  if (obj === null || typeof obj !== 'object') { return undefined; }
 
-  if (hasPropertyCombination(obj, ['r', 'g', 'b'])) return 'rgb';
+  if (hasPropertyCombination(obj, ['r', 'g', 'b'])) { return 'rgb'; }
 
-  if (hasPropertyCombination(obj, ['h', 's', 'l'])) return 'hsl';
+  if (hasPropertyCombination(obj, ['h', 's', 'l'])) { return 'hsl'; }
 
   return undefined;
 };

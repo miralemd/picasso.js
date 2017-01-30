@@ -157,8 +157,8 @@ export default function ordinal(fields, settings) {
     fn.range(stgns.invert ? [1, 0] : [0, 1]);
 
     fn.padding(isNaN(stgns.padding) ? 1 : stgns.padding);
-    if (!isNaN(stgns.paddingInner)) fn.paddingInner(stgns.paddingInner);
-    if (!isNaN(stgns.paddingOuter)) fn.paddingOuter(stgns.paddingOuter);
+    if (!isNaN(stgns.paddingInner)) { fn.paddingInner(stgns.paddingInner); }
+    if (!isNaN(stgns.paddingOuter)) { fn.paddingOuter(stgns.paddingOuter); }
     fn.align(isNaN(stgns.align) ? 0.5 : stgns.align);
   }
   return fn;

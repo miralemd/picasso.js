@@ -80,7 +80,7 @@ function appendTilting(struct, buildOpts) {
 }
 
 function appendCollider(tick, struct, buildOpts) {
-  if (!buildOpts.stepSize || buildOpts.layered || buildOpts.tilted) return;
+  if (!buildOpts.stepSize || buildOpts.layered || buildOpts.tilted) { return; }
 
   if (buildOpts.align === 'bottom' || buildOpts.align === 'top') {
     const tickCenter = tick.position * buildOpts.innerRect.width;

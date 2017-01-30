@@ -9,7 +9,7 @@ describe('text-metrics', () => {
       canvasContextMock = {
         font: '',
         measureText: sandbox.spy(() => {
-          if (!canvasContextMock.font) fontWasUnset = true;
+          if (!canvasContextMock.font) { fontWasUnset = true; }
           return { width: 150 };
         })
       },

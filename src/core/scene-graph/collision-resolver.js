@@ -81,7 +81,7 @@ function resolveGeometryCollision(node, type, input) {
 
 function resolveCollision(node, intersectionType, input) {
   const collider = node._collider;
-  if (collider === null) return null;
+  if (collider === null) { return null; }
 
   if (collider.type === 'frontChild') {
     return resolveFrontChildCollision(node, intersectionType, input);
@@ -99,7 +99,7 @@ function findAllCollisions(nodes, intersectionType, ary, input) {
 
     const collision = resolveCollision(node, intersectionType, input);
 
-    if (collision) ary.push(collision);
+    if (collision) { ary.push(collision); }
 
     // Only traverse children if no match is found on parent and it doesnt have any custom collider
     if (node.children && !collision && !node._collider) {
@@ -115,7 +115,7 @@ function hasCollision(nodes, intersectionType, input) {
 
     const collision = resolveCollision(node, intersectionType, input);
 
-    if (collision !== null) return true;
+    if (collision !== null) { return true; }
 
     if (node.children && !node._collider) {
       return hasCollision(node.children, intersectionType, input);

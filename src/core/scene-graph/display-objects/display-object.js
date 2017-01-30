@@ -68,7 +68,7 @@ class DisplayObject extends Node {
   }
 
   collider(opts) {
-    if (typeof opts === 'undefined') return this._collider;
+    if (typeof opts === 'undefined') { return this._collider; }
 
     const { type = null } = opts;
     const c = { type };
@@ -115,7 +115,7 @@ class DisplayObject extends Node {
   }
 
   resolveLocalTransform(m = new Matrix()) {
-    if (typeof this.attrs.transform !== 'undefined') resolveTransform(this.attrs.transform, m);
+    if (typeof this.attrs.transform !== 'undefined') { resolveTransform(this.attrs.transform, m); }
     this.modelViewMatrix = m.clone();
   }
 

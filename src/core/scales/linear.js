@@ -302,7 +302,7 @@ function minorTicksGenerator(count, start, end) {
 }
 
 function appendMinorTicks(majorTicks, minorCount, scale) {
-  if (majorTicks.length === 1) return majorTicks;
+  if (majorTicks.length === 1) { return majorTicks; }
 
   const ticks = majorTicks.concat([]);
 

@@ -15,7 +15,7 @@ export default class GeoCircle {
   }
 
   containsPoint(p) {
-    if (this.zeroSize) return false;
+    if (this.zeroSize) { return false; }
 
     const sqrDist = sqrDistance(this.vector, p);
 
@@ -26,11 +26,11 @@ export default class GeoCircle {
   }
 
   intersectsLine(points) {
-    if (this.zeroSize) return false;
+    if (this.zeroSize) { return false; }
 
     const [p1, p2] = points;
 
-    if (this.containsPoint(p1) || this.containsPoint(p2)) return true;
+    if (this.containsPoint(p1) || this.containsPoint(p2)) { return true; }
 
     const pointOnLine = closestPointToLine(p1, p2, this.vector);
     const dist = sqrDistance(pointOnLine, this.vector);
@@ -39,7 +39,7 @@ export default class GeoCircle {
   }
 
   intersectsRect(points) {
-    if (this.zeroSize) return false;
+    if (this.zeroSize) { return false; }
     const width = points[2].x - points[0].x;
     const height = points[2].y - points[0].y;
     const centerX = points[0].x + (width / 2);
@@ -49,7 +49,7 @@ export default class GeoCircle {
   }
 
   intersectsCircle(c) {
-    if (this.zeroSize || c.r <= 0) return false;
+    if (this.zeroSize || c.r <= 0) { return false; }
 
     const dx = this.cx - c.x;
     const dy = this.cy - c.y;

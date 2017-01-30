@@ -21,7 +21,7 @@ export function isLineIntersectingLine(lineStart, lineEnd, targetLineStart, targ
   const dYTarget = distanceY(targetLineStart, targetLineEnd);
   const dom = (dXline * dYTarget) - (dYline * dXtarget);
 
-  if (dom === 0) return false; // Lines are parrallel or coincident
+  if (dom === 0) { return false; } // Lines are parrallel or coincident
 
   const dLine = determinant(lineStart, lineEnd);
   const dTarget = determinant(targetLineStart, targetLineEnd);
@@ -40,9 +40,9 @@ export function isCircleIntersectingRect(cx, cy, r, rectCenterX, rectCenterY, wi
   const dX = Math.abs(cx - rectCenterX);
   const dY = Math.abs(cy - rectCenterY);
 
-  if (dX > rX + r || dY > rY + r) return false;
+  if (dX > rX + r || dY > rY + r) { return false; }
 
-  if (dX <= rX || dY <= rY) return true;
+  if (dX <= rX || dY <= rY) { return true; }
 
   const sqrDist = Math.pow(dX - rX, 2) + Math.pow(dY - rY, 2);
 

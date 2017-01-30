@@ -31,7 +31,7 @@ export default class GeoRect {
   }
 
   containsPoint(p) {
-    if (this.zeroSize) return false;
+    if (this.zeroSize) { return false; }
 
     return p.x >= this.x &&
       p.x <= this.x + this.width &&
@@ -40,17 +40,17 @@ export default class GeoRect {
   }
 
   intersectsLine(points) {
-    if (this.zeroSize) return false;
-    if (this.containsPoint(points[0]) || this.containsPoint(points[1])) return true;
+    if (this.zeroSize) { return false; }
+    if (this.containsPoint(points[0]) || this.containsPoint(points[1])) { return true; }
 
     for (let i = 0; i < 4; i++) {
-      if (isLineIntersectingLine(this.vectors[i], this.vectors[i !== 3 ? i + 1 : 0], ...points)) return true;
+      if (isLineIntersectingLine(this.vectors[i], this.vectors[i !== 3 ? i + 1 : 0], ...points)) { return true; }
     }
     return false;
   }
 
   intersectsRect(points) {
-    if (this.zeroSize) return false;
+    if (this.zeroSize) { return false; }
 
     return this.x <= points[2].x && // this.left <= target.right
       points[0].x <= this.x + this.width && // target.left <= this.right
@@ -59,7 +59,7 @@ export default class GeoRect {
   }
 
   intersectsCircle(c) {
-    if (this.zeroSize || c.r <= 0) return false;
+    if (this.zeroSize || c.r <= 0) { return false; }
 
     return isCircleIntersectingRect(c.x, c.y, c.r, this.center.x, this.center.y, this.width, this.height);
   }
