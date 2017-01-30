@@ -156,7 +156,7 @@ export default function componentFactory(definition) {
       if (settings.data) {
         data = composer.dataset().map(settings.data.mapTo, settings.data.groupBy);
       }else if(scale){
-      	data = [];
+      	data = scale.data();
       } else {
         data = [];
       }

@@ -300,6 +300,14 @@ function createInstance(definition) {
    */
   instance.brush = (...v) => composer.brush(...v);
 
+  /**
+   * Get all shapes associated with the provided context
+   * @param {String} context The brush context
+   * @param {String} mode Property comparasion mode.
+   * @param {Array} props Which specific data properties to compare
+   * @param {String} key Which component to get shapes from. Default gives shapes from all components.
+   * @return {data-brush}
+   */
   instance.getAffectedShapes = (context, mode = 'and', props, key) => {
     const shapes = [];
     currentComponents.filter(comp => key === undefined || key === null || comp.key === key).forEach((comp) => {
