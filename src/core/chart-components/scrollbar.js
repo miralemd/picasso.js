@@ -14,6 +14,7 @@ const scrollbar = {
     mousedown(event) {
       event.preventDefault();
       const dock = this.settings.dock;
+      const invert = this.settings.settings.invert;
       const horizontal = dock === 'top' || dock === 'bottom';
       const containerRect = event.currentTarget.getBoundingClientRect();
       const containerStart = containerRect[horizontal ? 'left' : 'top'];
@@ -23,7 +24,10 @@ const scrollbar = {
       let currentMove;
 
       { // local scope to allow reuse of variable names later
-        const offset = event[horizontal ? 'clientX' : 'clientY'] - containerStart;
+        let offset = event[horizontal ? 'clientX' : 'clientY'] - containerStart;
+        if (invert) {
+          offset = length - offset;
+        }
         const scrollState = scroll.getState();
 
         currentMove = {
@@ -42,7 +46,10 @@ const scrollbar = {
       }
 
       const mousemove = (e) => {
-        const offset = e[horizontal ? 'clientX' : 'clientY'] - containerStart;
+        let offset = e[horizontal ? 'clientX' : 'clientY'] - containerStart;
+        if (invert) {
+          offset = length - offset;
+        }
         if (!currentMove.swipe) {
           if (Math.abs(currentMove.startOffset - offset) <= 1) {
             return;
@@ -59,7 +66,10 @@ const scrollbar = {
         document.removeEventListener('mousemove', mousemove);
         document.removeEventListener('mouseup', mouseup);
 
-        const offset = e[horizontal ? 'clientX' : 'clientY'] - containerStart;
+        let offset = e[horizontal ? 'clientX' : 'clientY'] - containerStart;
+        if (invert) {
+          offset = length - offset;
+        }
         const scrollState = scroll.getState();
         if (currentMove.swipe) {
           const scrollMove = ((offset - currentMove.startOffset) / length) * (scrollState.max - scrollState.min);
@@ -103,6 +113,7 @@ const scrollbar = {
 
   render: function render(h) {
     const dock = this.settings.dock;
+    const invert = this.settings.settings.invert;
     const horizontal = dock === 'top' || dock === 'bottom';
     const lengthAttr = horizontal ? 'width' : 'height';
 
@@ -110,8 +121,12 @@ const scrollbar = {
     const length = _rect[lengthAttr];
 
     const scrollState = this.composer.scroll(this.settings.scroll).getState();
-    const thumbStart = (length * (scrollState.start - scrollState.min)) / (scrollState.max - scrollState.min);
+    let thumbStart = (length * (scrollState.start - scrollState.min)) / (scrollState.max - scrollState.min);
     const thumbRange = (length * scrollState.viewSize) / (scrollState.max - scrollState.min);
+
+    if (invert) {
+      thumbStart = length - thumbStart - thumbRange;
+    }
 
     return h(
       'div',
