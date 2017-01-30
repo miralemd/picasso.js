@@ -194,21 +194,22 @@ function createInstance(definition) {
           currentComponents.push(currComp);
         } else {
           // Component is (potentially) updated
-          currentComponents[idx].updateWith = {
+          currentComponents[idx].shouldUpdate = true;
+          currentComponents[idx].instance.beforeUpdate({
             formatters,
             scales,
             data,
             settings: comp
-          };
+          });
         }
       }
 
       const { visible, hidden } = layout(currentComponents);
       visible.forEach((compInstance) => {
         const comp = findComponent(compInstance);
-        if (comp.updateWith) {
-          compInstance.update(comp.updateWith);
-          delete comp.updateWith;
+        if (comp.shouldUpdate) {
+          compInstance.update();
+          delete comp.shouldUpdate;
         } else {
           compInstance.render();
         }
@@ -223,13 +224,14 @@ function createInstance(definition) {
     } else {
       // Update without relayouting - assumes the compoents array has been left intact (no additions, removals or moving of items)
       for (let i = 0; i < components.length; i++) {
+        currentComponents[i].instance.beforeUpdate({
+          formatters,
+          scales,
+          data,
+          settings: components[i]
+        });
         if (currentComponents[i].visible) {
-          currentComponents[i].instance.update({
-            formatters,
-            scales,
-            data,
-            settings: components[i]
-          });
+          currentComponents[i].instance.update();
         }
       }
     }

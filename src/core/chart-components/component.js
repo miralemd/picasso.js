@@ -77,7 +77,7 @@ export default function componentFactory(definition) {
     defaultSettings = {}
   } = definition;
 
-  return (config, composer, container) => {
+  return (config = {}, composer, container) => {
     let settings = extend(true, {}, defaultSettings, config);
     let data = [];
     let listeners = [];
@@ -140,34 +140,36 @@ export default function componentFactory(definition) {
       dock: settings.dock
     };
 
-    const updateScale = () => {
-      if (typeof settings.scale === 'string') {
-        scale = composer.scale(settings.scale);
+    function set(opts = {}) {
+      if (opts.settings) {
+        settings = extend(true, {}, defaultSettings, opts.settings);
       }
-    };
-    const updateFormatter = () => {
-      if (typeof settings.formatter === 'string') {
-        formatter = composer.formatter(settings.formatter);
-      } else if (typeof settings.scale === 'string') {
-        formatter = composer.formatter({ source: scale.sources[0] });
-      }
-    };
 
-    updateScale();
-    updateFormatter();
-
-    const fn = () => { };
-
-    fn.dockConfig = dockConfig;
-
-    // resize -> beforeRender -> render
-    fn.resize = (inner, outer) => {
       if (settings.data) {
         data = composer.dataset().map(settings.data.mapTo, settings.data.groupBy);
       } else {
         data = [];
       }
 
+      if (typeof settings.scale === 'string') {
+        scale = composer.scale(settings.scale);
+      }
+
+      if (typeof settings.formatter === 'string') {
+        formatter = composer.formatter(settings.formatter);
+      } else if (typeof settings.scale === 'string') {
+        formatter = composer.formatter({ source: scale.sources[0] });
+      }
+    }
+
+    const fn = () => {
+      fn.init({ settings: config });
+      return fn;
+    };
+
+    fn.dockConfig = dockConfig;
+
+    fn.resize = (inner, outer) => {
       const newSize = resize.call(definitionContext, {
         inner,
         outer
@@ -187,15 +189,18 @@ export default function componentFactory(definition) {
       return renderArgs;
     };
 
+    fn.init = (opts) => {
+      set(opts);
+
+      created({
+        settings
+      });
+    };
+
     fn.render = () => {
+      beforeMount();
+
       element = rend.element && rend.element() ? element : rend.appendTo(container);
-
-      if (settings.data) {
-        data = composer.dataset().map(settings.data.mapTo, settings.data.groupBy);
-      } else {
-        data = [];
-      }
-
       beforeRender();
 
       const nodes = brushArgs.nodes = render.call(definitionContext, ...getRenderArgs());
@@ -216,25 +221,16 @@ export default function componentFactory(definition) {
       rend.clear();
     };
 
-    fn.update = (opts = {}) => {
-      if (opts.settings) {
-        settings = extend(true, {}, defaultSettings, opts.settings);
-      }
-
-      updateScale();
-      updateFormatter();
-
-      if (settings.data) {
-        data = composer.dataset().map(settings.data.mapTo, settings.data.groupBy);
-      } else {
-        data = [];
-      }
+    fn.beforeUpdate = (opts) => {
+      set(opts);
 
       beforeUpdate({
         settings,
         data
       });
+    };
 
+    fn.update = () => {
       element = rend.element && rend.element() ? element : rend.appendTo(container);
 
       beforeRender();
@@ -337,16 +333,6 @@ export default function componentFactory(definition) {
         listeners = [];
       }
     };
-
-    // Start calling lifecycle methods
-    created({
-      settings
-    });
-
-    // TODO skip for SSR
-    beforeMount();
-
-    // end skip
 
     return fn;
   };
