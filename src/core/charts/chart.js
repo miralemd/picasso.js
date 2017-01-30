@@ -78,53 +78,63 @@ function createInstance(definition) {
 
   const listeners = [];
   let composer = composerFn();
-  let dockLayout = null;
   let currentComponents = []; // Augmented components
 
-  function renderComponents() {
-    currentComponents.forEach((c) => { dockLayout.addComponent(c.instance); });
-
-    const { visible, hidden } = dockLayout.layout(element);
-    visible.forEach((compInstance) => {
-      const comp = currentComponents.filter(c => c.instance === compInstance)[0];
-      if (comp.shouldUpdate) {
-        compInstance.update(comp.updateWith);
-        delete comp.shouldUpdate;
-        delete comp.updateWith;
-      } else {
-        compInstance.render();
+  const findComponent = (componentInstance) => {
+    for (let i = 0; i < currentComponents.length; i++) {
+      if (currentComponents[i].instance === componentInstance) {
+        return currentComponents[i];
       }
-    });
-    hidden.forEach((compInstance) => {
-      compInstance.hide();
-    });
-  }
+    }
+    return null;
+  };
 
-  function render(isInitial) {
+  const findComponentIndexByKey = (key) => {
+    for (let i = 0; i < currentComponents.length; i++) {
+      const currComp = currentComponents[i];
+      if (currComp.hasKey && currComp.key === key) {
+        return i;
+      }
+    }
+    return -1;
+  };
+
+  const layout = (components) => {
+    const dockLayout = createDockLayout(settings.dockLayout);
+    components.forEach((c) => { dockLayout.addComponent(c.instance); });
+
+    return dockLayout.layout(element);
+  };
+
+  const render = () => {
     const {
       components = []
     } = settings;
-    dockLayout = createDockLayout();
-    dockLayout.settings(settings.dockLayout);
 
     composer.set(data, settings);
 
-    if (isInitial) {
-      currentComponents = components.map(component => (
-        composer.createComponent(component, element)
-      ));
-    }
+    currentComponents = components.map(component => (
+      composer.createComponent(component, element)
+    ));
 
-    renderComponents();
-  }
+    const { visible, hidden } = layout(currentComponents);
+    visible.forEach((compInstance) => {
+      compInstance.render();
+      findComponent(compInstance).visible = true;
+    });
+    hidden.forEach((compInstance) => {
+      compInstance.hide();
+      findComponent(compInstance).visible = false;
+    });
+  };
 
-  function instance() {}
+  function instance() {} // The chart instance
 
   // Browser only
   const mount = () => {
     element.innerHTML = '';
 
-    render(true);
+    render();
 
     Object.keys(on).forEach((key) => {
       const listener = on[key].bind(instance);
@@ -148,7 +158,8 @@ function createInstance(definition) {
    * Update the chart with new settings and / or data
    * @param {} chart - Chart definition
    */
-  instance.update = (newProps) => {
+  instance.update = (newProps = {}) => {
+    const { partialData } = newProps;
     if (newProps.data) {
       data = newProps.data;
     }
@@ -164,49 +175,67 @@ function createInstance(definition) {
       components = []
     } = settings;
 
-    dockLayout = createDockLayout();
-    dockLayout.settings(settings.dockLayout);
-
-    for (let i = currentComponents.length - 1; i >= 0; i--) {
-      const currComp = currentComponents[i];
-      // TODO warn when there is no key
-      if (!components.some(c => currComp.hasKey && currComp.key === c.key)) {
-        // Component is removed
-        // console.log('Remove', currComp);
-        currComp.instance.destroy();
-        currentComponents.splice(i, 1);
-      }
-    }
-
-    for (let i = 0; i < components.length; i++) {
-      let idx = -1;
-      const comp = components[i];
-      for (let j = 0; j < currentComponents.length; j++) {
-        const currComp = currentComponents[j];
-        // TODO warn when there is no key
-        if (currComp.hasKey && currComp.key === comp.key) {
-          idx = j;
-          break;
-        }
-      }
-      if (idx === -1) {
-        // Component is added
-        // console.log('Add', comp);
-        currentComponents.push(composer.createComponent(comp, element));
-      } else {
-        // Component is (potentially) updated
-        // console.log('Update', comp);
-        currentComponents[idx].shouldUpdate = true;
-        currentComponents[idx].updateWith = {
+    if (partialData) {
+      // Update without relayouting - assumes the compoents array has been left intact (no additions, removals or moving of items)
+      for (let i = 0; i < components.length; i++) {
+        currentComponents[i].instance.beforeUpdate({
           formatters,
           scales,
           data,
-          settings: comp
-        };
+          settings: components[i]
+        });
+        if (currentComponents[i].visible) {
+          currentComponents[i].instance.update();
+        }
       }
-    }
+    } else {
+      for (let i = currentComponents.length - 1; i >= 0; i--) {
+        const currComp = currentComponents[i];
+        // TODO warn when there is no key
+        if (!components.some(c => currComp.hasKey && currComp.key === c.key)) {
+          // Component is removed
+          currentComponents.splice(i, 1);
+          currComp.instance.destroy();
+        }
+      }
 
-    render(false);
+      for (let i = 0; i < components.length; i++) {
+        const comp = components[i];
+        const idx = findComponentIndexByKey(comp.key);
+        if (idx === -1) {
+          // Component is added
+          const currComp = composer.createComponent(comp, element);
+          currentComponents.push(currComp);
+        } else {
+          // Component is (potentially) updated
+          currentComponents[idx].shouldUpdate = true;
+          currentComponents[idx].instance.beforeUpdate({
+            formatters,
+            scales,
+            data,
+            settings: comp
+          });
+        }
+      }
+
+      const { visible, hidden } = layout(currentComponents);
+      visible.forEach((compInstance) => {
+        const comp = findComponent(compInstance);
+        if (comp.shouldUpdate) {
+          compInstance.update();
+          delete comp.shouldUpdate;
+        } else {
+          compInstance.render();
+        }
+        comp.visible = true;
+      });
+      hidden.forEach((compInstance) => {
+        compInstance.hide();
+        const comp = findComponent(compInstance);
+        comp.visible = false;
+        delete comp.updateWith;
+      });
+    }
 
     if (typeof updated === 'function') {
       updated.call(instance);

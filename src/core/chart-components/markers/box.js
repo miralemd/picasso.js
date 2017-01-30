@@ -115,7 +115,7 @@ const boxMarker = {
       this.settings.settings.whiskers = true;
     }
   },
-  beforeRender(opts) {
+  resize(opts) {
     const {
       inner
     } = opts;

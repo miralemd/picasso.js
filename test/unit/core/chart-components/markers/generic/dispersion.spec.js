@@ -39,10 +39,10 @@ describe('Dispersion', () => {
   });
 
   it('should instantiate properly', () => {
-    d = dispersion(composerMock);
+    d = dispersion(composerMock)();
   });
   it('should fill items with data', () => {
-    d = dispersion(composerMock);
+    d = dispersion(composerMock)();
     d.updateSettings(settings);
     d.onData(data);
     d.items().forEach((item, i) => {

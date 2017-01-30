@@ -37,7 +37,7 @@ describe('point marker', () => {
       data: { mapTo: 'does not matter', groupBy: 'does not matter' }
     };
     composer.dataset().map.returns([{}]);
-    point = pointComponent(config, composer);
+    point = pointComponent(config, composer)();
     point.resize({ x: 10, y: 20, width: 100, height: 200 });
     point.render();
     expect(renderedPoints).to.deep.equal([{
@@ -68,7 +68,7 @@ describe('point marker', () => {
       }
     };
     composer.dataset().map.returns([{}]);
-    point = pointComponent(config, composer);
+    point = pointComponent(config, composer)();
     point.resize({ x: 10, y: 20, width: 100, height: 200 });
     point.render();
     expect(renderedPoints).to.deep.equal([{
@@ -103,7 +103,7 @@ describe('point marker', () => {
       }
     };
     composer.dataset().map.returns([{}]);
-    point = pointComponent(config, composer);
+    point = pointComponent(config, composer)();
     point.resize({ x: 10, y: 20, width: 100, height: 200 });
     point.render();
     expect(renderedPoints).to.deep.equal([{
@@ -139,7 +139,7 @@ describe('point marker', () => {
     composer.dataset().map.returns([{
       label: 'a'
     }]);
-    point = pointComponent(config, composer);
+    point = pointComponent(config, composer)();
     point.resize({ x: 10, y: 20, width: 100, height: 200 });
     point.render();
     expect(renderedPoints).to.deep.equal([{
@@ -190,7 +190,7 @@ describe('point marker', () => {
       m3: 1.2
     }]);
 
-    point = pointComponent(config, composer);
+    point = pointComponent(config, composer)();
     point.resize({ x: 10, y: 20, width: 100, height: 200 });
     point.render();
     expect(renderedPoints).to.deep.equal([{
@@ -239,7 +239,7 @@ describe('point marker', () => {
     xScale.step = () => 0.2; // max size: width * 0.2 -> 20
     composer.scale.onCall(0).returns(xScale);
 
-    point = pointComponent(config, composer);
+    point = pointComponent(config, composer)();
     point.resize({ x: 10, y: 20, width: 100, height: 200 }); // point size limits: [2,20]
     point.render();
 

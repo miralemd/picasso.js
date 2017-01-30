@@ -7,7 +7,7 @@ import {
 } from './brushing';
 
 const isReservedProperty = prop => [
-  'on', 'preferredSize', 'created', 'beforeMount', 'mounted',
+  'on', 'preferredSize', 'created', 'beforeMount', 'mounted', 'resize',
   'beforeUpdate', 'updated', 'beforeRender', 'render', 'beforeDestroy',
   'destroyed', 'defaultSettings', 'data', 'settings', 'formatter',
   'scale', 'composer', 'dockConfig'
@@ -77,7 +77,7 @@ export default function componentFactory(definition) {
     defaultSettings = {}
   } = definition;
 
-  return (config, composer, container) => {
+  return (config = {}, composer, container) => {
     let settings = extend(true, {}, defaultSettings, config);
     let data = [];
     let listeners = [];
@@ -110,6 +110,8 @@ export default function componentFactory(definition) {
     const beforeRender = createCallback('beforeRender');
     const beforeDestroy = createCallback('beforeDestroy');
     const destroyed = createCallback('destroyed');
+     // Do not allow overriding of these function§
+    const resize = definition.resize || function defaultResize({ inner }) { return inner; };
     const render = definition.render; // Do not allow overriding of this function
 
     let element;
@@ -138,39 +140,41 @@ export default function componentFactory(definition) {
       dock: settings.dock
     };
 
-    const updateScale = () => {
-      if (typeof settings.scale === 'string') {
-        scale = composer.scale(settings.scale);
+    function set(opts = {}) {
+      if (opts.settings) {
+        settings = extend(true, {}, defaultSettings, opts.settings);
       }
-    };
-    const updateFormatter = () => {
-      if (typeof settings.formatter === 'string') {
-        formatter = composer.formatter(settings.formatter);
-      } else if (typeof settings.scale === 'string') {
-        formatter = composer.formatter({ source: scale.sources[0] });
-      }
-    };
 
-    updateScale();
-    updateFormatter();
-
-    const fn = () => { };
-
-    fn.dockConfig = dockConfig;
-
-    // Treated as beforeRender
-    fn.resize = (inner, outer) => {
       if (settings.data) {
         data = composer.dataset().map(settings.data.mapTo, settings.data.groupBy);
       } else {
         data = [];
       }
 
-      const newSize = beforeRender({
+      if (typeof settings.scale === 'string') {
+        scale = composer.scale(settings.scale);
+      }
+
+      if (typeof settings.formatter === 'string') {
+        formatter = composer.formatter(settings.formatter);
+      } else if (typeof settings.scale === 'string') {
+        formatter = composer.formatter({ source: scale.sources[0] });
+      }
+    }
+
+    const fn = () => {
+      fn.init({ settings: config });
+      return fn;
+    };
+
+    fn.dockConfig = dockConfig;
+
+    fn.resize = (inner, outer) => {
+      const newSize = resize.call(definitionContext, {
         inner,
         outer
       });
-      if (newSize) { // TODO temporary
+      if (newSize) {
         rend.size(newSize);
       } else {
         rend.size(inner);
@@ -185,8 +189,20 @@ export default function componentFactory(definition) {
       return renderArgs;
     };
 
+    fn.init = (opts) => {
+      set(opts);
+
+      created({
+        settings
+      });
+    };
+
     fn.render = () => {
+      beforeMount();
+
       element = rend.element && rend.element() ? element : rend.appendTo(container);
+      beforeRender();
+
       const nodes = brushArgs.nodes = render.call(definitionContext, ...getRenderArgs());
       rend.render(nodes);
 
@@ -205,20 +221,20 @@ export default function componentFactory(definition) {
       rend.clear();
     };
 
-    fn.update = (opts = {}) => {
-      if (opts.settings) {
-        settings = extend(true, {}, defaultSettings, opts.settings);
-      }
-
-      updateScale();
-      updateFormatter();
+    fn.beforeUpdate = (opts) => {
+      set(opts);
 
       beforeUpdate({
         settings,
         data
       });
+    };
 
+    fn.update = () => {
       element = rend.element && rend.element() ? element : rend.appendTo(container);
+
+      beforeRender();
+
       const nodes = brushArgs.nodes = render.call(definitionContext, ...getRenderArgs());
       rend.render(nodes);
 
@@ -226,7 +242,7 @@ export default function componentFactory(definition) {
     };
 
     fn.destroy = () => {
-      beforeDestroy.call(element);
+      beforeDestroy(element);
       rend.destroy();
       destroyed();
       element = null;
@@ -317,16 +333,6 @@ export default function componentFactory(definition) {
         listeners = [];
       }
     };
-
-    // Start calling lifecycle methods
-    created({
-      settings
-    });
-
-    // TODO skip for SSR
-    beforeMount();
-
-    // end skip
 
     return fn;
   };

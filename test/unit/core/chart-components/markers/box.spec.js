@@ -39,7 +39,7 @@ describe('box marker', () => {
 
     composer.dataset().map.returns([{}]);
 
-    box = boxMarker(config, composer);
+    box = boxMarker(config, composer)();
 
     box.resize({ x: 10, y: 20, width: 100, height: 200 });
     box.render();
@@ -85,7 +85,7 @@ describe('box marker', () => {
     composer.scale.withArgs({ scale: 'x' }).returns(xScale);
     composer.scale.withArgs({ scale: 'y' }).returns(yScale);
 
-    box = boxMarker(config, composer);
+    box = boxMarker(config, composer)();
 
     box.resize({ x: 10, y: 20, width: 100, height: 200 });
     box.render();
@@ -197,7 +197,7 @@ describe('box marker', () => {
     composer.scale.withArgs({ scale: 'x' }).returns(xScale);
     composer.scale.withArgs({ scale: 'y' }).returns(yScale);
 
-    box = boxMarker(config, composer);
+    box = boxMarker(config, composer)();
 
     box.resize({ x: 10, y: 20, width: 100, height: 200 });
     box.render();
@@ -244,7 +244,7 @@ describe('box marker', () => {
     composer.scale.withArgs({ scale: 'x' }).returns(xScale);
     composer.scale.withArgs({ scale: 'y' }).returns(yScale);
 
-    box = boxMarker(config, composer);
+    box = boxMarker(config, composer)();
 
     box.resize({ x: 10, y: 20, width: 100, height: 200 });
     box.render();
@@ -296,7 +296,7 @@ describe('box marker', () => {
     composer.scale.withArgs({ scale: 'x' }).returns(xScale);
     composer.scale.withArgs({ scale: 'y' }).returns(yScale);
 
-    box = boxMarker(config, composer);
+    box = boxMarker(config, composer)();
 
     box.resize({ x: 10, y: 20, width: 100, height: 200 });
     box.render();

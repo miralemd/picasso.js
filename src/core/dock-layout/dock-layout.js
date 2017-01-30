@@ -212,10 +212,10 @@ function checkShowSettings(components, hiddenComponents, settings, logicalContai
   }
 }
 
-export default function dockLayout() {
+export default function dockLayout(initialSettings) {
   const components = [];
   const hiddenComponents = [];
-  let settings = {};
+  let settings = initialSettings ? resolveSettings(initialSettings) : {};
 
   const docker = function docker() {};
 

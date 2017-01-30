@@ -70,6 +70,7 @@ export default function composer() {
   fn.createComponent = (settings, container) => {
     const factoryFn = getComponentFactory(settings.type);
     const instance = factoryFn(settings, fn, container);
+    instance.init({ settings });
     return {
       instance,
       settings: extend(true, {}, settings),

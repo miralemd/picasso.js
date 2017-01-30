@@ -54,7 +54,7 @@ describe('Component', () => {
     const instance = customComponent({
       key1: 'override',
       key2: false
-    }, composerMock);
+    }, composerMock)();
     expect(created).to.have.been.called.once;
     expect(created.thisValues[0].data).to.deep.equal([]);
     expect(created.thisValues[0].settings).to.deep.equal({
@@ -72,7 +72,7 @@ describe('Component', () => {
   });
 
   it('should call lifecycle methods when rendering', () => {
-    const instance = customComponent({}, composerMock);
+    const instance = customComponent({}, composerMock)();
     instance.resize();
     instance.render();
 
@@ -82,9 +82,10 @@ describe('Component', () => {
   });
 
   it('should call lifecycle methods when updating', () => {
-    const instance = customComponent({}, composerMock);
+    const instance = customComponent({}, composerMock)();
     instance.resize();
     instance.render();
+    instance.beforeUpdate();
     instance.update();
 
     expect(mounted).to.have.been.called.once;

@@ -143,7 +143,7 @@ const textComponent = {
     }).height;
     return height + this.settings.paddingStart + this.settings.paddingEnd;
   },
-  beforeRender(opts) {
+  resize(opts) {
     const {
       inner
     } = opts;

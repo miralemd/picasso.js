@@ -95,7 +95,7 @@ const scrollbar = {
     return this.settings.settings.width;
   },
 
-  beforeRender: function beforeRender(opts) {
+  resize: function resize(opts) {
     const inner = opts.inner;
     this.rect = inner;
     return inner;
