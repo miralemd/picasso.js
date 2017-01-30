@@ -78,10 +78,35 @@ function createInstance(definition) {
 
   const listeners = [];
   let composer = composerFn();
-  let dockLayout = null;
   let currentComponents = []; // Augmented components
 
-  function render() {
+  const findComponent = (componentInstance) => {
+    for (let i = 0; i < currentComponents.length; i++) {
+      if (currentComponents[i].instance === componentInstance) {
+        return currentComponents[i];
+      }
+    }
+    return null;
+  };
+
+  const findComponentIndexByKey = (key) => {
+    for (let i = 0; i < currentComponents.length; i++) {
+      const currComp = currentComponents[i];
+      if (currComp.hasKey && currComp.key === key) {
+        return i;
+      }
+    }
+    return -1;
+  };
+
+  const layout = (components) => {
+    const dockLayout = createDockLayout(settings.dockLayout);
+    components.forEach((c) => { dockLayout.addComponent(c.instance); });
+
+    return dockLayout.layout(element);
+  };
+
+  const render = () => {
     const {
       components = []
     } = settings;
@@ -92,15 +117,18 @@ function createInstance(definition) {
       composer.createComponent(component, element)
     ));
 
-    dockLayout = createDockLayout(settings.dockLayout);
-    currentComponents.forEach((c) => { dockLayout.addComponent(c.instance); });
+    const { visible, hidden } = layout(currentComponents);
+    visible.forEach((compInstance) => {
+      compInstance.render();
+      findComponent(compInstance).visible = true;
+    });
+    hidden.forEach((compInstance) => {
+      compInstance.hide();
+      findComponent(compInstance).visible = false;
+    });
+  };
 
-    const { visible, hidden } = dockLayout.layout(element);
-    visible.forEach((compInstance) => { compInstance.render(); });
-    hidden.forEach((compInstance) => { compInstance.hide(); });
-  }
-
-  function instance() {}
+  function instance() {} // The chart instance
 
   // Browser only
   const mount = () => {
@@ -126,16 +154,6 @@ function createInstance(definition) {
     listeners.forEach(({ key, listener }) => element.removeEventListener(key, listener));
   };
 
-  const findComponentIndexByKey = (key) => {
-    for (let i = 0; i < currentComponents.length; i++) {
-      const currComp = currentComponents[i];
-      if (currComp.hasKey && currComp.key === key) {
-        return i;
-      }
-    }
-    return -1;
-  };
-
   /**
    * Update the chart with new settings and / or data
    * @param {} chart - Chart definition
@@ -157,8 +175,6 @@ function createInstance(definition) {
     } = settings;
 
     if (relayout) {
-      dockLayout = createDockLayout(settings.dockLayout);
-
       for (let i = currentComponents.length - 1; i >= 0; i--) {
         const currComp = currentComponents[i];
         // TODO warn when there is no key
@@ -187,31 +203,34 @@ function createInstance(definition) {
         }
       }
 
-      currentComponents.forEach((c) => { dockLayout.addComponent(c.instance); });
-      const { visible, hidden } = dockLayout.layout(element);
+      const { visible, hidden } = layout(currentComponents);
       visible.forEach((compInstance) => {
-        const comp = currentComponents.filter(c => c.instance === compInstance)[0];
+        const comp = findComponent(compInstance);
         if (comp.updateWith) {
           compInstance.update(comp.updateWith);
           delete comp.updateWith;
         } else {
           compInstance.render();
         }
+        comp.visible = true;
       });
-      hidden.forEach((compInstance) => { compInstance.hide(); });
+      hidden.forEach((compInstance) => {
+        compInstance.hide();
+        const comp = findComponent(compInstance);
+        comp.visible = false;
+        delete comp.updateWith;
+      });
     } else {
+      // Update without relayouting - assumes the compoents array has been left intact (no additions, removals or moving of items)
       for (let i = 0; i < components.length; i++) {
-        const comp = components[i];
-        let idx = findComponentIndexByKey(comp.key);
-        if (idx === -1) {
-          idx = i;
+        if (currentComponents[i].visible) {
+          currentComponents[i].instance.update({
+            formatters,
+            scales,
+            data,
+            settings: components[i]
+          });
         }
-        currentComponents[idx].instance.update({
-          formatters,
-          scales,
-          data,
-          settings: components[idx]
-        });
       }
     }
 
