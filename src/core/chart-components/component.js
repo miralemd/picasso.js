@@ -212,7 +212,9 @@ export default function componentFactory(definition) {
     fn.beforeMount = beforeMount;
 
     fn.beforeRender = () => {
-      beforeRender();
+      beforeRender({
+        size: rend.size()
+      });
     };
 
     fn.render = () => {

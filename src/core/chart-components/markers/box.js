@@ -115,12 +115,8 @@ const boxMarker = {
       this.settings.settings.whiskers = true;
     }
   },
-  resize(opts) {
-    const {
-      inner
-    } = opts;
-    this.rect = inner;
-    return inner;
+  beforeRender(opts) {
+    this.rect = opts.size;
   },
   render({ data }) {
     // Filter out points we cannot render
