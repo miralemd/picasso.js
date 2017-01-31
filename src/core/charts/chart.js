@@ -302,11 +302,11 @@ function createInstance(definition) {
 
   /**
    * Get a field associated with the provided brush
-   * @param {data-brush} - A data brush
+   * @param {String} path path to the field to fetch
    * @return {data-field}
    */
-  instance.field = brush =>
-     composer.dataset().findField(brush.id)
+  instance.field = path =>
+     composer.dataset().findField(path)
   ;
 
   /**
