@@ -18,7 +18,7 @@ export default function composer() {
 
   const fn = function fn() {};
 
-  fn.set = function set(data, settings) {
+  fn.set = function set(data, settings, { partialData } = {}) {
     const {
       formatters = {},
       scales = {},
@@ -26,7 +26,9 @@ export default function composer() {
     } = settings;
 
     dataset = buildData(data);
-    brushes = {};
+    if (!partialData) {
+      brushes = {};
+    }
     currentScales = buildScales(scales, fn);
     currentFormatters = buildFormatters(formatters, fn);
     currentScrollApis = buildScroll(scroll, fn, currentScrollApis);

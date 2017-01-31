@@ -167,7 +167,7 @@ function createInstance(definition) {
       settings = newProps.settings;
     }
 
-    composer.set(data, settings);
+    composer.set(data, settings, { partialData });
 
     const {
       formatters,

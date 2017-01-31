@@ -83,6 +83,7 @@ export default function componentFactory(definition) {
     let listeners = [];
     let scale;
     let formatter;
+    let brushStylers = [];
 
     const definitionContext = {};
     const instanceContext = {};
@@ -236,6 +237,11 @@ export default function componentFactory(definition) {
       beforeRender();
 
       const nodes = brushArgs.nodes = render.call(definitionContext, ...getRenderArgs());
+      brushStylers.forEach((brushStyler) => {
+        if (brushStyler.isActive()) {
+          brushStyler.update();
+        }
+      });
       rend.render(nodes);
 
       updated();
@@ -290,10 +296,11 @@ export default function componentFactory(definition) {
     };
 
     fn.mount = () => {
+      brushStylers = [];
       if (config.brush && config.brush.consume) {
         config.brush.consume.forEach((b) => {
           if (b.context && b.style) {
-            styler(brushArgs, b);
+            brushStylers.push(styler(brushArgs, b));
           }
         });
       }

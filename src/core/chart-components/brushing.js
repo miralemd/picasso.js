@@ -14,6 +14,40 @@ export function styler(obj, { context, data, style }) {
     }
   });
 
+  const update = () => {
+    // TODO - render nodes only once, i.e. don't render for each brush, update nodes for all brushes and then render
+    const nodes = obj.nodes;
+    const len = nodes.length;
+    const mappedData = obj.data;
+
+    for (let i = 0; i < len; i++) { // TODO - update only added and removed nodes
+      if (!nodes[i].__style) {
+        nodes[i].__style = {};
+        styleProps.forEach((s) => {
+          nodes[i].__style[s] = nodes[i][s]; // store original value
+        });
+      }
+
+      let nodeData = mappedData[nodes[i].data];
+      let isActive = nodeData && brusher.containsMappedData(nodeData, dataProps);
+      styleProps.forEach((s) => {
+        if (isActive && s in active) {
+          nodes[i][s] = active[s];
+        } else if (!isActive && s in inactive) {
+          nodes[i][s] = inactive[s];
+        } else {
+          if (!nodes[i].__style) {
+            nodes[i].__style = nodes[i].__style || {};
+            styleProps.forEach((ss) => {
+              nodes[i].__style[ss] = nodes[i][ss]; // store original value
+            });
+          }
+          nodes[i][s] = nodes[i].__style[s];
+        }
+      });
+    }
+  };
+
   brusher.on('start', () => {
     const nodes = obj.nodes;
     const len = nodes.length;
@@ -41,26 +75,14 @@ export function styler(obj, { context, data, style }) {
     obj.renderer.render(nodes);
   });
   brusher.on('update', (/* added, removed */) => {
-    // TODO - render nodes only once, i.e. don't render for each brush, update nodes for all brushes and then render
-    const nodes = obj.nodes;
-    const len = nodes.length;
-    const mappedData = obj.data;
-
-    for (let i = 0; i < len; i++) { // TODO - update only added and removed nodes
-      let nodeData = mappedData[nodes[i].data];
-      let isActive = nodeData && brusher.containsMappedData(nodeData, dataProps);
-      styleProps.forEach((s) => {
-        if (isActive && s in active) {
-          nodes[i][s] = active[s];
-        } else if (!isActive && s in inactive) {
-          nodes[i][s] = inactive[s];
-        } else {
-          nodes[i][s] = nodes[i].__style[s];
-        }
-      });
-    }
-    obj.renderer.render(nodes);
+    update();
+    obj.renderer.render(obj.nodes);
   });
+
+  return {
+    isActive() { return brusher.isActive(); },
+    update
+  };
 }
 
 function getPointData(e) {
