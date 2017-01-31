@@ -2,7 +2,6 @@
 import lineComponent from '../../../../../src/core/chart-components/grid/line';
 
 describe('line marker', () => {
-  let line;
   let rendererOutput;
   let composer;
   let shapeFn;
@@ -31,6 +30,20 @@ describe('line marker', () => {
     };
   });
 
+  function createAndRenderComponent(opts) {
+    const {
+      config,
+      inner
+    } = opts;
+    const instance = lineComponent(config, composer);
+    instance.beforeMount();
+    instance.resize(inner);
+    instance.beforeRender();
+    instance.render();
+    instance.mounted();
+    return instance;
+  }
+
   it('should not render lines with default settings and no scales', () => {
     const config = {
       shapeFn,
@@ -39,10 +52,10 @@ describe('line marker', () => {
 
     composer.dataset().map.returns([{}]);
 
-    line = lineComponent(config, composer);
-
-    line.resize({ x: 10, y: 20, width: 100, height: 200 });
-    line.render();
+    createAndRenderComponent({
+      inner: { x: 10, y: 20, width: 100, height: 200 },
+      config
+    });
 
     expect(rendererOutput).to.deep.equal([]);
   });
@@ -71,10 +84,10 @@ describe('line marker', () => {
     }];
     composer.scale.withArgs({ scale: 'y' }).returns(yScale);
 
-    line = lineComponent(config, composer);
-
-    line.resize({ x: 10, y: 20, width: 100, height: 200 });
-    line.render();
+    createAndRenderComponent({
+      inner: { x: 10, y: 20, width: 100, height: 200 },
+      config
+    });
 
     expect(rendererOutput).to.deep.equal([
       {
@@ -116,10 +129,10 @@ describe('line marker', () => {
     }];
     composer.scale.withArgs({ scale: 'x' }).returns(xScale);
 
-    line = lineComponent(config, composer);
-
-    line.resize({ x: 10, y: 20, width: 100, height: 200 });
-    line.render();
+    createAndRenderComponent({
+      inner: { x: 10, y: 20, width: 100, height: 200 },
+      config
+    });
 
     expect(rendererOutput).to.deep.equal([
       {
@@ -151,10 +164,10 @@ describe('line marker', () => {
     }];
     composer.scale.withArgs({ scale: 'y' }).returns(yScale);
 
-    line = lineComponent(config, composer);
-
-    line.resize({ x: 10, y: 20, width: 100, height: 200 });
-    line.render();
+    createAndRenderComponent({
+      inner: { x: 10, y: 20, width: 100, height: 200 },
+      config
+    });
 
     expect(rendererOutput).to.deep.equal([
       {
@@ -197,10 +210,10 @@ describe('line marker', () => {
     }];
     composer.scale.withArgs({ scale: 'y' }).returns(yScale);
 
-    line = lineComponent(config, composer);
-
-    line.resize({ x: 10, y: 20, width: 100, height: 200 });
-    line.render();
+    createAndRenderComponent({
+      inner: { x: 10, y: 20, width: 100, height: 200 },
+      config
+    });
 
     expect(rendererOutput).to.deep.equal([
       {
@@ -256,10 +269,10 @@ describe('line marker', () => {
     }];
     composer.scale.withArgs({ scale: 'y' }).returns(yScale);
 
-    line = lineComponent(config, composer);
-
-    line.resize({ x: 10, y: 20, width: 100, height: 200 });
-    line.render();
+    createAndRenderComponent({
+      inner: { x: 10, y: 20, width: 100, height: 200 },
+      config
+    });
 
     expect(rendererOutput).to.deep.equal([]);
   });

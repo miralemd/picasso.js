@@ -8,7 +8,6 @@ describe('Axis', () => {
   let composerMock;
   let config;
   let renderSpy;
-  let axis;
   let scale = {};
 
   function verifyNumberOfNodes(tNodes, lNodes) {
@@ -17,6 +16,21 @@ describe('Axis', () => {
     const lineNodes = nodes.filter(n => n.type === 'line');
     expect(textNodes.length, 'Unexpected number of text nodes').to.equal(tNodes);
     expect(lineNodes.length, 'Unexpected number of line nodes').to.equal(lNodes);
+  }
+
+  function createAndRenderAxis(opts) {
+    const {
+      inner,
+      outer
+    } = opts;
+    const component = axisComponent(config, composerMock);
+    component.beforeMount();
+    component.resize(inner, outer);
+    component.mounted();
+    component.beforeRender();
+    component.render();
+    component.mounted();
+    return component;
   }
 
   beforeEach(() => {
@@ -57,21 +71,21 @@ describe('Axis', () => {
 
     /*
     it('should instantiate a default formatter derived from the first field', () => {
-      axis = axisComponent(config, composerMock)();
+      createAndRenderAxis();
       expect(formatterSpy.args[0][0]).to.deep.equal({ source: 'fieldSource' });
     });
 
     it('should instantiate a formatter referenced by name', () => {
       formatterSpy.reset(); // Reset spy here because init is done in beforeEach
       config.formatter = 'customFormatter';
-      axis = axisComponent(config, composerMock)();
+      createAndRenderAxis();
       expect(formatterSpy.args[0][0]).to.equal('customFormatter');
     });
 
     it('should instantiate a formatter derived from a configured field', () => {
       formatterSpy.reset(); // Reset spy here because init is done in beforeEach
       config.formatter = { source: 'customSource' };
-      axis = axisComponent(config, composerMock)();
+      createAndRenderAxis();
       expect(formatterSpy.args[0][0]).to.deep.equal({ source: 'customSource' });
     });
     */
@@ -79,50 +93,56 @@ describe('Axis', () => {
     ['left', 'right', 'top', 'bottom'].forEach((d) => {
       it(`should align to ${d}`, () => {
         config.settings.align = d;
-        axis = axisComponent(config, composerMock)();
-        axis.resize({ x: 0, y: 0, width: 100, height: 100 }, { x: 0, y: 0, width: 100, height: 100 });
-        axis.render();
+        createAndRenderAxis({
+          inner: { x: 0, y: 0, width: 100, height: 100 },
+          outer: { x: 0, y: 0, width: 100, height: 100 }
+        });
         verifyNumberOfNodes(3, 4);
       });
     });
 
     it('should not render labels when disabled', () => {
       config.settings.labels = { show: false };
-      axis = axisComponent(config, composerMock)();
-      axis.resize({ x: 0, y: 0, width: 100, height: 100 }, { x: 0, y: 0, width: 100, height: 100 });
-      axis.render();
+      createAndRenderAxis({
+        inner: { x: 0, y: 0, width: 100, height: 100 },
+        outer: { x: 0, y: 0, width: 100, height: 100 }
+      });
       verifyNumberOfNodes(0, 4);
     });
 
     it('should not render axis line when disabled', () => {
       config.settings.line = { show: false };
-      axis = axisComponent(config, composerMock)();
-      axis.resize({ x: 0, y: 0, width: 100, height: 100 }, { x: 0, y: 0, width: 100, height: 100 });
-      axis.render();
+      createAndRenderAxis({
+        inner: { x: 0, y: 0, width: 100, height: 100 },
+        outer: { x: 0, y: 0, width: 100, height: 100 }
+      });
       verifyNumberOfNodes(3, 3);
     });
 
     it('should not render ticks when disabled', () => {
       config.settings.ticks = { show: false };
-      axis = axisComponent(config, composerMock)();
-      axis.resize({ x: 0, y: 0, width: 100, height: 100 }, { x: 0, y: 0, width: 100, height: 100 });
-      axis.render();
+      createAndRenderAxis({
+        inner: { x: 0, y: 0, width: 100, height: 100 },
+        outer: { x: 0, y: 0, width: 100, height: 100 }
+      });
       verifyNumberOfNodes(3, 1);
     });
 
     it('should render a custom number of ticks', () => {
       config.settings.ticks = { count: 5 };
-      axis = axisComponent(config, composerMock)();
-      axis.resize({ x: 0, y: 0, width: 100, height: 100 }, { x: 0, y: 0, width: 100, height: 100 });
-      axis.render();
+      createAndRenderAxis({
+        inner: { x: 0, y: 0, width: 100, height: 100 },
+        outer: { x: 0, y: 0, width: 100, height: 100 }
+      });
       verifyNumberOfNodes(6, 7);
     });
 
     it('should render minor ticks', () => {
       config.settings.minorTicks = { show: true, count: 2 };
-      axis = axisComponent(config, composerMock)();
-      axis.resize({ x: 0, y: 0, width: 100, height: 100 }, { x: 0, y: 0, width: 100, height: 100 });
-      axis.render();
+      createAndRenderAxis({
+        inner: { x: 0, y: 0, width: 100, height: 100 },
+        outer: { x: 0, y: 0, width: 100, height: 100 }
+      });
       verifyNumberOfNodes(3, 8);
     });
   });
@@ -138,14 +158,15 @@ describe('Axis', () => {
       scale.range([0, 1]);
       composerMock.scale().type = 'ordinal';
       /* composerMock.scale().sources = ['source'];*/
-      axis = axisComponent(config, composerMock)();
     });
 
     ['left', 'right', 'top', 'bottom'].forEach((d) => {
       it(`should align to ${d}`, () => {
         config.settings.align = d;
-        axis.resize({ x: 0, y: 0, width: 100, height: 100 }, { x: 0, y: 0, width: 100, height: 100 });
-        axis.render();
+        createAndRenderAxis({
+          inner: { x: 0, y: 0, width: 100, height: 100 },
+          outer: { x: 0, y: 0, width: 100, height: 100 }
+        });
         verifyNumberOfNodes(3, 0);
       });
     });
@@ -154,8 +175,10 @@ describe('Axis', () => {
       it(`should support layered labels for ${d} aligned axis`, () => {
         config.settings.align = d;
         config.settings.labels = { layered: true };
-        axis.resize({ x: 0, y: 0, width: 100, height: 100 }, { x: 0, y: 0, width: 100, height: 100 });
-        axis.render();
+        createAndRenderAxis({
+          inner: { x: 0, y: 0, width: 100, height: 100 },
+          outer: { x: 0, y: 0, width: 100, height: 100 }
+        });
         verifyNumberOfNodes(3, 0);
       });
     });

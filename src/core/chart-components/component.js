@@ -73,6 +73,15 @@ function prepareContext(ctx, definition, opts) {
   });
 }
 
+// First render
+// preferredSize -> resize -> beforeRender -> render -> mounted
+
+// Normal update
+// beforeUpdate -> preferredSize -> resize -> beforeRender -> render -> updated
+
+// Update without relayout
+// beforeUpdate -> beforeRender -> render -> updated
+
 // TODO support es6 classes
 export default function componentFactory(definition) {
   const {
@@ -153,7 +162,12 @@ export default function componentFactory(definition) {
       dock: settings.dock
     };
 
-    function set(opts = {}) {
+    const fn = () => {};
+
+    fn.dockConfig = dockConfig;
+
+    // Set new settings - will trigger mapping of data and creation of scale / formatter.
+    fn.set = (opts = {}) => {
       if (opts.settings) {
         settings = extend(true, {}, defaultSettings, opts.settings);
       }
@@ -173,14 +187,7 @@ export default function componentFactory(definition) {
       } else if (typeof settings.scale === 'string') {
         formatter = composer.formatter({ source: scale.sources[0] });
       }
-    }
-
-    const fn = () => {
-      fn.init({ settings: config });
-      return fn;
     };
-
-    fn.dockConfig = dockConfig;
 
     fn.resize = (inner, outer) => {
       const newSize = resize({
@@ -202,25 +209,15 @@ export default function componentFactory(definition) {
       return renderArgs;
     };
 
-    fn.init = (opts) => {
-      set(opts);
+    fn.beforeMount = beforeMount;
 
-      created({
-        settings
-      });
+    fn.beforeRender = () => {
+      beforeRender();
     };
 
     fn.render = () => {
-      beforeMount();
-
-      element = rend.element && rend.element() ? element : rend.appendTo(container);
-      beforeRender();
-
       const nodes = brushArgs.nodes = render.call(definitionContext, ...getRenderArgs());
       rend.render(nodes);
-
-      fn.mount();
-      mounted(element);
     };
 
     fn.hide = () => {
@@ -234,9 +231,7 @@ export default function componentFactory(definition) {
       rend.clear();
     };
 
-    fn.beforeUpdate = (opts) => {
-      set(opts);
-
+    fn.beforeUpdate = () => {
       beforeUpdate({
         settings,
         data
@@ -244,10 +239,6 @@ export default function componentFactory(definition) {
     };
 
     fn.update = () => {
-      element = rend.element && rend.element() ? element : rend.appendTo(container);
-
-      beforeRender();
-
       const nodes = brushArgs.nodes = render.call(definitionContext, ...getRenderArgs());
       brushStylers.forEach((brushStyler) => {
         if (brushStyler.isActive()) {
@@ -255,9 +246,9 @@ export default function componentFactory(definition) {
         }
       });
       rend.render(nodes);
-
-      updated();
     };
+
+    fn.updated = updated;
 
     fn.destroy = () => {
       beforeDestroy(element);
@@ -308,8 +299,10 @@ export default function componentFactory(definition) {
     };
 
     fn.mount = () => {
-      if (config.brush) {
-        (config.brush.consume || []).forEach((b) => {
+      element = rend.element && rend.element() ? element : rend.appendTo(container);
+
+      if (config.brush && config.brush.consume) {
+        config.brush.consume.forEach((b) => {
           if (b.context && b.style) {
             brushStylers.push(styler(brushArgs, b));
           }
@@ -347,6 +340,8 @@ export default function componentFactory(definition) {
       });
     };
 
+    fn.mounted = () => mounted(element);
+
     fn.unmount = () => {
       if (element) {
         listeners.forEach(({ key, listener }) => element.removeEventListener(key, listener));
@@ -378,6 +373,9 @@ export default function componentFactory(definition) {
         endBrush({ t, composer });
       });
     };
+
+    fn.set({ settings: config });
+    created();
 
     return fn;
   };

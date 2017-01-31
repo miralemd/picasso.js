@@ -2,7 +2,6 @@
 import boxMarker from '../../../../../src/core/chart-components/markers/box';
 
 describe('box marker', () => {
-  let box;
   let rendererOutput;
   let composer;
   let shapeFn;
@@ -31,6 +30,20 @@ describe('box marker', () => {
     };
   });
 
+  function createAndRenderComponent(opts) {
+    const {
+      config,
+      inner
+    } = opts;
+    const instance = boxMarker(config, composer);
+    instance.beforeMount();
+    instance.resize(inner);
+    instance.beforeRender();
+    instance.render();
+    instance.mounted();
+    return instance;
+  }
+
   it('should not render boxes with default settings', () => {
     const config = {
       shapeFn,
@@ -39,10 +52,10 @@ describe('box marker', () => {
 
     composer.dataset().map.returns([{}]);
 
-    box = boxMarker(config, composer)();
-
-    box.resize({ x: 10, y: 20, width: 100, height: 200 });
-    box.render();
+    createAndRenderComponent({
+      inner: { x: 10, y: 20, width: 100, height: 200 },
+      config
+    });
 
     expect(rendererOutput).to.deep.equal([]);
   });
@@ -85,10 +98,10 @@ describe('box marker', () => {
     composer.scale.withArgs({ scale: 'x' }).returns(xScale);
     composer.scale.withArgs({ scale: 'y' }).returns(yScale);
 
-    box = boxMarker(config, composer)();
-
-    box.resize({ x: 10, y: 20, width: 100, height: 200 });
-    box.render();
+    createAndRenderComponent({
+      inner: { x: 10, y: 20, width: 100, height: 200 },
+      config
+    });
 
     expect(rendererOutput).to.deep.equal([{
       data: 0,
@@ -197,10 +210,10 @@ describe('box marker', () => {
     composer.scale.withArgs({ scale: 'x' }).returns(xScale);
     composer.scale.withArgs({ scale: 'y' }).returns(yScale);
 
-    box = boxMarker(config, composer)();
-
-    box.resize({ x: 10, y: 20, width: 100, height: 200 });
-    box.render();
+    createAndRenderComponent({
+      inner: { x: 10, y: 20, width: 100, height: 200 },
+      config
+    });
 
     expect(rendererOutput).to.deep.equal([{
       data: 0,
@@ -244,10 +257,10 @@ describe('box marker', () => {
     composer.scale.withArgs({ scale: 'x' }).returns(xScale);
     composer.scale.withArgs({ scale: 'y' }).returns(yScale);
 
-    box = boxMarker(config, composer)();
-
-    box.resize({ x: 10, y: 20, width: 100, height: 200 });
-    box.render();
+    createAndRenderComponent({
+      inner: { x: 10, y: 20, width: 100, height: 200 },
+      config
+    });
 
     expect(rendererOutput).to.deep.equal([{
       data: 0,
@@ -296,10 +309,10 @@ describe('box marker', () => {
     composer.scale.withArgs({ scale: 'x' }).returns(xScale);
     composer.scale.withArgs({ scale: 'y' }).returns(yScale);
 
-    box = boxMarker(config, composer)();
-
-    box.resize({ x: 10, y: 20, width: 100, height: 200 });
-    box.render();
+    createAndRenderComponent({
+      inner: { x: 10, y: 20, width: 100, height: 200 },
+      config
+    });
 
     expect(rendererOutput).to.deep.equal([
       {
