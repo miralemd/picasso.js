@@ -3,6 +3,16 @@
 ## [Unreleased]
 
 ### Added
+- Brush support on SVG and Canvas renderer.
+- Brush through multiple layers of components. Control propagation via optional settings:
+```js
+  trigger: [{
+    contexts: [],
+    action: 'tap',
+    propagation 'stop', // 'stop' => only trigger on first shape || 'data' => only trigger on shapes with unique data values
+    globalPropagation: 'stop', // 'stop' => if triggered, do not run triggers on other components
+  }]
+```
 
 ### Fixed
 - Box marker's whisker circles now size correctly in both vertical and non-vertical mode.

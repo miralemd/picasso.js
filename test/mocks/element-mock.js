@@ -4,7 +4,7 @@ function element(name) {
     attributes: {},
     style: {},
     children: [],
-    listeners: {},
+    listeners: [],
     parentNode: null,
     parentElement: null,
     ownerDocument: {
@@ -42,10 +42,14 @@ function element(name) {
       el.parentElement = this;
     },
     addEventListener(key, val) {
-      this.listeners[key] = val;
+      const obj = {};
+      obj[key] = val;
+      this.listeners.push(obj);
     },
     trigger(listenerKey, arg) {
-      this.listeners[listenerKey].call(this, arg);
+      this.listeners
+        .filter(l => typeof l[listenerKey] !== 'undefined')
+        .forEach(l => l[listenerKey].call(this, arg));
     }
   };
 

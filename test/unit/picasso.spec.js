@@ -83,5 +83,19 @@ describe('picasso.js', () => {
       element.trigger('click', e);
       expect(clickFn).to.have.been.calledWith(e);
     });
+
+    it('should bind brush event listeners', () => {
+      const element = createElement();
+      const spy = sinon.spy(element, 'addEventListener');
+      const matchFn = fnName => value => value.toString().indexOf(fnName) !== -1;
+
+      picasso.chart({
+        element
+      });
+
+      expect(spy).to.have.been.calledWith('click', sinon.match(matchFn('onBrushTap'), 'function onBrushTap'));
+      expect(spy).to.have.been.calledWith('mousemove', sinon.match(matchFn('onBrushOver'), 'function onBrushOver'));
+      expect(spy).to.have.been.calledWith('mouseleave', sinon.match(matchFn('onBrushOverLeave'), 'function onBrushOverLeave'));
+    });
   });
 });

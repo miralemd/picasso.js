@@ -51,7 +51,6 @@ export function styler(obj, { context, data, style }) {
   brusher.on('start', () => {
     const nodes = obj.nodes;
     const len = nodes.length;
-
     for (let i = 0; i < len; i++) {
       nodes[i].__style = nodes[i].__style || {};
       styleProps.forEach((s) => {
@@ -85,11 +84,6 @@ export function styler(obj, { context, data, style }) {
   };
 }
 
-function getPointData(e) {
-  const target = e.target;
-  return target.getAttribute('data');
-}
-
 function brushDataPoint({
   dataPoint,
   action,
@@ -112,9 +106,12 @@ function brushDataPoint({
     actionFn = 'setValues';
   }
 
+
   if (dataPoint !== null) {
     dataProps.forEach((p) => {
-      items.push({ key: dataPoint[p].source.field, value: dataPoint[p].value });
+      if (dataPoint[p]) {
+        items.push({ key: dataPoint[p].source.field, value: dataPoint[p].value });
+      }
     });
 
     config.contexts.forEach((c) => {
@@ -123,18 +120,32 @@ function brushDataPoint({
   } else if (action === 'hover') {
     config.contexts.forEach((c) => {
       composer.brush(c).clear();
+      composer.brush(c).end();
     });
   }
 }
 
-function brushFromDomElement({
-  e,
+export function endBrush({
+  composer,
+  config
+}) {
+  if (!config) {
+    return;
+  }
+  (config.contexts || []).forEach((c) => {
+    composer.brush(c).clear();
+    composer.brush(c).end();
+  });
+}
+
+function brushFromSceneNode({
+  node,
   action,
   composer,
   data,
   config
 }) {
-  const dataAttrib = getPointData(e);
+  const dataAttrib = node.data;
   const dataPoint = dataAttrib !== null ? data[+dataAttrib] : null;
 
   brushDataPoint({
@@ -145,47 +156,90 @@ function brushFromDomElement({
   });
 }
 
-function endBrush({
-  composer,
-  config
-}) {
-  if (!config) {
-    return;
-  }
-  (config.contexts || []).forEach((c) => {
-    composer.brush(c).end();
+function uniqueDataCollisions(collisions, data, config) {
+  const dataProps = config.data || ['self'];
+
+  const uniqueCollisions = [];
+  const values = [];
+
+  collisions.forEach((c) => {
+    // Check if collision has unique data values
+    const isUnique = dataProps.every((dp) => {
+      const dataPoint = data[c.node.data];
+      const v = dataPoint[dp].value;
+      if (values.indexOf(v) !== -1) {
+        return false;
+      }
+      values.push(v);
+      return true;
+    });
+
+    if (isUnique) {
+      uniqueCollisions.push(c);
+    }
   });
+
+  return uniqueCollisions;
 }
 
-export function observeBrushOnElement({
-  element,
-  config
-}) {
-  let brushActions = {};
-  config.config.trigger.forEach((t) => {
-    brushActions[t.action] = brushActions[t.action] || [];
-    brushActions[t.action].push(t);
+function resolveEvent({ collisions, t, config, action }) {
+  let brushCollisions = [{ node: { data: null } }];
+  let resolved = false;
+
+  if (collisions.length > 0) {
+    brushCollisions = collisions;
+    resolved = true;
+
+    if (t.propagation === 'stop') {
+      brushCollisions = [collisions[collisions.length - 1]];
+    } else if (t.propagation === 'data') {
+      brushCollisions = uniqueDataCollisions(collisions, config.data, t);
+    }
+  }
+
+  brushCollisions.forEach((collision) => {
+    brushFromSceneNode({
+      node: collision.node,
+      action,
+      composer: config.composer,
+      data: config.data,
+      config: t
+    });
   });
 
-  if (brushActions.tap) {
-    element.addEventListener('click', (e) => {
-      brushActions.tap.forEach((t) => {
-        brushFromDomElement({ e, action: 'toggle', composer: config.composer, data: config.data, config: t });
-      });
-    });
+  return resolved;
+}
+
+export function resolveTapEvent({ e, t, config }) {
+  const rect = config.renderer.element().getBoundingClientRect();
+
+  const p = {
+    x: e.clientX - rect.left,
+    y: e.clientY - rect.top
+  };
+
+  if (p.x < 0 || p.y < 0 || p.x > rect.width || p.y > rect.height) {
+    return false;
   }
 
-  if (brushActions.over) {
-    element.addEventListener('mousemove', (e) => {
-      brushActions.over.forEach((t) => {
-        brushFromDomElement({ e, action: 'hover', composer: config.composer, data: config.data, config: t });
-      });
-    });
+  const collisions = config.renderer.itemsAt(p);
 
-    element.addEventListener('mouseleave', () => {
-      brushActions.over.forEach((t) => {
-        endBrush({ composer: config.composer, config: t });
-      });
-    });
+  return resolveEvent({ collisions, t, config, action: 'toggle' });
+}
+
+export function resolveOverEvent({ e, t, config }) {
+  const rect = config.renderer.element().getBoundingClientRect();
+
+  const p = {
+    x: e.clientX - rect.left,
+    y: e.clientY - rect.top
+  };
+
+  if (p.x < 0 || p.y < 0 || p.x > rect.width || p.y > rect.height) {
+    return false;
   }
+
+  const collisions = config.renderer.itemsAt(p);
+
+  return resolveEvent({ collisions, t, config, action: 'hover' });
 }

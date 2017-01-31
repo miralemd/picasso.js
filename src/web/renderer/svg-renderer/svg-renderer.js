@@ -36,7 +36,6 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
   let rect = createRect();
   let scene;
 
-
   const svg = function svg() {};
 
   svg.element = () => el;
@@ -53,6 +52,7 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
       group = element.ownerDocument.createElementNS(ns, 'g');
       el.appendChild(group);
     }
+
     element.appendChild(el);
     return el;
   };
@@ -95,7 +95,7 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
     return config.Promise.resolve(doRender);
   };
 
-  svg.itemsAt = options => scene.getItemsFrom(options);
+  svg.itemsAt = options => (scene ? scene.getItemsFrom(options) : []);
 
   svg.clear = () => {
     if (!group) {

@@ -81,5 +81,7 @@ export default function composer() {
     };
   };
 
+  fn.stopBrushing = false;
+
   return fn;
 }

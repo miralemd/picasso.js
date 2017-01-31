@@ -3,7 +3,9 @@ import extend from 'extend';
 import rendererFn from '../renderer/index';
 import {
   styler,
-  observeBrushOnElement
+  resolveTapEvent,
+  resolveOverEvent,
+  endBrush
 } from './brushing';
 
 const isReservedProperty = prop => [
@@ -122,6 +124,11 @@ export default function componentFactory(definition) {
       config: config.brush || {},
       renderer: null
     };
+    let brushTriggers = {
+      tap: [],
+      over: []
+    };
+
     Object.defineProperty(brushArgs, 'data', {
       get: () => data
     });
@@ -296,11 +303,18 @@ export default function componentFactory(definition) {
     };
 
     fn.mount = () => {
-      brushStylers = [];
-      if (config.brush && config.brush.consume) {
-        config.brush.consume.forEach((b) => {
+      if (config.brush) {
+        (config.brush.consume || []).forEach((b) => {
           if (b.context && b.style) {
             brushStylers.push(styler(brushArgs, b));
+          }
+        });
+
+        (config.brush.trigger || []).forEach((t) => {
+          if (t.action === 'over') {
+            brushTriggers.over.push(t);
+          } else {
+            brushTriggers.tap.push(t);
           }
         });
       }
@@ -326,12 +340,6 @@ export default function componentFactory(definition) {
           listener
         });
       });
-
-      // ===== temporary solution to try out interactive brushing (assuming svg renderer)
-      if (brushArgs.config.trigger) {
-        observeBrushOnElement({ element, config: brushArgs });
-      }
-      // ===== end temporary solution
     };
 
     fn.unmount = () => {
@@ -339,6 +347,31 @@ export default function componentFactory(definition) {
         listeners.forEach(({ key, listener }) => element.removeEventListener(key, listener));
         listeners = [];
       }
+
+      brushTriggers.tap = [];
+      brushTriggers.over = [];
+    };
+
+    fn.onBrushTap = (e) => {
+      brushTriggers.tap.forEach((t) => {
+        if (resolveTapEvent({ e, t, config: brushArgs }) && t.globalPropagation === 'stop') {
+          composer.stopBrushing = true;
+        }
+      });
+    };
+
+    fn.onBrushOver = (e) => {
+      brushTriggers.over.forEach((t) => {
+        if (resolveOverEvent({ e, t, config: brushArgs }) && t.globalPropagation === 'stop') {
+          composer.stopBrushing = true;
+        }
+      });
+    };
+
+    fn.onBrushOverLeave = () => {
+      brushTriggers.over.forEach((t) => {
+        endBrush({ t, composer });
+      });
     };
 
     return fn;

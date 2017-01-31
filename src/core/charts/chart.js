@@ -79,6 +79,7 @@ function createInstance(definition) {
   const listeners = [];
   let composer = composerFn();
   let currentComponents = []; // Augmented components
+  let visibleComponents = [];
 
   const findComponent = (componentInstance) => {
     for (let i = 0; i < currentComponents.length; i++) {
@@ -118,6 +119,7 @@ function createInstance(definition) {
     ));
 
     const { visible, hidden } = layout(currentComponents);
+    visibleComponents = visible;
     visible.forEach((compInstance) => {
       compInstance.render();
       findComponent(compInstance).visible = true;
@@ -144,6 +146,47 @@ function createInstance(definition) {
         listener
       });
     });
+
+    const onBrushTap = (e) => {
+      for (let i = visibleComponents.length - 1; i >= 0; i--) {
+        const comp = visibleComponents[i];
+
+        comp.onBrushTap(e);
+
+        if (composer.stopBrushing) {
+          composer.stopBrushing = false;
+          break;
+        }
+      }
+    };
+
+    const onBrushOver = (e) => {
+      for (let i = visibleComponents.length - 1; i >= 0; i--) {
+        const comp = visibleComponents[i];
+
+        comp.onBrushOver(e);
+
+        if (composer.stopBrushing) {
+          composer.stopBrushing = false;
+          break;
+        }
+      }
+    };
+
+    const onBrushOverLeave = () => {
+      for (let i = visibleComponents.length - 1; i >= 0; i--) {
+        const comp = visibleComponents[i];
+
+        comp.onBrushOverLeave();
+      }
+    };
+
+    element.addEventListener('click', onBrushTap);
+    element.addEventListener('mousemove', onBrushOver);
+    element.addEventListener('mouseleave', onBrushOverLeave);
+    listeners.push({ key: 'click', listener: onBrushTap });
+    listeners.push({ key: 'mousemove', listener: onBrushOver });
+    listeners.push({ key: 'mouseleave', listener: onBrushOverLeave });
 
     if (typeof mounted === 'function') {
       mounted.call(instance, element);
@@ -220,6 +263,7 @@ function createInstance(definition) {
 
       const { visible, hidden } = layout(currentComponents);
       visible.forEach((compInstance) => {
+        visibleComponents = visible;
         const comp = findComponent(compInstance);
         if (comp.shouldUpdate) {
           compInstance.update();

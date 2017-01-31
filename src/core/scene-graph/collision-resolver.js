@@ -131,7 +131,7 @@ function resolveShape(shape, ratio = 1) {
     x1, x2, y1, y2,
     cx, cy, r
   } = shape || {};
-  let _shape;
+  let _shape = {};
 
   const isNumber = v => typeof v === 'number' && !isNaN(v);
 
