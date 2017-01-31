@@ -91,10 +91,16 @@ export default function componentFactory(definition) {
     const instanceContext = {};
 
     // Create a callback that calls lifecycle functions in the definition and config (if they exist).
-    function createCallback(method, defaultReturnValue) {
+    function createCallback(method, defaultMethod = () => {}) {
       return function cb(...args) {
-        let returnValue = defaultReturnValue;
-        if (typeof definition[method] === 'function') {
+        const inDefinition = typeof definition[method] === 'function';
+        const inConfig = typeof config[method] === 'function';
+        if (!inDefinition && !inConfig) {
+          return defaultMethod.call(definitionContext, ...args);
+        }
+
+        let returnValue;
+        if (inDefinition) {
           returnValue = definition[method].call(definitionContext, ...args);
         }
         if (typeof config[method] === 'function') {
@@ -104,7 +110,8 @@ export default function componentFactory(definition) {
       };
     }
 
-    const preferredSize = createCallback('preferredSize', 0);
+    const preferredSize = createCallback('preferredSize', () => 0);
+    const resize = createCallback('resize', ({ inner }) => inner);
     const created = createCallback('created');
     const beforeMount = createCallback('beforeMount');
     const mounted = createCallback('mounted');
@@ -113,8 +120,6 @@ export default function componentFactory(definition) {
     const beforeRender = createCallback('beforeRender');
     const beforeDestroy = createCallback('beforeDestroy');
     const destroyed = createCallback('destroyed');
-     // Do not allow overriding of these function§
-    const resize = definition.resize || function defaultResize({ inner }) { return inner; };
     const render = definition.render; // Do not allow overriding of this function
 
     let element;
@@ -178,7 +183,7 @@ export default function componentFactory(definition) {
     fn.dockConfig = dockConfig;
 
     fn.resize = (inner, outer) => {
-      const newSize = resize.call(definitionContext, {
+      const newSize = resize({
         inner,
         outer
       });
