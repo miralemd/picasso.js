@@ -26,7 +26,6 @@ describe('Axis', () => {
     const component = axisComponent(config, composerMock);
     component.beforeMount();
     component.resize(inner, outer);
-    component.mounted();
     component.beforeRender();
     component.render();
     component.mounted();

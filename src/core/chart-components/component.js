@@ -132,6 +132,7 @@ export default function componentFactory(definition) {
     const render = definition.render; // Do not allow overriding of this function
 
     let element;
+    let size;
     let brushArgs = {
       nodes: [],
       composer,
@@ -196,8 +197,10 @@ export default function componentFactory(definition) {
       });
       if (newSize) {
         rend.size(newSize);
+        size = newSize;
       } else {
         rend.size(inner);
+        size = inner;
       }
     };
 
@@ -213,7 +216,7 @@ export default function componentFactory(definition) {
 
     fn.beforeRender = () => {
       beforeRender({
-        size: rend.size()
+        size
       });
     };
 
