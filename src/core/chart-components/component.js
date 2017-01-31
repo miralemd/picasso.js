@@ -155,8 +155,8 @@ export default function componentFactory(definition) {
 
       if (settings.data) {
         data = composer.dataset().map(settings.data.mapTo, settings.data.groupBy);
-      }else if(scale){
-      	data = scale.data();
+      } else if (scale) {
+        data = scale.data();
       } else {
         data = [];
       }
@@ -217,7 +217,7 @@ export default function componentFactory(definition) {
       rend.render(nodes);
 
       fn.mount();
-        mounted(element);
+      mounted(element);
     };
 
     fn.hide = () => {
@@ -310,7 +310,7 @@ export default function componentFactory(definition) {
           if (b.context && b.style) {
             brushStylers.push(styler(brushArgs, b));
           }
-    });
+        });
 
         (config.brush.trigger || []).forEach((t) => {
           if (t.action === 'over') {
@@ -321,22 +321,22 @@ export default function componentFactory(definition) {
         });
       }
 
-    Object.keys(definition.on || {}).forEach((key) => {
-      const listener = (e) => {
-        definition.on[key].call(definitionContext, e);
-      };
-      element.addEventListener(key, listener);
+      Object.keys(definition.on || {}).forEach((key) => {
+        const listener = (e) => {
+          definition.on[key].call(definitionContext, e);
+        };
+        element.addEventListener(key, listener);
         listeners.push({
           key,
           listener
         });
-    });
+      });
 
-    Object.keys(config.on || {}).forEach((key) => {
-      const listener = (e) => {
-        config.on[key].call(instanceContext, e);
-      };
-      element.addEventListener(key, listener);
+      Object.keys(config.on || {}).forEach((key) => {
+        const listener = (e) => {
+          config.on[key].call(instanceContext, e);
+        };
+        element.addEventListener(key, listener);
         listeners.push({
           key,
           listener
@@ -359,14 +359,14 @@ export default function componentFactory(definition) {
         if (resolveTapEvent({ e, t, config: brushArgs }) && t.globalPropagation === 'stop') {
           composer.stopBrushing = true;
         }
-    });
+      });
     };
 
     fn.onBrushOver = (e) => {
       brushTriggers.over.forEach((t) => {
         if (resolveOverEvent({ e, t, config: brushArgs }) && t.globalPropagation === 'stop') {
           composer.stopBrushing = true;
-    }
+        }
       });
     };
 
