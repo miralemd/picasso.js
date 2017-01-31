@@ -123,6 +123,7 @@ function createInstance(definition) {
     ));
 
     const { visible, hidden } = layout(currentComponents);
+    visibleComponents = visible;
 
     hidden.forEach((component) => {
       component.instance.hide();
@@ -159,7 +160,7 @@ function createInstance(definition) {
       for (let i = visibleComponents.length - 1; i >= 0; i--) {
         const comp = visibleComponents[i];
 
-        comp.onBrushTap(e);
+        comp.instance.onBrushTap(e);
 
         if (composer.stopBrushing) {
           composer.stopBrushing = false;
@@ -172,7 +173,7 @@ function createInstance(definition) {
       for (let i = visibleComponents.length - 1; i >= 0; i--) {
         const comp = visibleComponents[i];
 
-        comp.onBrushOver(e);
+        comp.instance.onBrushOver(e);
 
         if (composer.stopBrushing) {
           composer.stopBrushing = false;
@@ -185,7 +186,7 @@ function createInstance(definition) {
       for (let i = visibleComponents.length - 1; i >= 0; i--) {
         const comp = visibleComponents[i];
 
-        comp.onBrushOverLeave();
+        comp.instance.onBrushOverLeave();
       }
     };
 
@@ -231,7 +232,6 @@ function createInstance(definition) {
       currentComponents.forEach((component, idx) => {
         component.instance.set({ settings: components[idx] });
       });
-      const visibleComponents = currentComponents.filter(component => component.visible);
       visibleComponents.forEach(component => component.instance.beforeUpdate());
       visibleComponents.forEach(component => component.instance.beforeRender());
       visibleComponents.forEach(component => component.instance.update());
@@ -273,6 +273,7 @@ function createInstance(definition) {
       currentComponents.forEach(component => component.instance.beforeUpdate());
 
       const { visible, hidden } = layout(currentComponents);
+      visibleComponents = visible;
       const toUpdate = visible.filter(component => component.updateWith && component.visible);
       const toRender = visible.filter(component => !component.updateWith || !component.visible);
 
