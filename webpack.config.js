@@ -16,19 +16,21 @@ module.exports = {
     libraryTarget: 'umd'
   },
   resolve: {
-    packageMains: ['jsnext:main', 'main']
+    mainFields: ['jsnext:main', 'main']
   },
   module: {
-    loaders: [{
+    rules: [{
       test: /\.js$/,
-      loader: 'babel-loader',
-      query: {
-        presets: ['es2015'] // need to have this here instead of in .babelrc until after-work bumps babel dependecy to ^6.0.0
-      },
       include: [
         path.resolve(__dirname, 'src'),
         /node_modules\/|\\d3-/
-      ]
+      ],
+      use: {
+        loader: 'babel-loader',
+        options: {
+          presets: ['es2015'] // need to have this here instead of in .babelrc until after-work bumps babel dependecy to ^6.0.0
+        }
+      }
     }]
   }
 };
