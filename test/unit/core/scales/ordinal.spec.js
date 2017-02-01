@@ -1,23 +1,53 @@
- import ordinal from '../../../../src/core/scales/ordinal';
+import ordinal from '../../../../src/core/scales/ordinal';
 
- describe('OrdinalScale', () => {
-   let scale;
-   beforeEach(() => {
-     scale = ordinal();
-   });
+describe('OrdinalScale', () => {
+  let scale;
+  beforeEach(() => {
+    scale = ordinal();
+  });
 
-   it('should have empty domain as default', () => {
-     expect(scale.domain()).to.deep.equal([]);
-     expect(scale.range()).to.deep.equal([0, 1]);
-   });
+  it('should have empty domain as default', () => {
+    expect(scale.domain()).to.deep.equal([]);
+    expect(scale.range()).to.deep.equal([0, 1]);
+  });
 
+  describe('with input settings', () => {
+    let fieldValues;
+    let settings;
+    const fields = [{ values: () => fieldValues }];
+    const dataset = { map: () => ['data'] };
+    beforeEach(() => {
+      fieldValues = [];
+      settings = {};
+      scale = ordinal(fields, settings, dataset);
+    });
+
+    it('should be able to fetch data', () => {
+      expect(scale.data()).to.deep.equal(['data']);
+    });
+
+    it('should set domain to correct field values', () => {
+      fieldValues = ['A', 'B', 'C'].map(v => ({ label: v, id: v }));
+      scale = ordinal(fields, settings, dataset);
+      expect(scale.domain()).to.deep.equal(['A', 'B', 'C']);
+    });
+
+    it('should return correct field values', () => {
+      fieldValues = ['A', 'B', 'C'].map(v => ({ label: v, id: v }));
+      scale = ordinal(fields, settings, dataset);
+      expect(scale.get('A')).to.equal(0.25);
+      expect(scale.get('C')).to.equal(0.75);
+    });
+  });
+
+  it('should accept domain and range parameters', () => {
+    scale = ordinal().domain(['Jan', 'Apr']).range([50, 100]);
+    expect(scale.domain()).to.deep.equal(['Jan', 'Apr']);
+    expect(scale.range()).to.deep.equal([50, 100]);
+  });
   // Current ordinal is a band scale, so range is a number
 
-  /* it.only('should accept domain and range parameters', () => {
-    scale = ordinal().domain(['Jan', 'Apr']).range(['Q1', 'Q2']);
-    expect(scale.domain()).to.deep.equal(['Jan', 'Apr']);
-    expect(scale.range()).to.deep.equal(['Q1', 'Q2']);
-  });
+  /*
 
   it('should return assigned value when called without arguments', () => {
     scale.domain(['Jan', 'Apr']).range(['Q1', 'Q2']).unknown('unk');
@@ -92,4 +122,4 @@
     expect(scale.start).to.equal('Jan');
     expect(scale.end).to.equal('Dec');
   });*/
- });
+});

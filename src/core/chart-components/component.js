@@ -173,14 +173,16 @@ export default function componentFactory(definition) {
         settings = extend(true, {}, defaultSettings, opts.settings);
       }
 
-      if (settings.data) {
-        data = composer.dataset().map(settings.data.mapTo, settings.data.groupBy);
-      } else {
-        data = [];
-      }
-
       if (typeof settings.scale === 'string') {
         scale = composer.scale(settings.scale);
+      }
+
+      if (settings.data) {
+        data = composer.dataset().map(settings.data.mapTo, settings.data.groupBy);
+      } else if (scale) {
+        data = scale.data();
+      } else {
+        data = [];
       }
 
       if (typeof settings.formatter === 'string') {
@@ -285,7 +287,7 @@ export default function componentFactory(definition) {
     });
     instanceContext.update = fn.update;
 
-    fn.getBrushedShapes = function getBrushedShapes(context, mode) {
+    fn.getBrushedShapes = function getBrushedShapes(context, mode, props) {
       const shapes = [];
       if (config.brush && config.brush.trigger) {
         const brusher = composer.brush(context);
@@ -294,7 +296,7 @@ export default function componentFactory(definition) {
         config.brush.trigger.forEach((b) => {
           for (let i = 0; i < len; i++) {
             let nodeData = data[nodes[i].data];
-            if (nodeData && brusher.containsMappedData(nodeData, b.data, mode)) {
+            if (nodeData && brusher.containsMappedData(nodeData, props || b.data, mode)) {
               shapes.push({ shape: nodes[i], parent: element });
             }
           }

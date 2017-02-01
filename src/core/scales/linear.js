@@ -64,7 +64,7 @@ function getMinMax(fields, settings) {
  * @return { linearScale } Instance of linear scale
  */
 
-export default function linear(fields, settings) {
+export default function linear(fields, settings/* , dataset*/) {
   const d3Scale = scaleLinear();
   let tG;
   let tickCache;
@@ -80,6 +80,10 @@ export default function linear(fields, settings) {
     }
     return d3Scale(v.value);
   }
+
+  fn.data = function data() {
+    return [];
+  };
 
   /**
    * {@link https://github.com/d3/d3-scale#continuous_invert }

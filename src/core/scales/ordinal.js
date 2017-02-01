@@ -43,7 +43,7 @@ function generateSettings(fields, settings) {
  * @return { ordinalScale } Instance of ordinal scale
  */
 
-export default function ordinal(fields, settings) {
+export default function ordinal(fields, settings, dataset) {
   const d3Scale = scaleBand();
 
   /**
@@ -52,6 +52,10 @@ export default function ordinal(fields, settings) {
    * @return { Number } Value position in scale
    */
   const fn = v => d3Scale('label' in v ? v.label : v.value);
+
+  fn.data = function data() {
+    return dataset ? dataset.map({ self: { source: settings.source, type: 'qual' } }, { source: settings.source }) : [];
+  };
 
  /**
  * @param { Object[] } [values] Set or Get domain values

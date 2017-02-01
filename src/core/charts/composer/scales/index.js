@@ -31,7 +31,7 @@ export function create(options, dataset) {
   let s;
 
   if (reg.has(type)) {
-    s = reg.get(type)(fields, options);
+    s = reg.get(type)(fields, options, dataset);
     s.type = type;
     s.sources = sources;
   }
