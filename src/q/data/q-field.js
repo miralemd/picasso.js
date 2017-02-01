@@ -87,7 +87,7 @@ function traverseNode(node) {
 }
 
 function transformStackedToStraight(root) {
-  let nodes = root.qSubNodes;
+  let nodes = root ? root.qSubNodes : [];
   let matrix = [];
   for (let i = 0; i < nodes.length; i++) {
     matrix = matrix.concat(traverseNode(nodes[i]));
