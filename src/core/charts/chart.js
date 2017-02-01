@@ -315,7 +315,7 @@ function createInstance(definition) {
    * @param {String} mode Property comparasion mode.
    * @param {Array} props Which specific data properties to compare
    * @param {String} key Which component to get shapes from. Default gives shapes from all components.
-   * @return {data-brush}
+   * @return {Object[]} Array of objects containing shape and parent element
    */
   instance.getAffectedShapes = (context, mode = 'and', props, key) => {
     const shapes = [];

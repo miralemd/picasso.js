@@ -153,16 +153,16 @@ export default function componentFactory(definition) {
         settings = extend(true, {}, defaultSettings, opts.settings);
       }
 
+      if (typeof settings.scale === 'string') {
+        scale = composer.scale(settings.scale);
+      }
+
       if (settings.data) {
         data = composer.dataset().map(settings.data.mapTo, settings.data.groupBy);
       } else if (scale) {
         data = scale.data();
       } else {
         data = [];
-      }
-
-      if (typeof settings.scale === 'string') {
-        scale = composer.scale(settings.scale);
       }
 
       if (typeof settings.formatter === 'string') {
