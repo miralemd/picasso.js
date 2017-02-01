@@ -8,78 +8,116 @@ import createComponentFactory from './component';
  * @property {boolean} [width = 16]
  */
 
+function start(scrollbar, pos, elem) {
+  const dock = scrollbar.settings.dock;
+  const invert = scrollbar.settings.settings.invert;
+  const horizontal = dock === 'top' || dock === 'bottom';
+  const containerRect = elem.getBoundingClientRect();
+  const containerStart = containerRect[horizontal ? 'left' : 'top'];
+  const lengthAttr = horizontal ? 'width' : 'height';
+  const length = scrollbar.rect[lengthAttr];
+  const scroll = scrollbar.composer.scroll(scrollbar.settings.scroll);
+  let currentMove;
+
+  { // local scope to allow reuse of variable names later
+    let offset = pos[horizontal ? 'clientX' : 'clientY'] - containerStart;
+    if (invert) {
+      offset = length - offset;
+    }
+    const scrollState = scroll.getState();
+
+    currentMove = {
+      startOffset: offset,
+      startScroll: scrollState.start,
+      swipe: false
+    };
+
+    // Detect swipe start outsize the thumb & change startScroll to jump the scroll there.
+    const scrollPoint = ((offset / length) * (scrollState.max - scrollState.min)) + scrollState.min;
+    if (scrollPoint < scrollState.start) {
+      currentMove.startScroll = scrollPoint;
+    } else if (scrollPoint > scrollState.start + scrollState.viewSize) {
+      currentMove.startScroll = scrollPoint - scrollState.viewSize;
+    }
+  }
+
+  const update = (p) => {
+    let offset = p[horizontal ? 'clientX' : 'clientY'] - containerStart;
+    if (invert) {
+      offset = length - offset;
+    }
+    if (!currentMove.swipe) {
+      if (Math.abs(currentMove.startOffset - offset) <= 1) {
+        return;
+      }
+      currentMove.swipe = true;
+    }
+
+    const scrollState = scroll.getState();
+    const scrollMove = ((offset - currentMove.startOffset) / length) * (scrollState.max - scrollState.min);
+    const scrollStart = currentMove.startScroll + scrollMove;
+    scroll.moveTo(scrollStart);
+  };
+  const end = (p) => {
+    let offset = p[horizontal ? 'clientX' : 'clientY'] - containerStart;
+    if (invert) {
+      offset = length - offset;
+    }
+    const scrollState = scroll.getState();
+    if (currentMove.swipe) {
+      const scrollMove = ((offset - currentMove.startOffset) / length) * (scrollState.max - scrollState.min);
+      const scrollStart = currentMove.startScroll + scrollMove;
+      scroll.moveTo(scrollStart);
+    } else {
+      const scrollCenter = ((offset / length) * (scrollState.max - scrollState.min)) + scrollState.min;
+      const scrollStart = scrollCenter - (scrollState.viewSize / 2);
+      scroll.moveTo(scrollStart);
+    }
+  };
+
+  return {
+    update,
+    end
+  };
+}
+
 const scrollbar = {
   require: ['composer'],
   on: {
+    touchstart(event) {
+      event.preventDefault();
+      if (event.touches.length !== 1) {
+        this.currentMove = null;
+        return;
+      }
+      this.currentMove = start(this, event.touches[0], event.currentTarget);
+    },
+    touchmove(event) {
+      if (event.touches.length !== 1) {
+        this.currentMove = null;
+        return;
+      }
+      if (!this.currentMove) { return; }
+      this.currentMove.update(event.touches[0]);
+    },
+    touchend(event) {
+      if (!this.currentMove) { return; }
+      this.currentMove.end(event.changedTouches[0]);
+      this.currentMove = null;
+    },
+    touchcancel() {
+      this.currentMove = null;
+    },
     mousedown(event) {
       event.preventDefault();
-      const dock = this.settings.dock;
-      const invert = this.settings.settings.invert;
-      const horizontal = dock === 'top' || dock === 'bottom';
-      const containerRect = event.currentTarget.getBoundingClientRect();
-      const containerStart = containerRect[horizontal ? 'left' : 'top'];
-      const lengthAttr = horizontal ? 'width' : 'height';
-      const length = this.rect[lengthAttr];
-      const scroll = this.composer.scroll(this.settings.scroll);
-      let currentMove;
-
-      { // local scope to allow reuse of variable names later
-        let offset = event[horizontal ? 'clientX' : 'clientY'] - containerStart;
-        if (invert) {
-          offset = length - offset;
-        }
-        const scrollState = scroll.getState();
-
-        currentMove = {
-          startOffset: offset,
-          startScroll: scrollState.start,
-          swipe: false
-        };
-
-        // Detect swipe start outsize the thumb & change startScroll to jump the scroll there.
-        const scrollPoint = ((offset / length) * (scrollState.max - scrollState.min)) + scrollState.min;
-        if (scrollPoint < scrollState.start) {
-          currentMove.startScroll = scrollPoint;
-        } else if (scrollPoint > scrollState.start + scrollState.viewSize) {
-          currentMove.startScroll = scrollPoint - scrollState.viewSize;
-        }
-      }
-
+      const currentMove = start(this, event, event.currentTarget);
       const mousemove = (e) => {
-        let offset = e[horizontal ? 'clientX' : 'clientY'] - containerStart;
-        if (invert) {
-          offset = length - offset;
-        }
-        if (!currentMove.swipe) {
-          if (Math.abs(currentMove.startOffset - offset) <= 1) {
-            return;
-          }
-          currentMove.swipe = true;
-        }
-
-        const scrollState = scroll.getState();
-        const scrollMove = ((offset - currentMove.startOffset) / length) * (scrollState.max - scrollState.min);
-        const scrollStart = currentMove.startScroll + scrollMove;
-        scroll.moveTo(scrollStart);
+        currentMove.update(e);
       };
       const mouseup = (e) => {
         document.removeEventListener('mousemove', mousemove);
         document.removeEventListener('mouseup', mouseup);
-
-        let offset = e[horizontal ? 'clientX' : 'clientY'] - containerStart;
-        if (invert) {
-          offset = length - offset;
-        }
-        const scrollState = scroll.getState();
-        if (currentMove.swipe) {
-          const scrollMove = ((offset - currentMove.startOffset) / length) * (scrollState.max - scrollState.min);
-          const scrollStart = currentMove.startScroll + scrollMove;
-          scroll.moveTo(scrollStart);
-        } else {
-          const scrollCenter = ((offset / length) * (scrollState.max - scrollState.min)) + scrollState.min;
-          const scrollStart = scrollCenter - (scrollState.viewSize / 2);
-          scroll.moveTo(scrollStart);
-        }
+        currentMove.end(e);
       };
       document.addEventListener('mousemove', mousemove);
       document.addEventListener('mouseup', mouseup);
