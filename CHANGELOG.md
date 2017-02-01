@@ -15,7 +15,13 @@
 ```
 
 ### Fixed
-- Box marker's whisker circles now size correctly in both vertical and non-vertical mode.
+- QLIK-70268 Box marker's whisker circles now size correctly in both vertical and non-vertical mode.
+- QLIK-71779 Labels on top of each other if "forced axis values" close to each others are used in the wrong order
+- QLIK-72315 forceBounds setting should filter neighbor if it's to close
+- QLIK-70627 Ratio between point and box are not kept
+- QLIK-72348 Update chart from layered true to false renders the axis wrong
+- QLIK-72378 Update data in the update chart example sometimes makes the x axes disappear and it will never come back
+
 
 ## 0.5.0
 
