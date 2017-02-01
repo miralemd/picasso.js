@@ -21,6 +21,7 @@
 - QLIK-70627 Ratio between point and box are not kept
 - QLIK-72348 Update chart from layered true to false renders the axis wrong
 - QLIK-72378 Update data in the update chart example sometimes makes the x axes disappear and it will never come back
+- Formatter source lookup on dataset
 
 
 ## 0.5.0
