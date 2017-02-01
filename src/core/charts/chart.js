@@ -104,7 +104,11 @@ function createInstance(definition) {
     const dockLayout = createDockLayout(settings.dockLayout);
     components.forEach((c) => { dockLayout.addComponent(c.instance); });
 
-    return dockLayout.layout(element);
+    const { visible, hidden } = dockLayout.layout(element);
+    return {
+      visible: visible.map(v => findComponent(v)),
+      hidden: hidden.map(h => findComponent(h))
+    };
   };
 
   const render = () => {
@@ -120,14 +124,19 @@ function createInstance(definition) {
 
     const { visible, hidden } = layout(currentComponents);
     visibleComponents = visible;
-    visible.forEach((compInstance) => {
-      compInstance.render();
-      findComponent(compInstance).visible = true;
+
+    hidden.forEach((component) => {
+      component.instance.hide();
+      component.visible = false;
     });
-    hidden.forEach((compInstance) => {
-      compInstance.hide();
-      findComponent(compInstance).visible = false;
-    });
+
+    visible.forEach(component => component.instance.beforeMount());
+    visible.forEach(component => component.instance.mount());
+    visible.forEach(component => component.instance.beforeRender());
+
+    visible.forEach(component => component.instance.render());
+    visible.forEach(component => component.instance.mounted());
+    visible.forEach((component) => { component.visible = true; });
   };
 
   function instance() {} // The chart instance
@@ -151,7 +160,7 @@ function createInstance(definition) {
       for (let i = visibleComponents.length - 1; i >= 0; i--) {
         const comp = visibleComponents[i];
 
-        comp.onBrushTap(e);
+        comp.instance.onBrushTap(e);
 
         if (composer.stopBrushing) {
           composer.stopBrushing = false;
@@ -164,7 +173,7 @@ function createInstance(definition) {
       for (let i = visibleComponents.length - 1; i >= 0; i--) {
         const comp = visibleComponents[i];
 
-        comp.onBrushOver(e);
+        comp.instance.onBrushOver(e);
 
         if (composer.stopBrushing) {
           composer.stopBrushing = false;
@@ -177,7 +186,7 @@ function createInstance(definition) {
       for (let i = visibleComponents.length - 1; i >= 0; i--) {
         const comp = visibleComponents[i];
 
-        comp.onBrushOverLeave();
+        comp.instance.onBrushOverLeave();
       }
     };
 
@@ -220,17 +229,13 @@ function createInstance(definition) {
 
     if (partialData) {
       // Update without relayouting - assumes the compoents array has been left intact (no additions, removals or moving of items)
-      for (let i = 0; i < components.length; i++) {
-        currentComponents[i].instance.beforeUpdate({
-          formatters,
-          scales,
-          data,
-          settings: components[i]
-        });
-        if (currentComponents[i].visible) {
-          currentComponents[i].instance.update();
-        }
-      }
+      currentComponents.forEach((component, idx) => {
+        component.instance.set({ settings: components[idx] });
+      });
+      visibleComponents.forEach(component => component.instance.beforeUpdate());
+      visibleComponents.forEach(component => component.instance.beforeRender());
+      visibleComponents.forEach(component => component.instance.update());
+      visibleComponents.forEach(component => component.instance.updated());
     } else {
       for (let i = currentComponents.length - 1; i >= 0; i--) {
         const currComp = currentComponents[i];
@@ -251,33 +256,45 @@ function createInstance(definition) {
           currentComponents.push(currComp);
         } else {
           // Component is (potentially) updated
-          currentComponents[idx].shouldUpdate = true;
-          currentComponents[idx].instance.beforeUpdate({
+          currentComponents[idx].updateWith = {
             formatters,
             scales,
             data,
             settings: comp
-          });
+          };
         }
       }
 
-      const { visible, hidden } = layout(currentComponents);
-      visible.forEach((compInstance) => {
-        visibleComponents = visible;
-        const comp = findComponent(compInstance);
-        if (comp.shouldUpdate) {
-          compInstance.update();
-          delete comp.shouldUpdate;
-        } else {
-          compInstance.render();
+      currentComponents.forEach((component) => {
+        if (component.updateWith) {
+          component.instance.set(component.updateWith);
         }
-        comp.visible = true;
       });
-      hidden.forEach((compInstance) => {
-        compInstance.hide();
-        const comp = findComponent(compInstance);
-        comp.visible = false;
-        delete comp.updateWith;
+      currentComponents.forEach(component => component.instance.beforeUpdate());
+
+      const { visible, hidden } = layout(currentComponents);
+      visibleComponents = visible;
+      const toUpdate = visible.filter(component => component.updateWith && component.visible);
+      const toRender = visible.filter(component => !component.updateWith || !component.visible);
+
+      hidden.forEach((component) => {
+        component.instance.hide();
+        component.visible = false;
+        delete component.updateWith;
+      });
+
+      toUpdate.forEach(component => component.instance.beforeRender());
+      toUpdate.forEach(component => component.instance.update());
+      toUpdate.forEach(component => component.instance.updated());
+
+      toRender.forEach(component => component.instance.beforeMount());
+      toRender.forEach(component => component.instance.mount());
+      toRender.forEach(component => component.instance.beforeRender());
+      toRender.forEach(component => component.instance.render());
+      toRender.forEach(component => component.instance.mounted());
+      visible.forEach((component) => {
+        delete component.updateWith;
+        component.visible = true;
       });
     }
 

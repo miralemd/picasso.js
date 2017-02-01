@@ -223,17 +223,10 @@ const pointMarker = {
     this.local = calculateLocalSettings(settings.settings, composer);
   },
   beforeUpdate(opts) {
-    const {
-      settings
-    } = opts;
-    this.updateSettings(settings);
+    this.updateSettings(opts.settings);
   },
-  resize(opts) {
-    const {
-      inner
-    } = opts;
-    this.rect = inner;
-    return inner;
+  beforeRender(opts) {
+    this.rect = opts.size;
   },
   render({ data }) {
     const { width, height } = this.rect;

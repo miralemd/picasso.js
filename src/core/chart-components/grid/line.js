@@ -44,13 +44,9 @@ const gridLineComponent = {
     this.settings = settings.settings;
   },
 
-  resize(opts) {
-    const { inner } = opts;
-    this.rect = inner;
-    return inner;
-  },
+  beforeRender(opts) {
+    this.rect = opts.size;
 
-  beforeRender() {
     this.blueprint = transposer();
 
     this.blueprint.width = this.rect.width;

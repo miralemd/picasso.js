@@ -2,10 +2,25 @@
 import pointComponent from '../../../../../src/core/chart-components/markers/point';
 
 describe('point marker', () => {
-  let point;
   let renderedPoints;
   let composer;
   let shapeFn;
+
+  function createAndRenderPoint(opts) {
+    const {
+      inner,
+      outer,
+      config
+    } = opts;
+    const component = pointComponent(config, composer);
+    component.beforeMount();
+    component.resize(inner, outer);
+    component.mounted();
+    component.beforeRender();
+    component.render();
+    component.mounted();
+    return component;
+  }
 
   beforeEach(() => {
     const table = {
@@ -37,9 +52,10 @@ describe('point marker', () => {
       data: { mapTo: 'does not matter', groupBy: 'does not matter' }
     };
     composer.dataset().map.returns([{}]);
-    point = pointComponent(config, composer)();
-    point.resize({ x: 10, y: 20, width: 100, height: 200 });
-    point.render();
+    createAndRenderPoint({
+      inner: { x: 10, y: 20, width: 100, height: 200 },
+      config
+    });
     expect(renderedPoints).to.deep.equal([{
       type: 'circle',
       label: '',
@@ -68,9 +84,10 @@ describe('point marker', () => {
       }
     };
     composer.dataset().map.returns([{}]);
-    point = pointComponent(config, composer)();
-    point.resize({ x: 10, y: 20, width: 100, height: 200 });
-    point.render();
+    createAndRenderPoint({
+      inner: { x: 10, y: 20, width: 100, height: 200 },
+      config
+    });
     expect(renderedPoints).to.deep.equal([{
       type: 'circle',
       label: '',
@@ -103,9 +120,10 @@ describe('point marker', () => {
       }
     };
     composer.dataset().map.returns([{}]);
-    point = pointComponent(config, composer)();
-    point.resize({ x: 10, y: 20, width: 100, height: 200 });
-    point.render();
+    createAndRenderPoint({
+      inner: { x: 10, y: 20, width: 100, height: 200 },
+      config
+    });
     expect(renderedPoints).to.deep.equal([{
       type: 'rect',
       label: 'etikett',
@@ -139,9 +157,10 @@ describe('point marker', () => {
     composer.dataset().map.returns([{
       label: 'a'
     }]);
-    point = pointComponent(config, composer)();
-    point.resize({ x: 10, y: 20, width: 100, height: 200 });
-    point.render();
+    createAndRenderPoint({
+      inner: { x: 10, y: 20, width: 100, height: 200 },
+      config
+    });
     expect(renderedPoints).to.deep.equal([{
       type: 'a',
       label: 'etikett',
@@ -190,9 +209,10 @@ describe('point marker', () => {
       m3: 1.2
     }]);
 
-    point = pointComponent(config, composer)();
-    point.resize({ x: 10, y: 20, width: 100, height: 200 });
-    point.render();
+    createAndRenderPoint({
+      inner: { x: 10, y: 20, width: 100, height: 200 },
+      config
+    });
     expect(renderedPoints).to.deep.equal([{
       type: 'circle',
       label: 'etta',
@@ -239,9 +259,10 @@ describe('point marker', () => {
     xScale.step = () => 0.2; // max size: width * 0.2 -> 20
     composer.scale.onCall(0).returns(xScale);
 
-    point = pointComponent(config, composer)();
-    point.resize({ x: 10, y: 20, width: 100, height: 200 }); // point size limits: [2,20]
-    point.render();
+    createAndRenderPoint({
+      inner: { x: 10, y: 20, width: 100, height: 200 }, // point size limits: [2,20]
+      config
+    });
 
     expect(renderedPoints.map(p => p.size)).to.deep.equal([2, 2 + (18 * 0.4), 20]);
   });
