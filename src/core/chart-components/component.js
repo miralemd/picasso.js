@@ -274,7 +274,6 @@ export default function componentFactory(definition) {
       composer: () => composer,
       dockConfig: () => dockConfig
     });
-    definitionContext.update = fn.update;
 
     prepareContext(instanceContext, config, {
       settings: () => settings,
@@ -285,7 +284,6 @@ export default function componentFactory(definition) {
       composer: () => composer,
       dockConfig: () => dockConfig
     });
-    instanceContext.update = fn.update;
 
     fn.getBrushedShapes = function getBrushedShapes(context, mode, props) {
       const shapes = [];
