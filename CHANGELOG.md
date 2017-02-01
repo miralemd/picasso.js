@@ -3,22 +3,27 @@
 ## [Unreleased]
 
 ### Added
+
+- Scrollbar component
+- Partial update flag
 - Brush support on SVG and Canvas renderer.
 - Brush through multiple layers of components. Control propagation via optional settings:
-```js
-  trigger: [{
-    contexts: [],
-    action: 'tap',
-    propagation 'stop', // 'stop' => only trigger on first shape || 'data' => only trigger on shapes with unique data values
-    globalPropagation: 'stop', // 'stop' => if triggered, do not run triggers on other components
-  }]
-```
+
+    ```js
+    trigger: [{
+      contexts: [],
+      action: 'tap',
+      propagation 'stop', // 'stop' => only trigger on first shape || 'data' => only trigger on shapes with unique data values
+      globalPropagation: 'stop', // 'stop' => if triggered, do not run triggers on other components
+    }]
+    ```
 
 ### Fixed
-- QLIK-70268 Box marker's whisker circles now size correctly in both vertical and non-vertical mode.
+
+- QLIK-70268 Width/Size are not in sync nor logical
+- QLIK-70627 Ratio between point and box are not kept
 - QLIK-71779 Labels on top of each other if "forced axis values" close to each others are used in the wrong order
 - QLIK-72315 forceBounds setting should filter neighbor if it's to close
-- QLIK-70627 Ratio between point and box are not kept
 - QLIK-72348 Update chart from layered true to false renders the axis wrong
 - QLIK-72378 Update data in the update chart example sometimes makes the x axes disappear and it will never come back
 - Formatter source lookup on dataset
@@ -63,7 +68,7 @@
 
 - Transpile es6 versions of d3 modules
 
-## 0.4.0
+## [BREAKING] 0.4.0
 
 ### Breaking changes
 
@@ -176,7 +181,7 @@
       pic.brush('highlight').addValue('products', 'Bike');
     ```
 
-## 0.3.0
+## [BREAKING] 0.3.0
 
 ### Added
 
@@ -201,7 +206,7 @@
 - Scale with same min and max automatically expands the values to ensure a range exists
 - Stroke-width works as intended on canvas
 
-## 0.2.0
+## [BREAKING] 0.2.0
 
 ### Added
 
