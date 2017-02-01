@@ -4,14 +4,14 @@ function fieldFinder(query, field) {
   return field.title() === query;
 }
 
-export function create(options, table) {
+export function create(options, dataset) {
   // TODO Have some magic to handle and merge formatters from multiple sources
 
   if (options.source) {
-    const field = table.findField(options.source, fieldFinder);
+    const match = dataset.findField(options.source, fieldFinder);
 
-    if (typeof field !== 'undefined') {
-      return field.formatter();
+    if (match && typeof match.field !== 'undefined') {
+      return match.field.formatter();
     }
   }
 
@@ -23,14 +23,13 @@ export default function builder(obj, composer) {
   const formatters = {};
   for (const f in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, f)) {
-      formatters[f] = create(obj[f], composer.table());
+      formatters[f] = create(obj[f], composer.dataset());
     }
   }
   return formatters;
 }
 
-
-export function getOrCreateFormatter(v, formatters, tables) {
+export function getOrCreateFormatter(v, formatters, dataset) {
   let f;
   if (typeof v === 'string' && formatters[v]) { // return by name
     f = formatters[v];
@@ -38,5 +37,5 @@ export function getOrCreateFormatter(v, formatters, tables) {
     f = formatters[v.formatter];
   }
 
-  return f || create(v, tables);
+  return f || create(v, dataset);
 }

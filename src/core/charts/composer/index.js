@@ -34,10 +34,6 @@ export default function composer() {
     currentScrollApis = buildScroll(scroll, fn, currentScrollApis);
   };
 
-  fn.table = function table() {
-    return dataset.tables()[0];
-  };
-
   fn.dataset = function datasetFn() {
     return dataset;
   };
@@ -66,7 +62,7 @@ export default function composer() {
   };
 
   fn.formatter = function formatter(v) {
-    return getOrCreateFormatter(v, currentFormatters, fn.table());
+    return getOrCreateFormatter(v, currentFormatters, fn.dataset());
   };
 
   fn.createComponent = (settings, container) => {

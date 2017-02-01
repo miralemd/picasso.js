@@ -187,6 +187,8 @@ export default function componentFactory(definition) {
 
       if (typeof settings.formatter === 'string') {
         formatter = composer.formatter(settings.formatter);
+      } else if (typeof settings.formatter === 'object') {
+        formatter = composer.formatter(settings.formatter);
       } else if (typeof settings.scale === 'string') {
         formatter = composer.formatter({ source: scale.sources[0] });
       }
