@@ -270,7 +270,11 @@ function createInstance(definition) {
           component.instance.set(component.updateWith);
         }
       });
-      currentComponents.forEach(component => component.instance.beforeUpdate());
+      currentComponents.forEach((component) => {
+        if (component.updateWith) {
+          component.instance.beforeUpdate();
+        }
+      });
 
       const { visible, hidden } = layout(currentComponents);
       visibleComponents = visible;
@@ -283,15 +287,17 @@ function createInstance(definition) {
         delete component.updateWith;
       });
 
-      toUpdate.forEach(component => component.instance.beforeRender());
-      toUpdate.forEach(component => component.instance.update());
-      toUpdate.forEach(component => component.instance.updated());
-
       toRender.forEach(component => component.instance.beforeMount());
       toRender.forEach(component => component.instance.mount());
+
       toRender.forEach(component => component.instance.beforeRender());
+      toUpdate.forEach(component => component.instance.beforeRender());
+
       toRender.forEach(component => component.instance.render());
+      toUpdate.forEach(component => component.instance.update());
+
       toRender.forEach(component => component.instance.mounted());
+      toUpdate.forEach(component => component.instance.updated());
       visible.forEach((component) => {
         delete component.updateWith;
         component.visible = true;
