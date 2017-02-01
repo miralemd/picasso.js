@@ -31,7 +31,7 @@ export default function composer() {
     }
     currentScales = buildScales(scales, fn);
     currentFormatters = buildFormatters(formatters, fn);
-    currentScrollApis = buildScroll(scroll, fn, currentScrollApis);
+    currentScrollApis = buildScroll(scroll, fn, currentScrollApis, partialData);
   };
 
   fn.dataset = function datasetFn() {

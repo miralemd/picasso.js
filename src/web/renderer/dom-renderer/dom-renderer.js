@@ -80,6 +80,9 @@ export default function renderer(opts = {}) {
   dom.renderArgs = [h]; // Arguments to render functions using the DOM renderer
 
   dom.clear = () => {
+    if (!el) {
+      return;
+    }
     let first = el.firstChild;
 
     while (first) {

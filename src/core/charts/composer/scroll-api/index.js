@@ -1,21 +1,23 @@
 import scrollApi from '../../../scroll-api';
 
-export function createOrUpdate(options, oldApi) {
+export function createOrUpdate(options, oldApi, isPartial) {
   let min = options.min || 0;
   let max = options.max || 0;
   const viewSize = options.viewSize || 0;
 
   const s = oldApi || scrollApi();
-  s.update({ min, max, viewSize });
+  if (!isPartial || !oldApi) {
+    s.update({ min, max, viewSize });
+  }
 
   return s;
 }
 
-export default function builder(obj, composer, oldScrollApis) {
+export default function builder(obj, composer, oldScrollApis, isPartial) {
   const scrollApis = {};
   for (const n in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, n)) {
-      scrollApis[n] = createOrUpdate(obj[n], oldScrollApis[n]);
+      scrollApis[n] = createOrUpdate(obj[n], oldScrollApis ? oldScrollApis[n] : null, isPartial);
     }
   }
   return scrollApis;
