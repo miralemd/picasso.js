@@ -9,12 +9,16 @@ Brushing in a component is handled in two ways; _trigger_ and _consume_.
 * `action`: type of action to react to
 * `contexts`: name of the brushing contexts to affect
 * `data`: the mapped data properties to add to the brush. _Optional_
+* `propagation`: control the event propagation when multiple shapes are tapped. Disabled by default. _Optional_
+* `globalPropagation`: control the event propagation between components. Disabled by default. _Optional_
 
 ```js
 trigger: [{
   action: 'tap',
   contexts: ['selection', 'tooltip'],
-  data: ['x']
+  data: ['x'],
+  propagation 'stop', // 'stop' => prevent trigger to propagate further then to first shape || 'data' => only tap on shapes with unique data values
+  globalPropagation: 'stop', // 'stop' => prevent trigger of same type to be triggered on other components
 }],
 ```
 
@@ -39,7 +43,6 @@ consume: [{
       strokeWidth: 2
     },
     inactive: {
-      fill: 
     }
   }
 }]
