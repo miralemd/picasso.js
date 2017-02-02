@@ -308,8 +308,8 @@ export default function componentFactory(definition) {
     fn.mount = () => {
       element = rend.element && rend.element() ? element : rend.appendTo(container);
 
-      if (config.brush && config.brush.consume) {
-        config.brush.consume.forEach((b) => {
+      if (config.brush) {
+        (config.brush.consume || []).forEach((b) => {
           if (b.context && b.style) {
             brushStylers.push(styler(brushArgs, b));
           }
