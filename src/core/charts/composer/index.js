@@ -27,7 +27,7 @@ export default function composer() {
 
     dataset = buildData(data);
     if (!partialData) {
-      brushes = {};
+      Object.keys(brushes).forEach(b => brushes[b].clear());
     }
     currentScales = buildScales(scales, fn);
     currentFormatters = buildFormatters(formatters, fn);

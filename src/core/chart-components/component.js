@@ -260,6 +260,7 @@ export default function componentFactory(definition) {
     fn.updated = updated;
 
     fn.destroy = () => {
+      fn.unmount();
       beforeDestroy(element);
       rend.destroy();
       destroyed();
@@ -357,6 +358,9 @@ export default function componentFactory(definition) {
 
       brushTriggers.tap = [];
       brushTriggers.over = [];
+      brushStylers.forEach((brushStyler) => {
+        brushStyler.cleanUp();
+      });
     };
 
     fn.onBrushTap = (e) => {
