@@ -1,4 +1,5 @@
 import composerFn from './composer';
+import * as mixins from './chart-mixins';
 import createDockLayout from '../dock-layout/dock-layout';
 import {
   detectTouchSupport,
@@ -74,16 +75,38 @@ function createInstance(definition) {
     element,
     data = {},
     settings = {},
-    on = {},
-    created = () => {},
-    updated = () => {},
-    mounted = () => {}
+    on = {}
   } = definition;
 
   const listeners = [];
+  const context = {
+    ...definition
+  };
   let composer = composerFn();
   let currentComponents = []; // Augmented components
   let visibleComponents = [];
+
+  function instance() {} // The chart instance
+
+  // Create a callback that calls lifecycle functions in the definition and config (if they exist).
+  function createCallback(method, defaultMethod = () => {}) {
+    return function cb(...args) {
+      const inDefinition = typeof definition[method] === 'function';
+
+      let returnValue;
+      if (inDefinition) {
+        returnValue = definition[method].call(context, ...args);
+      } else {
+        returnValue = defaultMethod.call(context, ...args);
+      }
+      mixins.list().forEach((mixin) => {
+        if (mixin[method]) {
+          mixin[method].call(context, ...args);
+        }
+      });
+      return returnValue;
+    };
+  }
 
   const findComponent = (componentInstance) => {
     for (let i = 0; i < currentComponents.length; i++) {
@@ -115,10 +138,21 @@ function createInstance(definition) {
     };
   };
 
+  const created = createCallback('created');
+  const beforeMount = createCallback('beforeMount');
+  const mounted = createCallback('mounted');
+  const beforeUpdate = createCallback('beforeUpdate');
+  const updated = createCallback('updated');
+  const beforeRender = createCallback('beforeRender');
+  const beforeDestroy = createCallback('beforeDestroy');
+  const destroyed = createCallback('destroyed');
+
   const render = () => {
     const {
       components = []
     } = settings;
+
+    beforeRender();
 
     composer.set(data, settings);
 
@@ -142,8 +176,6 @@ function createInstance(definition) {
     visible.forEach(component => component.instance.mounted());
     visible.forEach((component) => { component.visible = true; });
   };
-
-  function instance() {} // The chart instance
 
   // Browser only
   const mount = () => {
@@ -223,10 +255,6 @@ function createInstance(definition) {
       element.addEventListener(event.key, event.listener);
       listeners.push(event);
     });
-
-    if (typeof mounted === 'function') {
-      mounted.call(instance, element);
-    }
   };
 
   const unmount = () => {
@@ -237,7 +265,7 @@ function createInstance(definition) {
    * Update the chart with new settings and / or data
    * @param {} chart - Chart definition
    */
-  instance.update = (newProps = {}) => {
+  instance.update = context.update = (newProps = {}) => {
     const { partialData } = newProps;
     if (newProps.data) {
       data = newProps.data;
@@ -245,6 +273,8 @@ function createInstance(definition) {
     if (newProps.settings) {
       settings = newProps.settings;
     }
+
+    beforeUpdate();
 
     composer.set(data, settings, { partialData });
 
@@ -337,24 +367,24 @@ function createInstance(definition) {
       component.visible = true;
     });
 
-    if (typeof updated === 'function') {
-      updated.call(instance);
-    }
+    updated();
   };
 
-  instance.destroy = () => {
+  instance.destroy = context.destroy = () => {
+    beforeDestroy();
     currentComponents.forEach(comp => comp.instance.destroy());
     currentComponents = [];
     unmount();
     delete instance.update;
     delete instance.destroy;
+    destroyed();
   };
 
   /**
    * The brush context for this chart
    * @return {data-brush}
    */
-  instance.brush = (...v) => composer.brush(...v);
+  instance.brush = context.brush = (...v) => composer.brush(...v);
 
   /**
    * Get a field associated with the provided brush
@@ -369,7 +399,7 @@ function createInstance(definition) {
    * The data set for this chart
    * @return {dataset}
    */
-  instance.data = () => composer.dataset();
+  instance.data = context.data = () => composer.dataset();
 
   /**
    * Get all shapes associated with the provided context
@@ -379,10 +409,10 @@ function createInstance(definition) {
    * @param {String} key Which component to get shapes from. Default gives shapes from all components.
    * @return {Object[]} Array of objects containing shape and parent element
    */
-  instance.getAffectedShapes = (context, mode = 'and', props, key) => {
+  instance.getAffectedShapes = context.getAffectedShapes = (ctx, mode = 'and', props, key) => {
     const shapes = [];
     currentComponents.filter(comp => key === undefined || key === null || comp.key === key).forEach((comp) => {
-      shapes.push(...comp.instance.getBrushedShapes(context, mode, props));
+      shapes.push(...comp.instance.getBrushedShapes(ctx, mode, props));
     });
     return shapes;
   };
@@ -397,7 +427,7 @@ function createInstance(definition) {
    * chart.findShapes('Circle[fill="red"][stroke!="black"]') // [CircleNode, CircleNode]
    * chart.findShapes('Container Rect') // [Rect, Rect]
    */
-  instance.findShapes = (selector) => {
+  instance.findShapes = context.findShapes = (selector) => {
     const shapes = [];
     visibleComponents.forEach((c) => {
       shapes.push(...c.instance.findShapes(selector));
@@ -408,13 +438,16 @@ function createInstance(definition) {
   /**
    * @return {scroll-api}
    */
-  instance.scroll = (...v) => composer.scroll(...v);
+  instance.scroll = context.scroll = (...v) => composer.scroll(...v);
 
-  created.call(instance);
+  created();
 
   if (element) {
+    beforeMount();
     mount(element);
+    mounted(element);
     instance.element = element;
+    context.element = element;
   }
 
   return instance;
@@ -427,6 +460,10 @@ function createInstance(definition) {
  * @param  {Chart.Props} settings - Settings
  * @return {Chart}
  */
-export default function chart(definition) {
+function chart(definition) {
   return createInstance(definition);
 }
+
+chart.mixin = mixins.add; // Expose mixin registering function
+
+export default chart;

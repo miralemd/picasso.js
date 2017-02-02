@@ -1,5 +1,6 @@
 import extend from 'extend';
 
+import { list as listMixins } from './component-mixins';
 import rendererFn from '../renderer/index';
 import {
   styler,
@@ -13,6 +14,10 @@ const isReservedProperty = prop => [
   'destroyed', 'defaultSettings', 'data', 'settings', 'formatter',
   'scale', 'composer', 'dockConfig'
 ].some(name => name === prop);
+
+const isNativeEvent = name => (
+  !/^tap|^swipe|^press|^rotate|^pinch|^pan/.test(name)
+);
 
 function prepareContext(ctx, definition, opts) {
   const {
@@ -103,17 +108,28 @@ export default function componentFactory(definition) {
     let formatter;
     let brushStylers = [];
 
+    let element;
+    let size;
+    let brushArgs = {
+      nodes: [],
+      composer,
+      config: config.brush || {},
+      renderer: null
+    };
+    let brushTriggers = {
+      tap: [],
+      over: []
+    };
+
     const definitionContext = {};
-    const instanceContext = {};
+    const instanceContext = { ...config };
+    let mixins;
 
     // Create a callback that calls lifecycle functions in the definition and config (if they exist).
     function createCallback(method, defaultMethod = () => {}) {
       return function cb(...args) {
         const inDefinition = typeof definition[method] === 'function';
         const inConfig = typeof config[method] === 'function';
-        if (!inDefinition && !inConfig) {
-          return defaultMethod.call(definitionContext, ...args);
-        }
 
         let returnValue;
         if (inDefinition) {
@@ -122,6 +138,14 @@ export default function componentFactory(definition) {
         if (typeof config[method] === 'function') {
           returnValue = config[method].call(instanceContext, ...args);
         }
+        if (!inDefinition && !inConfig) {
+          returnValue = defaultMethod.call(definitionContext, ...args);
+        }
+        mixins.forEach((mixin) => {
+          if (mixin[method]) {
+            mixin[method].call(instanceContext, ...args);
+          }
+        });
         return returnValue;
       };
     }
@@ -137,19 +161,6 @@ export default function componentFactory(definition) {
     const beforeDestroy = createCallback('beforeDestroy');
     const destroyed = createCallback('destroyed');
     const render = definition.render; // Do not allow overriding of this function
-
-    let element;
-    let size;
-    let brushArgs = {
-      nodes: [],
-      composer,
-      config: config.brush || {},
-      renderer: null
-    };
-    let brushTriggers = {
-      tap: [],
-      over: []
-    };
 
     Object.defineProperty(brushArgs, 'data', {
       get: () => data
@@ -332,25 +343,29 @@ export default function componentFactory(definition) {
       }
 
       Object.keys(definition.on || {}).forEach((key) => {
-        const listener = (e) => {
-          definition.on[key].call(definitionContext, e);
-        };
-        element.addEventListener(key, listener);
-        listeners.push({
-          key,
-          listener
-        });
+        if (isNativeEvent(key)) {
+          const listener = (e) => {
+            definition.on[key].call(definitionContext, e);
+          };
+          element.addEventListener(key, listener);
+          listeners.push({
+            key,
+            listener
+          });
+        }
       });
 
       Object.keys(config.on || {}).forEach((key) => {
-        const listener = (e) => {
-          config.on[key].call(instanceContext, e);
-        };
-        element.addEventListener(key, listener);
-        listeners.push({
-          key,
-          listener
-        });
+        if (isNativeEvent(key)) {
+          const listener = (e) => {
+            config.on[key].call(instanceContext, e);
+          };
+          element.addEventListener(key, listener);
+          listeners.push({
+            key,
+            listener
+          });
+        }
       });
     };
 
@@ -358,7 +373,11 @@ export default function componentFactory(definition) {
 
     fn.unmount = () => {
       if (element) {
-        listeners.forEach(({ key, listener }) => element.removeEventListener(key, listener));
+        listeners.forEach(({ key, listener }) => {
+          if (isNativeEvent(key)) {
+            element.removeEventListener(key, listener);
+          }
+        });
         listeners = [];
       }
 
@@ -386,6 +405,9 @@ export default function componentFactory(definition) {
     };
 
     fn.set({ settings: config });
+
+    mixins = listMixins(settings.type);
+
     created();
 
     return fn;

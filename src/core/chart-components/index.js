@@ -1,4 +1,5 @@
 import createComponentFactory from './component';
+import * as mixins from './component-mixins';
 import { registry } from '../utils/registry';
 import boxMarkerComponent from './markers/box';
 import pointMarkerComponent from './markers/point';
@@ -16,9 +17,13 @@ reg.register('point-marker', pointMarkerComponent);
 reg.register('grid-line', gridLineComponent);
 reg.register('scrollbar', scrollbarComponent);
 
-export default function component(name, definition) {
+function component(name, definition) {
   if (definition) {
     reg.register(name, createComponentFactory(definition));
   }
   return reg.get(name);
 }
+
+component.mixin = mixins.add;
+
+export default component;
