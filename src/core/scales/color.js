@@ -9,8 +9,8 @@ function getMinMax(fields) {
   };
 }
 
-export default function color(fields, settings) {
-  const s = linear(fields, settings);
+export default function color(settings, fields) {
+  const s = linear(settings, fields);
   let { min, max } = getMinMax(fields);
   const fn = function fn(v) {
     return interpolateViridis(fn.get(v.value));

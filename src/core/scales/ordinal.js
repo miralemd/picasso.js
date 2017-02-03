@@ -27,10 +27,10 @@ function evalSetting(fields, settings, name) {
 }
 
 
-function generateSettings(fields, settings) {
+function generateSettings(settings, fields) {
   const calcSettings = {};
   AVAILABLE_SETTINGS.forEach((s) => {
-    calcSettings[s] = evalSetting(fields, settings, s);
+    calcSettings[s] = evalSetting(settings, fields, s);
   });
   return calcSettings;
 }
@@ -43,7 +43,7 @@ function generateSettings(fields, settings) {
  * @return { ordinalScale } Instance of ordinal scale
  */
 
-export default function ordinal(fields, settings, dataset) {
+export default function ordinal(settings, fields, dataset) {
   const d3Scale = scaleBand();
 
   /**
@@ -152,9 +152,9 @@ export default function ordinal(fields, settings, dataset) {
     return fn.domain()[fn.domain().length - 1];
   };
 
-  if (fields) {
+  if (fields && fields[0]) {
     const values = fields[0].values();
-    const stgns = generateSettings(fields, settings);
+    const stgns = generateSettings(settings, fields);
     const uniq = unique(values).map(v => v.label);
 
     fn.domain(uniq);
