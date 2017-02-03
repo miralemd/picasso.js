@@ -21,17 +21,27 @@ function findFields(dataset, sources) {
   });
 }
 
-export function create(options, dataset) {
-  const sources = Array.isArray(options.source) ? options.source : [options.source];
-  const fields = findFields(dataset, sources);
-  let type = options.type;
-  if (!type) {
-    type = options.colors ? 'color' : getTypeFromMeta(fields[0]);
+function deduceScaleTypeFromOptions(options, fields) {
+  if (options.colors) {
+    return 'color';
+  } else if (fields[0]) {
+    return getTypeFromMeta(fields[0]);
   }
+  return 'linear';
+}
+
+export function create(options, dataset) {
+  let sources = [];
+  let fields = [];
+  if (options.source) {
+    sources = Array.isArray(options.source) ? options.source : [options.source];
+    fields = findFields(dataset, sources);
+  }
+  let type = options.type || deduceScaleTypeFromOptions(options, fields);
   let s;
 
   if (reg.has(type)) {
-    s = reg.get(type)(fields, options, dataset);
+    s = reg.get(type)(options, fields, dataset);
     s.type = type;
     s.sources = sources;
   }

@@ -7,7 +7,7 @@ function applyFormat(formatter) {
   return typeof formatter === 'undefined' ? t => t : t => formatter(t);
 }
 
-function evalSetting(fields, settings, name) {
+function evalSetting(settings, fields, name) {
   if (typeof settings[name] === 'function') {
     return settings[name](fields);
   }
@@ -15,39 +15,43 @@ function evalSetting(fields, settings, name) {
   return settings[name];
 }
 
-function generateSettings(fields, settings) {
+function generateSettings(settings, fields) {
   const calcSettings = {};
   AVAILABLE_SETTINGS.forEach((s) => {
-    calcSettings[s] = evalSetting(fields, settings, s);
+    calcSettings[s] = evalSetting(settings, fields, s);
   });
   return calcSettings;
 }
 
-function getMinMax(fields, settings) {
-  const min = Number(settings.min);
-  const max = Number(settings.max);
-  let fieldMin = Math.min(...fields.map(m => m.min()));
-  let fieldMax = Math.max(...fields.map(m => m.max()));
+function getMinMax(settings, fields) {
+  const min = +settings.min;
+  const max = +settings.max;
+  let fieldMin = 0;
+  let fieldMax = 1;
+  if (fields && fields[0]) {
+    fieldMin = Math.min(...fields.map(m => m.min()));
+    fieldMax = Math.max(...fields.map(m => m.max()));
 
-  if (isNaN(fieldMin) || isNaN(fieldMax)) {
-    fieldMin = -1;
-    fieldMax = 1;
-  } else if (fieldMin === fieldMax && fieldMin === 0) {
-    fieldMin = -1;
-    fieldMax = 1;
-  } else if (fieldMin === fieldMax && fieldMin) {
-    fieldMin -= Math.abs(fieldMin * 0.1);
-    fieldMax += Math.abs(fieldMax * 0.1);
-  } else if (!isNaN(settings.expand)) {
-    const range = fieldMax - fieldMin;
-    fieldMin -= range * settings.expand;
-    fieldMax += range * settings.expand;
-  }
+    if (isNaN(fieldMin) || isNaN(fieldMax)) {
+      fieldMin = -1;
+      fieldMax = 1;
+    } else if (fieldMin === fieldMax && fieldMin === 0) {
+      fieldMin = -1;
+      fieldMax = 1;
+    } else if (fieldMin === fieldMax && fieldMin) {
+      fieldMin -= Math.abs(fieldMin * 0.1);
+      fieldMax += Math.abs(fieldMax * 0.1);
+    } else if (!isNaN(settings.expand)) {
+      const range = fieldMax - fieldMin;
+      fieldMin -= range * settings.expand;
+      fieldMax += range * settings.expand;
+    }
 
-  if (Array.isArray(settings.include)) {
-    const i = settings.include.filter(n => !isNaN(n));
-    fieldMin = Math.min(...i, fieldMin);
-    fieldMax = Math.max(...i, fieldMax);
+    if (Array.isArray(settings.include)) {
+      const i = settings.include.filter(n => !isNaN(n));
+      fieldMin = Math.min(...i, fieldMin);
+      fieldMax = Math.max(...i, fieldMax);
+    }
   }
 
   return {
@@ -64,7 +68,7 @@ function getMinMax(fields, settings) {
  * @return { linearScale } Instance of linear scale
  */
 
-export default function linear(fields, settings/* , dataset*/) {
+export default function linear(settings, fields/* , dataset*/) {
   const d3Scale = scaleLinear();
   let tG;
   let tickCache;
@@ -278,15 +282,15 @@ export default function linear(fields, settings/* , dataset*/) {
   };
 
   fn.copy = function copy() {
-    const cop = linear(fields, settings);
+    const cop = linear(settings, fields);
     cop.domain(fn.domain());
     cop.range(fn.range());
     cop.clamp(d3Scale.clamp());
     return cop;
   };
-  if (fields) {
-    const stgns = generateSettings(fields, settings);
-    const { mini, maxi } = getMinMax(fields, stgns);
+  if (settings) {
+    const stgns = generateSettings(settings, fields);
+    const { mini, maxi } = getMinMax(stgns, fields);
 
     fn.domain([mini, maxi]);
     fn.range(stgns.invert ? [1, 0] : [0, 1]);

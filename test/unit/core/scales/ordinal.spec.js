@@ -19,7 +19,7 @@ describe('OrdinalScale', () => {
     beforeEach(() => {
       fieldValues = [];
       settings = {};
-      scale = ordinal(fields, settings, dataset);
+      scale = ordinal(settings, fields, dataset);
     });
 
     it('should be able to fetch data', () => {
@@ -28,13 +28,13 @@ describe('OrdinalScale', () => {
 
     it('should set domain to correct field values', () => {
       fieldValues = ['A', 'B', 'C'].map(v => ({ label: v, id: v }));
-      scale = ordinal(fields, settings, dataset);
+      scale = ordinal(settings, fields, dataset);
       expect(scale.domain()).to.deep.equal(['A', 'B', 'C']);
     });
 
     it('should return correct field values', () => {
       fieldValues = ['A', 'B', 'C'].map(v => ({ label: v, id: v }));
-      scale = ordinal(fields, settings, dataset);
+      scale = ordinal(settings, fields, dataset);
       expect(scale.get('A')).to.equal(0.25);
       expect(scale.get('C')).to.equal(0.75);
     });
