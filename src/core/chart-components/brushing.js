@@ -48,7 +48,7 @@ export function styler(obj, { context, data, style }) {
     }
   };
 
-  brusher.on('start', () => {
+  const onStart = () => {
     const nodes = obj.nodes;
     const len = nodes.length;
     for (let i = 0; i < len; i++) {
@@ -58,8 +58,8 @@ export function styler(obj, { context, data, style }) {
       });
     }
     obj.renderer.render(nodes);
-  });
-  brusher.on('end', () => {
+  };
+  const onEnd = () => {
     const nodes = obj.nodes;
     const len = nodes.length;
 
@@ -72,14 +72,27 @@ export function styler(obj, { context, data, style }) {
       }
     }
     obj.renderer.render(nodes);
-  });
-  brusher.on('update', (/* added, removed */) => {
+  };
+  const onUpdate = (/* added, removed */) => {
     update();
     obj.renderer.render(obj.nodes);
-  });
+  };
+
+  brusher.on('start', onStart);
+  brusher.on('end', onEnd);
+  brusher.on('update', onUpdate);
+
+  function cleanUp() {
+    brusher.removeListener('start', onStart);
+    brusher.removeListener('end', onEnd);
+    brusher.removeListener('update', onUpdate);
+  }
 
   return {
-    isActive() { return brusher.isActive(); },
+    isActive() {
+      return brusher.isActive();
+    },
+    cleanUp,
     update
   };
 }
