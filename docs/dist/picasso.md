@@ -10,6 +10,8 @@
 * <a href="#createInstance">createInstance</a>
 * <a href="#createInstance~instance.update">createInstance~instance.update</a>
 * <a href="#createInstance~instance.brush">createInstance~instance.brush</a>
+* <a href="#createInstance~instance.field">createInstance~instance.field</a>
+* <a href="#createInstance~instance.getAffectedShapes">createInstance~instance.getAffectedShapes</a>
 * <a href="#createInstance~instance.scroll">createInstance~instance.scroll</a>
 * <a href="#picasso.chart">picasso.chart</a>
 
@@ -104,6 +106,25 @@ Update the chart with new settings and / or data
 | Returns | data-brush | No | ... | ... |
 
 The brush context for this chart  
+#### <a name='createInstance~instance.field' href='#createInstance~instance.field'>#</a> createInstance.**createInstance~instance.field**(*String path*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| path | String | path to the field to fetch | No | No |
+| Returns | data-field | No | ... | ... |
+
+Get a field associated with the provided brush  
+#### <a name='createInstance~instance.getAffectedShapes' href='#createInstance~instance.getAffectedShapes'>#</a> createInstance.**createInstance~instance.getAffectedShapes**(*String context, String mode, Array props, String key*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| context | String | The brush context | No | No |
+| mode | String | Property comparasion mode. | No | No |
+| props | Array | Which specific data properties to compare | No | No |
+| key | String | Which component to get shapes from. Default gives shapes from all components. | No | No |
+| Returns | Array.&lt;Object&gt; | Array of objects containing shape and parent element | ... | ... |
+
+Get all shapes associated with the provided context  
 #### <a name='createInstance~instance.scroll' href='#createInstance~instance.scroll'>#</a> createInstance.**createInstance~instance.scroll**()
 
 |Name(s)|Type(s)|Description|Optional|Default value|
