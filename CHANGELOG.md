@@ -2,10 +2,13 @@
 
 ## [BREAKING] [Unreleased]
 
+### Breaking changes
+ - Box marker's scales has changed from x to major and y to minor. The vertical parameter has been replaced with "orientation" with possible values "vertical" and "horizontal". Defaults to vertical.
+
 ### Added
+ - Allow creation of scales without data source
 
 ### Fixed
- - [BREAKING] Box marker's scales has changed from x to major and y to minor. The vertical parameter has been replaced with "orientation" with possible values "vertical" and "horizontal". Defaults to vertical.
 
 ## 0.6.0
 
