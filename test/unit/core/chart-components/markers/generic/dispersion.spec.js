@@ -24,8 +24,8 @@ describe('Dispersion', () => {
 
     settings = {
       settings: {
-        x: { scale: 'whatevz' },
-        y: { scale: 'whatevz' }
+        major: { scale: 'whatevz' },
+        minor: { scale: 'whatevz' }
       }
     };
 

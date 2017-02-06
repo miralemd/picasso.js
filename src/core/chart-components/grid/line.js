@@ -81,9 +81,9 @@ const gridLineComponent = {
     this.lines.x = lineGen(this.x, this.settings, this.rect);
     this.lines.y = lineGen(this.y, this.settings, this.rect);
 
-    // Set all Y lines to vertical by default
+    // Set all Y lines to flipXY by default
     // This makes the transposer flip them individually
-    this.lines.y = this.lines.y.map(i => extend(i, { vertical: true }));
+    this.lines.y = this.lines.y.map(i => extend(i, { flipXY: true }));
 
     // Define a style that differs between major and minor ticks.
     let style = {};
@@ -103,7 +103,7 @@ const gridLineComponent = {
           y2: 1,
           stroke: style.stroke || 'black',
           strokeWidth: style.strokeWidth || 1,
-          vertical: p.vertical || false // This flips individual points (Y-lines)
+          flipXY: p.flipXY || false // This flips individual points (Y-lines)
         });
       }
     });

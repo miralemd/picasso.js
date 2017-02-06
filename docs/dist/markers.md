@@ -9,7 +9,6 @@
 * <a href="#marker-point-data">marker-point-data</a>
 * <a href="#marker-point-setting">marker-point-setting</a>
 * <a href="#marker-box">marker-box</a>
-* <a href="#marker-box-settings">marker-box-settings</a>
 * <a href="#marker-box-data">marker-box-data</a>
 
 
@@ -166,7 +165,7 @@ The specified source will provide the point marker with data.
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
 | type | string | &quot;box&quot; | No | No |
-| data | data-ref | Box data | No | No |
+| data | marker-box-data | Box data | No | No |
 | settings | marker-box-settings | Box marker settings | No | No |
 
 No description  
@@ -177,21 +176,21 @@ No description
   type: "box",
   data: {
    mapTo: {
-    min: { source: "/qHyperCube/qMeasureInfo/0" },
-    start: { source: "/qHyperCube/qMeasureInfo/1" },
-    med: { source: "/qHyperCube/qMeasureInfo/2" },
-    end: { source: "/qHyperCube/qMeasureInfo/3" },
-    max: { source: "/qHyperCube/qMeasureInfo/4" },
+     min: { source: "/qHyperCube/qMeasureInfo/0" },
+     start: { source: "/qHyperCube/qMeasureInfo/1" },
+     med: { source: "/qHyperCube/qMeasureInfo/2" },
+     end: { source: "/qHyperCube/qMeasureInfo/3" },
+     max: { source: "/qHyperCube/qMeasureInfo/4" },
    },
    groupBy: {
-    source: "/qHyperCube/qDimensionInfo/0"
-    }
+     source: "/qHyperCube/qDimensionInfo/0"
+   }
  },
  settings: {
-   x: {
+   major: {
      scale: { source: "/qHyperCube/qDimensionInfo/0" }
    },
-   y: {
+   minor: {
      scale: { source: ["/qHyperCube/qMeasureInfo/0",
               "/qHyperCube/qMeasureInfo/1",
               "/qHyperCube/qMeasureInfo/2",
@@ -201,19 +200,14 @@ No description
  }
 }
 ```
-#### <a name='marker-box-settings' href='#marker-box-settings'>#</a> marker-box-settings
+#### <a name='marker-box-data' href='#marker-box-data'>#</a> marker-box-data
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| min | marker-box-data | min | No | No |
-| max | marker-box-data | max | No | No |
-| start | marker-box-data | start | No | No |
-| end | marker-box-data | end | No | No |
-| med | marker-box-data | med | No | No |
-
-No description  
-#### <a name='marker-box-data' href='#marker-box-data'>#</a> marker-box-data
-
-Can be one of the following types: 
+| min | marker-box-data-ref | min | Yes | No |
+| max | marker-box-data-ref | max | Yes | No |
+| start | marker-box-data-ref | start | Yes | No |
+| end | marker-box-data-ref | end | Yes | No |
+| med | marker-box-data-ref | med | Yes | No |
 
 No description  

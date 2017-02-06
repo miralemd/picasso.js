@@ -13,8 +13,8 @@ function resolveInitialStyle(settings, baseStyles, composer) {
 
 export default function dispersion(composer, defaultStyles = {}, initialSettings = {}) {
   let settings = initialSettings;
-  let x;
-  let y;
+  let major;
+  let minor;
   let bandwidth;
   let minDataPointDistance;
   let blueprint;
@@ -29,8 +29,8 @@ export default function dispersion(composer, defaultStyles = {}, initialSettings
     settings = stngs.settings;
 
     // Setup scales
-    x = settings.x ? composer.scale(settings.x) : null;
-    y = settings.y ? composer.scale(settings.y) : null;
+    major = settings.major ? composer.scale(settings.major) : null;
+    minor = settings.minor ? composer.scale(settings.minor) : null;
 
     // Set the default bandwidth
     bandwidth = 0;
@@ -48,7 +48,7 @@ export default function dispersion(composer, defaultStyles = {}, initialSettings
     resolvedStyle = resolveInitialStyle(settings, defaultStyles, composer);
 
     // Calculate the minimum data point distance
-    if (x && !x.step) {
+    if (major && !major.step) {
       let pointCoords = data.map(d => d.self.value);
 
       // Sort values
@@ -74,12 +74,12 @@ export default function dispersion(composer, defaultStyles = {}, initialSettings
 
       items.push({
         style: obj,
-        x: x && d.self ? x(d.self) : 0.5,
-        min: y && 'min' in d ? y(d.min) : null,
-        max: y && 'max' in d ? y(d.max) : null,
-        start: y && 'start' in d ? y(d.start) : null,
-        end: y && 'end' in d ? y(d.end) : null,
-        med: y && 'med' in d ? y(d.med) : null,
+        major: major && d.self ? major(d.self) : 0.5,
+        min: minor && 'min' in d ? minor(d.min) : null,
+        max: minor && 'max' in d ? minor(d.max) : null,
+        start: minor && 'start' in d ? minor(d.start) : null,
+        end: minor && 'end' in d ? minor(d.end) : null,
+        med: minor && 'med' in d ? minor(d.med) : null,
         data: i
       });
     });
@@ -98,10 +98,10 @@ export default function dispersion(composer, defaultStyles = {}, initialSettings
       if (minDataPointDistance === 0) {
         minDataPointDistance = 0.000000001;
       }
-      let normalizedWidth = x({ value: x.domain()[0] }) - x({ value: x.domain()[0] + minDataPointDistance });
+      let normalizedWidth = major({ value: major.domain()[0] }) - major({ value: major.domain()[0] + minDataPointDistance });
       bandwidth = Math.abs(normalizedWidth);
     } else {
-      bandwidth = x && x.step ? x.step() : 0.5;
+      bandwidth = major && major.step ? major.step() : 0.5;
     }
 
     // Setup the blueprint
@@ -110,7 +110,7 @@ export default function dispersion(composer, defaultStyles = {}, initialSettings
     blueprint.height = rect.height;
     blueprint.x = rect.x;
     blueprint.y = rect.y;
-    blueprint.vertical = !settings.vertical;
+    blueprint.flipXY = settings.orientation === 'horizontal';
     blueprint.crisp = true;
 
     items.forEach((item, idx) => {

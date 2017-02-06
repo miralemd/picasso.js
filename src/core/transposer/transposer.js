@@ -16,8 +16,8 @@ class Transposer {
    * @param  {String} key   Key
    * @return {String}         Actual key
    */
-  static evaluateKey(key, vertical) {
-    if (vertical) {
+  static evaluateKey(key, flipXY) {
+    if (flipXY) {
       const firstChar = key.substring(0, 1);
       const rest = key.substring(1);
 
@@ -40,14 +40,14 @@ class Transposer {
   }
 
   /**
-   * Transpose a coordinate according to this.vertical and
+   * Transpose a coordinate according to this.flipXY and
    * the available rendering area
    *
    * @param  {String} key        The key of the coordinate to transpose
    * @param  {Number} coordinate The coordinate
    * @return {Number}            The actual location of the coordinate
    */
-  transposeCoordinate(key, coordinate, vertical) {
+  transposeCoordinate(key, coordinate, flipXY) {
     if (typeof coordinate === 'number' && isFinite(coordinate)) {
       const firstChar = key.substring(0, 1);
 
@@ -56,7 +56,7 @@ class Transposer {
       } else if (key === 'width') {
         return coordinate * this.width;
       } else if (key === 'r') {
-        return coordinate * (!vertical ? this.width : this.height);
+        return coordinate * (!flipXY ? this.width : this.height);
       } else if (firstChar === 'y' || key === 'cy') {
         return coordinate * this.height;
       } else if (key === 'height') {
@@ -86,11 +86,11 @@ class Transposer {
   output() {
     let items = this.storage.map((item) => {
       let newItem = {};
-      const vertical = (typeof item.vertical !== 'undefined' ? item.vertical : this.vertical);
+      const flipXY = (typeof item.flipXY !== 'undefined' ? item.flipXY : this.flipXY);
 
       Object.keys(item).forEach((key) => {
-        const nkey = Transposer.evaluateKey(key, vertical);
-        const nval = this.transposeCoordinate(nkey, item[key], vertical);
+        const nkey = Transposer.evaluateKey(key, flipXY);
+        const nval = this.transposeCoordinate(nkey, item[key], flipXY);
         newItem[nkey] = nval;
       });
 
@@ -111,7 +111,7 @@ class Transposer {
    */
   reset() {
     this.storage = [];
-    this.vertical = false;
+    this.flipXY = false;
     this.crisp = false;
 
     this.flipX = false;

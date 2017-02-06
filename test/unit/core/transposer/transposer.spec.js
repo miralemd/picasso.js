@@ -6,7 +6,7 @@ describe('transposer', () => {
   let draw = transposer();
 
   it('should return correct opposite keys', () => {
-    draw.vertical = true;
+    draw.flipXY = true;
 
     // Get the opposite key to what you put in, height when you put in width etc
     expect(draw.constructor.evaluateKey('width', true)).to.equal('height');
@@ -33,7 +33,7 @@ describe('transposer', () => {
     draw.x = 0;
     draw.y = 0;
 
-    draw.vertical = false;
+    draw.flipXY = false;
 
     // Check if the coordinates respond correctly to the values
     expect(draw.transposeCoordinate('width', 2)).to.equal(4);
@@ -46,7 +46,7 @@ describe('transposer', () => {
     expect(draw.transposeCoordinate('y', 0.5)).to.equal(1.5);
 
     // Flip it all
-    draw.vertical = true;
+    draw.flipXY = true;
 
     expect(draw.transposeCoordinate('y', 0.25, { height: 0.5 })).to.equal(0.75);
     expect(draw.transposeCoordinate('x', 0.75, { height: 0.25 })).to.equal(1.5);
@@ -90,7 +90,7 @@ describe('transposer', () => {
     expect(output[0].height).to.equal(12.5);
   });
 
-  it('should export the expected objects in vertical mode', () => {
+  it('should export the expected objects in flipXY mode', () => {
     const dummy = {
       x: 0.25,
       y: 0.75,
@@ -103,7 +103,7 @@ describe('transposer', () => {
     draw.height = 100;
     draw.x = 0;
     draw.y = 0;
-    draw.vertical = true;
+    draw.flipXY = true;
 
     const output = draw.output();
 

@@ -65,8 +65,8 @@ describe('box marker', () => {
       shapeFn,
       data: { mapTo: 'does not matter since returned data is mocked', groupBy: 'does not matter' },
       settings: {
-        x: { scale: 'x' },
-        y: { scale: 'y' },
+        major: { scale: 'x' },
+        minor: { scale: 'y' },
         box: {
           stroke: '#f00'
         },
@@ -105,6 +105,20 @@ describe('box marker', () => {
 
     expect(rendererOutput).to.deep.equal([{
       data: 0,
+      fill: '#fff',
+      height: 40,
+      maxWidth: 100,
+      minWidth: 5,
+      show: true,
+      stroke: '#f00',
+      strokeWidth: 1,
+      type: 'rect',
+      width: 38,
+      x: 31.5,
+      y: 79.5
+    },
+    {
+      data: 0,
       show: true,
       stroke: '#ff0',
       strokeWidth: 1,
@@ -124,20 +138,6 @@ describe('box marker', () => {
       x2: 49.5,
       y1: 159.5,
       y2: 119.5
-    },
-    {
-      data: 0,
-      fill: '#fff',
-      height: 40,
-      maxWidth: 100,
-      minWidth: 5,
-      show: true,
-      stroke: '#f00',
-      strokeWidth: 1,
-      type: 'rect',
-      width: 38,
-      x: 31.5,
-      y: 79.5
     },
     {
       data: 0,
@@ -189,8 +189,8 @@ describe('box marker', () => {
       shapeFn,
       data: { mapTo: 'does not matter since returned data is mocked', groupBy: 'does not matter' },
       settings: {
-        x: { scale: 'x' },
-        y: { scale: 'y' },
+        major: { scale: 'x' },
+        minor: { scale: 'y' },
         box: {
           stroke: '#f00'
         }
@@ -236,8 +236,8 @@ describe('box marker', () => {
       shapeFn,
       data: { mapTo: 'does not matter since returned data is mocked', groupBy: 'does not matter' },
       settings: {
-        x: { scale: 'x' },
-        y: { scale: 'y' },
+        major: { scale: 'x' },
+        minor: { scale: 'y' },
         box: {
           stroke: '#f00'
         }
@@ -283,8 +283,8 @@ describe('box marker', () => {
       shapeFn,
       data: { mapTo: 'does not matter since returned data is mocked', groupBy: 'does not matter' },
       settings: {
-        x: { scale: 'x' },
-        y: { scale: 'y' },
+        major: { scale: 'x' },
+        minor: { scale: 'y' },
         box: {
           stroke: '#f00'
         },
@@ -317,6 +317,20 @@ describe('box marker', () => {
     expect(rendererOutput).to.deep.equal([
       {
         data: 0,
+        fill: '#fff',
+        height: 40,
+        maxWidth: 100,
+        minWidth: 5,
+        show: true,
+        stroke: '#f00',
+        strokeWidth: 1,
+        type: 'rect',
+        width: 38,
+        x: 31.5,
+        y: 79.5
+      },
+      {
+        data: 0,
         show: true,
         stroke: '#000',
         strokeWidth: 1,
@@ -336,20 +350,6 @@ describe('box marker', () => {
         x2: 49.5,
         y1: 159.5,
         y2: 119.5
-      },
-      {
-        data: 0,
-        fill: '#fff',
-        height: 40,
-        maxWidth: 100,
-        minWidth: 5,
-        show: true,
-        stroke: '#f00',
-        strokeWidth: 1,
-        type: 'rect',
-        width: 38,
-        x: 31.5,
-        y: 79.5
       }
     ]);
   });

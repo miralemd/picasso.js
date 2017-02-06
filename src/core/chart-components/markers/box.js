@@ -1,17 +1,6 @@
 import createComponentFactory from '../component';
 import dispersion from './generic/dispersion';
 import notNumber from '../../utils/undef';
-/*
-const DEFAULT_DATA_SETTINGS = {
-  x: 0.5,
-  y: 0.5,
-  min: 0,
-  start: 0,
-  med: 0.5,
-  end: 1,
-  max: 1,
-  vertical: false,
-}*/
 
 const DEFAULT_STYLE_SETTINGS = {
   line: {
@@ -46,28 +35,28 @@ const DEFAULT_STYLE_SETTINGS = {
 /**
  * @typedef marker-box
  * @property {string} type - "box"
- * @property {data-ref} data - Box data
+ * @property {marker-box-data} data - Box data
  * @property {marker-box-settings} settings - Box marker settings
  * @example
  * {
  *   type: "box",
  *   data: {
  *    mapTo: {
- *     min: { source: "/qHyperCube/qMeasureInfo/0" },
- *     start: { source: "/qHyperCube/qMeasureInfo/1" },
- *     med: { source: "/qHyperCube/qMeasureInfo/2" },
- *     end: { source: "/qHyperCube/qMeasureInfo/3" },
- *     max: { source: "/qHyperCube/qMeasureInfo/4" },
+ *      min: { source: "/qHyperCube/qMeasureInfo/0" },
+ *      start: { source: "/qHyperCube/qMeasureInfo/1" },
+ *      med: { source: "/qHyperCube/qMeasureInfo/2" },
+ *      end: { source: "/qHyperCube/qMeasureInfo/3" },
+ *      max: { source: "/qHyperCube/qMeasureInfo/4" },
  *    },
  *    groupBy: {
- *     source: "/qHyperCube/qDimensionInfo/0"
- *     }
+ *      source: "/qHyperCube/qDimensionInfo/0"
+ *    }
  *  },
  *  settings: {
- *    x: {
+ *    major: {
  *      scale: { source: "/qHyperCube/qDimensionInfo/0" }
  *    },
- *    y: {
+ *    minor: {
  *      scale: { source: ["/qHyperCube/qMeasureInfo/0",
  *               "/qHyperCube/qMeasureInfo/1",
  *               "/qHyperCube/qMeasureInfo/2",
@@ -79,16 +68,12 @@ const DEFAULT_STYLE_SETTINGS = {
  */
 
 /**
- * @typedef marker-box-settings
- * @property {marker-box-data} min - min
- * @property {marker-box-data} max - max
- * @property {marker-box-data} start - start
- * @property {marker-box-data} end - end
- * @property {marker-box-data} med - med
- */
-
-/**
  * @typedef marker-box-data
+ * @property {marker-box-data-ref} [min] - min
+ * @property {marker-box-data-ref} [max] - max
+ * @property {marker-box-data-ref} [start] - start
+ * @property {marker-box-data-ref} [end] - end
+ * @property {marker-box-data-ref} [med] - med
  */
 
 const boxMarker = {
@@ -106,8 +91,8 @@ const boxMarker = {
     this.dispersion.updateSettings(settings);
 
     // Default to vertical
-    if (this.settings.settings.vertical === undefined) {
-      this.settings.settings.vertical = true;
+    if (this.settings.settings.orientation === undefined) {
+      this.settings.settings.orientation = 'vertical';
     }
 
     // Default to show whiskers
@@ -139,14 +124,14 @@ const boxMarker = {
     this.updateSettings(settings);
   },
   buildShapes(item) {
-    if (notNumber(item.x)) {
+    if (notNumber(item.major)) {
       return [];
     }
 
     const doodle = this.dispersion.doodle();
     const shapes = [];
 
-    let measureWidth = this.dispersion.blueprint().vertical ? this.rect.width : this.rect.height;
+    let measureWidth = this.dispersion.blueprint().flipXY ? this.rect.width : this.rect.height;
 
     let computeWidth = (minWidth, maxWidth, myWidth) => (Math.max(
       minWidth,
@@ -156,20 +141,12 @@ const boxMarker = {
     item.style.box.width = computeWidth(item.style.box.minWidth, item.style.box.maxWidth, item.style.box.width);
     item.style.whisker.width = computeWidth(item.style.box.minWidth, item.style.box.maxWidth, item.style.whisker.width);
 
-    if (item.style.line.show && !notNumber(item.min) && !notNumber(item.start)) {
-      // Draw the line min - start
-      shapes.push(doodle.verticalLine(item.x, item.start, item.min, 'line', item.style, item.data));
-    }
-    if (item.style.line.show && !notNumber(item.max) && !notNumber(item.end)) {
-      // Draw the line end - max (high)
-      shapes.push(doodle.verticalLine(item.x, item.max, item.end, 'line', item.style, item.data));
-    }
     // Draw the box
     if (item.style.box.show && !notNumber(item.start) && !notNumber(item.end)) {
       const high = Math.max(item.start, item.end);
       const low = Math.min(item.start, item.end);
       shapes.push(doodle.box(
-        item.x,
+        item.major,
         low,
         (high - low),
         item.style,
@@ -177,18 +154,27 @@ const boxMarker = {
       ));
     }
 
+    if (item.style.line.show && !notNumber(item.min) && !notNumber(item.start)) {
+      // Draw the line min - start
+      shapes.push(doodle.verticalLine(item.major, item.start, item.min, 'line', item.style, item.data));
+    }
+    if (item.style.line.show && !notNumber(item.max) && !notNumber(item.end)) {
+      // Draw the line end - max (high)
+      shapes.push(doodle.verticalLine(item.major, item.max, item.end, 'line', item.style, item.data));
+    }
+
     // Draw the median line
     if (item.style.median.show && !notNumber(item.med)) {
-      shapes.push(doodle.median(item.x, item.med, item.style, item.data));
+      shapes.push(doodle.median(item.major, item.med, item.style, item.data));
     }
 
     // Draw the whiskers
     if (item.style.whisker.show && !notNumber(item.min) && !notNumber(item.max)) {
       // Low whisker
-      shapes.push(doodle.whisker(item.x, item.min, item.style, item.data));
+      shapes.push(doodle.whisker(item.major, item.min, item.style, item.data));
 
       // High whisker
-      shapes.push(doodle.whisker(item.x, item.max, item.style, item.data));
+      shapes.push(doodle.whisker(item.major, item.max, item.style, item.data));
     }
 
     return shapes;
