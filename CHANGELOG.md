@@ -1,6 +1,8 @@
 # Changelog
 
-## [BREAKING] [Unreleased]
+## [Unreleased]
+
+## [BREAKING] 0.7.0
 
 ### Breaking changes
  - Box marker's scales has changed from x to major and y to minor. The vertical parameter has been replaced with "orientation" with possible values "vertical" and "horizontal". Defaults to vertical.
