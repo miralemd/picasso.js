@@ -9,6 +9,7 @@
  - Allow creation of scales without data source
 
 ### Fixed
+ - Some brushing issues has been fixed
 
 ## 0.6.0
 
