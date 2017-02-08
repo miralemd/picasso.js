@@ -1,9 +1,14 @@
 var extend = require( "extend" );
-var baseConfig = require( "@qlik/after-work/dist/config/client.conf.dev.js" );
-var httpServer = require( "@qlik/after-work/dist/utils" ).httpServer;
+var baseConfig = require( "after-work.js/dist/config/conf.dev.js" );
+var httpServer = require( "after-work.js/dist/utils" ).httpServer;
 
 var repoConfig = {
   config: {
+    // multiCapabilities: [
+    //   { "browserName": "chrome"	},
+    //   { "browserName": "firefox"	},
+    //   { "browserName": "egde"}
+    // ],
     beforeLaunch: function() {
       return httpServer( {
         server: {
@@ -20,7 +25,7 @@ var repoConfig = {
         args: ["--disable-gpu"]
       }
     },
-    plugins: [{ path: "../../node_modules/\@qlik/after-work/dist/plugins/screenshoter/index.js" }]
+    plugins: [{ path: "../../node_modules/after-work.js/dist/plugins/screenshoter/index.js" }]
   }
 };
 

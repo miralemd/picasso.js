@@ -1,0 +1,9 @@
+{
+	"logLevel": "info",
+	"server": {
+		"baseDir": "./",
+    "routes": {
+			"/resources": "./test/component"
+		}
+  }
+}

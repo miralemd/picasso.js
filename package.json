@@ -21,8 +21,9 @@
     "test": "aw-test-runner ./test/unit/**/*.spec.js",
     "test:watch": "aw-test-runner ./test/unit/**/*.spec.js -w",
     "test:coverage": "aw-test-coverage ./test/unit/**/*.spec.js",
-    "test:component:local": "node node_modules/@qlik/after-work/node_modules/protractor/bin/webdriver-manager update --standalone false && aw-webdriver-test-runner ./test/config/aw-config.js --specs ./test/**/*.comp.js",
-    "test:component:remote": "aw-webdriver-test-runner ./test/config/aw-config-remote.js --specs test/**/*.comp.js"
+    "test:component:local": "node node_modules/after-work.js/node_modules/protractor/bin/webdriver-manager update --standalone false && aw-webdriver-test-runner ./test/config/aw-config.js --specs ./test/**/*.comp.js",
+    "test:component:remote": "aw-webdriver-test-runner ./test/config/aw-config-remote.js --specs test/**/*.comp.js",
+    "test:component:server": "aw-web-server -c ./test/config/aw-webserver-config.json"
   },
   "files": [
     "/dist"
