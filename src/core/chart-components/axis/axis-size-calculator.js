@@ -105,10 +105,10 @@ export default function calcRequiredSize({
   measureText,
   scale,
   settings,
-  ticksFn,
-  setEdgeBleed
+  ticksFn
 }) {
   let size = 0;
+  let edgeBleed = { left: 0, top: 0, right: 0, bottom: 0 };
 
   if (settings.labels.show) {
     const align = settings.align;
@@ -184,9 +184,7 @@ export default function calcRequiredSize({
 
       const bleedSize = Math.max(...tickMeasures.map(labelWidth).map(adjustByPosition)) + settings.paddingEnd;
       const bleedDir = extendLeft ? 'left' : 'right';
-      setEdgeBleed({
-        [bleedDir]: bleedSize
-      });
+      edgeBleed[bleedDir] = bleedSize;
     }
   }
   if (settings.ticks.show) {
@@ -205,5 +203,5 @@ export default function calcRequiredSize({
   size += settings.paddingStart;
   size += settings.paddingEnd;
 
-  return size;
+  return { size, edgeBleed };
 }

@@ -14,7 +14,15 @@ function validateComponent(component) {
 
 
 function cacheSize(c, containerRect) {
-  c.cachedSize = typeof c.cachedSize === 'undefined' ? Math.ceil(c.config.requiredSize()(containerRect)) : c.cachedSize;
+  if (typeof c.cachedSize === 'undefined') {
+    let size = c.config.requiredSize()(containerRect);
+    if (typeof size === 'object') {
+      c.cachedSize = Math.ceil(size.size);
+      c.edgeBleed = size.edgeBleed;
+    } else {
+      c.cachedSize = Math.ceil(size);
+    }
+  }
   return c.cachedSize;
 }
 
@@ -44,11 +52,12 @@ function reduceDocRect(reducedRect, c) {
   }
 }
 function addEdgeBleed(currentEdgeBleed, c) {
-  const edgeBleed = c.config.edgeBleed();
-  currentEdgeBleed.left = Math.max(currentEdgeBleed.left, edgeBleed.left);
-  currentEdgeBleed.right = Math.max(currentEdgeBleed.right, edgeBleed.right);
-  currentEdgeBleed.top = Math.max(currentEdgeBleed.top, edgeBleed.top);
-  currentEdgeBleed.bottom = Math.max(currentEdgeBleed.bottom, edgeBleed.bottom);
+  const edgeBleed = c.edgeBleed;
+  if (!edgeBleed) { return; }
+  currentEdgeBleed.left = Math.max(currentEdgeBleed.left, edgeBleed.left || 0);
+  currentEdgeBleed.right = Math.max(currentEdgeBleed.right, edgeBleed.right || 0);
+  currentEdgeBleed.top = Math.max(currentEdgeBleed.top, edgeBleed.top || 0);
+  currentEdgeBleed.bottom = Math.max(currentEdgeBleed.bottom, edgeBleed.bottom || 0);
 }
 function reduceEdgeBleed(logicalContainerRect, reducedRect, edgeBleed) {
   if (reducedRect.x < edgeBleed.left) {

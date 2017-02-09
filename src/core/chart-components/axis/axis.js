@@ -131,10 +131,7 @@ const axisComponent = {
       measureText: this.renderer.measureText,
       scale: this.scale,
       settings: axisSettings,
-      ticksFn,
-      setEdgeBleed: (val) => {
-        this.dockConfig.edgeBleed = val;
-      }
+      ticksFn
     });
 
     return reqSize;
