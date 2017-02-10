@@ -279,7 +279,7 @@ describe('Rect', () => {
       rect = createRect(shape);
       rect.resolveLocalTransform();
 
-      expect(rect.intersectsCircle({ x: 15, y: 30, r: 1 })).to.equal(true);
+      expect(rect.intersectsCircle({ cx: 15, cy: 30, r: 1 })).to.equal(true);
     });
   });
 });

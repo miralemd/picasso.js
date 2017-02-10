@@ -1,5 +1,6 @@
 import Line, { create as createLine } from '../../../../../src/core/scene-graph/display-objects/line';
 import GeoRect from '../../../../../src/core/geometry/rect';
+import GeoLine from '../../../../../src/core/geometry/line';
 
 describe('Line', () => {
   let line;
@@ -22,7 +23,9 @@ describe('Line', () => {
       expect(line.attrs.y1).to.be.equal(0);
       expect(line.attrs.x2).to.be.equal(0);
       expect(line.attrs.y2).to.be.equal(0);
-      expect(line.collider()).to.equal(null);
+      expect(line.collider()).to.be.a('object');
+      expect(line.collider().fn).to.be.an.instanceof(GeoLine);
+      expect(line.collider().type).to.equal('line');
     });
 
     it('should accept arguments', () => {
@@ -62,7 +65,9 @@ describe('Line', () => {
       expect(line.attrs.y1).to.be.equal(0);
       expect(line.attrs.x2).to.be.equal(0);
       expect(line.attrs.y2).to.be.equal(0);
-      expect(line.collider()).to.equal(null);
+      expect(line.collider()).to.be.a('object');
+      expect(line.collider().fn).to.be.an.instanceof(GeoLine);
+      expect(line.collider().type).to.equal('line');
     });
 
     it('should be able to disable the default collider', () => {
@@ -222,6 +227,66 @@ describe('Line', () => {
         { x: -3, y: -2 }
       ];
       expect(line.bounds()).to.deep.equal(e);
+    });
+  });
+
+  describe('containsPoint', () => {
+    it('should include transformation when resolving collision', () => {
+      shape.x1 = 0;
+      shape.y1 = 0;
+      shape.x2 = 0;
+      shape.y2 = 4;
+      shape.transform = 'translate(1, 2)';
+      line = createLine(shape);
+      line.resolveLocalTransform();
+      const p = { x: 1, y: 5 };
+
+      expect(line.containsPoint(p)).to.equal(true);
+    });
+  });
+
+  describe('intersectsRect', () => {
+    it('should include transformation when resolving collision', () => {
+      shape.x1 = 0;
+      shape.y1 = 0;
+      shape.x2 = 0;
+      shape.y2 = 4;
+      shape.transform = 'translate(1, 2)';
+      line = createLine(shape);
+      line.resolveLocalTransform();
+      const rect = { x: 1, y: 5, width: 1, height: 1 };
+
+      expect(line.intersectsRect(rect)).to.equal(true);
+    });
+  });
+
+  describe('intersectsLine', () => {
+    it('should include transformation when resolving collision', () => {
+      shape.x1 = 0;
+      shape.y1 = 0;
+      shape.x2 = 0;
+      shape.y2 = 4;
+      shape.transform = 'translate(1, 2)';
+      line = createLine(shape);
+      line.resolveLocalTransform();
+      const l = { x1: 1, y1: 5, x2: 2, y2: 5 };
+
+      expect(line.intersectsLine(l)).to.equal(true);
+    });
+  });
+
+  describe('intersectsCircle', () => {
+    it('should include transformation when resolving collision', () => {
+      shape.x1 = 0;
+      shape.y1 = 0;
+      shape.x2 = 0;
+      shape.y2 = 4;
+      shape.transform = 'translate(1, 2)';
+      line = createLine(shape);
+      line.resolveLocalTransform();
+      const c = { cx: 1, cy: 5, r: 1 };
+
+      expect(line.intersectsCircle(c)).to.equal(true);
     });
   });
 });

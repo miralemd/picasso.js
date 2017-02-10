@@ -1,6 +1,6 @@
 import createCollision from './collision';
 import { scalarMultiply } from '../math/vector';
-import { convertLineToPoints, convertRectToPoints } from '../math/intersection';
+import { getLineVectors, getRectVertices } from '../math/intersection';
 
 function createNodeCollsion(node) {
   return createCollision({
@@ -59,11 +59,14 @@ function resolveBoundsCollision(node, type, input) {
 function resolveGeometryCollision(node, type, input) {
   let transformedInput = input;
   if (node.modelViewMatrix) {
-    if (Array.isArray(input)) {
+    if (Array.isArray(input)) { // Rect or Line
       transformedInput = node.inverseModelViewMatrix.transformPoints(input);
-    } else {
-      transformedInput = node.inverseModelViewMatrix.transformPoint(input);
+    } else if (!isNaN(input.r)) { // Circle
+      const p = { x: input.cx, y: input.cy };
+      ({ x: transformedInput.cx, y: transformedInput.cy } = node.inverseModelViewMatrix.transformPoint(p));
       transformedInput.r = input.r;
+    } else { // Point
+      transformedInput = node.inverseModelViewMatrix.transformPoint(input);
     }
   }
 
@@ -136,15 +139,15 @@ function resolveShape(shape, ratio = 1) {
   const isNumber = v => typeof v === 'number' && !isNaN(v);
 
   if (isNumber(cx) && isNumber(cy) && isNumber(r)) {
-    _shape.x = cx * ratio;
-    _shape.y = cy * ratio;
+    _shape.cx = cx * ratio;
+    _shape.cy = cy * ratio;
     _shape.r = r;
     return ['intersectsCircle', _shape];
   } else if (isNumber(x1) && isNumber(x2) && isNumber(y1) && isNumber(y2)) {
-    _shape = convertLineToPoints(shape).map(p => scalarMultiply(p, ratio));
+    _shape = getLineVectors(shape).map(p => scalarMultiply(p, ratio));
     return ['intersectsLine', _shape];
   } else if (isNumber(x) && isNumber(y) && isNumber(width) && isNumber(height)) {
-    _shape = convertRectToPoints(shape).map(p => scalarMultiply(p, ratio));
+    _shape = getRectVertices(shape).map(p => scalarMultiply(p, ratio));
     return ['intersectsRect', _shape];
   } else if (isNumber(x) && isNumber(y)) {
     _shape = scalarMultiply(shape, ratio);

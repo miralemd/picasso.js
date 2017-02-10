@@ -1,6 +1,6 @@
 import extend from 'extend';
 import DisplayObject from './display-object';
-import { convertRectToPoints, getMinMax } from '../../math/intersection';
+import { getRectVertices, getMinMax } from '../../math/intersection';
 
 export default class Rect extends DisplayObject {
   constructor(...s) {
@@ -33,7 +33,7 @@ export default class Rect extends DisplayObject {
   }
 
   boundingRect(includeTransform = false) {
-    const p = convertRectToPoints(this.attrs);
+    const p = getRectVertices(this.attrs);
     const pt = includeTransform && this.modelViewMatrix ? this.modelViewMatrix.transformPoints(p) : p;
     const [xMin, yMin, xMax, yMax] = getMinMax(pt);
 

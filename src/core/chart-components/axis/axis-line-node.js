@@ -25,7 +25,10 @@ export default function buildLine(buildOpts) {
     x1: 0,
     x2: 0,
     y1: 0,
-    y2: 0
+    y2: 0,
+    collider: {
+      type: null
+    }
   };
 
   if (buildOpts.align === 'top' || buildOpts.align === 'bottom') {

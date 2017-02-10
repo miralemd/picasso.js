@@ -89,6 +89,10 @@ class DisplayObject extends Node {
       const { x, y, width, height, minWidth, minHeight } = opts;
       c.fn = geometry(type, x, y, width, height, minWidth, minHeight);
       this._collider = c;
+    } else if (type === 'line') {
+      const { x1, y1, x2, y2, tolerance } = opts;
+      c.fn = geometry(type, x1, y1, x2, y2, tolerance);
+      this._collider = c;
     }
 
     return this._collider;

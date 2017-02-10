@@ -61,7 +61,7 @@ export default class GeoRect {
   intersectsCircle(c) {
     if (this.zeroSize || c.r <= 0) { return false; }
 
-    return isCircleIntersectingRect(c.x, c.y, c.r, this.center.x, this.center.y, this.width, this.height);
+    return isCircleIntersectingRect(c.cx, c.cy, c.r, this.center.x, this.center.y, this.width, this.height);
   }
 
   points() {

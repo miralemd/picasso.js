@@ -1,5 +1,5 @@
 import GeoCircle from '../../../../src/core/geometry/circle';
-import { convertRectToPoints } from '../../../../src/core/math/intersection';
+import { getRectVertices } from '../../../../src/core/math/intersection';
 
 describe('GeoCircle', () => {
   describe('constructor', () => {
@@ -92,7 +92,7 @@ describe('GeoCircle', () => {
         const c2 = new GeoCircle(100, 0, r);
         const c3 = new GeoCircle(0, 200, r);
         const c4 = new GeoCircle(100, 200, r);
-        const rect = convertRectToPoints({ x: 0, y: 0, width: 100, height: 200 });
+        const rect = getRectVertices({ x: 0, y: 0, width: 100, height: 200 });
 
         expect(c1.intersectsRect(rect)).to.equal(true);
         expect(c2.intersectsRect(rect)).to.equal(true);
@@ -103,7 +103,7 @@ describe('GeoCircle', () => {
       it('should intersect if rect is inside circle circumference', () => {
         const r = 300;
         const c1 = new GeoCircle(100, 100, r);
-        const rect = convertRectToPoints({ x: 150, y: 150, width: 50, height: 50 });
+        const rect = getRectVertices({ x: 150, y: 150, width: 50, height: 50 });
 
         expect(c1.intersectsRect(rect)).to.equal(true);
       });
@@ -114,7 +114,7 @@ describe('GeoCircle', () => {
         const c2 = new GeoCircle(99, 100, r);
         const c3 = new GeoCircle(50, 199, r);
         const c4 = new GeoCircle(1, 100, r);
-        const rect = convertRectToPoints({ x: 0, y: 0, width: 100, height: 200 });
+        const rect = getRectVertices({ x: 0, y: 0, width: 100, height: 200 });
 
         expect(c1.intersectsRect(rect)).to.equal(true);
         expect(c2.intersectsRect(rect)).to.equal(true);
@@ -129,7 +129,7 @@ describe('GeoCircle', () => {
         const c3 = new GeoCircle(0, 200 + r, r);
         const radiusDist = Math.floor(Math.cos((45 / 180) * Math.PI) * r);
         const c4 = new GeoCircle(100 + radiusDist, 200 + radiusDist, r);
-        const rect = convertRectToPoints({ x: 0, y: 0, width: 100, height: 200 });
+        const rect = getRectVertices({ x: 0, y: 0, width: 100, height: 200 });
 
         expect(c1.intersectsRect(rect)).to.equal(true);
         expect(c2.intersectsRect(rect)).to.equal(true);
@@ -145,7 +145,7 @@ describe('GeoCircle', () => {
         const c3 = new GeoCircle(0, 200 + rr, r);
         const radiusDist = Math.cos((45 / 180) * Math.PI) * rr;
         const c4 = new GeoCircle(100 + radiusDist, 200 + radiusDist, r);
-        const rect = convertRectToPoints({ x: 0, y: 0, width: 100, height: 200 });
+        const rect = getRectVertices({ x: 0, y: 0, width: 100, height: 200 });
 
         expect(c1.intersectsRect(rect)).to.equal(false);
         expect(c2.intersectsRect(rect)).to.equal(false);
@@ -155,21 +155,21 @@ describe('GeoCircle', () => {
 
       it('should not intersect if the size of the circle is zero', () => {
         const c = new GeoCircle(10, 20, 0);
-        const rect = convertRectToPoints({ x: 0, y: 0, width: 100, height: 200 });
+        const rect = getRectVertices({ x: 0, y: 0, width: 100, height: 200 });
 
         expect(c.intersectsRect(rect)).to.equal(false);
       });
 
       it('should not intersect if the width of the rect is zero', () => {
         const c = new GeoCircle(10, 20, 0);
-        const rect = convertRectToPoints({ x: 10, y: 20, width: 0, height: 200 });
+        const rect = getRectVertices({ x: 10, y: 20, width: 0, height: 200 });
 
         expect(c.intersectsRect(rect)).to.equal(false);
       });
 
       it('should not intersect if the height of the rect is zero', () => {
         const c = new GeoCircle(10, 20, 0);
-        const rect = convertRectToPoints({ x: 10, y: 20, width: 100, height: 0 });
+        const rect = getRectVertices({ x: 10, y: 20, width: 100, height: 0 });
 
         expect(c.intersectsRect(rect)).to.equal(false);
       });
@@ -307,10 +307,10 @@ describe('GeoCircle', () => {
         const r = 30;
         const c = new GeoCircle(10, 20, r);
         const rInside = r - 1;
-        const c1 = { x: 10, y: 20 - rInside, r: 10 };
-        const c2 = { x: 10 + rInside, y: 20, r: 10 };
-        const c3 = { x: 10, y: 20 + rInside, r: 10 };
-        const c4 = { x: 10 - rInside, y: 20, r: 10 };
+        const c1 = { cx: 10, cy: 20 - rInside, r: 10 };
+        const c2 = { cx: 10 + rInside, cy: 20, r: 10 };
+        const c3 = { cx: 10, cy: 20 + rInside, r: 10 };
+        const c4 = { cx: 10 - rInside, cy: 20, r: 10 };
 
         expect(c.intersectsCircle(c1)).to.equal(true);
         expect(c.intersectsCircle(c2)).to.equal(true);
@@ -322,10 +322,10 @@ describe('GeoCircle', () => {
         const r = 30;
         const c = new GeoCircle(10, 20, r);
         const rOutside = r + 10;
-        const c1 = { x: 10, y: 20 - rOutside, r: 9 };
-        const c2 = { x: 10 + rOutside, y: 20, r: 9 };
-        const c3 = { x: 10, y: 20 + rOutside, r: 9 };
-        const c4 = { x: 10 - rOutside, y: 20, r: 9 };
+        const c1 = { cx: 10, cy: 20 - rOutside, r: 9 };
+        const c2 = { cx: 10 + rOutside, cy: 20, r: 9 };
+        const c3 = { cx: 10, cy: 20 + rOutside, r: 9 };
+        const c4 = { cx: 10 - rOutside, cy: 20, r: 9 };
 
         expect(c.intersectsCircle(c1)).to.equal(false);
         expect(c.intersectsCircle(c2)).to.equal(false);
@@ -337,10 +337,10 @@ describe('GeoCircle', () => {
         const r = 30;
         const c = new GeoCircle(10, 20, r);
         const rOutside = r + 9;
-        const c1 = { x: 10, y: 20 - rOutside, r: 9 };
-        const c2 = { x: 10 + rOutside, y: 20, r: 9 };
-        const c3 = { x: 10, y: 20 + rOutside, r: 9 };
-        const c4 = { x: 10 - rOutside, y: 20, r: 9 };
+        const c1 = { cx: 10, cy: 20 - rOutside, r: 9 };
+        const c2 = { cx: 10 + rOutside, cy: 20, r: 9 };
+        const c3 = { cx: 10, cy: 20 + rOutside, r: 9 };
+        const c4 = { cx: 10 - rOutside, cy: 20, r: 9 };
 
         expect(c.intersectsCircle(c1)).to.equal(true);
         expect(c.intersectsCircle(c2)).to.equal(true);
@@ -350,14 +350,14 @@ describe('GeoCircle', () => {
 
       it('should not intersect if the size of the circle is zero', () => {
         const c = new GeoCircle(10, 20, 0);
-        const c1 = { x: 10, y: 20, r: 1 };
+        const c1 = { cx: 10, cy: 20, r: 1 };
 
         expect(c.intersectsCircle(c1)).to.equal(false);
       });
 
       it('should not intersect if the size of the colliding circle is zero', () => {
         const c = new GeoCircle(10, 20, 10);
-        const c1 = { x: 10, y: 20, r: 0 };
+        const c1 = { cx: 10, cy: 20, r: 0 };
 
         expect(c.intersectsCircle(c1)).to.equal(false);
       });

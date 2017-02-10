@@ -280,7 +280,7 @@ describe('Circle', () => {
       circle = createCircle(shape);
       circle.resolveLocalTransform();
 
-      expect(circle.intersectsCircle({ x: 15, y: 30, r: 1 })).to.equal(true);
+      expect(circle.intersectsCircle({ cx: 15, cy: 30, r: 1 })).to.equal(true);
     });
   });
 });

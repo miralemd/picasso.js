@@ -27,7 +27,18 @@ describe('Axis Line Node', () => {
         outerRect,
         padding: 10
       };
-      expected = { type: 'line', strokeWidth: 1, stroke: 'red', x1: 0, x2: 0, y1: 0, y2: 0 };
+      expected = {
+        type: 'line',
+        strokeWidth: 1,
+        stroke: 'red',
+        x1: 0,
+        x2: 0,
+        y1: 0,
+        y2: 0,
+        collider: {
+          type: null
+        }
+      };
     });
 
     it('Left align', () => {

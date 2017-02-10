@@ -1,5 +1,6 @@
+import extend from 'extend';
 import DisplayObject from './display-object';
-import { convertLineToPoints, getMinMax } from '../../math/intersection';
+import { getLineVectors, getMinMax } from '../../math/intersection';
 
 export default class Line extends DisplayObject {
   constructor(...s) {
@@ -10,15 +11,23 @@ export default class Line extends DisplayObject {
   set(v = {}) {
     const { x1 = 0, y1 = 0, x2 = 0, y2 = 0, collider } = v;
     super.set(v);
-    super.collider(collider);
     this.attrs.x1 = x1;
     this.attrs.y1 = y1;
     this.attrs.x2 = x2;
     this.attrs.y2 = y2;
+
+    const defaultCollider = {
+      type: 'line',
+      x1,
+      y1,
+      x2,
+      y2
+    };
+    super.collider(extend(defaultCollider, collider));
   }
 
   boundingRect(includeTransform = false) {
-    let p = convertLineToPoints(this.attrs);
+    let p = getLineVectors(this.attrs);
 
     if (includeTransform && this.modelViewMatrix) {
       p = this.modelViewMatrix.transformPoints(p);
