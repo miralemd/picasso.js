@@ -223,36 +223,51 @@ function resolveEvent({ collisions, t, config, action }) {
   return resolved;
 }
 
-export function resolveTapEvent({ e, t, config }) {
-  const rect = config.renderer.element().getBoundingClientRect();
+function touchSingleContactPoint(e, rect) {
+  if (e.touches && e.touches.length !== 1) {
+    return null;
+  }
 
-  const p = {
+  return {
+    x: e.touches[0].clientX - rect.left,
+    y: e.touches[0].clientY - rect.top
+  };
+}
+
+function singleContactPoint(e, rect) {
+  return {
     x: e.clientX - rect.left,
     y: e.clientY - rect.top
   };
+}
 
-  if (p.x < 0 || p.y < 0 || p.x > rect.width || p.y > rect.height) {
-    return false;
+function resolveCollisions(e, t, renderer) {
+  const rect = renderer.element().getBoundingClientRect();
+  let p = e.type === 'touchstart' ? touchSingleContactPoint(e, rect) : singleContactPoint(e, rect);
+
+  if (p === null || p.x < 0 || p.y < 0 || p.x > rect.width || p.y > rect.height) { // TODO include radius in this check?
+    return [];
   }
 
-  const collisions = config.renderer.itemsAt(p);
+  if (t.touchRadius > 0 && (e.pointerType === 'touch' || e.type === 'touchstart')) {
+    p = {
+      cx: p.x,
+      cy: p.y,
+      r: t.touchRadius // TODO Use touch event radius/width value (Need to handle dpi scaling as well)
+    };
+  }
+
+  return renderer.itemsAt(p);
+}
+
+export function resolveTapEvent({ e, t, config }) {
+  const collisions = resolveCollisions(e, t, config.renderer);
 
   return resolveEvent({ collisions, t, config, action: 'toggle' });
 }
 
 export function resolveOverEvent({ e, t, config }) {
-  const rect = config.renderer.element().getBoundingClientRect();
-
-  const p = {
-    x: e.clientX - rect.left,
-    y: e.clientY - rect.top
-  };
-
-  if (p.x < 0 || p.y < 0 || p.x > rect.width || p.y > rect.height) {
-    return false;
-  }
-
-  const collisions = config.renderer.itemsAt(p);
+  const collisions = resolveCollisions(e, t, config.renderer);
 
   return resolveEvent({ collisions, t, config, action: 'hover' });
 }

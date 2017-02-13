@@ -1,5 +1,6 @@
 import composerFn from './composer';
 import createDockLayout from '../dock-layout/dock-layout';
+import { detectPointerSupport, detectTouchSupport } from '../utils/event-type';
 
 /**
  * @typedef Chart.Props
@@ -157,6 +158,10 @@ function createInstance(definition) {
     });
 
     const onBrushTap = (e) => {
+      if (e.type === 'touchstart') {
+        e.preventDefault();
+      }
+
       for (let i = visibleComponents.length - 1; i >= 0; i--) {
         const comp = visibleComponents[i];
 
@@ -190,12 +195,25 @@ function createInstance(definition) {
       }
     };
 
-    element.addEventListener('click', onBrushTap);
-    element.addEventListener('mousemove', onBrushOver);
-    element.addEventListener('mouseleave', onBrushOverLeave);
-    listeners.push({ key: 'click', listener: onBrushTap });
-    listeners.push({ key: 'mousemove', listener: onBrushOver });
-    listeners.push({ key: 'mouseleave', listener: onBrushOverLeave });
+    const brushEventList = [];
+
+    if (detectPointerSupport(element)) {
+      brushEventList.push({ key: 'pointerdown', listener: onBrushTap });
+    } else {
+      brushEventList.push({ key: 'click', listener: onBrushTap });
+
+      if (detectTouchSupport(element)) {
+        brushEventList.push({ key: 'touchstart', listener: onBrushTap });
+      }
+    }
+
+    brushEventList.push({ key: 'mousemove', listener: onBrushOver });
+    brushEventList.push({ key: 'mouseleave', listener: onBrushOverLeave });
+
+    brushEventList.forEach((event) => {
+      element.addEventListener(event.key, event.listener);
+      listeners.push(event);
+    });
 
     if (typeof mounted === 'function') {
       mounted.call(instance, element);

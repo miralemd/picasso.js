@@ -2,6 +2,19 @@
 
 ## [Unreleased]
 
+### Added
+
+ - Support for touch/hybrid when brushing
+ - Optional setting to control touch area:
+
+     ```js
+     trigger: [{
+       contexts: [],
+       action: 'tap',
+       touchRadius: 24
+     }]
+     ```
+
 ## [BREAKING] 0.7.0
 
 ### Breaking changes
