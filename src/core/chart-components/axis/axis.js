@@ -15,6 +15,7 @@ import crispify from '../../transposer/crispifier';
  * @property {boolean} [labels.show = true]
  * @property {boolean} [labels.tilted = false] Only supported on a horizontal axis
  * @property {number} [labels.tiltAngle = 40]
+ * @property {number} [labels.maxEdgeBleed = Infinity]
  * @property {string} [labels.fontFamily = 'Arial']
  * @property {string} [labels.fontSize = '12px']
  * @property {string} [labels.fill = '#595959']

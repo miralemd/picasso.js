@@ -181,8 +181,7 @@ export default function calcRequiredSize({
         }
         return s - ((1 - majorTicks[i].position) * rect.width);
       };
-
-      const bleedSize = Math.max(...tickMeasures.map(labelWidth).map(adjustByPosition)) + settings.paddingEnd;
+      const bleedSize = Math.min(settings.labels.maxEdgeBleed, Math.max(...tickMeasures.map(labelWidth).map(adjustByPosition))) + settings.paddingEnd;
       const bleedDir = extendLeft ? 'left' : 'right';
       edgeBleed[bleedDir] = bleedSize;
     }

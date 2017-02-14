@@ -84,6 +84,31 @@ describe('AxisSizeCalculator', () => {
     expect(size.size).to.approximately(21.0442, 0.0001);
   });
 
+  it('tilted labels require edgeBleed', () => {
+    settings.dock = 'bottom';
+    settings.align = 'bottom';
+    settings.labels.show = true;
+    settings.labels.tilted = true;
+    ticks[0] = { label: 'AAAAAAAAAAAAAA', position: 0.1 };
+    ticks[1] = { label: 'BBBBBBBBBBBBBB', position: 0.5 };
+    ticks[2] = { label: 'CCCCCCCCCCCCCC', position: 0.9 };
+    const size = sizeFn(rect);
+    expect(size.edgeBleed.left).to.approximately(15.7246, 0.0001);
+  });
+
+  it('tilted labels with maxEdgeBleed', () => {
+    settings.dock = 'bottom';
+    settings.align = 'bottom';
+    settings.labels.show = true;
+    settings.labels.tilted = true;
+    settings.labels.maxEdgeBleed = 1;
+    ticks[0] = { label: 'AAAAAAAAAAAAAA', position: 0.1 };
+    ticks[1] = { label: 'BBBBBBBBBBBBBB', position: 0.5 };
+    ticks[2] = { label: 'CCCCCCCCCCCCCC', position: 0.9 };
+    const size = sizeFn(rect);
+    expect(size.edgeBleed.left).to.equals(11); // maxEdgeBleed + paddingEnd
+  });
+
   it('measure ticks', () => {
     settings.ticks.show = true;
     settings.ticks.margin = 4;

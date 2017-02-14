@@ -76,6 +76,24 @@ function appendTilting(struct, buildOpts) {
 
     struct.transform = `rotate(${r}, ${struct.x}, ${struct.y})`;
     struct.anchor = (buildOpts.align === 'bottom') === (buildOpts.angle < 0) ? 'start' : 'end';
+
+    // adjustForEnds
+    const textWidth = Math.cos(radians) * buildOpts.maxWidth;
+    if ((buildOpts.align === 'bottom') === (buildOpts.angle < 0)) {
+      // right
+      const rightBoundary = buildOpts.outerRect.width - buildOpts.paddingEnd;
+      const rightTextBoundary = struct.x + textWidth;
+      if (rightTextBoundary > rightBoundary) {
+        struct.maxWidth = (rightBoundary - struct.x - 10) / Math.cos(radians);
+      }
+    } else {
+      // left
+      const leftBoundary = buildOpts.paddingEnd;
+      const leftTextBoundary = struct.x - textWidth;
+      if (leftTextBoundary < leftBoundary) {
+        struct.maxWidth = (struct.x - leftBoundary - 10) / Math.cos(radians);
+      }
+    }
   }
 }
 
