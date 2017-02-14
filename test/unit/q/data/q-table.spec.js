@@ -53,6 +53,7 @@ describe('qTable', () => {
         qDimensionInfo: [{ qFallbackTitle: 'A' }, { qFallbackTitle: 'B' }],
         qMeasureInfo: [{ qFallbackTitle: 'C' }],
         qMode: 'K',
+        qEffectiveInterColumnSortOrder: [1, 0],
         qStackedDataPages: [{ qData: [
           {
             qType: 'R',
@@ -99,7 +100,12 @@ describe('qTable', () => {
     });
 
     it('should have values', () => {
-      expect(q.findField('A').values()).to.eql([
+      // expect(q.findField('B').values()).to.eql([
+      //   { value: 'NaN', label: 'Alpha', id: 1 },
+      //   { value: 2, label: 'Beta', id: 3 }
+      // ]);
+
+      expect(q.findField('/qDimensionInfo/1').values()).to.eql([
         { value: 'NaN', label: 'Alpha', id: 1 },
         { value: 2, label: 'Beta', id: 3 }
       ]);

@@ -7,23 +7,28 @@ const M_RX = /^\/(?:qHyperCube\/)?qMeasureInfo\/(\d+)/;
 function hyperCubeFieldsFn(hc) {
   let dimz = hc.qDimensionInfo.length;
   return hc.qDimensionInfo.concat(hc.qMeasureInfo).map((f, idx) =>
-     qField({ id: idx < dimz ? `/qDimensionInfo/${idx}` : `/qMeasureInfo/${idx - dimz}` })({
-       meta: f,
-       pages: hc.qDataPages,
-       idx
-     })
+    qField({ id: idx < dimz ? `/qDimensionInfo/${idx}` : `/qMeasureInfo/${idx - dimz}` })({
+      meta: f,
+      pages: hc.qDataPages,
+      idx
+    })
   );
 }
 
 function stackedHyperCubeFieldsFn(hc) {
   let dimz = hc.qDimensionInfo.length;
-  return hc.qDimensionInfo.concat(hc.qMeasureInfo).map((f, idx) =>
-     qField({ id: idx < dimz ? `/qDimensionInfo/${idx}` : `/qMeasureInfo/${idx - dimz}` })({
-       meta: f,
-       pages: hc.qStackedDataPages,
-       idx
-     })
-  );
+  return hc.qDimensionInfo.concat(hc.qMeasureInfo).map((f, idx) => {
+    let dataContentIdx = idx;
+    const order = hc.qEffectiveInterColumnSortOrder; // sort order should only contain references to dimensions
+    if (idx < dimz) { // if dimension, loolup where in the tree the dimension is located
+      dataContentIdx = order.indexOf(idx);
+    }
+    return qField({ id: idx < dimz ? `/qDimensionInfo/${idx}` : `/qMeasureInfo/${idx - dimz}` })({
+      meta: f,
+      pages: hc.qStackedDataPages,
+      idx: dataContentIdx
+    });
+  });
 }
 
 function listObjectFieldsFn(lo) {
