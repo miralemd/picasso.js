@@ -139,7 +139,13 @@ const scrollbar = {
     };
   },
 
-  preferredSize: function preferredSize() {
+  preferredSize: function preferredSize(rect) {
+    const scrollState = this.composer.scroll(this.settings.scroll).getState();
+    // hide the scrollbar if it is not possible to scroll
+    if (scrollState.viewSize >= scrollState.max - scrollState.min) {
+      const toLargeSize = Math.max(rect.width, rect.height);
+      return toLargeSize;
+    }
     return this.settings.settings.width;
   },
 
