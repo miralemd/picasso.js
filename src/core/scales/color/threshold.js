@@ -25,7 +25,7 @@ function generateDomain(range, min, max) {
 
 function getBreaks(domain) {
   const ret = [];
-  for (let i = 0; i < domain.length; i += 2) {
+  for (let i = 0; i < domain.length - 1; i++) {
     ret.push((domain[i] + domain[i + 1]) / 2);
   }
   return ret;

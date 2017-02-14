@@ -56,5 +56,13 @@ describe('Threshold', () => {
       ths = threshold(settings, fields);
       expect(ths.range()).to.deep.equal(['rgb(0, 0, 0)', 'rgb(128, 128, 128)', 'rgb(255, 255, 255)']);
     });
+    it('should generate 6 colors from 5 breaks', () => {
+      settings.colors = ['black', 'white'];
+      settings.limits = [5, 15, 25, 35, 45];
+      max = 50;
+      ths = threshold(settings, fields);
+      const result = [0, 51, 102, 153, 204, 255].map(v => `rgb(${v}, ${v}, ${v})`);
+      expect(ths.range()).to.deep.equal(result);
+    });
   });
 });
