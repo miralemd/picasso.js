@@ -131,15 +131,18 @@ const boxMarker = {
     const doodle = this.dispersion.doodle();
     const shapes = [];
 
-    let measureWidth = this.dispersion.blueprint().flipXY ? this.rect.width : this.rect.height;
+    let measureWidth = this.dispersion.blueprint().flipXY ? this.rect.height : this.rect.width;
 
-    let computeWidth = (minWidth, maxWidth, myWidth) => (Math.max(
-      minWidth,
-      Math.min(maxWidth, myWidth * this.dispersion.bandwidth() * measureWidth)
-    ) / measureWidth);
+    function computeWidth(minWidth, maxWidth, multiplier, bandwidth) {
+      let width = (bandwidth * measureWidth) * multiplier;
 
-    item.style.box.width = computeWidth(item.style.box.minWidth, item.style.box.maxWidth, item.style.box.width);
-    item.style.whisker.width = computeWidth(item.style.box.minWidth, item.style.box.maxWidth, item.style.whisker.width);
+      width = Math.max(minWidth, Math.min(maxWidth, width));
+
+      return width / measureWidth;
+    }
+
+    item.style.box.width = computeWidth(item.style.box.minWidth, item.style.box.maxWidth, item.style.box.width, this.dispersion.bandwidth());
+    item.style.whisker.width = computeWidth(item.style.box.minWidth, item.style.box.maxWidth, item.style.whisker.width, this.dispersion.bandwidth());
 
     // Draw the box
     if (item.style.box.show && !notNumber(item.start) && !notNumber(item.end)) {

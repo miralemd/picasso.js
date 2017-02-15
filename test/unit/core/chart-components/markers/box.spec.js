@@ -1,5 +1,6 @@
 
 import boxMarker from '../../../../../src/core/chart-components/markers/box';
+import { create } from '../../../../../src/core/charts/composer/scales';
 
 describe('box marker', () => {
   let rendererOutput;
@@ -352,5 +353,147 @@ describe('box marker', () => {
         y2: 119.5
       }
     ]);
+  });
+
+  it('should not have the squeeze bug', () => {
+    const config = {
+      shapeFn,
+      data: { mapTo: 'does not matter since returned data is mocked', groupBy: 'does not matter' },
+      settings: {
+        major: { scale: 'x' },
+        minor: { scale: 'y' },
+        box: {
+          stroke: '#f00'
+        },
+        whisker: {
+          show: false
+        }
+      }
+    };
+
+    let dataset = [
+      {
+        self: { value: 1 },
+        start: { value: 0.4 },
+        end: { value: 0.6 },
+        min: { value: 0.2 },
+        max: { value: 0.8 }
+      },
+      {
+        self: { value: 2 },
+        start: { value: 0.4 },
+        end: { value: 0.6 },
+        min: { value: 0.2 },
+        max: { value: 0.8 }
+      },
+      {
+        self: { value: 3 },
+        start: { value: 0.4 },
+        end: { value: 0.6 },
+        min: { value: 0.2 },
+        max: { value: 0.8 }
+      },
+      {
+        self: { value: 4 },
+        start: { value: 0.4 },
+        end: { value: 0.6 },
+        min: { value: 0.2 },
+        max: { value: 0.8 }
+      },
+      {
+        self: { value: 5 },
+        start: { value: 0.4 },
+        end: { value: 0.6 },
+        min: { value: 0.2 },
+        max: { value: 0.8 }
+      }
+    ];
+
+    composer.dataset().map.returns(dataset);
+
+    const xScale = create({ type: 'ordinal' });
+    xScale.domain([1, 2, 3, 4, 5]);
+    const yScale = create({ min: 0.2, max: 0.8 });
+
+    composer.scale.withArgs({ scale: 'x' }).returns(xScale);
+    composer.scale.withArgs({ scale: 'y' }).returns(yScale);
+
+    createAndRenderComponent({
+      inner: { x: 0, y: 0, width: 200, height: 20 },
+      config
+    });
+
+    [{
+      type: 'rect',
+      x: -15.5,
+      y: 6.5,
+      height: 7,
+      width: 30,
+      show: true,
+      fill: '#fff',
+      stroke: '#f00',
+      strokeWidth: 1,
+      maxWidth: 100,
+      minWidth: 5,
+      data: 0
+    },
+    {
+      type: 'rect',
+      x: 24.5,
+      y: 6.5,
+      height: 7,
+      width: 30,
+      show: true,
+      fill: '#fff',
+      stroke: '#f00',
+      strokeWidth: 1,
+      maxWidth: 100,
+      minWidth: 5,
+      data: 1
+    },
+    {
+      type: 'rect',
+      x: 64.5,
+      y: 6.5,
+      height: 7,
+      width: 30,
+      show: true,
+      fill: '#fff',
+      stroke: '#f00',
+      strokeWidth: 1,
+      maxWidth: 100,
+      minWidth: 5,
+      data: 2
+    },
+    {
+      type: 'rect',
+      x: 105.5,
+      y: 6.5,
+      height: 7,
+      width: 30,
+      show: true,
+      fill: '#fff',
+      stroke: '#f00',
+      strokeWidth: 1,
+      maxWidth: 100,
+      minWidth: 5,
+      data: 3
+    },
+    {
+      type: 'rect',
+      x: 145.5,
+      y: 6.5,
+      height: 7,
+      width: 30,
+      show: true,
+      fill: '#fff',
+      stroke: '#f00',
+      strokeWidth: 1,
+      maxWidth: 100,
+      minWidth: 5,
+      data: 4
+    }].forEach((item) => {
+      expect(rendererOutput).to.deep.include(item);
+    });
   });
 });
