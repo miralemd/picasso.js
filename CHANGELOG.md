@@ -2,10 +2,12 @@
 
 ## [Unreleased]
 
+## 0.8.0
+
 ### Added
 
- - Support for touch/hybrid when brushing
- - Optional setting to control touch area:
+- Support for touch/hybrid when brushing
+- Optional setting to control touch area:
 
      ```js
      trigger: [{
@@ -15,16 +17,23 @@
      }]
      ```
 
+### Fixed
+
+ - PIC-69 EffectiveInterColumnSortOrder not taken into account
+
 ## [BREAKING] 0.7.0
 
 ### Breaking changes
- - Box marker's scales has changed from x to major and y to minor. The vertical parameter has been replaced with "orientation" with possible values "vertical" and "horizontal". Defaults to vertical.
+
+- Box marker's scales has changed from x to major and y to minor. The vertical parameter has been replaced with "orientation" with possible values "vertical" and "horizontal". Defaults to vertical.
 
 ### Added
- - Allow creation of scales without data source
+
+- Allow creation of scales without data source
 
 ### Fixed
- - Some brushing issues has been fixed
+
+- Some brushing issues has been fixed
 
 ## 0.6.0
 
