@@ -2,22 +2,22 @@ import { scaleThreshold } from 'd3-scale';
 import notNumber from '../../utils/undef';
 import sequential from './sequential';
 
-function getMinMax(fields) {
+function getMinMax(settings, fields) {
   return {
-    min: Math.min(...fields.map(m => m.min())),
-    max: Math.max(...fields.map(m => m.max()))
+    min: settings.min || (fields ? Math.min(...fields.map(m => m.min())) : 0),
+    max: settings.max || (fields ? Math.max(...fields.map(m => m.max())) : 1)
   };
 }
 
 function generateDomain(range, min, max) {
-  const l = range.length;
-  if (l === 2) {
+  const len = range.length;
+  if (len === 2) {
     return [min + ((max - min) / 2)];
   }
   const domain = [];
-  const part = (max - min) / l;
+  const part = (max - min) / len;
 
-  for (let i = 1; i < l; i++) {
+  for (let i = 1; i < len; i++) {
     domain.push(min + (part * i));
   }
   return domain;
@@ -37,7 +37,7 @@ function generateRange(domain, colors, min, max) {
   return values.map(v => seq({ value: v }));
 }
 
-export default function threshold(settings, fields) {
+export default function threshold(settings = {}, fields) {
   const d3Scale = scaleThreshold();
 
   /**
@@ -78,19 +78,18 @@ export default function threshold(settings, fields) {
     return d3Scale.range();
   };
 
-  if (settings && fields) {
-    const { min, max } = getMinMax(fields);
-    let domain = settings.limits || settings.domain || [min + ((max - min) / 2)];
-    let range = settings.colors || settings.range || ['red', 'blue'];
-    if (range.length > domain.length + 1) {
-      // Generate limits from range
-      domain = generateDomain(range, min, max);
-    } else if (range.length < domain.length + 1) {
-      // Generate additional colors
-      range = generateRange(domain, range, min, max);
-    }
-    fn.range(range);
-    fn.domain(domain);
+  const { min, max } = getMinMax(settings, fields);
+  let domain = settings.limits || settings.domain || [min + ((max - min) / 2)];
+  let range = settings.colors || settings.range || ['red', 'blue'];
+  if (range.length > domain.length + 1) {
+    // Generate limits from range
+    domain = generateDomain(range, min, max);
+  } else if (range.length < domain.length + 1) {
+    // Generate additional colors
+    range = generateRange(domain, range, min, max);
   }
+  fn.range(range);
+  fn.domain(domain);
+
   return fn;
 }

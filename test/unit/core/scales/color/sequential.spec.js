@@ -1,4 +1,4 @@
-import sequential from '../../../../src/core/scales/color/sequential';
+import sequential from '../../../../../src/core/scales/color/sequential';
 
 describe('Sequential', () => {
   let seq;
@@ -7,6 +7,36 @@ describe('Sequential', () => {
   });
 
   describe('Basic colors', () => {
+    let min = 0;
+    let max = 100;
+    let settings = {};
+    const fields = [{ min: () => min, max: () => max }];
+
+    beforeEach(() => {
+      min = 0;
+      max = 100;
+      settings = {};
+    });
+    it('default settings', () => {
+      seq = sequential();
+      expect(seq.domain()).to.deep.equal([0, 1]);
+      expect(seq.range()).to.deep.equal(['red', 'blue']);
+    });
+
+    it('max/min settings', () => {
+      settings.min = 20;
+      settings.max = 100;
+      seq = sequential(settings);
+      expect(seq.domain()).to.deep.equal([20, 100]);
+      expect(seq.range()).to.deep.equal(['red', 'blue']);
+    });
+
+    it('only fields', () => {
+      seq = sequential({}, fields);
+      expect(seq.domain()).to.deep.equal([0, 100]);
+      expect(seq.range()).to.deep.equal(['red', 'blue']);
+    });
+
     it('should scale two rgb colors', () => {
       const c = seq.domain([0, 1]).range(['red', 'blue']).get(0.5);
       expect(c).to.equal('rgb(128, 0, 128)');

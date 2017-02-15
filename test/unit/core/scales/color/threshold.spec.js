@@ -1,4 +1,4 @@
-import threshold from '../../../../src/core/scales/color/threshold';
+import threshold from '../../../../../src/core/scales/color/threshold';
 
 describe('Threshold', () => {
   let ths;
@@ -6,8 +6,33 @@ describe('Threshold', () => {
     ths = threshold();
   });
 
-  describe('basic colors', () => {
-
+  describe('basics', () => {
+    let min = 0;
+    let max = 100;
+    let settings = {};
+    const fields = [{ min: () => min, max: () => max }];
+    beforeEach(() => {
+      min = 0;
+      max = 100;
+      settings = {};
+    });
+    it('default settings', () => {
+      ths = threshold();
+      expect(ths.domain()).to.deep.equal([0.5]);
+      expect(ths.range()).to.deep.equal(['red', 'blue']);
+    });
+    it('max/min settings', () => {
+      settings.min = 20;
+      settings.max = 100;
+      ths = threshold(settings);
+      expect(ths.domain()).to.deep.equal([60]);
+      expect(ths.range()).to.deep.equal(['red', 'blue']);
+    });
+    it('only fields', () => {
+      ths = threshold({}, fields);
+      expect(ths.domain()).to.deep.equal([50]);
+      expect(ths.range()).to.deep.equal(['red', 'blue']);
+    });
   });
 
   describe('generate thresholds', () => {
