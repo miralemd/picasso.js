@@ -1,17 +1,17 @@
 import { interpolateRgb } from 'd3-interpolate';
-import notNumber from '../../utils/undef';
 import extend from 'extend';
+import notNumber from '../../utils/undef';
 import linear from '../linear';
 
 function getMinMax(settings, fields) {
   const ret = { min: settings.min, max: settings.max };
-  
+
   if (notNumber(settings.min)) {
-    ret.min = (fields ? Math.min(...fields.map(m => m.min())) : 0)
+    ret.min = (fields ? Math.min(...fields.map(m => m.min())) : 0);
   }
 
   if (notNumber(settings.max)) {
-    ret.max = (fields ? Math.max(...fields.map(m => m.max())) : 1)
+    ret.max = (fields ? Math.max(...fields.map(m => m.max())) : 1);
   }
 
   return ret;
