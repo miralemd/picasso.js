@@ -155,19 +155,5 @@ describe('Tick generators', () => {
       ];
       expect(ticks).to.deep.equal(expected);
     });
-
-    it('should generate ticks by index', () => {
-      scale = band();
-      scale.domain([0, 1, 2]);
-      scale.range([0, 1]);
-
-      const ticks = generateDiscreteTicks({ data, scale });
-      const expected = [
-        { position: 0, label: 'd1' },
-        { position: 0.3333333333333333, label: 'd2' },
-        { position: 0.6666666666666666, label: 'd3' }
-      ];
-      expect(ticks).to.deep.equal(expected);
-    });
   });
 });

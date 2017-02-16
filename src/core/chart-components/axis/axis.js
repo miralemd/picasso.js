@@ -101,10 +101,6 @@ const axisComponent = {
     const dock = typeof axisSettings.dock !== 'undefined' ? axisSettings.dock : this.defaultDock;
     const align = getAlign(dock, axisSettings.align, this.scale.type);
 
-    if (this.scale.type === 'ordinal') {
-      this.domain = this.scale.domain();
-    }
-
     this.concreteNodeBuilder = nodeBuilder(this.scale.type);
 
     axisSettings.dock = dock;
@@ -127,7 +123,6 @@ const axisComponent = {
     const reqSize = calcRequiredSize({
       type: this.scale.type,
       rect: opts.inner,
-      data: this.domain,
       formatter,
       measureText: this.renderer.measureText,
       scale: this.scale,
@@ -172,7 +167,6 @@ const axisComponent = {
       settings: axisSettings,
       innerRect: this.innerRect,
       scale: this.scale,
-      data: this.domain,
       formatter
     });
   },

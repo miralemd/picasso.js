@@ -16,7 +16,7 @@ function lineGen(scale, settings, innerRect) {
   let lines = [];
 
   if (scale && scale.type === 'ordinal') {
-    lines = generateDiscreteTicks({ data: scale.domain(), scale }) || [];
+    lines = generateDiscreteTicks({ scale }) || [];
   } else if (scale) {
     lines = (scale.cachedTicks && scale.cachedTicks()) || [];
     if (!lines.length) {

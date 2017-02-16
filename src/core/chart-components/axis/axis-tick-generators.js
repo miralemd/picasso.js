@@ -77,13 +77,15 @@ export function generateContinuousTicks({ settings, scale, innerRect, formatter 
   return ticks;
 }
 
-export function generateDiscreteTicks({ data, scale }) {
-  return data.map((d, i) => {
-    const p0 = scale.get(i);
-    const p = p0 !== undefined ? p0 : scale.get(d);
+export function generateDiscreteTicks({ scale }) {
+  const dataSet = scale.data().length > 0 ?
+    scale.data().map(d => d.self) :
+    scale.domain().map(d => ({ value: d }));
+
+  return dataSet.map((d) => { // eslint-disable-line arrow-body-style
     return {
-      position: p,
-      label: `${d}`
+      position: scale(d),
+      label: `${'label' in d ? d.label : d.value}`
     };
   });
 }
