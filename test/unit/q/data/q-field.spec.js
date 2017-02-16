@@ -167,8 +167,8 @@ describe('QField', () => {
                 qValue: 'NaN',
                 qSubNodes: [
                   { qText: '$666', qElemNo: -1, qValue: 666, qType: 'T' },
-                  { qText: 'a1', qElemNo: 0, qValue: 123, qSubNodes: [{ qValue: 45, qElemNo: 0, qText: '$45.00' }] },
-                  { qText: 'a2', qElemNo: 3, qValue: 135, qSubNodes: [{ qValue: 32, qElemNo: 0, qText: '$32.00' }] }
+                  { qText: 'a1', qElemNo: 0, qValue: 123, qSubNodes: [{ qValue: 45, qElemNo: 0, qText: '$45.00', qAttrExps: { qValues: [{}, { qText: 'redish', qNum: 'NaN' }] } }] },
+                  { qText: 'a2', qElemNo: 3, qValue: 135, qSubNodes: [{ qValue: 32, qElemNo: 0, qText: '$32.00', qAttrExps: { qValues: [{}, { qText: 'white', qNum: false }] } }] }
                 ] },
               {
                 qText: 'Beta',
@@ -176,8 +176,8 @@ describe('QField', () => {
                 qValue: 2,
                 qSubNodes: [
                   { qText: '$666', qElemNo: -1, qValue: 666, qType: 'T' },
-                  { qText: 'b1', qElemNo: 7, qValue: 345, qSubNodes: [{ qValue: 13, qElemNo: 0, qText: '$13.00' }] },
-                  { qText: 'b3', qElemNo: 9, qValue: 276, qSubNodes: [{ qValue: 17, qElemNo: 0, qText: '$17.00' }] }
+                  { qText: 'b1', qElemNo: 7, qValue: 345, qSubNodes: [{ qValue: 13, qElemNo: 0, qText: '$13.00', qAttrExps: { qValues: [{}, { qText: 'red', qNum: 987 }] } }] },
+                  { qText: 'b3', qElemNo: 9, qValue: 276, qSubNodes: [{ qValue: 17, qElemNo: 0, qText: '$17.00', qAttrExps: { qValues: [{}, { qText: 'green', qNum: 'NaN' }] } }] }
                 ]
               }
             ]
@@ -253,6 +253,28 @@ describe('QField', () => {
           { label: '$17.00', id: 0, value: 17 }
         ]);
       });
+
+      it('should extract values from attribute expression on measure', () => {
+        const dd = {
+          meta: {
+            qMin: 'NaN',
+            qMax: 'NaN',
+            qFallbackTitle: 'attr express'
+          },
+          pages: [stackedPageWithoutPseudo],
+          idx: 2,
+          attrIdx: 1
+        };
+
+        let ff = qField()(dd);
+        let values = ff.values();
+        expect(values).to.deep.equal([
+          { value: 'NaN', label: 'redish', id: 0 },
+          { value: false, label: 'white', id: 0 },
+          { value: 987, label: 'red', id: 0 },
+          { value: 'NaN', label: 'green', id: 0 }
+        ]);
+      });
     });
 
     describe('containing two dimensions, two measures (pseudo dim)', () => {
@@ -272,6 +294,7 @@ describe('QField', () => {
                 qText: 'Alpha',
                 qElemNo: 1,
                 qValue: 'NaN',
+                qAttrExps: { qValues: [{}, { qNum: 255 }] },
                 qSubNodes: [
                   {
                     qText: 'Margin',
@@ -301,6 +324,7 @@ describe('QField', () => {
                 qText: 'Beta',
                 qElemNo: 3,
                 qValue: 2,
+                qAttrExps: { qValues: [{}, { qNum: 311 }] },
                 qSubNodes: [
                   {
                     qText: 'Margin',
@@ -374,6 +398,29 @@ describe('QField', () => {
           { label: 'a3', id: 5, value: 'NaN' },
           { label: 'b1', id: 7, value: 'NaN' },
           { label: 'b2', id: 8, value: 'NaN' }
+        ]);
+      });
+
+      it('should extract attribute expression values from first dimension', () => {
+        const dd = {
+          meta: {
+            qMin: 456,
+            qMax: 678,
+            qFallbackTitle: 'attr express'
+          },
+          pages: [stackedPageWithPseudo],
+          idx: 0,
+          attrIdx: 1
+        };
+
+        let ff = qField()(dd);
+        let values = ff.values();
+        expect(values).to.deep.equal([
+          { label: undefined, id: 0, value: 255 },
+          { label: undefined, id: 0, value: 255 },
+          { label: undefined, id: 0, value: 255 },
+          { label: undefined, id: 0, value: 311 },
+          { label: undefined, id: 0, value: 311 }
         ]);
       });
 

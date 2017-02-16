@@ -21,10 +21,14 @@ function attrExpField(hc, fieldIdx, attrIdx) {
   const dimz = hc.qDimensionInfo.length;
   const id = fieldIdx < dimz ? `/qDimensionInfo/${fieldIdx}/qAttrExprInfo/${attrIdx}` : `/qMeasureInfo/${fieldIdx - dimz}/qAttrExprInfo/${attrIdx}`;
   const meta = resolve(id, hc);
+  let fieldDataContentIdx = fieldIdx;
+  if (hc.qMode === 'K' && fieldIdx < dimz) {
+    fieldDataContentIdx = hc.qEffectiveInterColumnSortOrder.indexOf(fieldIdx);
+  }
   return qField({ id })({
     meta,
-    pages: hc.qDataPages,
-    idx: fieldIdx,
+    pages: hc.qMode === 'K' ? hc.qStackedDataPages : hc.qDataPages,
+    idx: fieldDataContentIdx,
     attrIdx
   });
 }
@@ -63,6 +67,21 @@ function fieldsFn(hc) {
   return listObjectFieldsFn(hc);
 }
 
+function getAttrExprField({
+  attributeExpressionFields,
+  idx,
+  path
+}, data) {
+  const attrIdx = +ATTR_EXPR_RX.exec(path)[1];
+  if (!attributeExpressionFields[idx]) {
+    attributeExpressionFields[idx] = [];
+  }
+  if (!attributeExpressionFields[idx][attrIdx]) {
+    attributeExpressionFields[idx][attrIdx] = attrExpField(data, idx, attrIdx);
+  }
+  return attributeExpressionFields[idx][attrIdx];
+}
+
 /**
  * Data interface for the Qlik Sense hypercube format
  * @private
@@ -87,14 +106,11 @@ export default function qTable({ id } = {}) {
       // check if attribute expr
       const remainder = query.replace(DIM_RX, '');
       if (ATTR_EXPR_RX.test(remainder)) {
-        const attrIdx = +ATTR_EXPR_RX.exec(remainder)[1];
-        if (!attributeExpressionFields[idx]) {
-          attributeExpressionFields[idx] = [];
-        }
-        if (!attributeExpressionFields[idx][attrIdx]) {
-          attributeExpressionFields[idx][attrIdx] = attrExpField(d, idx, attrIdx);
-        }
-        return attributeExpressionFields[idx][attrIdx];
+        return getAttrExprField({
+          attributeExpressionFields,
+          idx,
+          path: remainder
+        }, d);
       }
       if (Array.isArray(d.qDimensionInfo)) {
         return fields[idx];
@@ -105,14 +121,11 @@ export default function qTable({ id } = {}) {
       // check if attribute expr
       const remainder = query.replace(M_RX, '');
       if (ATTR_EXPR_RX.test(remainder)) {
-        const attrIdx = +ATTR_EXPR_RX.exec(remainder)[1];
-        if (!attributeExpressionFields[idx]) {
-          attributeExpressionFields[idx] = [];
-        }
-        if (!attributeExpressionFields[idx][attrIdx]) {
-          attributeExpressionFields[idx][attrIdx] = attrExpField(d, idx, attrIdx);
-        }
-        return attributeExpressionFields[idx][attrIdx];
+        return getAttrExprField({
+          attributeExpressionFields,
+          idx,
+          path: remainder
+        }, d);
       }
       return fields[idx];
     }
