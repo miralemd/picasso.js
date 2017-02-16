@@ -1,8 +1,10 @@
 import table from '../../core/data/table';
 import qField from './q-field';
+import resolve from '../../core/data/json-path-resolver';
 
 const DIM_RX = /^\/(?:qHyperCube\/)?qDimensionInfo(?:\/(\d+))?/;
 const M_RX = /^\/(?:qHyperCube\/)?qMeasureInfo\/(\d+)/;
+const ATTR_EXPR_RX = /\/qAttrExprInfo\/(\d+)/;
 
 function hyperCubeFieldsFn(hc) {
   let dimz = hc.qDimensionInfo.length;
@@ -13,6 +15,18 @@ function hyperCubeFieldsFn(hc) {
       idx
     })
   );
+}
+
+function attrExpField(hc, fieldIdx, attrIdx) {
+  const dimz = hc.qDimensionInfo.length;
+  const id = fieldIdx < dimz ? `/qDimensionInfo/${fieldIdx}/qAttrExprInfo/${attrIdx}` : `/qMeasureInfo/${fieldIdx - dimz}/qAttrExprInfo/${attrIdx}`;
+  const meta = resolve(id, hc);
+  return qField({ id })({
+    meta,
+    pages: hc.qDataPages,
+    idx: fieldIdx,
+    attrIdx
+  });
 }
 
 function stackedHyperCubeFieldsFn(hc) {
@@ -61,6 +75,8 @@ export default function qTable({ id } = {}) {
     fields: fieldsFn
   });
 
+  let attributeExpressionFields = [];
+
   q.findField = (query) => {
     const d = q.data();
     const fields = q.fields();
@@ -68,12 +84,36 @@ export default function qTable({ id } = {}) {
     // Find by path
     if (DIM_RX.test(query)) {
       const idx = +DIM_RX.exec(query)[1];
-      if (Array.isArray(d.qDimensionInfo)) { // listobject
+      // check if attribute expr
+      const remainder = query.replace(DIM_RX, '');
+      if (ATTR_EXPR_RX.test(remainder)) {
+        const attrIdx = +ATTR_EXPR_RX.exec(remainder)[1];
+        if (!attributeExpressionFields[idx]) {
+          attributeExpressionFields[idx] = [];
+        }
+        if (!attributeExpressionFields[idx][attrIdx]) {
+          attributeExpressionFields[idx][attrIdx] = attrExpField(d, idx, attrIdx);
+        }
+        return attributeExpressionFields[idx][attrIdx];
+      }
+      if (Array.isArray(d.qDimensionInfo)) {
         return fields[idx];
       }
-      return fields[0];
+      return fields[0]; // listobject
     } else if (M_RX.test(query)) {
       const idx = +M_RX.exec(query)[1] + d.qDimensionInfo.length;
+      // check if attribute expr
+      const remainder = query.replace(M_RX, '');
+      if (ATTR_EXPR_RX.test(remainder)) {
+        const attrIdx = +ATTR_EXPR_RX.exec(remainder)[1];
+        if (!attributeExpressionFields[idx]) {
+          attributeExpressionFields[idx] = [];
+        }
+        if (!attributeExpressionFields[idx][attrIdx]) {
+          attributeExpressionFields[idx][attrIdx] = attrExpField(d, idx, attrIdx);
+        }
+        return attributeExpressionFields[idx][attrIdx];
+      }
       return fields[idx];
     }
 

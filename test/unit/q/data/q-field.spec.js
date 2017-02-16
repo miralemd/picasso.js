@@ -426,4 +426,36 @@ describe('QField', () => {
       });
     });
   });
+
+  describe('as attribute expression', () => {
+    const pageWithAttrExpr = {
+      qArea: { qLeft: 7, qTop: 0, qWidth: 2, qHeight: 3 },
+      qMatrix: [
+        [{}, { qNum: 2, qText: 'två', qElemNumber: 1, qAttrExps: { qValues: [{ qNum: 13, qText: 'tretton' }, { qText: 'red' }] } }],
+        [{}, { qNum: 6, qText: 'sex', qElemNumber: 2, qAttrExps: { qValues: [{ qNum: 15, qText: 'femton' }, { qText: 'green' }] } }],
+        [{}, { qNum: 3, qText: 'tre', qElemNumber: 3, qAttrExps: { qValues: [{ qNum: 12, qText: 'tolv' }, { qText: 'blue' }] } }]
+      ]
+    };
+
+    const dd = {
+      meta: {
+        qMin: 1,
+        qMax: 2,
+        qFallbackTitle: 'wohoo'
+      },
+      pages: [pageWithAttrExpr],
+      idx: 8,
+      attrIdx: 0
+    };
+
+    it('should extract the proper values', () => {
+      const ff = qField()(dd);
+
+      expect(ff.values()).to.eql([
+        { value: 13, label: 'tretton', id: 0 },
+        { value: 15, label: 'femton', id: 0 },
+        { value: 12, label: 'tolv', id: 0 }
+      ]);
+    });
+  });
 });
