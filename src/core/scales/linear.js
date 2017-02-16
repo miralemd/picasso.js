@@ -168,6 +168,7 @@ export default function linear(settings, fields/* , dataset*/) {
   // TODO Support this?
   fn.interpolate = function interpolate(func) {
     d3Scale.interpolate(func);
+    return fn;
   };
 
   /**

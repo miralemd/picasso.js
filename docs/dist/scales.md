@@ -34,6 +34,12 @@
 * <a href="#ordinalScale.get">ordinalScale.get</a>
 * <a href="#ordinalScale.start">ordinalScale.start</a>
 * <a href="#ordinalScale.end">ordinalScale.end</a>
+* <a href="#picasso.scales.sequential">picasso.scales.sequential</a>
+* <a href="#sequential">sequential</a>
+* <a href="#picasso.scales.threshold">picasso.scales.threshold</a>
+* <a href="#threshold">threshold</a>
+* <a href="#threshold.domain">threshold.domain</a>
+* <a href="#threshold.range">threshold.range</a>
 
 
 ## Linear scale
@@ -315,3 +321,83 @@ Get the first value of the domain
 
 Get the last value of the domain  
 
+
+# Color Scales
+
+## Sequential scale
+
+#### <a name='picasso.scales.sequential' href='#picasso.scales.sequential'>#</a> **picasso.scales.sequential**(*Object settings, Object settings.limits, Object settings.domain, Object settings.colors, Object settings.range, Array fields*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| settings | Object | Settings for this scale. If both colors and limit are declared, they have to fulfill numColors &#x3D;&#x3D; numLimits else they will be overrided. | No | No |
+| settings.limits | Object | Explicit limits indicating breaks between colors. | No | No |
+| settings.domain | Object | Alias for settings.limits | No | No |
+| settings.colors | Object | Colors to use in the scale. | No | No |
+| settings.range | Object | Alias for settings.colors | No | No |
+| fields | Array | No | No | No |
+| Returns | sequentialScale | Instance of sequential scale | ... | ... |
+
+No description  
+#### <a name='sequential' href='#sequential'>#</a> **sequential**(*Object Item*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Item | Object | item object with value property | No | No |
+| Returns | string | The blended color | ... | ... |
+
+No description  
+
+## Threshold scale
+
+#### <a name='picasso.scales.threshold' href='#picasso.scales.threshold'>#</a> **picasso.scales.threshold**(*Object settings, Array settings.limits, Array settings.domain, Array settings.colors, Array settings.range, Number settings.max, Number settings.min, Array fields*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| settings | Object | Settings for this scale. If both colors and limit are declared, they have to fulfill numColors &#x3D;&#x3D; numLimits + 1 else they will be overrided. | No | No |
+| settings.limits | Array | Explicit limits indicating breaks between colors. | No | No |
+| settings.domain | Array | Alias for settings.limits | No | No |
+| settings.colors | Array | Colors to use in the scale. | No | No |
+| settings.range | Array | Alias for settings.colors | No | No |
+| settings.max | Number | Max value for the scale. Overrides field max. | No | No |
+| settings.min | Number | Min value for the scale. Overrides field min. | No | No |
+| fields | Array | No | No | No |
+| Returns | thresholdScale | Instance of threshold scale | ... | ... |
+
+No description  
+#### Examples
+
+```js
+let t = threshold({
+  colors: ['black', 'white'],
+  domain: [25,50,75],
+  max: 100,
+  min: 0
+});
+t.domain(); // [25,50,75]
+t.range(); // Generates from colors and domain: ['rgb(0,0,0)','rgb(85,85,85)','rgb(170,170,170)','rgb(255,255,255)']
+```
+#### <a name='threshold' href='#threshold'>#</a> **threshold**(*Object Item*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Item | Object | item object with value property | No | No |
+| Returns | String | The color from the appropriate band | ... | ... |
+
+No description  
+#### <a name='threshold.domain' href='#threshold.domain'>#</a> **threshold.domain**(*Array.&lt;Number&gt; [values]*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| values | Array.&lt;Number&gt; | Set or Get domain values | Yes | No |
+| Returns | thresholdScale | The instance this method was called on if a parameter is provided, otherwise the current domain is returned | ... | ... |
+
+No description  
+#### <a name='threshold.range' href='#threshold.range'>#</a> **threshold.range**(*Array.&lt;Number&gt; [values]*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| values | Array.&lt;Number&gt; | Set or Get range values | Yes | No |
+| Returns | thresholdScale | The instance this method was called on if a parameter is provided, otherwise the current range is returned | ... | ... |
+
+No description  

@@ -11,3 +11,13 @@
 
 {{>magic ctx='core.scales.ordinal-js'}}
 
+
+# Color Scales
+
+## Sequential scale
+
+{{>magic ctx='core.scales.color.sequential-js'}}
+
+## Threshold scale
+
+{{>magic ctx='core.scales.color.threshold-js'}}
