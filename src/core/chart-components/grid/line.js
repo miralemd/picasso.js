@@ -37,13 +37,6 @@ const gridLineComponent = {
     styles: {}
   },
 
-  beforeUpdate(opts) {
-    const { settings } = opts;
-
-    this.data = settings.data;
-    this.settings = settings.settings;
-  },
-
   beforeRender(opts) {
     this.rect = opts.size;
 
