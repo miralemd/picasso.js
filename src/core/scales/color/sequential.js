@@ -7,11 +7,11 @@ function getMinMax(settings, fields) {
   const ret = { min: settings.min, max: settings.max };
 
   if (notNumber(settings.min)) {
-    ret.min = (fields ? Math.min(...fields.map(m => m.min())) : 0);
+    ret.min = (fields && fields.length ? Math.min(...fields.map(m => m.min())) : 0);
   }
 
   if (notNumber(settings.max)) {
-    ret.max = (fields ? Math.max(...fields.map(m => m.max())) : 1);
+    ret.max = (fields && fields.length ? Math.max(...fields.map(m => m.max())) : 1);
   }
 
   return ret;
@@ -37,8 +37,12 @@ function generateDomain(range, min, max) {
 /**
  * @alias sequential
  * @memberof picasso.scales
+ * @param { Object } settings Settings for this scale. If both colors and limit are declared, they have to fulfill numColors == numLimits else they will be overrided.
+ * @param { Object } settings.limits Explicit limits indicating breaks between colors.
+ * @param { Object } settings.domain Alias for settings.limits
+ * @param { Object } settings.colors Colors to use in the scale.
+ * @param { Object } settings.range Alias for settings.colors
  * @param { Array } fields
- * @param { Object } settings
  * @return { sequentialScale } Instance of sequential scale
  */
 

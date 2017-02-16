@@ -6,11 +6,11 @@ function getMinMax(settings, fields) {
   const ret = { min: settings.min, max: settings.max };
 
   if (notNumber(settings.min)) {
-    ret.min = (fields ? Math.min(...fields.map(m => m.min())) : 0);
+    ret.min = (fields && fields.length ? Math.min(...fields.map(m => m.min())) : 0);
   }
 
   if (notNumber(settings.max)) {
-    ret.max = (fields ? Math.max(...fields.map(m => m.max())) : 1);
+    ret.max = (fields && fields.length ? Math.max(...fields.map(m => m.max())) : 1);
   }
 
   return ret;
@@ -44,13 +44,36 @@ function generateRange(domain, colors, min, max) {
   return values.map(v => seq({ value: v }));
 }
 
+/**
+ * @alias threshold
+ * @memberof picasso.scales
+ * @param { Object } settings Settings for this scale. If both colors and limit are declared, they have to fulfill numColors == numLimits + 1 else they will be overrided.
+ * @param { Array } settings.limits Explicit limits indicating breaks between colors.
+ * @param { Array } settings.domain Alias for settings.limits
+ * @param { Array } settings.colors Colors to use in the scale.
+ * @param { Array } settings.range Alias for settings.colors
+ * @param { Number } settings.max Max value for the scale. Overrides field max.
+ * @param { Number } settings.min Min value for the scale. Overrides field min.
+ * @param { Array } fields
+ * @return { thresholdScale } Instance of threshold scale
+ * @example
+ * let t = threshold({
+ *   colors: ['black', 'white'],
+ *   domain: [25,50,75],
+ *   max: 100,
+ *   min: 0
+ * });
+ * t.domain(); // [25,50,75]
+ * t.range(); // Generates from colors and domain: ['rgb(0,0,0)','rgb(85,85,85)','rgb(170,170,170)','rgb(255,255,255)']
+ */
+
 export default function threshold(settings = {}, fields) {
   const d3Scale = scaleThreshold();
 
   /**
    * @alias threshold
    * @param { Object } Item item object with value property
-   * @return { Number } The scaled value
+   * @return { String } The color from the appropriate band
    */
   function fn(v) {
     if (notNumber(v.value)) {
@@ -61,7 +84,7 @@ export default function threshold(settings = {}, fields) {
 
   /**
  * @param { Number[] } [values] Set or Get domain values
- * @return { linearScale | Number[] } The instance this method was called on if a parameter is provided, otherwise the current domain is returned
+ * @return { thresholdScale | Number[] } The instance this method was called on if a parameter is provided, otherwise the current domain is returned
  */
   fn.domain = function domain(values) {
     if (arguments.length) {
@@ -74,7 +97,7 @@ export default function threshold(settings = {}, fields) {
 
   /**
    * @param { Number[] } [values] Set or Get range values
-   * @return { linearScale | Number[] } The instance this method was called on if a parameter is provided, otherwise the current range is returned
+   * @return { thresholdScale | Number[] } The instance this method was called on if a parameter is provided, otherwise the current range is returned
    */
   fn.range = function range(values) {
     if (arguments.length) {
