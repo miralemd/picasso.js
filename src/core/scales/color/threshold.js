@@ -3,10 +3,17 @@ import notNumber from '../../utils/undef';
 import sequential from './sequential';
 
 function getMinMax(settings, fields) {
-  return {
-    min: settings.min || (fields ? Math.min(...fields.map(m => m.min())) : 0),
-    max: settings.max || (fields ? Math.max(...fields.map(m => m.max())) : 1)
-  };
+  const ret = { min: settings.min, max: settings.max };
+  
+  if (notNumber(settings.min)) {
+    ret.min = (fields ? Math.min(...fields.map(m => m.min())) : 0)
+  }
+
+  if (notNumber(settings.max)) {
+    ret.max = (fields ? Math.max(...fields.map(m => m.max())) : 1)
+  }
+
+  return ret;
 }
 
 function generateDomain(range, min, max) {
