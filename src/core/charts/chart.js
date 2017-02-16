@@ -245,82 +245,89 @@ function createInstance(definition) {
       components = []
     } = settings;
 
+    for (let i = currentComponents.length - 1; i >= 0; i--) {
+      const currComp = currentComponents[i];
+      // TODO warn when there is no key
+      if (!components.some(c => currComp.hasKey && currComp.key === c.key)) {
+        // Component is removed
+        currentComponents.splice(i, 1);
+        currComp.instance.destroy();
+      }
+    }
+
+    // Let the "components" array determine order of components
+    currentComponents = components.map((component, i) => {
+      const comp = components[i];
+      const idx = findComponentIndexByKey(comp.key);
+      if (idx === -1) {
+        // Component is added
+        return composer.createComponent(comp, element);
+      }
+      // Component is (potentially) updated
+      currentComponents[idx].updateWith = {
+        formatters,
+        scales,
+        data,
+        settings: comp
+      };
+      return currentComponents[idx];
+    });
+
+    currentComponents.forEach((component) => {
+      if (component.updateWith) {
+        component.instance.set(component.updateWith);
+      }
+    });
+    currentComponents.forEach((component) => {
+      if (component.updateWith) {
+        component.instance.beforeUpdate();
+      }
+    });
+
+    let toUpdate = [];
+    let toRender = [];
     if (partialData) {
-      // Update without relayouting - assumes the compoents array has been left intact (no additions, removals or moving of items)
-      currentComponents.forEach((component, idx) => {
-        component.instance.set({ settings: components[idx] });
-      });
-      visibleComponents.forEach(component => component.instance.beforeUpdate());
-      visibleComponents.forEach(component => component.instance.beforeRender());
-      visibleComponents.forEach(component => component.instance.update());
-      visibleComponents.forEach(component => component.instance.updated());
-    } else {
-      for (let i = currentComponents.length - 1; i >= 0; i--) {
-        const currComp = currentComponents[i];
-        // TODO warn when there is no key
-        if (!components.some(c => currComp.hasKey && currComp.key === c.key)) {
-          // Component is removed
-          currentComponents.splice(i, 1);
-          currComp.instance.destroy();
-        }
-      }
-
-      for (let i = 0; i < components.length; i++) {
-        const comp = components[i];
-        const idx = findComponentIndexByKey(comp.key);
-        if (idx === -1) {
-          // Component is added
-          const currComp = composer.createComponent(comp, element);
-          currentComponents.push(currComp);
+      currentComponents.forEach((component) => {
+        if (component.updateWith && component.visible) {
+          toUpdate.push(component);
         } else {
-          // Component is (potentially) updated
-          currentComponents[idx].updateWith = {
-            formatters,
-            scales,
-            data,
-            settings: comp
-          };
-        }
-      }
-
-      currentComponents.forEach((component) => {
-        if (component.updateWith) {
-          component.instance.set(component.updateWith);
+          toRender.push(component);
         }
       });
-      currentComponents.forEach((component) => {
-        if (component.updateWith) {
-          component.instance.beforeUpdate();
-        }
-      });
-
-      const { visible, hidden } = layout(currentComponents);
+    } else {
+      const { visible, hidden } = layout(currentComponents); // Relayout
       visibleComponents = visible;
-      const toUpdate = visible.filter(component => component.updateWith && component.visible);
-      const toRender = visible.filter(component => !component.updateWith || !component.visible);
+      visible.forEach((component) => {
+        if (component.updateWith && component.visible) {
+          toUpdate.push(component);
+        } else {
+          toRender.push(component);
+        }
+      });
 
       hidden.forEach((component) => {
         component.instance.hide();
         component.visible = false;
         delete component.updateWith;
       });
-
-      toRender.forEach(component => component.instance.beforeMount());
-      toRender.forEach(component => component.instance.mount());
-
-      toRender.forEach(component => component.instance.beforeRender());
-      toUpdate.forEach(component => component.instance.beforeRender());
-
-      toRender.forEach(component => component.instance.render());
-      toUpdate.forEach(component => component.instance.update());
-
-      toRender.forEach(component => component.instance.mounted());
-      toUpdate.forEach(component => component.instance.updated());
-      visible.forEach((component) => {
-        delete component.updateWith;
-        component.visible = true;
-      });
     }
+
+    toRender.forEach(component => component.instance.beforeMount());
+    toRender.forEach(component => component.instance.mount());
+
+    toRender.forEach(component => component.instance.beforeRender());
+    toUpdate.forEach(component => component.instance.beforeRender());
+
+    toRender.forEach(component => component.instance.render());
+    toUpdate.forEach(component => component.instance.update());
+
+    toRender.forEach(component => component.instance.mounted());
+    toUpdate.forEach(component => component.instance.updated());
+
+    visibleComponents.forEach((component) => {
+      delete component.updateWith;
+      component.visible = true;
+    });
 
     if (typeof updated === 'function') {
       updated.call(instance);
