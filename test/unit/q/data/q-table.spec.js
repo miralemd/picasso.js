@@ -45,6 +45,77 @@ describe('qTable', () => {
     });
   });
 
+  describe('hypercube with attribute expressions on dimension', () => {
+    let q;
+    beforeEach(() => {
+      q = qTable()({
+        qSize: { qcx: 3, qcy: 20 },
+        qDimensionInfo: [
+          {
+            qFallbackTitle: 'A',
+            qAttrExprInfo: [{
+              id: 'yes',
+              qFallbackTitle: 'wohoo'
+            }]
+          },
+          { qFallbackTitle: 'B' }
+        ],
+        qMeasureInfo: [{ qFallbackTitle: 'C' }],
+        qDataPages: [{ qMatrix: [] }]
+      });
+    });
+
+    it('should find an attribute expression field', () => {
+      expect(q.findField('/qDimensionInfo/0/qAttrExprInfo/0').title()).to.equal('wohoo');
+    });
+
+    it('should have proper data', () => {
+      expect(q.findField('/qDimensionInfo/0/qAttrExprInfo/0').data()).to.eql({
+        meta: { id: 'yes', qFallbackTitle: 'wohoo' },
+        pages: [{ qMatrix: [] }],
+        idx: 0,
+        attrIdx: 0
+      });
+    });
+  });
+
+  describe('hypercube with attribute expressions on measure', () => {
+    let q;
+    beforeEach(() => {
+      q = qTable()({
+        qSize: { qcx: 3, qcy: 20 },
+        qDimensionInfo: [
+          { qFallbackTitle: 'A' },
+          { qFallbackTitle: 'B' }
+        ],
+        qMeasureInfo: [
+          {},
+          {},
+          {
+            qFallbackTitle: 'C',
+            qAttrExprInfo: [{}, {
+              id: 'yes',
+              qFallbackTitle: 'wohoo'
+            }]
+          }],
+        qDataPages: [{ qMatrix: [] }]
+      });
+    });
+
+    it('should find an attribute expression field', () => {
+      expect(q.findField('/qMeasureInfo/2/qAttrExprInfo/1').title()).to.equal('wohoo');
+    });
+
+    it('should have proper data', () => {
+      expect(q.findField('/qMeasureInfo/2/qAttrExprInfo/1').data()).to.eql({
+        meta: { id: 'yes', qFallbackTitle: 'wohoo' },
+        pages: [{ qMatrix: [] }],
+        idx: 4,
+        attrIdx: 1
+      });
+    });
+  });
+
   describe('stackedobject', () => {
     let q;
     beforeEach(() => {

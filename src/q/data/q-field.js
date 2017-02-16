@@ -11,26 +11,29 @@ const specialTextValues = {
   }
 };
 
-function normalizeValues(path, data, meta) {
+function normalizeValues(path, data, meta, attrIdx) {
   let values = resolve(path, data);
   let normalized = new Array(values.length);
   let cell;
   for (let i = 0; i < values.length; i++) {
     cell = values[i];
+    if (typeof attrIdx !== 'undefined') {
+      cell = values[i].qAttrExps.qValues[attrIdx];
+    }
     normalized[i] = {
       value: cell.qNum,
       label: cell.qElemNumber in specialTextValues ? specialTextValues[cell.qElemNumber](meta) : cell.qText,
-      id: cell.qElemNumber
+      id: cell.qElemNumber || 0
     };
   }
   return normalized;
 }
 
-function collectStraightData(col, page, meta) {
+function collectStraightData(col, page, meta, attrIdx) {
   let values = [];
   let matrixColIdx = col - page.qArea.qLeft;
   if (matrixColIdx >= 0 && matrixColIdx < (page.qArea.qLeft + page.qArea.qWidth) && page.qArea.qHeight > 0) {
-    values = normalizeValues(`//${matrixColIdx}`, page.qMatrix, meta);
+    values = normalizeValues(`//${matrixColIdx}`, page.qMatrix, meta, attrIdx);
   }
   return values;
 }
@@ -48,7 +51,8 @@ function traverseNode(node) {
   let n = {
     qNum: node.qValue,
     qElemNumber: node.qElemNo,
-    qText: node.qText
+    qText: node.qText,
+    qAttrExps: node.qAttrExps
   };
   if (!children.length) {
     return [[n]];
@@ -95,20 +99,20 @@ function transformStackedToStraight(root) {
   return matrix;
 }
 
-function collectStackedData(col, page, meta) {
+function collectStackedData(col, page, meta, attrIdx) {
   let matrix = transformStackedToStraight(page.qData[0]);
-  return normalizeValues(`//${col}`, matrix, meta);
+  return normalizeValues(`//${col}`, matrix, meta, attrIdx);
 }
 
 // collect data over multiple pages
 // the pages are assumed to be ordered from top to bottom
-function collectData(col, pages, meta) {
+function collectData({ colIdx, pages, fieldMeta, attrIdx }) {
   let values = [];
   pages.forEach((p) => {
     if (p.qMatrix) {
-      values = values.concat(collectStraightData(col, p, meta));
+      values = values.concat(collectStraightData(colIdx, p, fieldMeta, attrIdx));
     } else if (p.qData) { // assume stacked data
-      values = values.concat(collectStackedData(col, p, meta));
+      values = values.concat(collectStackedData(colIdx, p, fieldMeta, attrIdx));
     }
   });
   return values;
@@ -124,7 +128,12 @@ const typeFn = (d) => {
 };
 const tagsFn = d => d.meta.qTags;
 const titleFn = d => d.meta.qFallbackTitle;
-const valuesFn = d => collectData(d.idx, d.pages, d.meta);
+const valuesFn = d => collectData({
+  colIdx: d.idx,
+  attrIdx: d.attrIdx,
+  pages: d.pages,
+  fieldMeta: d.meta
+});
 const formatterFn = (d) => {
   if (d.meta.qNumFormat && d.meta.qNumFormat.qType && ['U', 'I', 'R', 'F', 'M'].indexOf(d.meta.qNumFormat.qType) !== -1) {
     let pattern = d.meta.qNumFormat.qFmt;
