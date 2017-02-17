@@ -62,7 +62,7 @@ describe('point marker', () => {
       x: 50,
       y: 100,
       fill: '#999',
-      size: 7.75,
+      size: 10,
       stroke: '#ccc',
       strokeWidth: 0,
       opacity: 1,
@@ -94,7 +94,7 @@ describe('point marker', () => {
       x: 50,
       y: 100,
       fill: '#999',
-      size: 7.75,
+      size: 10,
       stroke: '#ccc',
       strokeWidth: 0,
       opacity: 1,
@@ -256,7 +256,7 @@ describe('point marker', () => {
       { m1: { value: 1 } }
     ]);
     const xScale = v => v;
-    xScale.step = () => 0.2; // max size: width * 0.2 -> 20
+    xScale.bandWidth = () => 0.2; // max size: width * 0.2 -> 20
     composer.scale.onCall(0).returns(xScale);
 
     createAndRenderPoint({

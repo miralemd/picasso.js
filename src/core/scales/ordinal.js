@@ -18,7 +18,7 @@ function unique(values) {
   });
 }
 
-function evalSetting(fields, settings, name) {
+function evalSetting(settings, fields, name) {
   if (typeof settings[name] === 'function') {
     return settings[name](fields);
   }
@@ -160,7 +160,7 @@ export default function ordinal(settings, fields, dataset) {
     fn.domain(uniq);
     fn.range(stgns.invert ? [1, 0] : [0, 1]);
 
-    fn.padding(isNaN(stgns.padding) ? 1 : stgns.padding);
+    fn.padding(isNaN(stgns.padding) ? 0 : stgns.padding);
     if (!isNaN(stgns.paddingInner)) { fn.paddingInner(stgns.paddingInner); }
     if (!isNaN(stgns.paddingOuter)) { fn.paddingOuter(stgns.paddingOuter); }
     fn.align(isNaN(stgns.align) ? 0.5 : stgns.align);

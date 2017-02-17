@@ -149,9 +149,9 @@ describe('Tick generators', () => {
 
       const ticks = generateDiscreteTicks({ data, scale });
       const expected = [
-        { position: 0, label: 'd1' },
-        { position: 0.3333333333333333, label: 'd2' },
-        { position: 0.6666666666666666, label: 'd3' }
+        { position: 0.16666666666666666, label: 'd1' },
+        { position: 0.5, label: 'd2' },
+        { position: 0.8333333333333333, label: 'd3' }
       ];
       expect(ticks).to.deep.equal(expected);
     });

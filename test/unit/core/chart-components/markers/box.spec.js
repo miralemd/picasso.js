@@ -93,9 +93,9 @@ describe('box marker', () => {
     }]);
 
     const xScale = v => v;
-    xScale.step = () => 0.5;
+    xScale.bandWidth = () => 0.5;
     const yScale = v => v;
-    yScale.step = () => 0.5;
+    yScale.bandWidth = () => 0.5;
     composer.scale.withArgs({ scale: 'x' }).returns(xScale);
     composer.scale.withArgs({ scale: 'y' }).returns(yScale);
 
@@ -114,8 +114,8 @@ describe('box marker', () => {
       stroke: '#f00',
       strokeWidth: 1,
       type: 'rect',
-      width: 38,
-      x: 31.5,
+      width: 50,
+      x: 49.5,
       y: 79.5
     },
     {
@@ -124,8 +124,8 @@ describe('box marker', () => {
       stroke: '#ff0',
       strokeWidth: 1,
       type: 'line',
-      x1: 49.5,
-      x2: 49.5,
+      x1: 74.5,
+      x2: 74.5,
       y1: 79.5,
       y2: 39.5
     },
@@ -135,8 +135,8 @@ describe('box marker', () => {
       stroke: '#ff0',
       strokeWidth: 1,
       type: 'line',
-      x1: 49.5,
-      x2: 49.5,
+      x1: 74.5,
+      x2: 74.5,
       y1: 159.5,
       y2: 119.5
     },
@@ -146,40 +146,40 @@ describe('box marker', () => {
       stroke: '#00f',
       strokeWidth: 1,
       type: 'line',
-      x1: 31.5,
-      x2: 68.5,
+      x1: 49.5,
+      x2: 99.5,
       y1: 99.5,
       y2: 99.5
     },
     {
-      cx: 50,
+      cx: 75,
       cy: 40,
       data: 0,
       fill: '',
-      r: 12.5,
+      r: 25,
       show: true,
       stroke: '#0f0',
       strokeWidth: 1,
       type: 'line',
-      width: 25,
-      x1: 37.5,
-      x2: 62.5,
+      width: 50,
+      x1: 49.5,
+      x2: 99.5,
       y1: 39.5,
       y2: 39.5
     },
     {
-      cx: 50,
+      cx: 75,
       cy: 160,
       data: 0,
       fill: '',
-      r: 12.5,
+      r: 25,
       show: true,
       stroke: '#0f0',
       strokeWidth: 1,
       type: 'line',
-      width: 25,
-      x1: 37.5,
-      x2: 62.5,
+      width: 50,
+      x1: 49.5,
+      x2: 99.5,
       y1: 159.5,
       y2: 159.5
     }]);
@@ -205,9 +205,9 @@ describe('box marker', () => {
     }]);
 
     const xScale = v => v;
-    xScale.step = () => 0.5;
+    xScale.bandWidth = () => 0.5;
     const yScale = v => v;
-    yScale.step = () => 0.5;
+    yScale.bandWidth = () => 0.5;
     composer.scale.withArgs({ scale: 'x' }).returns(xScale);
     composer.scale.withArgs({ scale: 'y' }).returns(yScale);
 
@@ -226,8 +226,8 @@ describe('box marker', () => {
       stroke: '#f00',
       strokeWidth: 1,
       type: 'rect',
-      width: 38,
-      x: 31.5,
+      width: 50,
+      x: 49.5,
       y: -0.5
     }]);
   });
@@ -252,9 +252,9 @@ describe('box marker', () => {
     }]);
 
     const xScale = v => v;
-    xScale.step = () => 0.5;
+    xScale.bandWidth = () => 0.5;
     const yScale = v => v;
-    yScale.step = () => 0.5;
+    yScale.bandWidth = () => 0.5;
     composer.scale.withArgs({ scale: 'x' }).returns(xScale);
     composer.scale.withArgs({ scale: 'y' }).returns(yScale);
 
@@ -273,8 +273,8 @@ describe('box marker', () => {
       stroke: '#f00',
       strokeWidth: 1,
       type: 'rect',
-      width: 38,
-      x: 31.5,
+      width: 50,
+      x: 49.5,
       y: 39.5
     }]);
   });
@@ -304,9 +304,9 @@ describe('box marker', () => {
     }]);
 
     const xScale = v => v;
-    xScale.step = () => 0.5;
+    xScale.bandWidth = () => 0.5;
     const yScale = v => v;
-    yScale.step = () => 0.5;
+    yScale.bandWidth = () => 0.5;
     composer.scale.withArgs({ scale: 'x' }).returns(xScale);
     composer.scale.withArgs({ scale: 'y' }).returns(yScale);
 
@@ -326,8 +326,8 @@ describe('box marker', () => {
         stroke: '#f00',
         strokeWidth: 1,
         type: 'rect',
-        width: 38,
-        x: 31.5,
+        width: 50,
+        x: 49.5,
         y: 79.5
       },
       {
@@ -336,8 +336,8 @@ describe('box marker', () => {
         stroke: '#000',
         strokeWidth: 1,
         type: 'line',
-        x1: 49.5,
-        x2: 49.5,
+        x1: 74.5,
+        x2: 74.5,
         y1: 79.5,
         y2: 39.5
       },
@@ -347,8 +347,8 @@ describe('box marker', () => {
         stroke: '#000',
         strokeWidth: 1,
         type: 'line',
-        x1: 49.5,
-        x2: 49.5,
+        x1: 74.5,
+        x2: 74.5,
         y1: 159.5,
         y2: 119.5
       }
@@ -423,77 +423,80 @@ describe('box marker', () => {
       config
     });
 
-    [{
-      type: 'rect',
-      x: -15.5,
-      y: 6.5,
-      height: 7,
-      width: 30,
-      show: true,
-      fill: '#fff',
-      stroke: '#f00',
-      strokeWidth: 1,
-      maxWidth: 100,
-      minWidth: 5,
-      data: 0
-    },
-    {
-      type: 'rect',
-      x: 24.5,
-      y: 6.5,
-      height: 7,
-      width: 30,
-      show: true,
-      fill: '#fff',
-      stroke: '#f00',
-      strokeWidth: 1,
-      maxWidth: 100,
-      minWidth: 5,
-      data: 1
-    },
-    {
-      type: 'rect',
-      x: 64.5,
-      y: 6.5,
-      height: 7,
-      width: 30,
-      show: true,
-      fill: '#fff',
-      stroke: '#f00',
-      strokeWidth: 1,
-      maxWidth: 100,
-      minWidth: 5,
-      data: 2
-    },
-    {
-      type: 'rect',
-      x: 105.5,
-      y: 6.5,
-      height: 7,
-      width: 30,
-      show: true,
-      fill: '#fff',
-      stroke: '#f00',
-      strokeWidth: 1,
-      maxWidth: 100,
-      minWidth: 5,
-      data: 3
-    },
-    {
-      type: 'rect',
-      x: 145.5,
-      y: 6.5,
-      height: 7,
-      width: 30,
-      show: true,
-      fill: '#fff',
-      stroke: '#f00',
-      strokeWidth: 1,
-      maxWidth: 100,
-      minWidth: 5,
-      data: 4
-    }].forEach((item) => {
-      expect(rendererOutput).to.deep.include(item);
-    });
+    const items = [
+      {
+        type: 'rect',
+        x: -0.5,
+        y: 6.5,
+        height: 7,
+        width: 40,
+        show: true,
+        fill: '#fff',
+        stroke: '#f00',
+        strokeWidth: 1,
+        maxWidth: 100,
+        minWidth: 5,
+        data: 0
+      },
+      {
+        type: 'rect',
+        x: 40.5,
+        y: 6.5,
+        height: 7,
+        width: 40,
+        show: true,
+        fill: '#fff',
+        stroke: '#f00',
+        strokeWidth: 1,
+        maxWidth: 100,
+        minWidth: 5,
+        data: 1
+      },
+      {
+        type: 'rect',
+        x: 79.5,
+        y: 6.5,
+        height: 7,
+        width: 40,
+        show: true,
+        fill: '#fff',
+        stroke: '#f00',
+        strokeWidth: 1,
+        maxWidth: 100,
+        minWidth: 5,
+        data: 2
+      },
+      {
+        type: 'rect',
+        x: 120.5,
+        y: 6.5,
+        height: 7,
+        width: 40,
+        show: true,
+        fill: '#fff',
+        stroke: '#f00',
+        strokeWidth: 1,
+        maxWidth: 100,
+        minWidth: 5,
+        data: 3
+      },
+      {
+        type: 'rect',
+        x: 159.5,
+        y: 6.5,
+        height: 7,
+        width: 40,
+        show: true,
+        fill: '#fff',
+        stroke: '#f00',
+        strokeWidth: 1,
+        maxWidth: 100,
+        minWidth: 5,
+        data: 4
+      }
+    ];
+
+    const rects = rendererOutput.filter(o => o.type === 'rect');
+    expect(rects).to.deep.equal(items);
   });
 });

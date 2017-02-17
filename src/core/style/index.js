@@ -171,6 +171,9 @@ export function resolveForDataObject(props, dataObj, index) {
       }
     } else if (hasScale && (hasImplicitDataProp || hasExplicitDataProp)) {
       ret[s] = props[s].scale(propData);
+      if (props[s].scale.bandWidth) {
+        ret[s] += props[s].scale.bandWidth() / 2;
+      }
     } else if (hasExplicitDataProp) {
       ret[s] = propData.value;
     } else {

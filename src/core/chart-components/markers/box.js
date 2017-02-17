@@ -19,14 +19,14 @@ const DEFAULT_STYLE_SETTINGS = {
     strokeWidth: 1,
     fill: '',
     type: 'line',
-    width: 0.5
+    width: 1
   },
   box: {
     show: true,
     fill: '#fff',
     stroke: '#000',
     strokeWidth: 1,
-    width: 0.75,
+    width: 1,
     maxWidth: 100,
     minWidth: 5
   }

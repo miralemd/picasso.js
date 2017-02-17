@@ -35,8 +35,9 @@ describe('OrdinalScale', () => {
     it('should return correct field values', () => {
       fieldValues = ['A', 'B', 'C'].map(v => ({ label: v, id: v }));
       scale = ordinal(settings, fields, dataset);
-      expect(scale.get('A')).to.equal(0.25);
-      expect(scale.get('C')).to.equal(0.75);
+      expect(scale.get('A')).to.equal(0);
+      expect(scale.get('B')).to.equal(1 / 3);
+      expect(scale.get('C')).to.equal(2 / 3);
     });
   });
 

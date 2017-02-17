@@ -84,7 +84,7 @@ export function generateDiscreteTicks({ scale }) {
 
   return dataSet.map((d) => { // eslint-disable-line arrow-body-style
     return {
-      position: scale(d),
+      position: scale(d) + (scale.bandWidth() / 2),
       label: `${'label' in d ? d.label : d.value}`
     };
   });
