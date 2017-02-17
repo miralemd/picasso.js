@@ -4,17 +4,60 @@
 
 ### Breaking changes
 
-- chartInstance.getAffectedShapes() now return an array of sceneObjects instead
+- `chart.getAffectedShapes()` now returns an array of `sceneObjects`
 
 ### Added
 
-- PIC-64 chartInstance.findShapes() takes a css selector and return shapes in a chart, as an array of sceneObjects
+- PIC-60 Basic sequential color scale:
+
+    ```js
+    fill: {
+      ref: 'a',
+      scale: {
+        source: '/qHyperCube/qDimensionInfo/0/qAttrExprInfo/0',
+        type: 'color-sequential',
+        range: ['darkred', 'orange', 'green']
+      }
+    }
+    ```
+
+- PIC-64 `chart.findShapes()` takes a css selector and return shapes in a chart, as an array of `sceneObjects`
+
+    ```js
+    chart.findShapes('circle');
+    chart.findShapes('circle[fill="red"]');
+    ```
+
+- PIC-67 Basic quantized color scale:
+
+    ```js
+    fill: {
+      ref: 'a',
+      scale: {
+        source: '/qHyperCube/qDimensionInfo/0/qAttrExprInfo/0',
+        type: 'color-threshold',
+        range: ['red', 'green', 'blue'],
+        domain: [100, 200]
+      }
+    }
+    ```
+
+- PIC-70 Support for attribute expressions on measures and dimensions:
+
+    ```js
+    source: '/qHyperCube/qMeasureInfo/1/qAttrExprInfo/0'
+    ```
+
+- PIC-77 Values are abbreviated when format type is inconclusive
+
 
 ### Fixed
 
-- Ordinal scale now respect it's settings
-- Oridnal scale changed to behave as a band scale
-- Components respect the ordinal scale properly and us bandwidth to handle default sizing
+- Ordinal scale does not use provided settings
+- Ordinal scale changed to behave as a band scale
+- Components respect the ordinal scale properly and use bandwidth to handle default sizing
+- PIC-72 Components do not update dock property
+- PIC-75 `NaN` values on measures messes up the min/max on the scale
 
 ## 0.8.0
 
