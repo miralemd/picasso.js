@@ -1,6 +1,20 @@
 # Changelog
 
-## [Unreleased]
+## [BREAKING] Unreleased
+
+### Breaking changes
+
+- chartInstance.getAffectedShapes() now return an array of sceneObjects instead
+
+### Added
+
+- PIC-64 chartInstance.findShapes() takes a css selector and return shapes in a chart, as an array of sceneObjects
+
+### Fixed
+
+- Ordinal scale now respect it's settings
+- Oridnal scale changed to behave as a band scale
+- Components respect the ordinal scale properly and us bandwidth to handle default sizing
 
 ## 0.8.0
 
