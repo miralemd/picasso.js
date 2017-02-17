@@ -1,6 +1,6 @@
 import field from '../../core/data/field';
 import resolve from '../../core/data/json-path-resolver';
-import { formatter } from '../../core/formatter';
+import { createFromMetaInfo } from '../formatter';
 
 const specialTextValues = {
   '-3': (meta) => {
@@ -134,22 +134,7 @@ const valuesFn = d => collectData({
   pages: d.pages,
   fieldMeta: d.meta
 });
-const formatterFn = (d) => {
-  if (d.meta.qNumFormat && d.meta.qNumFormat.qType && ['U', 'I', 'R', 'F', 'M'].indexOf(d.meta.qNumFormat.qType) !== -1) {
-    let pattern = d.meta.qNumFormat.qFmt;
-    const thousand = d.meta.qNumFormat.qThou || ',';
-    const decimal = d.meta.qNumFormat.qDec || '.';
-    const type = d.meta.qNumFormat.qType || 'U';
-
-    if (type === 'U') {
-      pattern = `#${decimal}##A`;
-    }
-    return formatter('q')('number')(pattern, thousand, decimal, type);
-  } else if (d.meta.qNumFormat && d.meta.qNumFormat.qType && ['D', 'T', 'TS', 'IV'].indexOf(d.meta.qNumFormat.qType) !== -1) {
-    return formatter('q')('time')(d.meta.qNumFormat.qFmt, d.meta.qNumFormat.qType);
-  }
-  return v => v;
-};
+const formatterFn = d => createFromMetaInfo(d.meta);
 
 export default function qField({ id } = {}) {
   return field({
