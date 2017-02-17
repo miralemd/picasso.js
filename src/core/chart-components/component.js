@@ -292,19 +292,20 @@ export default function componentFactory(definition) {
       const shapes = [];
       if (config.brush && config.brush.trigger) {
         const brusher = composer.brush(context);
-        const nodes = brushArgs.nodes;
-        const len = nodes.length;
+        const sceneObjects = rend.findShapes('*');
         config.brush.trigger.forEach((b) => {
-          for (let i = 0; i < len; i++) {
-            let nodeData = data[nodes[i].data];
+          sceneObjects.forEach((sceneObject) => {
+            const nodeData = data[sceneObject.data];
             if (nodeData && brusher.containsMappedData(nodeData, props || b.data, mode)) {
-              shapes.push({ shape: nodes[i], parent: element });
+              shapes.push(sceneObject);
             }
-          }
+          });
         });
       }
       return shapes;
     };
+
+    fn.findShapes = selector => rend.findShapes(selector);
 
     fn.mount = () => {
       element = rend.element && rend.element() ? element : rend.appendTo(container);

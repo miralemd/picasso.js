@@ -2,6 +2,8 @@ import Node from '../node';
 import { create as geometry } from '../../geometry';
 import Matrix from '../../math/matrix';
 import resolveTransform from './../transform-resolver';
+import nodeSelector from './../node-selector';
+import createSceneObject from './../scene-object';
 import { resolveCollionsOnNode, hasCollisionOnNode } from '../collision-resolver';
 
 class DisplayObject extends Node {
@@ -96,6 +98,10 @@ class DisplayObject extends Node {
     }
 
     return this._collider;
+  }
+
+  findShapes(selector) {
+    return nodeSelector.find(selector, this).map(node => createSceneObject(node));
   }
 
   getItemsFrom(shape) {

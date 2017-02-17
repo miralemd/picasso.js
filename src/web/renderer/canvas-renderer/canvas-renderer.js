@@ -151,6 +151,16 @@ export function renderer(sceneFn = sceneFactory) {
 
   canvasRenderer.itemsAt = options => (scene ? scene.getItemsFrom(options) : []);
 
+  canvasRenderer.findShapes = (selector) => {
+    if (scene) {
+      return scene.findShapes(selector).map((s) => {
+        s.element = canvasRenderer.element();
+        return s;
+      });
+    }
+    return [];
+  };
+
   canvasRenderer.clear = () => {
     if (!el) {
       return;

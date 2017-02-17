@@ -374,6 +374,24 @@ function createInstance(definition) {
   };
 
   /**
+   * Get all nodes matching the provided selector
+   * @param {String} selector CSS selector [type, attribute or universal]
+   * @return {Object[]} Array of objects containing matching nodes
+   *
+   * @example
+   * chart.findShapes('Circle') // [<CircleNode>, <CircleNode>]
+   * chart.findShapes('Circle[fill="red"][stroke!="black"]') // [CircleNode, CircleNode]
+   * chart.findShapes('Container Rect') // [Rect, Rect]
+   */
+  instance.findShapes = (selector) => {
+    const shapes = [];
+    visibleComponents.forEach((c) => {
+      shapes.push(...c.instance.findShapes(selector));
+    });
+    return shapes;
+  };
+
+  /**
    * @return {scroll-api}
    */
   instance.scroll = (...v) => composer.scroll(...v);

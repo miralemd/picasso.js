@@ -6,7 +6,7 @@ export default class Text extends DisplayObject {
     this.set(...s);
   }
 
-  set(v) {
+  set(v = {}) {
     const { x, y, dx, dy, text, collider } = v;
     super.set(v);
     super.collider(collider);
