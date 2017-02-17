@@ -73,6 +73,14 @@ function prepareContext(ctx, definition, opts) {
   });
 }
 
+function updateDockConfig(config, settings) {
+  config.displayOrder = settings.displayOrder;
+  config.dock = settings.dock;
+  config.prioOrder = settings.prioOrder;
+  config.minimumLayoutMode = settings.minimumLayoutMode;
+  return config;
+}
+
 // First render
 // preferredSize -> resize -> beforeRender -> render -> mounted
 
@@ -156,12 +164,9 @@ export default function componentFactory(definition) {
         inner,
         outer,
         dock: dockConfig.dock
-      }),
-      displayOrder: settings.displayOrder,
-      prioOrder: settings.prioOrder,
-      minimumLayoutMode: settings.minimumLayoutMode,
-      dock: settings.dock
+      })
     };
+    updateDockConfig(dockConfig, settings);
 
     const fn = () => {};
 
@@ -171,6 +176,7 @@ export default function componentFactory(definition) {
     fn.set = (opts = {}) => {
       if (opts.settings) {
         settings = extend(true, {}, defaultSettings, opts.settings);
+        updateDockConfig(dockConfig, settings);
       }
 
       if (typeof settings.scale === 'string') {
