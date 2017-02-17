@@ -1,4 +1,3 @@
-import config from '../../../config';
 import sceneFactory from '../../../core/scene-graph/scene';
 import { registry } from '../../../core/utils/registry';
 import { measureText } from '../text-metrics';
@@ -109,7 +108,7 @@ export function renderer(sceneFn = sceneFactory) {
 
   canvasRenderer.render = (shapes) => {
     if (!el) {
-      return config.Promise.reject();
+      return false;
     }
 
     const g = el.getContext('2d');
@@ -146,7 +145,7 @@ export function renderer(sceneFn = sceneFactory) {
 
     hasChangedRect = false;
     scene = newScene;
-    return config.Promise.resolve(doRender);
+    return doRender;
   };
 
   canvasRenderer.itemsAt = options => (scene ? scene.getItemsFrom(options) : []);

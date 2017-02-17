@@ -1,5 +1,4 @@
 import renderer from '../../../../../src/web/renderer/canvas-renderer';
-import config from '../../../../../src/config';
 import element from '../../../../mocks/element-mock';
 
 describe('canvas renderer', () => {
@@ -9,16 +8,11 @@ describe('canvas renderer', () => {
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
-    config.Promise = {
-      resolve: sandbox.stub(),
-      reject: sandbox.stub()
-    };
     scene = sandbox.stub();
     r = renderer(scene);
   });
 
   afterEach(() => {
-    config.Promise = global.Promise;
     sandbox.restore();
   });
 
@@ -38,16 +32,14 @@ describe('canvas renderer', () => {
     expect(el.style['-moz-osx-font-smoothing']).to.equal('antialiased');
   });
 
-  it('should return rejected promise when no canvas is initiated', () => {
-    r.render();
-    expect(config.Promise.reject.callCount).to.equal(1);
+  it('should not render when canvas does not exist', () => {
+    expect(r.render()).to.equal(false);
   });
 
-  it('should return resolved promise when canvas exists', () => {
+  it('should render when canvas exists', () => {
     r.appendTo(element('div'));
     scene.returns({ children: [] });
-    r.render();
-    expect(config.Promise.resolve.callCount).to.equal(1);
+    expect(r.render()).to.equal(true);
   });
 
   it('should return zero size when canvas is not initiated', () => {

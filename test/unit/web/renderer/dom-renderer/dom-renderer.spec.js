@@ -1,6 +1,4 @@
-// import { h } from '../../../../../src/web/renderer/dom-renderer/vdom';
 import renderer from '../../../../../src/web/renderer/dom-renderer/dom-renderer';
-import config from '../../../../../src/config';
 import element from '../../../../mocks/element-mock';
 
 describe('dom renderer', () => {
@@ -9,10 +7,6 @@ describe('dom renderer', () => {
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
-    config.Promise = {
-      resolve: sandbox.spy(),
-      reject: sandbox.spy()
-    };
     rend = renderer({
       createElement: element,
       createTextNode: text => text
@@ -21,7 +15,6 @@ describe('dom renderer', () => {
 
   afterEach(() => {
     sandbox.restore();
-    config.Promise = global.Promise;
   });
 
   it('should be a function', () => {
@@ -65,9 +58,8 @@ describe('dom renderer', () => {
     });
     */
 
-    it('should reject promise when rendering before appending', () => {
-      rend.render();
-      expect(config.Promise.reject.callCount).to.equal(1);
+    it('should not render before appending', () => {
+      expect(rend.render()).to.equal(false);
     });
 
     /*

@@ -1,4 +1,3 @@
-import config from '../../../config';
 import { h, patch } from './vdom';
 import { measureText } from '../text-metrics';
 
@@ -54,7 +53,7 @@ export default function renderer(opts = {}) {
 
   dom.render = (nodes) => {
     if (!el) {
-      return config.Promise.reject();
+      return false;
     }
 
     const scaleX = rect.scaleRatio.x;
@@ -74,7 +73,7 @@ export default function renderer(opts = {}) {
     }
     vnode = node;
 
-    return config.Promise.resolve(true);
+    return true;
   };
 
   dom.renderArgs = [h]; // Arguments to render functions using the DOM renderer
