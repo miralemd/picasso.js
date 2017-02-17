@@ -13,8 +13,9 @@ reg.add('color', color);
 reg.add('color-sequential', sequential);
 reg.add('color-threshold', threshold);
 
-function getTypeFromMeta(field) {
-  return isNaN(field.min()) ? 'ordinal' : 'linear';
+function getTypeFromMeta(fields) {
+  const types = fields.map(field => (field.type() === 'dimension' ? 'ordinal' : 'linear'));
+  return types.indexOf('linear') !== -1 ? 'linear' : 'ordinal';
 }
 
 function findFields(dataset, sources) {
@@ -28,7 +29,7 @@ function deduceScaleTypeFromOptions(options, fields) {
   if (options.colors) {
     return 'color';
   } else if (fields[0]) {
-    return getTypeFromMeta(fields[0]);
+    return getTypeFromMeta(fields);
   }
   return 'linear';
 }
