@@ -256,19 +256,18 @@ function createInstance(definition) {
     }
 
     // Let the "components" array determine order of components
-    currentComponents = components.map((component, i) => {
-      const comp = components[i];
-      const idx = findComponentIndexByKey(comp.key);
+    currentComponents = components.map((component) => {
+      const idx = findComponentIndexByKey(component.key);
       if (idx === -1) {
         // Component is added
-        return composer.createComponent(comp, element);
+        return composer.createComponent(component, element);
       }
       // Component is (potentially) updated
       currentComponents[idx].updateWith = {
         formatters,
         scales,
         data,
-        settings: comp
+        settings: component
       };
       return currentComponents[idx];
     });
