@@ -19,6 +19,18 @@ describe('table', () => {
       expect(dd.fields().map(f => f.title())).to.eql(['Country', 'Population']);
     });
 
+    it('should have type on fields', () => {
+      expect(dd.fields().map(f => f.type())).to.eql(['dimension', 'measure']);
+    });
+
+    it('should have min on fields', () => {
+      expect(dd.fields().map(f => f.min())).to.eql([NaN, -345]);
+    });
+
+    it('should have max on fields', () => {
+      expect(dd.fields().map(f => f.max())).to.eql([NaN, 123]);
+    });
+
     it('should extract values from fields', () => {
       expect(dd.fields().map(f => f.values())).to.eql([
         [{ id: 'Sweden', label: 'Sweden', value: 'Sweden' }, { id: 'Norway', label: 'Norway', value: 'Norway' }],

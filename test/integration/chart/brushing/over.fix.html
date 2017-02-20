@@ -1,0 +1,96 @@
+<html lang="en">
+<head>
+	<title>Component Test</title>
+	<meta charset="utf-8">
+  <base href="/dist/">
+  <script src="picasso.js"></script>
+	<style>
+		#container {
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="container" ></div>
+
+  <script>
+  let data = {
+    data: [
+      [
+        ['Product', 'Cost'],
+        ['Cars', 150000],
+        ['Trucks', 450000]
+      ]
+    ]
+  };
+
+  let brush = {
+    trigger: [
+      {
+        action: 'over',
+        contexts: ['test']
+      }
+    ],
+    consume: [{
+      context: 'test',
+        style: {
+          inactive: {
+          fill: 'red'
+        }
+      }
+    }]
+  };
+
+  let pointMarker = {
+    type: 'point-marker',
+      data: {
+        mapTo: {
+          x: {
+            source: '/0/0', reducer: 'first', type: 'qual'
+          },
+          y: {
+            source: '/0/1'
+          }
+        },
+        groupBy: {
+          source: '/0/0',
+          attribute: '$index'
+        }
+      },
+      settings: {
+        x: {
+          scale: 'd0',
+          ref: 'x'
+        },
+        y: {
+          scale: 'm0',
+          ref: 'y'
+        }
+      },
+      brush
+    };
+
+  let settings = {
+    scales: {
+      d0: {
+        source: '/0/0'
+      },
+      m0: {
+        source: '/0/1',
+        expand: 1 // Expand so that shapes dont end up at the boundaries
+      }
+    },
+    components: [pointMarker]
+  };
+  let element = document.getElementById("container");
+  window.fixture = picasso.chart({
+    element,
+    data,
+    settings
+  });
+  </script>
+</body>
+
+</html>

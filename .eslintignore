@@ -1,4 +1,5 @@
 dist/*
-coverage/*
+test/unit/coverage/*
+test/component/coverage/*
 docs/node_modules/*
 test/config/*.js

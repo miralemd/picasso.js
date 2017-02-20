@@ -2,15 +2,33 @@
 import field from './field';
 import resolve from './json-path-resolver';
 
+const filters = {
+  numeric: values => values.filter(v => typeof v === 'number' && !isNaN(v))
+};
+
 const fieldsFactory = (matrix) => {
   let headers = matrix[0]; // assume headers are in first row TODO - add headers config
 
   let content = matrix.slice(1);
 
-  let ff = headers.map((a, i) => field({ id: `/${i}` })({
-    title: headers[i],
-    values: resolve(`//${i}`, content).map(v => ({ value: v, label: String(v), id: String(v) }))
-  }));
+  let ff = headers.map((a, i) => {
+    const values = resolve(`//${i}`, content);
+    const numericValues = filters.numeric(values);
+    const isMeasure = numericValues.length > 0;
+    const type = isMeasure ? 'measure' : 'dimension';
+    const min = isMeasure ? Math.min(...numericValues) : NaN;
+    const max = isMeasure ? Math.max(...numericValues) : NaN;
+    const normalizedValues = values.map(v => ({ value: v, label: String(v), id: String(v) }));
+    // TODO Deal with tags
+
+    return field({ id: `/${i}` })({
+      title: headers[i],
+      values: normalizedValues,
+      min,
+      max,
+      type
+    });
+  });
   return ff;
 };
 

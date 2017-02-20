@@ -18,12 +18,16 @@
     "docs": "cd docs && npm run docs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "aw-test-runner ./test/unit/**/*.spec.js",
-    "test:watch": "aw-test-runner ./test/unit/**/*.spec.js -w",
-    "test:coverage": "aw-test-coverage ./test/unit/**/*.spec.js",
-    "test:component:local": "node node_modules/after-work.js/node_modules/protractor/bin/webdriver-manager update --standalone false && aw-webdriver-test-runner ./test/config/aw-config.js --specs ./test/**/*.comp.js",
-    "test:component:remote": "aw-webdriver-test-runner ./test/config/aw-config-remote.js --specs test/**/*.comp.js",
-    "test:component:server": "aw-web-server -c ./test/config/aw-webserver-config.json"
+    "test": "npm run test:unit && npm run test:component",
+    "test:coverage": "npm run test:unit:coverage && npm run test:component:coverage",
+    "test:unit": "aw-test-runner ./test/unit/**/*.spec.js",
+    "test:unit:watch": "aw-test-runner ./test/unit/**/*.spec.js -w",
+    "test:unit:coverage": "aw-test-coverage ./test/unit/**/*.spec.js --dir test/unit/coverage",
+    "test:component": "aw-test-runner ./test/component/**/*.comp.js",
+    "test:component:coverage": "aw-test-coverage ./test/component/**/*.comp.js  --dir test/component/coverage",
+    "test:integration:local": "node node_modules/after-work.js/node_modules/protractor/bin/webdriver-manager update --standalone false && aw-webdriver-test-runner ./test/config/aw-config.js --specs ./test/integration/**/*.int.js --aw-artifacts-path ./test/integration/artifacts",
+    "test:integration:remote": "aw-webdriver-test-runner ./test/config/aw-config-remote.js --specs test/integration/**/*.int.js --aw-artifacts-path ./test/integration/artifacts",
+    "fixture:server": "aw-web-server -c ./test/config/aw-webserver-config.json"
   },
   "files": [
     "/dist"

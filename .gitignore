@@ -7,9 +7,11 @@
 node_modules/
 dist/
 coverage/
+test/unit/coverage/
+test/component/coverage/
 docs/api
-test/component/artifacts/diff/
-test/component/artifacts/regression/
-test/component/artifacts/screenshots/
-test/component/artifacts/*.html
-test/component/artifacts/*.json
+test/integration/artifacts/diff/
+test/integration/artifacts/regression/
+test/integration/artifacts/screenshots/
+test/integration/artifacts/*.html
+test/integration/artifacts/*.json

@@ -1,25 +1,24 @@
 machine:
     node:
         version: 4.4.7
-    environment:
-        DBUS_SESSION_BUS_ADDRESS: /dev/null
 
 general:
     artifacts:
-        - "coverage/"
         - "dist/"
         - "docs/dist/"
-        - "test/component/artifacts/"
+        - "test/component/coverage/"
+        - "test/integration/artifacts/"
+        - "test/unit/coverage/"
 
 dependencies:
     override:
         - curl -u${ARTIFACTORY_USER}:${ARTIFACTORY_PWD} "https://qliktech.artifactoryonline.com/qliktech/api/npm/npm-local/auth/qlik" > ./.npmrc
         - npm install
     post:
+        - npm run lint
         - npm run build
         - cd docs && npm install && npm run docs
 
 test:
     override:
         - npm run test:coverage
-        - npm run lint

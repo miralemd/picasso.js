@@ -1,4 +1,4 @@
-function element(name) {
+function element(name, rect = { x: 0, y: 0, width: 100, height: 100 }) {
   const e = {
     name,
     attributes: {},
@@ -50,6 +50,14 @@ function element(name) {
       this.listeners
         .filter(l => typeof l[listenerKey] !== 'undefined')
         .forEach(l => l[listenerKey].call(this, arg));
+    },
+    getBoundingClientRect() {
+      return {
+        left: rect.x,
+        top: rect.y,
+        width: rect.width,
+        height: rect.height
+      };
     }
   };
 
@@ -61,7 +69,8 @@ function element(name) {
       arc: () => {},
       fill: () => {},
       restore: () => {},
-      rect: () => {}
+      rect: () => {},
+      measureText: text => ({ width: text.length })
     });
   }
 

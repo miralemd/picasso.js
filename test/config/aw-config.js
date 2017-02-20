@@ -4,17 +4,19 @@ var httpServer = require( "after-work.js/dist/utils" ).httpServer;
 
 var repoConfig = {
   config: {
+    // directConnect: false,
     // multiCapabilities: [
     //   { "browserName": "chrome"	},
     //   { "browserName": "firefox"	},
-    //   { "browserName": "egde"}
+    //   { "browserName": "internet explorer" }
     // ],
     beforeLaunch: function() {
       return httpServer( {
         server: {
           baseDir: "./",
           routes: {
-            "/src": "./src"
+            "/dist": "dist",
+            "/fixtures": "test/integration"
           }
         },
         scrollRestoreTechnique: "cookie"
