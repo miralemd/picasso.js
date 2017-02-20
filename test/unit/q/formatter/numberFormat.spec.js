@@ -312,6 +312,20 @@ describe('numberFormat', () => {
           expect(f(-1.234)).to.equal('(1.2)');
         });
 
+        it('should support zero formatting', () => {
+          f = formatter('0.0;(0.0);zero');
+          expect(f(0)).to.equal('zero');
+        });
+
+        it('should use list separator from locale info', () => {
+          f = formatter('0.0|(0.0)|zero', '', '', '', {
+            qListSep: '|'
+          });
+          expect(f(1)).to.equal('1.0');
+          expect(f(-2)).to.equal('(2.0)');
+          expect(f(0)).to.equal('zero');
+        });
+
         it('should support hexadecimal formatting', () => {
           f = formatter('(hex)');
 

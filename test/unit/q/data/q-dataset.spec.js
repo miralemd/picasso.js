@@ -2,6 +2,7 @@ import qDataset from '../../../../src/q/data/q-dataset';
 
 describe('qdataset', () => {
   const layout = {
+    qLocaleInfo: 'locale stuff',
     foo: {
       qHyperCube: 'foo-data'
     },
@@ -48,11 +49,11 @@ describe('qdataset', () => {
 
   it('should have tables with data', () => {
     const tables = d.tables();
-    expect(tables[0].data()).to.equal('foo-data');
-    expect(tables[1].data()).to.equal('layers-0-data');
-    expect(tables[2].data()).to.equal('layers-1-data');
-    expect(tables[3].data()).to.equal('lista');
-    expect(tables[4].data()).to.equal('liistaa');
-    expect(tables[5].data()).to.equal('root-data');
+    expect(tables[0].data()).to.eql({ cube: 'foo-data', localeInfo: 'locale stuff' });
+    expect(tables[1].data()).to.eql({ cube: 'layers-0-data', localeInfo: 'locale stuff' });
+    expect(tables[2].data()).to.eql({ cube: 'layers-1-data', localeInfo: 'locale stuff' });
+    expect(tables[3].data()).to.eql({ cube: 'lista', localeInfo: 'locale stuff' });
+    expect(tables[4].data()).to.eql({ cube: 'liistaa', localeInfo: 'locale stuff' });
+    expect(tables[5].data()).to.eql({ cube: 'root-data', localeInfo: 'locale stuff' });
   });
 });

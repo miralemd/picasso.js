@@ -1,7 +1,7 @@
 import numberFormatFactory from './parts/qs-number-formatter';
 
-export default function formatter(pattern, thousand, decimal, qType) {
-  const qformat = numberFormatFactory(null, pattern, thousand, decimal, qType);
+export default function formatter(pattern, thousand, decimal, qType, localeInfo) {
+  const qformat = numberFormatFactory(localeInfo, pattern, thousand, decimal, qType);
 
   /**
    * Format a value according to the specified pattern created at construct

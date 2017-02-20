@@ -26,7 +26,10 @@ function findCubes(layout) {
 
 function tablesFn(layout) {
   const paths = findCubes(layout);
-  return paths.map(p => qTable({ id: p })(resolve(p, layout)));
+  return paths.map(p => qTable({ id: p })({
+    cube: resolve(p, layout),
+    localeInfo: layout.qLocaleInfo
+  }));
 }
 
 export default function qDataset() {

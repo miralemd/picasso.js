@@ -5,10 +5,13 @@ describe('qTable', () => {
     let q;
     beforeEach(() => {
       q = qTable()({
-        qSize: { qcx: 3, qcy: 20 },
-        qDimensionInfo: [{ qFallbackTitle: 'A' }, { qFallbackTitle: 'B' }],
-        qMeasureInfo: [{ qFallbackTitle: 'C' }],
-        qDataPages: [{ qMatrix: [] }]
+        localeInfo: 'locale specific stuff',
+        cube: {
+          qSize: { qcx: 3, qcy: 20 },
+          qDimensionInfo: [{ qFallbackTitle: 'A' }, { qFallbackTitle: 'B' }],
+          qMeasureInfo: [{ qFallbackTitle: 'C' }],
+          qDataPages: [{ qMatrix: [] }]
+        }
       });
     });
   /*
@@ -43,25 +46,37 @@ describe('qTable', () => {
     it('should return undefined when field can not be found', () => {
       expect(q.findField('asd')).to.equal(undefined);
     });
+
+    it('should have proper data sent to a field', () => {
+      expect(q.findField('C').data()).to.eql({
+        meta: { qFallbackTitle: 'C' },
+        pages: [{ qMatrix: [] }],
+        idx: 2,
+        localeInfo: 'locale specific stuff'
+      });
+    });
   });
 
   describe('hypercube with attribute expressions on dimension', () => {
     let q;
     beforeEach(() => {
       q = qTable()({
-        qSize: { qcx: 3, qcy: 20 },
-        qDimensionInfo: [
-          {
-            qFallbackTitle: 'A',
-            qAttrExprInfo: [{
-              id: 'yes',
-              qFallbackTitle: 'wohoo'
-            }]
-          },
-          { qFallbackTitle: 'B' }
-        ],
-        qMeasureInfo: [{ qFallbackTitle: 'C' }],
-        qDataPages: [{ qMatrix: [] }]
+        cube: {
+          qSize: { qcx: 3, qcy: 20 },
+          qDimensionInfo: [
+            {
+              qFallbackTitle: 'A',
+              qAttrExprInfo: [{
+                id: 'yes',
+                qFallbackTitle: 'wohoo'
+              }]
+            },
+            { qFallbackTitle: 'B' }
+          ],
+          qMeasureInfo: [{ qFallbackTitle: 'C' }],
+          qDataPages: [{ qMatrix: [] }]
+        },
+        localeInfo: 'locale stuff'
       });
     });
 
@@ -74,7 +89,8 @@ describe('qTable', () => {
         meta: { id: 'yes', qFallbackTitle: 'wohoo' },
         pages: [{ qMatrix: [] }],
         idx: 0,
-        attrIdx: 0
+        attrIdx: 0,
+        localeInfo: 'locale stuff'
       });
     });
   });
@@ -82,7 +98,7 @@ describe('qTable', () => {
   describe('hypercube with attribute expressions on measure', () => {
     let q;
     beforeEach(() => {
-      q = qTable()({
+      q = qTable()({ cube: {
         qSize: { qcx: 3, qcy: 20 },
         qDimensionInfo: [
           { qFallbackTitle: 'A' },
@@ -99,7 +115,7 @@ describe('qTable', () => {
             }]
           }],
         qDataPages: [{ qMatrix: [] }]
-      });
+      } });
     });
 
     it('should find an attribute expression field', () => {
@@ -111,7 +127,8 @@ describe('qTable', () => {
         meta: { id: 'yes', qFallbackTitle: 'wohoo' },
         pages: [{ qMatrix: [] }],
         idx: 4,
-        attrIdx: 1
+        attrIdx: 1,
+        localeInfo: undefined
       });
     });
   });
@@ -120,29 +137,32 @@ describe('qTable', () => {
     let q;
     beforeEach(() => {
       q = qTable()({
-        qSize: { qcx: 3, qcy: 20 },
-        qDimensionInfo: [{ qFallbackTitle: 'A' }, { qFallbackTitle: 'B' }],
-        qMeasureInfo: [{ qFallbackTitle: 'C' }],
-        qMode: 'K',
-        qEffectiveInterColumnSortOrder: [1, 0],
-        qStackedDataPages: [{ qData: [
-          {
-            qType: 'R',
-            qElemNo: 0,
-            qSubNodes: [
-              {
-                qText: 'Alpha',
-                qElemNo: 1,
-                qValue: 'NaN'
-              },
-              {
-                qText: 'Beta',
-                qElemNo: 3,
-                qValue: 2
-              }
-            ]
-          }
-        ] }]
+        cube: {
+          qSize: { qcx: 3, qcy: 20 },
+          qDimensionInfo: [{ qFallbackTitle: 'A' }, { qFallbackTitle: 'B' }],
+          qMeasureInfo: [{ qFallbackTitle: 'C' }],
+          qMode: 'K',
+          qEffectiveInterColumnSortOrder: [1, 0],
+          qStackedDataPages: [{ qData: [
+            {
+              qType: 'R',
+              qElemNo: 0,
+              qSubNodes: [
+                {
+                  qText: 'Alpha',
+                  qElemNo: 1,
+                  qValue: 'NaN'
+                },
+                {
+                  qText: 'Beta',
+                  qElemNo: 3,
+                  qValue: 2
+                }
+              ]
+            }
+          ] }]
+        },
+        localeInfo: 'locale specific stuff'
       });
     });
 
@@ -156,6 +176,10 @@ describe('qTable', () => {
 
     it('should find a measure field', () => {
       expect(q.findField('/qMeasureInfo/0').title()).to.equal('C');
+    });
+
+    it('should should have locale data', () => {
+      expect(q.findField('/qMeasureInfo/0').data().localeInfo).to.eql('locale specific stuff');
     });
 
     it('should find a dimension field by title', () => {
@@ -186,7 +210,7 @@ describe('qTable', () => {
   describe('listobject', () => {
     let q;
     beforeEach(() => {
-      q = qTable()({
+      q = qTable()({ cube: {
         qSize: { qcx: 3, qcy: 20 },
         qDimensionInfo: { qFallbackTitle: 'A' },
         qDataPages: [{ qArea: { qTop: 0, qLeft: 0, qHeight: 20, qWidth: 1 },
@@ -195,7 +219,7 @@ describe('qTable', () => {
             [{ qNum: 'NaN', qText: 'beta', qElemNumber: 4 }],
             [{ qNum: null, qText: 'gamma', qElemNumber: 5 }]
           ] }]
-      });
+      } });
     });
     it('should have 1 fields', () => {
       expect(q.fields().length).to.equal(1);

@@ -256,8 +256,7 @@ class NumberFormatter {
   }
 
   prepare(pattern, t, d) {
-    let prep,
-      isFunctional;
+    let prep;
 
     if (typeof pattern === 'undefined') { pattern = this.pattern; }
     if (typeof t === 'undefined') { t = this.thousandDelimiter; }
@@ -285,13 +284,24 @@ class NumberFormatter {
         isFunctional: false,
         prefix: '',
         postfix: ''
+      },
+      zero: {
+        d,
+        t,
+        abbreviate: false,
+        isFunctional: false,
+        prefix: '',
+        postfix: ''
       }
     };
     prep = this._prepared;
 
-    pattern = pattern.split(';');
+    const patternSeparator = this.localeInfo ? this.localeInfo.qListSep : ';';
+
+    pattern = pattern.split(patternSeparator);
     prep.positive.pattern = pattern[0];
     prep.negative.pattern = pattern[1];
+    prep.zero.pattern = pattern[2];
     if (functional.test(pattern[0])) {
       prep.positive.isFunctional = true;
     }
@@ -300,15 +310,20 @@ class NumberFormatter {
     } else if (functional.test(pattern[1])) {
       prep.negative.isFunctional = true;
     }
+    if (!pattern[2]) {
+      prep.zero = false;
+    } else if (functional.test(pattern[2])) {
+      prep.zero.isFunctional = true;
+    }
 
-
-    isFunctional = prep.positive.isFunctional && (!prep.negative || (prep.negative && prep.negative.isFunctional));
-
-    if (!isFunctional) {
+    if (!prep.positive.isFunctional) {
       preparePattern(prep.positive, t, d);
-      if (prep.negative) {
-        preparePattern(prep.negative, t, d);
-      }
+    }
+    if (prep.negative && !prep.negative.isFunctional) {
+      preparePattern(prep.negative, t, d);
+    }
+    if (prep.zero && !prep.zero.isFunctional) {
+      preparePattern(prep.zero, t, d);
     }
   }
 
@@ -334,7 +349,10 @@ class NumberFormatter {
       return value.toString();
     }
 
-    if (value < 0 && prep.negative) {
+    if (value === 0 && prep.zero) {
+      prep = prep.zero;
+      return prep.pattern;
+    } else if (value < 0 && prep.negative) {
       prep = prep.negative;
       value = -value;
     } else {
