@@ -28,7 +28,7 @@ module.exports = {
       use: {
         loader: 'babel-loader',
         options: {
-          presets: ['es2015'] // need to have this here instead of in .babelrc until after-work bumps babel dependecy to ^6.0.0
+          presets: [['es2015', { modules: false }]] // need to have this here instead of in .babelrc until after-work bumps babel dependecy to ^6.0.0
         }
       }
     }]
