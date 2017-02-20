@@ -6,18 +6,19 @@ const DIM_RX = /^\/(?:qHyperCube\/)?qDimensionInfo(?:\/(\d+))?/;
 const M_RX = /^\/(?:qHyperCube\/)?qMeasureInfo\/(\d+)/;
 const ATTR_EXPR_RX = /\/qAttrExprInfo\/(\d+)/;
 
-function hyperCubeFieldsFn(hc) {
+function hyperCubeFieldsFn(hc, localeInfo) {
   let dimz = hc.qDimensionInfo.length;
   return hc.qDimensionInfo.concat(hc.qMeasureInfo).map((f, idx) =>
     qField({ id: idx < dimz ? `/qDimensionInfo/${idx}` : `/qMeasureInfo/${idx - dimz}` })({
       meta: f,
       pages: hc.qDataPages,
-      idx
+      idx,
+      localeInfo
     })
   );
 }
 
-function attrExpField(hc, fieldIdx, attrIdx) {
+function attrExpField(hc, fieldIdx, attrIdx, localeInfo) {
   const dimz = hc.qDimensionInfo.length;
   const id = fieldIdx < dimz ? `/qDimensionInfo/${fieldIdx}/qAttrExprInfo/${attrIdx}` : `/qMeasureInfo/${fieldIdx - dimz}/qAttrExprInfo/${attrIdx}`;
   const meta = resolve(id, hc);
@@ -29,11 +30,12 @@ function attrExpField(hc, fieldIdx, attrIdx) {
     meta,
     pages: hc.qMode === 'K' ? hc.qStackedDataPages : hc.qDataPages,
     idx: fieldDataContentIdx,
-    attrIdx
+    attrIdx,
+    localeInfo
   });
 }
 
-function stackedHyperCubeFieldsFn(hc) {
+function stackedHyperCubeFieldsFn(hc, localeInfo) {
   let dimz = hc.qDimensionInfo.length;
   return hc.qDimensionInfo.concat(hc.qMeasureInfo).map((f, idx) => {
     let dataContentIdx = idx;
@@ -44,7 +46,8 @@ function stackedHyperCubeFieldsFn(hc) {
     return qField({ id: idx < dimz ? `/qDimensionInfo/${idx}` : `/qMeasureInfo/${idx - dimz}` })({
       meta: f,
       pages: hc.qStackedDataPages,
-      idx: dataContentIdx
+      idx: dataContentIdx,
+      localeInfo
     });
   });
 }
@@ -57,27 +60,28 @@ function listObjectFieldsFn(lo) {
   })];
 }
 
-function fieldsFn(hc) {
+function fieldsFn(data) {
+  const hc = data.cube;
   if (Array.isArray(hc.qDimensionInfo)) {
     if (hc.qMode === 'K') {
-      return stackedHyperCubeFieldsFn(hc);
+      return stackedHyperCubeFieldsFn(hc, data.localeInfo);
     }
-    return hyperCubeFieldsFn(hc);
+    return hyperCubeFieldsFn(hc, data.localeInfo);
   }
-  return listObjectFieldsFn(hc);
+  return listObjectFieldsFn(hc, data.localeInfo);
 }
 
 function getAttrExprField({
   attributeExpressionFields,
   idx,
   path
-}, data) {
+}, data, localeInfo) {
   const attrIdx = +ATTR_EXPR_RX.exec(path)[1];
   if (!attributeExpressionFields[idx]) {
     attributeExpressionFields[idx] = [];
   }
   if (!attributeExpressionFields[idx][attrIdx]) {
-    attributeExpressionFields[idx][attrIdx] = attrExpField(data, idx, attrIdx);
+    attributeExpressionFields[idx][attrIdx] = attrExpField(data, idx, attrIdx, localeInfo);
   }
   return attributeExpressionFields[idx][attrIdx];
 }
@@ -98,6 +102,8 @@ export default function qTable({ id } = {}) {
 
   q.findField = (query) => {
     const d = q.data();
+    const hc = d.cube;
+    const locale = d.localeInfo;
     const fields = q.fields();
 
     // Find by path
@@ -110,14 +116,14 @@ export default function qTable({ id } = {}) {
           attributeExpressionFields,
           idx,
           path: remainder
-        }, d);
+        }, hc, locale);
       }
-      if (Array.isArray(d.qDimensionInfo)) {
+      if (Array.isArray(hc.qDimensionInfo)) {
         return fields[idx];
       }
       return fields[0]; // listobject
     } else if (M_RX.test(query)) {
-      const idx = +M_RX.exec(query)[1] + d.qDimensionInfo.length;
+      const idx = +M_RX.exec(query)[1] + hc.qDimensionInfo.length;
       // check if attribute expr
       const remainder = query.replace(M_RX, '');
       if (ATTR_EXPR_RX.test(remainder)) {
@@ -125,7 +131,7 @@ export default function qTable({ id } = {}) {
           attributeExpressionFields,
           idx,
           path: remainder
-        }, d);
+        }, hc, locale);
       }
       return fields[idx];
     }

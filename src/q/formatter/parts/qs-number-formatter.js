@@ -289,9 +289,9 @@ class NumberFormatter {
     };
     prep = this._prepared;
 
-    pattern = pattern.split(';');
+    pattern = pattern.split(';'); // TODO - use list separator from localeInfo
     prep.positive.pattern = pattern[0];
-    prep.negative.pattern = pattern[1];
+    prep.negative.pattern = pattern[1]; // TODO - add zero part
     if (functional.test(pattern[0])) {
       prep.positive.isFunctional = true;
     }

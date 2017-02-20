@@ -19,13 +19,13 @@ export default function formatter() {
   return type;
 }
 
-export function createFromMetaInfo(meta) {
+export function createFromMetaInfo(meta, localeInfo) {
   if (meta && meta.qNumFormat && ['D', 'T', 'TS', 'IV'].indexOf(meta.qNumFormat.qType) !== -1) {
-    return formatter('q')('time')(meta.qNumFormat.qFmt, meta.qNumFormat.qType);
+    return formatter('q')('time')(meta.qNumFormat.qFmt, meta.qNumFormat.qType, localeInfo);
   }
   let pattern = '#';
-  let thousand = ',';
-  let decimal = '.';
+  let thousand = localeInfo ? localeInfo.qThousandSep : ',';
+  let decimal = localeInfo ? localeInfo.qDecimalSep : '.';
   let type = 'U';
   let isAuto = meta && !!meta.qIsAutoFormat;
   if (meta && meta.qNumFormat) {
@@ -39,5 +39,5 @@ export function createFromMetaInfo(meta) {
   if (isAuto) {
     pattern = `#${decimal}##A`;
   }
-  return formatter('q')('number')(pattern, thousand, decimal, type);
+  return formatter('q')('number')(pattern, thousand, decimal, type, localeInfo);
 }

@@ -134,7 +134,7 @@ const valuesFn = d => collectData({
   pages: d.pages,
   fieldMeta: d.meta
 });
-const formatterFn = d => createFromMetaInfo(d.meta);
+const formatterFn = d => createFromMetaInfo(d.meta, d.localeInfo);
 
 export default function qField({ id } = {}) {
   return field({
