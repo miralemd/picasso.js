@@ -1,4 +1,3 @@
-import config from '../../../config';
 import { tree as treeFactory } from './svg-tree';
 import { svgNs } from './svg-nodes';
 import sceneFactory from '../../../core/scene-graph/scene';
@@ -59,7 +58,7 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
 
   svg.render = (items) => {
     if (!el) {
-      return config.Promise.reject();
+      return false;
     }
 
     const scaleX = rect.scaleRatio.x;
@@ -92,7 +91,7 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
 
     hasChangedRect = false;
     scene = newScene;
-    return config.Promise.resolve(doRender);
+    return doRender;
   };
 
   svg.itemsAt = options => (scene ? scene.getItemsFrom(options) : []);

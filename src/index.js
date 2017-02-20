@@ -4,7 +4,6 @@ import {
   data,
   component
 } from './core';
-import config from './config';
 import q from './q';
 import './web';
 
@@ -15,7 +14,6 @@ import './web';
  */
 
 export {
-  config,
   chart,
   renderer,
   data,

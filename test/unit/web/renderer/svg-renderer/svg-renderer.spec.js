@@ -1,5 +1,4 @@
 import renderer from '../../../../../src/web/renderer/svg-renderer/svg-renderer';
-import config from '../../../../../src/config';
 import element from '../../../../mocks/element-mock';
 
 describe('svg renderer', () => {
@@ -12,10 +11,6 @@ describe('svg renderer', () => {
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
-    config.Promise = {
-      resolve: sandbox.spy(),
-      reject: sandbox.spy()
-    };
     treeRenderer = {
       render: sandbox.spy()
     };
@@ -27,7 +22,6 @@ describe('svg renderer', () => {
 
   afterEach(() => {
     sandbox.restore();
-    config.Promise = global.Promise;
   });
 
   it('should be a function', () => {
@@ -71,9 +65,8 @@ describe('svg renderer', () => {
       s = { children: ['AA'] };
     });
 
-    it('should reject promise when rendering before appending', () => {
-      svg.render();
-      expect(config.Promise.reject.callCount).to.equal(1);
+    it('should not render before appending', () => {
+      expect(svg.render()).to.equal(false);
     });
 
     it('should call tree creator with proper params', () => {
