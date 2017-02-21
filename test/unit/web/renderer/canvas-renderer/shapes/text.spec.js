@@ -4,9 +4,13 @@ import render from '../../../../../../src/web/renderer/canvas-renderer/shapes/te
 
 describe('text', () => {
   describe('render', () => {
-    let text;
+    let sandbox,
+      g,
+      text;
 
-    const sandbox = sinon.sandbox.create(),
+    beforeEach(() => {
+      sandbox = sinon.sandbox.create();
+
       g = {
         beginPath: sandbox.spy(),
         font: '',
@@ -16,9 +20,8 @@ describe('text', () => {
         canvas: {}
       };
 
-    sandbox.stub(textManipulation, 'ellipsText', () => '...');
+      sandbox.stub(textManipulation, 'ellipsText', () => '...');
 
-    beforeEach(() => {
       text = {
         x: 1,
         y: 2,
@@ -32,10 +35,6 @@ describe('text', () => {
     });
 
     afterEach(() => {
-      sandbox.reset();
-    });
-
-    after(() => {
       sandbox.restore();
     });
 
