@@ -56,11 +56,11 @@ export default function qBrush(brush, { byCells, primarySource } = {}) {
 
         methods.selectHyperCubeCells.cols.push(info.index);
         if (b.id === primarySource || (!primarySource && !methods.selectHyperCubeCells.values)) {
-          methods.selectHyperCubeCells.values = b.brush.values().map(s => +s);
+          methods.selectHyperCubeCells.values = b.brush.values().map(s => +s).filter(v => !isNaN(v));
           hasValues = !!methods.selectHyperCubeCells.values.length;
         }
       } else {
-        const values = b.brush.values().map(s => +s);
+        const values = b.brush.values().map(s => +s).filter(v => !isNaN(v));
         hasValues = !!values.length;
         selections.push({
           params: [info.path, info.index, values, false],

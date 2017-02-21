@@ -55,9 +55,7 @@ export function collectRepeating(repeater, ds) {
   if (dataSource && dataSource.field) {
     fieldValues = dataSource.field.values();
     fieldValues.forEach((v, i) => {
-      let id = idAttribute === '$index' ? // eslint-disable-line no-nested-ternary
-        (typeof v.index !== 'undefined' ? v.index : i) :
-        v[idAttribute];
+      let id = idAttribute === '$index' ? i : v[idAttribute];
       if (!ids[id]) {
         ids[id] = {};
         collection.push(ids[id]);

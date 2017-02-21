@@ -146,10 +146,10 @@ describe('data-mapper', () => {
         trackBy: '$index',
         others: undefined,
         ids: {
-          7: {},
-          8: {},
-          9: {},
-          10: {}
+          0: {},
+          1: {},
+          2: {},
+          3: {}
         }
       });
     });
