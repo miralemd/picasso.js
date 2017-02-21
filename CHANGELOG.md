@@ -5,8 +5,22 @@
 ### Breaking changes
 
 - `chart.getAffectedShapes()` now returns an array of `sceneObjects`
+- `attribute` has changed name to `trackBy` in `data.mapTo.groupBy`
+- `type: 'qual:id'` has been removed in favor of `property: 'id'`
 
 ### Added
+
+- PIC-25 Sense selections by row and column:
+
+    ```js
+    data: {
+      mapTo: {
+        groupBy: '/qDimensionInfo/1', trackBy: '$index', property: '$index'
+      }
+    }
+
+    picasso.brush(chart.brush('selection', { byCells: true }))
+    ```
 
 - PIC-60 Basic sequential color scale:
 
