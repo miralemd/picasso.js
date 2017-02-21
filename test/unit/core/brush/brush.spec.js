@@ -378,6 +378,20 @@ describe('brush', () => {
       expect(bb.containsMappedData(d, ['nope'])).to.equal(false);
       expect(val.contains).to.have.been.calledWith('Cars');
     });
+
+    it('should return false when brushed data is not part of property filter for mode=and', () => {
+      bb.addValue('products');
+      val.contains.returns(true);
+      expect(bb.containsMappedData(d, ['nope'], 'and')).to.equal(false);
+      expect(val.contains).to.have.been.calledWith('Cars');
+    });
+
+    it('should return false when brushed data is not part of property filter for mode=xor ', () => {
+      bb.addValue('products');
+      val.contains.returns(true);
+      expect(bb.containsMappedData(d, ['nope'], 'xor')).to.equal(false);
+      expect(val.contains).to.have.been.calledWith('Cars');
+    });
   });
 
   describe('toggle', () => {
