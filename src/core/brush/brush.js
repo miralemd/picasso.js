@@ -449,9 +449,10 @@ export default function brush({
       }
 
       let type = d[key].source.type === 'quant' ? 'range' : 'value';
-      if (type === 'range' && ranges[source] && ranges[source].containsValue(d[key].value)) {
+      let value = d[key].value;
+      if (type === 'range' && ranges[source] && ranges[source].containsValue(value)) {
         status[i].bool = true;
-      } else if (type === 'value' && values[source] && values[source].contains(d[key].value)) {
+      } else if (type === 'value' && values[source] && values[source].contains(value)) {
         status[i].bool = true;
       }
     });
