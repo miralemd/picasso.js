@@ -72,6 +72,7 @@
 - Components respect the ordinal scale properly and use bandwidth to handle default sizing
 - PIC-72 Components do not update dock property
 - PIC-75 `NaN` values on measures messes up the min/max on the scale
+- PIC-43 When less then half of a label is visible then the axes will not be visible
 
 ## 0.8.0
 
