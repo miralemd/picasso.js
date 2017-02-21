@@ -25,11 +25,16 @@ function horizontalLabelOverlap({
   scale,
   settings
 }) {
+  /**
+   * Currently isn't any good way of doing a accurate measurement on size available (bandWidth * width) for labels.
+   * It's a lifecycle limitation as components docked either left or right can affect the width available after the calculation is done.
+   * <number of components docked left/right> * <width of components> => Less accurate ===> Can result in only ellips char rendered as labels.
+   */
   const m = settings.labels.layered ? 2 : 1;
   const size = rect.width;
   const tickSize = majorTicks
     .map(tick => tick.label)
-    .map(l => l.substr(0, Math.max(5, l.length / 2)))
+    .map(l => `${l.slice(0, 1)}…`) // Measure the size of 1 chars + the ellips char.
     .map(measureText)
     .map(r => r.width);
   for (let i = 0; i < majorTicks.length; ++i) {
@@ -149,7 +154,7 @@ export default function calcRequiredSize({
 
     if (isToLarge({ rect, type, scale, settings, tilted, majorTicks, measure, horizontal })) {
       const toLargeSize = Math.max(rect.width, rect.height); // used to hide the axis
-      return toLargeSize;
+      return { size: toLargeSize };
     }
 
     let labels;

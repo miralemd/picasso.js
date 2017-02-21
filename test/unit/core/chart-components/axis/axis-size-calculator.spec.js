@@ -6,6 +6,8 @@ describe('AxisSizeCalculator', () => {
   let ticks;
   let sizeFn;
   let rect;
+  let scale;
+  let type;
 
   beforeEach(() => {
     settings = continuousDefaultSettings();
@@ -16,13 +18,15 @@ describe('AxisSizeCalculator', () => {
     settings.paddingEnd = 10;
 
     ticks = [{ label: 'AA' }, { label: 'BB' }, { label: 'CC' }];
-    let scale = {};
+    scale = {};
     scale.ticks = sinon.stub().returns(ticks);
+    scale.bandWidth = sinon.stub().returns(1 / ticks.length);
+    type = undefined;
     rect = { x: 0, y: 0, height: 100, width: 100 };
     const data = null;
     const formatter = null;
     const measureText = ({ text = '' }) => ({ width: text.toString().length, height: 5 });
-    sizeFn = r => calcRequiredSize({ settings, rect: r, scale, data, formatter, measureText });
+    sizeFn = r => calcRequiredSize({ settings, rect: r, scale, data, formatter, measureText, type });
   });
 
   it('axis with no visible component have a margin of 10', () => {
@@ -52,6 +56,18 @@ describe('AxisSizeCalculator', () => {
     ticks[0].label = 'AAAAAA';
     size = sizeFn(rect);
     expect(size.size).to.equals(19);
+  });
+
+  it('horizontal discrete axis should be considered to large when labels requires more size then available', () => {
+    settings.dock = 'bottom';
+    settings.align = 'bottom';
+    settings.labels.show = true;
+    rect.width = 5;
+    type = 'ordinal';
+    // available bandWidth is ~1.7, required width from labels is 2
+    let size = sizeFn(rect);
+
+    expect(size.size).to.equals(100); // return the width of the container (rect in this test)
   });
 
   it('layered labels', () => {
