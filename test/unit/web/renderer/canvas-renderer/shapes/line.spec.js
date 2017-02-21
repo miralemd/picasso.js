@@ -2,11 +2,15 @@ import render from '../../../../../../src/web/renderer/canvas-renderer/shapes/li
 
 describe('line', () => {
   describe('render', () => {
-    let falsys,
+    let sandbox,
+      g,
+      falsys,
       truthys,
       line;
 
-    const sandbox = sinon.sandbox.create(),
+    beforeEach(() => {
+      sandbox = sinon.sandbox.create();
+
       g = {
         beginPath: sandbox.spy(),
         moveTo: sandbox.spy(),
@@ -14,7 +18,6 @@ describe('line', () => {
         stroke: sandbox.spy()
       };
 
-    beforeEach(() => {
       falsys = [false, null, undefined, 0, NaN, ''];
 
       truthys = [true, {}, [], 1, -1, 3.14, -3.14, 'foo'];
@@ -23,7 +26,7 @@ describe('line', () => {
     });
 
     afterEach(() => {
-      sandbox.reset();
+      sandbox.restore();
     });
 
     it('should fire beginPath', () => {

@@ -2,11 +2,15 @@ import render from '../../../../../../src/web/renderer/canvas-renderer/shapes/ci
 
 describe('circle', () => {
   describe('render', () => {
-    let falsys,
+    let sandbox,
+      g,
+      falsys,
       truthys,
       circle;
 
-    const sandbox = sinon.sandbox.create(),
+    beforeEach(() => {
+      sandbox = sinon.sandbox.create();
+
       g = {
         beginPath: sandbox.spy(),
         moveTo: sandbox.spy(),
@@ -15,7 +19,6 @@ describe('circle', () => {
         stroke: sandbox.spy()
       };
 
-    beforeEach(() => {
       falsys = [false, null, undefined, 0, NaN, ''];
 
       truthys = [true, {}, [], 1, -1, 3.14, -3.14, 'foo'];
@@ -24,7 +27,7 @@ describe('circle', () => {
     });
 
     afterEach(() => {
-      sandbox.reset();
+      sandbox.restore();
     });
 
     it('should fire beginPath', () => {

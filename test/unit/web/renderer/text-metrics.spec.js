@@ -2,34 +2,42 @@ import { measureText } from '../../../../src/web/renderer/text-metrics';
 
 describe('text-metrics', () => {
   describe('measureText', () => {
-    let cacheId = 0,
+    let sandbox,
+      canvasContextMock,
+      canvasMock,
+      cacheId = 0,
       fontWasUnset = false;
 
-    const sandbox = sinon.sandbox.create(),
+    const argument = {
+      text: 'Test',
+      fontSize: 0,
+      fontFamily: 'Arial'
+    };
+
+    beforeEach(() => {
+      sandbox = sinon.sandbox.create();
+
       canvasContextMock = {
         font: '',
         measureText: sandbox.spy(() => {
           if (!canvasContextMock.font) { fontWasUnset = true; }
           return { width: 150 };
         })
-      },
-      canvasMock = {
-        getContext: sandbox.spy(() => canvasContextMock)
-      },
-      argument = {
-        text: 'Test',
-        fontSize: 0,
-        fontFamily: 'Arial'
       };
 
-    global.document = {
-      createElement: sandbox.spy(() => canvasMock)
-    };
+      canvasMock = {
+        getContext: sandbox.spy(() => canvasContextMock)
+      };
+
+      global.document = {
+        createElement: sandbox.spy(() => canvasMock)
+      };
+    });
 
     afterEach(() => {
       fontWasUnset = false;
       canvasContextMock.font = '';
-      sandbox.reset();
+      sandbox.restore();
     });
 
     after(() => {
