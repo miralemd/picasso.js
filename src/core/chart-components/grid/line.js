@@ -1,7 +1,6 @@
 import extend from 'extend';
 import createComponentFactory from '../component';
 import { transposer } from '../../transposer/transposer';
-import { generateContinuousTicks, generateDiscreteTicks } from '../axis/axis-tick-generators';
 import { continuousDefaultSettings } from '../axis/axis-default-settings';
 
 /**
@@ -12,19 +11,11 @@ import { continuousDefaultSettings } from '../axis/axis-default-settings';
  * @param  {Object} rect     The rect containing width and height to renderer in
  * @return {Array}           Returns an array of ticks
  */
-function lineGen(scale, settings, innerRect) {
-  let lines = [];
-
-  if (scale && scale.type === 'ordinal') {
-    lines = generateDiscreteTicks({ scale }) || [];
-  } else if (scale) {
-    lines = (scale.cachedTicks && scale.cachedTicks()) || [];
-    if (!lines.length) {
-      lines = generateContinuousTicks({ settings: extend(continuousDefaultSettings(), settings, { align: 'bottom' }), scale, innerRect }) || [];
-    }
+function lineGen(scale, distance) {
+  if (!scale || !distance) {
+    return [];
   }
-
-  return lines;
+  return (scale.cachedTicks && scale.cachedTicks()) || scale.ticks({ distance });
 }
 
 const gridLineComponent = {
@@ -71,8 +62,8 @@ const gridLineComponent = {
     };
 
     // Use the lineGen function to generate appropriate ticks
-    this.lines.x = lineGen(this.x, this.settings, this.rect);
-    this.lines.y = lineGen(this.y, this.settings, this.rect);
+    this.lines.x = lineGen(this.x, this.rect.width);
+    this.lines.y = lineGen(this.y, this.rect.height);
 
     // Set all Y lines to flipXY by default
     // This makes the transposer flip them individually

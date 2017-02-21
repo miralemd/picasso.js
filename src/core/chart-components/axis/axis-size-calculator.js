@@ -104,8 +104,7 @@ export default function calcRequiredSize({
   formatter,
   measureText,
   scale,
-  settings,
-  ticksFn
+  settings
 }) {
   let size = 0;
   let edgeBleed = { left: 0, top: 0, right: 0, bottom: 0 };
@@ -115,11 +114,12 @@ export default function calcRequiredSize({
     const horizontal = align === 'top' || align === 'bottom';
     const layered = horizontal && settings.labels.layered;
 
+    const distance = horizontal ? rect.width : rect.height;
+
     const tilted = horizontal && settings.labels.tilted && !layered;
-    const majorTicks = ticksFn({
+    const majorTicks = scale.ticks({
       settings,
-      innerRect: rect,
-      scale,
+      distance,
       data,
       formatter
     })
@@ -161,14 +161,11 @@ export default function calcRequiredSize({
     const tickMeasures = labels.map(measure);
     const labelSizes = tickMeasures.map(sizeFromTextRect);
     const textSize = Math.min(settings.labels.maxSize, Math.max(...labelSizes));
-
     size += textSize;
     size += settings.labels.margin;
-
     if (layered) {
       size *= 2;
     }
-
     if (tilted) {
       const extendLeft = (settings.align === 'bottom') === (settings.labels.tiltAngle >= 0);
       const radians = Math.abs(settings.labels.tiltAngle) * (Math.PI / 180); // angle in radians

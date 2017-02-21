@@ -109,4 +109,3 @@ describe('composer-scales', () => {
     expect(s.type).to.equal('ordinal');
   });
 });
-

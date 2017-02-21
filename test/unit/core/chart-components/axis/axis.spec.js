@@ -126,24 +126,6 @@ describe('Axis', () => {
       });
       verifyNumberOfNodes(3, 1);
     });
-
-    it('should render a custom number of ticks', () => {
-      config.settings.ticks = { count: 5 };
-      createAndRenderAxis({
-        inner: { x: 0, y: 0, width: 100, height: 100 },
-        outer: { x: 0, y: 0, width: 100, height: 100 }
-      });
-      verifyNumberOfNodes(6, 7);
-    });
-
-    it('should render minor ticks', () => {
-      config.settings.minorTicks = { show: true, count: 2 };
-      createAndRenderAxis({
-        inner: { x: 0, y: 0, width: 100, height: 100 },
-        outer: { x: 0, y: 0, width: 100, height: 100 }
-      });
-      verifyNumberOfNodes(3, 8);
-    });
   });
 
   describe('discrete', () => {

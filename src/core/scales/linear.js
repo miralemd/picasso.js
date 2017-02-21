@@ -1,11 +1,27 @@
 import { scaleLinear } from 'd3-scale';
+import extend from 'extend';
+
 import notNumber from '../utils/undef';
+import { generateContinuousTicks } from './ticks/tick-generators';
+import { continuousDefaultSettings } from './ticks/default-settings';
 
 const AVAILABLE_SETTINGS = ['min', 'max', 'expand', 'include', 'invert'];
 
+/**
+ * @typedef ticks-settings
+ * @property {object} [ticks]
+ * @property {boolean} [ticks.tight = false]
+ * @property {boolean} [ticks.forceBounds = false]
+ * @property {number} [ticks.distance = 100] Approximate distance between each tick.
+ * @property {object} [minorTicks]
+ * @property {number} [minorTicks.count = 3]
+ */
+
+/*
 function applyFormat(formatter) {
   return typeof formatter === 'undefined' ? t => t : t => formatter(t);
 }
+*/
 
 function evalSetting(settings, fields, name) {
   if (typeof settings[name] === 'function') {
@@ -72,7 +88,6 @@ function getMinMax(settings, fields) {
 
 export default function linear(settings, fields/* , dataset*/) {
   const d3Scale = scaleLinear();
-  let tG;
   let tickCache;
 
   /**
@@ -143,10 +158,14 @@ export default function linear(settings, fields/* , dataset*/) {
    * @return { Number[] | Object } Array of ticks or any type the custom tick generator returns
    */
   fn.ticks = function ticks(input) {
-    if (typeof tG === 'function') {
-      tickCache = tG.call(null, input);
+    if (input !== null && typeof input === 'object') {
+      input.settings = input.settings || {};
+      input.settings = extend(true, continuousDefaultSettings(), settings, input.settings);
+      input.scale = fn;
+      tickCache = generateContinuousTicks(input);
       return tickCache;
     }
+
     tickCache = d3Scale.ticks(input);
     return tickCache;
   };
@@ -241,16 +260,6 @@ export default function linear(settings, fields/* , dataset*/) {
   };
 
   /**
-   * Assign a tick generator. Will be used when calling ticks function
-   * @param  { Function } generator Tick generator function
-   * @return { function } The instance this method was called on
-   */
-  fn.tickGenerator = function tickGenerator(generator) {
-    tG = generator;
-    return fn;
-  };
-
-  /**
    * Divides the domain and range into uniform segments, based on start and end value
    * @param  { Number } segments The number of segments
    * @return { function } The instance this method was called on
@@ -299,102 +308,4 @@ export default function linear(settings, fields/* , dataset*/) {
     fn.range(stgns.invert ? [1, 0] : [0, 1]);
   }
   return fn;
-}
-
-function minorTicksGenerator(count, start, end) {
-  const r = Math.abs(start - end);
-  const interval = r / (count + 1);
-  const ticks = [];
-  for (let i = 1; i <= count; i++) {
-    const v = i * interval;
-    ticks.push(start < end ? start + v : start - v);
-  }
-  return ticks;
-}
-
-function appendMinorTicks(majorTicks, minorCount, scale) {
-  if (majorTicks.length === 1) { return majorTicks; }
-
-  const ticks = majorTicks.concat([]);
-
-  for (let i = 0; i < majorTicks.length; i++) {
-    let start = majorTicks[i];
-    let end = majorTicks[i + 1];
-
-    if (i === 0 && start !== scale.start()) { // Before and after first major tick
-      ticks.push(...minorTicksGenerator(minorCount, start, end));
-      start -= end - start;
-      end = majorTicks[i];
-      ticks.push(...minorTicksGenerator(minorCount, start, end));
-    } else if (i === majorTicks.length - 1 && end !== scale.end()) { // After last major tick
-      end = start + (start - majorTicks[i - 1]);
-      ticks.push(...minorTicksGenerator(minorCount, start, end));
-    } else {
-      ticks.push(...minorTicksGenerator(minorCount, start, end));
-    }
-  }
-
-  return ticks.filter(t => t >= scale.min() && t <= scale.max());
-}
-
-/**
-* Generate ticks based on a distance, for each 100th unit, one additional tick may be added
-* @private
-* @param  {Number} distance       Distance between each tick
-* @param  {Number} scale         The scale instance
-* @param  {Number} [minorCount=0]     Number of tick added between each distance
-* @param  {Number} [unitDivider=100]   Number to divide distance with
-* @return {Array}               Array of ticks
-*/
-export function looseDistanceBasedGenerator({ distance, scale, minorCount = 0, unitDivider = 100, formatter = undefined }) {
-  const isNumber = v => typeof v === 'number' && !isNaN(v);
-  const count = isNumber(unitDivider) ? Math.max(Math.round(distance / unitDivider), 2) : 2;
-  let majorTicks = scale.ticks(count);
-  if (majorTicks.length <= 1) {
-    majorTicks = scale.ticks(count + 1);
-  }
-
-  const ticks = minorCount > 0 ? appendMinorTicks(majorTicks, minorCount, scale) : majorTicks;
-  ticks.sort((a, b) => a - b);
-
-  const ticksFormatted = ticks.map(applyFormat(formatter));
-
-  return ticks.map((tick, i) => ({
-    position: scale.get(tick),
-    label: ticksFormatted[i],
-    value: tick,
-    isMinor: majorTicks.indexOf(tick) === -1,
-    scale
-  }));
-}
-
-/**
-* Generate ticks based on a distance, for each 100th unit, one additional tick may be added.
-* Will attempt to round the bounds of domain to even values and generate ticks hitting the domain bounds.
-* @private
-* @param  {Number} distance       Distance between each tick
-* @param  {Number} scale         The scale instance
-* @param  {Number} [minorCount=0]     Number of tick added between each distance
-* @param  {Number} [unitDivider=100]   Number to divide distance with
-* @return {Array}               Array of ticks
-*/
-export function tightDistanceBasedGenerator({ distance, scale, minorCount = 0, unitDivider = 100, formatter = undefined }) {
-  const isNumber = v => typeof v === 'number' && !isNaN(v);
-  const count = isNumber(unitDivider) ? Math.max(Math.round(distance / unitDivider), 2) : 2;
-  const n = count > 10 ? 10 : count;
-  scale.nice(n);
-
-  const majorTicks = scale.ticks(count);
-  const ticks = minorCount > 0 ? appendMinorTicks(majorTicks, minorCount, scale) : majorTicks;
-  ticks.sort((a, b) => a - b);
-
-  const ticksFormatted = ticks.map(applyFormat(formatter));
-
-  return ticks.map((tick, i) => ({
-    position: scale.get(tick),
-    label: ticksFormatted[i],
-    value: tick,
-    isMinor: majorTicks.indexOf(tick) === -1,
-    scale
-  }));
 }

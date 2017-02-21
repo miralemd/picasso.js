@@ -3,7 +3,6 @@ import extend from 'extend';
 import createComponentFactory from '../component';
 import nodeBuilder from './axis-node-builder';
 import { discreteDefaultSettings, continuousDefaultSettings } from './axis-default-settings';
-import { generateContinuousTicks, generateDiscreteTicks } from './axis-tick-generators';
 import calcRequiredSize from './axis-size-calculator';
 import resolveSettingsForPath from '../settings-setup';
 import { resolveForDataValues } from '../../style';
@@ -32,16 +31,12 @@ import crispify from '../../transposer/crispifier';
  * @property {number} [ticks.tickSize = 4 (discrete) or 8 (continuous)]
  * @property {string} [ticks.stroke = '#cccccc']
  * @property {number} [ticks.strokeWidth = 1]
- * @property {boolean} [ticks.tight = false] Only on a continuous axis
- * @property {boolean} [ticks.forceBounds = false] Only on a continuous axis
- * @property {number} [ticks.distance = 100] Approximate distance between each tick. Only on a continuous axis
  * @property {object} [minorTicks] Only on a continuous axis
  * @property {boolean} [minorTicks.show = true]
  * @property {number} [minorTicks.margin = 0]
  * @property {number} [minorTicks.tickSize = 3]
  * @property {string} [minorTicks.stroke = '#E6E6E6']
  * @property {number} [minorTicks.strokeWidth = 1]
- * @property {number} [minorTicks.count = 3]
  */
 
 function alignTransform({ align, inner }) {
@@ -85,11 +80,9 @@ const axisComponent = {
     if (this.scale.type === 'ordinal') {
       this.defaultStyleSettings = discreteDefaultSettings();
       this.defaultDock = 'bottom';
-      this.ticksFn = generateDiscreteTicks;
     } else {
       this.defaultStyleSettings = continuousDefaultSettings();
       this.defaultDock = 'left';
-      this.ticksFn = generateContinuousTicks;
     }
 
     this.init(this.settings);
@@ -117,7 +110,6 @@ const axisComponent = {
   preferredSize(opts) {
     const {
       formatter,
-      ticksFn,
       axisSettings
     } = this;
     const reqSize = calcRequiredSize({
@@ -127,7 +119,9 @@ const axisComponent = {
       measureText: this.renderer.measureText,
       scale: this.scale,
       settings: axisSettings,
-      ticksFn
+      setEdgeBleed: (val) => {
+        this.dockConfig.edgeBleed = val;
+      }
     });
 
     return reqSize;
@@ -158,15 +152,15 @@ const axisComponent = {
   },
   beforeRender() {
     const {
-      formatter,
-      ticksFn,
-      axisSettings
+      innerRect,
+      scale,
+      formatter
     } = this;
 
-    this.ticks = ticksFn({
-      settings: axisSettings,
-      innerRect: this.innerRect,
-      scale: this.scale,
+    const distance = this.align === 'top' || this.align === 'bottom' ? innerRect.width : innerRect.height;
+
+    this.ticks = scale.ticks({
+      distance,
       formatter
     });
   },

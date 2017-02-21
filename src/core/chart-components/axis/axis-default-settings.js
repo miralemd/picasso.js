@@ -50,19 +50,15 @@ export function continuousDefaultSettings() {
       show: true,
       margin: 0,
       tickSize: 8,
-      tight: false,
-      forceBounds: false,
       stroke: '#cccccc',
-      strokeWidth: 1,
-      distance: 100
+      strokeWidth: 1
     },
     minorTicks: {
       show: false,
       margin: 0,
       tickSize: 3,
       stroke: '#E6E6E6',
-      strokeWidth: 1,
-      count: 3
+      strokeWidth: 1
     }
   };
 }

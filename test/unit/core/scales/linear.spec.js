@@ -1,4 +1,4 @@
-import linear, { looseDistanceBasedGenerator, tightDistanceBasedGenerator } from '../../../../src/core/scales/linear';
+import linear from '../../../../src/core/scales/linear';
 
 describe('LinearScale', () => {
   let lin;
@@ -164,6 +164,7 @@ describe('LinearScale', () => {
   });
 
   describe('Tick Generator', () => {
+    /*
     it('should use default tick generator if no custom generator have been assigned', () => {
       expect(lin.ticks(2)).to.deep.equal([0, 0.5, 1]);
     });
@@ -260,5 +261,6 @@ describe('LinearScale', () => {
         expect(scale.ticks).to.have.been.calledWith(100 / 20);
       });
     });
+    */
   });
 });

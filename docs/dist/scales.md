@@ -1,6 +1,7 @@
 # Scales
 
 ## API referece - Table of contents:
+* <a href="#ticks-settings">ticks-settings</a>
 * <a href="#picasso.scales.linear">picasso.scales.linear</a>
 * <a href="#linearScale">linearScale</a>
 * <a href="#linearScale.invert">linearScale.invert</a>
@@ -17,10 +18,7 @@
 * <a href="#linearScale.end">linearScale.end</a>
 * <a href="#linearScale.min">linearScale.min</a>
 * <a href="#linearScale.max">linearScale.max</a>
-* <a href="#linearScale.tickGenerator">linearScale.tickGenerator</a>
 * <a href="#linearScale.classify">linearScale.classify</a>
-* <a href="#looseDistanceBasedGenerator">looseDistanceBasedGenerator</a>
-* <a href="#tightDistanceBasedGenerator">tightDistanceBasedGenerator</a>
 * <a href="#picasso.scales.ordinal">picasso.scales.ordinal</a>
 * <a href="#ordinalScale">ordinalScale</a>
 * <a href="#ordinalScale.domain">ordinalScale.domain</a>
@@ -34,6 +32,7 @@
 * <a href="#ordinalScale.get">ordinalScale.get</a>
 * <a href="#ordinalScale.start">ordinalScale.start</a>
 * <a href="#ordinalScale.end">ordinalScale.end</a>
+* <a href="#ordinalScale.ticks">ordinalScale.ticks</a>
 * <a href="#picasso.scales.sequential">picasso.scales.sequential</a>
 * <a href="#sequential">sequential</a>
 * <a href="#picasso.scales.threshold">picasso.scales.threshold</a>
@@ -44,6 +43,18 @@
 
 ## Linear scale
 
+#### <a name='ticks-settings' href='#ticks-settings'>#</a> ticks-settings
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| ticks | object | No | Yes | No |
+| ticks.tight | boolean | No | Yes | No |
+| ticks.forceBounds | boolean | No | Yes | No |
+| ticks.distance | number | Approximate distance between each tick. | Yes | 100 |
+| minorTicks | object | No | Yes | No |
+| minorTicks.count | number | No | Yes | 3 |
+
+No description  
 #### <a name='picasso.scales.linear' href='#picasso.scales.linear'>#</a> **picasso.scales.linear**(*Array fields, Object settings*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
@@ -167,14 +178,6 @@ Get the minimum value of the domain
 | Returns | Number | No | ... | ... |
 
 Get the maximum value of the domain  
-#### <a name='linearScale.tickGenerator' href='#linearScale.tickGenerator'>#</a> **linearScale.tickGenerator**(*function generator*)
-
-|Name(s)|Type(s)|Description|Optional|Default value|
-|-------|-------|-----------|--------|-------------|
-| generator | function | Tick generator function | No | No |
-| Returns | function | The instance this method was called on | ... | ... |
-
-Assign a tick generator. Will be used when calling ticks function  
 #### <a name='linearScale.classify' href='#linearScale.classify'>#</a> **linearScale.classify**(*Number segments*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
@@ -193,29 +196,6 @@ s.classify( 2 );
 s.domain(); // [10, 5, 5, 0]
 s.range(); // [0.75, 0.75, 0.25, 0.25]
 ```
-#### <a name='looseDistanceBasedGenerator' href='#looseDistanceBasedGenerator'>#</a> **looseDistanceBasedGenerator**(*Number distance, Number scale, Number [minorCount, ]Number [unitDivider]*)
-
-|Name(s)|Type(s)|Description|Optional|Default value|
-|-------|-------|-----------|--------|-------------|
-| distance | Number | Distance between each tick | No | No |
-| scale | Number | The scale instance | No | No |
-| minorCount | Number | Number of tick added between each distance | Yes | No |
-| unitDivider | Number | Number to divide distance with | Yes | 100 |
-| Returns | Array | Array of ticks | ... | ... |
-
-Generate ticks based on a distance, for each 100th unit, one additional tick may be added  
-#### <a name='tightDistanceBasedGenerator' href='#tightDistanceBasedGenerator'>#</a> **tightDistanceBasedGenerator**(*Number distance, Number scale, Number [minorCount, ]Number [unitDivider]*)
-
-|Name(s)|Type(s)|Description|Optional|Default value|
-|-------|-------|-----------|--------|-------------|
-| distance | Number | Distance between each tick | No | No |
-| scale | Number | The scale instance | No | No |
-| minorCount | Number | Number of tick added between each distance | Yes | No |
-| unitDivider | Number | Number to divide distance with | Yes | 100 |
-| Returns | Array | Array of ticks | ... | ... |
-
-Generate ticks based on a distance, for each 100th unit, one additional tick may be added.
-Will attempt to round the bounds of domain to even values and generate ticks hitting the domain bounds.  
 
 ## Ordinal scale
 
@@ -320,6 +300,13 @@ Get the first value of the domain
 | Returns | Number | No | ... | ... |
 
 Get the last value of the domain  
+#### <a name='ordinalScale.ticks' href='#ordinalScale.ticks'>#</a> **ordinalScale.ticks**()
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | Array | Array of ticks | ... | ... |
+
+Generate discrete ticks  
 
 
 # Color Scales

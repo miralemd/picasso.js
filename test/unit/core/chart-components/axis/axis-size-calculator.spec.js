@@ -5,7 +5,6 @@ describe('AxisSizeCalculator', () => {
   let settings;
   let ticks;
   let sizeFn;
-  let ticksFn;
   let rect;
 
   beforeEach(() => {
@@ -17,13 +16,13 @@ describe('AxisSizeCalculator', () => {
     settings.paddingEnd = 10;
 
     ticks = [{ label: 'AA' }, { label: 'BB' }, { label: 'CC' }];
-    ticksFn = sinon.stub().returns(ticks);
+    let scale = {};
+    scale.ticks = sinon.stub().returns(ticks);
     rect = { x: 0, y: 0, height: 100, width: 100 };
-    const scale = null;
     const data = null;
     const formatter = null;
     const measureText = ({ text = '' }) => ({ width: text.toString().length, height: 5 });
-    sizeFn = r => calcRequiredSize({ settings, rect: r, ticksFn, scale, data, formatter, measureText });
+    sizeFn = r => calcRequiredSize({ settings, rect: r, scale, data, formatter, measureText });
   });
 
   it('axis with no visible component have a margin of 10', () => {

@@ -1,4 +1,5 @@
 import { scaleBand } from 'd3-scale';
+import { generateDiscreteTicks } from './ticks/tick-generators';
 
 const AVAILABLE_SETTINGS = [
   'padding',
@@ -68,6 +69,7 @@ export default function ordinal(settings, fields, dataset) {
     }
     return d3Scale.domain();
   };
+
   /**
    * @param { Number[] } [values] Set or Get range values
    * @return { ordinalScale | Number[] } The instance this method was called on if a parameter is provided, otherwise the current range is returned
@@ -79,6 +81,7 @@ export default function ordinal(settings, fields, dataset) {
     }
     return d3Scale.range();
   };
+
   /**
    * {@link https://github.com/d3/d3-scale#band_paddingOuter }
    * @param { Number } value A value within 0-1
@@ -88,6 +91,7 @@ export default function ordinal(settings, fields, dataset) {
     d3Scale.paddingOuter(p);
     return fn;
   };
+
   /**
    * {@link https://github.com/d3/d3-scale#band_paddingInner }
    * @param { Number } value A value within 0-1
@@ -97,6 +101,7 @@ export default function ordinal(settings, fields, dataset) {
     d3Scale.paddingInner(p);
     return fn;
   };
+
   /**
    * {@link https://github.com/d3/d3-scale#band_padding }
    * @param { Number } value A value within 0-1
@@ -106,6 +111,7 @@ export default function ordinal(settings, fields, dataset) {
     d3Scale.padding(p);
     return fn;
   };
+
   /**
    * {@link https://github.com/d3/d3-scale#band_padding }
    * @param { Number } value A value within 0-1
@@ -115,6 +121,7 @@ export default function ordinal(settings, fields, dataset) {
     d3Scale.align(a);
     return fn;
   };
+
   /**
    * {@link https://github.com/d3/d3-scale#band_align }
    * @return { Number } Bandwith of each band
@@ -122,6 +129,7 @@ export default function ordinal(settings, fields, dataset) {
   fn.bandWidth = function bandWidth() {
     return d3Scale.bandwidth();
   };
+
   /**
    * {@link https://github.com/d3/d3-scale#band_step }
    * @return { Number } Step distance
@@ -129,6 +137,7 @@ export default function ordinal(settings, fields, dataset) {
   fn.step = function step() {
     return d3Scale.step();
   };
+
   /**
    * {@link https://github.com/d3/d3-scale#_ordinal }
    * @param { Number } value
@@ -137,6 +146,7 @@ export default function ordinal(settings, fields, dataset) {
   fn.get = function get(value) {
     return d3Scale(value);
   };
+
   /**
    * Get the first value of the domain
    * @return { Number }
@@ -144,12 +154,22 @@ export default function ordinal(settings, fields, dataset) {
   fn.start = function start() {
     return fn.domain()[0];
   };
+
   /**
    * Get the last value of the domain
    * @return { Number }
    */
   fn.end = function end() {
     return fn.domain()[fn.domain().length - 1];
+  };
+
+  /**
+   * Generate discrete ticks
+   * @return {Array} Array of ticks
+   */
+  fn.ticks = function ticks(input = {}) {
+    input.scale = fn;
+    return generateDiscreteTicks(input);
   };
 
   if (fields && fields[0]) {
