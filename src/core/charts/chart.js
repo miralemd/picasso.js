@@ -357,6 +357,12 @@ function createInstance(definition) {
   ;
 
   /**
+   * The data set for this chart
+   * @return {dataset}
+   */
+  instance.data = () => composer.dataset();
+
+  /**
    * Get all shapes associated with the provided context
    * @param {String} context The brush context
    * @param {String} mode Property comparasion mode.
