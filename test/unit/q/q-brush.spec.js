@@ -5,6 +5,7 @@ describe('q-brush', () => {
 
   beforeEach(() => {
     brush = {
+      isActive: sinon.stub(),
       brushes: sinon.stub()
     };
   });
@@ -12,6 +13,20 @@ describe('q-brush', () => {
   it('should return empty when no brushes exist', () => {
     brush.brushes.returns([]);
     expect(qBrush(brush).length).to.equal(0);
+  });
+
+  it('should reset made selections when brush is active but contain no values', () => {
+    brush.isActive.returns(true);
+    brush.brushes.returns([{
+      id: '/qHyperCube/qDimensionInfo/2',
+      type: 'value',
+      brush: {
+        values: () => []
+      }
+    }]);
+    const selections = qBrush(brush);
+    expect(selections[0].method).to.equal('resetMadeSelections');
+    expect(selections[0].params).to.eql([]);
   });
 
   describe('selectHyperCubeValues', () => {

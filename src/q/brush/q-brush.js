@@ -20,11 +20,14 @@ function extractFieldFromId(id) {
 export default function qBrush(brush, { byCells, primarySource } = {}) {
   let selections = [];
   let methods = {};
+  let isActive = brush.isActive();
+  let hasValues = false;
   brush.brushes().forEach((b) => {
     let info = extractFieldFromId(b.id);
     if (b.type === 'range' && info.type === 'measure') {
       let ranges = b.brush.ranges();
       if (ranges.length) {
+        hasValues = true;
         if (!methods.rangeSelectHyperCubeValues) {
           methods.rangeSelectHyperCubeValues = {
             path: info.path,
@@ -54,15 +57,25 @@ export default function qBrush(brush, { byCells, primarySource } = {}) {
         methods.selectHyperCubeCells.cols.push(info.index);
         if (b.id === primarySource || (!primarySource && !methods.selectHyperCubeCells.values)) {
           methods.selectHyperCubeCells.values = b.brush.values().map(s => +s);
+          hasValues = !!methods.selectHyperCubeCells.values.length;
         }
       } else {
+        const values = b.brush.values().map(s => +s);
+        hasValues = !!values.length;
         selections.push({
-          params: [info.path, info.index, b.brush.values().map(s => +s), false],
+          params: [info.path, info.index, values, false],
           method: 'selectHyperCubeValues'
         });
       }
     }
   });
+
+  if (!hasValues && isActive) {
+    return [{
+      method: 'resetMadeSelections',
+      params: []
+    }];
+  }
 
   if (methods.rangeSelectHyperCubeValues) {
     selections.push({
