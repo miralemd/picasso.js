@@ -11,7 +11,7 @@ const specialTextValues = {
   }
 };
 
-function normalizeValues(path, data, meta, attrIdx) {
+function normalizeValues(path, data, meta, attrIdx, offset = 0) {
   let values = resolve(path, data);
   let normalized = new Array(values.length);
   let cell;
@@ -22,6 +22,7 @@ function normalizeValues(path, data, meta, attrIdx) {
     }
     normalized[i] = {
       value: cell.qNum,
+      index: typeof cell.qRow !== 'undefined' ? cell.qRow : offset + i,
       label: cell.qElemNumber in specialTextValues ? specialTextValues[cell.qElemNumber](meta) : cell.qText,
       id: cell.qElemNumber || 0
     };
@@ -33,7 +34,7 @@ function collectStraightData(col, page, meta, attrIdx) {
   let values = [];
   let matrixColIdx = col - page.qArea.qLeft;
   if (matrixColIdx >= 0 && matrixColIdx < (page.qArea.qLeft + page.qArea.qWidth) && page.qArea.qHeight > 0) {
-    values = normalizeValues(`//${matrixColIdx}`, page.qMatrix, meta, attrIdx);
+    values = normalizeValues(`//${matrixColIdx}`, page.qMatrix, meta, attrIdx, page.qArea.qTop);
   }
   return values;
 }
@@ -52,6 +53,7 @@ function traverseNode(node) {
     qNum: node.qValue,
     qElemNumber: node.qElemNo,
     qText: node.qText,
+    qRow: node.qRow,
     qAttrExps: node.qAttrExps
   };
   if (!children.length) {

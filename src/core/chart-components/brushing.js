@@ -119,7 +119,6 @@ function brushDataPoint({
     actionFn = 'setValues';
   }
 
-
   if (dataPoint !== null) {
     dataProps.forEach((p) => {
       if (dataPoint[p]) {

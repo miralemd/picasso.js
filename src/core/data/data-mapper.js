@@ -50,7 +50,7 @@ export function collectRepeating(repeater, ds) {
 
   let fieldValues = [];
   let singleGroup;
-  let idAttribute = repeater ? repeater.attribute || 'id' : 'id';
+  let idAttribute = repeater ? repeater.trackBy || 'id' : 'id';
   let dataSource = repeater ? ds.findField(repeater.source) : null;
   if (dataSource && dataSource.field) {
     fieldValues = dataSource.field.values();
@@ -71,7 +71,7 @@ export function collectRepeating(repeater, ds) {
     collection,
     fieldValues,
     ids,
-    attr: idAttribute
+    trackBy: idAttribute
   };
 }
 
@@ -89,7 +89,7 @@ export function collectRepeating(repeater, ds) {
  */
 // export function collectValues(key, pool, values, syncValues, type, attr, source) {
 export function collectValues({
-  key, pool, values, syncValues, type, attr, source, property, others
+  key, pool, values, syncValues, type, trackBy, source, valueProperty, others
 }) {
   const len = values.length;
   let v;
@@ -97,7 +97,7 @@ export function collectValues({
   let group;
   for (i = 0; i < len; i++) {
     v = values[i];
-    group = syncValues[i] ? pool[attr === '$index' ? i : syncValues[i][attr]] : others;
+    group = syncValues[i] ? pool[trackBy === '$index' ? i : syncValues[i][trackBy]] : others;
     if (group) {
       if (!group[key]) {
         group[key] = {
@@ -109,7 +109,11 @@ export function collectValues({
           }
         };
       }
-      group[key].values.push(v[property]);
+      if (valueProperty === '$index') {
+        group[key].values.push(typeof v.index !== 'undefined' ? v.index : i);
+      } else {
+        group[key].values.push(v[valueProperty]);
+      }
       group[key].source.indices.push(i);
     }
   }
@@ -137,7 +141,10 @@ export function collectMapping(key, m, repeating, ds, collector = collectValues)
       type = fieldType === 'dimension' ? 'qual' : 'quant';
     }
   }
-  let property = type === 'qual' ? 'label' : 'value';
+  let valueProperty = type === 'qual' ? 'label' : 'value';
+  if (m.property) {
+    valueProperty = m.property;
+  }
 
   if (m.linkFrom) {
     let link = ds.findField(m.linkFrom);// , ds.tables());
@@ -152,9 +159,9 @@ export function collectMapping(key, m, repeating, ds, collector = collectValues)
     values: fieldValues,
     syncValues,
     type,
-    attr: repeating.attr,
+    trackBy: repeating.trackBy,
     source: m.source,
-    property: type === 'qual:id' ? 'id' : property,
+    valueProperty,
     others: repeating.others
   });
 }
@@ -189,6 +196,8 @@ export function mapData(mapper, repeater, ds) {
     mapping = extend(true, {}, mapper, {
       self: {
         source: repeater.source,
+        property: repeater.property || 'label',
+        trackBy: repeater.trackBy || repeater.property || 'label',
         reducer: 'first',
         type: 'qual' // TODO - configurable?
       }

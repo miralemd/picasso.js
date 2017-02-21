@@ -101,10 +101,10 @@ describe('data-mapper', () => {
         findField: sandbox.stub()
       };
       values = [
-        { value: 7, id: 'id:7', label: 'seven' },
-        { value: 2, id: 'id:2', label: 'two' },
-        { value: 7, id: 'id:7', label: 'seven' },
-        { value: 11, id: 'id:11', label: 'eleven' }
+        { value: 7, id: 'id:7', label: 'seven', index: 7 },
+        { value: 2, id: 'id:2', label: 'two', index: 8 },
+        { value: 7, id: 'id:7', label: 'seven', index: 9 },
+        { value: 11, id: 'id:11', label: 'eleven', index: 10 }
       ];
     });
 
@@ -120,7 +120,7 @@ describe('data-mapper', () => {
       expect(collected).to.eql({
         collection: [{}, {}, {}],
         fieldValues: values,
-        attr: 'id',
+        trackBy: 'id',
         others: undefined,
         ids: {
           'id:7': {},
@@ -138,12 +138,12 @@ describe('data-mapper', () => {
       });
       let collected = collectRepeating({
         source: '',
-        attribute: '$index'
+        trackBy: '$index'
       }, ds);
       expect(collected).to.eql({
         collection: [{}, {}, {}, {}],
         fieldValues: values,
-        attr: '$index',
+        trackBy: '$index',
         others: undefined,
         ids: {
           0: {},
@@ -164,7 +164,7 @@ describe('data-mapper', () => {
       expect(collected).to.eql({
         collection: [{}],
         fieldValues: [],
-        attr: 'id',
+        trackBy: 'id',
         others: {},
         ids: {}
       });
@@ -181,14 +181,34 @@ describe('data-mapper', () => {
         values: [{ val: 'a' }, { val: 'c' }],
         syncValues: [true, true],
         type: 'qual',
-        attr: '$index',
+        trackBy: '$index',
         source: 'data source',
-        property: 'val'
+        valueProperty: 'val'
       });
 
       expect(pool).to.eql({
         0: { x: { values: ['a'], source: { field: 'data source', type: 'qual', indices: [0] } } },
         1: { x: { values: ['c'], source: { field: 'data source', type: 'qual', indices: [1] } } }
+      });
+    });
+
+    it('should collect values by index and extract index value', () => {
+      let pool = { 0: {}, 1: {} };
+
+      collectValues({
+        key: 'x',
+        pool,
+        values: [{ val: 'a', index: 13 }, { val: 'c', index: 15 }],
+        syncValues: [true, true],
+        type: 'qual',
+        trackBy: '$index',
+        source: 'data source',
+        valueProperty: '$index'
+      });
+
+      expect(pool).to.eql({
+        0: { x: { values: [13], source: { field: 'data source', type: 'qual', indices: [0] } } },
+        1: { x: { values: [15], source: { field: 'data source', type: 'qual', indices: [1] } } }
       });
     });
 
@@ -214,9 +234,9 @@ describe('data-mapper', () => {
         values: [{ val: 'a' }, { val: 'c' }, { val: 'b' }, { val: 'c' }, { val: 'e' }, { val: 'd' }],
         syncValues: [{ car: 'bmw' }, { car: 'volvo' }, { car: 'mercedes' }, { car: 'volvo' }, { car: 'bmw' }, { car: 'mercedes' }],
         type: 'qual',
-        attr: 'car',
+        trackBy: 'car',
         source: 'data source',
-        property: 'val'
+        valueProperty: 'val'
       });
 
       expect(pool).to.eql({
@@ -237,9 +257,9 @@ describe('data-mapper', () => {
         values: [{ val: 'a' }, { val: 'c' }, { val: 'b' }, { val: 'c' }, { val: 'e' }, { val: 'd' }],
         syncValues: [{ car: 'bmw' }, { car: 'volvo' }, { car: 'mercedes' }, { car: 'volvo' }, { car: 'bmw' }, { car: 'mercedes' }],
         type: 'qual',
-        attr: 'car',
+        trackBy: 'car',
         source: 'data source',
-        property: 'val'
+        valueProperty: 'val'
       });
 
       expect(pool).to.eql({
@@ -256,7 +276,7 @@ describe('data-mapper', () => {
         syncValues: [],
         type: 'qual',
         source: 'data source',
-        property: 'val',
+        valueProperty: 'val',
         others
       });
 
@@ -280,7 +300,7 @@ describe('data-mapper', () => {
       let groups = {
         collection: [{}, {}, {}],
         ids: 'idMap',
-        attr: 'id',
+        trackBy: 'id',
         fieldValues: 'syncValues',
         others: 'others'
       };
@@ -300,9 +320,9 @@ describe('data-mapper', () => {
         values: 'dummyValues',
         syncValues: 'syncValues',
         type: 'qual',
-        attr: 'id',
+        trackBy: 'id',
+        valueProperty: 'label',
         source: 'dummy',
-        property: 'label',
         others: 'others'
       });
     });
@@ -311,7 +331,7 @@ describe('data-mapper', () => {
       let groups = {
         collection: [{}, {}, {}],
         ids: 'idMap',
-        attr: 'id',
+        trackBy: 'id',
         fieldValues: 'syncValues',
         others: 'others'
       };
@@ -339,9 +359,9 @@ describe('data-mapper', () => {
         values: 'dummyValues',
         syncValues: 'customSyncValues',
         type: 'quant',
-        attr: 'id',
+        trackBy: 'id',
         source: 'dummy',
-        property: 'value',
+        valueProperty: 'value',
         others: 'others'
       });
     });
@@ -483,7 +503,7 @@ describe('data-mapper', () => {
 
     it('should collect data by rows', () => {
       let groupBy = {
-        source: '/0/0', attribute: '$index'
+        source: '/0/0', trackBy: '$index'
       };
       let mapper = {
         sales: { source: '/0/3', reducer: 'sum' },
