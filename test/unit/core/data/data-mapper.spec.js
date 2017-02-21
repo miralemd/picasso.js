@@ -101,10 +101,10 @@ describe('data-mapper', () => {
         findField: sandbox.stub()
       };
       values = [
-        { value: 7, id: 'id:7', label: 'seven' },
-        { value: 2, id: 'id:2', label: 'two' },
-        { value: 7, id: 'id:7', label: 'seven' },
-        { value: 11, id: 'id:11', label: 'eleven' }
+        { value: 7, id: 'id:7', label: 'seven', index: 7 },
+        { value: 2, id: 'id:2', label: 'two', index: 8 },
+        { value: 7, id: 'id:7', label: 'seven', index: 9 },
+        { value: 11, id: 'id:11', label: 'eleven', index: 10 }
       ];
     });
 
@@ -146,10 +146,10 @@ describe('data-mapper', () => {
         trackBy: '$index',
         others: undefined,
         ids: {
-          0: {},
-          1: {},
-          2: {},
-          3: {}
+          7: {},
+          8: {},
+          9: {},
+          10: {}
         }
       });
     });
@@ -189,6 +189,26 @@ describe('data-mapper', () => {
       expect(pool).to.eql({
         0: { x: { values: ['a'], source: { field: 'data source', type: 'qual', indices: [0] } } },
         1: { x: { values: ['c'], source: { field: 'data source', type: 'qual', indices: [1] } } }
+      });
+    });
+
+    it('should collect values by index and extract index value', () => {
+      let pool = { 0: {}, 1: {} };
+
+      collectValues({
+        key: 'x',
+        pool,
+        values: [{ val: 'a', index: 13 }, { val: 'c', index: 15 }],
+        syncValues: [true, true],
+        type: 'qual',
+        trackBy: '$index',
+        source: 'data source',
+        valueProperty: '$index'
+      });
+
+      expect(pool).to.eql({
+        0: { x: { values: [13], source: { field: 'data source', type: 'qual', indices: [0] } } },
+        1: { x: { values: [15], source: { field: 'data source', type: 'qual', indices: [1] } } }
       });
     });
 

@@ -201,8 +201,8 @@ describe('qTable', () => {
       // ]);
 
       expect(q.findField('/qDimensionInfo/1').values()).to.eql([
-        { value: 'NaN', label: 'Alpha', id: 1 },
-        { value: 2, label: 'Beta', id: 3 }
+        { value: 'NaN', label: 'Alpha', id: 1, index: 0 },
+        { value: 2, label: 'Beta', id: 3, index: 1 }
       ]);
     });
   });
@@ -235,9 +235,9 @@ describe('qTable', () => {
 
     it('should have values', () => {
       expect(q.findField('A').values()).to.eql([
-        { value: 17, label: 'alpha', id: 3 },
-        { value: 'NaN', label: 'beta', id: 4 },
-        { value: null, label: 'gamma', id: 5 }
+        { value: 17, label: 'alpha', id: 3, index: 0 },
+        { value: 'NaN', label: 'beta', id: 4, index: 1 },
+        { value: null, label: 'gamma', id: 5, index: 2 }
       ]);
     });
   });
