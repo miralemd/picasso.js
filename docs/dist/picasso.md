@@ -11,7 +11,9 @@
 * <a href="#createInstance~instance.update">createInstance~instance.update</a>
 * <a href="#createInstance~instance.brush">createInstance~instance.brush</a>
 * <a href="#createInstance~instance.field">createInstance~instance.field</a>
+* <a href="#createInstance~instance.data">createInstance~instance.data</a>
 * <a href="#createInstance~instance.getAffectedShapes">createInstance~instance.getAffectedShapes</a>
+* <a href="#createInstance~instance.findShapes">createInstance~instance.findShapes</a>
 * <a href="#createInstance~instance.scroll">createInstance~instance.scroll</a>
 * <a href="#picasso.chart">picasso.chart</a>
 
@@ -114,6 +116,13 @@ The brush context for this chart
 | Returns | data-field | No | ... | ... |
 
 Get a field associated with the provided brush  
+#### <a name='createInstance~instance.data' href='#createInstance~instance.data'>#</a> createInstance.**createInstance~instance.data**()
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | dataset | No | ... | ... |
+
+The data set for this chart  
 #### <a name='createInstance~instance.getAffectedShapes' href='#createInstance~instance.getAffectedShapes'>#</a> createInstance.**createInstance~instance.getAffectedShapes**(*String context, String mode, Array props, String key*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
@@ -125,6 +134,21 @@ Get a field associated with the provided brush
 | Returns | Array.&lt;Object&gt; | Array of objects containing shape and parent element | ... | ... |
 
 Get all shapes associated with the provided context  
+#### <a name='createInstance~instance.findShapes' href='#createInstance~instance.findShapes'>#</a> createInstance.**createInstance~instance.findShapes**(*String selector*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| selector | String | CSS selector [type, attribute or universal] | No | No |
+| Returns | Array.&lt;Object&gt; | Array of objects containing matching nodes | ... | ... |
+
+Get all nodes matching the provided selector  
+#### Examples
+
+```js
+chart.findShapes('Circle') // [<CircleNode>, <CircleNode>]
+chart.findShapes('Circle[fill="red"][stroke!="black"]') // [CircleNode, CircleNode]
+chart.findShapes('Container Rect') // [Rect, Rect]
+```
 #### <a name='createInstance~instance.scroll' href='#createInstance~instance.scroll'>#</a> createInstance.**createInstance~instance.scroll**()
 
 |Name(s)|Type(s)|Description|Optional|Default value|

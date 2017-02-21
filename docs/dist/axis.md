@@ -30,15 +30,11 @@
 | ticks.tickSize | number | No | Yes | 4 (discrete) or 8 (continuous) |
 | ticks.stroke | string | No | Yes | &#x27;#cccccc&#x27; |
 | ticks.strokeWidth | number | No | Yes | 1 |
-| ticks.tight | boolean | Only on a continuous axis | Yes | No |
-| ticks.forceBounds | boolean | Only on a continuous axis | Yes | No |
-| ticks.distance | number | Approximate distance between each tick. Only on a continuous axis | Yes | 100 |
 | minorTicks | object | Only on a continuous axis | Yes | No |
 | minorTicks.show | boolean | No | Yes | true |
 | minorTicks.margin | number | No | Yes | No |
 | minorTicks.tickSize | number | No | Yes | 3 |
 | minorTicks.stroke | string | No | Yes | &#x27;#E6E6E6&#x27; |
 | minorTicks.strokeWidth | number | No | Yes | 1 |
-| minorTicks.count | number | No | Yes | 3 |
 
 No description  
