@@ -101,7 +101,7 @@ export default function dispersion(composer, defaultStyles = {}, initialSettings
       let normalizedWidth = major({ value: major.domain()[0] }) - major({ value: major.domain()[0] + minDataPointDistance });
       bandwidth = Math.abs(normalizedWidth);
     } else {
-      bandwidth = major && major.bandWidth ? major.bandWidth() : 0;
+      bandwidth = major && major.bandWidth ? major.bandWidth() : 1;
     }
 
     // Setup the blueprint
