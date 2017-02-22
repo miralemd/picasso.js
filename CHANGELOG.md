@@ -1,6 +1,14 @@
 # Changelog
 
-## [BREAKING] Unreleased
+## Unreleased
+
+## 0.9.1
+
+### Fixed
+
+- Box-marker without major scale falls back to `minWidth` setting due to `bandwith` defaulting to `0` - should default to `1`
+
+## [BREAKING] 0.9.0
 
 ### Breaking changes
 
