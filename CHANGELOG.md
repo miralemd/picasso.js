@@ -15,6 +15,7 @@
 - `chart.getAffectedShapes()` now returns an array of `sceneObjects`
 - `attribute` has changed name to `trackBy` in `data.mapTo.groupBy`
 - `type: 'qual:id'` has been removed in favor of `property: 'id'`
+- Settings for generating ticks has been moved to the scale instead
 
 ### Added
 
