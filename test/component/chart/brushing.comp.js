@@ -27,7 +27,7 @@ describe('Brushing', () => {
       brush = {
         trigger: [
           {
-            action: 'tap',
+            on: 'tap',
             contexts: ['test']
           }
         ],

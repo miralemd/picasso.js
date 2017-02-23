@@ -259,14 +259,25 @@ function resolveCollisions(e, t, renderer) {
   return renderer.itemsAt(p);
 }
 
+
+function resolveAction(action, e, collisions, def) {
+  if (action) {
+    if (typeof action === 'function') {
+      return action(e, collisions);
+    }
+    return action;
+  }
+  return def;
+}
+
 export function resolveTapEvent({ e, t, config }) {
   const collisions = resolveCollisions(e, t, config.renderer);
 
-  return resolveEvent({ collisions, t, config, action: 'toggle' });
+  return resolveEvent({ collisions, t, config, action: resolveAction(t.action, e, collisions, 'toggle') });
 }
 
 export function resolveOverEvent({ e, t, config }) {
   const collisions = resolveCollisions(e, t, config.renderer);
 
-  return resolveEvent({ collisions, t, config, action: 'hover' });
+  return resolveEvent({ collisions, t, config, action: resolveAction(t.action, e, collisions, 'hover') });
 }

@@ -6,7 +6,8 @@ Brushing in a component is handled in two ways; _trigger_ and _consume_.
 
 `trigger` controls how the component reacts to various user actions like 'tapping on a shape':
 
-* `action`: type of action to react to
+* `on`: type of interaction to react to
+* `action`: type of action to respond with.  _Optional_
 * `contexts`: name of the brushing contexts to affect
 * `data`: the mapped data properties to add to the brush. _Optional_
 * `propagation`: control the event propagation when multiple shapes are tapped. Disabled by default. _Optional_
@@ -15,7 +16,8 @@ Brushing in a component is handled in two ways; _trigger_ and _consume_.
 
 ```js
 trigger: [{
-  action: 'tap',
+  on: 'tap',
+  action: 'toggle',
   contexts: ['selection', 'tooltip'],
   data: ['x'],
   propagation 'stop', // 'stop' => prevent trigger to propagate further then to first shape || 'data' => only tap on shapes with unique data values
@@ -75,7 +77,7 @@ when `addValue` is called, components that are _consuming_ the _highlight_ brush
   settings: {...},
   brush: {
     trigger: [{
-      action: 'tap',
+      on: 'tap',
       contexts: ['highlight']
     }],
     consume: [{
@@ -91,7 +93,7 @@ when `addValue` is called, components that are _consuming_ the _highlight_ brush
 
 ```
 
-To make the component react to a 'tap', we add a _trigger object_ with an `action` of type 'tap' and set the brush `contexts` we want to affect.
+To make the component react to a 'tap', we add a _trigger object_ with an `on` of type 'tap' and set the brush `contexts` we want to affect.
 
 To have the component listen to brush changes and update itself, we add a _consume object_ with the name of the `context` we want it to observe, and set the `style` of `inactive` points.
 
