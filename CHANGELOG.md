@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+## 0.9.2
+
+### Fixed
+
+- dom-renderer clear method
+
+### Added
+
+- PIC-84 Add interceptor removal methods:
+
+    ```js
+    brush.removeAllInterceptors('toggle-values');
+    brush.removeAllInterceptors();
+    ```
+
 ## 0.9.1
 
 ### Fixed
