@@ -556,4 +556,56 @@ describe('brush', () => {
       expect(changed[1]).to.eql([{ id: 'products', values: ['Cars', 'Skateboards'] }]);
     });
   });
+
+  describe('interceptors', () => {
+    let cb;
+    let interceptor;
+    beforeEach(() => {
+      cb = sandbox.spy();
+      b.on('update', cb);
+
+      interceptor = sandbox.stub().returns([{ key: 'intercepted', value: 'yes' }]);
+      b.intercept('add-values', interceptor);
+
+      vc.add.returns(true);
+    });
+
+    it('should intercept "add-values"', () => {
+      b.addValue('products', 'cars');
+      expect(interceptor).to.have.been.calledWithExactly([{ key: 'products', value: 'cars' }]);
+    });
+
+    it('should be updated with the values returned from the interceptor', () => {
+      b.addValue('products', 'cars');
+      expect(cb).to.have.been.calledWith([{ id: 'intercepted', values: ['yes'] }], []);
+    });
+
+    it('should remove the interceptor', () => {
+      b.removeInterceptor('add-values', interceptor);
+      b.addValue('products', 'cars');
+      expect(interceptor.callCount).to.equal(0);
+    });
+
+    it('should remove all interceptors', () => {
+      const toggleInterceptor = () => {};
+      b.intercept('toggle-values', toggleInterceptor);
+
+      const rem = sandbox.spy(b, 'removeInterceptor');
+      b.removeAllInterceptors();
+
+      expect(rem.firstCall).to.have.been.calledWith('add-values', interceptor);
+      expect(rem.secondCall).to.have.been.calledWith('toggle-values', toggleInterceptor);
+    });
+
+    it('should remove all named interceptors', () => {
+      const toggleInterceptor = () => {};
+      b.intercept('toggle-values', toggleInterceptor);
+
+      const rem = sandbox.spy(b, 'removeInterceptor');
+      b.removeAllInterceptors('add-values');
+
+      expect(rem.callCount).to.equal(1);
+      expect(rem.firstCall).to.have.been.calledWith('add-values', interceptor);
+    });
+  });
 });
