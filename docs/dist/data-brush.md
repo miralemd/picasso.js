@@ -203,3 +203,18 @@ brush.intercept('add-values', items => {
  return items;
 });
 ```
+#### <a name='brush.removeInterceptor' href='#brush.removeInterceptor'>#</a> **brush.removeInterceptor**(*string name, function ic*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| name | string | Name of the event to intercept | No | No |
+| ic | function | Handler to remove | No | No |
+
+Removes an interceptor  
+#### <a name='brush.removeAllInterceptors' href='#brush.removeAllInterceptors'>#</a> **brush.removeAllInterceptors**(*string [name]*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| name | string | Name of the event to remove interceptors for. If not provided, removes all interceptors. | Yes | No |
+
+Removes all interceptors  

@@ -178,6 +178,14 @@ function intercept(handlers, items) {
   return handlers && handlers.length ? handlers.reduce((value, interceptor) => interceptor(value), items) : items;
 }
 
+function toCamelCase(s) {
+  return s.replace(/(-[a-z])/g, $1 => $1.toUpperCase().replace('-', ''));
+}
+
+function toSnakeCase(s) {
+  return s.replace(/([A-Z])/g, $1 => `-${$1.toLowerCase()}`);
+}
+
 export default function brush({
   vc = valueCollection,
   rc = rangeCollection
@@ -482,11 +490,54 @@ export default function brush({
    * });
    */
   fn.intercept = (name, ic) => {
-    let s = name.replace(/(-[a-z])/g, $1 => $1.toUpperCase().replace('-', ''));
+    let s = toCamelCase(name);
     if (!interceptors[s]) {
       return;
     }
     interceptors[s].push(ic);
+  };
+
+  /**
+   * Removes an interceptor
+   *
+   * @param {string} name Name of the event to intercept
+   * @param {function} ic Handler to remove
+   */
+  fn.removeInterceptor = (name, ic) => {
+    let s = toCamelCase(name);
+    if (!interceptors[s]) {
+      return;
+    }
+    const idx = interceptors[s].indexOf(ic);
+    if (idx !== -1) {
+      interceptors[s].splice(idx, 1);
+    }
+  };
+
+  /**
+   * Removes all interceptors
+   *
+   * @param {string} [name] Name of the event to remove interceptors for. If not provided, removes all interceptors.
+   */
+  fn.removeAllInterceptors = (name) => {
+    let toRemove = [];
+    if (name) {
+      let s = toCamelCase(name);
+      if (interceptors[s] && interceptors[s].length) {
+        toRemove.push({ name, handlers: interceptors[s] });
+      }
+    } else {
+      Object.keys(interceptors).forEach((n) => {
+        if (interceptors[n].length) {
+          toRemove.push({ name: toSnakeCase(n), handlers: interceptors[n] });
+        }
+      });
+    }
+
+    toRemove.forEach((ic) => {
+      let interceptorHandlers = ic.handlers.slice();
+      interceptorHandlers.forEach(handler => fn.removeInterceptor(ic.name, handler));
+    });
   };
 
   EventEmitter.mixin(fn);
