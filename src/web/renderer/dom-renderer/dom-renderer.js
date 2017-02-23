@@ -88,6 +88,7 @@ export default function renderer(opts = {}) {
       el.removeChild(first);
       first = el.firstChild;
     }
+    vnode = null;
   };
 
   dom.destroy = () => {
