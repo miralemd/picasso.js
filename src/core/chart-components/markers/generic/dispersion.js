@@ -117,11 +117,32 @@ export default function dispersion(composer, defaultStyles = {}, initialSettings
       const shapes = buildShapes(item);
       shapes.forEach((shape) => {
         shape.data = idx;
+        shape.collider = { type: null };
         blueprint.push(shape);
       });
     });
 
-    return blueprint.output();
+    const output = blueprint.output();
+    if (output.length === 0) {
+      return output;
+    }
+    return items.map((item, idx) => {
+      const container = {
+        type: 'container',
+        data: idx,
+        collider: { type: 'bounds' },
+        children: []
+      };
+      for (let i = 0; i < output.length; i++) {
+        const o = output[i];
+        if (o.data === container.data) {
+          container.children.push(o);
+          output.splice(i, 1);
+          i--;
+        }
+      }
+      return container;
+    });
   };
 
   return fn();

@@ -12,6 +12,10 @@ action: 'remove' // Removes the brushed values
 action: function(e) { return e.ctrlKey ? 'set' : 'toggle' }
 ```
 
+### Added
+
+- PIC-82 Default to bounds container collider on box-marker
+
 ## 0.9.2
 
 ### Fixed

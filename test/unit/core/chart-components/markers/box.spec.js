@@ -104,85 +104,114 @@ describe('box marker', () => {
       config
     });
 
-    expect(rendererOutput).to.deep.equal([{
-      data: 0,
-      fill: '#fff',
-      height: 40,
-      maxWidth: 100,
-      minWidth: 5,
-      show: true,
-      stroke: '#f00',
-      strokeWidth: 1,
-      type: 'rect',
-      width: 50,
-      x: 49.5,
-      y: 79.5
-    },
-    {
-      data: 0,
-      show: true,
-      stroke: '#ff0',
-      strokeWidth: 1,
-      type: 'line',
-      x1: 74.5,
-      x2: 74.5,
-      y1: 79.5,
-      y2: 39.5
-    },
-    {
-      data: 0,
-      show: true,
-      stroke: '#ff0',
-      strokeWidth: 1,
-      type: 'line',
-      x1: 74.5,
-      x2: 74.5,
-      y1: 159.5,
-      y2: 119.5
-    },
-    {
-      data: 0,
-      show: true,
-      stroke: '#00f',
-      strokeWidth: 1,
-      type: 'line',
-      x1: 49.5,
-      x2: 99.5,
-      y1: 99.5,
-      y2: 99.5
-    },
-    {
-      cx: 75,
-      cy: 40,
-      data: 0,
-      fill: '',
-      r: 25,
-      show: true,
-      stroke: '#0f0',
-      strokeWidth: 1,
-      type: 'line',
-      width: 50,
-      x1: 49.5,
-      x2: 99.5,
-      y1: 39.5,
-      y2: 39.5
-    },
-    {
-      cx: 75,
-      cy: 160,
-      data: 0,
-      fill: '',
-      r: 25,
-      show: true,
-      stroke: '#0f0',
-      strokeWidth: 1,
-      type: 'line',
-      width: 50,
-      x1: 49.5,
-      x2: 99.5,
-      y1: 159.5,
-      y2: 159.5
-    }]);
+    expect(rendererOutput).to.deep.equal([
+      {
+        type: 'container',
+        data: 0,
+        collider: {
+          type: 'bounds'
+        },
+        children: [
+          {
+            data: 0,
+            fill: '#fff',
+            height: 40,
+            maxWidth: 100,
+            minWidth: 5,
+            show: true,
+            stroke: '#f00',
+            strokeWidth: 1,
+            type: 'rect',
+            width: 50,
+            x: 49.5,
+            y: 79.5,
+            collider: {
+              type: null
+            }
+          },
+          {
+            data: 0,
+            show: true,
+            stroke: '#ff0',
+            strokeWidth: 1,
+            type: 'line',
+            x1: 74.5,
+            x2: 74.5,
+            y1: 79.5,
+            y2: 39.5,
+            collider: {
+              type: null
+            }
+          },
+          {
+            data: 0,
+            show: true,
+            stroke: '#ff0',
+            strokeWidth: 1,
+            type: 'line',
+            x1: 74.5,
+            x2: 74.5,
+            y1: 159.5,
+            y2: 119.5,
+            collider: {
+              type: null
+            }
+          },
+          {
+            data: 0,
+            show: true,
+            stroke: '#00f',
+            strokeWidth: 1,
+            type: 'line',
+            x1: 49.5,
+            x2: 99.5,
+            y1: 99.5,
+            y2: 99.5,
+            collider: {
+              type: null
+            }
+          },
+          {
+            cx: 75,
+            cy: 40,
+            data: 0,
+            fill: '',
+            r: 25,
+            show: true,
+            stroke: '#0f0',
+            strokeWidth: 1,
+            type: 'line',
+            width: 50,
+            x1: 49.5,
+            x2: 99.5,
+            y1: 39.5,
+            y2: 39.5,
+            collider: {
+              type: null
+            }
+          },
+          {
+            cx: 75,
+            cy: 160,
+            data: 0,
+            fill: '',
+            r: 25,
+            show: true,
+            stroke: '#0f0',
+            strokeWidth: 1,
+            type: 'line',
+            width: 50,
+            x1: 49.5,
+            x2: 99.5,
+            y1: 159.5,
+            y2: 159.5,
+            collider: {
+              type: null
+            }
+          }
+        ]
+      }
+    ]);
   });
 
   it('should accept only end variable and draw a simple bar chart', () => {
@@ -216,20 +245,34 @@ describe('box marker', () => {
       config
     });
 
-    expect(rendererOutput).to.deep.equal([{
-      data: 0,
-      fill: '#fff',
-      height: 120,
-      maxWidth: 100,
-      minWidth: 5,
-      show: true,
-      stroke: '#f00',
-      strokeWidth: 1,
-      type: 'rect',
-      width: 50,
-      x: 49.5,
-      y: -0.5
-    }]);
+    expect(rendererOutput).to.deep.equal([
+      {
+        type: 'container',
+        data: 0,
+        collider: {
+          type: 'bounds'
+        },
+        children: [
+          {
+            data: 0,
+            fill: '#fff',
+            height: 120,
+            maxWidth: 100,
+            minWidth: 5,
+            show: true,
+            stroke: '#f00',
+            strokeWidth: 1,
+            type: 'rect',
+            width: 50,
+            x: 49.5,
+            y: -0.5,
+            collider: {
+              type: null
+            }
+          }
+        ]
+      }
+    ]);
   });
 
   it('should accept start and end variable to draw a gantt chart', () => {
@@ -263,20 +306,34 @@ describe('box marker', () => {
       config
     });
 
-    expect(rendererOutput).to.deep.equal([{
-      data: 0,
-      fill: '#fff',
-      height: 80,
-      maxWidth: 100,
-      minWidth: 5,
-      show: true,
-      stroke: '#f00',
-      strokeWidth: 1,
-      type: 'rect',
-      width: 50,
-      x: 49.5,
-      y: 39.5
-    }]);
+    expect(rendererOutput).to.deep.equal([
+      {
+        type: 'container',
+        data: 0,
+        collider: {
+          type: 'bounds'
+        },
+        children: [
+          {
+            data: 0,
+            fill: '#fff',
+            height: 80,
+            maxWidth: 100,
+            minWidth: 5,
+            show: true,
+            stroke: '#f00',
+            strokeWidth: 1,
+            type: 'rect',
+            width: 50,
+            x: 49.5,
+            y: 39.5,
+            collider: {
+              type: null
+            }
+          }
+        ]
+      }
+    ]);
   });
 
   it('should accept start, end, min and max values, without whiskers', () => {
@@ -317,40 +374,58 @@ describe('box marker', () => {
 
     expect(rendererOutput).to.deep.equal([
       {
+        type: 'container',
         data: 0,
-        fill: '#fff',
-        height: 40,
-        maxWidth: 100,
-        minWidth: 5,
-        show: true,
-        stroke: '#f00',
-        strokeWidth: 1,
-        type: 'rect',
-        width: 50,
-        x: 49.5,
-        y: 79.5
-      },
-      {
-        data: 0,
-        show: true,
-        stroke: '#000',
-        strokeWidth: 1,
-        type: 'line',
-        x1: 74.5,
-        x2: 74.5,
-        y1: 79.5,
-        y2: 39.5
-      },
-      {
-        data: 0,
-        show: true,
-        stroke: '#000',
-        strokeWidth: 1,
-        type: 'line',
-        x1: 74.5,
-        x2: 74.5,
-        y1: 159.5,
-        y2: 119.5
+        collider: {
+          type: 'bounds'
+        },
+        children: [
+          {
+            data: 0,
+            fill: '#fff',
+            height: 40,
+            maxWidth: 100,
+            minWidth: 5,
+            show: true,
+            stroke: '#f00',
+            strokeWidth: 1,
+            type: 'rect',
+            width: 50,
+            x: 49.5,
+            y: 79.5,
+            collider: {
+              type: null
+            }
+          },
+          {
+            data: 0,
+            show: true,
+            stroke: '#000',
+            strokeWidth: 1,
+            type: 'line',
+            x1: 74.5,
+            x2: 74.5,
+            y1: 79.5,
+            y2: 39.5,
+            collider: {
+              type: null
+            }
+          },
+          {
+            data: 0,
+            show: true,
+            stroke: '#000',
+            strokeWidth: 1,
+            type: 'line',
+            x1: 74.5,
+            x2: 74.5,
+            y1: 159.5,
+            y2: 119.5,
+            collider: {
+              type: null
+            }
+          }
+        ]
       }
     ]);
   });
@@ -436,7 +511,10 @@ describe('box marker', () => {
         strokeWidth: 1,
         maxWidth: 100,
         minWidth: 5,
-        data: 0
+        data: 0,
+        collider: {
+          type: null
+        }
       },
       {
         type: 'rect',
@@ -450,7 +528,10 @@ describe('box marker', () => {
         strokeWidth: 1,
         maxWidth: 100,
         minWidth: 5,
-        data: 1
+        data: 1,
+        collider: {
+          type: null
+        }
       },
       {
         type: 'rect',
@@ -464,7 +545,10 @@ describe('box marker', () => {
         strokeWidth: 1,
         maxWidth: 100,
         minWidth: 5,
-        data: 2
+        data: 2,
+        collider: {
+          type: null
+        }
       },
       {
         type: 'rect',
@@ -478,7 +562,10 @@ describe('box marker', () => {
         strokeWidth: 1,
         maxWidth: 100,
         minWidth: 5,
-        data: 3
+        data: 3,
+        collider: {
+          type: null
+        }
       },
       {
         type: 'rect',
@@ -492,11 +579,15 @@ describe('box marker', () => {
         strokeWidth: 1,
         maxWidth: 100,
         minWidth: 5,
-        data: 4
+        data: 4,
+        collider: {
+          type: null
+        }
       }
     ];
 
-    const rects = rendererOutput.filter(o => o.type === 'rect');
+    const children = rendererOutput.map(c => c.children);
+    const rects = [].concat(...children).filter(o => o.type === 'rect');
     expect(rects).to.deep.equal(items);
   });
 });
