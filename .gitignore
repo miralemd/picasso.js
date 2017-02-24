@@ -2,6 +2,7 @@
 *.tmp
 *.log
 .DS_Store
+stats.json
 .idea/
 .vscode/
 node_modules/
