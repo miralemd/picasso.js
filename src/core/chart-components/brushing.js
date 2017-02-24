@@ -260,10 +260,10 @@ function resolveCollisions(e, t, renderer) {
 }
 
 
-function resolveAction(action, e, collisions, def) {
+function resolveAction(action, e, def) {
   if (action) {
     if (typeof action === 'function') {
-      return action(e, collisions);
+      return action(e);
     }
     return action;
   }
@@ -273,11 +273,11 @@ function resolveAction(action, e, collisions, def) {
 export function resolveTapEvent({ e, t, config }) {
   const collisions = resolveCollisions(e, t, config.renderer);
 
-  return resolveEvent({ collisions, t, config, action: resolveAction(t.action, e, collisions, 'toggle') });
+  return resolveEvent({ collisions, t, config, action: resolveAction(t.action, e, 'toggle') });
 }
 
 export function resolveOverEvent({ e, t, config }) {
   const collisions = resolveCollisions(e, t, config.renderer);
 
-  return resolveEvent({ collisions, t, config, action: resolveAction(t.action, e, collisions, 'hover') });
+  return resolveEvent({ collisions, t, config, action: resolveAction(t.action, e, 'hover') });
 }
