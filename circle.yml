@@ -21,7 +21,7 @@ dependencies:
   post:
     - npm run lint
     - npm run build
-    - cd docs && npm install && npm run docs
+    - cd docs && yarn && npm run docs
 
 test:
   override:
