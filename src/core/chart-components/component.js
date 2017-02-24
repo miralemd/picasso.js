@@ -324,7 +324,7 @@ export default function componentFactory(definition) {
         });
 
         (config.brush.trigger || []).forEach((t) => {
-          if (t.action === 'over') {
+          if (t.on === 'over') {
             brushTriggers.over.push(t);
           } else {
             brushTriggers.tap.push(t);
