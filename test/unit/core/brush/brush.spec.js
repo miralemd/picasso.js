@@ -94,6 +94,14 @@ describe('brush', () => {
         { type: 'value', id: 'products', brush: vc }
       ]);
     });
+
+    it('should return empty after brush is ended', () => {
+      b.addValue('products');
+      b.addRange('sales');
+      expect(b.brushes().length).to.eql(2);
+      b.end();
+      expect(b.brushes().length).to.eql(0);
+    });
   });
 
   describe('addValue', () => {
@@ -292,14 +300,18 @@ describe('brush', () => {
   describe('clear', () => {
     it('should not emit an "update" event when state has not changed', () => {
       const cb = sandbox.spy();
+      vc.add.returns(true);
+      vc.values.returns([]);
+      b.addValue('products', 'cars');
       b.on('update', cb);
       b.clear();
       expect(cb.callCount).to.equal(0);
     });
 
-    it('should emit an "update" event when state changed', () => {
+    it('should emit an "update" event when state has changed', () => {
       const cb = sandbox.spy();
       b.addValue('products', 'whatevz');
+      vc.values.returns(['whatwhat']);
       b.on('update', cb);
       b.clear();
       expect(cb.callCount).to.equal(1);

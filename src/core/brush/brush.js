@@ -230,6 +230,8 @@ export default function brush({
       return;
     }
     activated = false;
+    ranges = {};
+    values = {};
     fn.emit('end');
   };
 
@@ -245,8 +247,8 @@ export default function brush({
    * Clears this brush context
    */
   fn.clear = () => {
-    const hasChanged = Object.keys(ranges).length + Object.keys(values).length > 0;
-    let removed = fn.brushes().filter(b => b.type === 'value').map(b => ({ id: b.id, values: b.brush.values() }));
+    const removed = fn.brushes().filter(b => b.type === 'value' && b.brush.values().length).map(b => ({ id: b.id, values: b.brush.values() }));
+    const hasChanged = Object.keys(ranges).length > 0 || removed.length;
     ranges = {};
     values = {};
     if (hasChanged) {
