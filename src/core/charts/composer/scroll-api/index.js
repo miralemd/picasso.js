@@ -1,14 +1,12 @@
 import scrollApi from '../../../scroll-api';
 
-export function createOrUpdate(options, oldApi, isPartial) {
+export function createOrUpdate(options, oldApi) {
   let min = options.min || 0;
   let max = options.max || 0;
   const viewSize = options.viewSize || 0;
 
   const s = oldApi || scrollApi();
-  if (!isPartial || !oldApi) {
-    s.update({ min, max, viewSize });
-  }
+  s.update({ min, max, viewSize });
 
   return s;
 }
