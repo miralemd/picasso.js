@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Workshop - {{title}}</title>
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.4.0/styles/github.min.css">
+	<link href="../style.css" rel="stylesheet"/>
+	<link href="../favicon.ico" rel="icon" >
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.4.0/highlight.min.js"></script>
+	<script>
+		window.onload = function() {
+			hljs.configure({
+				languages: ["javascript"]
+			});
+
+			var inlineBlocks = document.querySelectorAll('code');
+			Array.prototype.slice.call(inlineBlocks).forEach(function(b) {
+				hljs.highlightBlock(b);
+				if(b.parentNode.tagName !== "PRE") {
+					b.classList.add("inline");
+				}
+			});
+		};
+	</script>
+</head>
+<body>
+	<div id="page">
+		<h1>
+			<a class="back" href="/"></a>
+		</h1>
+    <div class="header-wrapper">
+      <div class="header">
+        <a class="header-logo" href="./index.html">
+          <span>Picasso.js</span>
+        </a>
+        <div class="header-links">
+          <a href="https://github.com/qlik-trial/picasso.js">Github</a>
+        </div>
+      </div>
+    </div>
+		<div class="container" id="container">
+      <div class="sidebar">
+        {{{sidebar}}}
+      </div>
+      <div class="content">
+			  {{{content}}}
+		  </div>
+		</div>
+	</div>
+</body>
+</html>
