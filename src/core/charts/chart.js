@@ -1,6 +1,9 @@
 import composerFn from './composer';
 import createDockLayout from '../dock-layout/dock-layout';
-import { detectPointerSupport, detectTouchSupport } from '../utils/event-type';
+import {
+  detectTouchSupport,
+  isValidTapEvent
+} from '../utils/event-type';
 
 /**
  * @typedef Chart.Props
@@ -157,9 +160,26 @@ function createInstance(definition) {
       });
     });
 
+    const eventInfo = {};
+    const onTapDown = (e) => {
+      if (e.touches) {
+        eventInfo.x = e.touches[0].clientX;
+        eventInfo.y = e.touches[0].clientY;
+        eventInfo.multiTouch = e.touches.length > 1;
+      } else {
+        eventInfo.x = e.clientX;
+        eventInfo.y = e.clientY;
+        eventInfo.multiTouch = false;
+      }
+      eventInfo.time = Date.now();
+    };
+
     const onBrushTap = (e) => {
-      if (e.type === 'touchstart') {
+      if (e.type === 'touchend') {
         e.preventDefault();
+      }
+      if (!isValidTapEvent(e, eventInfo)) {
+        return;
       }
 
       for (let i = visibleComponents.length - 1; i >= 0; i--) {
@@ -197,14 +217,12 @@ function createInstance(definition) {
 
     const brushEventList = [];
 
-    if (detectPointerSupport(element)) {
-      brushEventList.push({ key: 'pointerdown', listener: onBrushTap });
-    } else {
-      brushEventList.push({ key: 'click', listener: onBrushTap });
+    brushEventList.push({ key: 'mousedown', listener: onTapDown });
+    brushEventList.push({ key: 'mouseup', listener: onBrushTap });
 
-      if (detectTouchSupport(element)) {
-        brushEventList.push({ key: 'touchstart', listener: onBrushTap });
-      }
+    if (detectTouchSupport(element)) {
+      brushEventList.push({ key: 'touchstart', listener: onTapDown });
+      brushEventList.push({ key: 'touchend', listener: onBrushTap });
     }
 
     brushEventList.push({ key: 'mousemove', listener: onBrushOver });

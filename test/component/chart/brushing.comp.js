@@ -3,6 +3,19 @@
 import { chart } from '../../../src';
 import createElement from '../../mocks/element-mock';
 
+function simulateClick(elm, down, up = down) {
+  elm.trigger('mousedown', {
+    clientX: down.x,
+    clientY: down.y,
+    button: 0
+  });
+  elm.trigger('mouseup', {
+    clientX: up.x,
+    clientY: up.y,
+    button: 0
+  });
+}
+
 describe('Brushing', () => {
   let data;
   let settings;
@@ -19,8 +32,8 @@ describe('Brushing', () => {
       data = [
         [
           ['Product', 'Cost'],
-          ['Cars', 150000],
-          ['Trucks', 450000]
+          ['Cars', 1],
+          ['Trucks', 2]
         ]
       ];
 
@@ -115,6 +128,31 @@ describe('Brushing', () => {
       };
     });
 
+    describe('thresholds', () => {
+      it('should not tap if delta distance is greater the limit', () => {
+        settings.components.push(pointMarker);
+
+        const instance = chart({
+          element,
+          data: { data },
+          settings
+        });
+
+        const c = instance.findShapes('circle');
+        // mousedown on first point and mouseup on second
+        simulateClick(instance.element, {
+          x: c[0].attrs.cx,
+          y: c[0].attrs.cy
+        }, {
+          x: c[1].attrs.cx,
+          y: c[1].attrs.cy
+        });
+        const activeShapes = instance.getAffectedShapes('test');
+
+        expect(activeShapes).to.be.of.length(0);
+      });
+    });
+
     describe('propagation', () => {
       it('stop', () => {
         pointMarker.brush.trigger[0].propagation = 'stop';
@@ -135,9 +173,9 @@ describe('Brushing', () => {
         });
 
         const c1 = instance.findShapes('circle')[0];
-        instance.element.trigger('click', {
-          clientX: c1.attrs.cx,
-          clientY: c1.attrs.cy
+        simulateClick(instance.element, {
+          x: c1.attrs.cx,
+          y: c1.attrs.cy
         });
         const activeShapes = instance.getAffectedShapes('test');
         const inactiveShapes = instance.findShapes('[fill="red"]');
@@ -167,9 +205,9 @@ describe('Brushing', () => {
         });
 
         const c = instance.findShapes('circle');
-        instance.element.trigger('click', {
-          clientX: c[0].attrs.cx,
-          clientY: c[0].attrs.cy
+        simulateClick(instance.element, {
+          x: c[0].attrs.cx,
+          y: c[0].attrs.cy
         });
         const activeShapes = instance.getAffectedShapes('test');
         const inactiveShapes = instance.findShapes('[fill="red"]');
@@ -203,9 +241,9 @@ describe('Brushing', () => {
         });
 
         const c = instance.findShapes('circle');
-        instance.element.trigger('click', {
-          clientX: c[0].attrs.cx,
-          clientY: c[0].attrs.cy
+        simulateClick(instance.element, {
+          x: c[0].attrs.cx,
+          y: c[0].attrs.cy
         });
         const activeShapes = instance.getAffectedShapes('test');
         const inactiveShapes = instance.findShapes('[fill="red"]');
@@ -237,9 +275,9 @@ describe('Brushing', () => {
         });
 
         const rects = instance.findShapes('rect');
-        instance.element.trigger('click', {
-          clientX: rects[0].attrs.x + (rects[0].attrs.width / 2),
-          clientY: rects[0].attrs.y + (rects[0].attrs.height / 2)
+        simulateClick(instance.element, {
+          x: rects[0].attrs.x + (rects[0].attrs.width / 2),
+          y: rects[0].attrs.y + (rects[0].attrs.height / 2)
         });
         const activeShapes = instance.getAffectedShapes('test');
         const inactiveShapes = instance.findShapes('rect[fill="red"]');
@@ -260,9 +298,9 @@ describe('Brushing', () => {
         });
 
         const texts = instance.findShapes('text');
-        instance.element.trigger('click', {
-          clientX: texts[0].bounds.x + (texts[0].bounds.width / 2),
-          clientY: texts[0].bounds.y + (texts[0].bounds.height / 2)
+        simulateClick(instance.element, {
+          x: texts[0].bounds.x + (texts[0].bounds.width / 2),
+          y: texts[0].bounds.y + (texts[0].bounds.height / 2)
         });
         const activeShapes = instance.getAffectedShapes('test');
         const inactiveShapes = instance.findShapes('[fill="red"]');

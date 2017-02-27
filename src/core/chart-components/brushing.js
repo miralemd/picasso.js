@@ -1,3 +1,5 @@
+import { isTouchEvent } from '../utils/event-type';
+
 export function styler(obj, { context, data, style }) {
   const brusher = obj.composer.brush(context);
   const dataProps = data;
@@ -233,13 +235,13 @@ function resolveEvent({ collisions, t, config, action }) {
 }
 
 function touchSingleContactPoint(e, rect) {
-  if (e.touches && e.touches.length !== 1) {
+  if (e.changedTouches.length !== 1) {
     return null;
   }
 
   return {
-    x: e.touches[0].clientX - rect.left,
-    y: e.touches[0].clientY - rect.top
+    x: e.changedTouches[0].clientX - rect.left,
+    y: e.changedTouches[0].clientY - rect.top
   };
 }
 
@@ -252,13 +254,13 @@ function singleContactPoint(e, rect) {
 
 function resolveCollisions(e, t, renderer) {
   const rect = renderer.element().getBoundingClientRect();
-  let p = e.type === 'touchstart' ? touchSingleContactPoint(e, rect) : singleContactPoint(e, rect);
+  let p = isTouchEvent(e) ? touchSingleContactPoint(e, rect) : singleContactPoint(e, rect);
 
   if (p === null || p.x < 0 || p.y < 0 || p.x > rect.width || p.y > rect.height) { // TODO include radius in this check?
     return [];
   }
 
-  if (t.touchRadius > 0 && (e.pointerType === 'touch' || e.type === 'touchstart')) {
+  if (t.touchRadius > 0 && isTouchEvent(e)) {
     p = {
       cx: p.x,
       cy: p.y,
