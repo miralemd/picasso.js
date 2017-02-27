@@ -9,6 +9,7 @@
 
 - PIC-82 Default to bounds container collider on box-marker
 - PIC-85 Add trigger options for different actions
+
     ```
     action: 'set' // Sets the brushed values, replacing any previous ones (default for hover brush)
     action: 'toggle' // Toggles the brushed values, adding and removing from the brush (default for tap brush)
