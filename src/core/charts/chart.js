@@ -207,14 +207,6 @@ function createInstance(definition) {
       }
     };
 
-    const onBrushOverLeave = () => {
-      for (let i = visibleComponents.length - 1; i >= 0; i--) {
-        const comp = visibleComponents[i];
-
-        comp.instance.onBrushOverLeave();
-      }
-    };
-
     const brushEventList = [];
 
     brushEventList.push({ key: 'mousedown', listener: onTapDown });
@@ -226,7 +218,6 @@ function createInstance(definition) {
     }
 
     brushEventList.push({ key: 'mousemove', listener: onBrushOver });
-    brushEventList.push({ key: 'mouseleave', listener: onBrushOverLeave });
 
     brushEventList.forEach((event) => {
       element.addEventListener(event.key, event.listener);

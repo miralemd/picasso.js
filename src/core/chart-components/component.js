@@ -4,8 +4,7 @@ import rendererFn from '../renderer/index';
 import {
   styler,
   resolveTapEvent,
-  resolveOverEvent,
-  endBrush
+  resolveOverEvent
 } from './brushing';
 
 const isReservedProperty = prop => [
@@ -383,12 +382,6 @@ export default function componentFactory(definition) {
         if (resolveOverEvent({ e, t, config: brushArgs }) && t.globalPropagation === 'stop') {
           composer.stopBrushing = true;
         }
-      });
-    };
-
-    fn.onBrushOverLeave = () => {
-      brushTriggers.over.forEach((t) => {
-        endBrush({ t, composer });
       });
     };
 
