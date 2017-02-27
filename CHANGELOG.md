@@ -4,17 +4,18 @@
 ### Breaking changes
 - brushing: `trigger.action` changed to `on`
 - brushing: `action` now represents the resulting response on the brush
-```
-action: 'set' // Sets the brushed values, replacing any previous ones (default for hover brush)
-action: 'toggle' // Toggles the brushed values, adding and removing from the brush (default for tap brush)
-action: 'add' // Adds the brushed values
-action: 'remove' // Removes the brushed values
-action: function(e) { return e.ctrlKey ? 'set' : 'toggle' }
-```
 
 ### Added
 
 - PIC-82 Default to bounds container collider on box-marker
+- PIC-85 Add trigger options for different actions
+    ```
+    action: 'set' // Sets the brushed values, replacing any previous ones (default for hover brush)
+    action: 'toggle' // Toggles the brushed values, adding and removing from the brush (default for tap brush)
+    action: 'add' // Adds the brushed values
+    action: 'remove' // Removes the brushed values
+    action: function(e) { return e.ctrlKey ? 'set' : 'toggle' }
+    ```
 
 ## 0.9.2
 
