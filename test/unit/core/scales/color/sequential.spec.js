@@ -74,6 +74,15 @@ describe('Sequential', () => {
       expect(seq.get(0.90)).to.equal('rgb(236, 134, 134)'); // Fourth interval
       expect(seq.get(1)).to.equal('rgb(236, 134, 134)');
     });
+
+    it('should clamp colors', () => {
+      settings.min = 50;
+      settings.max = 60;
+      settings.range = ['rgb(100, 0, 0)', 'rgb(0, 0, 100)'];
+      seq = sequential(settings);
+      expect(seq.get(40)).to.deep.equal('rgb(100, 0, 0)');
+      expect(seq.get(70)).to.deep.equal('rgb(0, 0, 100)');
+    });
   });
 
   describe('Generate limits', () => {

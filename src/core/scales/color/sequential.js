@@ -47,7 +47,7 @@ function generateDomain(range, min, max) {
  */
 
 export default function sequential(settings = {}, fields) {
-  const s = linear(fields, settings).interpolate(interpolateRgb);
+  const s = linear(fields, settings).clamp(true).interpolate(interpolateRgb);
 
   /**
    * @alias sequential
