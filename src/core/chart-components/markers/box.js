@@ -1,6 +1,6 @@
 import createComponentFactory from '../component';
 import dispersion from './generic/dispersion';
-import notNumber from '../../utils/undef';
+import { notNumber } from '../../utils/math';
 
 const DEFAULT_STYLE_SETTINGS = {
   line: {

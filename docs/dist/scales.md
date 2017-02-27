@@ -34,7 +34,7 @@
 * <a href="#ordinalScale.end">ordinalScale.end</a>
 * <a href="#ordinalScale.ticks">ordinalScale.ticks</a>
 * <a href="#picasso.scales.sequential">picasso.scales.sequential</a>
-* <a href="#sequential">sequential</a>
+* <a href="#sequentialScale">sequentialScale</a>
 * <a href="#picasso.scales.threshold">picasso.scales.threshold</a>
 * <a href="#threshold">threshold</a>
 * <a href="#threshold.domain">threshold.domain</a>
@@ -55,12 +55,12 @@
 | minorTicks.count | number | No | Yes | 3 |
 
 No description  
-#### <a name='picasso.scales.linear' href='#picasso.scales.linear'>#</a> **picasso.scales.linear**(*Array fields, Object settings*)
+#### <a name='picasso.scales.linear' href='#picasso.scales.linear'>#</a> **picasso.scales.linear**(*Array.&lt;field&gt; fields, object settings*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| fields | Array | No | No | No |
-| settings | Object | No | No | No |
+| fields | Array.&lt;field&gt; | No | No | No |
+| settings | object | No | No | No |
 | Returns | linearScale | Instance of linear scale | ... | ... |
 
 No description  
@@ -313,24 +313,22 @@ Generate discrete ticks
 
 ## Sequential scale
 
-#### <a name='picasso.scales.sequential' href='#picasso.scales.sequential'>#</a> **picasso.scales.sequential**(*Object settings, Object settings.limits, Object settings.domain, Object settings.colors, Object settings.range, Array fields*)
+#### <a name='picasso.scales.sequential' href='#picasso.scales.sequential'>#</a> **picasso.scales.sequential**(*Object settings, Object settings.range, Object settings.domain, Array.&lt;field&gt; fields*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
 | settings | Object | Settings for this scale. If both colors and limit are declared, they have to fulfill numColors &#x3D;&#x3D; numLimits else they will be overrided. | No | No |
-| settings.limits | Object | Explicit limits indicating breaks between colors. | No | No |
-| settings.domain | Object | Alias for settings.limits | No | No |
-| settings.colors | Object | Colors to use in the scale. | No | No |
-| settings.range | Object | Alias for settings.colors | No | No |
-| fields | Array | No | No | No |
+| settings.range | Object | Explicit limits indicating breaks between colors. | No | No |
+| settings.domain | Object | Colors to use in the scale. | No | No |
+| fields | Array.&lt;field&gt; | No | No | No |
 | Returns | sequentialScale | Instance of sequential scale | ... | ... |
 
 No description  
-#### <a name='sequential' href='#sequential'>#</a> **sequential**(*Object Item*)
+#### <a name='sequentialScale' href='#sequentialScale'>#</a> **sequentialScale**(*object v*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| Item | Object | item object with value property | No | No |
+| v | object | Object containing a &#x27;value&#x27; property | No | No |
 | Returns | string | The blended color | ... | ... |
 
 No description  
