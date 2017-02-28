@@ -20,7 +20,7 @@ describe('Sequential', () => {
     it('default settings', () => {
       seq = sequential();
       expect(seq.domain()).to.deep.equal([0, 1]);
-      expect(seq.range()).to.deep.equal(['red', 'blue']);
+      expect(seq.range()).to.deep.equal(['rgb(180,221,212)', 'rgb(34, 83, 90)']);
     });
 
     it('max/min settings', () => {
@@ -28,13 +28,27 @@ describe('Sequential', () => {
       settings.max = 100;
       seq = sequential(settings);
       expect(seq.domain()).to.deep.equal([20, 100]);
-      expect(seq.range()).to.deep.equal(['red', 'blue']);
+      expect(seq.range()).to.deep.equal(['rgb(180,221,212)', 'rgb(34, 83, 90)']);
+    });
+
+    it('invalid max/min settings', () => {
+      settings.min = 'oops';
+      settings.max = 'ooooops';
+      seq = sequential(settings);
+      expect(seq.domain()).to.deep.equal([NaN, NaN]);
     });
 
     it('only fields', () => {
       seq = sequential({}, fields);
       expect(seq.domain()).to.deep.equal([0, 100]);
-      expect(seq.range()).to.deep.equal(['red', 'blue']);
+      expect(seq.range()).to.deep.equal(['rgb(180,221,212)', 'rgb(34, 83, 90)']);
+    });
+
+    it('invalid max/min on fields', () => {
+      fields[0].min = () => 'oops';
+      fields[0].max = () => 'ooops';
+      seq = sequential({}, fields);
+      expect(seq.domain()).to.deep.equal([0, 1]);
     });
 
     it('should scale two rgb colors', () => {
@@ -74,6 +88,15 @@ describe('Sequential', () => {
       expect(seq.get(0.90)).to.equal('rgb(236, 134, 134)'); // Fourth interval
       expect(seq.get(1)).to.equal('rgb(236, 134, 134)');
     });
+
+    it('should clamp colors', () => {
+      settings.min = 50;
+      settings.max = 60;
+      settings.range = ['rgb(100, 0, 0)', 'rgb(0, 0, 100)'];
+      seq = sequential(settings);
+      expect(seq.get(40)).to.deep.equal('rgb(100, 0, 0)');
+      expect(seq.get(70)).to.deep.equal('rgb(0, 0, 100)');
+    });
   });
 
   describe('Generate limits', () => {
@@ -88,19 +111,19 @@ describe('Sequential', () => {
       settings = {};
     });
     it('should add limits if missing', () => {
-      settings.colors = ['red', 'green', 'blue'];
+      settings.range = ['red', 'green', 'blue'];
       seq = sequential(settings, fields);
       expect(seq.domain()).to.deep.equal([0, 50, 100]);
     });
 
-    it('should use input limits if exists', () => {
-      settings.colors = ['red', 'green', 'blue'];
-      settings.limits = [0, 25, 100];
+    it('should use input range if exists', () => {
+      settings.range = ['red', 'green', 'blue'];
+      settings.domain = [0, 25, 100];
       seq = sequential(settings, fields);
       expect(seq.domain()).to.deep.equal([0, 25, 100]);
     });
     it('should generate more limits', () => {
-      settings.colors = ['red', 'green', 'blue', 'purple', 'yellow', 'magenta', 'pink', 'azure', 'black', 'white', 'brown'];
+      settings.range = ['red', 'green', 'blue', 'purple', 'yellow', 'magenta', 'pink', 'azure', 'black', 'white', 'brown'];
       seq = sequential(settings, fields);
       expect(seq.domain()).to.deep.equal([0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]);
     });

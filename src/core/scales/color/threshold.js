@@ -1,5 +1,5 @@
 import { scaleThreshold } from 'd3-scale';
-import notNumber from '../../utils/undef';
+import { notNumber } from '../../utils/math';
 import sequential from './sequential';
 
 function getMinMax(settings, fields) {

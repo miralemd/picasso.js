@@ -1,7 +1,7 @@
 import { scaleLinear } from 'd3-scale';
 import extend from 'extend';
 
-import notNumber from '../utils/undef';
+import { notNumber } from '../utils/math';
 import { generateContinuousTicks } from './ticks/tick-generators';
 import { continuousDefaultSettings } from './ticks/default-settings';
 
@@ -81,8 +81,8 @@ function getMinMax(settings, fields) {
  /**
  * @alias linear
  * @memberof picasso.scales
- * @param { Array } fields
- * @param { Object } settings
+ * @param { field[] } fields
+ * @param { object } settings
  * @return { linearScale } Instance of linear scale
  */
 

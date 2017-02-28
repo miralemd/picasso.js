@@ -1,21 +1,9 @@
 import { interpolateRgb } from 'd3-interpolate';
 import extend from 'extend';
-import notNumber from '../../utils/undef';
+import { minmax } from '../../utils/math';
 import linear from '../linear';
 
-function getMinMax(settings, fields) {
-  const ret = { min: settings.min, max: settings.max };
-
-  if (notNumber(settings.min)) {
-    ret.min = (fields && fields.length ? Math.min(...fields.map(m => m.min())) : 0);
-  }
-
-  if (notNumber(settings.max)) {
-    ret.max = (fields && fields.length ? Math.max(...fields.map(m => m.max())) : 1);
-  }
-
-  return ret;
-}
+const DEFAULT_COLORS = ['rgb(180,221,212)', 'rgb(34, 83, 90)'];
 
 function generateDomain(range, min, max) {
   const len = range.length;
@@ -37,21 +25,26 @@ function generateDomain(range, min, max) {
 /**
  * @alias sequential
  * @memberof picasso.scales
- * @param { Object } settings Settings for this scale. If both colors and limit are declared, they have to fulfill numColors == numLimits else they will be overrided.
- * @param { Object } settings.limits Explicit limits indicating breaks between colors.
- * @param { Object } settings.domain Alias for settings.limits
- * @param { Object } settings.colors Colors to use in the scale.
- * @param { Object } settings.range Alias for settings.colors
- * @param { Array } fields
+ * @param { Object } [settings] Settings for this scale. If both range and domain are specified, they have to fulfill range.length === domain.length, otherwise they will be overriden.
+ * @param { number[] } [settings.domain] Numeric values indicating stop limits between start and end values.
+ * @param { color[] } [settings.range] CSS color values indicating stop colors between start and end values.
+ * @param { field[] } [fields] Fields to dynamically calculate the domain extent.
  * @return { sequentialScale } Instance of sequential scale
+ *
+ * @example
+ * sequential({
+ *  range: ['red', '#fc6', 'green'],
+ *  domain: [-40, 0, 100]
+ * });
+ *
  */
 
 export default function sequential(settings = {}, fields) {
-  const s = linear(fields, settings).interpolate(interpolateRgb);
+  const s = linear(fields, settings).clamp(true).interpolate(interpolateRgb);
 
   /**
-   * @alias sequential
-   * @param { Object } Item item object with value property
+   * @alias sequentialScale
+   * @param { Object } v Object containing a 'value' property
    * @return { string } The blended color
    */
   const fn = function fn(v) {
@@ -59,9 +52,9 @@ export default function sequential(settings = {}, fields) {
   };
 
   extend(true, fn, s);
-  const { min, max } = getMinMax(settings, fields);
-  fn.range(settings.colors || settings.range || ['red', 'blue']);
-  fn.domain(settings.limits || settings.domain || generateDomain(fn.range(), min, max));
+  const [min, max] = minmax(settings, fields);
+  fn.range(settings.range || DEFAULT_COLORS);
+  fn.domain(settings.domain || generateDomain(fn.range(), min, max));
 
   return fn;
 }

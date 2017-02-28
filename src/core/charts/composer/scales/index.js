@@ -1,7 +1,7 @@
 import { registry } from '../../../utils/registry';
 import linear from '../../../scales/linear';
 import ordinal from '../../../scales/ordinal';
-import color from '../../../scales/color';
+// import color from '../../../scales/color';
 import sequential from '../../../scales/color/sequential';
 import threshold from '../../../scales/color/threshold';
 
@@ -9,7 +9,7 @@ const reg = registry();
 
 reg.add('linear', linear);
 reg.add('ordinal', ordinal);
-reg.add('color', color);
+// reg.add('color', color);
 reg.add('color-sequential', sequential);
 reg.add('color-threshold', threshold);
 
@@ -26,9 +26,7 @@ function findFields(dataset, sources) {
 }
 
 function deduceScaleTypeFromOptions(options, fields) {
-  if (options.colors) {
-    return 'color';
-  } else if (fields[0]) {
+  if (fields[0]) {
     return getTypeFromMeta(fields);
   }
   return 'linear';
@@ -43,6 +41,10 @@ export function create(options, dataset) {
   }
   let type = options.type || deduceScaleTypeFromOptions(options, fields);
   let s;
+
+  if (type === 'color') {
+    type = 'color-sequential';
+  }
 
   if (reg.has(type)) {
     s = reg.get(type);

@@ -30,9 +30,9 @@ describe('composer-scales', () => {
     expect(s.sources).to.eql([]);
   });
 
-  it('should create color scale when type option is "color"', () => {
-    let s = create({ type: 'color' });
-    expect(s.type).to.equal('color');
+  it('should create sequential color scale when type option is "color-sequential"', () => {
+    let s = create({ type: 'color-sequential' });
+    expect(s.type).to.equal('color-sequential');
     expect(s.sources).to.eql([]);
   });
 
