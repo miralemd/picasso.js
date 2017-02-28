@@ -69,7 +69,6 @@ describe('picasso.js', () => {
       expect(spy).to.have.been.calledWith('mousedown', sinon.match(matchFn('onTapDown'), 'function onTapDown'));
       expect(spy).to.have.been.calledWith('mouseup', sinon.match(matchFn('onBrushTap'), 'function onBrushTap'));
       expect(spy).to.have.been.calledWith('mousemove', sinon.match(matchFn('onBrushOver'), 'function onBrushOver'));
-      expect(spy).to.have.been.calledWith('mouseleave', sinon.match(matchFn('onBrushOverLeave'), 'function onBrushOverLeave'));
     });
   });
 });

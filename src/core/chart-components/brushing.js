@@ -127,7 +127,7 @@ function brushDataPoint({
     actionFn = 'addValues';
   } else if (action === 'remove') {
     actionFn = 'removeValues';
-  } else if (action === 'set' || action === 'hover') {
+  } else if (action === 'set') {
     actionFn = 'setValues';
   }
 
@@ -137,28 +137,10 @@ function brushDataPoint({
         items.push({ key: dataPoint[p].source.field, value: dataPoint[p].value });
       }
     });
-
-    config.contexts.forEach((c) => {
-      composer.brush(c)[actionFn](items);
-    });
-  } else if (action === 'hover') {
-    config.contexts.forEach((c) => {
-      composer.brush(c).clear();
-      composer.brush(c).end();
-    });
   }
-}
 
-export function endBrush({
-  composer,
-  config
-}) {
-  if (!config) {
-    return;
-  }
-  (config.contexts || []).forEach((c) => {
-    composer.brush(c).clear();
-    composer.brush(c).end();
+  config.contexts.forEach((c) => {
+    composer.brush(c)[actionFn](items);
   });
 }
 
@@ -291,5 +273,5 @@ export function resolveTapEvent({ e, t, config }) {
 export function resolveOverEvent({ e, t, config }) {
   const collisions = resolveCollisions(e, t, config.renderer);
 
-  return resolveEvent({ collisions, t, config, action: resolveAction(t.action, e, 'hover') });
+  return resolveEvent({ collisions, t, config, action: resolveAction(t.action, e, 'set') });
 }
