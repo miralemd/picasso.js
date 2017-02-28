@@ -1,20 +1,6 @@
 import { scaleThreshold } from 'd3-scale';
-import { notNumber } from '../../utils/math';
+import { notNumber, minmax } from '../../utils/math';
 import sequential from './sequential';
-
-function getMinMax(settings, fields) {
-  const ret = { min: settings.min, max: settings.max };
-
-  if (notNumber(settings.min)) {
-    ret.min = (fields && fields.length ? Math.min(...fields.map(m => m.min())) : 0);
-  }
-
-  if (notNumber(settings.max)) {
-    ret.max = (fields && fields.length ? Math.max(...fields.map(m => m.max())) : 1);
-  }
-
-  return ret;
-}
 
 function generateDomain(range, min, max) {
   const len = range.length;
@@ -108,9 +94,9 @@ export default function threshold(settings = {}, fields) {
     return d3Scale.range();
   };
 
-  const { min, max } = getMinMax(settings, fields);
-  let domain = settings.limits || settings.domain || [min + ((max - min) / 2)];
-  let range = settings.colors || settings.range || ['red', 'blue'];
+  const [min, max] = minmax(settings, fields);
+  let domain = settings.domain || [min + ((max - min) / 2)];
+  let range = settings.range || ['red', 'blue'];
   if (range.length > domain.length + 1) {
     // Generate limits from range
     domain = generateDomain(range, min, max);
