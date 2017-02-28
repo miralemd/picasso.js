@@ -313,22 +313,30 @@ Generate discrete ticks
 
 ## Sequential scale
 
-#### <a name='picasso.scales.sequential' href='#picasso.scales.sequential'>#</a> **picasso.scales.sequential**(*Object settings, Object settings.range, Object settings.domain, Array.&lt;field&gt; fields*)
+#### <a name='picasso.scales.sequential' href='#picasso.scales.sequential'>#</a> **picasso.scales.sequential**(*Object [settings, ]Array.&lt;number&gt; [settings.domain, ]Array.&lt;color&gt; [settings.range, ]Array.&lt;field&gt; [fields]*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| settings | Object | Settings for this scale. If both colors and limit are declared, they have to fulfill numColors &#x3D;&#x3D; numLimits else they will be overrided. | No | No |
-| settings.range | Object | Explicit limits indicating breaks between colors. | No | No |
-| settings.domain | Object | Colors to use in the scale. | No | No |
-| fields | Array.&lt;field&gt; | No | No | No |
+| settings | Object | Settings for this scale. If both range and domain are specified, they have to fulfill range.length &#x3D;&#x3D;&#x3D; domain.length, otherwise they will be overriden. | Yes | No |
+| settings.domain | Array.&lt;number&gt; | Numeric values indicating stop limits between start and end values. | Yes | No |
+| settings.range | Array.&lt;color&gt; | CSS color values indicating stop colors between start and end values. | Yes | No |
+| fields | Array.&lt;field&gt; | Fields to dynamically calculate the domain extent. | Yes | No |
 | Returns | sequentialScale | Instance of sequential scale | ... | ... |
 
 No description  
-#### <a name='sequentialScale' href='#sequentialScale'>#</a> **sequentialScale**(*object v*)
+#### Examples
+
+```js
+sequential({
+ range: ['red', '#fc6', 'green'],
+ domain: [-40, 0, 100]
+});
+```
+#### <a name='sequentialScale' href='#sequentialScale'>#</a> **sequentialScale**(*Object v*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| v | object | Object containing a &#x27;value&#x27; property | No | No |
+| v | Object | Object containing a &#x27;value&#x27; property | No | No |
 | Returns | string | The blended color | ... | ... |
 
 No description  
