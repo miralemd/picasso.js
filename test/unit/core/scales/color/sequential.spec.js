@@ -20,7 +20,7 @@ describe('Sequential', () => {
     it('default settings', () => {
       seq = sequential();
       expect(seq.domain()).to.deep.equal([0, 1]);
-      expect(seq.range()).to.deep.equal(['red', 'blue']);
+      expect(seq.range()).to.deep.equal(['rgb(180,221,212)', 'rgb(34, 83, 90)']);
     });
 
     it('max/min settings', () => {
@@ -28,7 +28,7 @@ describe('Sequential', () => {
       settings.max = 100;
       seq = sequential(settings);
       expect(seq.domain()).to.deep.equal([20, 100]);
-      expect(seq.range()).to.deep.equal(['red', 'blue']);
+      expect(seq.range()).to.deep.equal(['rgb(180,221,212)', 'rgb(34, 83, 90)']);
     });
 
     it('invalid max/min settings', () => {
@@ -41,7 +41,7 @@ describe('Sequential', () => {
     it('only fields', () => {
       seq = sequential({}, fields);
       expect(seq.domain()).to.deep.equal([0, 100]);
-      expect(seq.range()).to.deep.equal(['red', 'blue']);
+      expect(seq.range()).to.deep.equal(['rgb(180,221,212)', 'rgb(34, 83, 90)']);
     });
 
     it('invalid max/min on fields', () => {

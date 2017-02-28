@@ -3,6 +3,8 @@ import extend from 'extend';
 import { minmax } from '../../utils/math';
 import linear from '../linear';
 
+const DEFAULT_COLORS = ['rgb(180,221,212)', 'rgb(34, 83, 90)'];
+
 function generateDomain(range, min, max) {
   const len = range.length;
   if (len === 2) {
@@ -44,7 +46,7 @@ export default function sequential(settings = {}, fields) {
 
   extend(true, fn, s);
   const [min, max] = minmax(settings, fields);
-  fn.range(settings.range || ['red', 'blue']);
+  fn.range(settings.range || DEFAULT_COLORS);
   fn.domain(settings.domain || generateDomain(fn.range(), min, max));
 
   return fn;
