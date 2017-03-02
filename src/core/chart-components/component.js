@@ -106,24 +106,23 @@ export default function componentFactory(definition) {
     let listeners = [];
     let scale;
     let formatter;
-    let brushStylers = [];
-
     let element;
     let size;
-    let brushArgs = {
+
+    const brushArgs = {
       nodes: [],
       composer,
       config: config.brush || {},
       renderer: null
     };
-    let brushTriggers = {
+    const brushTriggers = {
       tap: [],
       over: []
     };
-
+    const brushStylers = [];
+    const componentMixins = listMixins(settings.type);
     const definitionContext = {};
-    const instanceContext = { ...config };
-    let mixins;
+    const instanceContext = { ...config, ...componentMixins.filter(mixinName => !isReservedProperty(mixinName)) };
 
     // Create a callback that calls lifecycle functions in the definition and config (if they exist).
     function createCallback(method, defaultMethod = () => {}) {
@@ -141,7 +140,7 @@ export default function componentFactory(definition) {
         if (!inDefinition && !inConfig) {
           returnValue = defaultMethod.call(definitionContext, ...args);
         }
-        mixins.forEach((mixin) => {
+        componentMixins.forEach((mixin) => {
           if (mixin[method]) {
             mixin[method].call(instanceContext, ...args);
           }
@@ -405,8 +404,6 @@ export default function componentFactory(definition) {
     };
 
     fn.set({ settings: config });
-
-    mixins = listMixins(settings.type);
 
     created();
 

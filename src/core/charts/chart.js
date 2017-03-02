@@ -67,6 +67,12 @@ import {
  * @property {Object.<string, {width: number, height: number}>} [layoutModes={}] Dictionary with named sizes
  */
 
+const isReservedProperty = prop => [
+  'on', 'created', 'beforeMount', 'mounted', 'resize',
+  'beforeUpdate', 'updated', 'beforeRender', 'render', 'beforeDestroy',
+  'destroyed', 'data', 'settings'
+].some(name => name === prop);
+
 /**
  * Chart instance factory function
  */
@@ -78,9 +84,11 @@ function createInstance(definition) {
     on = {}
   } = definition;
 
+  const chartMixins = mixins.list();
   const listeners = [];
   const context = {
-    ...definition
+    ...definition,
+    ...chartMixins.filter(mixinName => !isReservedProperty(mixinName))
   };
   let composer = composerFn();
   let currentComponents = []; // Augmented components
@@ -99,7 +107,7 @@ function createInstance(definition) {
       } else {
         returnValue = defaultMethod.call(context, ...args);
       }
-      mixins.list().forEach((mixin) => {
+      chartMixins.forEach((mixin) => {
         if (mixin[method]) {
           mixin[method].call(context, ...args);
         }
