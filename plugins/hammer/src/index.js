@@ -29,10 +29,16 @@ export default function initialize(picasso/* , options = {} */) {
           };
           hammertime.on(key, listener);
         });
+        this.hammertime = hammertime;
       }
+      this.touchEvents = touchEvents;
     },
-    destroy() {
-
+    beforeDestroy() {
+      if (this.hammertime) {
+        this.touchEvents.forEach(key => this.hammertime.off(key));
+        this.touchEvents = [];
+        delete this.hammertime;
+      }
     }
   });
 }
