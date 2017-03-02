@@ -16,12 +16,15 @@ dependencies:
   override:
     - curl -u${ARTIFACTORY_USER}:${ARTIFACTORY_PWD} "https://qliktech.artifactoryonline.com/qliktech/api/npm/npm-local/auth/qlik" > ./.npmrc
     - yarn
+    - cd docs && yarn
+    - cd plugins/hammer && yarn
   cache_directories:
     - ~/.cache/yarn
   post:
     - npm run lint
     - npm run build
-    - cd docs && yarn && npm run docs
+    - cd docs && npm run docs
+    - cd plugins/hammer && npm run build
 
 test:
   override:
