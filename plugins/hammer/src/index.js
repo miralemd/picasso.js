@@ -4,7 +4,7 @@ const isTouchEvent = name => (
   /^tap|^swipe|^press|^rotate|^pinch|^pan/.test(name)
 );
 
-export default function initialize(picasso/* , options = {} */) {
+module.exports = function initialize(picasso/* , options = {} */) { // eslint-disable-line
   picasso.chart.mixin({
     mounted(element) {
       const touchEvents = [];
@@ -41,4 +41,4 @@ export default function initialize(picasso/* , options = {} */) {
       }
     }
   });
-}
+};

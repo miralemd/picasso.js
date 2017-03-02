@@ -3,7 +3,6 @@
 	"server": {
 		"baseDir": "./",
     "routes": {
-      "/dist": "dist",
       "/fixtures": "test/integration"
 		}
   }
