@@ -23,9 +23,11 @@ dependencies:
   post:
     - npm run lint
     - npm run build
+    - npm run build:debug
     - cd docs && npm run docs
-    - cd plugins/hammer && npm run build
+    - cd plugins/hammer && npm run build && npm run build:debug
 
 test:
   override:
     - npm run test:coverage
+    - npm run test:integration:local
