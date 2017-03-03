@@ -66,6 +66,20 @@ describe('Threshold', () => {
       settings = {};
     });
 
+    it('should generate 1 break from 2 colors', () => {
+      settings.range = ['red', 'green'];
+      ths = threshold(settings, fields);
+      expect(ths.domain()).to.deep.equal([50]);
+    });
+
+    it('should generate 1 break from 2 colors when domain is empty', () => {
+      settings.range = ['red', 'green'];
+      settings.domain = [];
+      min = 80;
+      ths = threshold(settings, fields);
+      expect(ths.domain()).to.deep.equal([90]);
+    });
+
     it('should generate 2 breaks from 3 colors', () => {
       settings.range = ['red', 'green', 'blue'];
       max = 75;
@@ -165,20 +179,55 @@ describe('Threshold', () => {
       settings = {};
     });
 
+    it('should handle min/mix being inside domain', () => {
+      ths = threshold({
+        range: ['black', 'white'],
+        domain: [-10, 10],
+        min: -1,
+        max: 20
+      });
+      expect(ths.range()).to.deep.equal(['rgb(0, 0, 0)', 'rgb(128, 128, 128)', 'rgb(255, 255, 255)']);
+    });
+
     it('should generate 3 colors from 2 breaks', () => {
       settings.range = ['black', 'white'];
       settings.domain = [25, 50];
-      max = 75;
       ths = threshold(settings, fields);
       expect(ths.range()).to.deep.equal(['rgb(0, 0, 0)', 'rgb(128, 128, 128)', 'rgb(255, 255, 255)']);
     });
+
     it('should generate 6 colors from 5 breaks', () => {
-      settings.range = ['black', 'white'];
+      settings.range = ['black', 'rgb(240, 0, 0)'];
       settings.domain = [5, 15, 25, 35, 45];
-      max = 50;
       ths = threshold(settings, fields);
-      const result = [0, 51, 102, 153, 204, 255].map(v => `rgb(${v}, ${v}, ${v})`);
+      const result = [0, 30, 90, 150, 210, 240].map(v => `rgb(${v}, ${0}, ${0})`);
       expect(ths.range()).to.deep.equal(result);
+    });
+  });
+
+  describe('return values', () => {
+    it('should be NaN when input is invalid', () => {
+      ths = threshold();
+      expect(ths({})).to.eql(NaN);
+    });
+
+    it('should be correct', () => {
+      ths = threshold({
+        range: ['red', 'green'],
+        domain: [10]
+      });
+      expect(ths({ value: 9 })).to.equal('red');
+      expect(ths({ value: 11 })).to.equal('green');
+    });
+
+    it('should be correct on borders', () => {
+      ths = threshold({
+        range: ['red', 'green', 'blue'],
+        domain: [10, 20]
+      });
+      expect(ths({ value: 9 })).to.equal('red');
+      expect(ths({ value: 10 })).to.equal('green');
+      expect(ths({ value: 20 })).to.equal('blue');
     });
   });
 });

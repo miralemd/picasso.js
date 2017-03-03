@@ -27,6 +27,8 @@ function getBreaks(domain) {
 }
 
 function generateRange(domain, colors, min, max) {
+  min = domain[0];
+  max = domain && domain.length >= 2 ? domain[domain.length - 1] : max;
   const seq = sequential().domain([min, max]).range(colors);
   const values = [min, ...getBreaks(domain), max];
   return values.map(v => seq({ value: v }));
@@ -41,15 +43,13 @@ function generateNiceDomain(range, min, max) {
     return domain;
   }
 
-  if (domain.length >= range.length) {
-    // remove values from endpoints
-    let num = Math.max(0, range.length - 1);
-    while (domain.length > num) {
-      if (domain[0] - min <= max - domain[domain.length - 1]) {
-        domain.shift();
-      } else {
-        domain.pop();
-      }
+  // remove values from endpoints
+  let num = Math.max(0, range.length - 1);
+  while (domain.length > num) {
+    if (domain[0] - min <= max - domain[domain.length - 1]) {
+      domain.shift();
+    } else {
+      domain.pop();
     }
   }
 
