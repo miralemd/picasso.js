@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "generate": "node index.js"
+  },
+  "dependencies": {
+    "handlebars": "^4.0.6",
+    "leonardo-ui": "^1.0.2",
+    "marked": "^0.3.6"
+  }
+}
