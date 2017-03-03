@@ -51,16 +51,19 @@ function toTitleCase(input) {
 const template = Handlebars.compile(readFile(path.resolve(__dirname, 'template.html')));
 
 function kebabToCamelCase(value) {
+  value = value.split('/').join(' / ');
   return value[0].toUpperCase() + value.substr(1).replace(/-([a-z])/g, g => ` ${g[1].toUpperCase()}`);
 }
 
 function generateFile(opts) {
+  const rootPath = Array(opts.dest.replace(path.resolve(__dirname, '.'), '').split('/').length - 2).fill('../').join('');
+  const distPath = `${rootPath}dist/`;
   const markdown = readFile(opts.src);
   const content = marked(markdown);
 
   const sidebarItems = opts.files.map(filename => (
 `<li>
-  <a href="./${filename}.html">${kebabToCamelCase(filename)}</a>
+  <a href="${distPath}${filename}.html">${kebabToCamelCase(filename)}</a>
 </li>
 `
   ));
@@ -68,7 +71,8 @@ function generateFile(opts) {
   const html = template({
     content,
     sidebar: `<ul>${sidebarItems.join('')}</ul>`,
-    title: toTitleCase(opts.title)
+    title: toTitleCase(opts.title),
+    rootPath
   });
 
   recursiveDirectoryBuilder(opts.dest);

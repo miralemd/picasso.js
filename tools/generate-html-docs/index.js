@@ -3,7 +3,25 @@ const fs = require('fs');
 
 const generateFile = require('./generator').generateFile;
 
-const files = fs.readdirSync(path.resolve(__dirname, '../../docs/dist/')).filter(f => /\.md$/.test(f)).map(f => f.replace(/\.md$/, ''));
+function walk(dir, root = '') {
+  dir = path.resolve(__dirname, dir);
+  if (!root) {
+    root = `${dir}/`;
+  }
+
+  let results = [];
+  let list = fs.readdirSync(dir);
+
+  list.forEach((file) => {
+    file = `${dir}/${file}`;
+    let stat = fs.statSync(file);
+    if (stat && stat.isDirectory()) { results = results.concat(walk(file, root)); } else { results.push(file.replace(root, '')); }
+  });
+
+  return results;
+}
+
+const files = walk('../../docs/dist/').filter(f => /\.md$/.test(f)).map(f => f.replace(/\.md$/, ''));
 
 const filesToPrint = ['index', ...files];
 
