@@ -15,7 +15,6 @@ var repoConfig = {
         server: {
           baseDir: "./",
           routes: {
-            "/dist": "dist",
             "/fixtures": "test/integration"
           }
         },
