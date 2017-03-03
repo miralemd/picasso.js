@@ -6,11 +6,14 @@ machine:
 
 general:
   artifacts:
+    - "package.json"
     - "dist/"
     - "docs/dist/"
     - "test/component/coverage/"
     - "test/integration/artifacts/"
     - "test/unit/coverage/"
+    - "tools/analyze-webpack-stats/dist"
+    - "tools/generate-html-docs/dist"
 
 dependencies:
   override:
@@ -31,3 +34,13 @@ test:
   override:
     - npm run test:coverage
     - npm run test:integration:local
+
+deployment:
+  htmldocs:
+    branch: master
+    commands:
+      - ./tools/generate-html-docs.sh
+  analysis:
+    branch: master
+    commands:
+      - ./tools/analyze-webpack-stats.sh
