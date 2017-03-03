@@ -14,6 +14,8 @@ general:
     - "test/unit/coverage/"
     - "tools/analyze-webpack-stats/dist"
     - "tools/generate-html-docs/dist"
+    - "tools/generate-html-docs/style.css"
+    - "tools/generate-html-docs/favicon.ico"
 
 dependencies:
   override:
@@ -37,11 +39,8 @@ test:
     - npm run test:integration:local
 
 deployment:
-  htmldocs:
+  docsnstats:
     branch: master
     commands:
       - ./tools/generate-html-docs.sh
-  analysis:
-    branch: master
-    commands:
       - ./tools/analyze-webpack-stats.sh
