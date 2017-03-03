@@ -2,9 +2,6 @@ import threshold from '../../../../../src/core/scales/color/threshold';
 
 describe('Threshold', () => {
   let ths;
-  beforeEach(() => {
-    ths = threshold();
-  });
 
   describe('basics', () => {
     let min = 0;
@@ -79,6 +76,78 @@ describe('Threshold', () => {
       max = 100;
       ths = threshold(settings, fields);
       expect(ths.domain()).to.deep.equal([10, 20, 30, 40, 50, 60, 70, 80, 90]);
+    });
+  });
+
+  describe('nice domain', () => {
+    it('when range is empty', () => {
+      ths = threshold({
+        nice: true,
+        min: -4,
+        max: 7.2,
+        range: []
+      });
+      expect(ths.domain()).to.deep.equal([0]);
+    });
+
+    it('when range is of length 2 ', () => {
+      ths = threshold({
+        nice: true,
+        min: 1.2,
+        max: 7.2,
+        range: ['a', 'b']
+      });
+      expect(ths.domain()).to.deep.equal([4]);
+    });
+
+    it('when range is of length 3', () => {
+      ths = threshold({
+        nice: true,
+        min: 1.2,
+        max: 7.2,
+        range: ['a', 'b', 'c']
+      });
+      expect(ths.domain()).to.deep.equal([4, 6]);
+    });
+
+    it('when range and domain are equal', () => {
+      ths = threshold({
+        nice: true,
+        min: 1,
+        max: 9,
+        range: ['a', 'b', 'c']
+      });
+      expect(ths.domain()).to.deep.equal([5, 10]);
+    });
+
+    it('when range is of length 4', () => {
+      ths = threshold({
+        nice: true,
+        min: 13,
+        max: 43,
+        range: ['a', 'b', 'c', 'd']
+      });
+      expect(ths.domain()).to.deep.equal([20, 30, 40]);
+    });
+
+    it('when min is negative', () => {
+      ths = threshold({
+        nice: true,
+        min: -79,
+        max: 167,
+        range: ['a', 'b', 'c', 'd']
+      });
+      expect(ths.domain()).to.deep.equal([-100, 0, 100]);
+    });
+
+    it('when range is of length 5', () => {
+      ths = threshold({
+        nice: true,
+        min: 13,
+        max: 43,
+        range: ['a', 'b', 'c', 'd', 'e']
+      });
+      expect(ths.domain()).to.deep.equal([20, 25, 30, 35]);
     });
   });
 

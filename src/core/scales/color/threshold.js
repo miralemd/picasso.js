@@ -1,4 +1,4 @@
-import { scaleThreshold } from 'd3-scale';
+import { scaleThreshold, scaleLinear } from 'd3-scale';
 import { notNumber, minmax } from '../../utils/math';
 import sequential from './sequential';
 
@@ -30,21 +30,44 @@ function generateRange(domain, colors, min, max) {
   return values.map(v => seq({ value: v }));
 }
 
+function generateNiceDomain(range, min, max) {
+  let numPoints = range.length === 2 ? 10 : Math.max(1, range.length);
+  let lin = scaleLinear().domain([min, max]).nice([numPoints]);
+  let domain = lin.ticks([numPoints]);
+
+  if (!range || !range.length) {
+    return domain;
+  }
+
+  if (domain.length >= range.length) {
+    // remove values from endpoints
+    let num = Math.max(0, range.length - 1);
+    while (domain.length > num) {
+      if (domain[0] - min <= max - domain[domain.length - 1]) {
+        domain.shift();
+      } else {
+        domain.pop();
+      }
+    }
+  }
+
+  return domain;
+}
+
 /**
  * @alias threshold
  * @memberof picasso.scales
- * @param { Object } settings Settings for this scale. If both colors and limit are declared, they have to fulfill numColors == numLimits + 1 else they will be overrided.
- * @param { Array } settings.limits Explicit limits indicating breaks between colors.
- * @param { Array } settings.domain Alias for settings.limits
- * @param { Array } settings.colors Colors to use in the scale.
- * @param { Array } settings.range Alias for settings.colors
- * @param { Number } settings.max Max value for the scale. Overrides field max.
- * @param { Number } settings.min Min value for the scale. Overrides field min.
- * @param { Array } fields
+ * @param { Object } [settings] Settings for this scale. If both domain and range are specified, they have to fulfill domain.length === range.length + 1,  otherwise they will be overriden.
+ * @param { number[] } [settings.domain] Values defining the thresholds.
+ * @param { color[] } [settings.range] CSS color values of the output.
+ * @param { number } [settings.max] Max value for the domain. Overrides dynamically calculated max value from fields.
+ * @param { number } [settings.min] Min value for the domain. Overrides dynamically calculated min value from fields.
+ * @param { field[] } [fields] Fields to dynamically calculate the thresholds.
  * @return { thresholdScale } Instance of threshold scale
+ *
  * @example
  * let t = threshold({
- *   colors: ['black', 'white'],
+ *   range: ['black', 'white'],
  *   domain: [25,50,75],
  *   max: 100,
  *   min: 0
@@ -57,7 +80,7 @@ export default function threshold(settings = {}, fields) {
   const d3Scale = scaleThreshold();
 
   /**
-   * @alias threshold
+   * @alias thresholdScale
    * @param { Object } Item item object with value property
    * @return { String } The color from the appropriate band
    */
@@ -95,8 +118,9 @@ export default function threshold(settings = {}, fields) {
   };
 
   const [min, max] = minmax(settings, fields);
-  let domain = settings.domain || [min + ((max - min) / 2)];
   let range = settings.range || ['red', 'blue'];
+  let domain = settings.domain || (settings.nice ? generateNiceDomain(range, min, max) : [min + ((max - min) / 2)]);
+
   if (range.length > domain.length + 1) {
     // Generate limits from range
     domain = generateDomain(range, min, max);
@@ -104,6 +128,7 @@ export default function threshold(settings = {}, fields) {
     // Generate additional colors
     range = generateRange(domain, range, min, max);
   }
+
   fn.range(range);
   fn.domain(domain);
 
