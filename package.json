@@ -16,7 +16,7 @@
     "build:debug": "webpack --debug --devtool source-map --output-pathinfo",
     "build:watch": "npm run build:debug -- --watch",
     "docs": "cd docs && npm run docs",
-    "lint": "eslint *.js src test docs/*.js plugins/hammer/src",
+    "lint": "eslint *.js src test docs/*.js plugins/hammer/src tools/generate-html-docs/lib",
     "lint:fix": "npm run lint -- --fix",
     "test": "npm run test:unit && npm run test:component",
     "test:coverage": "npm run test:unit:coverage && npm run test:component:coverage",
