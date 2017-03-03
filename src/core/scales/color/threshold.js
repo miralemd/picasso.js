@@ -2,6 +2,8 @@ import { scaleThreshold, scaleLinear } from 'd3-scale';
 import { notNumber, minmax } from '../../utils/math';
 import sequential from './sequential';
 
+const DEFAULT_COLORS = ['rgb(180,221,212)', 'rgb(34, 83, 90)'];
+
 function generateDomain(range, min, max) {
   const len = range.length;
   if (len === 2) {
@@ -118,7 +120,7 @@ export default function threshold(settings = {}, fields) {
   };
 
   const [min, max] = minmax(settings, fields);
-  let range = settings.range || ['red', 'blue'];
+  let range = settings.range || DEFAULT_COLORS;
   let domain = settings.domain || (settings.nice ? generateNiceDomain(range, min, max) : [min + ((max - min) / 2)]);
 
   if (range.length > domain.length + 1) {

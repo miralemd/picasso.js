@@ -3,6 +3,8 @@ import threshold from '../../../../../src/core/scales/color/threshold';
 describe('Threshold', () => {
   let ths;
 
+  const defaultColors = ['rgb(180,221,212)', 'rgb(34, 83, 90)'];
+
   describe('basics', () => {
     let min = 0;
     let max = 100;
@@ -18,7 +20,7 @@ describe('Threshold', () => {
     it('default settings', () => {
       ths = threshold();
       expect(ths.domain()).to.deep.equal([0.5]);
-      expect(ths.range()).to.deep.equal(['red', 'blue']);
+      expect(ths.range()).to.deep.equal(defaultColors);
     });
 
     it('max/min settings', () => {
@@ -26,7 +28,7 @@ describe('Threshold', () => {
       settings.max = 100;
       ths = threshold(settings);
       expect(ths.domain()).to.deep.equal([60]);
-      expect(ths.range()).to.deep.equal(['red', 'blue']);
+      expect(ths.range()).to.deep.equal(defaultColors);
     });
 
     it('invalid max/min settings', () => {
@@ -34,13 +36,13 @@ describe('Threshold', () => {
       settings.max = 'ooooops';
       ths = threshold(settings);
       expect(ths.domain()).to.deep.equal([NaN]);
-      expect(ths.range()).to.deep.equal(['red', 'blue']);
+      expect(ths.range()).to.deep.equal(defaultColors);
     });
 
     it('only fields', () => {
       ths = threshold({}, fields);
       expect(ths.domain()).to.deep.equal([50]);
-      expect(ths.range()).to.deep.equal(['red', 'blue']);
+      expect(ths.range()).to.deep.equal(defaultColors);
     });
 
     it('invalid max/min on fields', () => {
@@ -48,7 +50,7 @@ describe('Threshold', () => {
       fields[0].max = () => 'ooops';
       ths = threshold({}, fields);
       expect(ths.domain()).to.deep.equal([0.5]);
-      expect(ths.range()).to.deep.equal(['red', 'blue']);
+      expect(ths.range()).to.deep.equal(defaultColors);
     });
   });
 
