@@ -47,3 +47,7 @@ You do not have to specify both the X and Y in case you're drawing a box plot or
 
 In this example we're using both X and Y scales, we're showing major ticks as a red, 5px line, and the settings for minor ticks are a blue 1px line.
 However, since the minor ticks have the variable show: false, they will not be rendered.
+
+## Component settings
+
+TODO

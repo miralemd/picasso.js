@@ -1,5 +1,7 @@
 # Markers
 
+TODO (should probably split this file into `point-marker.md` and `box-marker.md`)
+
 ## Table of contents:
 {{postprocess 'index'}}
 
@@ -10,3 +12,7 @@
 ## Box marker
 
 {{>magic ctx='core.chart-components.markers.box-js'}}
+
+## Component settings
+
+TODO

@@ -38,3 +38,7 @@
 | minorTicks.strokeWidth | number | No | Yes | 1 |
 
 No description  
+
+## Component settings
+
+TODO

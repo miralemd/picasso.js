@@ -1,5 +1,7 @@
 # Markers
 
+TODO (should probably split this file into `point-marker.md` and `box-marker.md`)
+
 ## Table of contents:
 * <a href="#marker-point">marker-point</a>
 * <a href="#marker-point-settings">marker-point-settings</a>
@@ -211,3 +213,7 @@ No description
 | med | marker-box-data-ref | med | Yes | No |
 
 No description  
+
+## Component settings
+
+TODO
