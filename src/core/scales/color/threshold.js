@@ -59,12 +59,13 @@ function generateNiceDomain(range, min, max) {
 /**
  * @alias threshold
  * @memberof picasso.scales
- * @param { Object } [settings] Settings for this scale. If both domain and range are specified, they have to fulfill domain.length === range.length + 1,  otherwise they will be overriden.
+ * @param { object } [settings] Settings for this scale. If both domain and range are specified, they have to fulfill domain.length === range.length + 1,  otherwise they will be overriden.
  * @param { number[] } [settings.domain] Values defining the thresholds.
- * @param { color[] } [settings.range] CSS color values of the output.
- * @param { number } [settings.max] Max value for the domain. Overrides dynamically calculated max value from fields.
- * @param { number } [settings.min] Min value for the domain. Overrides dynamically calculated min value from fields.
- * @param { field[] } [fields] Fields to dynamically calculate the thresholds.
+ * @param { color[] } [settings.range] CSS color values of the output range.
+ * @param { boolean } [settings.nice=false] If set to true, will generate 'nice' domain values. Ignored if domain is set.
+ * @param { number } [settings.min] Minimum value to generate domain extent from. Ignored if domain is set.
+ * @param { number } [settings.max] Maximum value to generate domain extend from. Ignored if domain is set.
+ * @param { field[] } [fields] Fields to dynamically calculate the domain extent from. Ignored if min/max are set.
  * @return { thresholdScale } Instance of threshold scale
  *
  * @example
@@ -83,8 +84,8 @@ export default function threshold(settings = {}, fields) {
 
   /**
    * @alias thresholdScale
-   * @param { Object } Item item object with value property
-   * @return { String } The color from the appropriate band
+   * @param { object } v Object literal containing a 'value' property.
+   * @return { string } A CSS color from the scale's range.
    */
   function fn(v) {
     if (notNumber(v.value)) {
@@ -94,8 +95,8 @@ export default function threshold(settings = {}, fields) {
   }
 
   /**
- * @param { Number[] } [values] Set or Get domain values
- * @return { thresholdScale | Number[] } The instance this method was called on if a parameter is provided, otherwise the current domain is returned
+ * @param { number[] } [values] Set or get domain values.
+ * @return { thresholdScale | number[] } The instance this method was called on if a parameter is provided, otherwise the current domain is returned.
  */
   fn.domain = function domain(values) {
     if (arguments.length) {
@@ -107,8 +108,8 @@ export default function threshold(settings = {}, fields) {
   };
 
   /**
-   * @param { Number[] } [values] Set or Get range values
-   * @return { thresholdScale | Number[] } The instance this method was called on if a parameter is provided, otherwise the current range is returned
+   * @param { number[] } [values] Set or get range values.
+   * @return { thresholdScale | number[] } The instance this method was called on if a parameter is provided, otherwise the current range is returned.
    */
   fn.range = function range(values) {
     if (arguments.length) {
