@@ -1,5 +1,5 @@
 const fs = require('fs');
-const path = require('path');
+const path = require('path').posix;
 
 const Handlebars = require('handlebars');
 const marked = require('marked');
@@ -10,7 +10,7 @@ marked.setOptions({
   tables: true,
   breaks: false,
   pedantic: false,
-  sanitize: true,
+  sanitize: false,
   smartLists: true,
   smartypants: false
 });
@@ -21,6 +21,31 @@ function readFile(file) {
 
 function writeFile(file, contents) {
   fs.writeFileSync(file, contents, 'utf-8');
+}
+
+function recursiveDirectoryBuilder(pathToBuild) {
+  let paths = pathToBuild.split('/');
+  paths.pop();
+  let dir = [];
+  let compiledDir = '';
+
+  while (paths.length) {
+    dir.push(paths.shift());
+    compiledDir = dir.join('/');
+
+    if (compiledDir && !fs.existsSync(compiledDir)) {
+      fs.mkdirSync(compiledDir);
+    }
+  }
+}
+
+function toTitleCase(input) {
+  if (input && input.length > 2) {
+    return input.split(' ')
+     .map(i => i[0].toUpperCase() + i.substr(1).toLowerCase())
+     .join(' ');
+  }
+  return input;
 }
 
 const template = Handlebars.compile(readFile(path.resolve(__dirname, 'template.html')));
@@ -42,8 +67,12 @@ function generateFile(opts) {
 
   const html = template({
     content,
-    sidebar: `<ul>${sidebarItems.join('')}</ul>`
+    sidebar: `<ul>${sidebarItems.join('')}</ul>`,
+    title: toTitleCase(opts.title)
   });
+
+  recursiveDirectoryBuilder(opts.dest);
+
   writeFile(opts.dest, html);
 }
 
