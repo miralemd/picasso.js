@@ -46,6 +46,13 @@ function element(name, rect = { x: 0, y: 0, width: 100, height: 100 }) {
       obj[key] = val;
       this.listeners.push(obj);
     },
+    removeEventListener(key, val) {
+      for (let i = this.listeners.length - 1; i >= 0; i--) {
+        if (this.listeners[i][key] === val) {
+          this.listeners.splice(i, 1);
+        }
+      }
+    },
     trigger(listenerKey, arg) {
       this.listeners
         .filter(l => typeof l[listenerKey] !== 'undefined')

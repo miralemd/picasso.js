@@ -373,9 +373,7 @@ export default function componentFactory(definition) {
     fn.unmount = () => {
       if (element) {
         listeners.forEach(({ key, listener }) => {
-          if (isNativeEvent(key)) {
-            element.removeEventListener(key, listener);
-          }
+          element.removeEventListener(key, listener);
         });
         listeners = [];
       }
@@ -404,7 +402,6 @@ export default function componentFactory(definition) {
     };
 
     fn.set({ settings: config });
-
     created();
 
     return fn;
