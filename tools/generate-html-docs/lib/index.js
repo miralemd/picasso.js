@@ -21,20 +21,20 @@ function walk(dir, root = '') {
   return results;
 }
 
-const files = walk('../../docs/dist/').filter(f => /\.md$/.test(f)).map(f => f.replace(/\.md$/, ''));
+const files = walk('../../../docs/dist/').filter(f => /\.md$/.test(f)).map(f => f.replace(/\.md$/, ''));
 
 const filesToPrint = ['index', ...files];
 
 files.forEach(file => generateFile({
-  src: path.resolve(__dirname, `../../docs/dist/${file}.md`),
-  dest: path.resolve(__dirname, `./dist/${file}.html`),
+  src: path.resolve(__dirname, `../../../docs/dist/${file}.md`),
+  dest: path.resolve(__dirname, `../dist/${file}.html`),
   files: filesToPrint,
   title: file
 }));
 
 generateFile({
-  src: path.resolve(__dirname, '../../README.md'),
-  dest: path.resolve(__dirname, './dist/index.html'),
+  src: path.resolve(__dirname, '../../../README.md'),
+  dest: path.resolve(__dirname, '../dist/index.html'),
   files: filesToPrint,
   title: 'Index'
 });

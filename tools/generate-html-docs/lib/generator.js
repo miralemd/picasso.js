@@ -48,7 +48,7 @@ function toTitleCase(input) {
   return input;
 }
 
-const template = Handlebars.compile(readFile(path.resolve(__dirname, 'template.html')));
+const template = Handlebars.compile(readFile(path.resolve(__dirname, '../template.html')));
 
 function kebabToCamelCase(value) {
   value = value.split('/').join(' / ');
@@ -56,8 +56,8 @@ function kebabToCamelCase(value) {
 }
 
 function generateFile(opts) {
-  const rootPath = Array(opts.dest.replace(path.resolve(__dirname, '.'), '').split('/').length - 2).fill('../').join('');
-  const distPath = `${rootPath}dist/`;
+  const rootPath = path.resolve(__dirname, '../');
+  const distPath = `${rootPath}/dist/`;
   const markdown = readFile(opts.src);
   const content = marked(markdown);
 

@@ -5,5 +5,5 @@ This tool is using [Electrify](https://github.com/electrode-io/electrode-electri
 ## Usage
 
 - Install with `npm install` or `yarn`
-- Output stats from webpack with `npm run build --json > stats.json`, standing in the root directory.
+- Output stats from webpack with `npm run build -- --json > stats.json`, standing in the root directory.
 - Run `npm run electrify -- ../../stats.json --open` to display stats in the browser.

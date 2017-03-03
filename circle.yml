@@ -6,15 +6,19 @@ machine:
 
 general:
   artifacts:
+    - "package.json"
     - "dist/"
     - "docs/dist/"
     - "test/component/coverage/"
     - "test/integration/artifacts/"
     - "test/unit/coverage/"
+    - "tools/analyze-webpack-stats/dist"
+    - "tools/generate-html-docs/dist"
 
 dependencies:
   override:
     - curl -u${ARTIFACTORY_USER}:${ARTIFACTORY_PWD} "https://qliktech.artifactoryonline.com/qliktech/api/npm/npm-local/auth/qlik" > ./.npmrc
+    - yarn global add babel-cli
     - yarn
     - cd docs && yarn
     - cd plugins/hammer && yarn
@@ -31,3 +35,13 @@ test:
   override:
     - npm run test:coverage
     - npm run test:integration:local
+
+deployment:
+  htmldocs:
+    branch: master
+    commands:
+      - ./tools/generate-html-docs.sh
+  analysis:
+    branch: master
+    commands:
+      - ./tools/analyze-webpack-stats.sh

@@ -6,4 +6,4 @@ This tool will generate basic HTML docs from the Markdown files in `docs/dist`. 
 
 - Install with `npm install` or `yarn`.
 - Make sure docs are built.
-- Run `node index.js` or `npm run generate` to build the HTML files into `./dist`.
+- Run `node lib/index.js` or `npm run generate` to build the HTML files into `./dist`.
