@@ -5,7 +5,7 @@ import { create } from '../../../../../src/core/charts/scales';
 
 describe('box marker', () => {
   let rendererOutput;
-  let composer;
+  let chart;
   let shapeFn;
 
   beforeEach(() => {
@@ -16,7 +16,7 @@ describe('box marker', () => {
       map: sinon.stub()
     };
     shapeFn = (type, p) => { p.type = type; return p; };
-    composer = {
+    chart = {
       renderer: {
         appendTo: () => {},
         render: p => (rendererOutput = p),
@@ -37,7 +37,7 @@ describe('box marker', () => {
       config,
       inner
     } = opts;
-    const instance = componentFactory(boxMarker)(config, composer);
+    const instance = componentFactory(boxMarker)(config, chart);
     instance.beforeMount();
     instance.resize(inner);
     instance.beforeRender();
@@ -52,7 +52,7 @@ describe('box marker', () => {
       data: { mapTo: 'does not matter', groupBy: 'does not matter' }
     };
 
-    composer.dataset().map.returns([{}]);
+    chart.dataset().map.returns([{}]);
 
     createAndRenderComponent({
       inner: { x: 10, y: 20, width: 100, height: 200 },
@@ -84,7 +84,7 @@ describe('box marker', () => {
       }
     };
 
-    composer.dataset().map.returns([{
+    chart.dataset().map.returns([{
       self: 0.5,
       min: 0.2,
       start: 0.4,
@@ -97,8 +97,8 @@ describe('box marker', () => {
     xScale.bandWidth = () => 0.5;
     const yScale = v => v;
     yScale.bandWidth = () => 0.5;
-    composer.scale.withArgs({ scale: 'x' }).returns(xScale);
-    composer.scale.withArgs({ scale: 'y' }).returns(yScale);
+    chart.scale.withArgs({ scale: 'x' }).returns(xScale);
+    chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
     createAndRenderComponent({
       inner: { x: 10, y: 20, width: 100, height: 200 },
@@ -228,7 +228,7 @@ describe('box marker', () => {
       }
     };
 
-    composer.dataset().map.returns([{
+    chart.dataset().map.returns([{
       self: 0.5,
       start: 0,
       end: 0.6
@@ -238,8 +238,8 @@ describe('box marker', () => {
     xScale.bandWidth = () => 0.5;
     const yScale = v => v;
     yScale.bandWidth = () => 0.5;
-    composer.scale.withArgs({ scale: 'x' }).returns(xScale);
-    composer.scale.withArgs({ scale: 'y' }).returns(yScale);
+    chart.scale.withArgs({ scale: 'x' }).returns(xScale);
+    chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
     createAndRenderComponent({
       inner: { x: 10, y: 20, width: 100, height: 200 },
@@ -289,7 +289,7 @@ describe('box marker', () => {
       }
     };
 
-    composer.dataset().map.returns([{
+    chart.dataset().map.returns([{
       self: 0.5,
       start: 0.2,
       end: 0.6
@@ -299,8 +299,8 @@ describe('box marker', () => {
     xScale.bandWidth = () => 0.5;
     const yScale = v => v;
     yScale.bandWidth = () => 0.5;
-    composer.scale.withArgs({ scale: 'x' }).returns(xScale);
-    composer.scale.withArgs({ scale: 'y' }).returns(yScale);
+    chart.scale.withArgs({ scale: 'x' }).returns(xScale);
+    chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
     createAndRenderComponent({
       inner: { x: 10, y: 20, width: 100, height: 200 },
@@ -353,7 +353,7 @@ describe('box marker', () => {
       }
     };
 
-    composer.dataset().map.returns([{
+    chart.dataset().map.returns([{
       self: 0.5,
       start: 0.4,
       end: 0.6,
@@ -365,8 +365,8 @@ describe('box marker', () => {
     xScale.bandWidth = () => 0.5;
     const yScale = v => v;
     yScale.bandWidth = () => 0.5;
-    composer.scale.withArgs({ scale: 'x' }).returns(xScale);
-    composer.scale.withArgs({ scale: 'y' }).returns(yScale);
+    chart.scale.withArgs({ scale: 'x' }).returns(xScale);
+    chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
     createAndRenderComponent({
       inner: { x: 10, y: 20, width: 100, height: 200 },
@@ -485,14 +485,14 @@ describe('box marker', () => {
       }
     ];
 
-    composer.dataset().map.returns(dataset);
+    chart.dataset().map.returns(dataset);
 
     const xScale = create({ type: 'ordinal' });
     xScale.domain([1, 2, 3, 4, 5]);
     const yScale = create({ min: 0.2, max: 0.8 });
 
-    composer.scale.withArgs({ scale: 'x' }).returns(xScale);
-    composer.scale.withArgs({ scale: 'y' }).returns(yScale);
+    chart.scale.withArgs({ scale: 'x' }).returns(xScale);
+    chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
     createAndRenderComponent({
       inner: { x: 0, y: 0, width: 200, height: 20 },

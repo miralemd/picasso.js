@@ -12,10 +12,10 @@ describe('Component', () => {
   let beforeUpdate;
   let updated;
   let resize;
-  let composerMock;
+  let chartMock;
 
   beforeEach(() => {
-    composerMock = {
+    chartMock = {
       renderer: {
         appendTo: () => {},
         render: () => ({}),
@@ -57,7 +57,7 @@ describe('Component', () => {
   });
 
   function createAndRenderComponent(config) {
-    const instance = customComponent(config, composerMock);
+    const instance = customComponent(config, chartMock);
     instance.beforeMount();
     instance.resize({});
     instance.beforeRender();

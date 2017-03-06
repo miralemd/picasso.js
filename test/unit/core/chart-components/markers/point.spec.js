@@ -4,7 +4,7 @@ import pointComponent from '../../../../../src/core/chart-components/markers/poi
 
 describe('point marker', () => {
   let renderedPoints;
-  let composer;
+  let chart;
   let shapeFn;
 
   function createAndRenderPoint(opts) {
@@ -13,7 +13,7 @@ describe('point marker', () => {
       outer,
       config
     } = opts;
-    const component = componentFactory(pointComponent)(config, composer);
+    const component = componentFactory(pointComponent)(config, chart);
     component.beforeMount();
     component.resize(inner, outer);
     component.mounted();
@@ -31,7 +31,7 @@ describe('point marker', () => {
       map: sinon.stub()
     };
     shapeFn = (type, p) => { p.type = type; return p; };
-    composer = {
+    chart = {
       renderer: {
         appendTo: () => {},
         render: p => (renderedPoints = p),
@@ -52,7 +52,7 @@ describe('point marker', () => {
       shapeFn,
       data: { mapTo: 'does not matter', groupBy: 'does not matter' }
     };
-    composer.dataset().map.returns([{}]);
+    chart.dataset().map.returns([{}]);
     createAndRenderPoint({
       inner: { x: 10, y: 20, width: 100, height: 200 },
       config
@@ -84,7 +84,7 @@ describe('point marker', () => {
         y: true
       }
     };
-    composer.dataset().map.returns([{}]);
+    chart.dataset().map.returns([{}]);
     createAndRenderPoint({
       inner: { x: 10, y: 20, width: 100, height: 200 },
       config
@@ -120,7 +120,7 @@ describe('point marker', () => {
         size: 4
       }
     };
-    composer.dataset().map.returns([{}]);
+    chart.dataset().map.returns([{}]);
     createAndRenderPoint({
       inner: { x: 10, y: 20, width: 100, height: 200 },
       config
@@ -155,7 +155,7 @@ describe('point marker', () => {
         size: () => 4
       }
     };
-    composer.dataset().map.returns([{
+    chart.dataset().map.returns([{
       label: 'a'
     }]);
     createAndRenderPoint({
@@ -194,7 +194,7 @@ describe('point marker', () => {
       }
     };
 
-    composer.dataset().map.returns([{
+    chart.dataset().map.returns([{
       label: 'etta',
       shape: 'circle',
       fill: 'red',
@@ -249,16 +249,16 @@ describe('point marker', () => {
         minSize: 0
       }
     };
-    // composer.table().findField.withArgs('foo').returns({ values: () => ['data 1', 'data 2', 'data 3'] });
-    // composer.table().findField.withArgs('measure 1').returns({ values: () => [0, 0.4, 1] });
-    composer.dataset().map.returns([
+    // chart.table().findField.withArgs('foo').returns({ values: () => ['data 1', 'data 2', 'data 3'] });
+    // chart.table().findField.withArgs('measure 1').returns({ values: () => [0, 0.4, 1] });
+    chart.dataset().map.returns([
       { m1: { value: 0 } },
       { m1: { value: 0.4 } },
       { m1: { value: 1 } }
     ]);
     const xScale = v => v;
     xScale.bandWidth = () => 0.2; // max size: width * 0.2 -> 20
-    composer.scale.onCall(0).returns(xScale);
+    chart.scale.onCall(0).returns(xScale);
 
     createAndRenderPoint({
       inner: { x: 10, y: 20, width: 100, height: 200 }, // point size limits: [2,20]

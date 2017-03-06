@@ -6,7 +6,7 @@ import ordinal from '../../../../../src/core/scales/ordinal';
 import { formatter } from '../../../../../src/core/formatter';
 
 describe('Axis', () => {
-  let composerMock;
+  let chartMock;
   let config;
   let renderSpy;
   let scale = {};
@@ -24,7 +24,7 @@ describe('Axis', () => {
       inner,
       outer
     } = opts;
-    const component = componentFactory(axisComponent)(config, composerMock);
+    const component = componentFactory(axisComponent)(config, chartMock);
     component.beforeMount();
     component.resize(inner, outer);
     component.beforeRender();
@@ -36,7 +36,7 @@ describe('Axis', () => {
   beforeEach(() => {
     const f = formatter('d3')('number')(' ');
     renderSpy = sinon.spy();
-    composerMock = {
+    chartMock = {
       renderer: {
         size: () => ({ width: 100, height: 100 }),
         render: renderSpy,
@@ -65,8 +65,8 @@ describe('Axis', () => {
   describe('continuous', () => {
     beforeEach(() => {
       scale = linear();
-      /* composerMock.scale.type = 'linear';
-      composerMock.scale.sources = ['fieldSource'];*/
+      /* chartMock.scale.type = 'linear';
+      chartMock.scale.sources = ['fieldSource'];*/
     });
 
     /*
@@ -134,12 +134,12 @@ describe('Axis', () => {
 
     beforeEach(() => {
       data = ['d1', 'd2', 'd3'];
-      composerMock.data = data;
+      chartMock.data = data;
       scale = ordinal();
       scale.domain([0, 1, 2]);
       scale.range([0, 1]);
-      composerMock.scale().type = 'ordinal';
-      /* composerMock.scale().sources = ['source'];*/
+      chartMock.scale().type = 'ordinal';
+      /* chartMock.scale().sources = ['source'];*/
     });
 
     ['left', 'right', 'top', 'bottom'].forEach((d) => {

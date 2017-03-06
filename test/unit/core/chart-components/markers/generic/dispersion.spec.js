@@ -1,7 +1,7 @@
 import dispersion from '../../../../../../src/core/chart-components/markers/generic/dispersion';
 
 describe('Dispersion', () => {
-  let composerMock;
+  let chartMock;
   let data;
   let settings;
   let d;
@@ -18,7 +18,7 @@ describe('Dispersion', () => {
       })
     };
 
-    composerMock = {
+    chartMock = {
       scale: () => s
     };
 
@@ -39,10 +39,10 @@ describe('Dispersion', () => {
   });
 
   it('should instantiate properly', () => {
-    d = dispersion(composerMock)();
+    d = dispersion(chartMock)();
   });
   it('should fill items with data', () => {
-    d = dispersion(composerMock)();
+    d = dispersion(chartMock)();
     d.updateSettings(settings);
     d.onData(data);
     d.items().forEach((item, i) => {
