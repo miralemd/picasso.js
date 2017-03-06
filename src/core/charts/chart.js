@@ -82,9 +82,13 @@ const isReservedProperty = prop => [
 ].some(name => name === prop);
 
 /**
- * Chart instance factory function
+ * The chart creator
+ * @memberof picasso
+ * @alias chart
+ * @param  {Chart.Props} settings - Settings
+ * @return {Chart}
  */
-function createInstance(definition) {
+function chart(definition) {
   let {
     element,
     data = {},
@@ -550,17 +554,6 @@ function createInstance(definition) {
   return instance;
 }
 
-/**
- * The chart creator
- * @memberof picasso
- * @alias chart
- * @param  {Chart.Props} settings - Settings
- * @return {Chart}
- */
-function chartFactory(definition) {
-  return createInstance(definition);
-}
+chart.mixin = mixins.add; // Expose mixin registering function
 
-chartFactory.mixin = mixins.add; // Expose mixin registering function
-
-export default chartFactory;
+export default chart;
