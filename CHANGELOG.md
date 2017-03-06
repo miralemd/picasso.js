@@ -2,6 +2,28 @@
 
 ## Unreleased
 
+### Breaking changes
+
+- scale ticks settings `count` & `values` now only accept primitive numbers:
+
+    ```js
+    scales: {
+      x: {
+        ticks: {
+          count: 5,
+          values: [1, 2, 3, 4, 5]
+        },
+        minorTicks: {
+          count: 3
+        }
+      }
+    }
+    ```
+
+### Fixed
+
+- PIC-55 Can crash browser by setting a short ticks distance
+
 ## [BREAKING] 0.10.0
 
 ### Breaking changes
