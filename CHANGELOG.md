@@ -23,6 +23,7 @@
 ### Fixed
 
 - PIC-55 Can crash browser by setting a short ticks distance
+- PIC-96 Tooltips doesn't align correctly for canvas
 
 ## [BREAKING] 0.10.0
 

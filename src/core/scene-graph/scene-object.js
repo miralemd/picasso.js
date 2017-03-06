@@ -7,6 +7,7 @@ export class SceneObject {
     this._attrs = node.attrs;
     this._type = node.type;
     this._data = node.data;
+    this._dpi = node.stage ? node.stage.dpi : 1;
   }
 
   /**
@@ -50,12 +51,17 @@ export class SceneObject {
   }
 
   /**
-   * Get bounding rectangle of the node.
+   * Get bounding rectangle of the node. After any transform has been applied, if any, but excluding scaling transform related to devicePixelRatio.
    * Origin is in the top-left corner of the scene element.
    * @return {Object} Bounding rectangle of the node.
    */
   get bounds() {
-    return this._bounds();
+    const bounds = this._bounds();
+    bounds.x /= this._dpi;
+    bounds.y /= this._dpi;
+    bounds.width /= this._dpi;
+    bounds.height /= this._dpi;
+    return bounds;
   }
 }
 
