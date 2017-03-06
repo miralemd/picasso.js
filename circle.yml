@@ -42,5 +42,5 @@ deployment:
   docsnstats:
     branch: master
     commands:
-      - ./tools/generate-html-docs.sh
-      - ./tools/analyze-webpack-stats.sh
+      - ./scripts/generate-html-docs.sh
+      - ./scripts/analyze-webpack-stats.sh
