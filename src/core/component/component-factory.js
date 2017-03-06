@@ -388,7 +388,7 @@ export default function componentFactory(definition) {
     fn.onBrushTap = (e) => {
       brushTriggers.tap.forEach((t) => {
         if (resolveTapEvent({ e, t, config: brushArgs }) && t.globalPropagation === 'stop') {
-          chart.stopBrushing = true;
+          chart.toggleBrushing(true);
         }
       });
     };
@@ -396,7 +396,7 @@ export default function componentFactory(definition) {
     fn.onBrushOver = (e) => {
       brushTriggers.over.forEach((t) => {
         if (resolveOverEvent({ e, t, config: brushArgs }) && t.globalPropagation === 'stop') {
-          chart.stopBrushing = true;
+          chart.toggleBrushing(true);
         }
       });
     };

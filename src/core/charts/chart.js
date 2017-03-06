@@ -94,7 +94,7 @@ function createInstance(definition) {
 
   const chartMixins = mixins.list();
   const listeners = [];
-  const context = {
+  const instance = {
     ...definition,
     ...chartMixins.filter(mixinName => !isReservedProperty(mixinName))
   };
@@ -107,46 +107,18 @@ function createInstance(definition) {
 
   let dataset = [];
   let brushes = {};
+  let stopBrushing = false;
 
-  const chart = {
-    dataset: function datasetFn() {
-      return dataset;
-    },
-    scales: function scales() {
-      return currentScales;
-    },
-    formatters: function formatters() {
-      return currentFormatters;
-    },
-    createComponent: (compSettings, container) => {
-      const factoryFn = component(compSettings.type);
-      const compInstance = factoryFn(compSettings, chart, container);
-      return {
-        instance: compInstance,
-        settings: extend(true, {}, compSettings),
-        key: compSettings.key,
-        hasKey: typeof compSettings.key !== 'undefined'
-      };
-    },
-    brush: function brushFn(name = 'default') {
-      if (!brushes[name]) {
-        brushes[name] = brush();
-      }
-      return brushes[name];
-    },
-    scroll: function scrollFn(name = 'default') {
-      return getScrollApi(name, currentScrollApis);
-    },
-    scale: function scale(v) {
-      return getOrCreateScale(v, currentScales, dataset);
-    },
-    formatter: function formatter(v) {
-      return getOrCreateFormatter(v, currentFormatters, chart.dataset());
-    },
-    stopBrushing: false
+  const createComponent = (compSettings, container) => {
+    const factoryFn = component(compSettings.type);
+    const compInstance = factoryFn(compSettings, instance, container);
+    return {
+      instance: compInstance,
+      settings: extend(true, {}, compSettings),
+      key: compSettings.key,
+      hasKey: typeof compSettings.key !== 'undefined'
+    };
   };
-
-  function instance() {} // The chart instance
 
   // Create a callback that calls lifecycle functions in the definition and config (if they exist).
   function createCallback(method, defaultMethod = () => {}) {
@@ -155,13 +127,13 @@ function createInstance(definition) {
 
       let returnValue;
       if (inDefinition) {
-        returnValue = definition[method].call(context, ...args);
+        returnValue = definition[method].call(instance, ...args);
       } else {
-        returnValue = defaultMethod.call(context, ...args);
+        returnValue = defaultMethod.call(instance, ...args);
       }
       chartMixins.forEach((mixin) => {
         if (mixin[method]) {
-          mixin[method].call(context, ...args);
+          mixin[method].call(instance, ...args);
         }
       });
       return returnValue;
@@ -229,9 +201,9 @@ function createInstance(definition) {
     if (!partialData) {
       Object.keys(brushes).forEach(b => brushes[b].clear());
     }
-    currentScales = buildScales(scales, chart);
-    currentFormatters = buildFormatters(formatters, chart);
-    currentScrollApis = buildScroll(scroll, chart, currentScrollApis, partialData);
+    currentScales = buildScales(scales, instance);
+    currentFormatters = buildFormatters(formatters, instance);
+    currentScrollApis = buildScroll(scroll, instance, currentScrollApis, partialData);
   };
 
   const render = () => {
@@ -244,7 +216,7 @@ function createInstance(definition) {
     set(data, settings);
 
     currentComponents = components.map(compSettings => (
-      chart.createComponent(compSettings, element)
+      createComponent(compSettings, element)
     ));
 
     const { visible, hidden } = layout(currentComponents);
@@ -306,8 +278,8 @@ function createInstance(definition) {
 
         comp.instance.onBrushTap(e);
 
-        if (chart.stopBrushing) {
-          chart.stopBrushing = false;
+        if (stopBrushing) {
+          stopBrushing = false;
           break;
         }
       }
@@ -319,8 +291,8 @@ function createInstance(definition) {
 
         comp.instance.onBrushOver(e);
 
-        if (chart.stopBrushing) {
-          chart.stopBrushing = false;
+        if (stopBrushing) {
+          stopBrushing = false;
           break;
         }
       }
@@ -352,7 +324,7 @@ function createInstance(definition) {
    * Update the chart with new settings and / or data
    * @param {} chart - Chart definition
    */
-  instance.update = context.update = (newProps = {}) => {
+  instance.update = (newProps = {}) => {
     const { partialData } = newProps;
     if (newProps.data) {
       data = newProps.data;
@@ -386,7 +358,7 @@ function createInstance(definition) {
       const idx = findComponentIndexByKey(comp.key);
       if (idx === -1) {
         // Component is added
-        return chart.createComponent(comp, element);
+        return createComponent(comp, element);
       }
       // Component is (potentially) updated
       currentComponents[idx].updateWith = {
@@ -461,7 +433,7 @@ function createInstance(definition) {
     updated();
   };
 
-  instance.destroy = context.destroy = () => {
+  instance.destroy = () => {
     beforeDestroy();
     currentComponents.forEach(comp => comp.instance.destroy());
     currentComponents = [];
@@ -472,25 +444,19 @@ function createInstance(definition) {
   };
 
   /**
-   * The brush context for this chart
-   * @return {data-brush}
-   */
-  instance.brush = context.brush = (...v) => chart.brush(...v);
-
-  /**
    * Get a field associated with the provided brush
    * @param {String} path path to the field to fetch
    * @return {data-field}
    */
   instance.field = path =>
-     chart.dataset().findField(path)
+     instance.dataset().findField(path)
   ;
 
   /**
    * The data set for this chart
    * @return {dataset}
    */
-  instance.data = context.data = () => chart.dataset();
+  instance.data = () => instance.dataset();
 
   /**
    * Get all shapes associated with the provided context
@@ -500,7 +466,7 @@ function createInstance(definition) {
    * @param {String} key Which component to get shapes from. Default gives shapes from all components.
    * @return {Object[]} Array of objects containing shape and parent element
    */
-  instance.getAffectedShapes = context.getAffectedShapes = (ctx, mode = 'and', props, key) => {
+  instance.getAffectedShapes = (ctx, mode = 'and', props, key) => {
     const shapes = [];
     currentComponents.filter(comp => key === undefined || key === null || comp.key === key).forEach((comp) => {
       shapes.push(...comp.instance.getBrushedShapes(ctx, mode, props));
@@ -518,7 +484,7 @@ function createInstance(definition) {
    * chart.findShapes('Circle[fill="red"][stroke!="black"]') // [CircleNode, CircleNode]
    * chart.findShapes('Container Rect') // [Rect, Rect]
    */
-  instance.findShapes = context.findShapes = (selector) => {
+  instance.findShapes = (selector) => {
     const shapes = [];
     visibleComponents.forEach((c) => {
       shapes.push(...c.instance.findShapes(selector));
@@ -529,7 +495,48 @@ function createInstance(definition) {
   /**
    * @return {scroll-api}
    */
-  instance.scroll = context.scroll = (...v) => chart.scroll(...v);
+  instance.scroll = function scroll(name = 'default') {
+    return getScrollApi(name, currentScrollApis);
+  };
+
+  instance.dataset = function datasetFn() {
+    return dataset;
+  };
+
+  instance.scales = function scales() {
+    return currentScales;
+  };
+
+  instance.formatters = function formatters() {
+    return currentFormatters;
+  };
+
+  /**
+   * The brush context for this chart
+   * @return {data-brush}
+   */
+  instance.brush = function brushFn(name = 'default') {
+    if (!brushes[name]) {
+      brushes[name] = brush();
+    }
+    return brushes[name];
+  };
+
+  instance.scale = function scale(v) {
+    return getOrCreateScale(v, currentScales, dataset);
+  };
+
+  instance.formatter = function formatter(v) {
+    return getOrCreateFormatter(v, currentFormatters, instance.dataset());
+  };
+
+  instance.toggleBrushing = function toggleBrushing(val) {
+    if (typeof val !== 'undefined') {
+      stopBrushing = !val;
+    } else {
+      stopBrushing = !stopBrushing;
+    }
+  };
 
   created();
 
@@ -538,7 +545,6 @@ function createInstance(definition) {
     mount(element);
     mounted(element);
     instance.element = element;
-    context.element = element;
   }
 
   return instance;
