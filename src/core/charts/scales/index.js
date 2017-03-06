@@ -1,8 +1,8 @@
-import { registry } from '../../../utils/registry';
-import linear from '../../../scales/linear';
-import ordinal from '../../../scales/ordinal';
-import sequential from '../../../scales/color/sequential';
-import threshold from '../../../scales/color/threshold';
+import { registry } from '../../utils/registry';
+import linear from '../../scales/linear';
+import ordinal from '../../scales/ordinal';
+import sequential from '../../scales/color/sequential';
+import threshold from '../../scales/color/threshold';
 
 const reg = registry();
 

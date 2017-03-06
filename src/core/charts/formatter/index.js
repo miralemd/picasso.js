@@ -1,4 +1,4 @@
-import { formatter } from '../../../formatter';
+import { formatter } from '../../formatter';
 
 function fieldFinder(query, field) {
   return field.title() === query;

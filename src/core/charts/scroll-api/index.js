@@ -1,4 +1,4 @@
-import scrollApi from '../../../scroll-api';
+import scrollApi from '../../scroll-api';
 
 export function createOrUpdate(options, oldApi) {
   let min = options.min || 0;

@@ -1,10 +1,18 @@
-import composerFn from './composer';
+import extend from 'extend';
+
 import * as mixins from './chart-mixins';
 import createDockLayout from '../dock-layout/dock-layout';
 import {
   detectTouchSupport,
   isValidTapEvent
 } from '../utils/event-type';
+
+import buildData from '../data/index';
+import buildFormatters, { getOrCreateFormatter } from './formatter';
+import buildScales, { getOrCreateScale } from './scales';
+import buildScroll, { getScrollApi } from './scroll-api';
+import brush from '../brush';
+import component from '../component';
 
 /**
  * @typedef Chart.Props
@@ -90,9 +98,53 @@ function createInstance(definition) {
     ...definition,
     ...chartMixins.filter(mixinName => !isReservedProperty(mixinName))
   };
-  let composer = composerFn();
   let currentComponents = []; // Augmented components
   let visibleComponents = [];
+
+  let currentScales = null; // Built scales
+  let currentFormatters = null; // Built formatters
+  let currentScrollApis = null; // Build scroll apis
+
+  let dataset = [];
+  let brushes = {};
+
+  const composer = {
+    dataset: function datasetFn() {
+      return dataset;
+    },
+    scales: function scales() {
+      return currentScales;
+    },
+    formatters: function formatters() {
+      return currentFormatters;
+    },
+    createComponent: (compSettings, container) => {
+      const factoryFn = component(compSettings.type);
+      const compInstance = factoryFn(compSettings, composer, container);
+      return {
+        instance: compInstance,
+        settings: extend(true, {}, compSettings),
+        key: compSettings.key,
+        hasKey: typeof compSettings.key !== 'undefined'
+      };
+    },
+    brush: function brushFn(name = 'default') {
+      if (!brushes[name]) {
+        brushes[name] = brush();
+      }
+      return brushes[name];
+    },
+    scroll: function scrollFn(name = 'default') {
+      return getScrollApi(name, currentScrollApis);
+    },
+    scale: function scale(v) {
+      return getOrCreateScale(v, currentScales, dataset);
+    },
+    formatter: function formatter(v) {
+      return getOrCreateFormatter(v, currentFormatters, composer.dataset());
+    },
+    stopBrushing: false
+  };
 
   function instance() {} // The chart instance
 
@@ -146,8 +198,8 @@ function createInstance(definition) {
     };
   };
 
-  const moveToPosition = (component, index) => {
-    const el = component.instance.renderer().element();
+  const moveToPosition = (comp, index) => {
+    const el = comp.instance.renderer().element();
     if (isNaN(index) || !el || !element || !element.childNodes) { return; }
     const nodes = element.childNodes;
     const i = Math.min(nodes.length - 1, Math.max(index, 0));
@@ -166,6 +218,22 @@ function createInstance(definition) {
   const beforeDestroy = createCallback('beforeDestroy');
   const destroyed = createCallback('destroyed');
 
+  const set = (_data, _settings, { partialData } = {}) => {
+    const {
+      formatters = {},
+      scales = {},
+      scroll = {}
+    } = _settings;
+
+    dataset = buildData(_data);
+    if (!partialData) {
+      Object.keys(brushes).forEach(b => brushes[b].clear());
+    }
+    currentScales = buildScales(scales, composer);
+    currentFormatters = buildFormatters(formatters, composer);
+    currentScrollApis = buildScroll(scroll, composer, currentScrollApis, partialData);
+  };
+
   const render = () => {
     const {
       components = []
@@ -173,27 +241,27 @@ function createInstance(definition) {
 
     beforeRender();
 
-    composer.set(data, settings);
+    set(data, settings);
 
-    currentComponents = components.map(component => (
-      composer.createComponent(component, element)
+    currentComponents = components.map(compSettings => (
+      composer.createComponent(compSettings, element)
     ));
 
     const { visible, hidden } = layout(currentComponents);
     visibleComponents = visible;
 
-    hidden.forEach((component) => {
-      component.instance.hide();
-      component.visible = false;
+    hidden.forEach((comp) => {
+      comp.instance.hide();
+      comp.visible = false;
     });
 
-    visible.forEach(component => component.instance.beforeMount());
-    visible.forEach(component => component.instance.mount());
-    visible.forEach(component => component.instance.beforeRender());
+    visible.forEach(comp => comp.instance.beforeMount());
+    visible.forEach(comp => comp.instance.mount());
+    visible.forEach(comp => comp.instance.beforeRender());
 
-    visible.forEach(component => component.instance.render());
-    visible.forEach(component => component.instance.mounted());
-    visible.forEach((component) => { component.visible = true; });
+    visible.forEach(comp => comp.instance.render());
+    visible.forEach(comp => comp.instance.mounted());
+    visible.forEach((comp) => { comp.visible = true; });
   };
 
   // Browser only
@@ -295,7 +363,7 @@ function createInstance(definition) {
 
     beforeUpdate();
 
-    composer.set(data, settings, { partialData });
+    set(data, settings, { partialData });
 
     const {
       formatters,
@@ -314,80 +382,80 @@ function createInstance(definition) {
     }
 
     // Let the "components" array determine order of components
-    currentComponents = components.map((component) => {
-      const idx = findComponentIndexByKey(component.key);
+    currentComponents = components.map((comp) => {
+      const idx = findComponentIndexByKey(comp.key);
       if (idx === -1) {
         // Component is added
-        return composer.createComponent(component, element);
+        return composer.createComponent(comp, element);
       }
       // Component is (potentially) updated
       currentComponents[idx].updateWith = {
         formatters,
         scales,
         data,
-        settings: component
+        settings: comp
       };
       return currentComponents[idx];
     });
 
-    currentComponents.forEach((component) => {
-      if (component.updateWith) {
-        component.instance.set(component.updateWith);
+    currentComponents.forEach((comp) => {
+      if (comp.updateWith) {
+        comp.instance.set(comp.updateWith);
       }
     });
-    currentComponents.forEach((component) => {
-      if (component.updateWith) {
-        component.instance.beforeUpdate();
+    currentComponents.forEach((comp) => {
+      if (comp.updateWith) {
+        comp.instance.beforeUpdate();
       }
     });
 
     let toUpdate = [];
     let toRender = [];
     if (partialData) {
-      currentComponents.forEach((component) => {
-        if (component.updateWith && component.visible) {
-          toUpdate.push(component);
+      currentComponents.forEach((comp) => {
+        if (comp.updateWith && comp.visible) {
+          toUpdate.push(comp);
         } else {
-          toRender.push(component);
+          toRender.push(comp);
         }
       });
     } else {
       const { visible, hidden } = layout(currentComponents); // Relayout
       visibleComponents = visible;
 
-      visible.forEach((component) => {
-        if (component.updateWith && component.visible) {
-          toUpdate.push(component);
+      visible.forEach((comp) => {
+        if (comp.updateWith && comp.visible) {
+          toUpdate.push(comp);
         } else {
-          toRender.push(component);
+          toRender.push(comp);
         }
       });
 
-      hidden.forEach((component) => {
-        component.instance.hide();
-        component.visible = false;
-        delete component.updateWith;
+      hidden.forEach((comp) => {
+        comp.instance.hide();
+        comp.visible = false;
+        delete comp.updateWith;
       });
     }
 
-    toRender.forEach(component => component.instance.beforeMount());
-    toRender.forEach(component => component.instance.mount());
+    toRender.forEach(comp => comp.instance.beforeMount());
+    toRender.forEach(comp => comp.instance.mount());
 
-    toRender.forEach(component => component.instance.beforeRender());
-    toUpdate.forEach(component => component.instance.beforeRender());
+    toRender.forEach(comp => comp.instance.beforeRender());
+    toUpdate.forEach(comp => comp.instance.beforeRender());
 
-    toRender.forEach(component => component.instance.render());
-    toUpdate.forEach(component => component.instance.update());
+    toRender.forEach(comp => comp.instance.render());
+    toUpdate.forEach(comp => comp.instance.update());
 
     // Ensure that displayOrder is keept
-    visibleComponents.forEach((component, i) => moveToPosition(component, i));
+    visibleComponents.forEach((comp, i) => moveToPosition(comp, i));
 
-    toRender.forEach(component => component.instance.mounted());
-    toUpdate.forEach(component => component.instance.updated());
+    toRender.forEach(comp => comp.instance.mounted());
+    toUpdate.forEach(comp => comp.instance.updated());
 
-    visibleComponents.forEach((component) => {
-      delete component.updateWith;
-      component.visible = true;
+    visibleComponents.forEach((comp) => {
+      delete comp.updateWith;
+      comp.visible = true;
     });
 
     updated();
