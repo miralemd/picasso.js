@@ -1,5 +1,6 @@
 import DisplayObject from '../../../../../src/core/scene-graph/display-objects/display-object';
 import { Collision } from '../../../../../src/core/scene-graph/collision';
+import { SceneObject } from '../../../../../src/core/scene-graph/scene-object';
 
 describe('Display Object', () => {
   let _displayObject;
@@ -64,12 +65,9 @@ describe('Display Object', () => {
       const collisions = _displayObject.getItemsFrom(shape);
       expect(collisions).to.be.of.length(1);
       expect(collisions[0]).to.be.an.instanceof(Collision);
-      expect(collisions[0]).to.deep.equal(new Collision({
-        node: _displayObject.attrs,
-        parent: null,
-        bounds: { x: 0, y: 0, width: 0, height: 0 },
-        input: shape
-      }));
+      expect(collisions[0].node).to.be.an.instanceof(SceneObject);
+      expect(collisions[0].parent).to.equal(null);
+      expect(collisions[0].input).to.deep.equal(shape);
     });
 
     it('should return a collision with it self, if it intersects line', () => {
@@ -77,12 +75,9 @@ describe('Display Object', () => {
       const collisions = _displayObject.getItemsFrom(shape);
       expect(collisions).to.be.of.length(1);
       expect(collisions[0]).to.be.an.instanceof(Collision);
-      expect(collisions[0]).to.deep.equal(new Collision({
-        node: _displayObject.attrs,
-        parent: null,
-        bounds: { x: 0, y: 0, width: 0, height: 0 },
-        input: shape
-      }));
+      expect(collisions[0].node).to.be.an.instanceof(SceneObject);
+      expect(collisions[0].parent).to.equal(null);
+      expect(collisions[0].input).to.deep.equal(shape);
     });
 
     it('should return a collision with it self, if it intersects rect', () => {
@@ -90,12 +85,9 @@ describe('Display Object', () => {
       const collisions = _displayObject.getItemsFrom(shape);
       expect(collisions).to.be.of.length(1);
       expect(collisions[0]).to.be.an.instanceof(Collision);
-      expect(collisions[0]).to.deep.equal(new Collision({
-        node: _displayObject.attrs,
-        parent: null,
-        bounds: { x: 0, y: 0, width: 0, height: 0 },
-        input: shape
-      }));
+      expect(collisions[0].node).to.be.an.instanceof(SceneObject);
+      expect(collisions[0].parent).to.equal(null);
+      expect(collisions[0].input).to.deep.equal(shape);
     });
 
     it('should return a collision with it self, if it intersects circle', () => {
@@ -103,12 +95,9 @@ describe('Display Object', () => {
       const collisions = _displayObject.getItemsFrom(shape);
       expect(collisions).to.be.of.length(1);
       expect(collisions[0]).to.be.an.instanceof(Collision);
-      expect(collisions[0]).to.deep.equal(new Collision({
-        node: _displayObject.attrs,
-        parent: null,
-        bounds: { x: 0, y: 0, width: 0, height: 0 },
-        input: shape
-      }));
+      expect(collisions[0].node).to.be.an.instanceof(SceneObject);
+      expect(collisions[0].parent).to.equal(null);
+      expect(collisions[0].input).to.deep.equal(shape);
     });
   });
 

@@ -1,5 +1,15 @@
 import { isTouchEvent } from '../utils/event-type';
 
+export function reduceToLeafNodes(nodes = []) {
+  return nodes.reduce((ary, node) => {
+    if (Array.isArray(node.children)) {
+      return ary.concat(reduceToLeafNodes(node.children));
+    }
+    ary.push(node);
+    return ary;
+  }, []);
+}
+
 export function styler(obj, { context, data, style }) {
   const brusher = obj.composer.brush(context);
   const dataProps = data;
@@ -16,18 +26,9 @@ export function styler(obj, { context, data, style }) {
     }
   });
 
-  function getChildNodes(nodes) {
-    return nodes.reduce((ary, node) => {
-      if (Array.isArray(node.children)) {
-        return ary.concat(getChildNodes(node.children));
-      }
-      return ary.concat(node);
-    }, []);
-  }
-
   const update = () => {
     // TODO - render nodes only once, i.e. don't render for each brush, update nodes for all brushes and then render
-    const nodes = getChildNodes(obj.nodes);
+    const nodes = reduceToLeafNodes(obj.nodes);
     const len = nodes.length;
     const mappedData = obj.data;
 
@@ -60,7 +61,7 @@ export function styler(obj, { context, data, style }) {
   };
 
   const onStart = () => {
-    const nodes = getChildNodes(obj.nodes);
+    const nodes = reduceToLeafNodes(obj.nodes);
     const len = nodes.length;
     for (let i = 0; i < len; i++) {
       nodes[i].__style = nodes[i].__style || {};
@@ -68,11 +69,11 @@ export function styler(obj, { context, data, style }) {
         nodes[i].__style[s] = nodes[i][s]; // store original value
       });
     }
-    obj.renderer.render(nodes);
+    obj.renderer.render(obj.nodes);
   };
 
   const onEnd = () => {
-    const nodes = getChildNodes(obj.nodes);
+    const nodes = reduceToLeafNodes(obj.nodes);
     const len = nodes.length;
 
     for (let i = 0; i < len; i++) {
@@ -83,7 +84,7 @@ export function styler(obj, { context, data, style }) {
         nodes[i].__style = undefined;
       }
     }
-    obj.renderer.render(nodes);
+    obj.renderer.render(obj.nodes);
   };
   const onUpdate = (/* added, removed */) => {
     update();

@@ -22,9 +22,6 @@ function traverse(items, parent, matrix) {
 
     const obj = create(s.type, s);
     if (obj) {
-      obj.set(s);
-      obj.type = s.type;
-
       if (s.transform) {
         matrix.save();
         resolveTransform(s.transform, matrix);

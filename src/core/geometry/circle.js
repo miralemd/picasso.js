@@ -2,11 +2,11 @@ import { sqrDistance } from '../math/vector';
 import { isCircleIntersectingRect, isCircleIntersectingLineSegment } from '../math/intersection';
 
 export default class GeoCircle {
-  constructor(cx = 0, cy = 0, r = 0, minRadius = 0) {
-    this.set(cx, cy, r, minRadius);
+  constructor({ cx = 0, cy = 0, r = 0, minRadius = 0 } = {}) {
+    this.set({ cx, cy, r, minRadius });
   }
 
-  set(cx = 0, cy = 0, r = 0, minRadius = 0) {
+  set({ cx = 0, cy = 0, r = 0, minRadius = 0 } = {}) {
     this.cx = cx;
     this.cy = cy;
     this.r = Math.max(r, minRadius);

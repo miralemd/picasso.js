@@ -3,7 +3,7 @@ export class SceneObject {
    * Read-only object representing a node on the scene.
    */
   constructor(node) {
-    this._bounds = () => node.boundingRect(true);
+    this._bounds = node.boundingRect ? () => node.boundingRect(true) : () => ({ x: 0, y: 0, width: 0, height: 0 });
     this._attrs = node.attrs;
     this._type = node.type;
     this._data = node.data;

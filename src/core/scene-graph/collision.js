@@ -1,13 +1,14 @@
+import createSceneObject from './scene-object';
+
 export class Collision {
-  constructor({ parent = null, node = null, input = null, bounds = null }) {
-    this._parent = parent;
-    this._node = node;
-    this._input = input;
-    this._bounds = bounds;
+  constructor(node) {
+    this._node = createSceneObject(node);
+    this._parent = null;
+    this._input = null;
   }
 
-  get bounds() {
-    return this._bounds;
+  get node() {
+    return this._node;
   }
 
   set parent(p) {
@@ -18,16 +19,12 @@ export class Collision {
     return this._parent;
   }
 
-  get node() {
-    return this._node;
+  set input(i) {
+    this._input = i;
   }
 
   get input() {
     return this._input;
-  }
-
-  set input(i) {
-    this._input = i;
   }
 }
 

@@ -2,18 +2,11 @@ import createCollision from './collision';
 import { scalarMultiply } from '../math/vector';
 import { getLineVectors, getRectVertices } from '../math/intersection';
 
-function createNodeCollsion(node) {
-  return createCollision({
-    node: node.node,
-    bounds: node.boundingRect ? node.boundingRect(true) : { x: 0, y: 0, width: 0, height: 0 }
-  });
-}
-
 function appendParentNode(node, collision) {
   const p = node.parent;
 
   if (p && p.type !== 'stage') {
-    collision.parent = createNodeCollsion(p);
+    collision.parent = createCollision(p);
 
     const pp = p.parent;
     if (pp && pp.type !== 'stage') {
@@ -34,7 +27,7 @@ function resolveFrontChildCollision(node, type, input) {
     const collider = desc._collider;
 
     if (collider && collider.fn[type](input)) {
-      const collision = createNodeCollsion(desc);
+      const collision = createCollision(desc);
 
       appendParentNode(desc, collision);
 
@@ -47,7 +40,7 @@ function resolveFrontChildCollision(node, type, input) {
 function resolveBoundsCollision(node, type, input) {
   const collider = node._collider.fn;
   if (collider[type](input)) {
-    const c = createNodeCollsion(node);
+    const c = createCollision(node);
 
     appendParentNode(node, c);
 
@@ -72,7 +65,7 @@ function resolveGeometryCollision(node, type, input) {
 
   const collider = node._collider.fn;
   if (collider[type](transformedInput)) {
-    const c = createNodeCollsion(node);
+    const c = createCollision(node);
 
     appendParentNode(node, c);
 

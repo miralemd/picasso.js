@@ -77,23 +77,15 @@ class DisplayObject extends Node {
 
     if (!type) {
       this._collider = null;
+    } else if (this._collider && this._collider.type === type) {
+      this._collider.fn.set(opts);
     } else if (type === 'frontChild') {
       this._collider = c;
     } else if (type === 'bounds') {
-      const { x, y, width, height, minWidth, minHeight } = opts;
-      c.fn = geometry('rect', x, y, width, height, minWidth, minHeight);
+      c.fn = geometry('rect', opts);
       this._collider = c;
-    } else if (type === 'circle') {
-      const { cx, cy, r, minRadius } = opts;
-      c.fn = geometry(type, cx, cy, r, minRadius);
-      this._collider = c;
-    } else if (type === 'rect') {
-      const { x, y, width, height, minWidth, minHeight } = opts;
-      c.fn = geometry(type, x, y, width, height, minWidth, minHeight);
-      this._collider = c;
-    } else if (type === 'line') {
-      const { x1, y1, x2, y2, tolerance } = opts;
-      c.fn = geometry(type, x1, y1, x2, y2, tolerance);
+    } else if (['line', 'rect', 'circle'].indexOf(type) !== -1) {
+      c.fn = geometry(type, opts);
       this._collider = c;
     }
 

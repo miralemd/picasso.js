@@ -65,7 +65,7 @@ export default class Container extends DisplayObject {
 
     if (this._collider && this._collider.type === 'bounds') {
       reCalcBoundingRect(this, c, true);
-      const opts = extend({ x: 0, y: 0, width: 0, height: 0 }, this._boundingRect, this._collider);
+      const opts = extend({ type: 'bounds', x: 0, y: 0, width: 0, height: 0 }, this._boundingRect);
       super.collider(opts);
     }
 
@@ -80,7 +80,7 @@ export default class Container extends DisplayObject {
       for (let i = 0; i < num; i++) {
         reCalcBoundingRect(this, children[i], true);
       }
-      const opts = extend({ x: 0, y: 0, width: 0, height: 0 }, this._boundingRect, this._collider);
+      const opts = extend({ type: 'bounds', x: 0, y: 0, width: 0, height: 0 }, this._boundingRect);
       super.collider(opts);
     }
 
@@ -100,7 +100,7 @@ export default class Container extends DisplayObject {
     NC.removeChild.call(this, c);
 
     if (this._collider && this._collider.type === 'bounds') {
-      const opts = extend(this.boundingRect(true), this._collider);
+      const opts = extend(this.boundingRect(true), { type: 'bounds' });
       super.collider(opts);
     }
 
@@ -111,7 +111,7 @@ export default class Container extends DisplayObject {
     NC.removeChildren.call(this, children);
 
     if (this._collider && this._collider.type === 'bounds') {
-      const opts = extend(this.boundingRect(true), this._collider);
+      const opts = extend(this.boundingRect(true), { type: 'bounds' });
       super.collider(opts);
     }
 
