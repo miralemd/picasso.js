@@ -1,7 +1,7 @@
 #!/bin/bash
 cd "$(dirname "$0")"
-cd ../docs && yarn && npm -s run docs && cd ../tools
-cd generate-html-docs && yarn
+cd ../docs && yarn && npm -s run docs && cd ../scripts
+cd ../tools/generate-html-docs && yarn
 if command -v babel-node >/dev/null 2>&1; then
     babel-node lib/index.js
 else
