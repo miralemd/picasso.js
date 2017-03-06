@@ -1,5 +1,6 @@
 
-import pointComponent from '../../../../../src/core/chart-components/markers/point';
+import componentFactory from '../../../../../src/core/component/component-factory';
+import pointComponent from '../../../../../src/core/chart-components/markers/point/point';
 
 describe('point marker', () => {
   let renderedPoints;
@@ -12,7 +13,7 @@ describe('point marker', () => {
       outer,
       config
     } = opts;
-    const component = pointComponent(config, composer);
+    const component = componentFactory(pointComponent)(config, composer);
     component.beforeMount();
     component.resize(inner, outer);
     component.mounted();

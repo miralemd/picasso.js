@@ -1,7 +1,5 @@
 import extend from 'extend';
 
-import createComponentFactory from '../component';
-
 function parseTitle(text, join, table, scale) {
   let title;
   if (typeof text === 'function') {
@@ -167,10 +165,10 @@ const textComponent = {
       extend(this.settings, opts.settings.settings || {});
     }
     const table = this.dataset.tables()[0];
-    const text = opts.settings.text;
+    const text = this.settings.text;
     const join = opts.settings.settings && opts.settings.settings.join;
     this.title = parseTitle(text, join, table, this.scale);
   }
 };
 
-export default createComponentFactory(textComponent);
+export default textComponent;

@@ -1,6 +1,5 @@
-import createComponentFactory from '../component';
-import dispersion from './generic/dispersion';
-import { notNumber } from '../../utils/math';
+import dispersion from '../generic/dispersion';
+import { notNumber } from '../../../utils/math';
 
 const DEFAULT_STYLE_SETTINGS = {
   line: {
@@ -76,7 +75,7 @@ const DEFAULT_STYLE_SETTINGS = {
  * @property {marker-box-data-ref} [med] - med
  */
 
-const boxMarker = {
+const boxMarkerComponent = {
   require: ['composer'],
   defaultSettings: {
     settings: {},
@@ -184,4 +183,4 @@ const boxMarker = {
   }
 };
 
-export default createComponentFactory(boxMarker);
+export default boxMarkerComponent;

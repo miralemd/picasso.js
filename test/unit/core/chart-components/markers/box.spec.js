@@ -1,5 +1,6 @@
 
-import boxMarker from '../../../../../src/core/chart-components/markers/box';
+import componentFactory from '../../../../../src/core/component/component-factory';
+import boxMarker from '../../../../../src/core/chart-components/markers/box/box';
 import { create } from '../../../../../src/core/charts/composer/scales';
 
 describe('box marker', () => {
@@ -36,7 +37,7 @@ describe('box marker', () => {
       config,
       inner
     } = opts;
-    const instance = boxMarker(config, composer);
+    const instance = componentFactory(boxMarker)(config, composer);
     instance.beforeMount();
     instance.resize(inner);
     instance.beforeRender();

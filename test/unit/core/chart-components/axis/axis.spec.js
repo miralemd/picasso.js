@@ -1,4 +1,5 @@
 // import { scaleLinear as linear, scaleBand as band } from 'd3-scale';
+import componentFactory from '../../../../../src/core/component/component-factory';
 import axisComponent from '../../../../../src/core/chart-components/axis/axis';
 import linear from '../../../../../src/core/scales/linear';
 import ordinal from '../../../../../src/core/scales/ordinal';
@@ -23,7 +24,7 @@ describe('Axis', () => {
       inner,
       outer
     } = opts;
-    const component = axisComponent(config, composerMock);
+    const component = componentFactory(axisComponent)(config, composerMock);
     component.beforeMount();
     component.resize(inner, outer);
     component.beforeRender();

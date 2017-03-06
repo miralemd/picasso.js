@@ -1,4 +1,5 @@
 
+import componentFactory from '../../../../../src/core/component/component-factory';
 import lineComponent from '../../../../../src/core/chart-components/grid/line';
 
 describe('line marker', () => {
@@ -35,7 +36,7 @@ describe('line marker', () => {
       config,
       inner
     } = opts;
-    const instance = lineComponent(config, composer);
+    const instance = componentFactory(lineComponent)(config, composer);
     instance.beforeMount();
     instance.resize(inner);
     instance.beforeRender();

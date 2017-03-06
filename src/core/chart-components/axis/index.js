@@ -1,3 +1,5 @@
-import axis from './axis';
+import axisComponent from './axis';
 
-export default axis;
+export default function axis(picasso) {
+  picasso.component('axis', axisComponent);
+}

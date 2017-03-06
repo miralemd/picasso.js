@@ -1,5 +1,4 @@
 import extend from 'extend';
-import createComponentFactory from '../component';
 import { transposer } from '../../transposer/transposer';
 import { continuousDefaultSettings } from '../axis/axis-default-settings';
 
@@ -96,4 +95,4 @@ const gridLineComponent = {
   }
 };
 
-export default createComponentFactory(gridLineComponent);
+export default gridLineComponent;

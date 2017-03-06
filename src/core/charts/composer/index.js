@@ -6,7 +6,7 @@ import buildScales, { getOrCreateScale } from './scales';
 import brush from '../../brush';
 import buildScroll, { getScrollApi } from './scroll-api';
 
-import getComponentFactory from '../../chart-components/index';
+import component from '../../component/index';
 
 export default function composer() {
   let currentScales = null; // Built scales
@@ -66,7 +66,7 @@ export default function composer() {
   };
 
   fn.createComponent = (settings, container) => {
-    const factoryFn = getComponentFactory(settings.type);
+    const factoryFn = component(settings.type);
     const instance = factoryFn(settings, fn, container);
     return {
       instance,

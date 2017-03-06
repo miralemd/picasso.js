@@ -1,5 +1,4 @@
 /* global document */
-import createComponentFactory from './component';
 
 /**
  * @typedef scrollbar-settings
@@ -8,15 +7,15 @@ import createComponentFactory from './component';
  * @property {boolean} [width = 16]
  */
 
-function start(scrollbar, pos, elem) {
-  const dock = scrollbar.settings.dock;
-  const invert = scrollbar.settings.settings.invert;
+function start(_scrollbar, pos, elem) {
+  const dock = _scrollbar.settings.dock;
+  const invert = _scrollbar.settings.settings.invert;
   const horizontal = dock === 'top' || dock === 'bottom';
   const containerRect = elem.getBoundingClientRect();
   const containerStart = containerRect[horizontal ? 'left' : 'top'];
   const lengthAttr = horizontal ? 'width' : 'height';
-  const length = scrollbar.rect[lengthAttr];
-  const scroll = scrollbar.composer.scroll(scrollbar.settings.scroll);
+  const length = _scrollbar.rect[lengthAttr];
+  const scroll = _scrollbar.composer.scroll(_scrollbar.settings.scroll);
   let currentMove;
 
   { // local scope to allow reuse of variable names later
@@ -81,7 +80,7 @@ function start(scrollbar, pos, elem) {
   };
 }
 
-const scrollbar = {
+const scrollbarComponent = {
   require: ['composer'],
   on: {
     touchstart(event) {
@@ -201,4 +200,6 @@ const scrollbar = {
   renderer: 'dom'
 };
 
-export default createComponentFactory(scrollbar);
+export default function scrollbar(picasso) {
+  picasso.component('scrollbar', scrollbarComponent);
+}
