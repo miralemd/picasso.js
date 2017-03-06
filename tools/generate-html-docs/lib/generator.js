@@ -32,7 +32,7 @@ function writeFile(file, contents) {
  * @return {Undefined}          Returns nothing
  */
 function recursiveDirectoryBuilder(pathToBuild) {
-  let paths = pathToBuild.split('/');
+  let paths = pathToBuild.replace(/\\/g, '/').split('/');
   paths.pop();
   let dir = [];
   let compiledDir = '';
@@ -72,7 +72,7 @@ function kebabToCamelCase(value) {
  * @return {String}             Returns a string with correct amount of ../../'s to the rootPath for appending files to
  */
 function rootPathGenerator(destination, rootFolder) {
-  return Array(destination.replace(path.resolve(__dirname, rootFolder), '').split('/').length - 2).fill('../').join('');
+  return Array(destination.replace(path.resolve(__dirname, rootFolder), '').replace(/\\/g, '/').split('/').length - 2).fill('../').join('');
 }
 
 /**
