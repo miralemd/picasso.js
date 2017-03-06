@@ -1,9 +1,13 @@
+'use strict'; // eslint-disable-line
+
 const path = require('path');
 const fs = require('fs');
 
 const generateFile = require('./generator').generateFile;
 
-function walk(dir, root = '') {
+function walk(dir, root) {
+  root = root || '';
+
   dir = path.resolve(__dirname, dir);
   if (!root) {
     root = `${dir}/`;
@@ -23,7 +27,7 @@ function walk(dir, root = '') {
 
 const files = walk('../../../docs/dist/').filter(f => /\.md$/.test(f)).map(f => f.replace(/\.md$/, ''));
 
-const filesToPrint = ['index', ...files];
+const filesToPrint = ['index'].concat(files);
 
 files.forEach(file => generateFile({
   src: path.resolve(__dirname, `../../../docs/dist/${file}.md`),
