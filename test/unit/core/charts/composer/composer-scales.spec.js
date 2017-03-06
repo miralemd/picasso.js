@@ -1,4 +1,4 @@
-import { create } from '../../../../../src/core/charts/composer/scales';
+import { create } from '../../../../../src/core/charts/scales';
 
 describe('composer-scales', () => {
   it('should not throw when source options is not provided', () => {

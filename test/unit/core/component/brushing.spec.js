@@ -24,7 +24,7 @@ describe('Brushing', () => {
       ];
 
       dummyComponent = {
-        composer: {
+        chart: {
           brush: sinon.stub()
         },
         data: [
@@ -53,7 +53,7 @@ describe('Brushing', () => {
       };
       brusherStub.containsMappedData.onCall(0).returns(false); // Do not match first node but all after
       brusherStub.containsMappedData.returns(true);
-      dummyComponent.composer.brush.returns(brusherStub);
+      dummyComponent.chart.brush.returns(brusherStub);
 
       consume = {
         context: 'test',

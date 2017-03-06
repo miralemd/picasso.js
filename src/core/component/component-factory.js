@@ -12,7 +12,7 @@ const isReservedProperty = prop => [
   'on', 'preferredSize', 'created', 'beforeMount', 'mounted', 'resize',
   'beforeUpdate', 'updated', 'beforeRender', 'render', 'beforeDestroy',
   'destroyed', 'defaultSettings', 'data', 'settings', 'formatter',
-  'scale', 'composer', 'dockConfig'
+  'scale', 'chart', 'dockConfig'
 ].some(name => name === prop);
 
 const isNativeEvent = name => (
@@ -29,7 +29,7 @@ function prepareContext(ctx, definition, opts) {
     scale,
     data,
     renderer,
-    composer,
+    chart,
     dockConfig
   } = opts;
 
@@ -64,10 +64,10 @@ function prepareContext(ctx, definition, opts) {
       Object.defineProperty(ctx, 'renderer', {
         get: renderer
       });
-    } else if (req === 'composer') {
-      ctx.composer = composer;
-      Object.defineProperty(ctx, 'composer', {
-        get: composer
+    } else if (req === 'chart') {
+      ctx.chart = chart;
+      Object.defineProperty(ctx, 'chart', {
+        get: chart
       });
     } else if (req === 'dockConfig') {
       Object.defineProperty(ctx, 'dockConfig', {
@@ -100,7 +100,7 @@ export default function componentFactory(definition) {
     defaultSettings = {}
   } = definition;
 
-  return (config = {}, composer, container) => {
+  return (config = {}, chart, container) => {
     let settings = extend(true, {}, defaultSettings, config);
     let data = [];
     let listeners = [];
@@ -111,7 +111,7 @@ export default function componentFactory(definition) {
 
     const brushArgs = {
       nodes: [],
-      composer,
+      chart,
       config: config.brush || {},
       renderer: null
     };
@@ -165,7 +165,7 @@ export default function componentFactory(definition) {
       get: () => data
     });
 
-    const rend = definition.renderer ? rendererFn(definition.renderer) : composer.renderer || rendererFn();
+    const rend = definition.renderer ? rendererFn(definition.renderer) : chart.renderer || rendererFn();
     brushArgs.renderer = rend;
 
     const dockConfig = {
@@ -189,11 +189,11 @@ export default function componentFactory(definition) {
       }
 
       if (typeof settings.scale === 'string') {
-        scale = composer.scale(settings.scale);
+        scale = chart.scale(settings.scale);
       }
 
       if (settings.data) {
-        data = composer.dataset().map(settings.data.mapTo, settings.data.groupBy);
+        data = chart.dataset().map(settings.data.mapTo, settings.data.groupBy);
       } else if (scale) {
         data = scale.data();
       } else {
@@ -201,11 +201,11 @@ export default function componentFactory(definition) {
       }
 
       if (typeof settings.formatter === 'string') {
-        formatter = composer.formatter(settings.formatter);
+        formatter = chart.formatter(settings.formatter);
       } else if (typeof settings.formatter === 'object') {
-        formatter = composer.formatter(settings.formatter);
+        formatter = chart.formatter(settings.formatter);
       } else if (typeof settings.scale === 'string') {
-        formatter = composer.formatter({ source: scale.sources[0] });
+        formatter = chart.formatter({ source: scale.sources[0] });
       }
     };
 
@@ -289,7 +289,7 @@ export default function componentFactory(definition) {
       scale: () => scale,
       formatter: () => formatter,
       renderer: () => rend,
-      composer: () => composer,
+      chart: () => chart,
       dockConfig: () => dockConfig
     });
 
@@ -299,14 +299,14 @@ export default function componentFactory(definition) {
       scale: () => scale,
       formatter: () => formatter,
       renderer: () => rend,
-      composer: () => composer,
+      chart: () => chart,
       dockConfig: () => dockConfig
     });
 
     fn.getBrushedShapes = function getBrushedShapes(context, mode, props) {
       const shapes = [];
       if (config.brush && config.brush.trigger) {
-        const brusher = composer.brush(context);
+        const brusher = chart.brush(context);
         const sceneObjects = rend.findShapes('*');
         config.brush.trigger.forEach((b) => {
           sceneObjects.forEach((sceneObject) => {
@@ -388,7 +388,7 @@ export default function componentFactory(definition) {
     fn.onBrushTap = (e) => {
       brushTriggers.tap.forEach((t) => {
         if (resolveTapEvent({ e, t, config: brushArgs }) && t.globalPropagation === 'stop') {
-          composer.stopBrushing = true;
+          chart.stopBrushing = true;
         }
       });
     };
@@ -396,7 +396,7 @@ export default function componentFactory(definition) {
     fn.onBrushOver = (e) => {
       brushTriggers.over.forEach((t) => {
         if (resolveOverEvent({ e, t, config: brushArgs }) && t.globalPropagation === 'stop') {
-          composer.stopBrushing = true;
+          chart.stopBrushing = true;
         }
       });
     };

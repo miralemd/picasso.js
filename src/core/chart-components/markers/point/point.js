@@ -179,9 +179,9 @@ function getPointSizeLimits(x, y, width, height) {
   return [min, max];
 }
 
-function calculateLocalSettings(stngs, composer) {
-  let local = resolveSettings(stngs, DEFAULT_DATA_SETTINGS, composer);
-  local.errorShape = resolveSettings(stngs.errorShape, DEFAULT_ERROR_SETTINGS.errorShape, composer);
+function calculateLocalSettings(stngs, chart) {
+  let local = resolveSettings(stngs, DEFAULT_DATA_SETTINGS, chart);
+  local.errorShape = resolveSettings(stngs.errorShape, DEFAULT_ERROR_SETTINGS.errorShape, chart);
   return local;
 }
 
@@ -208,7 +208,7 @@ function createDisplayPoints(dataPoints, { x, y, width, height }, pointSize, sha
 }
 
 const pointMarkerComponent = {
-  require: ['composer'],
+  require: ['chart'],
   defaultSettings: {
     settings: {},
     data: {}
@@ -218,8 +218,8 @@ const pointMarkerComponent = {
     this.updateSettings(this.settings);
   },
   updateSettings(settings) {
-    const composer = this.composer;
-    this.local = calculateLocalSettings(settings.settings, composer);
+    const chart = this.chart;
+    this.local = calculateLocalSettings(settings.settings, chart);
   },
   beforeUpdate(opts) {
     this.updateSettings(opts.settings);

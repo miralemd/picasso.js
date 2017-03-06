@@ -108,7 +108,7 @@ function createInstance(definition) {
   let dataset = [];
   let brushes = {};
 
-  const composer = {
+  const chart = {
     dataset: function datasetFn() {
       return dataset;
     },
@@ -120,7 +120,7 @@ function createInstance(definition) {
     },
     createComponent: (compSettings, container) => {
       const factoryFn = component(compSettings.type);
-      const compInstance = factoryFn(compSettings, composer, container);
+      const compInstance = factoryFn(compSettings, chart, container);
       return {
         instance: compInstance,
         settings: extend(true, {}, compSettings),
@@ -141,7 +141,7 @@ function createInstance(definition) {
       return getOrCreateScale(v, currentScales, dataset);
     },
     formatter: function formatter(v) {
-      return getOrCreateFormatter(v, currentFormatters, composer.dataset());
+      return getOrCreateFormatter(v, currentFormatters, chart.dataset());
     },
     stopBrushing: false
   };
@@ -229,9 +229,9 @@ function createInstance(definition) {
     if (!partialData) {
       Object.keys(brushes).forEach(b => brushes[b].clear());
     }
-    currentScales = buildScales(scales, composer);
-    currentFormatters = buildFormatters(formatters, composer);
-    currentScrollApis = buildScroll(scroll, composer, currentScrollApis, partialData);
+    currentScales = buildScales(scales, chart);
+    currentFormatters = buildFormatters(formatters, chart);
+    currentScrollApis = buildScroll(scroll, chart, currentScrollApis, partialData);
   };
 
   const render = () => {
@@ -244,7 +244,7 @@ function createInstance(definition) {
     set(data, settings);
 
     currentComponents = components.map(compSettings => (
-      composer.createComponent(compSettings, element)
+      chart.createComponent(compSettings, element)
     ));
 
     const { visible, hidden } = layout(currentComponents);
@@ -306,8 +306,8 @@ function createInstance(definition) {
 
         comp.instance.onBrushTap(e);
 
-        if (composer.stopBrushing) {
-          composer.stopBrushing = false;
+        if (chart.stopBrushing) {
+          chart.stopBrushing = false;
           break;
         }
       }
@@ -319,8 +319,8 @@ function createInstance(definition) {
 
         comp.instance.onBrushOver(e);
 
-        if (composer.stopBrushing) {
-          composer.stopBrushing = false;
+        if (chart.stopBrushing) {
+          chart.stopBrushing = false;
           break;
         }
       }
@@ -386,7 +386,7 @@ function createInstance(definition) {
       const idx = findComponentIndexByKey(comp.key);
       if (idx === -1) {
         // Component is added
-        return composer.createComponent(comp, element);
+        return chart.createComponent(comp, element);
       }
       // Component is (potentially) updated
       currentComponents[idx].updateWith = {
@@ -475,7 +475,7 @@ function createInstance(definition) {
    * The brush context for this chart
    * @return {data-brush}
    */
-  instance.brush = context.brush = (...v) => composer.brush(...v);
+  instance.brush = context.brush = (...v) => chart.brush(...v);
 
   /**
    * Get a field associated with the provided brush
@@ -483,14 +483,14 @@ function createInstance(definition) {
    * @return {data-field}
    */
   instance.field = path =>
-     composer.dataset().findField(path)
+     chart.dataset().findField(path)
   ;
 
   /**
    * The data set for this chart
    * @return {dataset}
    */
-  instance.data = context.data = () => composer.dataset();
+  instance.data = context.data = () => chart.dataset();
 
   /**
    * Get all shapes associated with the provided context
@@ -529,7 +529,7 @@ function createInstance(definition) {
   /**
    * @return {scroll-api}
    */
-  instance.scroll = context.scroll = (...v) => composer.scroll(...v);
+  instance.scroll = context.scroll = (...v) => chart.scroll(...v);
 
   created();
 
@@ -551,10 +551,10 @@ function createInstance(definition) {
  * @param  {Chart.Props} settings - Settings
  * @return {Chart}
  */
-function chart(definition) {
+function chartFactory(definition) {
   return createInstance(definition);
 }
 
-chart.mixin = mixins.add; // Expose mixin registering function
+chartFactory.mixin = mixins.add; // Expose mixin registering function
 
-export default chart;
+export default chartFactory;

@@ -5,7 +5,7 @@ import { continuousDefaultSettings } from '../axis/axis-default-settings';
 /**
  * Generate array of lines (ticks) from scale
  *
- * @param  {Object} scale    A scale supplied by the composer
+ * @param  {Object} scale    A scale supplied by the chart
  * @param  {Object} settings The settings object from the grid line component
  * @param  {Object} rect     The rect containing width and height to renderer in
  * @return {Array}           Returns an array of ticks
@@ -21,7 +21,7 @@ const gridLineComponent = {
   created() {
   },
 
-  require: ['composer', 'renderer'],
+  require: ['chart', 'renderer'],
   defaultSettings: {
     displayOrder: 0,
     styles: {}
@@ -41,8 +41,8 @@ const gridLineComponent = {
 
   render() {
     // Setup scales
-    this.x = this.settings.x ? this.composer.scale(this.settings.x) : null;
-    this.y = this.settings.y ? this.composer.scale(this.settings.y) : null;
+    this.x = this.settings.x ? this.chart.scale(this.settings.x) : null;
+    this.y = this.settings.y ? this.chart.scale(this.settings.y) : null;
 
     // Return an empty array to abort rendering when no scales are available to renderer
     if (!this.x && !this.y) {

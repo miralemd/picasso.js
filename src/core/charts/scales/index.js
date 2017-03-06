@@ -64,11 +64,11 @@ export function getOrCreateScale(v, scales, dataset) {
   return s || create(v, dataset);
 }
 
-export default function builder(obj, composer) {
+export default function builder(obj, chart) {
   const scales = {};
   for (const s in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, s)) {
-      scales[s] = create(obj[s], composer.dataset());
+      scales[s] = create(obj[s], chart.dataset());
     }
   }
   return scales;

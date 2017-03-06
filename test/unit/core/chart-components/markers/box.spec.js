@@ -1,7 +1,7 @@
 
 import componentFactory from '../../../../../src/core/component/component-factory';
 import boxMarker from '../../../../../src/core/chart-components/markers/box/box';
-import { create } from '../../../../../src/core/charts/composer/scales';
+import { create } from '../../../../../src/core/charts/scales';
 
 describe('box marker', () => {
   let rendererOutput;
