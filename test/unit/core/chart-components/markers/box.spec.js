@@ -6,6 +6,7 @@ import { create } from '../../../../../src/core/charts/scales';
 describe('box marker', () => {
   let rendererOutput;
   let chart;
+  let renderer;
   let shapeFn;
 
   beforeEach(() => {
@@ -17,11 +18,6 @@ describe('box marker', () => {
     };
     shapeFn = (type, p) => { p.type = type; return p; };
     chart = {
-      renderer: {
-        appendTo: () => {},
-        render: p => (rendererOutput = p),
-        size: () => {}
-      },
       brush: () => ({
         on: () => {}
       }),
@@ -30,6 +26,11 @@ describe('box marker', () => {
       dataset: () => dataset,
       scale: sinon.stub()
     };
+    renderer = {
+      appendTo: () => {},
+      render: p => (rendererOutput = p),
+      size: () => {}
+    };
   });
 
   function createAndRenderComponent(opts) {
@@ -37,7 +38,7 @@ describe('box marker', () => {
       config,
       inner
     } = opts;
-    const instance = componentFactory(boxMarker)(config, chart);
+    const instance = componentFactory(boxMarker)(config, chart, null, { renderer });
     instance.beforeMount();
     instance.resize(inner);
     instance.beforeRender();

@@ -5,6 +5,7 @@ import pointComponent from '../../../../../src/core/chart-components/markers/poi
 describe('point marker', () => {
   let renderedPoints;
   let chart;
+  let renderer;
   let shapeFn;
 
   function createAndRenderPoint(opts) {
@@ -13,7 +14,7 @@ describe('point marker', () => {
       outer,
       config
     } = opts;
-    const component = componentFactory(pointComponent)(config, chart);
+    const component = componentFactory(pointComponent)(config, chart, null, { renderer });
     component.beforeMount();
     component.resize(inner, outer);
     component.mounted();
@@ -32,11 +33,6 @@ describe('point marker', () => {
     };
     shapeFn = (type, p) => { p.type = type; return p; };
     chart = {
-      renderer: {
-        appendTo: () => {},
-        render: p => (renderedPoints = p),
-        size: () => {}
-      },
       brush: () => ({
         on: () => {}
       }),
@@ -44,6 +40,11 @@ describe('point marker', () => {
       table: () => table,
       dataset: () => dataset,
       scale: sinon.stub()
+    };
+    renderer = {
+      appendTo: () => {},
+      render: p => (renderedPoints = p),
+      size: () => {}
     };
   });
 

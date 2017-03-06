@@ -5,6 +5,7 @@ import lineComponent from '../../../../../src/core/chart-components/grid/line';
 describe('line marker', () => {
   let rendererOutput;
   let chart;
+  let renderer;
   let shapeFn;
 
   beforeEach(() => {
@@ -16,11 +17,6 @@ describe('line marker', () => {
     };
     shapeFn = (type, p) => { p.type = type; return p; };
     chart = {
-      renderer: {
-        appendTo: () => {},
-        render: p => (rendererOutput = p),
-        size: () => {}
-      },
       brush: () => ({
         on: () => {}
       }),
@@ -29,6 +25,11 @@ describe('line marker', () => {
       dataset: () => dataset,
       scale: sinon.stub()
     };
+    renderer = {
+      appendTo: () => {},
+      render: p => (rendererOutput = p),
+      size: () => {}
+    };
   });
 
   function createAndRenderComponent(opts) {
@@ -36,7 +37,7 @@ describe('line marker', () => {
       config,
       inner
     } = opts;
-    const instance = componentFactory(lineComponent)(config, chart);
+    const instance = componentFactory(lineComponent)(config, chart, null, { renderer });
     instance.beforeMount();
     instance.resize(inner);
     instance.beforeRender();

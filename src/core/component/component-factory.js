@@ -100,7 +100,7 @@ export default function componentFactory(definition) {
     defaultSettings = {}
   } = definition;
 
-  return (config = {}, chart, container) => {
+  return (config = {}, chart, container, options = {}) => {
     let settings = extend(true, {}, defaultSettings, config);
     let data = [];
     let listeners = [];
@@ -165,7 +165,7 @@ export default function componentFactory(definition) {
       get: () => data
     });
 
-    const rend = definition.renderer ? rendererFn(definition.renderer) : chart.renderer || rendererFn();
+    const rend = definition.renderer ? rendererFn(definition.renderer) : options.renderer || rendererFn();
     brushArgs.renderer = rend;
 
     const dockConfig = {

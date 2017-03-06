@@ -12,15 +12,11 @@ describe('Component', () => {
   let beforeUpdate;
   let updated;
   let resize;
-  let chartMock;
+  let chart;
+  let renderer;
 
   beforeEach(() => {
-    chartMock = {
-      renderer: {
-        appendTo: () => {},
-        render: () => ({}),
-        size: () => {}
-      },
+    chart = {
       brush: () => ({
         on: () => {}
       }),
@@ -54,10 +50,15 @@ describe('Component', () => {
       beforeUpdate,
       updated
     });
+    renderer = {
+      appendTo: () => {},
+      render: () => ({}),
+      size: () => {}
+    };
   });
 
   function createAndRenderComponent(config) {
-    const instance = customComponent(config, chartMock);
+    const instance = customComponent(config, chart, null, { renderer });
     instance.beforeMount();
     instance.resize({});
     instance.beforeRender();
