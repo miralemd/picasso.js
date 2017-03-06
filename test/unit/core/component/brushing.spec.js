@@ -1,4 +1,4 @@
-import { styler } from '../../../../src/core/chart-components/brushing';
+import { styler } from '../../../../src/core/component/brushing';
 
 describe('Brushing', () => {
   describe('Styler', () => {

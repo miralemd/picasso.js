@@ -1,6 +1,5 @@
 import extend from 'extend';
 
-import createComponentFactory from '../component';
 import nodeBuilder from './axis-node-builder';
 import { discreteDefaultSettings, continuousDefaultSettings } from './axis-default-settings';
 import calcRequiredSize from './axis-size-calculator';
@@ -188,4 +187,4 @@ const axisComponent = {
   }
 };
 
-export default createComponentFactory(axisComponent);
+export default axisComponent;

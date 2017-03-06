@@ -1,3 +1,5 @@
-import lineComponent from './line';
+import gridLineComponent from './line';
 
-export default lineComponent;
+export default function gridLine(picasso) {
+  picasso.component('grid-line', gridLineComponent);
+}

@@ -1,3 +1,5 @@
-import text from './text';
+import textComponent from './text';
 
-export default text;
+export default function text(picasso) {
+  picasso.component('text', textComponent);
+}
