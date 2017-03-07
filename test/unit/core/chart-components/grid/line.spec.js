@@ -37,7 +37,11 @@ describe('line marker', () => {
       config,
       inner
     } = opts;
-    const instance = componentFactory(lineComponent)(config, chart, null, { renderer });
+    const instance = componentFactory(lineComponent, {
+      settings: config,
+      chart,
+      renderer
+    });
     instance.beforeMount();
     instance.resize(inner);
     instance.beforeRender();

@@ -13,6 +13,7 @@ import buildScales, { getOrCreateScale } from './scales';
 import buildScroll, { getScrollApi } from './scroll-api';
 import brush from '../brush';
 import component from '../component';
+import componentFactory from '../component/component-factory';
 
 /**
  * @typedef Chart.Props
@@ -114,8 +115,12 @@ function chart(definition) {
   let stopBrushing = false;
 
   const createComponent = (compSettings, container) => {
-    const factoryFn = component(compSettings.type);
-    const compInstance = factoryFn(compSettings, instance, container);
+    const componentDefinition = component(compSettings.type);
+    const compInstance = componentFactory(componentDefinition, {
+      settings: compSettings,
+      chart: instance,
+      container
+    });
     return {
       instance: compInstance,
       settings: extend(true, {}, compSettings),

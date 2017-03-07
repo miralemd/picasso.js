@@ -38,7 +38,11 @@ describe('box marker', () => {
       config,
       inner
     } = opts;
-    const instance = componentFactory(boxMarker)(config, chart, null, { renderer });
+    const instance = componentFactory(boxMarker, {
+      settings: config,
+      chart,
+      renderer
+    });
     instance.beforeMount();
     instance.resize(inner);
     instance.beforeRender();

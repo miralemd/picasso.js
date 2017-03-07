@@ -3,7 +3,7 @@
 import componentFactory from '../../../../src/core/component/component-factory';
 
 describe('Component', () => {
-  let customComponent;
+  let definition;
   let created;
   let beforeMount;
   let mounted;
@@ -33,7 +33,7 @@ describe('Component', () => {
     beforeUpdate = sinon.spy();
     updated = sinon.spy();
     resize = sinon.spy();
-    customComponent = componentFactory({
+    definition = {
       defaultSettings: {
         dock: 'top',
         style: {
@@ -49,7 +49,7 @@ describe('Component', () => {
       resize,
       beforeUpdate,
       updated
-    });
+    };
     renderer = {
       appendTo: () => {},
       render: () => ({}),
@@ -58,7 +58,11 @@ describe('Component', () => {
   });
 
   function createAndRenderComponent(config) {
-    const instance = customComponent(config, chart, null, { renderer });
+    const instance = componentFactory(definition, {
+      settings: config,
+      chart,
+      renderer
+    });
     instance.beforeMount();
     instance.resize({});
     instance.beforeRender();

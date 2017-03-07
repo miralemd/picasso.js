@@ -25,7 +25,11 @@ describe('Axis', () => {
       inner,
       outer
     } = opts;
-    const component = componentFactory(axisComponent)(config, chart, null, { renderer });
+    const component = componentFactory(axisComponent, {
+      settings: config,
+      chart,
+      renderer
+    });
     component.beforeMount();
     component.resize(inner, outer);
     component.beforeRender();

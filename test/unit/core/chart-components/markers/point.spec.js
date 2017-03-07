@@ -14,7 +14,11 @@ describe('point marker', () => {
       outer,
       config
     } = opts;
-    const component = componentFactory(pointComponent)(config, chart, null, { renderer });
+    const component = componentFactory(pointComponent, {
+      settings: config,
+      chart,
+      renderer
+    });
     component.beforeMount();
     component.resize(inner, outer);
     component.mounted();

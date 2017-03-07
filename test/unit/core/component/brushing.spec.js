@@ -3,7 +3,6 @@ import { styler } from '../../../../src/core/component/brushing';
 describe('Brushing', () => {
   describe('Styler', () => {
     let dummyComponent;
-    let renderer;
     let consume;
     let nodes;
     let brusherStub;
@@ -32,10 +31,10 @@ describe('Brushing', () => {
           { self: 0 },
           { self: 1 }
         ],
-        nodes
-      };
-      renderer = {
-        render: sinon.spy()
+        nodes,
+        renderer: {
+          render: sinon.spy()
+        }
       };
 
       brusherStub = {
@@ -73,7 +72,7 @@ describe('Brushing', () => {
       styler(dummyComponent, consume);
       brusherStub.trigger('start');
 
-      renderer.render.args[0][0].forEach((node) => {
+      dummyComponent.renderer.render.args[0][0].forEach((node) => {
         expect(node.__style).to.deep.equal({
           fill: 'yellow',
           stroke: 'pink'
@@ -86,7 +85,7 @@ describe('Brushing', () => {
       brusherStub.trigger('start');
       brusherStub.trigger('end');
 
-      renderer.render.args[0][0].forEach((node) => {
+      dummyComponent.renderer.render.args[0][0].forEach((node) => {
         expect(node.__style).to.equal(undefined);
       });
     });
@@ -95,7 +94,7 @@ describe('Brushing', () => {
       styler(dummyComponent, consume);
       brusherStub.trigger('update');
 
-      const output = renderer.render.args[0][0];
+      const output = dummyComponent.renderer.render.args[0][0];
       expect(output[0].stroke).to.equal('pink'); // Inactive
       expect(output[0].fill).to.equal('inactiveFill');
       expect(output[1].stroke).to.equal('activeStroke'); // Active
@@ -132,7 +131,7 @@ describe('Brushing', () => {
       styler(dummyComponent, consume);
       brusherStub.trigger('update');
 
-      const output = renderer.render.args[0][0];
+      const output = dummyComponent.renderer.render.args[0][0];
       expect(output[0].stroke).to.equal('pink'); // Inactive
       expect(output[0].fill).to.equal('inactiveFill');
       expect(output[1].stroke).to.equal('activeStroke'); // Active
