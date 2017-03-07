@@ -1,7 +1,6 @@
 import { registry } from '../../../utils/registry';
 import linear from '../../../scales/linear';
 import ordinal from '../../../scales/ordinal';
-// import color from '../../../scales/color';
 import sequential from '../../../scales/color/sequential';
 import threshold from '../../../scales/color/threshold';
 
@@ -9,7 +8,6 @@ const reg = registry();
 
 reg.add('linear', linear);
 reg.add('ordinal', ordinal);
-// reg.add('color', color);
 reg.add('color-sequential', sequential);
 reg.add('color-threshold', threshold);
 
