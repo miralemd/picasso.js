@@ -103,6 +103,7 @@ export function renderer(sceneFn = sceneFactory) {
     }
 
     element.appendChild(el);
+
     return el;
   };
 

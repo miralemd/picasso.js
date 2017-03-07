@@ -146,6 +146,17 @@ function createInstance(definition) {
     };
   };
 
+  const moveToPosition = (component, index) => {
+    const el = component.instance.renderer().element();
+    if (isNaN(index) || !el || !element || !element.childNodes) { return; }
+    const nodes = element.childNodes;
+    const i = Math.min(nodes.length - 1, Math.max(index, 0));
+    const node = nodes[i];
+    if (element.insertBefore && typeof node !== 'undefined') {
+      element.insertBefore(el, nodes[i]);
+    }
+  };
+
   const created = createCallback('created');
   const beforeMount = createCallback('beforeMount');
   const mounted = createCallback('mounted');
@@ -343,6 +354,7 @@ function createInstance(definition) {
     } else {
       const { visible, hidden } = layout(currentComponents); // Relayout
       visibleComponents = visible;
+
       visible.forEach((component) => {
         if (component.updateWith && component.visible) {
           toUpdate.push(component);
@@ -366,6 +378,9 @@ function createInstance(definition) {
 
     toRender.forEach(component => component.instance.render());
     toUpdate.forEach(component => component.instance.update());
+
+    // Ensure that displayOrder is keept
+    visibleComponents.forEach((component, i) => moveToPosition(component, i));
 
     toRender.forEach(component => component.instance.mounted());
     toUpdate.forEach(component => component.instance.updated());

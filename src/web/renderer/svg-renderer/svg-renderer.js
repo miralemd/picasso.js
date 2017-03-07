@@ -53,6 +53,7 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
     }
 
     element.appendChild(el);
+
     return el;
   };
 

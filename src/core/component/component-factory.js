@@ -401,6 +401,8 @@ export default function componentFactory(definition) {
       });
     };
 
+    fn.renderer = () => rend;
+
     fn.set({ settings: config });
     created();
 

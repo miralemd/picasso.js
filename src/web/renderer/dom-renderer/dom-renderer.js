@@ -47,7 +47,9 @@ export default function renderer(opts = {}) {
       el.style['-webkit-font-smoothing'] = 'antialiased';
       el.style['-moz-osx-font-smoothing'] = 'antialiased';
     }
+
     element.appendChild(el);
+
     return el;
   };
 
