@@ -40,6 +40,5 @@ $ npm run test:coverage
 
 ## How to use
 
-* Use the [Documentation](docs/dist/) as a reference
+* Use the [Documentation](http://rd-bge-picasso.rdlund.qliktech.com/picasso/master/docs/dist/) as a reference, you can also [view them on github](docs/dist/).
 * Try out picasso examples using [Picasso Sandbox](http://rd-bge-picasso.rdlund.qliktech.com)
-
