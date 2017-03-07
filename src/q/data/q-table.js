@@ -5,6 +5,7 @@ import resolve from '../../core/data/json-path-resolver';
 const DIM_RX = /^\/(?:qHyperCube\/)?qDimensionInfo(?:\/(\d+))?/;
 const M_RX = /^\/(?:qHyperCube\/)?qMeasureInfo\/(\d+)/;
 const ATTR_EXPR_RX = /\/qAttrExprInfo\/(\d+)/;
+const ATTR_DIM_RX = /\/qAttrDimInfo\/(\d+)/;
 
 function hyperCubeFieldsFn(hc, localeInfo) {
   const dimz = hc.qDimensionInfo.length;
@@ -31,6 +32,23 @@ function attrExpField(hc, fieldIdx, attrIdx, localeInfo) {
     pages: hc.qMode === 'K' ? hc.qStackedDataPages : hc.qDataPages,
     idx: fieldDataContentIdx,
     attrIdx,
+    localeInfo
+  });
+}
+
+function attrDimField(hc, fieldIdx, attrDimIdx, localeInfo) {
+  const dimz = hc.qDimensionInfo.length;
+  const id = fieldIdx < dimz ? `/qDimensionInfo/${fieldIdx}/qAttrDimInfo/${attrDimIdx}` : `/qMeasureInfo/${fieldIdx - dimz}/qAttrDimInfo/${attrDimIdx}`;
+  const meta = resolve(id, hc);
+  let fieldDataContentIdx = fieldIdx;
+  if (hc.qMode === 'K' && fieldIdx < dimz) {
+    fieldDataContentIdx = hc.qEffectiveInterColumnSortOrder.indexOf(fieldIdx);
+  }
+  return qField({ id })({
+    meta,
+    pages: hc.qMode === 'K' ? hc.qStackedDataPages : hc.qDataPages,
+    idx: fieldDataContentIdx,
+    attrDimIdx,
     localeInfo
   });
 }
@@ -86,6 +104,15 @@ function getAttrExprField({
   return attributeExpressionFields[idx][attrIdx];
 }
 
+function getAttrDimField({
+  attributeDimFields,
+  idx,
+  path
+}, data, localeInfo) {
+  const attrDimIdx = +ATTR_DIM_RX.exec(path)[1];
+  return attrDimField(data, idx, attrDimIdx, localeInfo);
+}
+
 /**
  * Data interface for the Qlik Sense hypercube format
  * @private
@@ -98,7 +125,8 @@ export default function qTable({ id } = {}) {
     fields: fieldsFn
   });
 
-  const attributeExpressionFields = [];
+  let attributeExpressionFields = [];
+  let attributeDimensionFields = [];
 
   q.findField = (query) => {
     const d = q.data();
@@ -114,6 +142,12 @@ export default function qTable({ id } = {}) {
       if (ATTR_EXPR_RX.test(remainder)) {
         return getAttrExprField({
           attributeExpressionFields,
+          idx,
+          path: remainder
+        }, hc, locale);
+      } else if (ATTR_DIM_RX.test(remainder)) {
+        return getAttrDimField({
+          attributeDimensionFields,
           idx,
           path: remainder
         }, hc, locale);

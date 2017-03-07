@@ -11,30 +11,36 @@ const specialTextValues = {
   }
 };
 
-function normalizeValues(path, data, meta, attrIdx, offset = 0) {
-  const values = resolve(path, data);
-  const normalized = new Array(values.length);
+function normalizeValues(path, data, meta, attrIdx, attrDimIdx, offset = 0) {
+  let values = resolve(path, data);
+  let normalized = new Array(values.length);
   let cell;
+  let elemNo;
   for (let i = 0; i < values.length; i++) {
     cell = values[i];
+    elemNo = cell.qElemNumber || 0;
     if (typeof attrIdx !== 'undefined') {
       cell = values[i].qAttrExps.qValues[attrIdx];
+      elemNo = cell.qElemNo || 0;
+    } else if (typeof attrDimIdx !== 'undefined') {
+      cell = values[i].qAttrDims.qValues[attrDimIdx];
+      elemNo = cell.qElemNo || 0;
     }
     normalized[i] = {
       value: cell.qNum,
       index: typeof cell.qRow !== 'undefined' ? cell.qRow : offset + i,
-      label: cell.qElemNumber in specialTextValues ? specialTextValues[cell.qElemNumber](meta) : cell.qText,
-      id: cell.qElemNumber || 0
+      label: elemNo in specialTextValues ? specialTextValues[elemNo](meta) : cell.qText,
+      id: elemNo
     };
   }
   return normalized;
 }
 
-function collectStraightData(col, page, meta, attrIdx) {
+function collectStraightData(col, page, meta, attrIdx, attrDimIdx) {
   let values = [];
   const matrixColIdx = col - page.qArea.qLeft;
   if (matrixColIdx >= 0 && matrixColIdx < (page.qArea.qLeft + page.qArea.qWidth) && page.qArea.qHeight > 0) {
-    values = normalizeValues(`//${matrixColIdx}`, page.qMatrix, meta, attrIdx, page.qArea.qTop);
+    values = normalizeValues(`//${matrixColIdx}`, page.qMatrix, meta, attrIdx, attrDimIdx, page.qArea.qTop);
   }
   return values;
 }
@@ -108,11 +114,11 @@ function collectStackedData(col, page, meta, attrIdx) {
 
 // collect data over multiple pages
 // the pages are assumed to be ordered from top to bottom
-function collectData({ colIdx, pages, fieldMeta, attrIdx }) {
+function collectData({ colIdx, pages, fieldMeta, attrIdx, attrDimIdx }) {
   let values = [];
   pages.forEach((p) => {
     if (p.qMatrix) {
-      values = values.concat(collectStraightData(colIdx, p, fieldMeta, attrIdx));
+      values = values.concat(collectStraightData(colIdx, p, fieldMeta, attrIdx, attrDimIdx));
     } else if (p.qData) { // assume stacked data
       values = values.concat(collectStackedData(colIdx, p, fieldMeta, attrIdx));
     }
@@ -133,6 +139,7 @@ const titleFn = d => d.meta.qFallbackTitle;
 const valuesFn = d => collectData({
   colIdx: d.idx,
   attrIdx: d.attrIdx,
+  attrDimIdx: d.attrDimIdx,
   pages: d.pages,
   fieldMeta: d.meta
 });
