@@ -57,7 +57,7 @@ describe('qTable', () => {
     });
   });
 
-  describe('hypercube with attribute expressions on dimension', () => {
+  describe('hypercube with attribute expressions/dimensions', () => {
     let q;
     beforeEach(() => {
       q = qTable()({
@@ -66,101 +66,149 @@ describe('qTable', () => {
           qDimensionInfo: [
             {
               qFallbackTitle: 'A',
+              qAttrDimInfo: [{}, {
+                id: 'yes',
+                label: 'title from label',
+                qFallbackTitle: 'attr dim title',
+                qSize: {}
+              }],
               qAttrExprInfo: [{
                 id: 'yes',
-                qFallbackTitle: 'wohoo'
+                qFallbackTitle: 'attr expr title'
               }]
             },
             { qFallbackTitle: 'B' }
           ],
-          qMeasureInfo: [{ qFallbackTitle: 'C' }],
+          qMeasureInfo: [
+            {},
+            {},
+            {
+              qFallbackTitle: 'C',
+              qAttrDimInfo: [{}, {}, {
+                id: 'yes',
+                qFallbackTitle: 'm attr dim title'
+              }],
+              qAttrExprInfo: [{}, {
+                id: 'yes',
+                qFallbackTitle: 'm attr expr title'
+              }]
+            }
+          ],
           qDataPages: [{ qMatrix: [] }]
         },
         localeInfo: 'locale stuff'
       });
     });
 
-    it('should find an attribute expression field', () => {
-      expect(q.findField('/qDimensionInfo/0/qAttrExprInfo/0').title()).to.equal('wohoo');
+    it('should find an attribute expression field on dimension', () => {
+      expect(q.findField('/qDimensionInfo/0/qAttrExprInfo/0').title()).to.equal('attr expr title');
     });
 
-    it('should have proper data', () => {
+    it('should have data on attr expr field found on dimension', () => {
       expect(q.findField('/qDimensionInfo/0/qAttrExprInfo/0').data()).to.eql({
-        meta: { id: 'yes', qFallbackTitle: 'wohoo' },
+        meta: { id: 'yes', qFallbackTitle: 'attr expr title' },
         pages: [{ qMatrix: [] }],
         idx: 0,
         attrIdx: 0,
         localeInfo: 'locale stuff'
       });
     });
-  });
 
-  describe('hypercube with attribute expressions on measure', () => {
-    let q;
-    beforeEach(() => {
-      q = qTable()({ cube: {
-        qSize: { qcx: 3, qcy: 20 },
-        qDimensionInfo: [
-          { qFallbackTitle: 'A' },
-          { qFallbackTitle: 'B' }
-        ],
-        qMeasureInfo: [
-          {},
-          {},
-          {
-            qFallbackTitle: 'C',
-            qAttrExprInfo: [{}, {
-              id: 'yes',
-              qFallbackTitle: 'wohoo'
-            }]
-          }],
-        qDataPages: [{ qMatrix: [] }]
-      } });
+    it('should find an attribute expression field on measure', () => {
+      expect(q.findField('/qMeasureInfo/2/qAttrExprInfo/1').title()).to.equal('m attr expr title');
     });
 
-    it('should find an attribute expression field', () => {
-      expect(q.findField('/qMeasureInfo/2/qAttrExprInfo/1').title()).to.equal('wohoo');
-    });
-
-    it('should have proper data', () => {
+    it('should have data on attr expr field found on measure', () => {
       expect(q.findField('/qMeasureInfo/2/qAttrExprInfo/1').data()).to.eql({
-        meta: { id: 'yes', qFallbackTitle: 'wohoo' },
+        meta: { id: 'yes', qFallbackTitle: 'm attr expr title' },
         pages: [{ qMatrix: [] }],
         idx: 4,
         attrIdx: 1,
-        localeInfo: undefined
+        localeInfo: 'locale stuff'
+      });
+    });
+
+    it('should find an attribute dimension on dimension', () => {
+      expect(q.findField('/qDimensionInfo/0/qAttrDimInfo/1').title()).to.equal('title from label');
+    });
+
+    it('should identify an attribute dimension as type "dimension"', () => {
+      expect(q.findField('/qDimensionInfo/0/qAttrDimInfo/1').type()).to.equal('dimension');
+    });
+
+    it('should returned cached field instances when called multiple times', () => {
+      let ff = q.findField('/qDimensionInfo/0/qAttrDimInfo/1');
+      let ff2 = q.findField('/qDimensionInfo/0/qAttrDimInfo/1');
+      expect(ff).to.equal(ff2);
+    });
+
+    it('should have data on attr dim field found on dimension', () => {
+      expect(q.findField('/qDimensionInfo/0/qAttrDimInfo/1').data()).to.eql({
+        meta: { id: 'yes', qFallbackTitle: 'attr dim title', label: 'title from label', qSize: {} },
+        pages: [{ qMatrix: [] }],
+        idx: 0,
+        attrDimIdx: 1,
+        localeInfo: 'locale stuff'
+      });
+    });
+
+    it('should find an attribute dimension field on measure', () => {
+      expect(q.findField('/qMeasureInfo/2/qAttrDimInfo/2').title()).to.equal('m attr dim title');
+    });
+
+    it('should have data on attr dim field found on measure', () => {
+      expect(q.findField('/qMeasureInfo/2/qAttrDimInfo/2').data()).to.eql({
+        meta: { id: 'yes', qFallbackTitle: 'm attr dim title' },
+        pages: [{ qMatrix: [] }],
+        idx: 4,
+        attrDimIdx: 2,
+        localeInfo: 'locale stuff'
       });
     });
   });
 
   describe('stackedobject', () => {
     let q;
+    let pages;
     beforeEach(() => {
+      pages = [
+        { qData: [
+          {
+            qType: 'R',
+            qElemNo: 0,
+            qSubNodes: [
+              {
+                qText: 'Alpha',
+                qElemNo: 1,
+                qValue: 'NaN'
+              },
+              {
+                qText: 'Beta',
+                qElemNo: 3,
+                qValue: 2
+              }
+            ]
+          }
+        ] }
+      ];
       q = qTable()({
         cube: {
           qSize: { qcx: 3, qcy: 20 },
-          qDimensionInfo: [{ qFallbackTitle: 'A' }, { qFallbackTitle: 'B' }],
-          qMeasureInfo: [{ qFallbackTitle: 'C' }],
+          qDimensionInfo: [
+            { qFallbackTitle: 'A' },
+            {
+              qFallbackTitle: 'B',
+              qAttrDimInfo: [{}, {}, { label: 'attr dim' }],
+              qAttrExprInfo: [{ label: 'attr expr' }]
+            }],
+          qMeasureInfo: [{
+            qFallbackTitle: 'C',
+            qAttrDimInfo: [{ label: 'm attr dim' }],
+            qAttrExprInfo: [{}, { label: 'm attr expr' }]
+          }],
           qMode: 'K',
           qEffectiveInterColumnSortOrder: [1, 0],
-          qStackedDataPages: [{ qData: [
-            {
-              qType: 'R',
-              qElemNo: 0,
-              qSubNodes: [
-                {
-                  qText: 'Alpha',
-                  qElemNo: 1,
-                  qValue: 'NaN'
-                },
-                {
-                  qText: 'Beta',
-                  qElemNo: 3,
-                  qValue: 2
-                }
-              ]
-            }
-          ] }]
+          qStackedDataPages: pages
         },
         localeInfo: 'locale specific stuff'
       });
@@ -176,6 +224,32 @@ describe('qTable', () => {
 
     it('should find a measure field', () => {
       expect(q.findField('/qMeasureInfo/0').title()).to.equal('C');
+    });
+
+    it('should find an attribute dimension field on a dimension', () => {
+      expect(q.findField('/qDimensionInfo/1/qAttrDimInfo/2').title()).to.equal('attr dim');
+    });
+
+    it('should have data on attr dim field found on dimension', () => {
+      expect(q.findField('/qDimensionInfo/1/qAttrDimInfo/2').data()).to.eql({
+        meta: { label: 'attr dim' },
+        pages,
+        idx: 0,
+        attrDimIdx: 2,
+        localeInfo: 'locale specific stuff'
+      });
+    });
+
+    it('should find an attribute dimension field on a measure', () => {
+      expect(q.findField('/qMeasureInfo/0/qAttrDimInfo/0').title()).to.equal('m attr dim');
+    });
+
+    it('should find an attribute expression field on a dimension', () => {
+      expect(q.findField('/qDimensionInfo/1/qAttrExprInfo/0').title()).to.equal('attr expr');
+    });
+
+    it('should find an attribute expression field on a measure', () => {
+      expect(q.findField('/qMeasureInfo/0/qAttrExprInfo/1').title()).to.equal('m attr expr');
     });
 
     it('should should have locale data', () => {
@@ -195,11 +269,6 @@ describe('qTable', () => {
     });
 
     it('should have values', () => {
-      // expect(q.findField('B').values()).to.eql([
-      //   { value: 'NaN', label: 'Alpha', id: 1 },
-      //   { value: 2, label: 'Beta', id: 3 }
-      // ]);
-
       expect(q.findField('/qDimensionInfo/1').values()).to.eql([
         { value: 'NaN', label: 'Alpha', id: 1, index: 0 },
         { value: 2, label: 'Beta', id: 3, index: 1 }

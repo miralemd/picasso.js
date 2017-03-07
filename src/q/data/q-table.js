@@ -89,28 +89,37 @@ function fieldsFn(data) {
   return listObjectFieldsFn(hc, data.localeInfo);
 }
 
-function getAttrExprField({
-  attributeExpressionFields,
+function getAttrField({
+  attributeDimensionFieldsCache,
+  attributeExpressionFieldsCache,
   idx,
   path
-}, data, localeInfo) {
-  const attrIdx = +ATTR_EXPR_RX.exec(path)[1];
-  if (!attributeExpressionFields[idx]) {
-    attributeExpressionFields[idx] = [];
+}, hc, localeInfo) {
+  let fn;
+  let attrIdx;
+  let fieldCache;
+  if (ATTR_EXPR_RX.test(path)) {
+    fieldCache = attributeExpressionFieldsCache;
+    fn = attrExpField;
+    attrIdx = +ATTR_EXPR_RX.exec(path)[1];
+  } else if (ATTR_DIM_RX.test(path)) {
+    fieldCache = attributeDimensionFieldsCache;
+    fn = attrDimField;
+    attrIdx = +ATTR_DIM_RX.exec(path)[1];
   }
-  if (!attributeExpressionFields[idx][attrIdx]) {
-    attributeExpressionFields[idx][attrIdx] = attrExpField(data, idx, attrIdx, localeInfo);
-  }
-  return attributeExpressionFields[idx][attrIdx];
-}
 
-function getAttrDimField({
-  attributeDimFields,
-  idx,
-  path
-}, data, localeInfo) {
-  const attrDimIdx = +ATTR_DIM_RX.exec(path)[1];
-  return attrDimField(data, idx, attrDimIdx, localeInfo);
+  if (!fn) {
+    return false;
+  }
+
+  if (!fieldCache[idx]) {
+    fieldCache[idx] = [];
+  }
+  if (!fieldCache[idx][attrIdx]) {
+    fieldCache[idx][attrIdx] = fn(hc, idx, attrIdx, localeInfo);
+  }
+
+  return fieldCache[idx][attrIdx];
 }
 
 /**
@@ -125,8 +134,8 @@ export default function qTable({ id } = {}) {
     fields: fieldsFn
   });
 
-  let attributeExpressionFields = [];
-  let attributeDimensionFields = [];
+  let attributeDimensionFieldsCache = [];
+  let attributeExpressionFieldsCache = [];
 
   q.findField = (query) => {
     const d = q.data();
@@ -137,36 +146,38 @@ export default function qTable({ id } = {}) {
     // Find by path
     if (DIM_RX.test(query)) {
       const idx = +DIM_RX.exec(query)[1];
-      // check if attribute expr
+      // check if attribute field
       const remainder = query.replace(DIM_RX, '');
-      if (ATTR_EXPR_RX.test(remainder)) {
-        return getAttrExprField({
-          attributeExpressionFields,
-          idx,
-          path: remainder
-        }, hc, locale);
-      } else if (ATTR_DIM_RX.test(remainder)) {
-        return getAttrDimField({
-          attributeDimensionFields,
-          idx,
-          path: remainder
-        }, hc, locale);
+      const attributeField = getAttrField({
+        attributeDimensionFieldsCache,
+        attributeExpressionFieldsCache,
+        idx,
+        path: remainder
+      }, hc, locale);
+
+      if (attributeField !== false) {
+        return attributeField;
       }
+
       if (Array.isArray(hc.qDimensionInfo)) {
         return fields[idx];
       }
       return fields[0]; // listobject
     } else if (M_RX.test(query)) {
       const idx = +M_RX.exec(query)[1] + hc.qDimensionInfo.length;
-      // check if attribute expr
+      // check if attribute field
       const remainder = query.replace(M_RX, '');
-      if (ATTR_EXPR_RX.test(remainder)) {
-        return getAttrExprField({
-          attributeExpressionFields,
-          idx,
-          path: remainder
-        }, hc, locale);
+      const attributeField = getAttrField({
+        attributeDimensionFieldsCache,
+        attributeExpressionFieldsCache,
+        idx,
+        path: remainder
+      }, hc, locale);
+
+      if (attributeField !== false) {
+        return attributeField;
       }
+
       return fields[idx];
     }
 

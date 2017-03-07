@@ -12,8 +12,8 @@ const specialTextValues = {
 };
 
 function normalizeValues(path, data, meta, attrIdx, attrDimIdx, offset = 0) {
-  let values = resolve(path, data);
-  let normalized = new Array(values.length);
+  const values = resolve(path, data);
+  const normalized = new Array(values.length);
   let cell;
   let elemNo;
   for (let i = 0; i < values.length; i++) {
@@ -60,7 +60,8 @@ function traverseNode(node) {
     qElemNumber: node.qElemNo,
     qText: node.qText,
     qRow: node.qRow,
-    qAttrExps: node.qAttrExps
+    qAttrExps: node.qAttrExps,
+    qAttrDims: node.qAttrDims
   };
   if (!children.length) {
     return [[n]];
@@ -107,9 +108,9 @@ function transformStackedToStraight(root) {
   return matrix;
 }
 
-function collectStackedData(col, page, meta, attrIdx) {
+function collectStackedData(col, page, meta, attrIdx, attrDimIdx) {
   const matrix = transformStackedToStraight(page.qData[0]);
-  return normalizeValues(`//${col}`, matrix, meta, attrIdx);
+  return normalizeValues(`//${col}`, matrix, meta, attrIdx, attrDimIdx);
 }
 
 // collect data over multiple pages
@@ -120,7 +121,7 @@ function collectData({ colIdx, pages, fieldMeta, attrIdx, attrDimIdx }) {
     if (p.qMatrix) {
       values = values.concat(collectStraightData(colIdx, p, fieldMeta, attrIdx, attrDimIdx));
     } else if (p.qData) { // assume stacked data
-      values = values.concat(collectStackedData(colIdx, p, fieldMeta, attrIdx));
+      values = values.concat(collectStackedData(colIdx, p, fieldMeta, attrIdx, attrDimIdx));
     }
   });
   return values;
@@ -129,13 +130,13 @@ function collectData({ colIdx, pages, fieldMeta, attrIdx, attrDimIdx }) {
 const minFn = d => d.meta.qMin;
 const maxFn = d => d.meta.qMax;
 const typeFn = (d) => {
-  if ('qStateCounts' in d.meta) {
+  if ('qStateCounts' in d.meta || 'qSize' in d.meta) {
     return 'dimension';
   }
   return 'measure';
 };
 const tagsFn = d => d.meta.qTags;
-const titleFn = d => d.meta.qFallbackTitle;
+const titleFn = d => d.meta.label || d.meta.qFallbackTitle;
 const valuesFn = d => collectData({
   colIdx: d.idx,
   attrIdx: d.attrIdx,
