@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+-  
+
+## [BREAKING] 0.11.0
+
 ### Breaking changes
 
 - scale ticks settings `count` & `values` now only accept primitive numbers:
@@ -24,6 +28,11 @@
 
 - PIC-55 Can crash browser by setting a short ticks distance
 - PIC-96 Tooltips doesn't align correctly for canvas
+
+### Added
+
+- PIC-2 Sequential scale
+- PIC-3 Threshold color scale
 
 ## [BREAKING] 0.10.0
 
