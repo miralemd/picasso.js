@@ -158,7 +158,7 @@ export function resolveForDataObject(props, dataObj, index) {
     const hasImplicitDataProp = s in dataObj;
     const propData = exists && props[s].ref ? dataObj[props[s].ref] : dataObj[s];
     if (typeof props[s] === 'function') { // custom accessor function, not scale!
-      let fnContext = {
+      const fnContext = {
         data: dataObj
       };
       if (hasScale) {

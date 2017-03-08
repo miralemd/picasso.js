@@ -2,7 +2,7 @@ import contextFactory from '../../../../src/core/scene-graph/context';
 
 describe('Context', () => {
   it('should handle inheritance correctly', () => {
-    let session = contextFactory(['inherited']);
+    const session = contextFactory(['inherited']);
 
     let context = session();
 
@@ -31,7 +31,7 @@ describe('Context', () => {
   });
 
   it('should handle inheritance with pre-made item correctly', () => {
-    let session = contextFactory(['inherited']);
+    const session = contextFactory(['inherited']);
 
     let context = session();
 
@@ -56,7 +56,7 @@ describe('Context', () => {
   });
 
   it('should handle overwriting values correctly', () => {
-    let session = contextFactory(['inherited', 'inheritedTwo']);
+    const session = contextFactory(['inherited', 'inheritedTwo']);
 
     let context = session();
 

@@ -32,7 +32,7 @@ export default function rangeCollection() {
     const i0 = index(boundaries, min);
     const i1 = index(boundaries, max, true);
 
-    let args = [i0, i1 - i0];
+    const args = [i0, i1 - i0];
     if (i0 % 2 === 0) {
       args.push(min);
     }
@@ -49,7 +49,7 @@ export default function rangeCollection() {
     const i0 = index(boundaries, min);
     const i1 = index(boundaries, max, true);
 
-    let args = [i0, i1 - i0];
+    const args = [i0, i1 - i0];
     if (i0 % 2 === 1) {
       args.push(min);
     }
@@ -64,7 +64,7 @@ export default function rangeCollection() {
   fn.containsValue = value => contains(boundaries, value);
 
   fn.ranges = () => {
-    let collection = [];
+    const collection = [];
     for (let i = 1; i < boundaries.length; i += 2) {
       collection.push({
         min: boundaries[i - 1],

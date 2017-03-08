@@ -9,18 +9,18 @@ describe('value-collection', () => {
 
   describe('add', () => {
     it('should return true when successfully adding a value', () => {
-      let vc = valueCollection();
+      const vc = valueCollection();
       expect(vc.add('Foo')).to.equal(true);
     });
 
     it('should return false when adding new value fails', () => {
-      let vc = valueCollection();
+      const vc = valueCollection();
       vc.add('Foo');
       expect(vc.add('Foo')).to.equal(false);
     });
 
     it('should not add duplicate values', () => {
-      let vc = valueCollection();
+      const vc = valueCollection();
       vc.add('Foo');
       vc.add('Foo');
       vc.add(3);
@@ -81,7 +81,7 @@ describe('value-collection', () => {
   });
 
   it('should clear values', () => {
-    let vc = valueCollection();
+    const vc = valueCollection();
     vc.add('Foo');
     vc.add(3);
     expect(vc.values()).to.eql(['Foo', 3]);

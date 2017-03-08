@@ -28,7 +28,7 @@ const createRect = ({ x, y, width, height, scaleRatio } = {}) => {
 };
 
 export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sceneFactory) {
-  let tree = treeFn();
+  const tree = treeFn();
   let el;
   let group;
   let hasChangedRect = false;

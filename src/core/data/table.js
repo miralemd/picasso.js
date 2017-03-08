@@ -7,11 +7,11 @@ const filters = {
 };
 
 const fieldsFactory = (matrix) => {
-  let headers = matrix[0]; // assume headers are in first row TODO - add headers config
+  const headers = matrix[0]; // assume headers are in first row TODO - add headers config
 
-  let content = matrix.slice(1);
+  const content = matrix.slice(1);
 
-  let ff = headers.map((a, i) => {
+  const ff = headers.map((a, i) => {
     const values = resolve(`//${i}`, content);
     const numericValues = filters.numeric(values);
     const isMeasure = numericValues.length > 0;

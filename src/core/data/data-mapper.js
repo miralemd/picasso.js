@@ -45,17 +45,17 @@ export const reducers = {
  */
 // loop through all values from a given field and collect the unique values based on the specified attribute
 export function collectRepeating(repeater, ds) {
-  let collection = []; // keep track of order
-  let ids = {};
+  const collection = []; // keep track of order
+  const ids = {};
 
   let fieldValues = [];
   let singleGroup;
-  let idAttribute = repeater ? repeater.trackBy || 'id' : 'id';
-  let dataSource = repeater ? ds.findField(repeater.source) : null;
+  const idAttribute = repeater ? repeater.trackBy || 'id' : 'id';
+  const dataSource = repeater ? ds.findField(repeater.source) : null;
   if (dataSource && dataSource.field) {
     fieldValues = dataSource.field.values();
     fieldValues.forEach((v, i) => {
-      let id = idAttribute === '$index' ? i : v[idAttribute];
+      const id = idAttribute === '$index' ? i : v[idAttribute];
       if (!ids[id]) {
         ids[id] = {};
         collection.push(ids[id]);
@@ -129,7 +129,7 @@ export function collectValues({
  * @return {String}           [description]
  */
 export function collectMapping(key, m, repeating, ds, collector = collectValues) {
-  let ff = ds.findField(m.source); // , ds.tables());
+  const ff = ds.findField(m.source); // , ds.tables());
   let fieldValues = [];
   let syncValues = repeating.fieldValues;
   let type = m.type || 'quant';
@@ -147,7 +147,7 @@ export function collectMapping(key, m, repeating, ds, collector = collectValues)
   }
 
   if (m.linkFrom) {
-    let link = ds.findField(m.linkFrom);// , ds.tables());
+    const link = ds.findField(m.linkFrom);// , ds.tables());
     if (link.field) {
       syncValues = link.field.values();
     }
@@ -188,7 +188,7 @@ function reduceValues(key, values, reducer) {
  * @return {String}          [description]
  */
 export function mapData(mapper, repeater, ds) {
-  let collected = collectRepeating(repeater, ds);
+  const collected = collectRepeating(repeater, ds);
 
   let mapping = mapper;
 

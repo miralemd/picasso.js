@@ -77,7 +77,7 @@ describe('Tick generators', () => {
     describe('by count', () => {
       it('should generate ticks by count', () => {
         settings.ticks.count = 10;
-        let ticks = scale.ticks(input);
+        const ticks = scale.ticks(input);
         expect(ticks.length).to.deep.equal(11);
       });
 

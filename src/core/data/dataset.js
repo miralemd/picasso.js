@@ -6,10 +6,10 @@ function tablesFn(data) {
 }
 
 function findField(path, tables) {
-  let table = tables.filter(t => path.indexOf(t.id()) === 0)[0];
+  const table = tables.filter(t => path.indexOf(t.id()) === 0)[0];
   let field;
   if (table) {
-    let subpath = path.replace(table.id(), '');
+    const subpath = path.replace(table.id(), '');
     field = table.findField(subpath);
   }
   return {

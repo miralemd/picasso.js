@@ -56,7 +56,7 @@ class Registry {
   }
 
   remove(key) {
-    let d = this.registry[key];
+    const d = this.registry[key];
     delete this.registry[key];
     return d;
   }
@@ -66,9 +66,9 @@ class Registry {
    * @returns {*}
    */
   build(obj, options) {
-    let parts = {};
+    const parts = {};
 
-    for (let key in obj) {
+    for (const key in obj) {
       if (this.registry[key]) {
         parts[key] = this.registry[key](obj[key], options);
       }

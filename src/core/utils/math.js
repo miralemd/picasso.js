@@ -36,12 +36,12 @@ export function minmax(settings, arr) {
 
   if (arr && arr.length) {
     if (!definedMin) {
-      let arrMin = arr.map(minAccessor).filter(numericFilter);
+      const arrMin = arr.map(minAccessor).filter(numericFilter);
       min = arrMin.length ? Math.min(...arrMin) : min;
     }
 
     if (!definedMax) {
-      let arrMax = arr.map(maxAccessor).filter(numericFilter);
+      const arrMax = arr.map(maxAccessor).filter(numericFilter);
       max = arrMax.length ? Math.max(...arrMax) : max;
     }
   }

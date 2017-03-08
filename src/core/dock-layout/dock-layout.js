@@ -15,7 +15,7 @@ function validateComponent(component) {
 
 function cacheSize(c, containerRect) {
   if (typeof c.cachedSize === 'undefined') {
-    let size = c.config.requiredSize()(containerRect);
+    const size = c.config.requiredSize()(containerRect);
     if (typeof size === 'object') {
       c.cachedSize = Math.ceil(size.size);
       c.edgeBleed = size.edgeBleed;
@@ -134,8 +134,8 @@ function appendScaleRatio(rect, outerRect, logicalContainerRect, containerRect) 
 }
 
 function positionComponents(components, logicalContainerRect, reducedRect, containerRect) {
-  let vRect = { x: reducedRect.x, y: reducedRect.y, width: reducedRect.width, height: reducedRect.height };
-  let hRect = { x: reducedRect.x, y: reducedRect.y, width: reducedRect.width, height: reducedRect.height };
+  const vRect = { x: reducedRect.x, y: reducedRect.y, width: reducedRect.width, height: reducedRect.height };
+  const hRect = { x: reducedRect.x, y: reducedRect.y, width: reducedRect.width, height: reducedRect.height };
 
   components.sort((a, b) => a.config.displayOrder() - b.config.displayOrder()).forEach((c) => {
     const outerRect = {};

@@ -129,7 +129,7 @@ describe('brush', () => {
     });
 
     it('should emit "start" event if not activated', () => {
-      let cb = sandbox.spy();
+      const cb = sandbox.spy();
       bb.on('start', cb);
       v.add.returns(true);
       bb.addValue('garage', 'Car');
@@ -138,7 +138,7 @@ describe('brush', () => {
     });
 
     it('should emit "update" event when state changes', () => {
-      let cb = sandbox.spy();
+      const cb = sandbox.spy();
       v.add.returns(true);
       bb.on('update', cb);
       bb.addValue('garage', 'Car');
@@ -146,7 +146,7 @@ describe('brush', () => {
     });
 
     it('should not emit "update" event when state does not change', () => {
-      let cb = sandbox.spy();
+      const cb = sandbox.spy();
       v.add.returns(false);
       bb.on('update', cb);
       bb.addValue('garage', 'Car');
@@ -175,7 +175,7 @@ describe('brush', () => {
     });
 
     it('should emit "update" event when state changes', () => {
-      let cb = sandbox.spy();
+      const cb = sandbox.spy();
       v.remove.returns(true);
       bb.on('update', cb);
       bb.removeValue('garage', 'Car');
@@ -184,7 +184,7 @@ describe('brush', () => {
     });
 
     it('should not emit "update" event when state does not change', () => {
-      let cb = sandbox.spy();
+      const cb = sandbox.spy();
       v.remove.returns(false);
       bb.on('update', cb);
       bb.removeValue('garage', 'Car');
@@ -218,7 +218,7 @@ describe('brush', () => {
     });
 
     it('should emit "start" event if not activated', () => {
-      let cb = sandbox.spy();
+      const cb = sandbox.spy();
       bb.on('start', cb);
       bb.addRange('speed', {});
       bb.addRange('speed', {});
@@ -226,7 +226,7 @@ describe('brush', () => {
     });
 
     it('should emit "update" event', () => {
-      let cb = sandbox.spy();
+      const cb = sandbox.spy();
       bb.on('update', cb);
       bb.addRange('speed', {});
       expect(cb.callCount).to.equal(1);
@@ -420,7 +420,7 @@ describe('brush', () => {
     });
 
     it('should not toggle duplicate values', () => {
-      let items = [
+      const items = [
         { key: 'products', value: 'Bike' },
         { key: 'regions', value: 'south' },
         { key: 'regions', value: 'south' },
@@ -428,7 +428,7 @@ describe('brush', () => {
         { key: 'products', value: 'Bike' },
         { key: 'products', value: 'Bike' }
       ];
-      let toggled = toggle({
+      const toggled = toggle({
         items,
         vc: vcoll,
         values: {}
@@ -438,36 +438,36 @@ describe('brush', () => {
     });
 
     it('should toggle on new values', () => {
-      let items = [
+      const items = [
         { key: 'products', value: 'Bike' },
         { key: 'products', value: 0 }
       ];
-      let toggled = toggle({
+      const toggled = toggle({
         items,
         vc: vcoll,
         values: {}
       });
 
-      let expectAdded = [
+      const expectAdded = [
         { id: 'products', values: ['Bike', 0] }
       ];
       expect(toggled[0]).to.eql(expectAdded);
     });
 
     it('should toggle off existing values', () => {
-      let items = [
+      const items = [
         { key: 'products', value: 'Bike' },
         { key: 'products', value: 'Existing' },
         { key: 'products', value: 'Car' }
       ];
       v.contains.withArgs('Existing').returns(true);
-      let toggled = toggle({
+      const toggled = toggle({
         items,
         vc: vcoll,
         values: {}
       });
 
-      let expectRemoved = [
+      const expectRemoved = [
         { id: 'products', values: ['Existing'] }
       ];
       expect(toggled[1]).to.eql(expectRemoved);
@@ -489,10 +489,10 @@ describe('brush', () => {
     });
 
     it('should add the new values', () => {
-      let items = [
+      const items = [
         { key: 'products', value: 'Bike' }
       ];
-      let changed = set({
+      const changed = set({
         items,
         vc: vcoll,
         vCollection: {}
@@ -503,11 +503,11 @@ describe('brush', () => {
 
     it('should not add existing values', () => {
       v.values.returns(['Bike']); // existing values
-      let items = [
+      const items = [
         { key: 'products', value: 'Bike' } // new values
       ];
       v.contains.withArgs('Bike').returns(true);
-      let changed = set({
+      const changed = set({
         items,
         vc: vcoll,
         vCollection: {
@@ -520,11 +520,11 @@ describe('brush', () => {
 
     it('should not remove existing values', () => {
       v.values.returns(['Bike']); // existing values
-      let items = [
+      const items = [
         { key: 'products', value: 'Bike' } // new values
       ];
       v.contains.withArgs('Bike').returns(true);
-      let changed = set({
+      const changed = set({
         items,
         vc: vcoll,
         vCollection: {
@@ -537,13 +537,13 @@ describe('brush', () => {
 
     it('should remove old values from same collection', () => {
       v.values.returns([0, 'Cars', 'Skateboards']); // existing values
-      let items = [
+      const items = [
         { key: 'products', value: 'Bike' }, // new value
         { key: 'products', value: 'Skateboards' } // add existing value
       ];
       v.contains.withArgs('Cars').returns(true);
       v.contains.withArgs(0).returns(true);
-      let changed = set({
+      const changed = set({
         items,
         vc: vcoll,
         vCollection: {
@@ -556,8 +556,8 @@ describe('brush', () => {
 
     it('should remove old values', () => {
       v.values.returns(['Cars', 'Skateboards']); // existing values
-      let items = [];
-      let changed = set({
+      const items = [];
+      const changed = set({
         items,
         vc: vcoll,
         vCollection: {

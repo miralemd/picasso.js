@@ -16,12 +16,12 @@
  * resolve( path, obj ); // "heaven"
  */
 export default function resolve(path, obj) {
-  let arr = path.replace(/^\//, '').split(/\//);
+  const arr = path.replace(/^\//, '').split(/\//);
   let subpath;
   let container = obj;
   for (let i = 0; i < arr.length; i++) {
     if (!arr[i] && Array.isArray(container)) {
-      let carr = new Array(container.length);
+      const carr = new Array(container.length);
       subpath = arr.slice(i + 1).join('/');
       for (let c = 0; c < container.length; c++) {
         carr[c] = resolve(subpath, container[c]);

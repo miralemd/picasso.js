@@ -8,8 +8,8 @@ function add({
   values,
   vc
 }) {
-  let changedMap = {};
-  let changed = [];
+  const changedMap = {};
+  const changed = [];
   items.forEach(({ key, value }) => {
     if (!values[key]) {
       values[key] = vc();
@@ -31,8 +31,8 @@ function remove({
   items,
   values
 }) {
-  let changedMap = {};
-  let changed = [];
+  const changedMap = {};
+  const changed = [];
   items.forEach(({ key, value }) => {
     if (!values[key]) {
       return;
@@ -51,12 +51,12 @@ function remove({
 }
 
 function collectUnique(items) {
-  let filteredSet = {};
+  const filteredSet = {};
   items.forEach(({ key, value }) => {
     if (!filteredSet[key]) {
       filteredSet[key] = [];
     }
-    let idx = filteredSet[key].indexOf(value);
+    const idx = filteredSet[key].indexOf(value);
 
     if (idx === -1) {
       filteredSet[key].push(value);
@@ -87,11 +87,11 @@ export function toggle({
   values,
   vc
 }) {
-  let addedMap = {};
-  let removedMap = {};
-  let added = [];
-  let removed = [];
-  let filteredSet = collectUnique(items);
+  const addedMap = {};
+  const removedMap = {};
+  const added = [];
+  const removed = [];
+  const filteredSet = collectUnique(items);
 
   Object.keys(filteredSet).forEach((key) => {
     filteredSet[key].forEach((value) => {
@@ -123,12 +123,12 @@ export function toggle({
 }
 
 function diff(old, current) {
-  let changed = [];
+  const changed = [];
   Object.keys(old).forEach((key) => {
     if (!current[key]) {
       changed.push({ id: key, values: old[key] });
     } else {
-      let changedValues = old[key].filter(v => current[key].indexOf(v) === -1);
+      const changedValues = old[key].filter(v => current[key].indexOf(v) === -1);
       if (changedValues.length) {
         changed.push({ id: key, values: changedValues });
       }
@@ -143,12 +143,12 @@ export function set({
   vCollection,
   vc
 }) {
-  let addedMap = {};
+  const addedMap = {};
   let added = [];
   let removed = [];
-  let filteredSet = collectUnique(items);
+  const filteredSet = collectUnique(items);
 
-  let oldMap = {};
+  const oldMap = {};
   Object.keys(vCollection).forEach((key) => {
     oldMap[key] = vCollection[key].values().slice();
     delete vCollection[key];
@@ -193,7 +193,7 @@ export default function brush({
   let activated = false;
   let ranges = {};
   let values = {};
-  let interceptors = {
+  const interceptors = {
     addValues: [],
     removeValues: [],
     toggleValues: [],
@@ -322,7 +322,7 @@ export default function brush({
    */
   fn.setValues = (items) => {
     const its = intercept(interceptors.setValues, items);
-    let changed = set({
+    const changed = set({
       items: its,
       vCollection: values,
       vc
@@ -390,7 +390,7 @@ export default function brush({
    */
   fn.toggleValues = (items) => {
     const its = intercept(interceptors.toggleValues, items);
-    let toggled = toggle({
+    const toggled = toggle({
       items: its,
       values,
       vc
@@ -453,13 +453,13 @@ export default function brush({
     let status = [];
     Object.keys(d).forEach((key, i) => {
       status[i] = { key, i, bool: false };
-      let source = d[key].source && d[key].source.field;
+      const source = d[key].source && d[key].source.field;
       if (!source) {
         return;
       }
 
-      let type = d[key].source.type === 'quant' ? 'range' : 'value';
-      let value = d[key].value;
+      const type = d[key].source.type === 'quant' ? 'range' : 'value';
+      const value = d[key].value;
       if (type === 'range' && ranges[source] && ranges[source].containsValue(value)) {
         status[i].bool = true;
       } else if (type === 'value' && values[source] && values[source].contains(value)) {
@@ -492,7 +492,7 @@ export default function brush({
    * });
    */
   fn.intercept = (name, ic) => {
-    let s = toCamelCase(name);
+    const s = toCamelCase(name);
     if (!interceptors[s]) {
       return;
     }
@@ -506,7 +506,7 @@ export default function brush({
    * @param {function} ic Handler to remove
    */
   fn.removeInterceptor = (name, ic) => {
-    let s = toCamelCase(name);
+    const s = toCamelCase(name);
     if (!interceptors[s]) {
       return;
     }
@@ -522,9 +522,9 @@ export default function brush({
    * @param {string} [name] Name of the event to remove interceptors for. If not provided, removes all interceptors.
    */
   fn.removeAllInterceptors = (name) => {
-    let toRemove = [];
+    const toRemove = [];
     if (name) {
-      let s = toCamelCase(name);
+      const s = toCamelCase(name);
       if (interceptors[s] && interceptors[s].length) {
         toRemove.push({ name, handlers: interceptors[s] });
       }
@@ -537,7 +537,7 @@ export default function brush({
     }
 
     toRemove.forEach((ic) => {
-      let interceptorHandlers = ic.handlers.slice();
+      const interceptorHandlers = ic.handlers.slice();
       interceptorHandlers.forEach(handler => fn.removeInterceptor(ic.name, handler));
     });
   };

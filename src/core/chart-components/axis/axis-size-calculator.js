@@ -112,7 +112,7 @@ export default function calcRequiredSize({
   settings
 }) {
   let size = 0;
-  let edgeBleed = { left: 0, top: 0, right: 0, bottom: 0 };
+  const edgeBleed = { left: 0, top: 0, right: 0, bottom: 0 };
 
   if (settings.labels.show) {
     const align = settings.align;

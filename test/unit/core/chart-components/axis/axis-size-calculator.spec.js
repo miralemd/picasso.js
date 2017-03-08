@@ -65,7 +65,7 @@ describe('AxisSizeCalculator', () => {
     rect.width = 5;
     type = 'ordinal';
     // available bandWidth is ~1.7, required width from labels is 2
-    let size = sizeFn(rect);
+    const size = sizeFn(rect);
 
     expect(size.size).to.equals(100); // return the width of the container (rect in this test)
   });

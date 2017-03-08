@@ -35,16 +35,16 @@ function generateRange(domain, colors, min, max) {
 }
 
 function generateNiceDomain(range, min, max) {
-  let numPoints = range.length === 2 ? 10 : Math.max(1, range.length);
-  let lin = scaleLinear().domain([min, max]).nice([numPoints]);
-  let domain = lin.ticks([numPoints]);
+  const numPoints = range.length === 2 ? 10 : Math.max(1, range.length);
+  const lin = scaleLinear().domain([min, max]).nice([numPoints]);
+  const domain = lin.ticks([numPoints]);
 
   if (!range || !range.length) {
     return domain;
   }
 
   // remove values from endpoints
-  let num = Math.max(0, range.length - 1);
+  const num = Math.max(0, range.length - 1);
   while (domain.length > num) {
     if (domain[0] - min <= max - domain[domain.length - 1]) {
       domain.shift();

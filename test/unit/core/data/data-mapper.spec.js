@@ -9,7 +9,7 @@ import {
 describe('data-mapper', () => {
   describe('reducers', () => {
     describe('defaults', () => {
-      let values = [2, -1, 4, 3];
+      const values = [2, -1, 4, 3];
       it('first', () => {
         expect(reducers.first(values)).to.equal(2);
       });
@@ -36,7 +36,7 @@ describe('data-mapper', () => {
     });
 
     describe('containing valid and null data', () => {
-      let values = [undefined, 2, -1, null, 4, NaN, '', 3];
+      const values = [undefined, 2, -1, null, 4, NaN, '', 3];
       it('first', () => {
         expect(reducers.first(values)).to.equal(undefined);
       });
@@ -63,7 +63,7 @@ describe('data-mapper', () => {
     });
 
     describe('containing only null data', () => {
-      let values = [undefined, null, NaN, ''];
+      const values = [undefined, null, NaN, ''];
       it('first', () => {
         expect(reducers.first(values)).to.equal(undefined);
       });
@@ -113,7 +113,7 @@ describe('data-mapper', () => {
           values: () => values
         }
       });
-      let collected = collectRepeating({
+      const collected = collectRepeating({
         source: ''
       }, ds);
       expect(collected).to.eql({
@@ -135,7 +135,7 @@ describe('data-mapper', () => {
           values: () => values
         }
       });
-      let collected = collectRepeating({
+      const collected = collectRepeating({
         source: '',
         trackBy: '$index'
       }, ds);
@@ -159,7 +159,7 @@ describe('data-mapper', () => {
           values: () => values
         }
       });
-      let collected = collectRepeating(undefined, ds);
+      const collected = collectRepeating(undefined, ds);
       expect(collected).to.eql({
         collection: [{}],
         fieldValues: [],
@@ -172,7 +172,7 @@ describe('data-mapper', () => {
 
   describe('collectValues', () => {
     it('should collect values by index', () => {
-      let pool = { 0: {}, 1: {} };
+      const pool = { 0: {}, 1: {} };
 
       collectValues({
         key: 'x',
@@ -192,7 +192,7 @@ describe('data-mapper', () => {
     });
 
     it('should collect values by index and extract index value', () => {
-      let pool = { 0: {}, 1: {} };
+      const pool = { 0: {}, 1: {} };
 
       collectValues({
         key: 'x',
@@ -212,7 +212,7 @@ describe('data-mapper', () => {
     });
 
     it('should collect values by attribute', () => {
-      let pool = {
+      const pool = {
         volvo: {},
         mercedes: {},
         bmw: {
@@ -246,7 +246,7 @@ describe('data-mapper', () => {
     });
 
     it('should skip values that are not in the pool', () => {
-      let pool = {
+      const pool = {
         volvo: {}
       };
 
@@ -267,7 +267,7 @@ describe('data-mapper', () => {
     });
 
     it('should collect values into the others bin when there is no sync match', () => {
-      let others = {};
+      const others = {};
 
       collectValues({
         key: 'brand',
@@ -296,21 +296,21 @@ describe('data-mapper', () => {
     });
 
     it('should call collector with proper arguments', () => {
-      let groups = {
+      const groups = {
         collection: [{}, {}, {}],
         ids: 'idMap',
         trackBy: 'id',
         fieldValues: 'syncValues',
         others: 'others'
       };
-      let mapping = { source: 'dummy' };
+      const mapping = { source: 'dummy' };
       ds.findField.returns({
         field: {
           values: () => 'dummyValues',
           type: () => 'dimension'
         }
       });
-      let collector = sandbox.stub();
+      const collector = sandbox.stub();
       collectMapping('x', mapping, groups, ds, collector);
 
       expect(collector).to.have.been.calledWith({
@@ -327,14 +327,14 @@ describe('data-mapper', () => {
     });
 
     it('should call collector with proper arguments, again', () => {
-      let groups = {
+      const groups = {
         collection: [{}, {}, {}],
         ids: 'idMap',
         trackBy: 'id',
         fieldValues: 'syncValues',
         others: 'others'
       };
-      let mapping = {
+      const mapping = {
         source: 'dummy',
         linkFrom: 'linkedField'
       };
@@ -349,7 +349,7 @@ describe('data-mapper', () => {
           values: () => 'customSyncValues'
         }
       });
-      let collector = sandbox.stub();
+      const collector = sandbox.stub();
       collectMapping('x', mapping, groups, ds, collector);
 
       expect(collector).to.have.been.calledWith({
@@ -470,11 +470,11 @@ describe('data-mapper', () => {
     });
 
     it('should collect itself', () => {
-      let groupBy = {
+      const groupBy = {
         source: '/0/0'
       };
 
-      let values = mapData({}, groupBy, ds);
+      const values = mapData({}, groupBy, ds);
       expect(values).to.eql([
         {
           self: { value: 'Cars', source: { field: '/0/0', indices: [0, 1], type: 'qual' } }
@@ -489,10 +489,10 @@ describe('data-mapper', () => {
     });
 
     it('should collect all into one bin when repeater is undefined', () => {
-      let mapper = {
+      const mapper = {
         sales: { source: '/0/3', reducer: 'sum' }
       };
-      let values = mapData(mapper, undefined, ds);
+      const values = mapData(mapper, undefined, ds);
       expect(values).to.eql([
         {
           sales: { value: 215, source: { field: '/0/3', indices: [0, 1, 2, 3, 4], type: 'quant' } }
@@ -501,15 +501,15 @@ describe('data-mapper', () => {
     });
 
     it('should collect data by rows', () => {
-      let groupBy = {
+      const groupBy = {
         source: '/0/0', trackBy: '$index'
       };
-      let mapper = {
+      const mapper = {
         sales: { source: '/0/3', reducer: 'sum' },
         margin: { source: '/0/4', reducer: 'first' }
       };
 
-      let values = mapData(mapper, groupBy, ds);
+      const values = mapData(mapper, groupBy, ds);
       expect(values).to.eql([
         {
           self: { value: 'Cars', source: { field: '/0/0', indices: [0], type: 'qual' } },
@@ -540,15 +540,15 @@ describe('data-mapper', () => {
     });
 
     it('should collect data by group', () => {
-      let groupBy = {
+      const groupBy = {
         source: '/0/0'
       };
-      let mapper = {
+      const mapper = {
         sales: { source: '/0/3', reducer: 'sum' },
         margin: { source: '/0/4', reducer: 'first' }
       };
 
-      let values = mapData(mapper, groupBy, ds);
+      const values = mapData(mapper, groupBy, ds);
       expect(values).to.eql([
         {
           self: { value: 'Cars', source: { field: '/0/0', indices: [0, 1], type: 'qual' } },
@@ -569,14 +569,14 @@ describe('data-mapper', () => {
     });
 
     it('should collect data from multiple tables', () => {
-      let groupBy = {
+      const groupBy = {
         source: '/0/0'
       };
-      let mapper = {
+      const mapper = {
         color: { source: '/1/1', reducer: 'first', linkFrom: '/1/0' }
       };
 
-      let values = mapData(mapper, groupBy, ds);
+      const values = mapData(mapper, groupBy, ds);
       expect(values).to.eql([
         {
           self: { value: 'Cars', source: { field: '/0/0', indices: [0, 1], type: 'qual' } },
@@ -594,15 +594,15 @@ describe('data-mapper', () => {
     });
 
     it('should collect data using a custom reducer function', () => {
-      let groupBy = {
+      const groupBy = {
         source: '/0/0'
       };
-      let reducer = values => values.map(v => v).join(', ');
-      let mapper = {
+      const reducer = values => values.map(v => v).join(', ');
+      const mapper = {
         year: { source: '/0/2', type: 'quant', reducer }
       };
 
-      let values = mapData(mapper, groupBy, ds);
+      const values = mapData(mapper, groupBy, ds);
       expect(values).to.eql([
         {
           self: { value: 'Cars', source: { field: '/0/0', indices: [0, 1], type: 'qual' } },
@@ -620,15 +620,15 @@ describe('data-mapper', () => {
     });
 
     it('should accept constant values', () => {
-      let groupBy = {
+      const groupBy = {
         source: '/0/0'
       };
-      let mapper = {
+      const mapper = {
         num: 3,
         s: 'foo',
         b: false
       };
-      let values = mapData(mapper, groupBy, ds);
+      const values = mapData(mapper, groupBy, ds);
       expect(values).to.eql([
         {
           self: { value: 'Cars', source: { field: '/0/0', indices: [0, 1], type: 'qual' } },

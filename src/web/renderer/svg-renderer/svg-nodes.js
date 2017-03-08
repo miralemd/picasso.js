@@ -25,7 +25,7 @@ const maintainer = (element, item) => {
   for (const attr in item.attrs) {
     if (attr === 'text') {
       element.textContent = ellipsText(item.attrs, measureText);
-      let dir = detectTextDirection(item.attrs.text);
+      const dir = detectTextDirection(item.attrs.text);
       if (dir === 'rtl') {
         element.setAttribute('direction', 'rtl');
         element.setAttribute('dir', 'rtl');

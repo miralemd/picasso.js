@@ -4,9 +4,9 @@ import { findShapes, getAffectedShapes } from '../../model/chart';
 import { clickOnShape, hoverOverShape } from '../../webdriver/actions';
 
 describe('Brushing', () => {
-  let tap = '/fixtures/chart/brushing/tap.fix.html';
-  let tapScroll = '/fixtures/chart/brushing/tap_scroll.fix.html';
-  let over = '/fixtures/chart/brushing/over.fix.html';
+  const tap = '/fixtures/chart/brushing/tap.fix.html';
+  const tapScroll = '/fixtures/chart/brushing/tap_scroll.fix.html';
+  const over = '/fixtures/chart/brushing/over.fix.html';
 
   it('tap', () => {
     browser.get(tap);

@@ -27,7 +27,7 @@ describe('dataset', () => {
   describe('findField', () => {
     let ds;
     before(() => {
-      let data = [
+      const data = [
         [
           []
         ],
@@ -41,7 +41,7 @@ describe('dataset', () => {
     });
 
     it('should find the second field in the second table', () => {
-      let f = ds.findField('/1/1');
+      const f = ds.findField('/1/1');
       expect(f.table.id()).to.equal('/1');
       expect(f.field.id()).to.equal('/1');
       expect(f.field.values()).to.eql([
@@ -52,7 +52,7 @@ describe('dataset', () => {
   });
 
   it('should recognize two tables', () => {
-    let ds = dataset({ tables: tablesFn })(arr);
+    const ds = dataset({ tables: tablesFn })(arr);
     expect(ds.tables()).to.eql(['cube', 'othercube']);
   });
 });

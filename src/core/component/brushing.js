@@ -15,7 +15,7 @@ export function styler(obj, { context, data, style }) {
   const dataProps = data;
   const active = style.active || {};
   const inactive = style.inactive || {};
-  let styleProps = [];
+  const styleProps = [];
   Object.keys(active).forEach((key) => {
     styleProps.push(key);
   });
@@ -40,8 +40,8 @@ export function styler(obj, { context, data, style }) {
         });
       }
 
-      let nodeData = mappedData[nodes[i].data];
-      let isActive = nodeData && brusher.containsMappedData(nodeData, dataProps);
+      const nodeData = mappedData[nodes[i].data];
+      const isActive = nodeData && brusher.containsMappedData(nodeData, dataProps);
       styleProps.forEach((s) => {
         if (isActive && s in active) {
           nodes[i][s] = active[s];
@@ -121,7 +121,7 @@ function brushDataPoint({
   }
 
   const dataProps = config.data || ['self'];
-  let items = [];
+  const items = [];
 
   let actionFn = 'toggleValues';
   if (action === 'add') {

@@ -3,7 +3,7 @@ import Matrix from '../math/matrix';
 import resolveTransform from './transform-resolver';
 import contextFactory from './context';
 
-let styleContext = contextFactory(
+const styleContext = contextFactory(
   [
     'stroke',
     'fill',

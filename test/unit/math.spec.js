@@ -19,7 +19,7 @@ describe('minmax', () => {
   });
 
   it('should calculate min from object array', () => {
-    let arr = [
+    const arr = [
       { min: () => 4 },
       { min: () => 3 }
     ];
@@ -27,7 +27,7 @@ describe('minmax', () => {
   });
 
   it('should calculate max from object array', () => {
-    let arr = [
+    const arr = [
       { max: () => 4 },
       { max: () => 3 }
     ];
@@ -35,7 +35,7 @@ describe('minmax', () => {
   });
 
   it('should handle NaN values in object array', () => {
-    let arr = [
+    const arr = [
       { min: () => 'min', max: () => 'max' }
     ];
     expect(minmax({}, arr)).to.eql([0, 1]);

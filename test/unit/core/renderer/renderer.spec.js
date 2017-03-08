@@ -14,7 +14,7 @@ describe('fooo', () => {
   });
 
   it('should throw error when type does not exist', () => {
-    let fn = () => { renderer('dummy'); };
+    const fn = () => { renderer('dummy'); };
     expect(fn).to.throw("Renderer of type 'dummy' does not exist");
   });
 

@@ -2,9 +2,9 @@ import { crispifierFactory } from '../../../../src/core/transposer/crispifier';
 
 describe('crispifier', () => {
   it('should not modify rects with 0 stroke width', () => {
-    let crispifier = crispifierFactory();
+    const crispifier = crispifierFactory();
 
-    let dummy = {
+    const dummy = {
       type: 'rect',
       x: 100,
       y: 150,
@@ -22,9 +22,9 @@ describe('crispifier', () => {
   });
 
   it('should modify rects with uneven stroke width', () => {
-    let crispifier = crispifierFactory();
+    const crispifier = crispifierFactory();
 
-    let dummy = {
+    const dummy = {
       type: 'rect',
       x: 100,
       y: 150,
@@ -42,9 +42,9 @@ describe('crispifier', () => {
   });
 
   it('should modify lines with uneven stroke width', () => {
-    let crispifier = crispifierFactory();
+    const crispifier = crispifierFactory();
 
-    let dummy = {
+    const dummy = {
       type: 'line',
       x1: 100,
       y1: 150,
@@ -62,9 +62,9 @@ describe('crispifier', () => {
   });
 
   it('should not modify lines with even stroke width', () => {
-    let crispifier = crispifierFactory();
+    const crispifier = crispifierFactory();
 
-    let dummy = {
+    const dummy = {
       type: 'line',
       x1: 100,
       y1: 150,
@@ -82,9 +82,9 @@ describe('crispifier', () => {
   });
 
   it('should not modify non-straight lines', () => {
-    let crispifier = crispifierFactory();
+    const crispifier = crispifierFactory();
 
-    let dummy = {
+    const dummy = {
       type: 'line',
       x1: 100,
       y1: 150,
@@ -102,9 +102,9 @@ describe('crispifier', () => {
   });
 
   it('should not modify rects with empty crispmap', () => {
-    let crispifier = crispifierFactory({}); // empty crispmap here
+    const crispifier = crispifierFactory({}); // empty crispmap here
 
-    let dummyRect = {
+    const dummyRect = {
       type: 'rect',
       x: 100,
       y: 150,
@@ -113,7 +113,7 @@ describe('crispifier', () => {
       strokeWidth: 1
     };
 
-    let dummyLine = {
+    const dummyLine = {
       type: 'line',
       x1: 100,
       y1: 150,

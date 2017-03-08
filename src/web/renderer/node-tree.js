@@ -1,7 +1,7 @@
 function diff(from, to) {
   const added = [];
   let items;
-  let removed = [];
+  const removed = [];
   const updatedNew = [];
   const updatedOld = [];
   let fromIds;

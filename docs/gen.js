@@ -1,15 +1,15 @@
 "use strict"; // eslint-disable-line
 
-let rimraf = require('rimraf'); // eslint-disable-line import/no-unresolved
-let handlebars = require('handlebars'); // eslint-disable-line import/no-unresolved
+const rimraf = require('rimraf'); // eslint-disable-line import/no-unresolved
+const handlebars = require('handlebars'); // eslint-disable-line import/no-unresolved
 require('handlebars-helpers')({ handlebars }); // eslint-disable-line import/no-unresolved
-let fs = require('fs');
-let path = require('path');
+const fs = require('fs');
+const path = require('path');
 
 
-let glob = require('glob'); // eslint-disable-line import/no-unresolved
+const glob = require('glob'); // eslint-disable-line import/no-unresolved
 
-let resolve = require('./json-path-resolver').resolve;
+const resolve = require('./json-path-resolver').resolve;
 
 function log(msg) {
   console.log(msg);// eslint-disable-line no-console
@@ -23,15 +23,15 @@ const MD_INPUT_FOLDER = 'src/input/';
 const MD_OUTPUT_FOLDER = 'dist/';
 const POSTPROCESS_ROOT = 'src/';
 
-let toPostProcess = [];
+const toPostProcess = [];
 
 function fixPath(str) {
   if (path.sep === '\\') {
     // change path separator for windows paths
     str = str.replace(/\\/g, '/');
   }
-  let find = '/picasso.js/src';
-  let cut = str.indexOf(find) + find.length;
+  const find = '/picasso.js/src';
+  const cut = str.indexOf(find) + find.length;
   return str.length === cut ? '' : str.substr(cut);
 }
 
@@ -41,10 +41,10 @@ function domkdir(curpath, skipFile) {
     curpath.pop();
   }
 
-  let rebuiltPath = [];
+  const rebuiltPath = [];
   for (let i = 0; i < curpath.length; i++) {
     rebuiltPath.push(curpath[i]);
-    let tryPath = rebuiltPath.join('/');
+    const tryPath = rebuiltPath.join('/');
     if (!fs.existsSync(tryPath)) {
       fs.mkdirSync(tryPath);
     }
@@ -52,9 +52,9 @@ function domkdir(curpath, skipFile) {
 }
 
 function getJSDOCData(inputFile) {
-  let data = JSON.parse(fs.readFileSync(inputFile)).docs;
+  const data = JSON.parse(fs.readFileSync(inputFile)).docs;
 
-  let output = {};
+  const output = {};
 
   data.forEach((i) => {
     let filePath = (i && i.meta && fixPath(i.meta.path)) || '';
@@ -76,7 +76,7 @@ function getJSDOCData(inputFile) {
       parentFilePath.pop();
       parentFilePath = parentFilePath.join('/');
 
-      let parent = resolve(parentFilePath, output);
+      const parent = resolve(parentFilePath, output);
       parent.children = parent.children || [];
       parent.children.push(filePath.replace(`${parentFilePath}/`, ''));
     }
@@ -85,7 +85,7 @@ function getJSDOCData(inputFile) {
   return output;
 }
 
-let jsdoc = getJSDOCData(JSDOC_INPUT);
+const jsdoc = getJSDOCData(JSDOC_INPUT);
 
 /**
  * TEMPLATES
@@ -93,8 +93,8 @@ let jsdoc = getJSDOCData(JSDOC_INPUT);
 function registerTemplates(cb) {
   glob(`${MD_TEMPLATES_FOLDER}**/*.md`, {}, (err, files) => {
     files.forEach((file) => {
-      let title = file.split('/').pop().replace(/\.md/gi, '');
-      let content = `${fs.readFileSync(file)}`;
+      const title = file.split('/').pop().replace(/\.md/gi, '');
+      const content = `${fs.readFileSync(file)}`;
       handlebars.registerPartial(title, content);
     });
     cb();
@@ -120,7 +120,7 @@ handlebars.registerHelper('postprocess', (item) => {
 
 function doPostProcess(content, jsdocdata) {
   toPostProcess.forEach((item) => {
-    let itemTemplate = handlebars.compile(fs.readFileSync(path.resolve(`${POSTPROCESS_ROOT}${item}.md`)).toString());
+    const itemTemplate = handlebars.compile(fs.readFileSync(path.resolve(`${POSTPROCESS_ROOT}${item}.md`)).toString());
 
     content = content.replace(postProcessTemplate(item), itemTemplate(jsdocdata));
   });
@@ -134,9 +134,9 @@ function compileMarkdownFiles(jsdocdata) {
   glob(`${MD_INPUT_FOLDER}/**/*.md`, {}, (err, files) => {
     files.forEach((file) => {
       file = path.resolve(file);
-      let inputBasepath = path.resolve(MD_INPUT_FOLDER);
-      let relativePath = file.replace(inputBasepath, '');
-      let template = handlebars.compile(`${fs.readFileSync(file)}`);
+      const inputBasepath = path.resolve(MD_INPUT_FOLDER);
+      const relativePath = file.replace(inputBasepath, '');
+      const template = handlebars.compile(`${fs.readFileSync(file)}`);
       let title = path.basename(file, '.md');
 
       title = title.charAt(0).toUpperCase() + title.substr(1);

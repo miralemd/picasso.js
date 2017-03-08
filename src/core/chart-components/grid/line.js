@@ -50,7 +50,7 @@ const gridLineComponent = {
     }
 
     // Base the styling upon the axis defaults
-    let axisDefaults = continuousDefaultSettings();
+    const axisDefaults = continuousDefaultSettings();
     this.settings.ticks = extend({}, axisDefaults.ticks, this.settings.ticks || {});
     this.settings.minorTicks = extend({}, axisDefaults.minorTicks, this.settings.minorTicks || {});
 

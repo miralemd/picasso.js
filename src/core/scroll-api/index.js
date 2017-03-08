@@ -29,7 +29,7 @@ export default function scrollApi() {
      * @emits update
      */
     moveTo(value) {
-      let newStart = Math.max(min, Math.min(max - viewSize, value));
+      const newStart = Math.max(min, Math.min(max - viewSize, value));
       if (start !== newStart) {
         start = newStart;
         s.emit('update');
@@ -52,7 +52,7 @@ export default function scrollApi() {
       }
 
       // update scroll to be within the new bounds
-      let newStart = Math.max(min, Math.min(max - viewSize, start));
+      const newStart = Math.max(min, Math.min(max - viewSize, start));
       if (start !== newStart) {
         start = newStart;
         triggerUpdate = true;
