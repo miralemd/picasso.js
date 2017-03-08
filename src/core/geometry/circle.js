@@ -53,6 +53,15 @@ export default class GeoCircle {
     }
     return false;
   }
+
+  points() {
+    return [
+      {
+        x: this.cx,
+        y: this.cy
+      }
+    ];
+  }
 }
 
 export function create(...args) {

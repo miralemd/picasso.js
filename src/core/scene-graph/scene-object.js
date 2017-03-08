@@ -1,3 +1,36 @@
+import { pointsToRect, pointsToCircle, pointsToLine } from '../math/intersection';
+
+function colliderToShape(node, dpi) {
+  const collider = node.collider();
+
+  if (collider && collider.fn) {
+    const mvm = node.modelViewMatrix;
+    const type = collider.type;
+    let points = collider.fn.points();
+    points = mvm ? mvm.transformPoints(points) : points;
+    points.forEach((p) => {
+      p.x /= dpi;
+      p.y /= dpi;
+    });
+
+    if (type === 'rect' || type === 'bounds') {
+      const rect = pointsToRect(points);
+      rect.type = 'rect';
+      return rect;
+    } else if (type === 'circle') {
+      const circle = pointsToCircle(points, collider.fn.r);
+      circle.type = 'circle';
+      return circle;
+    } else if (type === 'line') {
+      const line = pointsToLine(points);
+      line.type = 'line';
+      return line;
+    }
+  }
+
+  return null;
+}
+
 export class SceneObject {
   /**
    * Read-only object representing a node on the scene.
@@ -8,6 +41,7 @@ export class SceneObject {
     this._type = node.type;
     this._data = node.data;
     this._dpi = node.stage ? node.stage.dpi : 1;
+    this._collider = () => colliderToShape(node, this._dpi);
   }
 
   /**
@@ -62,6 +96,15 @@ export class SceneObject {
     bounds.width /= this._dpi;
     bounds.height /= this._dpi;
     return bounds;
+  }
+
+  /**
+   * Get collider of the node. Transform on the node has been applied to the collider shape, if any, but excluding scaling transform related to devicePixelRatio.
+   * Origin is in the top-left corner of the scene element.
+   * @return {Object} Shape of the collider.
+   */
+  get collider() {
+    return this._collider();
   }
 }
 

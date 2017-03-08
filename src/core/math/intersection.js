@@ -176,6 +176,34 @@ export function getMinMax(points) {
   return [xMin, yMin, xMax, yMax];
 }
 
+export function pointsToRect(points) {
+  const [xMin, yMin, xMax, yMax] = getMinMax(points);
+
+  return {
+    x: xMin,
+    y: yMin,
+    width: xMax - xMin,
+    height: yMax - yMin
+  };
+}
+
+export function pointsToCircle(points, r) {
+  return {
+    cx: points[0].x,
+    cy: points[0].y,
+    r
+  };
+}
+
+export function pointsToLine(points) {
+  return {
+    x1: points[0].x,
+    y1: points[0].y,
+    x2: points[1].x,
+    y2: points[1].y
+  };
+}
+
 export default {
   closestPointToLine,
   isPointOnLine,

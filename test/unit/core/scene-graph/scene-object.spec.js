@@ -1,4 +1,8 @@
 import create from '../../../../src/core/scene-graph/scene-object';
+import { create as createRect } from '../../../../src/core/scene-graph/display-objects/rect';
+import { create as createLine } from '../../../../src/core/scene-graph/display-objects/line';
+import { create as createCircle } from '../../../../src/core/scene-graph/display-objects/circle';
+import { create as createContainer } from '../../../../src/core/scene-graph/display-objects/container';
 
 describe('Scene Object', () => {
   let sceneObject;
@@ -33,11 +37,11 @@ describe('Scene Object', () => {
 
   it('should expose node bounds, after any transform', () => {
     const bounds = { x: 10, y: 20, width: 30, height: 40 };
-    nodeMock.boundingRect.returns(bounds);
-    sceneObject = create(nodeMock);
+    const rect = createRect({ ...bounds, transform: 'translate(5, 15)' });
+    rect.resolveLocalTransform();
+    sceneObject = create(rect);
 
-    expect(sceneObject.bounds).to.deep.equal(bounds);
-    expect(nodeMock.boundingRect).to.have.been.calledWith(true); // Called with true param to include transform
+    expect(sceneObject.bounds).to.deep.equal({ x: 15, y: 35, width: 30, height: 40 });
   });
 
   it('should expose node bounds, exluding the dpi scale factor', () => {
@@ -65,6 +69,75 @@ describe('Scene Object', () => {
       y: 0,
       width: 0,
       height: 0
+    });
+  });
+
+  describe('should expose node collider as a geometrical shape', () => {
+    it('rect', () => {
+      const rect = createRect({ x: 10, y: 20, width: 30, height: 40 });
+      sceneObject = create(rect);
+      expect(sceneObject.collider).to.deep.equal({
+        type: 'rect',
+        x: 10,
+        y: 20,
+        width: 30,
+        height: 40
+      });
+    });
+
+    it('line', () => {
+      const line = createLine({ x1: 10, y1: 20, x2: 30, y2: 40 });
+      sceneObject = create(line);
+      expect(sceneObject.collider).to.deep.equal({
+        type: 'line',
+        x1: 10,
+        y1: 20,
+        x2: 30,
+        y2: 40
+      });
+    });
+
+    it('circle', () => {
+      const circle = createCircle({ cx: 10, cy: 20, r: 30 });
+      sceneObject = create(circle);
+      expect(sceneObject.collider).to.deep.equal({
+        type: 'circle',
+        cx: 10,
+        cy: 20,
+        r: 30
+      });
+    });
+
+    it('bounds', () => {
+      const container = createContainer({ collider: { type: 'bounds' } });
+      container.addChild(createRect({ x: 10, y: 20, width: 30, height: 40 }));
+      sceneObject = create(container);
+      expect(sceneObject.collider).to.deep.equal({
+        type: 'rect',
+        x: 10,
+        y: 20,
+        width: 30,
+        height: 40
+      });
+    });
+
+    it('and include any transform on the node', () => {
+      const rect = createRect({ x: 10, y: 20, width: 30, height: 40, transform: 'translate(5, 15)' });
+      rect.resolveLocalTransform();
+      sceneObject = create(rect);
+      expect(sceneObject.collider).to.deep.equal({
+        type: 'rect',
+        x: 15,
+        y: 35,
+        width: 30,
+        height: 40
+      });
+    });
+
+    it('and handle if node doesnt have any collider', () => {
+      const rect = createRect({ x: 10, y: 20, width: 30, height: 40, collider: { type: null } });
+      sceneObject = create(rect);
+      expect(sceneObject.collider).to.equal(null);
     });
   });
 });
