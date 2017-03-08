@@ -130,7 +130,7 @@ const boxMarkerComponent = {
     const doodle = this.dispersion.doodle();
     const shapes = [];
 
-    let measureWidth = this.dispersion.blueprint().flipXY ? this.rect.height : this.rect.width;
+    const measureWidth = this.dispersion.blueprint().flipXY ? this.rect.height : this.rect.width;
 
     function computeWidth(minWidth, maxWidth, multiplier, bandwidth) {
       let width = (bandwidth * measureWidth) * multiplier;

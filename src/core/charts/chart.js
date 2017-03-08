@@ -112,7 +112,7 @@ function chart(definition) {
   let currentScrollApis = null; // Build scroll apis
 
   let dataset = [];
-  let brushes = {};
+  const brushes = {};
   let stopBrushing = false;
 
   const createComponent = (compSettings, container) => {
@@ -391,8 +391,8 @@ function chart(definition) {
       }
     });
 
-    let toUpdate = [];
-    let toRender = [];
+    const toUpdate = [];
+    const toRender = [];
     if (partialData) {
       currentComponents.forEach((comp) => {
         if (comp.updateWith && comp.visible) {

@@ -84,8 +84,8 @@ class Transposer {
    * @return {Array}   Array of objects
    */
   output() {
-    let items = this.storage.map((item) => {
-      let newItem = {};
+    const items = this.storage.map((item) => {
+      const newItem = {};
       const flipXY = (typeof item.flipXY !== 'undefined' ? item.flipXY : this.flipXY);
 
       Object.keys(item).forEach((key) => {

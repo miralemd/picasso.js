@@ -2,7 +2,7 @@ import { registry } from '../utils/registry';
 
 let prio = [];
 
-let reg = registry();
+const reg = registry();
 
 export default function renderer(type = prio[0]) {
   if (!reg.has(type)) {
@@ -20,7 +20,7 @@ renderer.register = function register(type, fn) {
 
 renderer.deregister = function deregister(type) {
   reg.remove(type);
-  let idx = prio.indexOf(type);
+  const idx = prio.indexOf(type);
   if (idx !== -1) {
     prio.splice(idx, 1);
   }

@@ -7,7 +7,7 @@ import extend from 'extend';
  * @return {Function}               A context function
  */
 export default function contextFactory(whitelist = []) {
-  let states = [{}];
+  const states = [{}];
 
   /**
    * Returns the current context as an object. The object is mutable.
@@ -16,7 +16,7 @@ export default function contextFactory(whitelist = []) {
    */
   function context() {
     // Returns the current context, the last in the stack.
-    let item = states[states.length - 1];
+    const item = states[states.length - 1];
     return item;
   }
 
@@ -27,8 +27,8 @@ export default function contextFactory(whitelist = []) {
    * @return {Object}             The current context, just as context()
    */
   context.save = function save(item = {}) {
-    let current = context();
-    let obj = {};
+    const current = context();
+    const obj = {};
     let key = '';
 
     // Only inherit whitelisted properties

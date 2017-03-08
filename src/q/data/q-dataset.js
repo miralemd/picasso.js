@@ -4,7 +4,7 @@ import resolve from '../../core/data/json-path-resolver';
 
 function findCubes(layout) {
   // TODO - add dimension attribute tables
-  let paths = [];
+  const paths = [];
   function traverse(obj, p) {
     if (Array.isArray(obj)) {
       obj.forEach((o, i) => traverse(o, `${p}/${i}`));

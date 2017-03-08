@@ -11,7 +11,7 @@ import timeFormat, { QlikTimeToDate } from '../../../../src/q/formatter/timeForm
 function DateToQlikTime(value) {
   let offset = QlikTimeToDate(0);
 
-  let off2 = ((offset.getTimezoneOffset() * 60 * 1000) - (value.getTimezoneOffset() * 60 * 1000)) + (offset.getTimezoneOffset() * 60 * 1000);
+  const off2 = ((offset.getTimezoneOffset() * 60 * 1000) - (value.getTimezoneOffset() * 60 * 1000)) + (offset.getTimezoneOffset() * 60 * 1000);
 
   offset = offset.setTime(offset.getTime() + (value.getTimezoneOffset() * 60 * 1000));
 
@@ -350,7 +350,7 @@ describe('qlik timeFormat', () => {
   describe('Combinations', () => {
     it('should support combinations of year, month, weekday and day', () => {
       n = timeFormat(null);
-      let d = DateToQlikTime(new Date(2014, 3, 24, 13, 55, 40, 100)); // thursday 24th april 2014 @ 13:55:40:100
+      const d = DateToQlikTime(new Date(2014, 3, 24, 13, 55, 40, 100)); // thursday 24th april 2014 @ 13:55:40:100
 
       expect(n.format('YYYY-MM-DD', d)).to.equal('2014-04-24');
       expect(n.format('DD/MM -YY', d)).to.equal('24/04 -14');
@@ -445,7 +445,7 @@ describe('qlik timeFormat', () => {
 
     describe('Fractions', () => {
       it(' ', () => {
-        let d = DateToQlikTime(new Date(2014, 0, 1, 0, 0, 0, 456));
+        const d = DateToQlikTime(new Date(2014, 0, 1, 0, 0, 0, 456));
         expect(n.format('f F', d)).to.equal('4 4'); // tenths of a second
         expect(n.format('ff', d)).to.equal('45'); // hundreths of a second
         expect(n.format('fff FFF', d)).to.equal('456 456'); // tousandths of a second
@@ -456,7 +456,7 @@ describe('qlik timeFormat', () => {
     });
 
     it('should support combinations of hours, minutes, seconds and fractions', () => {
-      let d = 41753.58033550347;
+      const d = 41753.58033550347;
       // let d = DateToQlikTime(new Date(2014, 3, 24, 13, 55, 40, 987));
 
       expect(n.format('h:m:s', midnight)).to.equal('0:0:0');

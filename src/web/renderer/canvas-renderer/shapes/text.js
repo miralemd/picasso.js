@@ -19,7 +19,7 @@ export default function render(t, { g }) {
 
   g.font = `${t['font-size']} ${t['font-family']}`;
   g.canvas.dir = detectTextDirection(t.text);
-  let textAlign = t['text-anchor'] === 'middle' ? 'center' : t['text-anchor'];
+  const textAlign = t['text-anchor'] === 'middle' ? 'center' : t['text-anchor'];
   g.textAlign = flipTextAnchor(textAlign, g.canvas.dir);
   g.textBaseline = convertBaseline(t['dominant-baseline']);
   g.fillText(text, t.x + t.dx, t.y + t.dy);

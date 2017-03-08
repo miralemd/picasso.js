@@ -7,7 +7,7 @@ const M_RX = /^\/(?:qHyperCube\/)?qMeasureInfo\/(\d+)/;
 const ATTR_EXPR_RX = /\/qAttrExprInfo\/(\d+)/;
 
 function hyperCubeFieldsFn(hc, localeInfo) {
-  let dimz = hc.qDimensionInfo.length;
+  const dimz = hc.qDimensionInfo.length;
   return hc.qDimensionInfo.concat(hc.qMeasureInfo).map((f, idx) =>
     qField({ id: idx < dimz ? `/qDimensionInfo/${idx}` : `/qMeasureInfo/${idx - dimz}` })({
       meta: f,
@@ -36,7 +36,7 @@ function attrExpField(hc, fieldIdx, attrIdx, localeInfo) {
 }
 
 function stackedHyperCubeFieldsFn(hc, localeInfo) {
-  let dimz = hc.qDimensionInfo.length;
+  const dimz = hc.qDimensionInfo.length;
   return hc.qDimensionInfo.concat(hc.qMeasureInfo).map((f, idx) => {
     let dataContentIdx = idx;
     const order = hc.qEffectiveInterColumnSortOrder; // sort order should only contain references to dimensions
@@ -98,7 +98,7 @@ export default function qTable({ id } = {}) {
     fields: fieldsFn
   });
 
-  let attributeExpressionFields = [];
+  const attributeExpressionFields = [];
 
   q.findField = (query) => {
     const d = q.data();

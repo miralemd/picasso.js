@@ -12,8 +12,8 @@ const specialTextValues = {
 };
 
 function normalizeValues(path, data, meta, attrIdx, offset = 0) {
-  let values = resolve(path, data);
-  let normalized = new Array(values.length);
+  const values = resolve(path, data);
+  const normalized = new Array(values.length);
   let cell;
   for (let i = 0; i < values.length; i++) {
     cell = values[i];
@@ -32,7 +32,7 @@ function normalizeValues(path, data, meta, attrIdx, offset = 0) {
 
 function collectStraightData(col, page, meta, attrIdx) {
   let values = [];
-  let matrixColIdx = col - page.qArea.qLeft;
+  const matrixColIdx = col - page.qArea.qLeft;
   if (matrixColIdx >= 0 && matrixColIdx < (page.qArea.qLeft + page.qArea.qWidth) && page.qArea.qHeight > 0) {
     values = normalizeValues(`//${matrixColIdx}`, page.qMatrix, meta, attrIdx, page.qArea.qTop);
   }
@@ -46,10 +46,10 @@ function collectStraightData(col, page, meta, attrIdx) {
 
 function traverseNode(node) {
   let rows = [];
-  let children = node.qSubNodes || [];
-  let pseudos = [];
+  const children = node.qSubNodes || [];
+  const pseudos = [];
 
-  let n = {
+  const n = {
     qNum: node.qValue,
     qElemNumber: node.qElemNo,
     qText: node.qText,
@@ -63,15 +63,15 @@ function traverseNode(node) {
   if (children[0].qType === 'P') {
     // rows = rows.concat(children[0].qSubNodes.map(traverseNode)[0]);
     for (let i = 0; i < children.length; i++) {
-      let pp = children[i].qSubNodes.map(traverseNode).map(v => v[0]);
+      const pp = children[i].qSubNodes.map(traverseNode).map(v => v[0]);
       pseudos.push(pp);
     }
-    let first = pseudos[0];
+    const first = pseudos[0];
     pseudos.slice(1).forEach((p) => {
       // log(n.qText, 'pesudorodfsdfws', p);
       first.forEach((row, r) => {
         // log('a', r, p[r]);
-        let lastRowValue = p[r].slice(-1)[0];
+        const lastRowValue = p[r].slice(-1)[0];
         row.push(lastRowValue);
       });
     });
@@ -93,7 +93,7 @@ function traverseNode(node) {
 }
 
 function transformStackedToStraight(root) {
-  let nodes = root ? root.qSubNodes : [];
+  const nodes = root ? root.qSubNodes : [];
   let matrix = [];
   for (let i = 0; i < nodes.length; i++) {
     matrix = matrix.concat(traverseNode(nodes[i]));
@@ -102,7 +102,7 @@ function transformStackedToStraight(root) {
 }
 
 function collectStackedData(col, page, meta, attrIdx) {
-  let matrix = transformStackedToStraight(page.qData[0]);
+  const matrix = transformStackedToStraight(page.qData[0]);
   return normalizeValues(`//${col}`, matrix, meta, attrIdx);
 }
 

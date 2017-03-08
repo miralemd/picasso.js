@@ -2,7 +2,7 @@ export default function render(path, { g, doStroke }) {
   const commands = path.d.match(/[a-z][^a-z]*/ig);
 
   let prevPoint;
-  let points = [];
+  const points = [];
   g.beginPath();
   for (let i = 0; i < commands.length; i++) {
     const params = commands[i].match(/([ml])\s?(\S+)(?:\s|,)(\S+)/i);

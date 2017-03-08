@@ -52,15 +52,15 @@ export function circleContainsPoint(circle, point) {
 }
 
 export function isLineIntersectingLine(p1, p2, p3, p4) {
-  let dx1 = distanceX(p2, p1);
-  let dy1 = distanceY(p2, p1);
-  let dx2 = distanceX(p4, p3);
-  let dy2 = distanceY(p4, p3);
-  let dx3 = distanceX(p1, p3);
-  let dy3 = distanceY(p1, p3);
+  const dx1 = distanceX(p2, p1);
+  const dy1 = distanceY(p2, p1);
+  const dx2 = distanceX(p4, p3);
+  const dy2 = distanceY(p4, p3);
+  const dx3 = distanceX(p1, p3);
+  const dy3 = distanceY(p1, p3);
   let ub = (dy2 * dx1) - (dx2 * dy1);
-  let uat = (dx2 * dy3) - (dy2 * dx3);
-  let ubt = (dx1 * dy3) - (dy1 * dx3);
+  const uat = (dx2 * dy3) - (dy2 * dx3);
+  const ubt = (dx1 * dy3) - (dy1 * dx3);
   let t1;
   let t2;
 
@@ -91,7 +91,7 @@ export function isLineIntersectingLine(p1, p2, p3, p4) {
     }
     return false; // PARALLEL;
   }
-  let ua = uat / ub;
+  const ua = uat / ub;
   ub = ubt / ub;
   if (ua >= 0.0 && ua <= 1.0 && ub >= 0.0 && ub <= 1.0) {
     return true;

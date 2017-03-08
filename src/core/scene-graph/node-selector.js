@@ -20,7 +20,7 @@ const FILTERS = {
 
   attr: (attr, operator, value, objects) => { // eslint-disable-line arrow-body-style
     return objects.filter((o) => {
-      let v = o.attrs[attr];
+      const v = o.attrs[attr];
 
       if (!operator) { // TODO handle undefined differently for != operator? As display object may very well have a default rendering color
         return typeof v !== 'undefined';
@@ -167,7 +167,7 @@ function find(s, object) {
         levels.push(filtered);
       }
 
-      let selected = levels[0].filter((node) => {
+      const selected = levels[0].filter((node) => {
         let ancestor = node.parent;
         let idx;
 

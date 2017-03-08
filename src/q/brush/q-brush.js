@@ -2,9 +2,9 @@ function extractFieldFromId(id) {
   const DIM_RX = /\/qDimensionInfo(?:\/(\d+))?/;
   const M_RX = /\/qMeasureInfo\/(\d+)/;
 
-  let isDimension = DIM_RX.test(id);
-  let fieldMatch = isDimension ? DIM_RX.exec(id) : M_RX.exec(id);
-  let path = `${id.substr(0, id.indexOf('/qHyperCube'))}/qHyperCubeDef`;
+  const isDimension = DIM_RX.test(id);
+  const fieldMatch = isDimension ? DIM_RX.exec(id) : M_RX.exec(id);
+  const path = `${id.substr(0, id.indexOf('/qHyperCube'))}/qHyperCubeDef`;
   let index = 0;
   if (fieldMatch !== null) {
     index = +fieldMatch[1];
@@ -18,14 +18,14 @@ function extractFieldFromId(id) {
 }
 
 export default function qBrush(brush, { byCells, primarySource } = {}) {
-  let selections = [];
-  let methods = {};
-  let isActive = brush.isActive();
+  const selections = [];
+  const methods = {};
+  const isActive = brush.isActive();
   let hasValues = false;
   brush.brushes().forEach((b) => {
-    let info = extractFieldFromId(b.id);
+    const info = extractFieldFromId(b.id);
     if (b.type === 'range' && info.type === 'measure') {
-      let ranges = b.brush.ranges();
+      const ranges = b.brush.ranges();
       if (ranges.length) {
         hasValues = true;
         if (!methods.rangeSelectHyperCubeValues) {

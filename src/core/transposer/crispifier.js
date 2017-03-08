@@ -42,7 +42,7 @@ export function crispifierFactory(crispMap) {
    * Re-map the crispmap
    */
   Object.keys(crispMap).forEach((type) => {
-    let self = crispMap[type];
+    const self = crispMap[type];
 
     self.items = [];
 
@@ -70,11 +70,11 @@ export function crispifierFactory(crispMap) {
   function crispItem(item) {
     if (crispMap[item.type] && crispMap[item.type].condition(item)) {
       const self = crispMap[item.type];
-      let doAppend = self.conditionAppend === undefined || self.conditionAppend(item);
+      const doAppend = self.conditionAppend === undefined || self.conditionAppend(item);
 
       self.items.forEach((i) => {
-        let rounded = Math.round(item[i.key]);
-        let diff = item[i.key] - rounded;
+        const rounded = Math.round(item[i.key]);
+        const diff = item[i.key] - rounded;
         item[i.key] = rounded;
 
         if (doAppend && i.type === 'append') {

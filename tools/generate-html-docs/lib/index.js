@@ -14,11 +14,11 @@ function walk(dir, root) {
   }
 
   let results = [];
-  let list = fs.readdirSync(dir);
+  const list = fs.readdirSync(dir);
 
   list.forEach((file) => {
     file = `${dir}/${file}`;
-    let stat = fs.statSync(file);
+    const stat = fs.statSync(file);
     if (stat && stat.isDirectory()) { results = results.concat(walk(file, root)); } else { results.push(file.replace(root, '')); }
   });
 

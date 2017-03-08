@@ -452,7 +452,7 @@ describe('box marker', () => {
       }
     };
 
-    let dataset = [
+    const dataset = [
       {
         self: { value: 1 },
         start: { value: 0.4 },

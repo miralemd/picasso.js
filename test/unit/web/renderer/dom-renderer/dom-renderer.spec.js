@@ -31,8 +31,8 @@ describe('dom renderer', () => {
     });
 
     it('should not create new root if it already exists', () => {
-      let el = element('div');
-      let el2 = element('div');
+      const el = element('div');
+      const el2 = element('div');
       rend.appendTo(el);
       const rendEl = rend.element();
       rend.appendTo(el2);

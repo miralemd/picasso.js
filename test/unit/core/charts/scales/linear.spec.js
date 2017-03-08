@@ -5,9 +5,9 @@ describe('Linear data scale', () => {
   let dataScale;
   let fields;
   let settings;
-  let truty = [true, {}, [], 42, 'foo', new Date(), -42, 3.14, -3.14, Infinity, -Infinity];
-  let falsy = [false, null, undefined, 0, NaN, ''];
-  let notNumbers = [{}, 'this is my sock', undefined, NaN, () => {}, '123ABC'];
+  const truty = [true, {}, [], 42, 'foo', new Date(), -42, 3.14, -3.14, Infinity, -Infinity];
+  const falsy = [false, null, undefined, 0, NaN, ''];
+  const notNumbers = [{}, 'this is my sock', undefined, NaN, () => {}, '123ABC'];
 
   beforeEach(() => {
     fields = [

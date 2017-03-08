@@ -209,7 +209,7 @@ class DateFormatter {
     this.locale_months_abbr = info.qCalendarStrings.qMonthNames.slice();
 
     if (!pattern) {
-      let patternMap = {
+      const patternMap = {
         [TYPES.TIME]: info.qTimeFmt || 'hh:mm:ss',
         [TYPES.DATE]: info.qDateFmt || 'YYYY-MM-DD',
         [TYPES.DATE_TIME]: info.qTimestampFmt || 'YYYY-MM-DD hh:mm:ss'
@@ -261,7 +261,7 @@ class DateFormatter {
     const masks = getMasks(this, parsedDate);
 
     const masksArr = [];
-    for (let mask in masks) {
+    for (const mask in masks) {
       if (Object.prototype.hasOwnProperty.call(masks, mask)) {
         masksArr.push(mask);
       }

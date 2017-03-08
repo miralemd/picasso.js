@@ -180,7 +180,7 @@ function getPointSizeLimits(x, y, width, height) {
 }
 
 function calculateLocalSettings(stngs, chart) {
-  let local = resolveSettings(stngs, DEFAULT_DATA_SETTINGS, chart);
+  const local = resolveSettings(stngs, DEFAULT_DATA_SETTINGS, chart);
   local.errorShape = resolveSettings(stngs.errorShape, DEFAULT_ERROR_SETTINGS.errorShape, chart);
   return local;
 }
@@ -191,7 +191,7 @@ function createDisplayPoints(dataPoints, { x, y, width, height }, pointSize, sha
   ).map((p) => {
     const s = notNumber(p.size) ? p.errorShape : p;
     const size = pointSize[0] + (s.size * (pointSize[1] - pointSize[0]));
-    let shape = shapeFn(s.shape, {
+    const shape = shapeFn(s.shape, {
       label: p.label,
       x: p.x * width,
       y: p.y * height,

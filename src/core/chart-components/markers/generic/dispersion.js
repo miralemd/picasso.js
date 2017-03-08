@@ -49,7 +49,7 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
 
     // Calculate the minimum data point distance
     if (major && !major.bandWidth) {
-      let pointCoords = data.map(d => d.self.value);
+      const pointCoords = data.map(d => d.self.value);
 
       // Sort values
       pointCoords.sort();
@@ -67,7 +67,7 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
     }
 
     data.forEach((d, i) => {
-      let obj = {};
+      const obj = {};
       Object.keys(resolvedStyle).forEach((part) => {
         obj[part] = resolveForDataObject(resolvedStyle[part], d, i);
       });
@@ -98,7 +98,7 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
       if (minDataPointDistance === 0) {
         minDataPointDistance = 0.000000001;
       }
-      let normalizedWidth = major({ value: major.domain()[0] }) - major({ value: major.domain()[0] + minDataPointDistance });
+      const normalizedWidth = major({ value: major.domain()[0] }) - major({ value: major.domain()[0] + minDataPointDistance });
       bandwidth = Math.abs(normalizedWidth);
     } else {
       bandwidth = major && major.bandWidth ? major.bandWidth() : 1;

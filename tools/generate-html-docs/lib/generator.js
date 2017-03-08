@@ -32,9 +32,9 @@ function writeFile(file, contents) {
  * @return {Undefined}          Returns nothing
  */
 function recursiveDirectoryBuilder(pathToBuild) {
-  let paths = pathToBuild.replace(/\\/g, '/').split('/');
+  const paths = pathToBuild.replace(/\\/g, '/').split('/');
   paths.pop();
-  let dir = [];
+  const dir = [];
   let compiledDir = '';
 
   while (paths.length) {

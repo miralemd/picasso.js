@@ -92,8 +92,8 @@ describe('QField', () => {
     };
 
     it('should fallback to empty string when othersLabel is not defined', () => {
-      let ff = qField()(dd);
-      let values = ff.values();
+      const ff = qField()(dd);
+      const values = ff.values();
       expect(values).to.eql([
         { value: 2, label: '', id: -3, index: 1 },
         { value: 4, label: 'fyra', id: 2, index: 2 },
@@ -102,7 +102,7 @@ describe('QField', () => {
     });
 
     it('should use the defined othersLabel', () => {
-      let ff = qField()({
+      const ff = qField()({
         meta: {
           qMin: 1,
           qMax: 2,
@@ -113,7 +113,7 @@ describe('QField', () => {
         pages: [pageWithOtherNodes],
         idx: 1
       });
-      let values = ff.values();
+      const values = ff.values();
       expect(values).to.eql([
         { value: 2, label: 'dom andra', id: -3, index: 1 },
         { value: 4, label: 'fyra', id: 2, index: 2 },
@@ -200,8 +200,8 @@ describe('QField', () => {
           idx: 0
         };
 
-        let ff = qField()(dd);
-        let values = ff.values();
+        const ff = qField()(dd);
+        const values = ff.values();
         expect(values).to.deep.equal([
           { value: 'NaN', label: 'Alpha', id: 1, index: 7 },
           { value: 'NaN', label: 'Alpha', id: 1, index: 7 },
@@ -223,8 +223,8 @@ describe('QField', () => {
           idx: 1
         };
 
-        let ff = qField()(dd);
-        let values = ff.values();
+        const ff = qField()(dd);
+        const values = ff.values();
         expect(values).to.deep.equal([
           { label: 'a1', id: 0, value: 123, index: 8 },
           { label: 'a2', id: 3, value: 135, index: 9 },
@@ -246,8 +246,8 @@ describe('QField', () => {
           idx: 2
         };
 
-        let ff = qField()(dd);
-        let values = ff.values();
+        const ff = qField()(dd);
+        const values = ff.values();
         expect(values).to.deep.equal([
           { label: '$45.00', id: 0, value: 45, index: 8 },
           { label: '$32.00', id: 0, value: 32, index: 9 },
@@ -268,8 +268,8 @@ describe('QField', () => {
           attrIdx: 1
         };
 
-        let ff = qField()(dd);
-        let values = ff.values();
+        const ff = qField()(dd);
+        const values = ff.values();
         expect(values).to.deep.equal([
           { value: 'NaN', label: 'redish', id: 0, index: 0 },
           { value: false, label: 'white', id: 0, index: 1 },
@@ -374,8 +374,8 @@ describe('QField', () => {
           idx: 0
         };
 
-        let ff = qField()(dd);
-        let values = ff.values();
+        const ff = qField()(dd);
+        const values = ff.values();
         expect(values).to.deep.equal([
           { label: 'Alpha', id: 1, value: 'NaN', index: 13 },
           { label: 'Alpha', id: 1, value: 'NaN', index: 13 },
@@ -398,8 +398,8 @@ describe('QField', () => {
           idx: 1
         };
 
-        let ff = qField()(dd);
-        let values = ff.values();
+        const ff = qField()(dd);
+        const values = ff.values();
         expect(values).to.deep.equal([
           { label: 'a1', id: 3, value: 'NaN', index: 13 },
           { label: 'a2', id: 4, value: 2014, index: 14 },
@@ -421,8 +421,8 @@ describe('QField', () => {
           attrIdx: 1
         };
 
-        let ff = qField()(dd);
-        let values = ff.values();
+        const ff = qField()(dd);
+        const values = ff.values();
         expect(values).to.deep.equal([
           { label: undefined, id: 0, value: 255, index: 0 },
           { label: undefined, id: 0, value: 255, index: 1 },
@@ -445,8 +445,8 @@ describe('QField', () => {
           idx: 2
         };
 
-        let ff = qField()(dd);
-        let values = ff.values();
+        const ff = qField()(dd);
+        const values = ff.values();
         expect(values).to.deep.equal([
           { label: '50%', id: 0, value: 0.50, index: 13 },
           { label: '51%', id: 0, value: 0.51, index: 14 },
@@ -469,8 +469,8 @@ describe('QField', () => {
           idx: 3
         };
 
-        let ff = qField()(dd);
-        let values = ff.values();
+        const ff = qField()(dd);
+        const values = ff.values();
         expect(values).to.deep.equal([
           { label: '$41', id: 0, value: 41, index: 16 },
           { label: '$42', id: 0, value: 42, index: 17 },

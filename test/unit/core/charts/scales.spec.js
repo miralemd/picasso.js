@@ -2,12 +2,12 @@ import { create } from '../../../../src/core/charts/scales';
 
 describe('scales', () => {
   it('should not throw when source options is not provided', () => {
-    let fn = () => create({});
+    const fn = () => create({});
     expect(fn).to.not.throw();
   });
 
   it('should create linear scale when type option is "linear"', () => {
-    let s = create({});
+    const s = create({});
     expect(s.type).to.equal('linear');
     expect(s.min()).to.equal(0);
     expect(s.max()).to.equal(1);
@@ -15,7 +15,7 @@ describe('scales', () => {
   });
 
   it('should create linear scale with specific min/max', () => {
-    let s = create({
+    const s = create({
       min: 20,
       max: 30
     });
@@ -25,19 +25,19 @@ describe('scales', () => {
   });
 
   it('should create ordinal scale when type option is "ordinal"', () => {
-    let s = create({ type: 'ordinal' });
+    const s = create({ type: 'ordinal' });
     expect(s.type).to.equal('ordinal');
     expect(s.sources).to.eql([]);
   });
 
   it('should create sequential color scale when type option is "color-sequential"', () => {
-    let s = create({ type: 'color-sequential' });
+    const s = create({ type: 'color-sequential' });
     expect(s.type).to.equal('color-sequential');
     expect(s.sources).to.eql([]);
   });
 
   it('should create linear scale when no better type fits', () => {
-    let s = create({});
+    const s = create({});
     expect(s.type).to.equal('linear');
     expect(s.min()).to.equal(0);
     expect(s.max()).to.equal(1);
@@ -45,7 +45,7 @@ describe('scales', () => {
   });
 
   it('should create linear scale when source fields are measures', () => {
-    let dataset = {
+    const dataset = {
       findField: sinon.stub()
     };
 
@@ -59,14 +59,14 @@ describe('scales', () => {
       min: () => 0,
       max: () => 1
     } });
-    let s = create({
+    const s = create({
       source: ['m1', 'm2']
     }, dataset);
     expect(s.type).to.equal('linear');
   });
 
   it('should exclude NaN values when calculating the combined min/max', () => {
-    let dataset = {
+    const dataset = {
       findField: sinon.stub()
     };
 
@@ -85,7 +85,7 @@ describe('scales', () => {
       min: () => -5,
       max: () => 'NaN'
     } });
-    let s = create({
+    const s = create({
       source: ['m1', 'm2', 'm3']
     }, dataset);
     expect(s.min()).to.equal(-5);
@@ -93,7 +93,7 @@ describe('scales', () => {
   });
 
   it('should create ordinal scale when source fields are dimensions', () => {
-    let dataset = {
+    const dataset = {
       findField: sinon.stub()
     };
 
@@ -103,7 +103,7 @@ describe('scales', () => {
       min: () => 2015,
       max: () => 2017
     } });
-    let s = create({
+    const s = create({
       source: ['d1']
     }, dataset);
     expect(s.type).to.equal('ordinal');

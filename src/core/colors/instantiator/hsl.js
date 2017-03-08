@@ -16,7 +16,7 @@ const rHsl = /^\s*hsl\(\s*(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*%{1})\s*,\s*(-?\d+\.?\
 export default function hsl(colStr) {
   const match = (rHsl.exec(colStr) || rHsla.exec(colStr) || []);
 
-  let [h, s, l, a] = match.slice(1).map((v) => {
+  const [h, s, l, a] = match.slice(1).map((v) => {
     let returnVal = parseFloat(v);
 
     switch (match.indexOf(v)) {
