@@ -2,7 +2,18 @@
 
 ## Unreleased
 
--  
+### Added
+
+- PIC-104 Control visibility of components
+ 
+    ```js
+    components: [
+      {
+        type: 'axis',
+        show: false
+      }
+    ]
+    ```
 
 ## [BREAKING] 0.11.0
 

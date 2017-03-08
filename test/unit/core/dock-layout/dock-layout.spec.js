@@ -7,7 +7,8 @@ describe('Dock Layout', () => {
     size = 0,
     order = 0,
     edgeBleed = {},
-    minimumLayoutMode
+    minimumLayoutMode,
+    show = true
   } = {}) {
     let outerRect = { x: 0, y: 0, width: 0, height: 0 };
     let innerRect = { x: 0, y: 0, width: 0, height: 0 };
@@ -15,7 +16,7 @@ describe('Dock Layout', () => {
 
     const dummy = function dummy() {};
 
-    dummy.dockConfig = dockConfig({ dock, displayOrder: order });
+    dummy.dockConfig = dockConfig({ dock, displayOrder: order, show });
     dummy.dockConfig.requiredSize(rect => ({ size: rect.width * size, edgeBleed }));
     dummy.dockConfig.minimumLayoutMode(minimumLayoutMode);
 
@@ -303,6 +304,33 @@ describe('Dock Layout', () => {
       expect(leftComp.resize().innerRect, 'leftComp innerRect had incorrect calculated size').to.deep.include({ x: 0, y: 0, width: 100, height: 600 });
       expect(bottomComp.resize().innerRect, 'bottomComp innerRect had incorrect calculated size').to.deep.include({ x: 100, y: 600, width: 900, height: 300 });
       expect(mainComp.resize().innerRect, 'Main innerRect had incorrect calculated size').to.deep.include({ x: 100, y: 0, width: 900, height: 600 });
+    });
+  });
+
+  describe('show', () => {
+    it('should remove components with show set to false', () => {
+      const leftComp = componentMock({ dock: 'left', size: 0.05, show: false });
+      const rightComp = componentMock({ dock: 'right', size: 0.1 });
+      const mainComp = componentMock();
+      const topComp = componentMock({ dock: 'top', size: 0.15 });
+      const bottomComp = componentMock({ dock: 'bottom', size: 0.2, show: false });
+      const rect = { x: 0, y: 0, width: 1000, height: 1000 };
+      const dl = dockLayout();
+      dl.addComponent(leftComp);
+      dl.addComponent(rightComp);
+      dl.addComponent(mainComp);
+      dl.addComponent(topComp);
+      dl.addComponent(bottomComp);
+
+      const { visible, hidden } = dl.layout(rect);
+
+      expect(visible).to.be.of.length(3);
+      expect(hidden).to.be.of.length(2);
+      expect(visible).to.include(rightComp);
+      expect(visible).to.include(mainComp);
+      expect(visible).to.include(topComp);
+      expect(hidden).to.include(leftComp);
+      expect(hidden).to.include(bottomComp);
     });
   });
 });

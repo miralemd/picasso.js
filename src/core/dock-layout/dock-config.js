@@ -4,7 +4,8 @@ export default function dockConfig(settings = {}) {
     displayOrder = 0,
     prioOrder = 0,
     requiredSize = () => 0,
-    minimumLayoutMode
+    minimumLayoutMode,
+    show = true
   } = settings;
 
   const fn = function fn() {};
@@ -46,6 +47,14 @@ export default function dockConfig(settings = {}) {
       return minimumLayoutMode;
     }
     minimumLayoutMode = s;
+    return this;
+  };
+
+  fn.show = function showFn(s) {
+    if (typeof s === 'undefined') {
+      return show;
+    }
+    show = !!s;
     return this;
   };
 

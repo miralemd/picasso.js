@@ -82,6 +82,7 @@ function updateDockConfig(config, settings) {
   config.dock = settings.dock;
   config.prioOrder = settings.prioOrder;
   config.minimumLayoutMode = settings.minimumLayoutMode;
+  config.show = settings.show;
   return config;
 }
 

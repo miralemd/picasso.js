@@ -58,6 +58,7 @@ import componentFactory from '../component/component-factory';
  * @property {brush-setting} [brush] see [brushing](./brushing.md)
  * @property {number} [displayOrder = 0]
  * @property {number} [prioOrder = 0]
+ * @property {boolean} [show = true] If the component should be rendered
  * @property {string | {width: string, height: string}} [minimumLayoutMode] Refer to layout sizes defined by layoutModes in dockLayout
  * @property {string} [dock] left, right, top or bottom
  * @property {string} [scale] Named scale. Will be provided to the component if it ask for it.

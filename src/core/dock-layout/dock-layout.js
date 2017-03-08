@@ -202,13 +202,13 @@ function checkShowSettings(components, hiddenComponents, settings, logicalContai
   for (let i = 0; i < components.length; ++i) {
     const c = components[i];
     const minimumLayoutMode = c.config.minimumLayoutMode();
-    let show = true;
-    if (typeof minimumLayoutMode === 'object') {
+    let show = c.config.show();
+    if (show && typeof minimumLayoutMode === 'object') {
       show = layoutModes[minimumLayoutMode.width] &&
         layoutModes[minimumLayoutMode.height] &&
         logicalContainerRect.width >= layoutModes[minimumLayoutMode.width].width &&
         logicalContainerRect.height >= layoutModes[minimumLayoutMode.height].height;
-    } else if (minimumLayoutMode !== undefined) {
+    } else if (show && minimumLayoutMode !== undefined) {
       show = layoutModes[minimumLayoutMode] &&
         logicalContainerRect.width >= layoutModes[minimumLayoutMode].width &&
         logicalContainerRect.height >= layoutModes[minimumLayoutMode].height;
