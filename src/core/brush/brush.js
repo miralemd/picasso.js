@@ -439,7 +439,7 @@ export default function brush({
     }
 
     ranges[path].add(r);
-    fn.emit('update'); // TODO - do not emit update if state hasn't changed
+    fn.emit('update', [], []); // TODO - do not emit update if state hasn't changed
   };
 
   fn.containsRangeValue = (path, value) => {

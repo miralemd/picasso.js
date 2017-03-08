@@ -1,13 +1,86 @@
-function extractFieldFromId(id) {
+import resolve from '../../core/data/json-path-resolver';
+
+const LAYOUT_TO_PROP = [
+  ['qHyperCube', 'qHyperCubeDef'],
+  ['qDimensionInfo', 'qDimensions'],
+  ['qMeasureInfo', 'qMeasures'],
+  ['qAttrDimInfo', 'qAttributeDimensions'],
+  ['qAttrExprInfo', 'qAttributeExpressions']
+];
+
+export function extractFieldFromId(id, layout) {
   const DIM_RX = /\/qDimensionInfo(?:\/(\d+))?/;
   const M_RX = /\/qMeasureInfo\/(\d+)/;
-
-  const isDimension = DIM_RX.test(id);
-  const fieldMatch = isDimension ? DIM_RX.exec(id) : M_RX.exec(id);
-  const path = `${id.substr(0, id.indexOf('/qHyperCube'))}/qHyperCubeDef`;
+  const ATTR_DIM_RX = /\/qAttrDimInfo\/(\d+)/;
+  const ATTR_EXPR_RX = /\/qAttrExprInfo\/(\d+)/;
+  let isDimension = false;
   let index = 0;
-  if (fieldMatch !== null) {
-    index = +fieldMatch[1];
+  let path = id;
+  const pathToHC = `${path.substr(0, path.indexOf('/qHyperCube') + 11)}`; // 14 = length of '/qHyperCubeDef'
+
+  let shortenPath = true;
+
+  if (DIM_RX.test(id)) {
+    index = +DIM_RX.exec(id)[1];
+    const attr = id.replace(DIM_RX, '');
+    isDimension = true;
+    if (ATTR_DIM_RX.test(attr)) {
+      index = 0; // 'selection' should occur in the first field in the attribute dimension table
+      shortenPath = false;
+    } else if (ATTR_EXPR_RX.test(attr)) {
+      let attrIdx = 0; // depends on number of measures + number of attr expressions in dimensions before this one
+      if (layout) {
+        const hc = resolve(pathToHC, layout);
+
+        // offset by number of measures
+        attrIdx += hc.qMeasureInfo.length;
+
+        // offset by total number of attr expr in dimensions (assuming attr expr in dimensions are ordered first)
+        attrIdx = hc.qDimensionInfo.slice(0, index).reduce((v, dim) => v + dim.qAttrExprInfo.length, attrIdx);
+
+        // offset by the actual column value for the attribute expression itself
+        attrIdx += +ATTR_EXPR_RX.exec(path)[1];
+
+        index = attrIdx;
+        isDimension = false;
+      }
+    }
+  } else if (M_RX.test(id)) {
+    index = +M_RX.exec(id)[1];
+    isDimension = false;
+    const attr = id.replace(M_RX, '');
+    if (ATTR_DIM_RX.test(attr)) {
+      index = 0; // 'selection' should occur in the first field in the attribute dimension table
+      shortenPath = false;
+      isDimension = true;
+    } else if (ATTR_EXPR_RX.test(attr)) {
+      let attrIdx = 0; // depends on number of measures + number of attr expressions in dimensions and measures before this one
+      if (layout) {
+        const hc = resolve(pathToHC, layout);
+
+        // offset by number of measures
+        attrIdx += hc.qMeasureInfo.length;
+
+        // offset by total number of attr expr in dimensions (assuming attr expr in dimensions are ordered first)
+        attrIdx = hc.qDimensionInfo.reduce((v, dim) => v + dim.qAttrExprInfo.length, attrIdx);
+
+        // offset by total number of attr expr in measures before 'index'
+        attrIdx = hc.qMeasureInfo.slice(0, index).reduce((v, meas) => v + meas.qAttrExprInfo.length, attrIdx);
+
+        // offset by the actual column value for the attribute expression itself
+        attrIdx += +ATTR_EXPR_RX.exec(path)[1];
+
+        index = attrIdx;
+      }
+    }
+  }
+
+  LAYOUT_TO_PROP.forEach(([v, prop]) => {
+    path = path.replace(v, prop);
+  });
+
+  if (shortenPath) {
+    path = `${path.substr(0, path.indexOf('/qHyperCubeDef') + 14)}`; // 14 = length of '/qHyperCubeDef'
   }
 
   return {
@@ -17,13 +90,13 @@ function extractFieldFromId(id) {
   };
 }
 
-export default function qBrush(brush, { byCells, primarySource } = {}) {
+export default function qBrush(brush, { byCells, primarySource } = {}, layout) {
   const selections = [];
   const methods = {};
   const isActive = brush.isActive();
   let hasValues = false;
   brush.brushes().forEach((b) => {
-    const info = extractFieldFromId(b.id);
+    const info = extractFieldFromId(b.id, layout);
     if (b.type === 'range' && info.type === 'measure') {
       const ranges = b.brush.ranges();
       if (ranges.length) {

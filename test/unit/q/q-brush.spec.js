@@ -1,4 +1,4 @@
-import qBrush from '../../../src/q/brush/q-brush';
+import qBrush, { extractFieldFromId } from '../../../src/q/brush/q-brush';
 
 describe('q-brush', () => {
   let brush;
@@ -119,6 +119,77 @@ describe('q-brush', () => {
         [1, 6, 4],
         [2, 1]
       ]);
+    });
+  });
+
+  describe('path extraction', () => {
+    it('should map hypercube layout value to property path', () => {
+      let v = extractFieldFromId('/qHyperCube');
+      expect(v.path).to.equal('/qHyperCubeDef');
+    });
+
+    it('should map dimension layout value to params', () => {
+      let v = extractFieldFromId('/qHyperCube/qDimensionInfo/3');
+      expect(v).to.eql({
+        path: '/qHyperCubeDef',
+        index: 3,
+        type: 'dimension'
+      });
+    });
+
+    it('should map measure layout value to params', () => {
+      let v = extractFieldFromId('/qHyperCube/qMeasureInfo/2');
+      expect(v).to.eql({
+        path: '/qHyperCubeDef',
+        index: 2,
+        type: 'measure'
+      });
+    });
+
+    it('should map attribute dimension layout value to params (on dimension)', () => {
+      let v = extractFieldFromId('/qHyperCube/qDimensionInfo/2/qAttrDimInfo/5');
+      expect(v).to.eql({
+        path: '/qHyperCubeDef/qDimensions/2/qAttributeDimensions/5',
+        index: 0,
+        type: 'dimension'
+      });
+    });
+
+    it('should map attribute dimension layout value to params (on measure)', () => {
+      let v = extractFieldFromId('/qHyperCube/qMeasureInfo/2/qAttrDimInfo/4');
+      expect(v).to.eql({
+        path: '/qHyperCubeDef/qMeasures/2/qAttributeDimensions/4',
+        index: 0,
+        type: 'dimension'
+      });
+    });
+
+    it('should map attribute expression layout value to params (on measure)', () => {
+      let v = extractFieldFromId('/qHyperCube/qMeasureInfo/1/qAttrExprInfo/1', {
+        qHyperCube: {
+          qDimensionInfo: [{ qAttrExprInfo: [{}, {}] }],
+          qMeasureInfo: [{ qAttrExprInfo: [{}, {}] }, { qAttrExprInfo: [{}, {}, {}] }]
+        }
+      });
+      expect(v).to.eql({
+        path: '/qHyperCubeDef',
+        index: 7,
+        type: 'measure'
+      });
+    });
+
+    it('should map attribute expression layout value to params (on dimension)', () => {
+      let v = extractFieldFromId('/qHyperCube/qDimensionInfo/1/qAttrExprInfo/1', {
+        qHyperCube: {
+          qDimensionInfo: [{ qAttrExprInfo: [{}, {}] }, { qAttrExprInfo: [{}, {}, {}] }],
+          qMeasureInfo: [{}, {}, {}]
+        }
+      });
+      expect(v).to.eql({
+        path: '/qHyperCubeDef',
+        index: 6,
+        type: 'measure'
+      });
     });
   });
 });
