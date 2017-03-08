@@ -1,7 +1,7 @@
 import extend from 'extend';
 import { resolveStyle } from '../style';
 
-export default function resolveSettingsForPath(settings, defaults, composer, path) {
+export default function resolveSettingsForPath(settings, defaults, chart, path) {
   const composition = extend(true, {}, settings);
   // Check each setting for the existance of a source without custom function
   const ext = path ? composition[path] : composition;
@@ -10,7 +10,7 @@ export default function resolveSettingsForPath(settings, defaults, composer, pat
     Object.keys(ext).forEach((a) => {
       if (ext[a]) {
         if ((ext[a].source || ext[a].scale) && !ext[a].fn) {
-          const scale = composer.scale(ext[a]);
+          const scale = chart.scale(ext[a]);
           if (scale) {
             ext[a] = scale;
           }
@@ -28,7 +28,7 @@ function isPrimitive(x) {
   return type !== 'object' && type !== 'function' && type !== 'undefined';
 }
 
-export function resolveSettings(settings, defaults, composer) {
+export function resolveSettings(settings, defaults, chart) {
   const composition = extend(true, {}, settings);
   const ext = composition;
   const defs = defaults;
@@ -43,7 +43,7 @@ export function resolveSettings(settings, defaults, composer) {
           ext[a] = obj.fn;
         }
         if (obj.scale) {
-          const scale = composer.scale(obj.scale);
+          const scale = chart.scale(obj.scale);
           if (scale) {
             ext[a].scale = scale;
           }

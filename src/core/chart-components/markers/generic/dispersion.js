@@ -3,15 +3,15 @@ import { transposer } from '../../../transposer/transposer';
 import { resolveForDataObject } from '../../../style';
 import resolveSettingsForPath from '../../settings-setup';
 
-function resolveInitialStyle(settings, baseStyles, composer) {
+function resolveInitialStyle(settings, baseStyles, chart) {
   const ret = {};
   Object.keys(baseStyles).forEach((s) => {
-    ret[s] = resolveSettingsForPath(settings, baseStyles, composer, s);
+    ret[s] = resolveSettingsForPath(settings, baseStyles, chart, s);
   });
   return ret;
 }
 
-export default function dispersion(composer, defaultStyles = {}, initialSettings = {}) {
+export default function dispersion(chart, defaultStyles = {}, initialSettings = {}) {
   let settings = initialSettings;
   let major;
   let minor;
@@ -29,8 +29,8 @@ export default function dispersion(composer, defaultStyles = {}, initialSettings
     settings = stngs.settings;
 
     // Setup scales
-    major = settings.major ? composer.scale(settings.major) : null;
-    minor = settings.minor ? composer.scale(settings.minor) : null;
+    major = settings.major ? chart.scale(settings.major) : null;
+    minor = settings.minor ? chart.scale(settings.minor) : null;
 
     // Set the default bandwidth
     bandwidth = 0;
@@ -45,7 +45,7 @@ export default function dispersion(composer, defaultStyles = {}, initialSettings
 
   fn.onData = (data) => {
     items = [];
-    resolvedStyle = resolveInitialStyle(settings, defaultStyles, composer);
+    resolvedStyle = resolveInitialStyle(settings, defaultStyles, chart);
 
     // Calculate the minimum data point distance
     if (major && !major.bandWidth) {

@@ -11,7 +11,7 @@ export function reduceToLeafNodes(nodes = []) {
 }
 
 export function styler(obj, { context, data, style }) {
-  const brusher = obj.composer.brush(context);
+  const brusher = obj.chart.brush(context);
   const dataProps = data;
   const active = style.active || {};
   const inactive = style.inactive || {};
@@ -113,7 +113,7 @@ export function styler(obj, { context, data, style }) {
 function brushDataPoint({
   dataPoint,
   action,
-  composer,
+  chart,
   config
 }) {
   if (typeof dataPoint === 'undefined' || !config) {
@@ -141,14 +141,14 @@ function brushDataPoint({
   }
 
   config.contexts.forEach((c) => {
-    composer.brush(c)[actionFn](items);
+    chart.brush(c)[actionFn](items);
   });
 }
 
 function brushFromSceneNode({
   node,
   action,
-  composer,
+  chart,
   data,
   config
 }) {
@@ -158,7 +158,7 @@ function brushFromSceneNode({
   brushDataPoint({
     dataPoint,
     action,
-    composer,
+    chart,
     config
   });
 }
@@ -208,7 +208,7 @@ function resolveEvent({ collisions, t, config, action }) {
     brushFromSceneNode({
       node: collision.node,
       action,
-      composer: config.composer,
+      chart: config.chart,
       data: config.data,
       config: t
     });

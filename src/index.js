@@ -7,6 +7,7 @@ import {
 import q from './q';
 import './web';
 
+// import chartComponent from './core/charts';
 import boxMarkerComponent from './core/chart-components/markers/box';
 import pointMarkerComponent from './core/chart-components/markers/point';
 import gridLineComponent from './core/chart-components/grid';
@@ -27,6 +28,7 @@ function use(plugin, options = {}) {
 
 
 // Register components
+// use(chartComponent);
 use(textComponent);
 use(axisComponent);
 use(boxMarkerComponent);

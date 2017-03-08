@@ -1,4 +1,4 @@
-import { formatter } from '../../../formatter';
+import { formatter } from '../../formatter';
 
 function fieldFinder(query, field) {
   return field.title() === query;
@@ -19,11 +19,11 @@ export function create(options, dataset) {
       // .locale( options.locale || {} );
 }
 
-export default function builder(obj, composer) {
+export default function builder(obj, chart) {
   const formatters = {};
   for (const f in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, f)) {
-      formatters[f] = create(obj[f], composer.dataset());
+      formatters[f] = create(obj[f], chart.dataset());
     }
   }
   return formatters;

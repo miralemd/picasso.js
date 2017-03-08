@@ -2,8 +2,8 @@ import resolveSettingsForPath from '../../../../src/core/chart-components/settin
 
 describe('Settings setup', () => {
   let settings,
-    composer,
-    nullComposer;
+    chart,
+    nullchart;
   beforeEach(() => {
     settings = {
       fontSize: '13px',
@@ -47,37 +47,37 @@ describe('Settings setup', () => {
       }
     };
 
-    nullComposer = {
+    nullchart = {
       scale() {
         return function scale() { return undefined; };
       }
     };
-    composer = {
+    chart = {
       scale() {
         return function scale() { return 'compost'; };
       }
     };
   });
   it('should use custom scale if not-null', () => {
-    const result = resolveSettingsForPath(settings, { line: { fill: 'filling' } }, composer, 'line');
+    const result = resolveSettingsForPath(settings, { line: { fill: 'filling' } }, chart, 'line');
     expect(result.fill.fn()).to.equal('compost');
   });
   it('should add fallback if custom scale', () => {
-    const result = resolveSettingsForPath(settings, { line: { fill: 'filling' } }, nullComposer, 'line');
+    const result = resolveSettingsForPath(settings, { line: { fill: 'filling' } }, nullchart, 'line');
     expect(result.fill.fn()).to.equal('filling');
   });
   it('should add fallback if custom fn', () => {
-    const result = resolveSettingsForPath(settings, { box: { opacity: '!transparency' } }, composer, 'box');
+    const result = resolveSettingsForPath(settings, { box: { opacity: '!transparency' } }, chart, 'box');
     expect(result.opacity.fn(undefined, 2)).to.equal(0.5);
     expect(result.opacity.fn(undefined, 0)).to.equal('!transparency');
   });
   it('should add fallback if custom fn no root', () => {
-    const result = resolveSettingsForPath(settings, { box: { opacity: '!transparency' } }, composer, 'box');
+    const result = resolveSettingsForPath(settings, { box: { opacity: '!transparency' } }, chart, 'box');
     expect(result.opacity.fn(undefined, 2)).to.equal(0.5);
     expect(result.opacity.fn(undefined, 0)).to.equal('!transparency');
   });
   it('should handle explicitly set null value', () => {
-    const result = resolveSettingsForPath(settings, { title: { nullValue: '2' } }, composer, 'title');
+    const result = resolveSettingsForPath(settings, { title: { nullValue: '2' } }, chart, 'title');
     expect(result.nullValue).to.equal(null);
   });
 });

@@ -1,8 +1,8 @@
-import { registry } from '../../../utils/registry';
-import linear from '../../../scales/linear';
-import ordinal from '../../../scales/ordinal';
-import sequential from '../../../scales/color/sequential';
-import threshold from '../../../scales/color/threshold';
+import { registry } from '../../utils/registry';
+import linear from '../../scales/linear';
+import ordinal from '../../scales/ordinal';
+import sequential from '../../scales/color/sequential';
+import threshold from '../../scales/color/threshold';
 
 const reg = registry();
 
@@ -64,11 +64,11 @@ export function getOrCreateScale(v, scales, dataset) {
   return s || create(v, dataset);
 }
 
-export default function builder(obj, composer) {
+export default function builder(obj, chart) {
   const scales = {};
   for (const s in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, s)) {
-      scales[s] = create(obj[s], composer.dataset());
+      scales[s] = create(obj[s], chart.dataset());
     }
   }
   return scales;

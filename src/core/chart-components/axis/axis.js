@@ -56,16 +56,16 @@ function getAlign(dock, align, type) {
   return align;
 }
 
-function resolveInitialStyle(settings, baseStyles, composer) {
+function resolveInitialStyle(settings, baseStyles, chart) {
   const ret = {};
   Object.keys(baseStyles).forEach((s) => {
-    ret[s] = resolveSettingsForPath(settings, baseStyles, composer, s);
+    ret[s] = resolveSettingsForPath(settings, baseStyles, chart, s);
   });
   return ret;
 }
 
 const axisComponent = {
-  require: ['composer', 'renderer', 'dockConfig'],
+  require: ['chart', 'renderer', 'dockConfig'],
   defaultSettings: {
     displayOrder: 0,
     prioOrder: 0,
@@ -87,7 +87,7 @@ const axisComponent = {
     this.init(this.settings);
   },
   init(settings) {
-    const styleSettings = resolveInitialStyle(settings.settings, this.defaultStyleSettings, this.composer);
+    const styleSettings = resolveInitialStyle(settings.settings, this.defaultStyleSettings, this.chart);
     const axisSettings = extend(true, {}, this.settings, settings.settings, styleSettings);
 
     const dock = typeof axisSettings.dock !== 'undefined' ? axisSettings.dock : this.defaultDock;

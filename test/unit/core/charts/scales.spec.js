@@ -1,6 +1,6 @@
-import { create } from '../../../../../src/core/charts/composer/scales';
+import { create } from '../../../../src/core/charts/scales';
 
-describe('composer-scales', () => {
+describe('scales', () => {
   it('should not throw when source options is not provided', () => {
     let fn = () => create({});
     expect(fn).to.not.throw();

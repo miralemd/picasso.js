@@ -4,7 +4,8 @@ import lineComponent from '../../../../../src/core/chart-components/grid/line';
 
 describe('line marker', () => {
   let rendererOutput;
-  let composer;
+  let chart;
+  let renderer;
   let shapeFn;
 
   beforeEach(() => {
@@ -15,12 +16,7 @@ describe('line marker', () => {
       map: sinon.stub()
     };
     shapeFn = (type, p) => { p.type = type; return p; };
-    composer = {
-      renderer: {
-        appendTo: () => {},
-        render: p => (rendererOutput = p),
-        size: () => {}
-      },
+    chart = {
       brush: () => ({
         on: () => {}
       }),
@@ -29,6 +25,11 @@ describe('line marker', () => {
       dataset: () => dataset,
       scale: sinon.stub()
     };
+    renderer = {
+      appendTo: () => {},
+      render: p => (rendererOutput = p),
+      size: () => {}
+    };
   });
 
   function createAndRenderComponent(opts) {
@@ -36,7 +37,11 @@ describe('line marker', () => {
       config,
       inner
     } = opts;
-    const instance = componentFactory(lineComponent)(config, composer);
+    const instance = componentFactory(lineComponent, {
+      settings: config,
+      chart,
+      renderer
+    });
     instance.beforeMount();
     instance.resize(inner);
     instance.beforeRender();
@@ -51,7 +56,7 @@ describe('line marker', () => {
       data: { mapTo: 'does not matter', groupBy: 'does not matter' }
     };
 
-    composer.dataset().map.returns([{}]);
+    chart.dataset().map.returns([{}]);
 
     createAndRenderComponent({
       inner: { x: 10, y: 20, width: 100, height: 200 },
@@ -69,21 +74,21 @@ describe('line marker', () => {
       y: { scale: 'y' }
     };
 
-    composer.dataset().map.returns([{}]);
+    chart.dataset().map.returns([{}]);
 
     const xScale = v => v;
     xScale.cachedTicks = () => [{
       position: 0.5,
       isMinor: false
     }];
-    composer.scale.withArgs({ scale: 'x' }).returns(xScale);
+    chart.scale.withArgs({ scale: 'x' }).returns(xScale);
 
     const yScale = v => v;
     yScale.cachedTicks = () => [{
       position: 0.5,
       isMinor: false
     }];
-    composer.scale.withArgs({ scale: 'y' }).returns(yScale);
+    chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
     createAndRenderComponent({
       inner: { x: 10, y: 20, width: 100, height: 200 },
@@ -121,14 +126,14 @@ describe('line marker', () => {
       x: { scale: 'x' }
     };
 
-    composer.dataset().map.returns([{}]);
+    chart.dataset().map.returns([{}]);
 
     const xScale = v => v;
     xScale.cachedTicks = () => [{
       position: 0.5,
       isMinor: false
     }];
-    composer.scale.withArgs({ scale: 'x' }).returns(xScale);
+    chart.scale.withArgs({ scale: 'x' }).returns(xScale);
 
     createAndRenderComponent({
       inner: { x: 10, y: 20, width: 100, height: 200 },
@@ -156,14 +161,14 @@ describe('line marker', () => {
       y: { scale: 'y' }
     };
 
-    composer.dataset().map.returns([{}]);
+    chart.dataset().map.returns([{}]);
 
     const yScale = v => v;
     yScale.cachedTicks = () => [{
       position: 0.5,
       isMinor: false
     }];
-    composer.scale.withArgs({ scale: 'y' }).returns(yScale);
+    chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
     createAndRenderComponent({
       inner: { x: 10, y: 20, width: 100, height: 200 },
@@ -195,21 +200,21 @@ describe('line marker', () => {
       }
     };
 
-    composer.dataset().map.returns([{}]);
+    chart.dataset().map.returns([{}]);
 
     const xScale = v => v;
     xScale.cachedTicks = () => [{
       position: 0.5,
       isMinor: true
     }];
-    composer.scale.withArgs({ scale: 'x' }).returns(xScale);
+    chart.scale.withArgs({ scale: 'x' }).returns(xScale);
 
     const yScale = v => v;
     yScale.cachedTicks = () => [{
       position: 0.5,
       isMinor: true
     }];
-    composer.scale.withArgs({ scale: 'y' }).returns(yScale);
+    chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
     createAndRenderComponent({
       inner: { x: 10, y: 20, width: 100, height: 200 },
@@ -254,21 +259,21 @@ describe('line marker', () => {
       }
     };
 
-    composer.dataset().map.returns([{}]);
+    chart.dataset().map.returns([{}]);
 
     const xScale = v => v;
     xScale.cachedTicks = () => [{
       position: 0.5,
       isMinor: true
     }];
-    composer.scale.withArgs({ scale: 'x' }).returns(xScale);
+    chart.scale.withArgs({ scale: 'x' }).returns(xScale);
 
     const yScale = v => v;
     yScale.cachedTicks = () => [{
       position: 0.5,
       isMinor: false
     }];
-    composer.scale.withArgs({ scale: 'y' }).returns(yScale);
+    chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
     createAndRenderComponent({
       inner: { x: 10, y: 20, width: 100, height: 200 },

@@ -99,7 +99,7 @@ function generateTitle({
 
 
 const textComponent = {
-  require: ['renderer', 'composer'],
+  require: ['renderer', 'chart'],
   defaultSettings: {
     dock: 'bottom',
     displayOrder: 99,
@@ -127,7 +127,7 @@ const textComponent = {
 
     extend(this.settings, this.settings.settings || {});
 
-    this.dataset = this.composer.dataset();
+    this.dataset = this.chart.dataset();
     const table = this.dataset.tables()[0];
     const text = this.settings.text;
     const join = this.settings.settings && this.settings.settings.join;

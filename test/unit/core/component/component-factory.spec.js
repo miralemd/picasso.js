@@ -3,7 +3,7 @@
 import componentFactory from '../../../../src/core/component/component-factory';
 
 describe('Component', () => {
-  let customComponent;
+  let definition;
   let created;
   let beforeMount;
   let mounted;
@@ -12,15 +12,11 @@ describe('Component', () => {
   let beforeUpdate;
   let updated;
   let resize;
-  let composerMock;
+  let chart;
+  let renderer;
 
   beforeEach(() => {
-    composerMock = {
-      renderer: {
-        appendTo: () => {},
-        render: () => ({}),
-        size: () => {}
-      },
+    chart = {
       brush: () => ({
         on: () => {}
       }),
@@ -37,7 +33,7 @@ describe('Component', () => {
     beforeUpdate = sinon.spy();
     updated = sinon.spy();
     resize = sinon.spy();
-    customComponent = componentFactory({
+    definition = {
       defaultSettings: {
         dock: 'top',
         style: {
@@ -53,11 +49,20 @@ describe('Component', () => {
       resize,
       beforeUpdate,
       updated
-    });
+    };
+    renderer = {
+      appendTo: () => {},
+      render: () => ({}),
+      size: () => {}
+    };
   });
 
   function createAndRenderComponent(config) {
-    const instance = customComponent(config, composerMock);
+    const instance = componentFactory(definition, {
+      settings: config,
+      chart,
+      renderer
+    });
     instance.beforeMount();
     instance.resize({});
     instance.beforeRender();

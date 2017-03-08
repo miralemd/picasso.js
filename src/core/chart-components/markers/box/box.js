@@ -76,14 +76,14 @@ const DEFAULT_STYLE_SETTINGS = {
  */
 
 const boxMarkerComponent = {
-  require: ['composer'],
+  require: ['chart'],
   defaultSettings: {
     settings: {},
     data: {}
   },
   created() {
     this.rect = { x: 0, y: 0, width: 0, height: 0 };
-    this.dispersion = dispersion(this.composer, DEFAULT_STYLE_SETTINGS, this.settings.settings);
+    this.dispersion = dispersion(this.chart, DEFAULT_STYLE_SETTINGS, this.settings.settings);
     this.updateSettings(this.settings);
   },
   updateSettings(settings) {
