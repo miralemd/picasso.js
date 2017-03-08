@@ -28,15 +28,20 @@ export function extractFieldFromId(id, layout) {
       index = 0; // 'selection' should occur in the first field in the attribute dimension table
       shortenPath = false;
     } else if (ATTR_EXPR_RX.test(attr)) {
-      let attrIdx = 0; // depends on number of measures + number of attr expressions in dimensions before this one
+      // attrIdx depends on number of measures + number of attr expressions
+      // in dimensions before this one
+      let attrIdx = 0;
       if (layout) {
         const hc = resolve(pathToHC, layout);
 
         // offset by number of measures
         attrIdx += hc.qMeasureInfo.length;
 
-        // offset by total number of attr expr in dimensions (assuming attr expr in dimensions are ordered first)
-        attrIdx = hc.qDimensionInfo.slice(0, index).reduce((v, dim) => v + dim.qAttrExprInfo.length, attrIdx);
+        // offset by total number of attr expr in dimensions
+        // (assuming attr expr in dimensions are ordered first)
+        attrIdx = hc.qDimensionInfo
+          .slice(0, index)
+          .reduce((v, dim) => v + dim.qAttrExprInfo.length, attrIdx);
 
         // offset by the actual column value for the attribute expression itself
         attrIdx += +ATTR_EXPR_RX.exec(path)[1];
@@ -50,22 +55,28 @@ export function extractFieldFromId(id, layout) {
     isDimension = false;
     const attr = id.replace(M_RX, '');
     if (ATTR_DIM_RX.test(attr)) {
-      index = 0; // 'selection' should occur in the first field in the attribute dimension table
+      // 'selection' should occur in the first field in the attribute dimension table
+      index = 0;
       shortenPath = false;
       isDimension = true;
     } else if (ATTR_EXPR_RX.test(attr)) {
-      let attrIdx = 0; // depends on number of measures + number of attr expressions in dimensions and measures before this one
+      // depends on number of measures + number of attr expressions
+      // in dimensions and measures before this one
+      let attrIdx = 0;
       if (layout) {
         const hc = resolve(pathToHC, layout);
 
         // offset by number of measures
         attrIdx += hc.qMeasureInfo.length;
 
-        // offset by total number of attr expr in dimensions (assuming attr expr in dimensions are ordered first)
+        // offset by total number of attr expr in dimensions
+        // (assuming attr expr in dimensions are ordered first)
         attrIdx = hc.qDimensionInfo.reduce((v, dim) => v + dim.qAttrExprInfo.length, attrIdx);
 
         // offset by total number of attr expr in measures before 'index'
-        attrIdx = hc.qMeasureInfo.slice(0, index).reduce((v, meas) => v + meas.qAttrExprInfo.length, attrIdx);
+        attrIdx = hc.qMeasureInfo
+          .slice(0, index)
+          .reduce((v, meas) => v + meas.qAttrExprInfo.length, attrIdx);
 
         // offset by the actual column value for the attribute expression itself
         attrIdx += +ATTR_EXPR_RX.exec(path)[1];
@@ -129,7 +140,9 @@ export default function qBrush(brush, { byCells, primarySource } = {}, layout) {
 
         methods.selectHyperCubeCells.cols.push(info.index);
         if (b.id === primarySource || (!primarySource && !methods.selectHyperCubeCells.values)) {
-          methods.selectHyperCubeCells.values = b.brush.values().map(s => +s).filter(v => !isNaN(v));
+          methods.selectHyperCubeCells.values = b.brush.values()
+            .map(s => +s)
+            .filter(v => !isNaN(v));
           hasValues = !!methods.selectHyperCubeCells.values.length;
         }
       } else {
@@ -160,7 +173,11 @@ export default function qBrush(brush, { byCells, primarySource } = {}, layout) {
   if (methods.selectHyperCubeCells) {
     selections.push({
       method: 'selectHyperCubeCells',
-      params: [methods.selectHyperCubeCells.path, methods.selectHyperCubeCells.values, methods.selectHyperCubeCells.cols]
+      params: [
+        methods.selectHyperCubeCells.path,
+        methods.selectHyperCubeCells.values,
+        methods.selectHyperCubeCells.cols
+      ]
     });
   }
 

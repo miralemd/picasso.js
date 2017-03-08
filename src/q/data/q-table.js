@@ -134,8 +134,8 @@ export default function qTable({ id } = {}) {
     fields: fieldsFn
   });
 
-  let attributeDimensionFieldsCache = [];
-  let attributeExpressionFieldsCache = [];
+  const attributeDimensionFieldsCache = [];
+  const attributeExpressionFieldsCache = [];
 
   q.findField = (query) => {
     const d = q.data();
