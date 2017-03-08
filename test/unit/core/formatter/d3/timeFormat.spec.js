@@ -1,5 +1,3 @@
-/* eslint no-unused-expressions: 0*/
-
 import timeFormat from '../../../../../src/core/formatter/d3/timeFormat';
 
 describe('d3 timeFormat', () => {

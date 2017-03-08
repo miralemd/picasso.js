@@ -38,7 +38,7 @@ describe('picasso.js', () => {
         data: {}
       });
 
-      expect(updatedFn).to.have.been.called; // eslint-disable-line no-unused-expressions
+      expect(updatedFn).to.have.been.called;
     });
 
     it('should bind event listener', () => {

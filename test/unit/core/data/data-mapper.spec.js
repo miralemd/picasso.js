@@ -63,7 +63,6 @@ describe('data-mapper', () => {
     });
 
     describe('containing only null data', () => {
-      /* eslint no-unused-expressions: 0*/
       let values = [undefined, null, NaN, ''];
       it('first', () => {
         expect(reducers.first(values)).to.equal(undefined);

@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-expressions */
-
 import componentFactory from '../../../../src/core/component/component-factory';
 
 describe('Component', () => {

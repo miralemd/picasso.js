@@ -1,5 +1,3 @@
-/* eslint no-unused-expressions: 0*/
-
 import numberFormat from '../../../../../src/core/formatter/d3/numberFormat';
 
 describe('d3 numberFormat', () => {

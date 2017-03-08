@@ -481,7 +481,7 @@ describe('Container', () => {
 
       const items = container.getItemsFrom();
 
-      expect(items).to.be.empty; // eslint-disable-line no-unused-expressions
+      expect(items).to.be.empty;
     });
 
     it('should return an empty array if call argument is an empty object', () => {
@@ -491,7 +491,7 @@ describe('Container', () => {
 
       const items = container.getItemsFrom({});
 
-      expect(items).to.be.empty; // eslint-disable-line no-unused-expressions
+      expect(items).to.be.empty;
     });
 
     it('should return an empty array if call argument is null', () => {
@@ -501,7 +501,7 @@ describe('Container', () => {
 
       const items = container.getItemsFrom(null);
 
-      expect(items).to.be.empty; // eslint-disable-line no-unused-expressions
+      expect(items).to.be.empty;
     });
 
     it('should return an empty array if call argument shape is not supported', () => {
@@ -511,7 +511,7 @@ describe('Container', () => {
 
       const items = container.getItemsFrom({ a: 1, b: 2, c: 20, width: 20 });
 
-      expect(items).to.be.empty; // eslint-disable-line no-unused-expressions
+      expect(items).to.be.empty;
     });
 
     describe('Bounds', () => {
@@ -545,7 +545,7 @@ describe('Container', () => {
 
         const items = container.getItemsFrom({ x: 400, y: 450 });
 
-        expect(items).to.be.empty; // eslint-disable-line no-unused-expressions
+        expect(items).to.be.empty;
       });
     });
 
@@ -588,7 +588,7 @@ describe('Container', () => {
 
         const items = container.getItemsFrom({ x: 550, y: 550 });
 
-        expect(items).to.be.empty; // eslint-disable-line no-unused-expressions
+        expect(items).to.be.empty;
       });
     });
 
@@ -632,7 +632,7 @@ describe('Container', () => {
 
         const items = container.getItemsFrom({ x: 550, y: 550 });
 
-        expect(items).to.be.empty; // eslint-disable-line no-unused-expressions
+        expect(items).to.be.empty;
       });
 
       it('should return empty result if there are no colliding children', () => {
@@ -642,7 +642,7 @@ describe('Container', () => {
 
         const items = container.getItemsFrom({ x: 450, y: 450 });
 
-        expect(items).to.be.empty; // eslint-disable-line no-unused-expressions
+        expect(items).to.be.empty;
       });
     });
 
@@ -673,7 +673,7 @@ describe('Container', () => {
 
         const items = container.getItemsFrom({ x: 10, y: 10 });
 
-        expect(items).to.be.empty; // eslint-disable-line no-unused-expressions
+        expect(items).to.be.empty;
       });
 
       it('should return empty result if no collision is detected', () => {
@@ -681,7 +681,7 @@ describe('Container', () => {
 
         const items = container.getItemsFrom({ x: 400, y: 450 });
 
-        expect(items).to.be.empty; // eslint-disable-line no-unused-expressions
+        expect(items).to.be.empty;
       });
     });
   });

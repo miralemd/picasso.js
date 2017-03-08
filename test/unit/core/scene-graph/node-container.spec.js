@@ -1,6 +1,5 @@
 import Node from '../../../../src/core/scene-graph/node-container';
 
-/* eslint no-unused-expressions: 0 */
 describe('TreeNode', () => {
   describe('upon instantiation', () => {
     it('should have no parent', () => {

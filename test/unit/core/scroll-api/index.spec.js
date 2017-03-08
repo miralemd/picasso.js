@@ -33,7 +33,6 @@ describe('Scroll api', () => {
     scroll.on('update', fn);
     scroll.update({ min: 0, max: 200, viewSize: 10 });
 
-    // eslint-disable-next-line no-unused-expressions
     expect(fn).to.have.been.calledOnce;
   });
   it('should only trigger update once if viewSize and start changes', () => {
@@ -41,7 +40,6 @@ describe('Scroll api', () => {
     scroll.on('update', fn);
     scroll.update({ min: 100, max: 200, viewSize: 10 });
 
-    // eslint-disable-next-line no-unused-expressions
     expect(fn).to.have.been.calledOnce;
   });
 });

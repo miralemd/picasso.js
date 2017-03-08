@@ -1,5 +1,3 @@
-/* eslint no-unused-expressions: 0*/
-
 import { crispifierFactory } from '../../../../src/core/transposer/crispifier';
 
 describe('crispifier', () => {

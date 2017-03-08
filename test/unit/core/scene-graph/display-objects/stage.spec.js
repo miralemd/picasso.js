@@ -21,13 +21,13 @@ describe('Stage', () => {
         stage = create();
         const r = stage.getItemsFrom({ x: 60, y: 60 });
 
-        expect(r).to.be.empty; // eslint-disable-line no-unused-expressions
+        expect(r).to.be.empty;
       });
 
       it('should return an empty array when there are no hits', () => {
         const r = stage.getItemsFrom({ x: 6000, y: 6000 });
 
-        expect(r).to.be.empty; // eslint-disable-line no-unused-expressions
+        expect(r).to.be.empty;
       });
 
       it('should return child objects that intersect with a point', () => {
@@ -63,13 +63,13 @@ describe('Stage', () => {
         stage = create();
         const r = stage.getItemsFrom({ x1: 60, y1: 60, x2: 120, y2: 120 });
 
-        expect(r).to.be.empty; // eslint-disable-line no-unused-expressions
+        expect(r).to.be.empty;
       });
 
       it('should return an empty array when there are no hits', () => {
         const r = stage.getItemsFrom({ x1: 6000, y1: 6000, x2: 12000, y2: 12000 });
 
-        expect(r).to.be.empty; // eslint-disable-line no-unused-expressions
+        expect(r).to.be.empty;
       });
 
       it('should return child objects that intersect with a line', () => {
@@ -95,13 +95,13 @@ describe('Stage', () => {
         stage = create();
         const r = stage.getItemsFrom({ x: 60, y: 60, width: 120, height: 120 });
 
-        expect(r).to.be.empty; // eslint-disable-line no-unused-expressions
+        expect(r).to.be.empty;
       });
 
       it('should return an empty array when there are no hits', () => {
         const r = stage.getItemsFrom({ x: 6000, y: 6000, width: 120, height: 120 });
 
-        expect(r).to.be.empty; // eslint-disable-line no-unused-expressions
+        expect(r).to.be.empty;
       });
 
       it('should return child objects that intersect with a rect', () => {

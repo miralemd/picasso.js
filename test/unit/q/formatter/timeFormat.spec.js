@@ -1,5 +1,3 @@
-/* eslint no-unused-expressions: 0*/
-
 import timeFormat, { QlikTimeToDate } from '../../../../src/q/formatter/timeFormat';
 
 /**

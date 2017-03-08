@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-expressions */
-
 import { chart } from '../../../src';
 import createElement from '../../mocks/element-mock';
 
