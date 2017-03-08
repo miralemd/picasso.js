@@ -40,8 +40,8 @@ function tablesFn(layout) {
   }));
 }
 
-export default function qDataset() {
-  const qds = dataset({
+export default function qDataset(data) {
+  const qds = dataset(data, {
     tables: tablesFn
   });
 

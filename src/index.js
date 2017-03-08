@@ -2,6 +2,8 @@ import {
   chart,
   renderer,
   data,
+  formatter,
+  brush,
   component
 } from './core';
 import q from './q';
@@ -20,12 +22,13 @@ function use(plugin, options = {}) {
   plugin({
     chart,
     renderer,
+    brush,
     data,
+    formatter,
     component,
     q
   }, options);
 }
-
 
 // Register components
 // use(chartComponent);
@@ -36,6 +39,9 @@ use(pointMarkerComponent);
 use(gridLineComponent);
 use(scrollbarComponent);
 
+// Register q
+use(q);
+
 /**
  * The mother of all namespaces
  * @namespace picasso
@@ -44,7 +50,8 @@ export {
   chart,
   renderer,
   data,
+  formatter,
+  brush,
   use,
-  component,
-  q
+  component
 };

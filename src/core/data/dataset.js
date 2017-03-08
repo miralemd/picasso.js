@@ -27,7 +27,7 @@ export function findField(path, tables) {
  * @ignore
  * @return {dataset}
  */
-export default function dataset({
+export default function dataset(_d, {
   tables = tablesFn
 } = {}) {
   let cache = {},
@@ -95,7 +95,7 @@ export default function dataset({
    */
   ds.map = (mapper, repeater) => mapData(mapper, repeater, ds);
 
-  return ds;
+  return ds(_d);
 }
 
 /**

@@ -1,5 +1,5 @@
 /* eslint no-return-assign: 0*/
-import { formatter as formatterFn } from '../formatter';
+import formatterFn from '../formatter';
 
 // TODO - decide whether usage of .call() is appropriate when invoking accessors, if yes then arrow functions are not allowed!
 
@@ -10,7 +10,7 @@ const accessors = {
   type: data => data.type,
   title: data => data.title,
   values: data => data.values,
-  formatter: () => formatterFn('d3')('number')('')
+  formatter: () => formatterFn('d3-number')('')
 };
 
 /**
