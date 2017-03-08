@@ -18,6 +18,7 @@
     "docs": "cd docs && npm run docs",
     "lint": "eslint *.js src test docs/*.js plugins/hammer/src tools/generate-html-docs/lib",
     "lint:fix": "npm run lint -- --fix",
+    "lint:recommended": "npm run lint -- --config .eslintrc-recommended.json",
     "test": "npm run test:unit && npm run test:component",
     "test:coverage": "npm run test:unit:coverage && npm run test:component:coverage",
     "test:unit": "aw-test-runner './test/unit/**/*.spec.js'",
