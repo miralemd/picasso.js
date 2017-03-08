@@ -101,7 +101,20 @@ export function extractFieldFromId(id, layout) {
   };
 }
 
-export default function qBrush(brush, { byCells, primarySource } = {}, layout) {
+/**
+ * Helper method to generate suitable QIX selection methods and parameters based on a brush instance.
+ * @alias brush
+ * @memberof picasso.q
+ * @param {brush} brush A brush instance
+ * @param {object} [opts]
+ * @param {boolean} [opts.byCells=false] Whether to prefer selection by row index.
+ * @param {string} [opts.primarySource] Field source to extract row indices from. If not specified, indices from first source are used.
+ * @param {object} [layout] QIX data layout. Needed only when brushing on attribute expressions, to be able to calculate the measure index.
+ * @return {object[]} An array of relevant selections
+ */
+export default function qBrush(brush, opts = {}, layout) {
+  const byCells = opts.byCells;
+  const primarySource = opts.primarySource;
   const selections = [];
   const methods = {};
   const isActive = brush.isActive();
