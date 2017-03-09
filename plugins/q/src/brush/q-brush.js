@@ -1,4 +1,4 @@
-import resolve from '../../core/data/json-path-resolver';
+import resolve from '../json-path-resolver';
 
 const LAYOUT_TO_PROP = [
   ['qHyperCube', 'qHyperCubeDef'],

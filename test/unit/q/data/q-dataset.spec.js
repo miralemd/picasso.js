@@ -1,4 +1,6 @@
-import qDataset from '../../../../src/q/data/q-dataset';
+import * as picasso from '../../../../src/index';
+
+import initPlugin, { qDataset } from '../../../../plugins/q/src/q';
 
 describe('qdataset', () => {
   const layout = {
@@ -42,7 +44,8 @@ describe('qdataset', () => {
   let d;
 
   beforeEach(() => {
-    d = qDataset()(layout);
+    initPlugin(picasso);
+    d = qDataset(layout);
   });
 
   it('should create 10 tables', () => {

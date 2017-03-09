@@ -2,14 +2,18 @@ import chart from './charts/chart';
 import renderer from './renderer';
 import component from './component/index';
 import data from './data';
+import dataset from './data/dataset';
+import field from './data/field';
+import table from './data/table';
 import formatter from './formatter';
-import brush from './brush';
 
 export {
   chart,
   renderer,
   data,
   formatter,
-  brush,
+  dataset,
+  field,
+  table,
   component
 };

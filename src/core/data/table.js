@@ -21,13 +21,13 @@ const fieldsFactory = (matrix) => {
     const normalizedValues = values.map(v => ({ value: v, label: String(v), id: String(v) }));
     // TODO Deal with tags
 
-    return field({ id: `/${i}` })({
+    return field({
       title: headers[i],
       values: normalizedValues,
       min,
       max,
       type
-    });
+    }, { id: `/${i}` });
   });
   return ff;
 };
@@ -46,21 +46,18 @@ const accessors = {
  * @ignore
  * @return {table}
  */
-export default function table({
+export default function table(data, {
   id,
   fields = accessors.fields,
   find = accessors.find
 } = {}) {
-  let dd = {},
-    cache = {};
+  const cache = {};
 
   /**
    * @alias table
    * @param {object} d Sets data content for this table
    */
-  function fn(d) {
-    dd = d;
-    cache = {};
+  function fn() {
     return fn;
   }
 
@@ -68,7 +65,7 @@ export default function table({
    * Returns this table's data
    * @return {object}
    */
-  fn.data = () => dd;
+  fn.data = () => data;
 
   /**
    * Returns this table's id
@@ -82,7 +79,7 @@ export default function table({
    */
   fn.fields = () => {
     if (!cache.fields) {
-      cache.fields = fields(dd);
+      cache.fields = fields(data);
     }
     return cache.fields;
   };

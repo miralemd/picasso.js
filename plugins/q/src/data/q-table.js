@@ -1,6 +1,5 @@
-import table from '../../core/data/table';
-import qField from './q-field';
-import resolve from '../../core/data/json-path-resolver';
+import { qField } from '../q';
+import resolve from '../json-path-resolver';
 
 const DIM_RX = /^\/(?:qHyperCube\/)?qDimensionInfo(?:\/(\d+))?/;
 const M_RX = /^\/(?:qHyperCube\/)?qMeasureInfo\/(\d+)/;
@@ -9,14 +8,15 @@ const ATTR_DIM_RX = /\/qAttrDimInfo\/(\d+)/;
 
 function hyperCubeFieldsFn(hc, localeInfo) {
   const dimz = hc.qDimensionInfo.length;
-  return hc.qDimensionInfo.concat(hc.qMeasureInfo).map((f, idx) =>
-    qField({ id: idx < dimz ? `/qDimensionInfo/${idx}` : `/qMeasureInfo/${idx - dimz}` })({
+  return hc.qDimensionInfo.concat(hc.qMeasureInfo).map((f, idx) => {
+    const data = {
       meta: f,
       pages: hc.qDataPages,
       idx,
       localeInfo
-    })
-  );
+    };
+    return qField(data, { id: idx < dimz ? `/qDimensionInfo/${idx}` : `/qMeasureInfo/${idx - dimz}` });
+  });
 }
 
 function attrExpField(hc, fieldIdx, attrIdx, localeInfo) {
@@ -27,13 +27,14 @@ function attrExpField(hc, fieldIdx, attrIdx, localeInfo) {
   if (hc.qMode === 'K' && fieldIdx < dimz) {
     fieldDataContentIdx = hc.qEffectiveInterColumnSortOrder.indexOf(fieldIdx);
   }
-  return qField({ id })({
+  const data = {
     meta,
     pages: hc.qMode === 'K' ? hc.qStackedDataPages : hc.qDataPages,
     idx: fieldDataContentIdx,
     attrIdx,
     localeInfo
-  });
+  };
+  return qField(data, { id });
 }
 
 function attrDimField(hc, fieldIdx, attrDimIdx, localeInfo) {
@@ -44,13 +45,14 @@ function attrDimField(hc, fieldIdx, attrDimIdx, localeInfo) {
   if (hc.qMode === 'K' && fieldIdx < dimz) {
     fieldDataContentIdx = hc.qEffectiveInterColumnSortOrder.indexOf(fieldIdx);
   }
-  return qField({ id })({
+  const data = {
     meta,
     pages: hc.qMode === 'K' ? hc.qStackedDataPages : hc.qDataPages,
     idx: fieldDataContentIdx,
     attrDimIdx,
     localeInfo
-  });
+  };
+  return qField(data, { id });
 }
 
 function stackedHyperCubeFieldsFn(hc, localeInfo) {
@@ -61,21 +63,23 @@ function stackedHyperCubeFieldsFn(hc, localeInfo) {
     if (idx < dimz) { // if dimension, loolup where in the tree the dimension is located
       dataContentIdx = order.indexOf(idx);
     }
-    return qField({ id: idx < dimz ? `/qDimensionInfo/${idx}` : `/qMeasureInfo/${idx - dimz}` })({
+    const data = {
       meta: f,
       pages: hc.qStackedDataPages,
       idx: dataContentIdx,
       localeInfo
-    });
+    };
+    return qField(data, { id: idx < dimz ? `/qDimensionInfo/${idx}` : `/qMeasureInfo/${idx - dimz}` });
   });
 }
 
 function listObjectFieldsFn(lo) {
-  return [qField({ id: '/qDimensionInfo' })({
+  const data = {
     meta: lo.qDimensionInfo,
     pages: lo.qDataPages,
     idx: 0
-  })];
+  };
+  return [qField(data, { id: '/qDimensionInfo' })];
 }
 
 function attrDimFieldsFn(hc, localeInfo) {
@@ -87,22 +91,24 @@ function attrDimFieldsFn(hc, localeInfo) {
     }
     meta[key] = hc[key];
   });
-  fields.push(qField({ id: '/0' })({
+  const data = {
     meta,
     pages: hc.qDataPages,
     idx: 0,
     localeInfo
-  }));
+  };
+  fields.push(qField(data, { id: '/0' }));
 
-  // TODO - find out the purpose of the second field
-  fields.push(qField({ id: '/1' })({
+  const secondFieldData = {
     meta: {
       label: '$unknown'
     },
     pages: hc.qDataPages,
     idx: 1,
     localeInfo
-  }));
+  };
+  // TODO - find out the purpose of the second field
+  fields.push(qField(secondFieldData, { id: '/1' }));
 
   return fields;
 }
@@ -162,8 +168,8 @@ function getAttrField({
  * @param  {function} [fieldFn=qField] Field factory function
  * @return {table}                  Data table
  */
-export default function qTable({ id } = {}) {
-  const q = table({
+export default function qTable(tableFn, data, { id } = {}) {
+  const q = tableFn(data, {
     id,
     fields: fieldsFn
   });

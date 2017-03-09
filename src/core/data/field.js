@@ -20,7 +20,7 @@ const accessors = {
  * @ignore
  * @return {field} Data field
  */
-export default function field({
+export default function field(data, {
   id,
   min = accessors.min,
   max = accessors.max,
@@ -30,14 +30,11 @@ export default function field({
   values = accessors.values,
   formatter = accessors.formatter
 } = {}) {
-  let data = {};
-
   /**
    * @alias field
    * @param {object} d Field data
    */
-  function fn(d) {
-    data = d;
+  function fn() {
     return fn;
   }
 
@@ -90,5 +87,5 @@ export default function field({
    */
   fn.formatter = () => formatter(data);
 
-  return fn;
+  return fn();
 }

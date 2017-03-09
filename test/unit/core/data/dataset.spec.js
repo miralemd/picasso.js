@@ -68,7 +68,7 @@ describe('dataset', () => {
         findField: () => {}
       }));
     }
-    const ds = dataset({ tables: tfn })(ts);
+    const ds = dataset(ts, { tables: tfn });
     const result = ds.findField('general');
     expect(result.table.id()).to.equal('general');
   });

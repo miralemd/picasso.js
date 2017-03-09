@@ -1,10 +1,16 @@
-import qTable from '../../../../src/q/data/q-table';
+import * as picasso from '../../../../src/index';
+
+import initPlugin, { qTable } from '../../../../plugins/q/src/q';
 
 describe('qTable', () => {
+  beforeEach(() => {
+    initPlugin(picasso);
+  });
+
   describe('hypercube', () => {
     let q;
     beforeEach(() => {
-      q = qTable()({
+      q = qTable({
         localeInfo: 'locale specific stuff',
         cube: {
           qSize: { qcx: 3, qcy: 20 },
@@ -60,7 +66,7 @@ describe('qTable', () => {
   describe('hypercube with attribute expressions/dimensions', () => {
     let q;
     beforeEach(() => {
-      q = qTable()({
+      q = qTable({
         cube: {
           qSize: { qcx: 3, qcy: 20 },
           qDimensionInfo: [
@@ -192,7 +198,7 @@ describe('qTable', () => {
           }
         ] }
       ];
-      q = qTable()({
+      q = qTable({
         cube: {
           qSize: { qcx: 3, qcy: 20 },
           qDimensionInfo: [
@@ -280,7 +286,7 @@ describe('qTable', () => {
   describe('listobject', () => {
     let q;
     beforeEach(() => {
-      q = qTable()({ cube: {
+      q = qTable({ cube: {
         qSize: { qcx: 3, qcy: 20 },
         qDimensionInfo: { qFallbackTitle: 'A' },
         qDataPages: [{ qArea: { qTop: 0, qLeft: 0, qHeight: 20, qWidth: 1 },
@@ -315,7 +321,7 @@ describe('qTable', () => {
   describe('attribute dimension table', () => {
     let q;
     beforeEach(() => {
-      q = qTable({ id: 'legendData/qAttrDimInfo/1/0' })({
+      q = qTable({
         cube: {
           label: 'title label',
           qFallbackTitle: 'attr title',
@@ -323,7 +329,7 @@ describe('qTable', () => {
           qDataPages: [{ qMatrix: [] }]
         },
         localeInfo: 'locale stuff'
-      });
+      }, { id: 'legendData/qAttrDimInfo/1/0' });
     });
 
     it('should find the first field', () => {

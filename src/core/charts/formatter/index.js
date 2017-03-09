@@ -17,7 +17,7 @@ export function create(options, dataset) {
 
   let formatterName;
   if (options.formatter) {
-    formatterName = `${options.formatter || 'd3'}${options.type || 'number'}`;
+    formatterName = `${options.formatter || 'd3'}-${options.type || 'number'}`;
   } else {
     formatterName = options.type || 'd3-number';
   }

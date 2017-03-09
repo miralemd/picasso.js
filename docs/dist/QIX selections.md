@@ -171,15 +171,5 @@ which results in `2 + 1 + 2 + 2 = 7`
 
 ## API reference
 
-#### <a name='picasso.q.brush' href='#picasso.q.brush'>#</a> **picasso.q.brush**(*brush brush, object [opts, ]boolean [opts.byCells, ]string [opts.primarySource, ]object [layout]*)
+Context q.brush.q-brush-js is not available 
 
-|Name(s)|Type(s)|Description|Optional|Default value|
-|-------|-------|-----------|--------|-------------|
-| brush | brush | A brush instance | No | No |
-| opts | object | No | Yes | No |
-| opts.byCells | boolean | Whether to prefer selection by row index. | Yes | No |
-| opts.primarySource | string | Field source to extract row indices from. If not specified, indices from first source are used. | Yes | No |
-| layout | object | QIX data layout. Needed only when brushing on attribute expressions, to be able to calculate the measure index. | Yes | No |
-| Returns | Array.&lt;object&gt; | An array of relevant selections | ... | ... |
-
-Helper method to generate suitable QIX selection methods and parameters based on a brush instance.  

@@ -1,3 +1,5 @@
+#!/bin/bash
+cd "$(dirname "$0")"
 cwd=pwd
 for dir in ./../plugins/*/
 do
@@ -9,5 +11,5 @@ do
     yarn
     npm -s run build
     npm -s run build:debug
-    cd ${cwd}
+    cd "${cwd}"
 done

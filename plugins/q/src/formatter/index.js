@@ -1,27 +1,14 @@
-import { registry } from '../../core/utils/registry';
 import numberFormat from './numberFormat';
 import timeFormat from './timeFormat';
 
-const reg = registry();
-
-reg.add('number', numberFormat);
-reg.add('time', timeFormat);
-
-export default function formatter() {
-  function type(t) {
-    return reg.has(t) && reg.get(t);
-  }
-
-  type.has = function has(t) {
-    return reg.has(t);
-  };
-
-  return type;
-}
+export {
+  numberFormat,
+  timeFormat
+};
 
 export function createFromMetaInfo(meta, localeInfo) {
   if (meta && meta.qNumFormat && ['D', 'T', 'TS', 'IV'].indexOf(meta.qNumFormat.qType) !== -1) {
-    return formatter('q')('time')(meta.qNumFormat.qFmt, meta.qNumFormat.qType, localeInfo);
+    return timeFormat(meta.qNumFormat.qFmt, meta.qNumFormat.qType, localeInfo);
   }
   let pattern = '#';
   let thousand = localeInfo ? localeInfo.qThousandSep : ',';
@@ -39,5 +26,5 @@ export function createFromMetaInfo(meta, localeInfo) {
   if (isAuto) {
     pattern = `#${decimal}##A`;
   }
-  return formatter('q')('number')(pattern, thousand, decimal, type, localeInfo);
+  return numberFormat(pattern, thousand, decimal, type, localeInfo);
 }

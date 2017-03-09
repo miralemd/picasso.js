@@ -31,7 +31,9 @@
     "fixture:server": "aw-web-server -c ./test/config/aw-webserver-config.json"
   },
   "files": [
-    "/dist"
+    "/dist",
+    "/plugins/q/dist",
+    "/plugins/hammer/dist"
   ],
   "devDependencies": {
     "after-work.js": "^1.0.0",
@@ -48,10 +50,8 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-mocha": "^4.7.0",
     "extend": "^3.0.0",
-    "hammerjs": "^2.0.8",
     "jsdoc": "^3.4.0",
     "node-event-emitter": "0.0.1",
-    "number-format.js": "^1.1.10",
     "rimraf": "^2.5.2",
     "snabbdom": "^0.5.4",
     "webpack": "^2.2.1"
