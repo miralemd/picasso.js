@@ -11,7 +11,7 @@ const LAYOUT_TO_PROP = [
 export function extractFieldFromId(id, layout) {
   const DIM_RX = /\/qDimensionInfo(?:\/(\d+))?/;
   const M_RX = /\/qMeasureInfo\/(\d+)/;
-  const ATTR_DIM_RX = /\/qAttrDimInfo\/(\d+)/;
+  const ATTR_DIM_RX = /\/qAttrDimInfo\/(\d+)(?:\/(\d+))?/;
   const ATTR_EXPR_RX = /\/qAttrExprInfo\/(\d+)/;
   let isDimension = false;
   let index = 0;
@@ -25,7 +25,12 @@ export function extractFieldFromId(id, layout) {
     const attr = id.replace(DIM_RX, '');
     isDimension = true;
     if (ATTR_DIM_RX.test(attr)) {
-      index = 0; // 'selection' should occur in the first field in the attribute dimension table
+      index = 0; // default to 0
+      const attrDimColIdx = +ATTR_DIM_RX.exec(path)[2];
+      if (!isNaN(attrDimColIdx)) { // use column index if specified
+        index = attrDimColIdx;
+        path = path.replace(/\/\d+$/, '');
+      }
       shortenPath = false;
     } else if (ATTR_EXPR_RX.test(attr)) {
       // attrIdx depends on number of measures + number of attr expressions
@@ -55,8 +60,12 @@ export function extractFieldFromId(id, layout) {
     isDimension = false;
     const attr = id.replace(M_RX, '');
     if (ATTR_DIM_RX.test(attr)) {
-      // 'selection' should occur in the first field in the attribute dimension table
-      index = 0;
+      index = 0; // default to 0
+      const attrDimColIdx = +ATTR_DIM_RX.exec(path)[2];
+      if (!isNaN(attrDimColIdx)) { // use column index if specified
+        index = attrDimColIdx;
+        path = path.replace(/\/\d+$/, '');
+      }
       shortenPath = false;
       isDimension = true;
     } else if (ATTR_EXPR_RX.test(attr)) {

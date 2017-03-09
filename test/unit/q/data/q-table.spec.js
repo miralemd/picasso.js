@@ -70,7 +70,8 @@ describe('qTable', () => {
                 id: 'yes',
                 label: 'title from label',
                 qFallbackTitle: 'attr dim title',
-                qSize: {}
+                qSize: {},
+                qDataPages: 'attr dim table pages'
               }],
               qAttrExprInfo: [{
                 id: 'yes',
@@ -136,7 +137,7 @@ describe('qTable', () => {
       expect(q.findField('/qDimensionInfo/0/qAttrDimInfo/1').type()).to.equal('dimension');
     });
 
-    it('should returned cached field instances when called multiple times', () => {
+    it('should return cached field instances when called multiple times', () => {
       let ff = q.findField('/qDimensionInfo/0/qAttrDimInfo/1');
       let ff2 = q.findField('/qDimensionInfo/0/qAttrDimInfo/1');
       expect(ff).to.equal(ff2);
@@ -144,7 +145,7 @@ describe('qTable', () => {
 
     it('should have data on attr dim field found on dimension', () => {
       expect(q.findField('/qDimensionInfo/0/qAttrDimInfo/1').data()).to.eql({
-        meta: { id: 'yes', qFallbackTitle: 'attr dim title', label: 'title from label', qSize: {} },
+        meta: { id: 'yes', qFallbackTitle: 'attr dim title', label: 'title from label', qSize: {}, qDataPages: 'attr dim table pages' },
         pages: [{ qMatrix: [] }],
         idx: 0,
         attrDimIdx: 1,
@@ -308,6 +309,31 @@ describe('qTable', () => {
         { value: 'NaN', label: 'beta', id: 4, index: 1 },
         { value: null, label: 'gamma', id: 5, index: 2 }
       ]);
+    });
+  });
+
+  describe('attribute dimension table', () => {
+    let q;
+    beforeEach(() => {
+      q = qTable({ id: 'legendData/qAttrDimInfo/1/0' })({
+        cube: {
+          label: 'title label',
+          qFallbackTitle: 'attr title',
+          qSize: { qcx: 2, qcy: 20 },
+          qDataPages: [{ qMatrix: [] }]
+        },
+        localeInfo: 'locale stuff'
+      });
+    });
+
+    it('should find the first field', () => {
+      let f = q.findField('/0');
+      expect(f.title()).to.equal('title label');
+    });
+
+    it('should find the second field', () => {
+      let f = q.findField('/1');
+      expect(f.title()).to.equal('$unknown');
     });
   });
 });

@@ -24,7 +24,19 @@ describe('qdataset', () => {
       qHyperCube: 'foo-nope'
     },
     qListObject: 'liistaa',
-    qHyperCube: 'root-data'
+    qHyperCube: 'root-data',
+    attrs: {
+      qHyperCube: {
+        qDimensionInfo: [
+          {
+            qFallbackTitle: 'A',
+            qAttrDimInfo: ['colors']
+          },
+          { qFallbackTitle: 'B' }
+        ],
+        qMeasureInfo: [{}, { qAttrDimInfo: ['polygons', 'regions'] }]
+      }
+    }
   };
 
   let d;
@@ -33,8 +45,8 @@ describe('qdataset', () => {
     d = qDataset()(layout);
   });
 
-  it('should create 6 tables', () => {
-    expect(d.tables().length).to.equal(6);
+  it('should create 10 tables', () => {
+    expect(d.tables().length).to.equal(10);
   });
 
   it('should identify tables', () => {
@@ -47,6 +59,12 @@ describe('qdataset', () => {
     expect(tables[5].id()).to.equal('/qHyperCube');
   });
 
+  it('should identify attribute dimension tables', () => {
+    const tables = d.tables();
+    expect(tables[7].id()).to.equal('/attrs/qHyperCube/qDimensionInfo/0/qAttrDimInfo/0');
+    expect(tables[9].id()).to.equal('/attrs/qHyperCube/qMeasureInfo/1/qAttrDimInfo/1');
+  });
+
   it('should have tables with data', () => {
     const tables = d.tables();
     expect(tables[0].data()).to.eql({ cube: 'foo-data', localeInfo: 'locale stuff' });
@@ -55,5 +73,20 @@ describe('qdataset', () => {
     expect(tables[3].data()).to.eql({ cube: 'lista', localeInfo: 'locale stuff' });
     expect(tables[4].data()).to.eql({ cube: 'liistaa', localeInfo: 'locale stuff' });
     expect(tables[5].data()).to.eql({ cube: 'root-data', localeInfo: 'locale stuff' });
+  });
+
+  it('should have attribute dimension tables with data', () => {
+    const tables = d.tables();
+    expect(tables[7].data()).to.eql({ cube: 'colors', localeInfo: 'locale stuff' });
+    expect(tables[9].data()).to.eql({ cube: 'regions', localeInfo: 'locale stuff' });
+  });
+
+  it('should find table containing attr dim field', () => {
+    expect(d.findField('/attrs/qHyperCube/qMeasureInfo/1/qAttrDimInfo/1').table.id()).to.equal('/attrs/qHyperCube');
+  });
+
+  it('should find attr dim table', () => {
+    expect(d.findField('/attrs/qHyperCube/qMeasureInfo/1/qAttrDimInfo/1/0').table.id())
+      .to.equal('/attrs/qHyperCube/qMeasureInfo/1/qAttrDimInfo/1');
   });
 });

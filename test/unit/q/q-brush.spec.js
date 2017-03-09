@@ -155,11 +155,29 @@ describe('q-brush', () => {
       });
     });
 
+    it('should map attribute dimension column layout value to params (on dimension)', () => {
+      let v = extractFieldFromId('/qHyperCube/qDimensionInfo/2/qAttrDimInfo/5/3');
+      expect(v).to.eql({
+        path: '/qHyperCubeDef/qDimensions/2/qAttributeDimensions/5',
+        index: 3,
+        type: 'dimension'
+      });
+    });
+
     it('should map attribute dimension layout value to params (on measure)', () => {
       let v = extractFieldFromId('/qHyperCube/qMeasureInfo/2/qAttrDimInfo/4');
       expect(v).to.eql({
         path: '/qHyperCubeDef/qMeasures/2/qAttributeDimensions/4',
         index: 0,
+        type: 'dimension'
+      });
+    });
+
+    it('should map attribute dimension column layout value to params (on measure)', () => {
+      let v = extractFieldFromId('/qHyperCube/qMeasureInfo/2/qAttrDimInfo/4/3');
+      expect(v).to.eql({
+        path: '/qHyperCubeDef/qMeasures/2/qAttributeDimensions/4',
+        index: 3,
         type: 'dimension'
       });
     });

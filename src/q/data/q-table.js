@@ -78,15 +78,49 @@ function listObjectFieldsFn(lo) {
   })];
 }
 
+function attrDimFieldsFn(hc, localeInfo) {
+  const fields = [];
+  const meta = {};
+  Object.keys(hc).forEach((key) => {
+    if (key === 'qDataPages') {
+      return;
+    }
+    meta[key] = hc[key];
+  });
+  fields.push(qField({ id: '/0' })({
+    meta,
+    pages: hc.qDataPages,
+    idx: 0,
+    localeInfo
+  }));
+
+  // TODO - find out the purpose of the second field
+  fields.push(qField({ id: '/1' })({
+    meta: {
+      label: '$unknown'
+    },
+    pages: hc.qDataPages,
+    idx: 1,
+    localeInfo
+  }));
+
+  return fields;
+}
+
 function fieldsFn(data) {
   const hc = data.cube;
+  const hasDimInfo = typeof hc.qDimensionInfo !== 'undefined';
   if (Array.isArray(hc.qDimensionInfo)) {
     if (hc.qMode === 'K') {
       return stackedHyperCubeFieldsFn(hc, data.localeInfo);
     }
     return hyperCubeFieldsFn(hc, data.localeInfo);
+  } else if (hasDimInfo) {
+    return listObjectFieldsFn(hc, data.localeInfo);
+  } else if (hc.qSize) {
+    return attrDimFieldsFn(hc, data.localeInfo);
   }
-  return listObjectFieldsFn(hc, data.localeInfo);
+  return [];
 }
 
 function getAttrField({
@@ -142,6 +176,11 @@ export default function qTable({ id } = {}) {
     const hc = d.cube;
     const locale = d.localeInfo;
     const fields = q.fields();
+
+    if (ATTR_DIM_RX.test(id) && query) { // true if this table is an attribute dimension table
+      const idx = +/\/(\d+)/.exec(query)[1];
+      return fields[idx];
+    }
 
     // Find by path
     if (DIM_RX.test(query)) {
