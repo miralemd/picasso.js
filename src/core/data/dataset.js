@@ -5,8 +5,10 @@ function tablesFn(data) {
   return data.map((tableData, i) => tableFn({ id: `/${i}` })(tableData));
 }
 
-function findField(path, tables) {
-  const table = tables.filter(t => path.indexOf(t.id()) === 0)[0];
+export function findField(path, tables) {
+  const matches = tables.filter(t => path.indexOf(t.id()) === 0);
+  matches.sort((a, b) => path.replace(a.id(), '').length - path.replace(b.id(), '').length);
+  const table = matches[0];
   let field;
   if (table) {
     const subpath = path.replace(table.id(), '');

@@ -5,6 +5,7 @@ import resolve from '../../core/data/json-path-resolver';
 const DIM_RX = /^\/(?:qHyperCube\/)?qDimensionInfo(?:\/(\d+))?/;
 const M_RX = /^\/(?:qHyperCube\/)?qMeasureInfo\/(\d+)/;
 const ATTR_EXPR_RX = /\/qAttrExprInfo\/(\d+)/;
+const ATTR_DIM_RX = /\/qAttrDimInfo\/(\d+)/;
 
 function hyperCubeFieldsFn(hc, localeInfo) {
   const dimz = hc.qDimensionInfo.length;
@@ -35,6 +36,23 @@ function attrExpField(hc, fieldIdx, attrIdx, localeInfo) {
   });
 }
 
+function attrDimField(hc, fieldIdx, attrDimIdx, localeInfo) {
+  const dimz = hc.qDimensionInfo.length;
+  const id = fieldIdx < dimz ? `/qDimensionInfo/${fieldIdx}/qAttrDimInfo/${attrDimIdx}` : `/qMeasureInfo/${fieldIdx - dimz}/qAttrDimInfo/${attrDimIdx}`;
+  const meta = resolve(id, hc);
+  let fieldDataContentIdx = fieldIdx;
+  if (hc.qMode === 'K' && fieldIdx < dimz) {
+    fieldDataContentIdx = hc.qEffectiveInterColumnSortOrder.indexOf(fieldIdx);
+  }
+  return qField({ id })({
+    meta,
+    pages: hc.qMode === 'K' ? hc.qStackedDataPages : hc.qDataPages,
+    idx: fieldDataContentIdx,
+    attrDimIdx,
+    localeInfo
+  });
+}
+
 function stackedHyperCubeFieldsFn(hc, localeInfo) {
   const dimz = hc.qDimensionInfo.length;
   return hc.qDimensionInfo.concat(hc.qMeasureInfo).map((f, idx) => {
@@ -60,30 +78,82 @@ function listObjectFieldsFn(lo) {
   })];
 }
 
+function attrDimFieldsFn(hc, localeInfo) {
+  const fields = [];
+  const meta = {};
+  Object.keys(hc).forEach((key) => {
+    if (key === 'qDataPages') {
+      return;
+    }
+    meta[key] = hc[key];
+  });
+  fields.push(qField({ id: '/0' })({
+    meta,
+    pages: hc.qDataPages,
+    idx: 0,
+    localeInfo
+  }));
+
+  // TODO - find out the purpose of the second field
+  fields.push(qField({ id: '/1' })({
+    meta: {
+      label: '$unknown'
+    },
+    pages: hc.qDataPages,
+    idx: 1,
+    localeInfo
+  }));
+
+  return fields;
+}
+
 function fieldsFn(data) {
   const hc = data.cube;
+  const hasDimInfo = typeof hc.qDimensionInfo !== 'undefined';
   if (Array.isArray(hc.qDimensionInfo)) {
     if (hc.qMode === 'K') {
       return stackedHyperCubeFieldsFn(hc, data.localeInfo);
     }
     return hyperCubeFieldsFn(hc, data.localeInfo);
+  } else if (hasDimInfo) {
+    return listObjectFieldsFn(hc, data.localeInfo);
+  } else if (hc.qSize) {
+    return attrDimFieldsFn(hc, data.localeInfo);
   }
-  return listObjectFieldsFn(hc, data.localeInfo);
+  return [];
 }
 
-function getAttrExprField({
-  attributeExpressionFields,
+function getAttrField({
+  attributeDimensionFieldsCache,
+  attributeExpressionFieldsCache,
   idx,
   path
-}, data, localeInfo) {
-  const attrIdx = +ATTR_EXPR_RX.exec(path)[1];
-  if (!attributeExpressionFields[idx]) {
-    attributeExpressionFields[idx] = [];
+}, hc, localeInfo) {
+  let fn;
+  let attrIdx;
+  let fieldCache;
+  if (ATTR_EXPR_RX.test(path)) {
+    fieldCache = attributeExpressionFieldsCache;
+    fn = attrExpField;
+    attrIdx = +ATTR_EXPR_RX.exec(path)[1];
+  } else if (ATTR_DIM_RX.test(path)) {
+    fieldCache = attributeDimensionFieldsCache;
+    fn = attrDimField;
+    attrIdx = +ATTR_DIM_RX.exec(path)[1];
   }
-  if (!attributeExpressionFields[idx][attrIdx]) {
-    attributeExpressionFields[idx][attrIdx] = attrExpField(data, idx, attrIdx, localeInfo);
+
+  if (!fn) {
+    return false;
   }
-  return attributeExpressionFields[idx][attrIdx];
+
+  if (!fieldCache[idx]) {
+    fieldCache[idx] = [];
+  }
+  if (!fieldCache[idx][attrIdx]) {
+    fieldCache[idx][attrIdx] = fn(hc, idx, attrIdx, localeInfo);
+  }
+
+  return fieldCache[idx][attrIdx];
 }
 
 /**
@@ -98,7 +168,8 @@ export default function qTable({ id } = {}) {
     fields: fieldsFn
   });
 
-  const attributeExpressionFields = [];
+  const attributeDimensionFieldsCache = [];
+  const attributeExpressionFieldsCache = [];
 
   q.findField = (query) => {
     const d = q.data();
@@ -106,33 +177,46 @@ export default function qTable({ id } = {}) {
     const locale = d.localeInfo;
     const fields = q.fields();
 
+    if (ATTR_DIM_RX.test(id) && query) { // true if this table is an attribute dimension table
+      const idx = +/\/(\d+)/.exec(query)[1];
+      return fields[idx];
+    }
+
     // Find by path
     if (DIM_RX.test(query)) {
       const idx = +DIM_RX.exec(query)[1];
-      // check if attribute expr
+      // check if attribute field
       const remainder = query.replace(DIM_RX, '');
-      if (ATTR_EXPR_RX.test(remainder)) {
-        return getAttrExprField({
-          attributeExpressionFields,
-          idx,
-          path: remainder
-        }, hc, locale);
+      const attributeField = getAttrField({
+        attributeDimensionFieldsCache,
+        attributeExpressionFieldsCache,
+        idx,
+        path: remainder
+      }, hc, locale);
+
+      if (attributeField !== false) {
+        return attributeField;
       }
+
       if (Array.isArray(hc.qDimensionInfo)) {
         return fields[idx];
       }
       return fields[0]; // listobject
     } else if (M_RX.test(query)) {
       const idx = +M_RX.exec(query)[1] + hc.qDimensionInfo.length;
-      // check if attribute expr
+      // check if attribute field
       const remainder = query.replace(M_RX, '');
-      if (ATTR_EXPR_RX.test(remainder)) {
-        return getAttrExprField({
-          attributeExpressionFields,
-          idx,
-          path: remainder
-        }, hc, locale);
+      const attributeField = getAttrField({
+        attributeDimensionFieldsCache,
+        attributeExpressionFieldsCache,
+        idx,
+        path: remainder
+      }, hc, locale);
+
+      if (attributeField !== false) {
+        return attributeField;
       }
+
       return fields[idx];
     }
 

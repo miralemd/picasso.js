@@ -297,6 +297,7 @@ describe('QField', () => {
                 qElemNo: 1,
                 qRow: 13,
                 qValue: 'NaN',
+                qAttrDims: { qValues: [{}, { qText: 'alpha attr dim', qElemNo: 333 }] },
                 qAttrExps: { qValues: [{}, { qNum: 255 }] },
                 qSubNodes: [
                   {
@@ -330,6 +331,7 @@ describe('QField', () => {
                 qElemNo: 3,
                 qRow: 19,
                 qValue: 2,
+                qAttrDims: { qValues: [{}, { qText: 'beta attr dim', qElemNo: 334 }] },
                 qAttrExps: { qValues: [{}, { qNum: 311 }] },
                 qSubNodes: [
                   {
@@ -406,6 +408,28 @@ describe('QField', () => {
           { label: 'a3', id: 5, value: 'NaN', index: 15 },
           { label: 'b1', id: 7, value: 'NaN', index: 19 },
           { label: 'b2', id: 8, value: 'NaN', index: 20 }
+        ]);
+      });
+
+      it('should extract attribute dimension values from first dimension', () => {
+        const dd = {
+          meta: {
+            qSize: {},
+            qFallbackTitle: 'attr express'
+          },
+          pages: [stackedPageWithPseudo],
+          idx: 0,
+          attrDimIdx: 1
+        };
+
+        let ff = qField()(dd);
+        let values = ff.values();
+        expect(values).to.deep.equal([
+          { label: 'alpha attr dim', id: 333, value: undefined, index: 0 },
+          { label: 'alpha attr dim', id: 333, value: undefined, index: 1 },
+          { label: 'alpha attr dim', id: 333, value: undefined, index: 2 },
+          { label: 'beta attr dim', id: 334, value: undefined, index: 3 },
+          { label: 'beta attr dim', id: 334, value: undefined, index: 4 }
         ]);
       });
 
@@ -510,6 +534,38 @@ describe('QField', () => {
         { value: 13, label: 'tretton', id: 0, index: 0 },
         { value: 15, label: 'femton', id: 0, index: 1 },
         { value: 12, label: 'tolv', id: 0, index: 2 }
+      ]);
+    });
+  });
+
+  describe('as attribute dimension', () => {
+    const pageWithAttrDim = {
+      qArea: { qLeft: 7, qTop: 0, qWidth: 2, qHeight: 3 },
+      qMatrix: [
+        [{}, { qNum: 2, qText: 'två', qElemNumber: 1, qAttrDims: { qValues: [{ qText: 'a' }, { qText: 'tretton', qElemNo: 7 }] } }],
+        [{}, { qNum: 6, qText: 'sex', qElemNumber: 2, qAttrDims: { qValues: [{ qText: 'b' }, { qText: 'femton', qElemNo: -2 }] } }],
+        [{}, { qNum: 3, qText: 'tre', qElemNumber: 3, qAttrDims: { qValues: [{ qText: 'c' }, { qText: 'tolv', qElemNo: 6 }] } }]
+      ]
+    };
+
+    const dd = {
+      meta: {
+        qMin: 1,
+        qMax: 2,
+        qFallbackTitle: 'wohoo'
+      },
+      pages: [pageWithAttrDim],
+      idx: 8,
+      attrDimIdx: 1
+    };
+
+    it('should extract attribute dimension values', () => {
+      const ff = qField()(dd);
+
+      expect(ff.values()).to.eql([
+        { value: undefined, label: 'tretton', id: 7, index: 0 },
+        { value: undefined, label: 'femton', id: -2, index: 1 },
+        { value: undefined, label: 'tolv', id: 6, index: 2 }
       ]);
     });
   });

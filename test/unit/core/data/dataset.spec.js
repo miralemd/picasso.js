@@ -55,4 +55,21 @@ describe('dataset', () => {
     const ds = dataset({ tables: tablesFn })(arr);
     expect(ds.tables()).to.eql(['cube', 'othercube']);
   });
+
+  it('should find the right table when they have similar paths', () => {
+    const ts = [
+      { name: 'gen', data: {} },
+      { name: 'generally', data: {} },
+      { name: 'general', data: {} }
+    ];
+    function tfn(tables) {
+      return tables.map(t => ({
+        id: () => t.name,
+        findField: () => {}
+      }));
+    }
+    const ds = dataset({ tables: tfn })(ts);
+    const result = ds.findField('general');
+    expect(result.table.id()).to.equal('general');
+  });
 });
