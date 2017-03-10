@@ -118,7 +118,7 @@ export default function componentFactory(definition, options = {}) {
   const brushArgs = {
     nodes: [],
     chart,
-    config: config.brush || {},
+    config: settings.brush || {},
     renderer: null
   };
   const brushTriggers = {
@@ -166,6 +166,28 @@ export default function componentFactory(definition, options = {}) {
   const beforeDestroy = createCallback('beforeDestroy');
   const destroyed = createCallback('destroyed');
   const render = definition.render; // Do not allow overriding of this function
+
+  const addBrushStylers = () => {
+    if (settings.brush) {
+      (settings.brush.consume || []).forEach((b) => {
+        if (b.context && b.style) {
+          brushStylers.push(styler(brushArgs, b));
+        }
+      });
+    }
+  };
+
+  const addBrushTriggers = () => {
+    if (settings.brush) {
+      (settings.brush.trigger || []).forEach((t) => {
+        if (t.on === 'over') {
+          brushTriggers.over.push(t);
+        } else {
+          brushTriggers.tap.push(t);
+        }
+      });
+    }
+  };
 
   Object.defineProperty(brushArgs, 'data', {
     get: () => data
@@ -270,11 +292,22 @@ export default function componentFactory(definition, options = {}) {
 
   fn.update = () => {
     const nodes = brushArgs.nodes = render.call(definitionContext, ...getRenderArgs());
+
+    // Reset brush stylers and triggers
+    brushStylers.splice(0, brushStylers.length - 1);
+    brushTriggers.splice(0, brushTriggers.length - 1);
+
+    if (settings.brush) {
+      addBrushStylers();
+      addBrushTriggers();
+    }
+
     brushStylers.forEach((brushStyler) => {
       if (brushStyler.isActive()) {
         brushStyler.update();
       }
     });
+
     rend.render(nodes);
   };
 
@@ -311,10 +344,10 @@ export default function componentFactory(definition, options = {}) {
 
   fn.getBrushedShapes = function getBrushedShapes(context, mode, props) {
     const shapes = [];
-    if (config.brush && config.brush.trigger) {
+    if (settings.brush && settings.brush.trigger) {
       const brusher = chart.brush(context);
       const sceneObjects = rend.findShapes('*');
-      config.brush.trigger.forEach((b) => {
+      settings.brush.trigger.forEach((b) => {
         sceneObjects.forEach((sceneObject) => {
           const nodeData = data[sceneObject.data];
           if (nodeData && brusher.containsMappedData(nodeData, props || b.data, mode)) {
@@ -331,20 +364,9 @@ export default function componentFactory(definition, options = {}) {
   fn.mount = () => {
     element = rend.element && rend.element() ? element : rend.appendTo(container);
 
-    if (config.brush) {
-      (config.brush.consume || []).forEach((b) => {
-        if (b.context && b.style) {
-          brushStylers.push(styler(brushArgs, b));
-        }
-      });
-
-      (config.brush.trigger || []).forEach((t) => {
-        if (t.on === 'over') {
-          brushTriggers.over.push(t);
-        } else {
-          brushTriggers.tap.push(t);
-        }
-      });
+    if (settings.brush) {
+      addBrushStylers();
+      addBrushTriggers();
     }
 
     Object.keys(definition.on || {}).forEach((key) => {
