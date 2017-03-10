@@ -29,7 +29,7 @@ function generateDomain(range, min, max) {
  * @param { number[] } [settings.domain] Numeric values indicating stop limits between start and end values.
  * @param { color[] } [settings.range] CSS color values indicating stop colors between start and end values.
  * @param { field[] } [fields] Fields to dynamically calculate the domain extent.
- * @return { sequentialScale } Instance of sequential scale
+ * @return { scaleSequential } Instance of sequential scale
  *
  * @example
  * sequential({
@@ -43,7 +43,7 @@ export default function sequential(settings = {}, fields) {
   const s = linear(fields, settings).clamp(true).interpolate(interpolateRgb);
 
   /**
-   * @alias sequentialScale
+   * @alias scaleSequential
    * @param { Object } v Object containing a 'value' property
    * @return { string } The blended color
    */

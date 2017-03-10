@@ -96,32 +96,6 @@ export default function threshold(settings = {}, fields) {
 
   Object.keys(d3Scale).forEach(key => (fn[key] = d3Scale[key]));
 
-  /**
- * @param { number[] } [values] Set or get domain values.
- * @return { thresholdScale | number[] } The instance this method was called on if a parameter is provided, otherwise the current domain is returned.
- */
-  // fn.domain = function domain(values) {
-  //   if (arguments.length) {
-  //     d3Scale.domain(values);
-
-  //     return fn;
-  //   }
-  //   return d3Scale.domain();
-  // };
-
-  /**
-   * @param { number[] } [values] Set or get range values.
-   * @return { thresholdScale | number[] } The instance this method was called on if a parameter is provided, otherwise the current range is returned.
-   */
-  // fn.range = function range(values) {
-  //   if (arguments.length) {
-  //     d3Scale.range(values);
-
-  //     return fn;
-  //   }
-  //   return d3Scale.range();
-  // };
-
   const [min, max] = minmax(settings, fields);
   let range = settings.range || DEFAULT_COLORS;
   let domain = settings.domain || (settings.nice ? generateNiceDomain(range, min, max) : [min + ((max - min) / 2)]);
