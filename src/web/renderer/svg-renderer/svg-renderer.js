@@ -2,6 +2,7 @@ import { tree as treeFactory } from './svg-tree';
 import { svgNs } from './svg-nodes';
 import sceneFactory from '../../../core/scene-graph/scene';
 import { measureText } from '../text-metrics';
+import { processGradients, resetGradients } from './svg-gradient';
 
 const createRect = ({ x, y, width, height, scaleRatio } = {}) => {
   const rect = {
@@ -71,6 +72,9 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
       el.setAttribute('width', Math.round(rect.width * scaleX));
       el.setAttribute('height', Math.round(rect.height * scaleY));
     }
+
+    resetGradients();
+    items = processGradients(items);
 
     const sceneContainer = {
       type: 'container',

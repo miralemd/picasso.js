@@ -21,10 +21,10 @@ function reCalcBoundingRect(c, child, includeTransform = false) {
 }
 
 export default class Container extends DisplayObject {
-  constructor(...s) {
+  constructor(s = {}) {
     const { type = 'container' } = s;
     super(type);
-    this.set(...s);
+    this.set(s);
     this._boundingRect = {};
   }
 

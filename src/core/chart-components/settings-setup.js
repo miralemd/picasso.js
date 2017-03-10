@@ -51,6 +51,9 @@ export function resolveSettings(settings, defaults, chart) {
         if (obj.ref) {
           ext[a].ref = obj.ref;
         }
+        if (obj.type) {
+          ext[a] = obj;
+        }
       }
     });
   }
