@@ -52,41 +52,41 @@ describe('Sequential', () => {
     });
 
     it('should scale two rgb colors', () => {
-      const c = seq.domain([0, 1]).range(['red', 'blue']).get(0.5);
+      const c = seq.domain([0, 1]).range(['red', 'blue'])(0.5);
       expect(c).to.equal('rgb(128, 0, 128)');
     });
 
     it('should scale two hsl colors', () => {
-      const c = seq.domain([0, 1]).range(['hsl(120,50%,10%)', 'hsl(360,100%,50%)']).get(0.5);
+      const c = seq.domain([0, 1]).range(['hsl(120,50%,10%)', 'hsl(360,100%,50%)'])(0.5);
       expect(c).to.equal('rgb(134, 19, 6)');
     });
 
     it('should scale rgb color to a hsl color', () => {
-      const c = seq.domain([0, 1]).range(['blue', 'hsl(360,100%,50%)']).get(0.5);
+      const c = seq.domain([0, 1]).range(['blue', 'hsl(360,100%,50%)'])(0.5);
       expect(c).to.equal('rgb(128, 0, 128)');
     });
 
     it('should scale hsl color to a rgb color', () => {
-      const c = seq.domain([0, 1]).range(['hsl(360,100%,50%)', 'blue']).get(0.5);
+      const c = seq.domain([0, 1]).range(['hsl(360,100%,50%)', 'blue'])(0.5);
       expect(c).to.equal('rgb(128, 0, 128)');
     });
 
     it('should scale a single color over lightness', () => {
       seq.domain([0, 1]).range(['hsl(0, 100%, 20%)', 'hsl(0, 100%, 80%)']);
-      expect(seq.get(0)).to.equal('rgb(102, 0, 0)');
-      expect(seq.get(1)).to.equal('rgb(255, 153, 153)');
+      expect(seq(0)).to.equal('rgb(102, 0, 0)');
+      expect(seq(1)).to.equal('rgb(255, 153, 153)');
     });
 
     it('should scale a single color over lightness when using classify', () => {
       seq.domain([0, 1]).range(['hsl(0, 100%, 20%)', 'hsl(0, 100%, 80%)']).classify(4);
-      expect(seq.get(0)).to.equal('rgb(121, 19, 19)'); // First interval
-      expect(seq.get(0.2)).to.equal('rgb(121, 19, 19)');
-      expect(seq.get(0.5)).to.equal('rgb(198, 96, 96)'); // Second interval
-      expect(seq.get(0.6)).to.equal('rgb(198, 96, 96)');
-      expect(seq.get(0.75)).to.equal('rgb(236, 134, 134)'); // Thrid interval
-      expect(seq.get(0.85)).to.equal('rgb(236, 134, 134)');
-      expect(seq.get(0.90)).to.equal('rgb(236, 134, 134)'); // Fourth interval
-      expect(seq.get(1)).to.equal('rgb(236, 134, 134)');
+      expect(seq(0)).to.equal('rgb(121, 19, 19)'); // First interval
+      expect(seq(0.2)).to.equal('rgb(121, 19, 19)');
+      expect(seq(0.5)).to.equal('rgb(198, 96, 96)'); // Second interval
+      expect(seq(0.6)).to.equal('rgb(198, 96, 96)');
+      expect(seq(0.75)).to.equal('rgb(236, 134, 134)'); // Thrid interval
+      expect(seq(0.85)).to.equal('rgb(236, 134, 134)');
+      expect(seq(0.90)).to.equal('rgb(236, 134, 134)'); // Fourth interval
+      expect(seq(1)).to.equal('rgb(236, 134, 134)');
     });
 
     it('should clamp colors', () => {
@@ -94,8 +94,8 @@ describe('Sequential', () => {
       settings.max = 60;
       settings.range = ['rgb(100, 0, 0)', 'rgb(0, 0, 100)'];
       seq = sequential(settings);
-      expect(seq.get(40)).to.deep.equal('rgb(100, 0, 0)');
-      expect(seq.get(70)).to.deep.equal('rgb(0, 0, 100)');
+      expect(seq(40)).to.deep.equal('rgb(100, 0, 0)');
+      expect(seq(70)).to.deep.equal('rgb(0, 0, 100)');
     });
   });
 

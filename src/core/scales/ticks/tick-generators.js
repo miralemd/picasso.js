@@ -63,7 +63,7 @@ export function looseDistanceBasedGenerator({ distance, scale, minorCount = 0, u
   const ticksFormatted = ticks.map(applyFormat(formatter));
 
   return ticks.map((tick, i) => ({
-    position: scale.get(tick),
+    position: scale(tick),
     label: ticksFormatted[i],
     value: tick,
     isMinor: majorTicks.indexOf(tick) === -1
@@ -93,7 +93,7 @@ export function tightDistanceBasedGenerator({ distance, scale, minorCount = 0, u
   const ticksFormatted = ticks.map(applyFormat(formatter));
 
   return ticks.map((tick, i) => ({
-    position: scale.get(tick),
+    position: scale(tick),
     label: ticksFormatted[i],
     value: tick,
     isMinor: majorTicks.indexOf(tick) === -1
@@ -104,7 +104,7 @@ function ticksByCount({ count, minorCount, scale, formatter }) {
   return scale
     .ticks(((count - 1) * minorCount) + count)
     .map((tick, i) => ({
-      position: scale.get(tick),
+      position: scale(tick),
       label: formatter(tick),
       isMinor: i % (minorCount + 1) !== 0,
       value: tick
@@ -116,7 +116,7 @@ function ticksByValue({ values, scale, formatter }) {
     .sort((a, b) => a - b)
     .filter((v, i, ary) => v <= scale.max() && v >= scale.min() && ary.indexOf(v) === i)
     .map(tick => ({
-      position: scale.get(tick),
+      position: scale(tick),
       label: formatter(tick),
       isMinor: false,
       value: tick
@@ -174,13 +174,13 @@ export function generateContinuousTicks({ settings, scale, distance, formatter }
 
 export function generateDiscreteTicks({ scale }) {
   const dataSet = scale.data().length > 0 ?
-    scale.data().map(d => d.self) :
-    scale.domain().map(d => ({ value: d }));
+    scale.data().map(d => d.self.value) :
+    scale.domain(); // .map(d => ({ value: d }));
 
   return dataSet.map((d) => { // eslint-disable-line arrow-body-style
     return {
-      position: scale(d) + (scale.bandWidth() / 2),
-      label: `${'label' in d ? d.label : d.value}`
+      position: scale(d) + (scale.bandwidth() / 2),
+      label: `${d}`
     };
   });
 }

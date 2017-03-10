@@ -216,8 +216,8 @@ describe('Threshold', () => {
         range: ['red', 'green'],
         domain: [10]
       });
-      expect(ths({ value: 9 })).to.equal('red');
-      expect(ths({ value: 11 })).to.equal('green');
+      expect(ths(9)).to.equal('red');
+      expect(ths(11)).to.equal('green');
     });
 
     it('should be correct on borders', () => {
@@ -225,9 +225,9 @@ describe('Threshold', () => {
         range: ['red', 'green', 'blue'],
         domain: [10, 20]
       });
-      expect(ths({ value: 9 })).to.equal('red');
-      expect(ths({ value: 10 })).to.equal('green');
-      expect(ths({ value: 20 })).to.equal('blue');
+      expect(ths(9)).to.equal('red');
+      expect(ths(10)).to.equal('green');
+      expect(ths(20)).to.equal('blue');
     });
   });
 });

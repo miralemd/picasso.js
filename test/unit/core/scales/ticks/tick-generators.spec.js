@@ -216,9 +216,9 @@ describe('Tick generators', () => {
 
       const ticks = scale.ticks();
       const expected = [
-        { position: 0 + (scale.bandWidth() / 2), label: 'd1' },
-        { position: (1 / 3) + (scale.bandWidth() / 2), label: 'd2' },
-        { position: (2 / 3) + (scale.bandWidth() / 2), label: 'd3' }
+        { position: 0 + (scale.bandwidth() / 2), label: 'd1' },
+        { position: (1 / 3) + (scale.bandwidth() / 2), label: 'd2' },
+        { position: (2 / 3) + (scale.bandwidth() / 2), label: 'd3' }
       ];
       expect(ticks).to.deep.equal(expected);
     });

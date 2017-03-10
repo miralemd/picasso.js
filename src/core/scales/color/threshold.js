@@ -31,7 +31,7 @@ function generateRange(domain, colors, min, max) {
   max = domain && domain.length >= 2 ? domain[domain.length - 1] : max;
   const seq = sequential().domain([min, max]).range(colors);
   const values = [min, ...getBreaks(domain), max];
-  return values.map(v => seq({ value: v }));
+  return values.map(v => seq(v));
 }
 
 function generateNiceDomain(range, min, max) {
@@ -88,37 +88,39 @@ export default function threshold(settings = {}, fields) {
    * @return { string } A CSS color from the scale's range.
    */
   function fn(v) {
-    if (notNumber(v.value)) {
+    if (notNumber(v)) {
       return NaN;
     }
-    return d3Scale(v.value);
+    return d3Scale(v);
   }
+
+  Object.keys(d3Scale).forEach(key => (fn[key] = d3Scale[key]));
 
   /**
  * @param { number[] } [values] Set or get domain values.
  * @return { thresholdScale | number[] } The instance this method was called on if a parameter is provided, otherwise the current domain is returned.
  */
-  fn.domain = function domain(values) {
-    if (arguments.length) {
-      d3Scale.domain(values);
+  // fn.domain = function domain(values) {
+  //   if (arguments.length) {
+  //     d3Scale.domain(values);
 
-      return fn;
-    }
-    return d3Scale.domain();
-  };
+  //     return fn;
+  //   }
+  //   return d3Scale.domain();
+  // };
 
   /**
    * @param { number[] } [values] Set or get range values.
    * @return { thresholdScale | number[] } The instance this method was called on if a parameter is provided, otherwise the current range is returned.
    */
-  fn.range = function range(values) {
-    if (arguments.length) {
-      d3Scale.range(values);
+  // fn.range = function range(values) {
+  //   if (arguments.length) {
+  //     d3Scale.range(values);
 
-      return fn;
-    }
-    return d3Scale.range();
-  };
+  //     return fn;
+  //   }
+  //   return d3Scale.range();
+  // };
 
   const [min, max] = minmax(settings, fields);
   let range = settings.range || DEFAULT_COLORS;

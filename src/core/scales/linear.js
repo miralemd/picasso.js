@@ -96,10 +96,10 @@ export default function linear(settings, fields/* , dataset*/) {
    * @return { Number } The scaled value
    */
   function fn(v) {
-    if (notNumber(v.value)) {
+    if (notNumber(v)) {
       return NaN;
     }
-    return d3Scale(v.value);
+    return d3Scale(v);
   }
 
   fn.data = function data() {
@@ -223,9 +223,9 @@ export default function linear(settings, fields/* , dataset*/) {
    * @param { Number } value A value within the domain value span
    * @return { Number } Interpolated from the range
    */
-  fn.get = function get(value) {
-    return notNumber(value) ? NaN : d3Scale(value);
-  };
+  // fn.get = function get(value) {
+  //   return notNumber(value) ? NaN : d3Scale(value);
+  // };
 
   /**
    * Get the first value of the domain
@@ -281,7 +281,7 @@ export default function linear(settings, fields/* , dataset*/) {
       let lastVal = domain[domain.length - 1] || 0,
         calIntervalPos = lastVal + valueRange,
         calSamplePos = lastVal + samplePos,
-        sampleColValue = fn.get(calSamplePos);
+        sampleColValue = fn(calSamplePos);
 
       domain.push(...[calIntervalPos, calIntervalPos]);
       range.push(...[sampleColValue, sampleColValue]);

@@ -24,7 +24,7 @@ describe('Linear data scale', () => {
 
   it('should return a scaled value on the function object', () => {
     dataScale = linear(settings, fields);
-    expect(dataScale({ value: 100 })).to.equal(1);
+    expect(dataScale(100)).to.equal(1);
   });
 
 

@@ -102,12 +102,12 @@ function discreteCalcMaxTextRect({ measureText, settings, innerRect, scale }) {
   if (settings.align === 'left' || settings.align === 'right') {
     textRect.width = innerRect.width - labelsSpacing(settings) - settings.paddingEnd;
   } else if (settings.labels.layered) {
-    textRect.width = (scale.bandWidth() * innerRect.width) * 2;
+    textRect.width = (scale.bandwidth() * innerRect.width) * 2;
   } else if (!settings.labels.layered && settings.labels.tilted) {
     const radians = Math.abs(settings.labels.tiltAngle) * (Math.PI / 180);
     textRect.width = (innerRect.height - labelsSpacing(settings) - settings.paddingEnd - (h * Math.cos(radians))) / Math.sin(radians);
   } else {
-    textRect.width = scale.bandWidth() * innerRect.width;
+    textRect.width = scale.bandwidth() * innerRect.width;
   }
   return textRect;
 }
@@ -149,7 +149,7 @@ export default function nodeBuilder(type) {
     calcMaxTextRectFn = discreteCalcMaxTextRect;
     getStepSizeFn = ({ innerRect, scale, settings }) => {
       const size = settings.align === 'top' || settings.align === 'bottom' ? innerRect.width : innerRect.height;
-      return size * scale.bandWidth();
+      return size * scale.bandwidth();
     };
     return discrete;
   }

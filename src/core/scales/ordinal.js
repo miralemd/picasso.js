@@ -52,7 +52,7 @@ export default function ordinal(settings, fields, dataset) {
    * @param { Object } Object item with value
    * @return { Number } Value position in scale
    */
-  const fn = v => d3Scale('label' in v ? v.label : v.value);
+  const fn = d3Scale;
 
   fn.data = function data() {
     return dataset ? dataset.map({ self: { source: settings.source, type: 'qual' } }, { source: settings.source }) : [];
@@ -62,81 +62,81 @@ export default function ordinal(settings, fields, dataset) {
  * @param { Object[] } [values] Set or Get domain values
  * @return { ordinalScale | Object[] } The instance this method was called on if a parameter is provided, otherwise the current domain is returned
  */
-  fn.domain = function domain(v) {
-    if (arguments.length) {
-      d3Scale.domain(v);
-      return fn;
-    }
-    return d3Scale.domain();
-  };
+  // fn.domain = function domain(v) {
+  //   if (arguments.length) {
+  //     d3Scale.domain(v);
+  //     return fn;
+  //   }
+  //   return d3Scale.domain();
+  // };
 
   /**
    * @param { Number[] } [values] Set or Get range values
    * @return { ordinalScale | Number[] } The instance this method was called on if a parameter is provided, otherwise the current range is returned
    */
-  fn.range = function range(v) {
-    if (arguments.length) {
-      d3Scale.range(v);
-      return fn;
-    }
-    return d3Scale.range();
-  };
+  // fn.range = function range(v) {
+  //   if (arguments.length) {
+  //     d3Scale.range(v);
+  //     return fn;
+  //   }
+  //   return d3Scale.range();
+  // };
 
   /**
    * {@link https://github.com/d3/d3-scale#band_paddingOuter }
    * @param { Number } value A value within 0-1
    * @return { ordinalScale } The instance this method was called on
    */
-  fn.paddingOuter = function paddingOuter(p = 0) {
-    d3Scale.paddingOuter(p);
-    return fn;
-  };
+  // fn.paddingOuter = function paddingOuter(p = 0) {
+  //   d3Scale.paddingOuter(p);
+  //   return fn;
+  // };
 
   /**
    * {@link https://github.com/d3/d3-scale#band_paddingInner }
    * @param { Number } value A value within 0-1
    * @return { ordinalScale } The instance this method was called on
    */
-  fn.paddingInner = function paddingInner(p = 0) {
-    d3Scale.paddingInner(p);
-    return fn;
-  };
+  // fn.paddingInner = function paddingInner(p = 0) {
+  //   d3Scale.paddingInner(p);
+  //   return fn;
+  // };
 
   /**
    * {@link https://github.com/d3/d3-scale#band_padding }
    * @param { Number } value A value within 0-1
    * @return { ordinalScale } The instance this method was called on
    */
-  fn.padding = function padding(p = 0) {
-    d3Scale.padding(p);
-    return fn;
-  };
+  // fn.padding = function padding(p = 0) {
+  //   d3Scale.padding(p);
+  //   return fn;
+  // };
 
   /**
    * {@link https://github.com/d3/d3-scale#band_padding }
    * @param { Number } value A value within 0-1
    * @return { ordinalScale } The instance this method was called on
    */
-  fn.align = function align(a) {
-    d3Scale.align(a);
-    return fn;
-  };
+  // fn.align = function align(a) {
+  //   d3Scale.align(a);
+  //   return fn;
+  // };
 
   /**
    * {@link https://github.com/d3/d3-scale#band_align }
    * @return { Number } Bandwith of each band
    */
-  fn.bandWidth = function bandWidth() {
-    return d3Scale.bandwidth();
-  };
+  // fn.bandWidth = function bandWidth() {
+  //   return d3Scale.bandwidth();
+  // };
 
   /**
    * {@link https://github.com/d3/d3-scale#band_step }
    * @return { Number } Step distance
    */
-  fn.step = function step() {
-    return d3Scale.step();
-  };
+  // fn.step = function step() {
+  //   return d3Scale.step();
+  // };
 
   /**
    * {@link https://github.com/d3/d3-scale#_ordinal }
