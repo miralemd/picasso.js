@@ -295,7 +295,8 @@ export default function componentFactory(definition, options = {}) {
 
     // Reset brush stylers and triggers
     brushStylers.splice(0, brushStylers.length - 1);
-    brushTriggers.splice(0, brushTriggers.length - 1);
+    brushTriggers.tap = [];
+    brushTriggers.over = [];
 
     if (settings.brush) {
       addBrushStylers();
