@@ -36,6 +36,12 @@ describe('scales', () => {
     expect(s.sources).to.eql([]);
   });
 
+  it('should create categorical color scale when type option is "categorical-color"', () => {
+    const s = create({ type: 'categorical-color' });
+    expect(s.type).to.equal('categorical-color');
+    expect(s.sources).to.eql([]);
+  });
+
   it('should create linear scale when no better type fits', () => {
     const s = create({});
     expect(s.type).to.equal('linear');

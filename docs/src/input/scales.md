@@ -21,3 +21,7 @@
 ## Threshold scale
 
 {{>magic ctx='core.scales.color.threshold-js'}}
+
+## Categorical scale
+
+{{>magic ctx='core.scales.color.categorical-js'}}
