@@ -37,18 +37,17 @@ function generateSettings(settings, fields) {
 }
 
  /**
- * @alias ordinal
- * @memberof picasso.scales
+ * @alias band
  * @param { Array } fields
  * @param { Object } settings
- * @return { ordinalScale } Instance of ordinal scale
+ * @return { scaleBand } Instance of band scale
  */
 
 export default function ordinal(settings, fields, dataset) {
   const d3Scale = scaleBand();
 
   /**
-   * @alias ordinalScale
+   * @alias scaleBand
    * @param { Object } Object item with value
    * @return { Number } Value position in scale
    */

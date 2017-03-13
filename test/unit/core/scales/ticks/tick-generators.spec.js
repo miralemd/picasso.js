@@ -1,7 +1,7 @@
 import { continuousDefaultSettings } from '../../../../../src/core/scales/ticks/default-settings';
 import { looseDistanceBasedGenerator } from '../../../../../src/core/scales/ticks/tick-generators';
 import linear from '../../../../../src/core/scales/linear';
-import band from '../../../../../src/core/scales/ordinal';
+import band from '../../../../../src/core/scales/band';
 import { formatter } from '../../../../../src/core/formatter';
 
 describe('Tick generators', () => {

@@ -24,26 +24,24 @@ function generateDomain(range, min, max) {
 
 /**
  * @alias sequential
- * @memberof picasso.scales
  * @param { Object } [settings] Settings for this scale. If both range and domain are specified, they have to fulfill range.length === domain.length, otherwise they will be overriden.
  * @param { number[] } [settings.domain] Numeric values indicating stop limits between start and end values.
  * @param { color[] } [settings.range] CSS color values indicating stop colors between start and end values.
  * @param { field[] } [fields] Fields to dynamically calculate the domain extent.
- * @return { scaleSequential } Instance of sequential scale
+ * @return { scaleSequentialColor } Instance of sequential scale
  *
  * @example
  * sequential({
  *  range: ['red', '#fc6', 'green'],
  *  domain: [-40, 0, 100]
  * });
- *
  */
 
 export default function sequential(settings = {}, fields) {
   const s = linear(fields, settings).clamp(true).interpolate(interpolateRgb);
 
   /**
-   * @alias scaleSequential
+   * @alias scaleSequentialColor
    * @param { Object } v Object containing a 'value' property
    * @return { string } The blended color
    */

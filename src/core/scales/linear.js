@@ -80,10 +80,9 @@ function getMinMax(settings, fields) {
 
  /**
  * @alias linear
- * @memberof picasso.scales
  * @param { field[] } fields
  * @param { object } settings
- * @return { linearScale } Instance of linear scale
+ * @return { scaleLinear } Instance of linear scale
  */
 
 export default function linear(settings, fields/* , dataset*/) {
@@ -91,7 +90,7 @@ export default function linear(settings, fields/* , dataset*/) {
   let tickCache;
 
   /**
-   * @alias linearScale
+   * @alias scaleLinear
    * @param { Object } Item item object with value property
    * @return { Number } The scaled value
    */

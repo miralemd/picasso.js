@@ -58,7 +58,6 @@ function generateNiceDomain(range, min, max) {
 
 /**
  * @alias threshold
- * @memberof picasso.scales
  * @param { object } [settings] Settings for this scale. If both domain and range are specified, they have to fulfill domain.length === range.length + 1,  otherwise they will be overriden.
  * @param { number[] } [settings.domain] Values defining the thresholds.
  * @param { color[] } [settings.range] CSS color values of the output range.
@@ -66,7 +65,7 @@ function generateNiceDomain(range, min, max) {
  * @param { number } [settings.min] Minimum value to generate domain extent from. Ignored if domain is set.
  * @param { number } [settings.max] Maximum value to generate domain extend from. Ignored if domain is set.
  * @param { field[] } [fields] Fields to dynamically calculate the domain extent from. Ignored if min/max are set.
- * @return { thresholdScale } Instance of threshold scale
+ * @return { scaleThresholdColor } Instance of threshold scale
  *
  * @example
  * let t = threshold({
@@ -83,7 +82,7 @@ export default function threshold(settings = {}, fields) {
   const d3Scale = scaleThreshold();
 
   /**
-   * @alias thresholdScale
+   * @alias scaleThresholdColor
    * @param { object } v Object literal containing a 'value' property.
    * @return { string } A CSS color from the scale's range.
    */

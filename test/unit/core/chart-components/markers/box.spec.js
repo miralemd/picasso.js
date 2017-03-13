@@ -492,7 +492,7 @@ describe('box marker', () => {
 
     chart.dataset().map.returns(dataset);
 
-    const xScale = create({ type: 'ordinal' });
+    const xScale = create({ type: 'band' });
     xScale.domain([1, 2, 3, 4, 5]);
     const yScale = create({ min: 0.2, max: 0.8 });
 

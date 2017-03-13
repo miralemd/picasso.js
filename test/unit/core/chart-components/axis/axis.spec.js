@@ -2,7 +2,7 @@
 import componentFactory from '../../../../../src/core/component/component-factory';
 import axisComponent from '../../../../../src/core/chart-components/axis/axis';
 import linear from '../../../../../src/core/scales/linear';
-import ordinal from '../../../../../src/core/scales/ordinal';
+import band from '../../../../../src/core/scales/band';
 import { formatter } from '../../../../../src/core/formatter';
 
 describe('Axis', () => {
@@ -140,10 +140,10 @@ describe('Axis', () => {
     beforeEach(() => {
       data = ['d1', 'd2', 'd3'];
       chart.data = data;
-      scale = ordinal();
+      scale = band();
       scale.domain([0, 1, 2]);
       scale.range([0, 1]);
-      chart.scale().type = 'ordinal';
+      chart.scale().type = 'band';
       /* chartMock.scale().sources = ['source'];*/
     });
 

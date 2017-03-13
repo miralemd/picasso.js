@@ -1,9 +1,9 @@
-import ordinal from '../../../../src/core/scales/ordinal';
+import band from '../../../../src/core/scales/band';
 
 describe('OrdinalScale', () => {
   let scale;
   beforeEach(() => {
-    scale = ordinal();
+    scale = band();
   });
 
   it('should have empty domain as default', () => {
@@ -19,7 +19,7 @@ describe('OrdinalScale', () => {
     beforeEach(() => {
       fieldValues = [];
       settings = {};
-      scale = ordinal(settings, fields, dataset);
+      scale = band(settings, fields, dataset);
     });
 
     it('should be able to fetch data', () => {
@@ -28,13 +28,13 @@ describe('OrdinalScale', () => {
 
     it('should set domain to correct field values', () => {
       fieldValues = ['A', 'B', 'C'].map(v => ({ label: v, id: v }));
-      scale = ordinal(settings, fields, dataset);
+      scale = band(settings, fields, dataset);
       expect(scale.domain()).to.deep.equal(['A', 'B', 'C']);
     });
 
     it('should return correct field values', () => {
       fieldValues = ['A', 'B', 'C'].map(v => ({ label: v, id: v }));
-      scale = ordinal(settings, fields, dataset);
+      scale = band(settings, fields, dataset);
       expect(scale('A')).to.equal(0);
       expect(scale('B')).to.equal(1 / 3);
       expect(scale('C')).to.equal(2 / 3);
@@ -42,7 +42,7 @@ describe('OrdinalScale', () => {
   });
 
   it('should accept domain and range parameters', () => {
-    scale = ordinal().domain(['Jan', 'Apr']).range([50, 100]);
+    scale = band().domain(['Jan', 'Apr']).range([50, 100]);
     expect(scale.domain()).to.deep.equal(['Jan', 'Apr']);
     expect(scale.range()).to.deep.equal([50, 100]);
   });
