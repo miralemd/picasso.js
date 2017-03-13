@@ -1,4 +1,4 @@
-import { scaleBand } from 'd3-scale';
+import { scaleBand as d3ScaleBand } from 'd3-scale';
 import { generateDiscreteTicks } from './ticks/tick-generators';
 
 const AVAILABLE_SETTINGS = [
@@ -27,7 +27,6 @@ function evalSetting(settings, fields, name) {
   return settings[name];
 }
 
-
 function generateSettings(settings, fields) {
   const calcSettings = {};
   AVAILABLE_SETTINGS.forEach((s) => {
@@ -37,48 +36,51 @@ function generateSettings(settings, fields) {
 }
 
  /**
- * @alias band
- * @param { Array } fields
+ * @alias scaleBand
+ * @memberof picasso
+ * @private
  * @param { Object } settings
- * @return { scaleBand } Instance of band scale
+ * @param { fields[] } [fields]
+ * @param { dataset } [dataset]
+ * @return { band }
  */
 
-export default function band(settings, fields, dataset) {
-  const d3Scale = scaleBand();
-
+export default function scaleBand(settings, fields, dataset) {
   /**
-   * @alias scaleBand
-   * @param { Object } Object item with value
-   * @return { Number } Value position in scale
+   * An augmented {@link https://github.com/d3/d3-scale#_band|d3 band scale}
+   * @alias band
+   * @kind function
+   * @param { Object } value
+   * @return { number }
    */
-  const fn = d3Scale;
+  const band = d3ScaleBand();
 
-  fn.data = function data() {
+  band.data = function data() {
     return dataset ? dataset.map({ self: { source: settings.source, type: 'qual' } }, { source: settings.source }) : [];
   };
 
   /**
    * Get the first value of the domain
-   * @return { Number }
+   * @return { number }
    */
-  fn.start = function start() {
-    return fn.domain()[0];
+  band.start = function start() {
+    return band.domain()[0];
   };
 
   /**
    * Get the last value of the domain
-   * @return { Number }
+   * @return { number }
    */
-  fn.end = function end() {
-    return fn.domain()[fn.domain().length - 1];
+  band.end = function end() {
+    return band.domain()[band.domain().length - 1];
   };
 
   /**
    * Generate discrete ticks
-   * @return {Array} Array of ticks
+   * @return {Object[]} Array of ticks
    */
-  fn.ticks = function ticks(input = {}) {
-    input.scale = fn;
+  band.ticks = function ticks(input = {}) {
+    input.scale = band;
     return generateDiscreteTicks(input);
   };
 
@@ -87,13 +89,13 @@ export default function band(settings, fields, dataset) {
     const stgns = generateSettings(settings, fields);
     const uniq = unique(values).map(v => v.label);
 
-    fn.domain(uniq);
-    fn.range(stgns.invert ? [1, 0] : [0, 1]);
+    band.domain(uniq);
+    band.range(stgns.invert ? [1, 0] : [0, 1]);
 
-    fn.padding(isNaN(stgns.padding) ? 0 : stgns.padding);
-    if (!isNaN(stgns.paddingInner)) { fn.paddingInner(stgns.paddingInner); }
-    if (!isNaN(stgns.paddingOuter)) { fn.paddingOuter(stgns.paddingOuter); }
-    fn.align(isNaN(stgns.align) ? 0.5 : stgns.align);
+    band.padding(isNaN(stgns.padding) ? 0 : stgns.padding);
+    if (!isNaN(stgns.paddingInner)) { band.paddingInner(stgns.paddingInner); }
+    if (!isNaN(stgns.paddingOuter)) { band.paddingOuter(stgns.paddingOuter); }
+    band.align(isNaN(stgns.align) ? 0.5 : stgns.align);
   }
-  return fn;
+  return band;
 }

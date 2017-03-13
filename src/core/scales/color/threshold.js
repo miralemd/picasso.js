@@ -57,7 +57,8 @@ function generateNiceDomain(range, min, max) {
 }
 
 /**
- * @alias threshold
+ * @alias scaleThresholdColor
+ * @memberof picasso
  * @param { object } [settings] Settings for this scale. If both domain and range are specified, they have to fulfill domain.length === range.length + 1,  otherwise they will be overriden.
  * @param { number[] } [settings.domain] Values defining the thresholds.
  * @param { color[] } [settings.range] CSS color values of the output range.
@@ -65,7 +66,7 @@ function generateNiceDomain(range, min, max) {
  * @param { number } [settings.min] Minimum value to generate domain extent from. Ignored if domain is set.
  * @param { number } [settings.max] Maximum value to generate domain extend from. Ignored if domain is set.
  * @param { field[] } [fields] Fields to dynamically calculate the domain extent from. Ignored if min/max are set.
- * @return { scaleThresholdColor } Instance of threshold scale
+ * @return { thresholdColor }
  *
  * @example
  * let t = threshold({
@@ -78,11 +79,11 @@ function generateNiceDomain(range, min, max) {
  * t.range(); // Generates from colors and domain: ['rgb(0,0,0)','rgb(85,85,85)','rgb(170,170,170)','rgb(255,255,255)']
  */
 
-export default function threshold(settings = {}, fields) {
+export default function scaleThresholdColor(settings = {}, fields) {
   const d3Scale = scaleThreshold();
 
   /**
-   * @alias scaleThresholdColor
+   * @alias thresholdColor
    * @param { object } v Object literal containing a 'value' property.
    * @return { string } A CSS color from the scale's range.
    */
