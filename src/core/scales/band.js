@@ -43,7 +43,7 @@ function generateSettings(settings, fields) {
  * @return { scaleBand } Instance of band scale
  */
 
-export default function ordinal(settings, fields, dataset) {
+export default function band(settings, fields, dataset) {
   const d3Scale = scaleBand();
 
   /**

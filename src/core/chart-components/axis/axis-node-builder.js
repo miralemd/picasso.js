@@ -224,5 +224,5 @@ export default function nodeBuilder(type) {
   continuous.build = build;
   discrete.build = build;
 
-  return type === 'ordinal' ? discrete() : continuous();
+  return type === 'band' ? discrete() : continuous();
 }
