@@ -2,43 +2,31 @@
 
 ## API referece - Table of contents:
 * <a href="#ticks-settings">ticks-settings</a>
-* <a href="#picasso.scales.linear">picasso.scales.linear</a>
-* <a href="#linearScale">linearScale</a>
-* <a href="#linearScale.invert">linearScale.invert</a>
-* <a href="#linearScale.rangeRound">linearScale.rangeRound</a>
-* <a href="#linearScale.clamp">linearScale.clamp</a>
-* <a href="#linearScale.cachedTicks">linearScale.cachedTicks</a>
-* <a href="#linearScale.clearTicksCache">linearScale.clearTicksCache</a>
-* <a href="#linearScale.ticks">linearScale.ticks</a>
-* <a href="#linearScale.nice">linearScale.nice</a>
-* <a href="#linearScale.domain">linearScale.domain</a>
-* <a href="#linearScale.range">linearScale.range</a>
-* <a href="#linearScale.get">linearScale.get</a>
-* <a href="#linearScale.start">linearScale.start</a>
-* <a href="#linearScale.end">linearScale.end</a>
-* <a href="#linearScale.min">linearScale.min</a>
-* <a href="#linearScale.max">linearScale.max</a>
-* <a href="#linearScale.classify">linearScale.classify</a>
-* <a href="#picasso.scales.ordinal">picasso.scales.ordinal</a>
-* <a href="#ordinalScale">ordinalScale</a>
-* <a href="#ordinalScale.domain">ordinalScale.domain</a>
-* <a href="#ordinalScale.range">ordinalScale.range</a>
-* <a href="#ordinalScale.paddingOuter">ordinalScale.paddingOuter</a>
-* <a href="#ordinalScale.paddingInner">ordinalScale.paddingInner</a>
-* <a href="#ordinalScale.padding">ordinalScale.padding</a>
-* <a href="#ordinalScale.align">ordinalScale.align</a>
-* <a href="#ordinalScale.bandWidth">ordinalScale.bandWidth</a>
-* <a href="#ordinalScale.step">ordinalScale.step</a>
-* <a href="#ordinalScale.get">ordinalScale.get</a>
-* <a href="#ordinalScale.start">ordinalScale.start</a>
-* <a href="#ordinalScale.end">ordinalScale.end</a>
-* <a href="#ordinalScale.ticks">ordinalScale.ticks</a>
-* <a href="#picasso.scales.sequential">picasso.scales.sequential</a>
-* <a href="#sequentialScale">sequentialScale</a>
-* <a href="#picasso.scales.threshold">picasso.scales.threshold</a>
-* <a href="#thresholdScale">thresholdScale</a>
-* <a href="#thresholdScale.domain">thresholdScale.domain</a>
-* <a href="#thresholdScale.range">thresholdScale.range</a>
+* <a href="#picasso.scaleLinear">picasso.scaleLinear</a>
+* <a href="#linear">linear</a>
+* <a href="#linear.invert">linear.invert</a>
+* <a href="#linear.rangeRound">linear.rangeRound</a>
+* <a href="#linear.clamp">linear.clamp</a>
+* <a href="#linear.cachedTicks">linear.cachedTicks</a>
+* <a href="#linear.clearTicksCache">linear.clearTicksCache</a>
+* <a href="#linear.ticks">linear.ticks</a>
+* <a href="#linear.nice">linear.nice</a>
+* <a href="#linear.domain">linear.domain</a>
+* <a href="#linear.range">linear.range</a>
+* <a href="#linear.start">linear.start</a>
+* <a href="#linear.end">linear.end</a>
+* <a href="#linear.min">linear.min</a>
+* <a href="#linear.max">linear.max</a>
+* <a href="#linear.classify">linear.classify</a>
+* <a href="#picasso.scaleBand">picasso.scaleBand</a>
+* <a href="#band">band</a>
+* <a href="#band.start">band.start</a>
+* <a href="#band.end">band.end</a>
+* <a href="#band.ticks">band.ticks</a>
+* <a href="#picasso.scaleSequentialColor">picasso.scaleSequentialColor</a>
+* <a href="#sequentialColor">sequentialColor</a>
+* <a href="#picasso.scaleThresholdColor">picasso.scaleThresholdColor</a>
+* <a href="#thresholdColor">thresholdColor</a>
 
 
 ## Linear scale
@@ -55,134 +43,126 @@
 | minorTicks.count | number | No | Yes | 3 |
 
 No description  
-#### <a name='picasso.scales.linear' href='#picasso.scales.linear'>#</a> **picasso.scales.linear**(*Array.&lt;field&gt; fields, object settings*)
+#### <a name='picasso.scaleLinear' href='#picasso.scaleLinear'>#</a> **picasso.scaleLinear**(*object settings, Array.&lt;field&gt; [fields]*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| fields | Array.&lt;field&gt; | No | No | No |
 | settings | object | No | No | No |
-| Returns | linearScale | Instance of linear scale | ... | ... |
+| fields | Array.&lt;field&gt; | No | Yes | No |
+| Returns | linear | No | ... | ... |
 
 No description  
-#### <a name='linearScale' href='#linearScale'>#</a> **linearScale**(*Object Item*)
+#### <a name='linear' href='#linear'>#</a> **linear**(*Object value*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| Item | Object | item object with value property | No | No |
-| Returns | Number | The scaled value | ... | ... |
+| value | Object | No | No | No |
+| Returns | number | No | ... | ... |
 
 No description  
-#### <a name='linearScale.invert' href='#linearScale.invert'>#</a> **linearScale.invert**(*Number value*)
+#### <a name='linear.invert' href='#linear.invert'>#</a> **linear.invert**(*number value*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| value | Number | The inverted value | No | No |
-| Returns | Number | The inverted scaled value | ... | ... |
+| value | number | The inverted value | No | No |
+| Returns | number | The inverted scaled value | ... | ... |
 
 {@link https://github.com/d3/d3-scale#continuous_invert }  
-#### <a name='linearScale.rangeRound' href='#linearScale.rangeRound'>#</a> **linearScale.rangeRound**(*Array.&lt;Number&gt; values*)
+#### <a name='linear.rangeRound' href='#linear.rangeRound'>#</a> **linear.rangeRound**(*Array.&lt;number&gt; values*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| values | Array.&lt;Number&gt; | Range values | No | No |
-| Returns | linearScale | The instance this method was called on | ... | ... |
+| values | Array.&lt;number&gt; | Range values | No | No |
+| Returns | linear | The instance this method was called on | ... | ... |
 
 {@link https://github.com/d3/d3-scale#continuous_rangeRound }  
-#### <a name='linearScale.clamp' href='#linearScale.clamp'>#</a> **linearScale.clamp**(*Boolean [value]*)
+#### <a name='linear.clamp' href='#linear.clamp'>#</a> **linear.clamp**(*boolean [value]*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| value | Boolean | TRUE if clamping should be enabled | Yes | true |
-| Returns | linearScale | The instance this method was called on | ... | ... |
+| value | boolean | TRUE if clamping should be enabled | Yes | true |
+| Returns | linear | The instance this method was called on | ... | ... |
 
 {@link https://github.com/d3/d3-scale#continuous_clamp }  
-#### <a name='linearScale.cachedTicks' href='#linearScale.cachedTicks'>#</a> **linearScale.cachedTicks**()
+#### <a name='linear.cachedTicks' href='#linear.cachedTicks'>#</a> **linear.cachedTicks**()
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| Returns | Number | No | ... | ... |
+| Returns | number | No | ... | ... |
 
 Get cached ticks (if any)  
-#### <a name='linearScale.clearTicksCache' href='#linearScale.clearTicksCache'>#</a> **linearScale.clearTicksCache**()
+#### <a name='linear.clearTicksCache' href='#linear.clearTicksCache'>#</a> **linear.clearTicksCache**()
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| Returns | Number | No | ... | ... |
+| Returns | number | No | ... | ... |
 
 Clear the tick cache  
-#### <a name='linearScale.ticks' href='#linearScale.ticks'>#</a> **linearScale.ticks**(*Object input*)
+#### <a name='linear.ticks' href='#linear.ticks'>#</a> **linear.ticks**(*Object input*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
 | input | Object | Number of ticks to generate or an object passed to tick generator | No | No |
-| Returns | Array.&lt;Number&gt; | Array of ticks or any type the custom tick generator returns | ... | ... |
+| Returns | Array.&lt;number&gt; | Array of ticks or any type the custom tick generator returns | ... | ... |
 
 {@link https://github.com/d3/d3-scale#continuous_ticks }  
-#### <a name='linearScale.nice' href='#linearScale.nice'>#</a> **linearScale.nice**(*Number count*)
+#### <a name='linear.nice' href='#linear.nice'>#</a> **linear.nice**(*number count*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| count | Number | No | No | No |
-| Returns | linearScale | The instance this method was called on | ... | ... |
+| count | number | No | No | No |
+| Returns | linear | The instance this method was called on | ... | ... |
 
 {@link https://github.com/d3/d3-scale#continuous_nice }  
-#### <a name='linearScale.domain' href='#linearScale.domain'>#</a> **linearScale.domain**(*Array.&lt;Number&gt; [values]*)
+#### <a name='linear.domain' href='#linear.domain'>#</a> **linear.domain**(*Array.&lt;number&gt; [values]*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| values | Array.&lt;Number&gt; | Set or Get domain values | Yes | No |
-| Returns | linearScale | The instance this method was called on if a parameter is provided, otherwise the current domain is returned | ... | ... |
+| values | Array.&lt;number&gt; | Set or Get domain values | Yes | No |
+| Returns | linear | The instance this method was called on if a parameter is provided, otherwise the current domain is returned | ... | ... |
 
 No description  
-#### <a name='linearScale.range' href='#linearScale.range'>#</a> **linearScale.range**(*Array.&lt;Number&gt; [values]*)
+#### <a name='linear.range' href='#linear.range'>#</a> **linear.range**(*Array.&lt;number&gt; [values]*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| values | Array.&lt;Number&gt; | Set or Get range values | Yes | No |
-| Returns | linearScale | The instance this method was called on if a parameter is provided, otherwise the current range is returned | ... | ... |
+| values | Array.&lt;number&gt; | Set or Get range values | Yes | No |
+| Returns | linear | The instance this method was called on if a parameter is provided, otherwise the current range is returned | ... | ... |
 
 No description  
-#### <a name='linearScale.get' href='#linearScale.get'>#</a> **linearScale.get**(*Number value*)
+#### <a name='linear.start' href='#linear.start'>#</a> **linear.start**()
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| value | Number | A value within the domain value span | No | No |
-| Returns | Number | Interpolated from the range | ... | ... |
-
-{@link https://github.com/d3/d3-scale#_continuous }  
-#### <a name='linearScale.start' href='#linearScale.start'>#</a> **linearScale.start**()
-
-|Name(s)|Type(s)|Description|Optional|Default value|
-|-------|-------|-----------|--------|-------------|
-| Returns | Number | No | ... | ... |
+| Returns | number | No | ... | ... |
 
 Get the first value of the domain  
-#### <a name='linearScale.end' href='#linearScale.end'>#</a> **linearScale.end**()
+#### <a name='linear.end' href='#linear.end'>#</a> **linear.end**()
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| Returns | Number | No | ... | ... |
+| Returns | number | No | ... | ... |
 
 Get the last value of the domain  
-#### <a name='linearScale.min' href='#linearScale.min'>#</a> **linearScale.min**()
+#### <a name='linear.min' href='#linear.min'>#</a> **linear.min**()
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| Returns | Number | No | ... | ... |
+| Returns | number | No | ... | ... |
 
 Get the minimum value of the domain  
-#### <a name='linearScale.max' href='#linearScale.max'>#</a> **linearScale.max**()
+#### <a name='linear.max' href='#linear.max'>#</a> **linear.max**()
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| Returns | Number | No | ... | ... |
+| Returns | number | No | ... | ... |
 
 Get the maximum value of the domain  
-#### <a name='linearScale.classify' href='#linearScale.classify'>#</a> **linearScale.classify**(*Number segments*)
+#### <a name='linear.classify' href='#linear.classify'>#</a> **linear.classify**(*number segments*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| segments | Number | The number of segments | No | No |
+| segments | number | The number of segments | No | No |
 | Returns | function | The instance this method was called on | ... | ... |
 
 Divides the domain and range into uniform segments, based on start and end value  
@@ -197,114 +177,45 @@ s.domain(); // [10, 5, 5, 0]
 s.range(); // [0.75, 0.75, 0.25, 0.25]
 ```
 
-## Ordinal scale
+## Band scale
 
-#### <a name='picasso.scales.ordinal' href='#picasso.scales.ordinal'>#</a> **picasso.scales.ordinal**(*Array fields, Object settings*)
+#### <a name='picasso.scaleBand' href='#picasso.scaleBand'>#</a> **picasso.scaleBand**(*Object settings, Array.&lt;fields&gt; [fields, ]dataset [dataset]*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| fields | Array | No | No | No |
 | settings | Object | No | No | No |
-| Returns | ordinalScale | Instance of ordinal scale | ... | ... |
+| fields | Array.&lt;fields&gt; | No | Yes | No |
+| dataset | dataset | No | Yes | No |
+| Returns | band | No | ... | ... |
 
 No description  
-#### <a name='ordinalScale' href='#ordinalScale'>#</a> **ordinalScale**(*Object Object*)
+#### <a name='band' href='#band'>#</a> **band**(*Object value*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| Object | Object | item with value | No | No |
-| Returns | Number | Value position in scale | ... | ... |
+| value | Object | No | No | No |
+| Returns | number | No | ... | ... |
 
-No description  
-#### <a name='ordinalScale.domain' href='#ordinalScale.domain'>#</a> **ordinalScale.domain**(*Array.&lt;Object&gt; [values]*)
-
-|Name(s)|Type(s)|Description|Optional|Default value|
-|-------|-------|-----------|--------|-------------|
-| values | Array.&lt;Object&gt; | Set or Get domain values | Yes | No |
-| Returns | ordinalScale | The instance this method was called on if a parameter is provided, otherwise the current domain is returned | ... | ... |
-
-No description  
-#### <a name='ordinalScale.range' href='#ordinalScale.range'>#</a> **ordinalScale.range**(*Array.&lt;Number&gt; [values]*)
+An augmented {@link https://github.com/d3/d3-scale#_band|d3 band scale}  
+#### <a name='band.start' href='#band.start'>#</a> **band.start**()
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| values | Array.&lt;Number&gt; | Set or Get range values | Yes | No |
-| Returns | ordinalScale | The instance this method was called on if a parameter is provided, otherwise the current range is returned | ... | ... |
-
-No description  
-#### <a name='ordinalScale.paddingOuter' href='#ordinalScale.paddingOuter'>#</a> **ordinalScale.paddingOuter**(*Number value*)
-
-|Name(s)|Type(s)|Description|Optional|Default value|
-|-------|-------|-----------|--------|-------------|
-| value | Number | A value within 0-1 | No | No |
-| Returns | ordinalScale | The instance this method was called on | ... | ... |
-
-{@link https://github.com/d3/d3-scale#band_paddingOuter }  
-#### <a name='ordinalScale.paddingInner' href='#ordinalScale.paddingInner'>#</a> **ordinalScale.paddingInner**(*Number value*)
-
-|Name(s)|Type(s)|Description|Optional|Default value|
-|-------|-------|-----------|--------|-------------|
-| value | Number | A value within 0-1 | No | No |
-| Returns | ordinalScale | The instance this method was called on | ... | ... |
-
-{@link https://github.com/d3/d3-scale#band_paddingInner }  
-#### <a name='ordinalScale.padding' href='#ordinalScale.padding'>#</a> **ordinalScale.padding**(*Number value*)
-
-|Name(s)|Type(s)|Description|Optional|Default value|
-|-------|-------|-----------|--------|-------------|
-| value | Number | A value within 0-1 | No | No |
-| Returns | ordinalScale | The instance this method was called on | ... | ... |
-
-{@link https://github.com/d3/d3-scale#band_padding }  
-#### <a name='ordinalScale.align' href='#ordinalScale.align'>#</a> **ordinalScale.align**(*Number value*)
-
-|Name(s)|Type(s)|Description|Optional|Default value|
-|-------|-------|-----------|--------|-------------|
-| value | Number | A value within 0-1 | No | No |
-| Returns | ordinalScale | The instance this method was called on | ... | ... |
-
-{@link https://github.com/d3/d3-scale#band_padding }  
-#### <a name='ordinalScale.bandWidth' href='#ordinalScale.bandWidth'>#</a> **ordinalScale.bandWidth**()
-
-|Name(s)|Type(s)|Description|Optional|Default value|
-|-------|-------|-----------|--------|-------------|
-| Returns | Number | Bandwith of each band | ... | ... |
-
-{@link https://github.com/d3/d3-scale#band_align }  
-#### <a name='ordinalScale.step' href='#ordinalScale.step'>#</a> **ordinalScale.step**()
-
-|Name(s)|Type(s)|Description|Optional|Default value|
-|-------|-------|-----------|--------|-------------|
-| Returns | Number | Step distance | ... | ... |
-
-{@link https://github.com/d3/d3-scale#band_step }  
-#### <a name='ordinalScale.get' href='#ordinalScale.get'>#</a> **ordinalScale.get**(*Number value*)
-
-|Name(s)|Type(s)|Description|Optional|Default value|
-|-------|-------|-----------|--------|-------------|
-| value | Number | No | No | No |
-| Returns | Number | No | ... | ... |
-
-{@link https://github.com/d3/d3-scale#_ordinal }  
-#### <a name='ordinalScale.start' href='#ordinalScale.start'>#</a> **ordinalScale.start**()
-
-|Name(s)|Type(s)|Description|Optional|Default value|
-|-------|-------|-----------|--------|-------------|
-| Returns | Number | No | ... | ... |
+| Returns | number | No | ... | ... |
 
 Get the first value of the domain  
-#### <a name='ordinalScale.end' href='#ordinalScale.end'>#</a> **ordinalScale.end**()
+#### <a name='band.end' href='#band.end'>#</a> **band.end**()
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| Returns | Number | No | ... | ... |
+| Returns | number | No | ... | ... |
 
 Get the last value of the domain  
-#### <a name='ordinalScale.ticks' href='#ordinalScale.ticks'>#</a> **ordinalScale.ticks**()
+#### <a name='band.ticks' href='#band.ticks'>#</a> **band.ticks**()
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
-| Returns | Array | Array of ticks | ... | ... |
+| Returns | Array.&lt;Object&gt; | Array of ticks | ... | ... |
 
 Generate discrete ticks  
 
@@ -313,7 +224,7 @@ Generate discrete ticks
 
 ## Sequential scale
 
-#### <a name='picasso.scales.sequential' href='#picasso.scales.sequential'>#</a> **picasso.scales.sequential**(*Object [settings, ]Array.&lt;number&gt; [settings.domain, ]Array.&lt;color&gt; [settings.range, ]Array.&lt;field&gt; [fields]*)
+#### <a name='picasso.scaleSequentialColor' href='#picasso.scaleSequentialColor'>#</a> **picasso.scaleSequentialColor**(*Object [settings, ]Array.&lt;number&gt; [settings.domain, ]Array.&lt;color&gt; [settings.range, ]Array.&lt;field&gt; [fields]*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
@@ -321,18 +232,18 @@ Generate discrete ticks
 | settings.domain | Array.&lt;number&gt; | Numeric values indicating stop limits between start and end values. | Yes | No |
 | settings.range | Array.&lt;color&gt; | CSS color values indicating stop colors between start and end values. | Yes | No |
 | fields | Array.&lt;field&gt; | Fields to dynamically calculate the domain extent. | Yes | No |
-| Returns | sequentialScale | Instance of sequential scale | ... | ... |
+| Returns | sequentialColor | No | ... | ... |
 
 No description  
 #### Examples
 
 ```js
-sequential({
+picasso.scaleSequentialColor({
  range: ['red', '#fc6', 'green'],
  domain: [-40, 0, 100]
 });
 ```
-#### <a name='sequentialScale' href='#sequentialScale'>#</a> **sequentialScale**(*Object v*)
+#### <a name='sequentialColor' href='#sequentialColor'>#</a> **sequentialColor**(*Object v*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
@@ -343,7 +254,7 @@ No description
 
 ## Threshold scale
 
-#### <a name='picasso.scales.threshold' href='#picasso.scales.threshold'>#</a> **picasso.scales.threshold**(*object [settings, ]Array.&lt;number&gt; [settings.domain, ]Array.&lt;color&gt; [settings.range, ]boolean [settings.nice, ]number [settings.min, ]number [settings.max, ]Array.&lt;field&gt; [fields]*)
+#### <a name='picasso.scaleThresholdColor' href='#picasso.scaleThresholdColor'>#</a> **picasso.scaleThresholdColor**(*object [settings, ]Array.&lt;number&gt; [settings.domain, ]Array.&lt;color&gt; [settings.range, ]boolean [settings.nice, ]number [settings.min, ]number [settings.max, ]Array.&lt;field&gt; [fields]*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
@@ -354,7 +265,7 @@ No description
 | settings.min | number | Minimum value to generate domain extent from. Ignored if domain is set. | Yes | No |
 | settings.max | number | Maximum value to generate domain extend from. Ignored if domain is set. | Yes | No |
 | fields | Array.&lt;field&gt; | Fields to dynamically calculate the domain extent from. Ignored if min/max are set. | Yes | No |
-| Returns | thresholdScale | Instance of threshold scale | ... | ... |
+| Returns | thresholdColor | No | ... | ... |
 
 No description  
 #### Examples
@@ -369,27 +280,11 @@ let t = threshold({
 t.domain(); // [25,50,75]
 t.range(); // Generates from colors and domain: ['rgb(0,0,0)','rgb(85,85,85)','rgb(170,170,170)','rgb(255,255,255)']
 ```
-#### <a name='thresholdScale' href='#thresholdScale'>#</a> **thresholdScale**(*object v*)
+#### <a name='thresholdColor' href='#thresholdColor'>#</a> **thresholdColor**(*object v*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
 | v | object | Object literal containing a &#x27;value&#x27; property. | No | No |
 | Returns | string | A CSS color from the scale&#x27;s range. | ... | ... |
-
-No description  
-#### <a name='thresholdScale.domain' href='#thresholdScale.domain'>#</a> **thresholdScale.domain**(*Array.&lt;number&gt; [values]*)
-
-|Name(s)|Type(s)|Description|Optional|Default value|
-|-------|-------|-----------|--------|-------------|
-| values | Array.&lt;number&gt; | Set or get domain values. | Yes | No |
-| Returns | thresholdScale | The instance this method was called on if a parameter is provided, otherwise the current domain is returned. | ... | ... |
-
-No description  
-#### <a name='thresholdScale.range' href='#thresholdScale.range'>#</a> **thresholdScale.range**(*Array.&lt;number&gt; [values]*)
-
-|Name(s)|Type(s)|Description|Optional|Default value|
-|-------|-------|-----------|--------|-------------|
-| values | Array.&lt;number&gt; | Set or get range values. | Yes | No |
-| Returns | thresholdScale | The instance this method was called on if a parameter is provided, otherwise the current range is returned. | ... | ... |
 
 No description  

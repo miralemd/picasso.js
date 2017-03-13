@@ -1,19 +1,19 @@
 import { registry } from '../../utils/registry';
 import linear from '../../scales/linear';
-import ordinal from '../../scales/ordinal';
+import band from '../../scales/band';
 import sequential from '../../scales/color/sequential';
 import threshold from '../../scales/color/threshold';
 
 const reg = registry();
 
 reg.add('linear', linear);
-reg.add('ordinal', ordinal);
-reg.add('color-sequential', sequential);
-reg.add('color-threshold', threshold);
+reg.add('band', band);
+reg.add('sequential-color', sequential);
+reg.add('threshold-color', threshold);
 
 function getTypeFromMeta(fields) {
-  const types = fields.map(field => (field.type() === 'dimension' ? 'ordinal' : 'linear'));
-  return types.indexOf('linear') !== -1 ? 'linear' : 'ordinal';
+  const types = fields.map(field => (field.type() === 'dimension' ? 'band' : 'linear'));
+  return types.indexOf('linear') !== -1 ? 'linear' : 'band';
 }
 
 function findFields(dataset, sources) {
@@ -41,7 +41,7 @@ export function create(options, dataset) {
   let s;
 
   if (type === 'color') {
-    type = 'color-sequential';
+    type = 'sequential-color';
   }
 
   if (reg.has(type)) {

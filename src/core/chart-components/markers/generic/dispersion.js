@@ -48,7 +48,7 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
     resolvedStyle = resolveInitialStyle(settings, defaultStyles, chart);
 
     // Calculate the minimum data point distance
-    if (major && !major.bandWidth) {
+    if (major && !major.bandwidth) {
       const pointCoords = data.map(d => d.self.value);
 
       // Sort values
@@ -74,12 +74,12 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
 
       items.push({
         style: obj,
-        major: major && d.self ? major(d.self) + (major.bandWidth() / 2) : 0.5,
-        min: minor && 'min' in d ? minor(d.min) : null,
-        max: minor && 'max' in d ? minor(d.max) : null,
-        start: minor && 'start' in d ? minor(d.start) : null,
-        end: minor && 'end' in d ? minor(d.end) : null,
-        med: minor && 'med' in d ? minor(d.med) : null,
+        major: major && d.self ? major(d.self.value) + (major.bandwidth() / 2) : 0.5,
+        min: minor && 'min' in d ? minor(d.min.value) : null,
+        max: minor && 'max' in d ? minor(d.max.value) : null,
+        start: minor && 'start' in d ? minor(d.start.value) : null,
+        end: minor && 'end' in d ? minor(d.end.value) : null,
+        med: minor && 'med' in d ? minor(d.med.value) : null,
         data: i
       });
     });
@@ -98,10 +98,10 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
       if (minDataPointDistance === 0) {
         minDataPointDistance = 0.000000001;
       }
-      const normalizedWidth = major({ value: major.domain()[0] }) - major({ value: major.domain()[0] + minDataPointDistance });
+      const normalizedWidth = major(major.domain()[0]) - major(major.domain()[0] + minDataPointDistance);
       bandwidth = Math.abs(normalizedWidth);
     } else {
-      bandwidth = major && major.bandWidth ? major.bandWidth() : 1;
+      bandwidth = major && major.bandwidth ? major.bandwidth() : 1;
     }
 
     // Setup the blueprint

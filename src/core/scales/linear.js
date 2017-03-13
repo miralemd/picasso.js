@@ -1,4 +1,4 @@
-import { scaleLinear } from 'd3-scale';
+import { scaleLinear as d3ScaleLinear } from 'd3-scale';
 import extend from 'extend';
 
 import { notNumber } from '../utils/math';
@@ -79,27 +79,27 @@ function getMinMax(settings, fields) {
 }
 
  /**
- * @alias linear
- * @memberof picasso.scales
- * @param { field[] } fields
+ * @alias scaleLinear
+ * @memberof picasso
  * @param { object } settings
- * @return { linearScale } Instance of linear scale
+ * @param { field[] } [fields]
+ * @return { linear }
  */
 
-export default function linear(settings, fields/* , dataset*/) {
-  const d3Scale = scaleLinear();
+export default function scaleLinear(settings, fields) {
+  const d3Scale = d3ScaleLinear();
   let tickCache;
 
   /**
-   * @alias linearScale
-   * @param { Object } Item item object with value property
-   * @return { Number } The scaled value
+   * @alias linear
+   * @param { Object } value
+   * @return { number }
    */
   function fn(v) {
-    if (notNumber(v.value)) {
+    if (notNumber(v)) {
       return NaN;
     }
-    return d3Scale(v.value);
+    return d3Scale(v);
   }
 
   fn.data = function data() {
@@ -108,8 +108,8 @@ export default function linear(settings, fields/* , dataset*/) {
 
   /**
    * {@link https://github.com/d3/d3-scale#continuous_invert }
-   * @param { Number } value The inverted value
-   * @return { Number } The inverted scaled value
+   * @param { number } value The inverted value
+   * @return { number } The inverted scaled value
    */
   fn.invert = function invert(value) {
     return d3Scale.invert(value);
@@ -117,8 +117,8 @@ export default function linear(settings, fields/* , dataset*/) {
 
   /**
    * {@link https://github.com/d3/d3-scale#continuous_rangeRound }
-   * @param { Number[] } values Range values
-   * @return { linearScale } The instance this method was called on
+   * @param { number[] } values Range values
+   * @return { linear } The instance this method was called on
    */
   fn.rangeRound = function rangeRound(values) {
     d3Scale.rangeRound(values);
@@ -127,8 +127,8 @@ export default function linear(settings, fields/* , dataset*/) {
 
   /**
    * {@link https://github.com/d3/d3-scale#continuous_clamp }
-   * @param { Boolean } [ value=true ] TRUE if clamping should be enabled
-   * @return { linearScale } The instance this method was called on
+   * @param { boolean } [ value=true ] TRUE if clamping should be enabled
+   * @return { linear } The instance this method was called on
    */
   fn.clamp = function clamp(value = true) {
     d3Scale.clamp(value);
@@ -137,7 +137,7 @@ export default function linear(settings, fields/* , dataset*/) {
 
   /**
    * Get cached ticks (if any)
-   * @return { Number | Undefined }
+   * @return { number | undefined }
    */
   fn.cachedTicks = function fnCachedTicks() {
     return tickCache;
@@ -145,7 +145,7 @@ export default function linear(settings, fields/* , dataset*/) {
 
   /**
    * Clear the tick cache
-   * @return {Number | Undefined}
+   * @return {number | undefined}
    */
   fn.clearTicksCache = function fnClearTicks() {
     tickCache = undefined;
@@ -155,7 +155,7 @@ export default function linear(settings, fields/* , dataset*/) {
   /**
    * {@link https://github.com/d3/d3-scale#continuous_ticks }
    * @param { Object } input Number of ticks to generate or an object passed to tick generator
-   * @return { Number[] | Object } Array of ticks or any type the custom tick generator returns
+   * @return { number[] | Object } Array of ticks or any type the custom tick generator returns
    */
   fn.ticks = function ticks(input) {
     if (input !== null && typeof input === 'object') {
@@ -172,8 +172,8 @@ export default function linear(settings, fields/* , dataset*/) {
 
   /**
    * {@link https://github.com/d3/d3-scale#continuous_nice }
-   * @param { Number } count
-   * @return { linearScale } The instance this method was called on
+   * @param { number } count
+   * @return { linear } The instance this method was called on
    */
   fn.nice = function nice(count) {
     d3Scale.nice(count);
@@ -193,8 +193,8 @@ export default function linear(settings, fields/* , dataset*/) {
   };
 
   /**
-   * @param { Number[] } [values] Set or Get domain values
-   * @return { linearScale | Number[] } The instance this method was called on if a parameter is provided, otherwise the current domain is returned
+   * @param { number[] } [values] Set or Get domain values
+   * @return { linear | Number[] } The instance this method was called on if a parameter is provided, otherwise the current domain is returned
    */
   fn.domain = function domain(values) {
     if (arguments.length) {
@@ -206,8 +206,8 @@ export default function linear(settings, fields/* , dataset*/) {
   };
 
   /**
-   * @param { Number[] } [values] Set or Get range values
-   * @return { linearScale | Number[] } The instance this method was called on if a parameter is provided, otherwise the current range is returned
+   * @param { number[] } [values] Set or Get range values
+   * @return { linear | number[] } The instance this method was called on if a parameter is provided, otherwise the current range is returned
    */
   fn.range = function range(values) {
     if (arguments.length) {
@@ -220,16 +220,16 @@ export default function linear(settings, fields/* , dataset*/) {
 
   /**
    * {@link https://github.com/d3/d3-scale#_continuous }
-   * @param { Number } value A value within the domain value span
-   * @return { Number } Interpolated from the range
+   * @param { number } value A value within the domain value span
+   * @return { number } Interpolated from the range
    */
-  fn.get = function get(value) {
-    return notNumber(value) ? NaN : d3Scale(value);
-  };
+  // fn.get = function get(value) {
+  //   return notNumber(value) ? NaN : d3Scale(value);
+  // };
 
   /**
    * Get the first value of the domain
-   * @return { Number }
+   * @return { number }
    */
   fn.start = function start() {
     return fn.domain()[0];
@@ -237,7 +237,7 @@ export default function linear(settings, fields/* , dataset*/) {
 
   /**
    * Get the last value of the domain
-   * @return { Number }
+   * @return { number }
    */
   fn.end = function end() {
     return fn.domain()[this.domain().length - 1];
@@ -245,7 +245,7 @@ export default function linear(settings, fields/* , dataset*/) {
 
   /**
    * Get the minimum value of the domain
-   * @return { Number }
+   * @return { number }
    */
   fn.min = function min() {
     return Math.min(this.start(), this.end());
@@ -253,7 +253,7 @@ export default function linear(settings, fields/* , dataset*/) {
 
   /**
    * Get the maximum value of the domain
-   * @return { Number }
+   * @return { number }
    */
   fn.max = function max() {
     return Math.max(this.start(), this.end());
@@ -261,7 +261,7 @@ export default function linear(settings, fields/* , dataset*/) {
 
   /**
    * Divides the domain and range into uniform segments, based on start and end value
-   * @param  { Number } segments The number of segments
+   * @param  { number } segments The number of segments
    * @return { function } The instance this method was called on
    * @example
    * let s = linear();
@@ -281,7 +281,7 @@ export default function linear(settings, fields/* , dataset*/) {
       let lastVal = domain[domain.length - 1] || 0,
         calIntervalPos = lastVal + valueRange,
         calSamplePos = lastVal + samplePos,
-        sampleColValue = fn.get(calSamplePos);
+        sampleColValue = fn(calSamplePos);
 
       domain.push(...[calIntervalPos, calIntervalPos]);
       range.push(...[sampleColValue, sampleColValue]);
@@ -294,7 +294,7 @@ export default function linear(settings, fields/* , dataset*/) {
   };
 
   fn.copy = function copy() {
-    const cop = linear(settings, fields);
+    const cop = scaleLinear(settings, fields);
     cop.domain(fn.domain());
     cop.range(fn.range());
     cop.clamp(d3Scale.clamp());

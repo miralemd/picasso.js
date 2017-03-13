@@ -38,7 +38,7 @@ function horizontalLabelOverlap({
     .map(measureText)
     .map(r => r.width);
   for (let i = 0; i < majorTicks.length; ++i) {
-    const d1 = m * size * scale.bandWidth();
+    const d1 = m * size * scale.bandwidth();
     const d2 = tickSize[i];
     if (d1 < d2) {
       return true;

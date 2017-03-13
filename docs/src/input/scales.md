@@ -7,9 +7,9 @@
 
 {{>magic ctx='core.scales.linear-js'}}
 
-## Ordinal scale
+## Band scale
 
-{{>magic ctx='core.scales.ordinal-js'}}
+{{>magic ctx='core.scales.band-js'}}
 
 
 # Color Scales

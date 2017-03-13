@@ -24,15 +24,15 @@ describe('scales', () => {
     expect(s.max()).to.equal(30);
   });
 
-  it('should create ordinal scale when type option is "ordinal"', () => {
-    const s = create({ type: 'ordinal' });
-    expect(s.type).to.equal('ordinal');
+  it('should create band scale when type option is "band"', () => {
+    const s = create({ type: 'band' });
+    expect(s.type).to.equal('band');
     expect(s.sources).to.eql([]);
   });
 
-  it('should create sequential color scale when type option is "color-sequential"', () => {
-    const s = create({ type: 'color-sequential' });
-    expect(s.type).to.equal('color-sequential');
+  it('should create sequential color scale when type option is "sequential-color"', () => {
+    const s = create({ type: 'sequential-color' });
+    expect(s.type).to.equal('sequential-color');
     expect(s.sources).to.eql([]);
   });
 
@@ -92,7 +92,7 @@ describe('scales', () => {
     expect(s.max()).to.equal(90);
   });
 
-  it('should create ordinal scale when source fields are dimensions', () => {
+  it('should create band scale when source fields are dimensions', () => {
     const dataset = {
       findField: sinon.stub()
     };
@@ -106,6 +106,6 @@ describe('scales', () => {
     const s = create({
       source: ['d1']
     }, dataset);
-    expect(s.type).to.equal('ordinal');
+    expect(s.type).to.equal('band');
   });
 });

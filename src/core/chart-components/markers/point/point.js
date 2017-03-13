@@ -164,8 +164,8 @@ const DEFAULT_ERROR_SETTINGS = {
   */
 
 function getSpaceFromScale(s, space) {
-  if (s && typeof s.bandWidth === 'function') { // some kind of ordinal scale
-    return Math.max(1, s.bandWidth() * space);
+  if (s && typeof s.bandwidth === 'function') { // some kind of ordinal scale
+    return Math.max(1, s.bandwidth() * space);
   }
   return Math.max(1, space / 10);
 }

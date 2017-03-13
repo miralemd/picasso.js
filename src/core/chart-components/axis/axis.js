@@ -51,7 +51,7 @@ function getAlign(dock, align, type) {
   if (dock && !align) {
     return dock;
   } else if (!dock && !align) {
-    return type === 'ordinal' ? 'bottom' : 'left';
+    return type === 'band' ? 'bottom' : 'left';
   }
   return align;
 }
@@ -76,7 +76,7 @@ const axisComponent = {
     this.innerRect = { width: 0, height: 0, x: 0, y: 0 };
     this.outerRect = { width: 0, height: 0, x: 0, y: 0 };
 
-    if (this.scale.type === 'ordinal') {
+    if (this.scale.type === 'band') {
       this.defaultStyleSettings = discreteDefaultSettings();
       this.defaultDock = 'bottom';
     } else {

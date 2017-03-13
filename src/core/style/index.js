@@ -170,9 +170,9 @@ export function resolveForDataObject(props, dataObj, index) {
         ret[s] = props[s].call(fnContext, hasExplicitDataProp ? dataObj[props[s].ref] : undefined, index);
       }
     } else if (hasScale && (hasImplicitDataProp || hasExplicitDataProp)) {
-      ret[s] = props[s].scale(propData);
-      if (props[s].scale.bandWidth) {
-        ret[s] += props[s].scale.bandWidth() / 2;
+      ret[s] = props[s].scale(propData.value);
+      if (props[s].scale.bandwidth) {
+        ret[s] += props[s].scale.bandwidth() / 2;
       }
     } else if (hasExplicitDataProp) {
       ret[s] = propData.value;

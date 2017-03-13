@@ -262,7 +262,7 @@ describe('point marker', () => {
       { m1: { value: 1 } }
     ]);
     const xScale = v => v;
-    xScale.bandWidth = () => 0.2; // max size: width * 0.2 -> 20
+    xScale.bandwidth = () => 0.2; // max size: width * 0.2 -> 20
     chart.scale.onCall(0).returns(xScale);
 
     createAndRenderPoint({

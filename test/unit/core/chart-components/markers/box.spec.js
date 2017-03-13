@@ -90,18 +90,18 @@ describe('box marker', () => {
     };
 
     chart.dataset().map.returns([{
-      self: 0.5,
-      min: 0.2,
-      start: 0.4,
-      med: 0.5,
-      end: 0.6,
-      max: 0.8
+      self: { value: 0.5 },
+      min: { value: 0.2 },
+      start: { value: 0.4 },
+      med: { value: 0.5 },
+      end: { value: 0.6 },
+      max: { value: 0.8 }
     }]);
 
     const xScale = v => v;
-    xScale.bandWidth = () => 0.5;
+    xScale.bandwidth = () => 0.5;
     const yScale = v => v;
-    yScale.bandWidth = () => 0.5;
+    yScale.bandwidth = () => 0.5;
     chart.scale.withArgs({ scale: 'x' }).returns(xScale);
     chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
@@ -234,15 +234,15 @@ describe('box marker', () => {
     };
 
     chart.dataset().map.returns([{
-      self: 0.5,
-      start: 0,
-      end: 0.6
+      self: { value: 0.5 },
+      start: { value: 0 },
+      end: { value: 0.6 }
     }]);
 
     const xScale = v => v;
-    xScale.bandWidth = () => 0.5;
+    xScale.bandwidth = () => 0.5;
     const yScale = v => v;
-    yScale.bandWidth = () => 0.5;
+    yScale.bandwidth = () => 0.5;
     chart.scale.withArgs({ scale: 'x' }).returns(xScale);
     chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
@@ -295,15 +295,15 @@ describe('box marker', () => {
     };
 
     chart.dataset().map.returns([{
-      self: 0.5,
-      start: 0.2,
-      end: 0.6
+      self: { value: 0.5 },
+      start: { value: 0.2 },
+      end: { value: 0.6 }
     }]);
 
     const xScale = v => v;
-    xScale.bandWidth = () => 0.5;
+    xScale.bandwidth = () => 0.5;
     const yScale = v => v;
-    yScale.bandWidth = () => 0.5;
+    yScale.bandwidth = () => 0.5;
     chart.scale.withArgs({ scale: 'x' }).returns(xScale);
     chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
@@ -359,17 +359,17 @@ describe('box marker', () => {
     };
 
     chart.dataset().map.returns([{
-      self: 0.5,
-      start: 0.4,
-      end: 0.6,
-      min: 0.2,
-      max: 0.8
+      self: { value: 0.5 },
+      start: { value: 0.4 },
+      end: { value: 0.6 },
+      min: { value: 0.2 },
+      max: { value: 0.8 }
     }]);
 
     const xScale = v => v;
-    xScale.bandWidth = () => 0.5;
+    xScale.bandwidth = () => 0.5;
     const yScale = v => v;
-    yScale.bandWidth = () => 0.5;
+    yScale.bandwidth = () => 0.5;
     chart.scale.withArgs({ scale: 'x' }).returns(xScale);
     chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
@@ -492,7 +492,7 @@ describe('box marker', () => {
 
     chart.dataset().map.returns(dataset);
 
-    const xScale = create({ type: 'ordinal' });
+    const xScale = create({ type: 'band' });
     xScale.domain([1, 2, 3, 4, 5]);
     const yScale = create({ min: 0.2, max: 0.8 });
 
