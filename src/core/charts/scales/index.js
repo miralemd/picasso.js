@@ -8,8 +8,8 @@ const reg = registry();
 
 reg.add('linear', linear);
 reg.add('band', band);
-reg.add('color-sequential', sequential);
-reg.add('color-threshold', threshold);
+reg.add('sequential-color', sequential);
+reg.add('threshold-color', threshold);
 
 function getTypeFromMeta(fields) {
   const types = fields.map(field => (field.type() === 'dimension' ? 'band' : 'linear'));
@@ -41,7 +41,7 @@ export function create(options, dataset) {
   let s;
 
   if (type === 'color') {
-    type = 'color-sequential';
+    type = 'sequential-color';
   }
 
   if (reg.has(type)) {

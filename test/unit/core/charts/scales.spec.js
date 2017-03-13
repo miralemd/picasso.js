@@ -30,9 +30,9 @@ describe('scales', () => {
     expect(s.sources).to.eql([]);
   });
 
-  it('should create sequential color scale when type option is "color-sequential"', () => {
-    const s = create({ type: 'color-sequential' });
-    expect(s.type).to.equal('color-sequential');
+  it('should create sequential color scale when type option is "sequential-color"', () => {
+    const s = create({ type: 'sequential-color' });
+    expect(s.type).to.equal('sequential-color');
     expect(s.sources).to.eql([]);
   });
 
