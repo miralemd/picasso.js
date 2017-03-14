@@ -3,6 +3,7 @@ import linear from '../../scales/linear';
 import band from '../../scales/band';
 import sequential from '../../scales/color/sequential';
 import threshold from '../../scales/color/threshold';
+import categorical from '../../scales/color/categorical';
 
 const reg = registry();
 
@@ -10,6 +11,7 @@ reg.add('linear', linear);
 reg.add('band', band);
 reg.add('sequential-color', sequential);
 reg.add('threshold-color', threshold);
+reg.add('categorical-color', categorical);
 
 function getTypeFromMeta(fields) {
   const types = fields.map(field => (field.type() === 'dimension' ? 'band' : 'linear'));
@@ -41,7 +43,11 @@ export function create(options, dataset) {
   let s;
 
   if (type === 'color') {
-    type = 'sequential-color';
+    if (fields[0] && fields[0].type() === 'dimension') {
+      type = 'categorical-color';
+    } else {
+      type = 'sequential-color';
+    }
   }
 
   if (reg.has(type)) {

@@ -27,6 +27,9 @@
 * <a href="#sequentialColor">sequentialColor</a>
 * <a href="#picasso.scaleThresholdColor">picasso.scaleThresholdColor</a>
 * <a href="#thresholdColor">thresholdColor</a>
+* <a href="#picasso.scaleCategorical">picasso.scaleCategorical</a>
+* <a href="#picasso.scaleCategorical.range">picasso.scaleCategorical.range</a>
+* <a href="#picasso.scaleCategorical.unknown">picasso.scaleCategorical.unknown</a>
 
 
 ## Linear scale
@@ -288,3 +291,24 @@ t.range(); // Generates from colors and domain: ['rgb(0,0,0)','rgb(85,85,85)','r
 | Returns | string | A CSS color from the scale&#x27;s range. | ... | ... |
 
 No description  
+
+## Categorical scale
+
+#### <a name='picasso.scaleCategorical' href='#picasso.scaleCategorical'>#</a> **picasso.scaleCategorical**(*Object settings, Array.&lt;field&gt; [fields, ]dataset [dataset]*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| settings | Object | No | No | No |
+| fields | Array.&lt;field&gt; | No | Yes | No |
+| dataset | dataset | No | Yes | No |
+| Returns | ordinal | No | ... | ... |
+
+An ordinal scale with the output range set to default colors, as defined by *scaleCategorical.range*  
+
+#### <a name='picasso.scaleCategorical.range' href='#picasso.scaleCategorical.range'>#</a> **picasso.scaleCategorical.range** *Array.&lt;string&gt;*
+
+Default range of colors 
+
+#### <a name='picasso.scaleCategorical.unknown' href='#picasso.scaleCategorical.unknown'>#</a> **picasso.scaleCategorical.unknown** *string*
+
+Default color for unknown values 
