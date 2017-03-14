@@ -16,7 +16,10 @@
  * resolve( path, obj ); // "heaven"
  */
 export default function resolve(path, obj) {
-  const arr = path.replace(/^\//, '').split(/\//);
+  if (path.charAt(0) === '/') {
+    path = path.substring(1);
+  }
+  const arr = path.split('/');
   let subpath;
   let container = obj;
   for (let i = 0; i < arr.length; i++) {
