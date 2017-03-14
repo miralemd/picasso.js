@@ -2,6 +2,33 @@
 
 ## Unreleased
 
+### Breaking changes
+
+- Move `q` on the public API into a separate plugin. This change requires registering of the `q` plugin to make it available. Also, the brush helper function has been renamed.
+
+  _Usage in ES2015_
+
+    ```js
+    import picasso from '@qlik/picasso';
+    import q, { qBrushHelper } from '@qlik/picasso/plugins/q';
+
+    picasso.use(q);
+
+    qBrushHelper(/* ... */);
+    ```
+
+  _Usage in AMD_
+
+    ```js
+    define(['@qlik/picasso', '@qlik/picasso/plugins/q/dist/picasso-q'], function(picasso, q) {
+      picasso.use(q);
+
+      qBrushHelper(/* ... */);
+    });
+    ```
+
+- Initializing formatters, data etc. has changed from picasso.data('q')()(data) to picasso.data('q')(data).
+
 ### Added
 
 - PIC-104 Control visibility of components
@@ -14,6 +41,11 @@
       }
     ]
     ```
+
+- Expose the following methods on the public API: `formatter`, `dataset`, `field` and `table`.
+
+- Flatten formatters (keeping backward compatibility). Example: `picasso.formatter('d3')('number')` -> `picasso.formatter('d3-number')`.
+
 
 ## [BREAKING] 0.11.0
 
