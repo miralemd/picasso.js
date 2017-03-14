@@ -1,7 +1,10 @@
-import qField from '../../../../src/q/data/q-field';
+import * as picasso from '../../../../src/index';
+
+import initPlugin, { qField } from '../../../../plugins/q/src/q';
 
 describe('QField', () => {
   let f;
+
   const page = {
     qArea: { qLeft: 0, qTop: 5, qWidth: 2, qHeight: 3 },
     qMatrix: [
@@ -20,6 +23,10 @@ describe('QField', () => {
     ]
   };
 
+  beforeEach(() => {
+    initPlugin(picasso);
+  });
+
   describe('', () => {
     const dd = {
       meta: {
@@ -33,7 +40,7 @@ describe('QField', () => {
       idx: 1
     };
     beforeEach(() => {
-      f = qField()(dd);
+      f = qField(dd);
     });
 
     it('should return min value', () => {
@@ -57,7 +64,7 @@ describe('QField', () => {
     });
 
     it('should identify when the field is a measure', () => {
-      const m = qField()({ meta: {} });
+      const m = qField({ meta: {} });
       expect(m.type()).to.equal('measure');
     });
 
@@ -92,7 +99,7 @@ describe('QField', () => {
     };
 
     it('should fallback to empty string when othersLabel is not defined', () => {
-      const ff = qField()(dd);
+      const ff = qField(dd);
       const values = ff.values();
       expect(values).to.eql([
         { value: 2, label: '', id: -3, index: 1 },
@@ -102,7 +109,7 @@ describe('QField', () => {
     });
 
     it('should use the defined othersLabel', () => {
-      const ff = qField()({
+      const ff = qField({
         meta: {
           qMin: 1,
           qMax: 2,
@@ -134,7 +141,7 @@ describe('QField', () => {
       idx: 8
     };
     beforeEach(() => {
-      f = qField()(dd);
+      f = qField(dd);
     });
 
     it('should return values', () => {
@@ -200,7 +207,7 @@ describe('QField', () => {
           idx: 0
         };
 
-        const ff = qField()(dd);
+        const ff = qField(dd);
         const values = ff.values();
         expect(values).to.deep.equal([
           { value: 'NaN', label: 'Alpha', id: 1, index: 7 },
@@ -223,7 +230,7 @@ describe('QField', () => {
           idx: 1
         };
 
-        const ff = qField()(dd);
+        const ff = qField(dd);
         const values = ff.values();
         expect(values).to.deep.equal([
           { label: 'a1', id: 0, value: 123, index: 8 },
@@ -246,7 +253,7 @@ describe('QField', () => {
           idx: 2
         };
 
-        const ff = qField()(dd);
+        const ff = qField(dd);
         const values = ff.values();
         expect(values).to.deep.equal([
           { label: '$45.00', id: 0, value: 45, index: 8 },
@@ -268,7 +275,7 @@ describe('QField', () => {
           attrIdx: 1
         };
 
-        const ff = qField()(dd);
+        const ff = qField(dd);
         const values = ff.values();
         expect(values).to.deep.equal([
           { value: 'NaN', label: 'redish', id: 0, index: 0 },
@@ -376,7 +383,7 @@ describe('QField', () => {
           idx: 0
         };
 
-        const ff = qField()(dd);
+        const ff = qField(dd);
         const values = ff.values();
         expect(values).to.deep.equal([
           { label: 'Alpha', id: 1, value: 'NaN', index: 13 },
@@ -400,7 +407,7 @@ describe('QField', () => {
           idx: 1
         };
 
-        const ff = qField()(dd);
+        const ff = qField(dd);
         const values = ff.values();
         expect(values).to.deep.equal([
           { label: 'a1', id: 3, value: 'NaN', index: 13 },
@@ -422,7 +429,7 @@ describe('QField', () => {
           attrDimIdx: 1
         };
 
-        let ff = qField()(dd);
+        let ff = qField(dd);
         let values = ff.values();
         expect(values).to.deep.equal([
           { label: 'alpha attr dim', id: 333, value: undefined, index: 0 },
@@ -445,7 +452,7 @@ describe('QField', () => {
           attrIdx: 1
         };
 
-        const ff = qField()(dd);
+        const ff = qField(dd);
         const values = ff.values();
         expect(values).to.deep.equal([
           { label: undefined, id: 0, value: 255, index: 0 },
@@ -469,7 +476,7 @@ describe('QField', () => {
           idx: 2
         };
 
-        const ff = qField()(dd);
+        const ff = qField(dd);
         const values = ff.values();
         expect(values).to.deep.equal([
           { label: '50%', id: 0, value: 0.50, index: 13 },
@@ -493,7 +500,7 @@ describe('QField', () => {
           idx: 3
         };
 
-        const ff = qField()(dd);
+        const ff = qField(dd);
         const values = ff.values();
         expect(values).to.deep.equal([
           { label: '$41', id: 0, value: 41, index: 16 },
@@ -528,7 +535,7 @@ describe('QField', () => {
     };
 
     it('should extract the proper values', () => {
-      const ff = qField()(dd);
+      const ff = qField(dd);
 
       expect(ff.values()).to.eql([
         { value: 13, label: 'tretton', id: 0, index: 0 },
@@ -560,7 +567,7 @@ describe('QField', () => {
     };
 
     it('should extract attribute dimension values', () => {
-      const ff = qField()(dd);
+      const ff = qField(dd);
 
       expect(ff.values()).to.eql([
         { value: undefined, label: 'tretton', id: 7, index: 0 },

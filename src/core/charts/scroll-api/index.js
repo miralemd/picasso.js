@@ -11,7 +11,7 @@ export function createOrUpdate(options, oldApi) {
   return s;
 }
 
-export default function builder(obj, chart, oldScrollApis, isPartial) {
+export default function builder(obj, oldScrollApis, isPartial) {
   const scrollApis = {};
   for (const n in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, n)) {

@@ -33,10 +33,6 @@ TODO
 
 [More about data](./data).
 
-### `picasso.q`
-
-TODO
-
 ### `picasso.use(plugin)`
 
 * `plugin` - Function

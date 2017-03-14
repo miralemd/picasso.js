@@ -2,7 +2,7 @@ import tableFn from './table';
 import { mapData } from './data-mapper';
 
 function tablesFn(data) {
-  return data.map((tableData, i) => tableFn({ id: `/${i}` })(tableData));
+  return data.map((tableData, i) => tableFn(tableData, { id: `/${i}` }));
 }
 
 export function findField(path, tables) {
@@ -27,19 +27,16 @@ export function findField(path, tables) {
  * @ignore
  * @return {dataset}
  */
-export default function dataset({
+export default function dataset(data, {
   tables = tablesFn
 } = {}) {
-  let cache = {},
-    data = [];
+  const cache = {};
 
   /**
    * @alias dataset
    * @param {object} d The data
    */
-  function ds(d) {
-    data = d;
-    cache = {};
+  function ds() {
     return ds;
   }
 

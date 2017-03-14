@@ -1,5 +1,5 @@
 /* eslint no-return-assign: 0*/
-import { formatter as formatterFn } from '../formatter';
+import formatterFn from '../formatter';
 
 // TODO - decide whether usage of .call() is appropriate when invoking accessors, if yes then arrow functions are not allowed!
 
@@ -10,7 +10,7 @@ const accessors = {
   type: data => data.type,
   title: data => data.title,
   values: data => data.values,
-  formatter: () => formatterFn('d3')('number')('')
+  formatter: () => formatterFn('d3-number')('')
 };
 
 /**
@@ -20,7 +20,7 @@ const accessors = {
  * @ignore
  * @return {field} Data field
  */
-export default function field({
+export default function field(data, {
   id,
   min = accessors.min,
   max = accessors.max,
@@ -30,14 +30,11 @@ export default function field({
   values = accessors.values,
   formatter = accessors.formatter
 } = {}) {
-  let data = {};
-
   /**
    * @alias field
    * @param {object} d Field data
    */
-  function fn(d) {
-    data = d;
+  function fn() {
     return fn;
   }
 
@@ -90,5 +87,5 @@ export default function field({
    */
   fn.formatter = () => formatter(data);
 
-  return fn;
+  return fn();
 }

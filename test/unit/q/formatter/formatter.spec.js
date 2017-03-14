@@ -1,4 +1,4 @@
-import { createFromMetaInfo } from '../../../../src/q/formatter';
+import { createFromMetaInfo } from '../../../../plugins/q/src/formatter';
 
 const qLocaleInfo = {
   qDecimalSep: ',',

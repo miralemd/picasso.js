@@ -37,7 +37,7 @@ describe('dataset', () => {
           ['Cars', 59]
         ]
       ];
-      ds = dataset()(data);
+      ds = dataset(data);
     });
 
     it('should find the second field in the second table', () => {
@@ -52,7 +52,7 @@ describe('dataset', () => {
   });
 
   it('should recognize two tables', () => {
-    const ds = dataset({ tables: tablesFn })(arr);
+    const ds = dataset(arr, { tables: tablesFn });
     expect(ds.tables()).to.eql(['cube', 'othercube']);
   });
 
@@ -68,7 +68,7 @@ describe('dataset', () => {
         findField: () => {}
       }));
     }
-    const ds = dataset({ tables: tfn })(ts);
+    const ds = dataset(ts, { tables: tfn });
     const result = ds.findField('general');
     expect(result.table.id()).to.equal('general');
   });

@@ -2,9 +2,12 @@ import {
   chart,
   renderer,
   data,
+  formatter,
+  dataset,
+  field,
+  table,
   component
 } from './core';
-import q from './q';
 import './web';
 
 // import chartComponent from './core/charts';
@@ -21,11 +24,13 @@ function use(plugin, options = {}) {
     chart,
     renderer,
     data,
-    component,
-    q
+    dataset,
+    field,
+    table,
+    formatter,
+    component
   }, options);
 }
-
 
 // Register components
 // use(chartComponent);
@@ -44,7 +49,10 @@ export {
   chart,
   renderer,
   data,
+  formatter,
+  dataset,
+  field,
+  table,
   use,
-  component,
-  q
+  component
 };

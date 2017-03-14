@@ -11,7 +11,7 @@ describe('Field', () => {
     };
     let f;
     beforeEach(() => {
-      f = field()(dd);
+      f = field(dd);
     });
 
     it('should return data', () => {
@@ -43,18 +43,18 @@ describe('Field', () => {
     let f;
     beforeEach(() => {
       f = field({
-        min: d => d.mm.qMin,
-        max: d => d.mm.maximum,
-        tags: d => d.meta.taggar.map(x => x.v),
-        title: d => d.label,
-        values: d => d.values.map(x => x.v)
-      })({
         mm: { qMin: -3, maximum: 2 },
         meta: {
           taggar: [{ v: 'numeric' }, { v: 'date' }]
         },
         label: 'custom',
         values: [{ v: 1 }, { v: 6 }, { v: 6 }]
+      }, {
+        min: d => d.mm.qMin,
+        max: d => d.mm.maximum,
+        tags: d => d.meta.taggar.map(x => x.v),
+        title: d => d.label,
+        values: d => d.values.map(x => x.v)
       });
     });
 

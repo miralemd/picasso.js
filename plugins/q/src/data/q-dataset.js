@@ -1,6 +1,5 @@
-import dataset, { findField } from '../../core/data/dataset';
-import qTable from './q-table';
-import resolve from '../../core/data/json-path-resolver';
+import { qTable } from '../q';
+import resolve from '../json-path-resolver';
 
 const ATTR_DIM_RX = /qAttrDimInfo\/\d+$/;
 
@@ -34,14 +33,32 @@ function findCubes(layout) {
 
 function tablesFn(layout) {
   const paths = findCubes(layout);
-  return paths.map(p => qTable({ id: p })({
-    cube: resolve(p, layout),
-    localeInfo: layout.qLocaleInfo
-  }));
+  return paths.map((p) => {
+    const data = {
+      cube: resolve(p, layout),
+      localeInfo: layout.qLocaleInfo
+    };
+    return qTable(data, { id: p });
+  });
 }
 
-export default function qDataset() {
-  const qds = dataset({
+function findField(path, tables) {
+  const matches = tables.filter(t => path.indexOf(t.id()) === 0);
+  matches.sort((a, b) => path.replace(a.id(), '').length - path.replace(b.id(), '').length);
+  const table = matches[0];
+  let field;
+  if (table) {
+    const subpath = path.replace(table.id(), '');
+    field = table.findField(subpath);
+  }
+  return {
+    table,
+    field
+  };
+}
+
+export default function qDataset(datasetFn, data) {
+  const qds = datasetFn(data, {
     tables: tablesFn
   });
 

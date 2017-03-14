@@ -1,5 +1,4 @@
-import field from '../../core/data/field';
-import resolve from '../../core/data/json-path-resolver';
+import resolve from '../json-path-resolver';
 import { createFromMetaInfo } from '../formatter';
 
 const specialTextValues = {
@@ -146,8 +145,8 @@ const valuesFn = d => collectData({
 });
 const formatterFn = d => createFromMetaInfo(d.meta, d.localeInfo);
 
-export default function qField({ id } = {}) {
-  return field({
+export default function qField(fieldFn, data, { id } = {}) {
+  return fieldFn(data, {
     id,
     formatter: formatterFn,
     min: minFn,

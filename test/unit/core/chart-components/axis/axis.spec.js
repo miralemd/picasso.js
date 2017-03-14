@@ -3,7 +3,7 @@ import componentFactory from '../../../../../src/core/component/component-factor
 import axisComponent from '../../../../../src/core/chart-components/axis/axis';
 import linear from '../../../../../src/core/scales/linear';
 import band from '../../../../../src/core/scales/band';
-import { formatter } from '../../../../../src/core/formatter';
+import formatter from '../../../../../src/core/formatter';
 
 describe('Axis', () => {
   let chart;
@@ -39,7 +39,7 @@ describe('Axis', () => {
   }
 
   beforeEach(() => {
-    const f = formatter('d3')('number')(' ');
+    const f = formatter('d3-number')(' ');
     renderSpy = sinon.spy();
     chart = {
       brush: () => ({

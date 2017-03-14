@@ -2,12 +2,12 @@ import { continuousDefaultSettings } from '../../../../../src/core/scales/ticks/
 import { looseDistanceBasedGenerator } from '../../../../../src/core/scales/ticks/tick-generators';
 import linear from '../../../../../src/core/scales/linear';
 import band from '../../../../../src/core/scales/band';
-import { formatter } from '../../../../../src/core/formatter';
+import formatter from '../../../../../src/core/formatter';
 
 describe('Tick generators', () => {
   let settings;
   let scale;
-  const d3formatter = formatter('d3')('number')('');
+  const d3formatter = formatter('d3-number')('');
   let input;
 
   describe('continues tick generator', () => {
@@ -25,7 +25,7 @@ describe('Tick generators', () => {
     describe('formatting', () => {
       it('should output ticks in the correct format', () => {
         settings.ticks.count = 2;
-        input.formatter = formatter('d3')('number')('-1.0%');
+        input.formatter = formatter('d3-number')('-1.0%');
         const ticks = scale.ticks(input);
         const expected = [
           { position: 0, label: '0%', isMinor: false, value: 0 },

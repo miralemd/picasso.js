@@ -1,17 +1,15 @@
 import { registry } from '../utils/registry';
-import d3formatter from './d3';
+
+import { numberFormat as d3NumberFormatter, timeFormat as d3TimeFormatter } from './d3';
 
 const reg = registry();
 
-export function register(type, fn) {
-  reg.add(type, fn);
-}
-
-export function formatter(type) {
-  if (!reg.has(type)) {
-    throw new Error(`Formatter of type ${type} does not exist`);
+export default function formatter(type, obj) {
+  if (obj) {
+    reg.add(type, obj);
   }
-  return reg.get(type)();
+  return reg.get(type);
 }
 
-register('d3', d3formatter);
+formatter('d3-number', d3NumberFormatter);
+formatter('d3-time', d3TimeFormatter);

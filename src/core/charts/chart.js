@@ -7,7 +7,7 @@ import {
   isValidTapEvent
 } from '../utils/event-type';
 
-import buildData from '../data/index';
+import dataRegistry from '../data/index';
 import buildFormatters, { getOrCreateFormatter } from './formatter';
 import buildScales, { getOrCreateScale } from './scales';
 import buildScroll, { getScrollApi } from './scroll-api';
@@ -207,13 +207,13 @@ function chart(definition) {
       scroll = {}
     } = _settings;
 
-    dataset = buildData(_data);
+    dataset = dataRegistry(_data.type)(_data.data);
     if (!partialData) {
       Object.keys(brushes).forEach(b => brushes[b].clear());
     }
-    currentScales = buildScales(scales, instance);
-    currentFormatters = buildFormatters(formatters, instance);
-    currentScrollApis = buildScroll(scroll, instance, currentScrollApis, partialData);
+    currentScales = buildScales(scales, dataset);
+    currentFormatters = buildFormatters(formatters, dataset);
+    currentScrollApis = buildScroll(scroll, currentScrollApis, partialData);
   };
 
   const render = () => {
@@ -537,7 +537,7 @@ function chart(definition) {
   };
 
   instance.formatter = function formatter(v) {
-    return getOrCreateFormatter(v, currentFormatters, instance.dataset());
+    return getOrCreateFormatter(v, currentFormatters, dataset);
   };
 
   instance.toggleBrushing = function toggleBrushing(val) {

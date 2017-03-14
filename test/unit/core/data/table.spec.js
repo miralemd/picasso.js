@@ -4,7 +4,7 @@ describe('table', () => {
   describe('defaults', () => {
     let dd;
     beforeEach(() => {
-      dd = table()([
+      dd = table([
         ['Country', 'Population'],
         ['Sweden', 123],
         ['Norway', -345]
@@ -50,12 +50,12 @@ describe('table', () => {
     };
     beforeEach(() => {
       dd = table({
-        fields: fieldsFn
-      })({
         foo: [
           { title: 'First field', values: [0, 5, 6] },
           { title: 'Second field', values: [1, 2] }
         ]
+      }, {
+        fields: fieldsFn
       });
     });
 
