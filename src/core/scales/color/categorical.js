@@ -26,11 +26,31 @@ const UNKNOWN_COLOR = '#d2d2d2';
  */
 export default function scaleCategorical(settings = {}, fields, dataset) {
   const s = ordinal(settings, fields, dataset)
-    .unknown(UNKNOWN_COLOR);
+    .unknown(settings.unknown || UNKNOWN_COLOR);
 
-  if (!settings.range) {
-    s.range(scaleCategorical.range);
+  let range = (settings.range || scaleCategorical.range).slice();
+  if (settings.explicit && settings.explicit.domain) {
+    let domain = s.domain().slice();
+    let explicitDomain = (settings.explicit.domain || []);
+    if (explicitDomain.length) {
+      // duplicate range values to cover entire domain
+      let numCopies = Math.floor(domain.length / range.length);
+      for (let i = 1; i < numCopies + 1; i *= 2) {
+        range = range.concat(range);
+      }
+      // inject explicit colors
+      let explicitRange = (settings.explicit.range || []);
+      explicitDomain.forEach((v, i) => {
+        const idx = domain.indexOf(v);
+        if (idx !== -1) {
+          range.splice(idx, 0, explicitRange[i]);
+        }
+      });
+      // cutoff excess range values
+      range.length = domain.length;
+    }
   }
+  s.range(range);
 
   return s;
 }
