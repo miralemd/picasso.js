@@ -1,6 +1,6 @@
 {
   "name": "@qlik/picasso-q",
-  "version": "0.9.1",
+  "version": "0.12.0",
   "description": "Q module for Picasso",
   "license": "ISC",
   "private": true,
