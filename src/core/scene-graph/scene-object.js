@@ -1,5 +1,24 @@
 import { pointsToRect, pointsToCircle, pointsToLine } from '../math/intersection';
 
+function pointsToPath(points) {
+  let d = '';
+
+  for (let i = 0; i < points.length; i++) {
+    const p = points[i];
+    if (i === 0) {
+      d += `M${p.x} ${p.y}`;
+    } else {
+      d += `L${p.x} ${p.y}`;
+    }
+
+    d += ' ';
+  }
+
+  d += 'Z';
+
+  return d;
+}
+
 function colliderToShape(node, dpi) {
   const collider = node.collider();
 
@@ -25,6 +44,12 @@ function colliderToShape(node, dpi) {
       const line = pointsToLine(points);
       line.type = 'line';
       return line;
+    } else if (type === 'polygon') {
+      const path = pointsToPath(points);
+      return {
+        type: 'path',
+        d: path
+      };
     }
   }
 

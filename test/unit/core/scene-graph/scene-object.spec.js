@@ -108,6 +108,27 @@ describe('Scene Object', () => {
       });
     });
 
+    it('polygon', () => {
+      const circle = createCircle({
+        cx: 10,
+        cy: 20,
+        r: 30,
+        collider: {
+          type: 'polygon',
+          vertices: [
+            { x: 0, y: 25 },
+            { x: 25, y: 0 },
+            { x: 50, y: 25 }
+          ]
+        }
+      });
+      sceneObject = create(circle);
+      expect(sceneObject.collider).to.deep.equal({
+        type: 'path',
+        d: 'M0 25 L25 0 L50 25 L0 25 Z'
+      });
+    });
+
     it('bounds', () => {
       const container = createContainer({ collider: { type: 'bounds' } });
       container.addChild(createRect({ x: 10, y: 20, width: 30, height: 40 }));

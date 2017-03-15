@@ -84,7 +84,7 @@ class DisplayObject extends Node {
     } else if (type === 'bounds') {
       c.fn = geometry('rect', opts);
       this._collider = c;
-    } else if (['line', 'rect', 'circle'].indexOf(type) !== -1) {
+    } else if (['line', 'rect', 'circle', 'polygon'].indexOf(type) !== -1) {
       c.fn = geometry(type, opts);
       this._collider = c;
     }
