@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [BREAKING] 0.12.0
+
 ### Breaking changes
 
 - Move `q` on the public API into a separate plugin. This change requires registering of the `q` plugin to make it available. Also, the brush helper function has been renamed.
@@ -28,9 +30,15 @@
     ```
 
 - Initializing formatters, data etc. has changed from picasso.data('q')()(data) to picasso.data('q')(data).
+- Color types have changed name (if any of the following are used explicitly, they need to be updated):
+  - `ordinal` → `band`
+  - `color-threshold` → `threshold-color`
+  - `color-sequential` → `sequential-color`
 
 ### Added
 
+- PIC-4 Categorical color scale
+- PIC-6 QIX attribute dimension support
 - PIC-104 Control visibility of components
  
     ```js
@@ -43,8 +51,7 @@
     ```
 
 - Expose the following methods on the public API: `formatter`, `dataset`, `field` and `table`.
-
-- Flatten formatters (keeping backward compatibility). Example: `picasso.formatter('d3')('number')` -> `picasso.formatter('d3-number')`.
+- Flatten formatters (keeping backward compatibility). Example: `picasso.formatter('d3')('number')` → `picasso.formatter('d3-number')`.
 
 
 ## [BREAKING] 0.11.0
