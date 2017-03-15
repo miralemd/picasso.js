@@ -40,8 +40,8 @@ describe('categorical', () => {
         domain: ['Sweden', 'Italy', 'England', 'France', 'Canada'],
         range: ['blue', 'red'],
         explicit: {
-          domain: ['Italy', 'USA'],
-          range: ['green', 'starspangled']
+          domain: ['Italy', 'USA', 'Sweden'],
+          range: ['green', 'starspangled', 'yellow']
         }
       });
     });
@@ -51,7 +51,7 @@ describe('categorical', () => {
     });
 
     it('should modify range when explicit range and domain are set', () => {
-      expect(s.range()).to.eql(['blue', 'green', 'red', 'blue', 'red']);
+      expect(s.range()).to.eql(['yellow', 'green', 'blue', 'red', 'blue']);
     });
 
     it('should return custom color for "Italy"', () => {

@@ -40,10 +40,11 @@ export default function scaleCategorical(settings = {}, fields, dataset) {
       }
       // inject explicit colors
       let explicitRange = (settings.explicit.range || []);
-      explicitDomain.forEach((v, i) => {
-        const idx = domain.indexOf(v);
+      const order = explicitDomain.map((d, i) => [domain.indexOf(d), d, explicitRange[i]]).sort((a, b) => a[0] - b[0]);
+      order.forEach((v) => {
+        const idx = domain.indexOf(v[1]);
         if (idx !== -1) {
-          range.splice(idx, 0, explicitRange[i]);
+          range.splice(idx, 0, v[2]);
         }
       });
       // cutoff excess range values
