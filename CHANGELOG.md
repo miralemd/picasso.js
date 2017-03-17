@@ -2,6 +2,23 @@
 
 ## Unreleased
 
+## 0.12.3
+
+### Fixed
+
+- PIC-112 - Discrete axis doesn't hide when labels overlap
+- Event handlers for brush stylers are not cleared during update
+
+## 0.12.2
+
+### Fixed
+
+- q plugin exports don't work in AMD
+
+## 0.12.1
+
+- ?
+
 ### Fixed
 
 - PIC-112 Discrete axis doesn't hide when labels overlap
