@@ -217,6 +217,39 @@ describe('Brushing', () => {
       });
     });
 
+    describe('global propagation', () => {
+      it('stop', () => {
+        pointMarker.brush.trigger[0].globalPropagation = 'stop';
+        pointMarker.settings.x = undefined;
+        settings.components.push(pointMarker);
+        settings.components.push(pointMarker);
+        data = [
+          [
+            ['Product', 'Cost'],
+            ['Cars', 1]
+          ]
+        ];
+
+        const instance = chart({
+          element,
+          data: { data },
+          settings
+        });
+
+        const c1 = instance.findShapes('circle')[0];
+        simulateClick(instance.element, {
+          x: c1.attrs.cx,
+          y: c1.attrs.cy
+        });
+        const activeShapes = instance.getAffectedShapes('test');
+        const inactiveShapes = instance.findShapes('[fill="red"]');
+
+        // Each component has one shape. Only one component should trigger a brush, but both should consume it
+        expect(activeShapes).to.be.of.length(2);
+        expect(inactiveShapes).to.be.of.length(0);
+      });
+    });
+
     describe('components', () => {
       before(() => {
         // Axis require access to document to measure text

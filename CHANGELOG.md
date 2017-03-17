@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- PIC-113 globalPropagation property doesn't work on brush trigger
+
 ## 0.12.3
 
 ### Fixed

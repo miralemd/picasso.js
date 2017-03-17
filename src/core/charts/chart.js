@@ -458,9 +458,7 @@ function chart(definition) {
    * @param {String} path path to the field to fetch
    * @return {data-field}
    */
-  instance.field = path =>
-     instance.dataset().findField(path)
-  ;
+  instance.field = path => instance.dataset().findField(path);
 
   /**
    * The data set for this chart
@@ -542,7 +540,7 @@ function chart(definition) {
 
   instance.toggleBrushing = function toggleBrushing(val) {
     if (typeof val !== 'undefined') {
-      stopBrushing = !val;
+      stopBrushing = val;
     } else {
       stopBrushing = !stopBrushing;
     }
