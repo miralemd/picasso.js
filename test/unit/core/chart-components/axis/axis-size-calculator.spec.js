@@ -7,7 +7,7 @@ describe('AxisSizeCalculator', () => {
   let sizeFn;
   let rect;
   let scale;
-  let type;
+  let isDiscrete;
 
   beforeEach(() => {
     settings = continuousDefaultSettings();
@@ -21,12 +21,12 @@ describe('AxisSizeCalculator', () => {
     scale = {};
     scale.ticks = sinon.stub().returns(ticks);
     scale.bandwidth = sinon.stub().returns(1 / ticks.length);
-    type = undefined;
+    isDiscrete = false;
     rect = { x: 0, y: 0, height: 100, width: 100 };
     const data = null;
     const formatter = null;
     const measureText = ({ text = '' }) => ({ width: text.toString().length, height: 5 });
-    sizeFn = r => calcRequiredSize({ settings, rect: r, scale, data, formatter, measureText, type });
+    sizeFn = r => calcRequiredSize({ settings, rect: r, scale, data, formatter, measureText, isDiscrete });
   });
 
   it('axis with no visible component have a margin of 10', () => {
@@ -63,7 +63,7 @@ describe('AxisSizeCalculator', () => {
     settings.align = 'bottom';
     settings.labels.show = true;
     rect.width = 5;
-    type = 'ordinal';
+    isDiscrete = true;
     // available bandWidth is ~1.7, required width from labels is 2
     const size = sizeFn(rect);
 

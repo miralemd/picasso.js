@@ -65,7 +65,6 @@ function tiltedLabelOverlap({
 
 function isToLarge({
   rect,
-  type,
   scale,
   settings,
   tilted,
@@ -79,7 +78,6 @@ function isToLarge({
     rect
   });
   const horizontalOverlap =
-    type === 'ordinal' &&
     !tilted &&
     horizontal &&
     horizontalLabelOverlap({
@@ -90,7 +88,6 @@ function isToLarge({
       settings
     });
   const verticalOverlap =
-    type === 'ordinal' &&
     !horizontal &&
     verticalLabelOverlap({
       majorTicks,
@@ -103,8 +100,8 @@ function isToLarge({
 }
 
 export default function calcRequiredSize({
+  isDiscrete,
   rect,
-  type,
   data,
   formatter,
   measureText,
@@ -152,7 +149,7 @@ export default function calcRequiredSize({
       sizeFromTextRect = r => r.width;
     }
 
-    if (isToLarge({ rect, type, scale, settings, tilted, majorTicks, measure, horizontal })) {
+    if (isDiscrete && isToLarge({ rect, scale, settings, tilted, majorTicks, measure, horizontal })) {
       const toLargeSize = Math.max(rect.width, rect.height); // used to hide the axis
       return { size: toLargeSize };
     }

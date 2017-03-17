@@ -133,7 +133,7 @@ function continuousCalcMaxTextRect({ measureText, settings, innerRect, ticks }) 
   return textRect;
 }
 
-export default function nodeBuilder(type) {
+export default function nodeBuilder(isDiscrete) {
   let calcMaxTextRectFn;
   let getStepSizeFn;
   let filterLabels = false;
@@ -224,5 +224,5 @@ export default function nodeBuilder(type) {
   continuous.build = build;
   discrete.build = build;
 
-  return type === 'band' ? discrete() : continuous();
+  return isDiscrete ? discrete() : continuous();
 }

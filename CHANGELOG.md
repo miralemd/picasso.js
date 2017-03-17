@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- PIC-112 Discrete axis doesn't hide when labels overlap
+
 ## [BREAKING] 0.12.0
 
 ### Breaking changes

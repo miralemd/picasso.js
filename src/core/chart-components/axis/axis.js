@@ -47,11 +47,11 @@ function alignTransform({ align, inner }) {
   return { y: inner.y + inner.height };
 }
 
-function getAlign(dock, align, type) {
+function getAlign(dock, align, isDiscrete) {
   if (dock && !align) {
     return dock;
   } else if (!dock && !align) {
-    return type === 'band' ? 'bottom' : 'left';
+    return isDiscrete ? 'bottom' : 'left';
   }
   return align;
 }
@@ -75,8 +75,9 @@ const axisComponent = {
   created() {
     this.innerRect = { width: 0, height: 0, x: 0, y: 0 };
     this.outerRect = { width: 0, height: 0, x: 0, y: 0 };
+    this.isDiscrete = !!this.scale.bandwidth;
 
-    if (this.scale.type === 'band') {
+    if (this.isDiscrete) {
       this.defaultStyleSettings = discreteDefaultSettings();
       this.defaultDock = 'bottom';
     } else {
@@ -91,9 +92,9 @@ const axisComponent = {
     const axisSettings = extend(true, {}, this.settings, settings.settings, styleSettings);
 
     const dock = typeof axisSettings.dock !== 'undefined' ? axisSettings.dock : this.defaultDock;
-    const align = getAlign(dock, axisSettings.align, this.scale.type);
+    const align = getAlign(dock, axisSettings.align, this.isDiscrete);
 
-    this.concreteNodeBuilder = nodeBuilder(this.scale.type);
+    this.concreteNodeBuilder = nodeBuilder(this.isDiscrete);
 
     axisSettings.dock = dock;
     axisSettings.align = align;
@@ -112,7 +113,7 @@ const axisComponent = {
       axisSettings
     } = this;
     const reqSize = calcRequiredSize({
-      type: this.scale.type,
+      isDiscrete: this.isDiscrete,
       rect: opts.inner,
       formatter,
       measureText: this.renderer.measureText,
