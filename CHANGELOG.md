@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.12.4
+
 ### Fixed
 
 - PIC-113 globalPropagation property doesn't work on brush trigger
@@ -55,7 +57,7 @@
     ```
 
 - Initializing formatters, data etc. has changed from picasso.data('q')()(data) to picasso.data('q')(data).
-- Color types have changed name (if any of the following are used explicitly, they need to be updated):
+- Scale types have changed name (if any of the following are used explicitly, they need to be updated):
   - `ordinal` → `band`
   - `color-threshold` → `threshold-color`
   - `color-sequential` → `sequential-color`
