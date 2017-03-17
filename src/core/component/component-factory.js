@@ -294,7 +294,8 @@ export default function componentFactory(definition, options = {}) {
     const nodes = brushArgs.nodes = render.call(definitionContext, ...getRenderArgs());
 
     // Reset brush stylers and triggers
-    brushStylers.splice(0, brushStylers.length - 1);
+    brushStylers.forEach(b => b.cleanUp());
+    brushStylers.length = 0;
     brushTriggers.tap = [];
     brushTriggers.over = [];
 
