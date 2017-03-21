@@ -1,3 +1,5 @@
+import canvascontext from './canvas-context';
+
 function element(name, rect = { x: 0, y: 0, width: 100, height: 100 }) {
   const e = {
     name,
@@ -69,16 +71,7 @@ function element(name, rect = { x: 0, y: 0, width: 100, height: 100 }) {
   };
 
   if (name === 'canvas') {
-    e.getContext = () => ({
-      save: () => {},
-      beginPath: () => {},
-      moveTo: () => {},
-      arc: () => {},
-      fill: () => {},
-      restore: () => {},
-      rect: () => {},
-      measureText: text => ({ width: text.length })
-    });
+    e.getContext = () => canvascontext('2d');
   }
 
   return e;

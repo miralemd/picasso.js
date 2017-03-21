@@ -70,7 +70,7 @@ export function processGradients(items) {
 
   if (items && items.length) {
     let item = null;
-    for (let i = 0, len = items.length; i !== len; i++) {
+    for (let i = 0, len = items.length; i < len; i++) {
       item = items[i];
       if (item.children) {
         processGradients(item.children);

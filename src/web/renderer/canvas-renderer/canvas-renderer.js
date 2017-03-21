@@ -1,6 +1,7 @@
 import sceneFactory from '../../../core/scene-graph/scene';
 import { registry } from '../../../core/utils/registry';
 import { measureText } from '../text-metrics';
+import createCanvasGradient from './canvas-gradient';
 
 const reg = registry();
 
@@ -18,37 +19,60 @@ function resolveMatrix(p, g) {
   g.setTransform(p[0][0], p[1][0], p[0][1], p[1][1], p[0][2], p[1][2]);
 }
 
-function applyContext(g, s, shapeToCanvasMap) {
-  shapeToCanvasMap.forEach((cmd) => {
+function applyContext(g, s, shapeToCanvasMap, computed = {}) {
+  const computedKeys = Object.keys(computed);
+
+  for (let i = 0, len = shapeToCanvasMap.length; i < len; i++) {
+    let cmd = shapeToCanvasMap[i];
+
     const shapeCmd = cmd[0];
     const canvasCmd = cmd[1];
-    if (shapeCmd in s.attrs && g[canvasCmd] !== s.attrs[shapeCmd]) {
+
+    if ((shapeCmd in s.attrs && !(canvasCmd in computed)) && g[canvasCmd] !== s.attrs[shapeCmd]) {
       g[canvasCmd] = s.attrs[shapeCmd];
     }
-  });
+  }
+
+  for (let i = 0, len = computedKeys.length; i < len; i++) {
+    const key = computedKeys[i];
+    g[key] = computed[key];
+  }
 }
 
 function renderShapes(shapes, g, shapeToCanvasMap) {
-  shapes.forEach((s) => {
+  for (let i = 0, len = shapes.length; i < len; i++) {
+    let shape = shapes[i];
+    let computed = {};
     g.save();
-    applyContext(g, s, shapeToCanvasMap);
 
-    if (s.modelViewMatrix) {
-      resolveMatrix(s.modelViewMatrix.elements, g);
+    // Gradient check
+    if (shape.attrs && (shape.attrs.fill || shape.attrs.stroke)) {
+      if (shape.attrs.fill && typeof shape.attrs.fill === 'object' && shape.attrs.fill.type === 'gradient') {
+        computed.fillStyle = createCanvasGradient(g, shape.attrs, shape.attrs.fill);
+      }
+      if (shape.attrs.stroke && typeof shape.attrs.stroke === 'object' && shape.attrs.stroke.type === 'gradient') {
+        computed.strokeStyle = createCanvasGradient(g, shape.attrs, shape.attrs.stroke);
+      }
     }
 
-    if (reg.has(s.type)) {
-      reg.get(s.type)(s.attrs, {
+    applyContext(g, shape, shapeToCanvasMap, computed);
+
+    if (shape.modelViewMatrix) {
+      resolveMatrix(shape.modelViewMatrix.elements, g);
+    }
+
+    if (reg.has(shape.type)) {
+      reg.get(shape.type)(shape.attrs, {
         g,
-        doFill: 'fill' in s.attrs,
-        doStroke: 'stroke' in s.attrs && s.attrs['stroke-width'] !== 0
+        doFill: 'fill' in shape.attrs,
+        doStroke: 'stroke' in shape.attrs && shape.attrs['stroke-width'] !== 0
       });
     }
-    if (s.children) {
-      renderShapes(s.children, g, shapeToCanvasMap);
+    if (shape.children) {
+      renderShapes(shape.children, g, shapeToCanvasMap);
     }
     g.restore();
-  });
+  }
 }
 
 const createRect = ({ x, y, width, height, scaleRatio } = {}) => {
