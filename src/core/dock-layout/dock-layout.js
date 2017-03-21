@@ -137,11 +137,20 @@ function positionComponents(components, logicalContainerRect, reducedRect, conta
   const vRect = { x: reducedRect.x, y: reducedRect.y, width: reducedRect.width, height: reducedRect.height };
   const hRect = { x: reducedRect.x, y: reducedRect.y, width: reducedRect.width, height: reducedRect.height };
 
-  components.sort((a, b) => a.config.displayOrder() - b.config.displayOrder()).forEach((c) => {
-    const outerRect = {};
-    const rect = {};
+  const referencedComponents = {};
 
-    switch (c.config.dock()) {
+  components.sort((a, b) => {
+    if (/^@/.test(b.config.dock())) {
+      return -1;
+    } else if (/^@/.test(a.config.dock())) {
+      return 1;
+    }
+    return a.config.displayOrder() - b.config.displayOrder();
+  }).forEach((c) => {
+    let outerRect = {};
+    let rect = {};
+    const d = c.config.dock();
+    switch (d) {
       case 'top':
         outerRect.height = rect.height = c.cachedSize;
         outerRect.width = logicalContainerRect.width;
@@ -190,8 +199,21 @@ function positionComponents(components, logicalContainerRect, reducedRect, conta
         outerRect.width = rect.width = reducedRect.width;
         outerRect.height = rect.height = reducedRect.height;
     }
-
-    appendScaleRatio(rect, outerRect, logicalContainerRect, containerRect);
+    if (/^@/.test(d)) {
+      const ref = referencedComponents[d.replace('@', '')];
+      if (ref) {
+        outerRect = extend(true, {}, ref.outerRect);
+        rect = extend(true, {}, ref.rect);
+      }
+    } else {
+      appendScaleRatio(rect, outerRect, logicalContainerRect, containerRect);
+      if (c.key) {
+        referencedComponents[c.key] = { // store the size of this component
+          rect,
+          outerRect
+        };
+      }
+    }
     c.instance.resize(rect, outerRect, logicalContainerRect);
     c.cachedSize = undefined;
   });
@@ -228,7 +250,7 @@ export default function dockLayout(initialSettings) {
 
   const docker = function docker() {};
 
-  docker.addComponent = function addComponent(component) {
+  docker.addComponent = function addComponent(component, key) {
     validateComponent(component);
     docker.removeComponent(component);
 
@@ -238,6 +260,7 @@ export default function dockLayout(initialSettings) {
     // if object: wrap in dockConfig() function
     components.push({
       instance: component,
+      key,
       config: typeof component.dockConfig === 'function' ? component.dockConfig : dockConfig(component.dockConfig)
     });
   };
