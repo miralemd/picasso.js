@@ -17,6 +17,7 @@ import gridLineComponent from './core/chart-components/grid';
 import axisComponent from './core/chart-components/axis';
 import textComponent from './core/chart-components/text';
 import scrollbarComponent from './core/chart-components/scrollbar';
+import rangeComponent from './core/chart-components/range';
 
 // Plugin API
 function use(plugin, options = {}) {
@@ -40,6 +41,7 @@ use(boxMarkerComponent);
 use(pointMarkerComponent);
 use(gridLineComponent);
 use(scrollbarComponent);
+use(rangeComponent);
 
 /**
  * The mother of all namespaces

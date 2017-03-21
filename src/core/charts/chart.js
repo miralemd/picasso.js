@@ -171,7 +171,7 @@ function chart(definition) {
 
   const layout = (components) => {
     const dockLayout = createDockLayout(settings.dockLayout);
-    components.forEach((c) => { dockLayout.addComponent(c.instance); });
+    components.forEach((c) => { dockLayout.addComponent(c.instance, c.key); });
 
     const { visible, hidden } = dockLayout.layout(element);
     return {
