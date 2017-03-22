@@ -546,6 +546,8 @@ function chart(definition) {
     }
   };
 
+  instance.component = key => currentComponents[findComponentIndexByKey(key)];
+
   created();
 
   if (element) {

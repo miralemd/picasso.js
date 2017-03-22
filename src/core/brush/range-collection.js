@@ -59,6 +59,15 @@ export default function rangeCollection() {
     boundaries.splice(...args);
   };
 
+  fn.set = (range) => {
+    boundaries = [];
+    if (Array.isArray(range)) {
+      range.forEach(fn.add);
+    } else {
+      fn.add(range);
+    }
+  };
+
   fn.clear = () => (boundaries = []);
 
   fn.containsValue = value => contains(boundaries, value);
