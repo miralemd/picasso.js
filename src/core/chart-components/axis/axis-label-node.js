@@ -97,9 +97,7 @@ function appendTilting(struct, buildOpts) {
   }
 }
 
-function appendCollider(tick, struct, buildOpts) {
-  if (!buildOpts.stepSize || buildOpts.layered || buildOpts.tilted) { return; }
-
+function bandwidthCollider(tick, struct, buildOpts) {
   if (buildOpts.align === 'bottom' || buildOpts.align === 'top') {
     const tickCenter = tick.position * buildOpts.innerRect.width;
     const leftBoundary = tickCenter + (buildOpts.innerRect.x - buildOpts.outerRect.x - (buildOpts.stepSize / 2));
@@ -130,6 +128,28 @@ function appendCollider(tick, struct, buildOpts) {
   collider.width = widthClip > 0 ? collider.width - widthClip : collider.width;
   const heightClip = (collider.y + collider.height) - (buildOpts.outerRect.y + buildOpts.outerRect.height);
   collider.height = heightClip > 0 ? collider.height - heightClip : collider.height;
+}
+
+function tiltedCollider(tick, struct) {
+  struct.collider = {
+    type: 'polygon',
+    vertices: [
+      { x: struct.boundingRect.x, y: struct.boundingRect.y },
+      { x: struct.boundingRect.x + struct.boundingRect.width, y: struct.boundingRect.y },
+      { x: struct.boundingRect.x + struct.boundingRect.width, y: struct.boundingRect.y + struct.boundingRect.height },
+      { x: struct.boundingRect.x, y: struct.boundingRect.y + struct.boundingRect.height }
+    ]
+  };
+}
+
+function appendCollider(tick, struct, buildOpts) {
+  if (!buildOpts.stepSize || buildOpts.layered) { return; }
+
+  if (buildOpts.tilted) {
+    tiltedCollider(tick, struct, buildOpts);
+  } else {
+    bandwidthCollider(tick, struct, buildOpts);
+  }
 }
 
 function appendBounds(struct, buildOpts) {
@@ -178,8 +198,8 @@ export default function buildNode(tick, buildOpts) {
   adjustForEnds(struct, buildOpts);
   appendPadding(struct, buildOpts);
   appendTilting(struct, buildOpts);
-  appendCollider(tick, struct, buildOpts);
   appendBounds(struct, buildOpts);
+  appendCollider(tick, struct, buildOpts);
 
   return struct;
 }

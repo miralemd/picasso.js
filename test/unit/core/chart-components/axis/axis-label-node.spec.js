@@ -307,14 +307,6 @@ describe('Axis Label Node', () => {
         expect(label.collider).to.equal(undefined);
       });
 
-      it('should not have a collider if titled', () => {
-        buildOpts.stepSize = 0.2;
-        buildOpts.tilted = true;
-        const label = buildLabel(tick, buildOpts);
-
-        expect(label.collider).to.equal(undefined);
-      });
-
       describe('align left', () => {
         beforeEach(() => {
           buildOpts.align = 'left';

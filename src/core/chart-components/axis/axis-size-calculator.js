@@ -50,17 +50,23 @@ function horizontalLabelOverlap({
 function tiltedLabelOverlap({
   majorTicks,
   measureText,
-  rect
+  rect,
+  bleedSize,
+  angle
 }) {
-  const size = rect.width;
-  const textHeight = measureText('M').height;
-  for (let i = 1; i < majorTicks.length; ++i) {
-    const d = size * Math.abs(majorTicks[i - 1].position - majorTicks[i].position);
-    if (d < textHeight) {
-      return true;
-    }
+  if (majorTicks.length < 2) {
+    return false;
+  } else if (angle === 0) {
+    return true; // TODO 0 angle should be considered non-tilted
   }
-  return false;
+  const absAngle = Math.abs(angle);
+  const size = rect.width - bleedSize;
+  const stepSize = size * Math.abs(majorTicks[0].position - majorTicks[1].position);
+  const textHeight = measureText('M').height;
+  const reciprocal = 1 / stepSize; // 1 === Math.sin(90 * (Math.PI / 180))
+  const distanceBetweenLabels = Math.sin(absAngle * (Math.PI / 180)) / reciprocal;
+
+  return textHeight > distanceBetweenLabels;
 }
 
 function isToLarge({
@@ -72,11 +78,6 @@ function isToLarge({
   measure,
   horizontal
 }) {
-  const tiltedOverlap = tilted && tiltedLabelOverlap({
-    majorTicks,
-    measureText: measure,
-    rect
-  });
   const horizontalOverlap =
     !tilted &&
     horizontal &&
@@ -96,7 +97,7 @@ function isToLarge({
       settings
     });
 
-  return tiltedOverlap || horizontalOverlap || verticalOverlap;
+  return horizontalOverlap || verticalOverlap;
 }
 
 export default function calcRequiredSize({
@@ -183,6 +184,10 @@ export default function calcRequiredSize({
       const bleedSize = Math.min(settings.labels.maxEdgeBleed, Math.max(...tickMeasures.map(labelWidth).map(adjustByPosition))) + settings.paddingEnd;
       const bleedDir = extendLeft ? 'left' : 'right';
       edgeBleed[bleedDir] = bleedSize;
+
+      if (isDiscrete && tiltedLabelOverlap({ majorTicks, measureText, rect, bleedSize, angle: settings.labels.tiltAngle })) {
+        return { size: Math.max(rect.width, rect.height) };
+      }
     }
   }
   if (settings.ticks.show) {

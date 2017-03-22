@@ -50,7 +50,7 @@ function resolveBoundsCollision(node, type, input) {
 }
 
 function resolveGeometryCollision(node, type, input) {
-  let transformedInput = input;
+  let transformedInput = {};
   if (node.modelViewMatrix) {
     if (Array.isArray(input)) { // Rect or Line
       transformedInput = node.inverseModelViewMatrix.transformPoints(input);
@@ -61,6 +61,8 @@ function resolveGeometryCollision(node, type, input) {
     } else { // Point
       transformedInput = node.inverseModelViewMatrix.transformPoint(input);
     }
+  } else {
+    transformedInput = input;
   }
 
   const collider = node._collider.fn;

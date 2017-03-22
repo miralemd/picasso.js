@@ -12,7 +12,7 @@ import crispify from '../../transposer/crispifier';
  * @property {object} [labels] Labels settings
  * @property {boolean} [labels.show = true]
  * @property {boolean} [labels.tilted = false] Only supported on a horizontal axis
- * @property {number} [labels.tiltAngle = 40]
+ * @property {number} [labels.tiltAngle = 40] Angle in degrees, capped between -90 and 90
  * @property {number} [labels.maxEdgeBleed = Infinity]
  * @property {string} [labels.fontFamily = 'Arial']
  * @property {string} [labels.fontSize = '12px']
@@ -85,9 +85,9 @@ const axisComponent = {
       this.defaultDock = 'left';
     }
 
-    this.init(this.settings);
+    this.resolveSettings(this.settings);
   },
-  init(settings) {
+  resolveSettings(settings) {
     const styleSettings = resolveInitialStyle(settings.settings, this.defaultStyleSettings, this.chart);
     const axisSettings = extend(true, {}, this.settings, settings.settings, styleSettings);
 
@@ -98,6 +98,7 @@ const axisComponent = {
 
     axisSettings.dock = dock;
     axisSettings.align = align;
+    axisSettings.labels.tiltAngle = Math.max(-90, Math.min(axisSettings.labels.tiltAngle, 90));
     this.dockConfig.dock = dock; // Override the dock setting (TODO should be removed)
     this.align = align;
 
@@ -112,6 +113,7 @@ const axisComponent = {
       formatter,
       axisSettings
     } = this;
+
     const reqSize = calcRequiredSize({
       isDiscrete: this.isDiscrete,
       rect: opts.inner,
@@ -130,7 +132,7 @@ const axisComponent = {
     const {
       settings
     } = opts;
-    this.init(settings);
+    this.resolveSettings(settings);
   },
   resize(opts) {
     const {

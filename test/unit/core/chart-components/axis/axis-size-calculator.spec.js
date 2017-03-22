@@ -17,7 +17,7 @@ describe('AxisSizeCalculator', () => {
     settings.paddingStart = 0;
     settings.paddingEnd = 10;
 
-    ticks = [{ label: 'AA' }, { label: 'BB' }, { label: 'CC' }];
+    ticks = [{ label: 'AA', position: 0 }, { label: 'BB', position: 0.5 }, { label: 'CC', position: 1 }];
     scale = {};
     scale.ticks = sinon.stub().returns(ticks);
     scale.bandwidth = sinon.stub().returns(1 / ticks.length);
@@ -68,6 +68,49 @@ describe('AxisSizeCalculator', () => {
     const size = sizeFn(rect);
 
     expect(size.size).to.equals(100); // return the width of the container (rect in this test)
+  });
+
+  it('horizontal tilted discrete axis should be considered to large when labels requires more size then available', () => {
+    settings.dock = 'bottom';
+    settings.align = 'bottom';
+    settings.labels.show = true;
+    settings.labels.tilted = true;
+    settings.labels.tiltAngle = 45;
+    rect.width = 25;
+    isDiscrete = true;
+
+    const size = sizeFn(rect);
+
+    expect(size.size).to.equals(100); // return the width of the container (rect in this test)
+  });
+
+  it('horizontal tilted discrete axis should be considered to large if angle is set to zero', () => {
+    settings.dock = 'bottom';
+    settings.align = 'bottom';
+    settings.labels.show = true;
+    settings.labels.tilted = true;
+    settings.labels.tiltAngle = 0;
+    rect.width = 100;
+    isDiscrete = true;
+
+    const size = sizeFn(rect);
+
+    expect(size.size).to.equals(100); // return the width of the container (rect in this test)
+  });
+
+  it('horizontal tilted discrete axis should not be considered to large if there is only one tick', () => {
+    ticks.splice(1);
+    settings.dock = 'bottom';
+    settings.align = 'bottom';
+    settings.labels.show = true;
+    settings.labels.tilted = true;
+    settings.labels.tiltAngle = 45;
+    rect.width = 2; // would be considered to large if there were two ticks
+    isDiscrete = true;
+
+    const size = sizeFn(rect);
+
+    expect(size.size).to.not.equal(100);
   });
 
   it('layered labels', () => {
