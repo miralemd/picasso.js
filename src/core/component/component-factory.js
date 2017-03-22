@@ -431,6 +431,12 @@ export default function componentFactory(definition, options = {}) {
     });
   };
 
+  /**
+   * Expose definition on instance
+   * @experimental
+   */
+  fn.def = definitionContext;
+
   fn.renderer = () => rend;
 
   fn.set({ settings: config });

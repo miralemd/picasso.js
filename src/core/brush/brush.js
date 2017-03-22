@@ -442,6 +442,20 @@ export default function brush({
     fn.emit('update', [], []); // TODO - do not emit update if state hasn't changed
   };
 
+  fn.setRange = (path, r) => {
+    if (!ranges[path]) {
+      ranges[path] = rc();
+    }
+
+    if (!activated) {
+      activated = true;
+      fn.emit('start');
+    }
+
+    ranges[path].set(r);
+    fn.emit('update', [], []); // TODO - do not emit update if state hasn't changed
+  };
+
   fn.containsRangeValue = (path, value) => {
     if (!ranges[path]) {
       return false;
