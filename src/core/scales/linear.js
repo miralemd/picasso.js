@@ -8,11 +8,14 @@ import { continuousDefaultSettings } from './ticks/default-settings';
 const AVAILABLE_SETTINGS = ['min', 'max', 'expand', 'include', 'invert'];
 
 /**
- * @typedef ticks-settings
+ * @typedef settings
+ * @property {number} [expand] - Expand the output range
+ * @property {boolean} [invert=false] - Invert the output range
+ * @property {number[]} [include] - Include specified numbers in the output range
  * @property {object} [ticks]
  * @property {boolean} [ticks.tight = false]
  * @property {boolean} [ticks.forceBounds = false]
- * @property {number} [ticks.distance = 100] Approximate distance between each tick.
+ * @property {number} [ticks.distance = 100] Approximate distance between each tick
  * @property {object} [minorTicks]
  * @property {number} [minorTicks.count = 3]
  */

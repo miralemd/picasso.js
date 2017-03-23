@@ -29,34 +29,8 @@ const DEFAULT_ERROR_SETTINGS = {
 };
 
 /**
- * @typedef marker-point
- * @property {string} type - "point"
- * @property {marker-point-data} data - Point data mapping.
- * @property {marker-point-settings} settings - Marker settings
- * @example
- * {
- *  type: "point",
- *  data: {
- *    groupBy: {
- *      source: "/qHyperCube/qDimensionInfo/0",
- *    },
- *    mapTo: {
- *      color: { source: "/qHyperCube/qMeasureInfo/0" },
- *      opacity: { source: "/qHyperCube/qMeasureInfo/1" }
- *    }
- *  },
- *  settings: {
- *   x: 0.2, // simple number, places all points at the same position along the x-axis (which assumes to have a range of [0,1])
- *   y: ( d, i, arr ) => i / arr.length, // function is called for each datum `d`
- *   fill: { ref: "color", scale: { source: "/qHyperCube/qMeasureInfo/0", type: "color" }, // auto-constructs a color scale from the specified source
- *   opacity: { ref: "opacity", fn: ( d ) => d.value },
- *   shape: ( d, i ) => ["rect", "circle"][i % 2]
- *  }
- * }
- */
-
-/**
- * @typedef marker-point-settings
+ * @typedef settings
+ * @type {object}
  * @property {marker-point-number} [x=0.5] - x coordinate
  * @property {marker-point-number} [y=0.5] - y coordinate
  * @property {marker-point-string} [fill="#999"] - fill color
@@ -65,6 +39,13 @@ const DEFAULT_ERROR_SETTINGS = {
  * @property {marker-point-number} [size=1] - size of shape
  * @property {marker-point-number} [opacity=1] - opacity of shape
  * @property {marker-point-string} [shape="circle"] - type of shape
+ */
+
+/**
+ * @typedef marker-point
+ * @property {string} type - "point"
+ * @property {marker-point-data} data - Point data mapping.
+ * @property {settings} settings - Marker settings
  */
 
 /**
@@ -97,27 +78,6 @@ const DEFAULT_ERROR_SETTINGS = {
  * @property {string} mapTo.source - Data field
  * @property {object} groupBy - The data source to group data
  * @property {string} groupBy.source - Reference to a data source
- * @example
- * {
- *   mapTo: {
- *    x: { source: "/qHyperCube/qMeasureInfo/0" },
- *    y: { source: "/qHyperCube/qMeasureInfo/1", reducer: "avg" },
- *    parent: { source: "/qHyperCube/qDimensionInfo/0", type: "qual", reducer: "first" }
- *   },
- *   groupBy: {
- *    source: "/qHyperCube/qDimensionInfo/1"
- *   }
- * }
- *
- * // will provide an output:
- * [
- *  {
- *    x: { value: 3.2, source: {...} },
- *    y: { value: 16.2, source: {...} },
- *    parent: { value: 'Europe', source: {...} }
- *  },
- *  ...
- * ]
  */
 
  /**
@@ -130,37 +90,6 @@ const DEFAULT_ERROR_SETTINGS = {
   * @property {string} scale.source - Data source
   * @property {string} scale.type - Scale type
   * @property {marker-point-data-accessor} [fn] - Data accessor. Custom data accessor which will be called for each datum. The return value is used for the specified property.
-  * @example
-  * // assuming a data mapping of:
-  * // {
-  * //  x: { source: "/qHyperCube/qMeasureInfo/0" }
-  * //  label: { source: "/qHyperCube/qDimensionInfo/0" }
-  * // }
-  * //
-  * // the data can be accessed in various ways:
-  * // the following definitions will all result in the same 'x' value
-  * {
-  *   x: { ref: "x" } // reference the 'x' value in the mapped data
-  *   x: { ref: "x", fn: (d) { return d.value; } }, // the referenced value in sent in as the first parameter in the callback
-  *   x: { fn: function(d) { return this.data.x.value; } }, // the mapped data can be accessed through <code>this.data</code>
-  *   x: function (d) { return this.data.x.value; }
-  * }
-  * @example
-  * // a scale will in some cases automatically be used when provided,
-  * // the following definitions will all result in the same 'x' value:
-  * {
-  *   x: { ref: "x", scale: "x" }, // automatically sends the 'x' value through the scale and returns that value
-  *   x: { ref: "x", scale: "x", fn: function(d) { return this.scale(d) } }, // the referenced 'scale' is accessible in the callback's 'this' context
-  *   x: { scale: "x", fn: function(d) { return this.scale(this.data.x) } },
-  * }
-  *
-  * @example
-  * // since all mapped data is accessible in all settings, the values can be used for more expressive representation of properties
-  * {
-  *   fill: { scale: "x", fn: function() { // color the maximum value red
-  *     return this.scale.max() >= this.data.x.value ? "red" : "grey";
-  *   } }
-  * }
   */
 
 function getSpaceFromScale(s, space) {

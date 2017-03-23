@@ -1,19 +1,16 @@
-# `range` component
+# `range` component [*EXPERIMENTAL*] 
 
-A simple component that renders active `brush` ranges.
+A component that renders active `brush` ranges.
 
-## Component definition:
+## Component settings
 
 ```js
-{    
-  type: 'range',
-  settings: {
-    brush: 'highlight', // name of brush instance
-    scale: 'y', // name of scale
-    direction: 'vertical' // direction of the brush - default: 'horizontal'
-    fill: 'red', // optional - default: '#ccc'
-    opacity: 0.2 // optional - default: 1
-  } 
+settings: {
+  brush: 'foo', // Name of brush instance.
+  scale: 'foo', // Name of a scale.
+  direction: 'horizontal', // Direction of the brush. Default: 'horizontal'. Optional.
+  fill: '#ccc', // Fill color. Default: '#ccc'. Optional.
+  opacity: 1, // Layer opacity. Default: 1. Optional.
 }
 ```
 
@@ -32,5 +29,4 @@ components: [
     ...
   }
 ]
-
 ```

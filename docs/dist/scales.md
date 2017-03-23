@@ -1,51 +1,22 @@
 # Scales
 
-## API referece - Table of contents:
-* <a href="#ticks-settings">ticks-settings</a>
-* <a href="#picasso.scaleLinear">picasso.scaleLinear</a>
-* <a href="#linear">linear</a>
-* <a href="#linear.invert">linear.invert</a>
-* <a href="#linear.rangeRound">linear.rangeRound</a>
-* <a href="#linear.clamp">linear.clamp</a>
-* <a href="#linear.cachedTicks">linear.cachedTicks</a>
-* <a href="#linear.clearTicksCache">linear.clearTicksCache</a>
-* <a href="#linear.ticks">linear.ticks</a>
-* <a href="#linear.nice">linear.nice</a>
-* <a href="#linear.domain">linear.domain</a>
-* <a href="#linear.range">linear.range</a>
-* <a href="#linear.start">linear.start</a>
-* <a href="#linear.end">linear.end</a>
-* <a href="#linear.min">linear.min</a>
-* <a href="#linear.max">linear.max</a>
-* <a href="#linear.classify">linear.classify</a>
-* <a href="#picasso.scaleBand">picasso.scaleBand</a>
-* <a href="#band">band</a>
-* <a href="#band.start">band.start</a>
-* <a href="#band.end">band.end</a>
-* <a href="#band.ticks">band.ticks</a>
-* <a href="#picasso.scaleSequentialColor">picasso.scaleSequentialColor</a>
-* <a href="#sequentialColor">sequentialColor</a>
-* <a href="#picasso.scaleThresholdColor">picasso.scaleThresholdColor</a>
-* <a href="#thresholdColor">thresholdColor</a>
-* <a href="#picasso.scaleCategorical">picasso.scaleCategorical</a>
-* <a href="#picasso.scaleCategorical.range">picasso.scaleCategorical.range</a>
-* <a href="#picasso.scaleCategorical.unknown">picasso.scaleCategorical.unknown</a>
-
-
 ## Linear scale
 
-#### <a name='ticks-settings' href='#ticks-settings'>#</a> ticks-settings
-
-|Name(s)|Type(s)|Description|Optional|Default value|
-|-------|-------|-----------|--------|-------------|
-| ticks | object | No | Yes | No |
-| ticks.tight | boolean | No | Yes | No |
-| ticks.forceBounds | boolean | No | Yes | No |
-| ticks.distance | number | Approximate distance between each tick. | Yes | 100 |
-| minorTicks | object | No | Yes | No |
-| minorTicks.count | number | No | Yes | 3 |
-
-No description  
+```js
+settings: {
+  expand: 3.14, // Expand the output range. Optional.
+  invert: true, // Invert the output range. Optional.
+  include: [3, 7], // Include specified numbers in the output range. Optional.
+  ticks: { //  Optional.
+    tight: true, //  Optional.
+    forceBounds: true, //  Optional.
+    distance: 100, // Approximate distance between each tick. Default: 100. Optional.
+  },
+  minorTicks: { //  Optional.
+    count: 3, //  Default: 3. Optional.
+  },
+}
+```
 #### <a name='picasso.scaleLinear' href='#picasso.scaleLinear'>#</a> **picasso.scaleLinear**(*object settings, Array.&lt;field&gt; [fields]*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
@@ -222,10 +193,7 @@ Get the last value of the domain
 
 Generate discrete ticks  
 
-
-# Color Scales
-
-## Sequential scale
+## Sequential color scale
 
 #### <a name='picasso.scaleSequentialColor' href='#picasso.scaleSequentialColor'>#</a> **picasso.scaleSequentialColor**(*Object [settings, ]Array.&lt;number&gt; [settings.domain, ]Array.&lt;color&gt; [settings.range, ]Array.&lt;field&gt; [fields]*)
 
@@ -255,7 +223,7 @@ picasso.scaleSequentialColor({
 
 No description  
 
-## Threshold scale
+## Threshold color scale
 
 #### <a name='picasso.scaleThresholdColor' href='#picasso.scaleThresholdColor'>#</a> **picasso.scaleThresholdColor**(*object [settings, ]Array.&lt;number&gt; [settings.domain, ]Array.&lt;color&gt; [settings.range, ]boolean [settings.nice, ]number [settings.min, ]number [settings.max, ]Array.&lt;field&gt; [fields]*)
 
@@ -292,7 +260,7 @@ t.range(); // Generates from colors and domain: ['rgb(0,0,0)','rgb(85,85,85)','r
 
 No description  
 
-## Categorical scale
+## Categorical color scale
 
 #### <a name='picasso.scaleCategorical' href='#picasso.scaleCategorical'>#</a> **picasso.scaleCategorical**(*Object settings, Array.&lt;field&gt; [fields, ]dataset [dataset]*)
 

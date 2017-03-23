@@ -1,21 +1,10 @@
-# `range` component
+# `range` component [*EXPERIMENTAL*] 
 
-A simple component that renders active `brush` ranges.
+A component that renders active `brush` ranges.
 
-## Component definition:
+## Component settings
 
-```js
-{    
-  type: 'range',
-  settings: {
-    brush: 'highlight', // name of brush instance
-    scale: 'y', // name of scale
-    direction: 'vertical' // direction of the brush - default: 'horizontal'
-    fill: 'red', // optional - default: '#ccc'
-    opacity: 0.2 // optional - default: 1
-  } 
-}
-```
+{{>magic ctx='core.chart-components.range.range-js'}}
 
 The component can be docked to the same area as another component by referencing the `key` value:
 
@@ -32,5 +21,4 @@ components: [
     ...
   }
 ]
-
 ```

@@ -1,4 +1,4 @@
-# [*EXPERIMENTAL*] `brush-range` component
+# `brush-range` component [*EXPERIMENTAL*] 
 
 ## Definition
 

@@ -5,8 +5,6 @@
 * <a href="#dataset.tables">dataset.tables</a>
 * <a href="#dataset.table">dataset.table</a>
 * <a href="#dataset.map">dataset.map</a>
-* <a href="#data-map">data-map</a>
-* <a href="#data-repeater">data-repeater</a>
 * <a href="#picasso.data.table">picasso.data.table</a>
 * <a href="#table">table</a>
 * <a href="#table.data">table.data</a>
@@ -92,22 +90,18 @@ ds.map({
 //   }
 // ]
 ```
-#### <a name='data-map' href='#data-map'>#</a> data-map
-
-|Name(s)|Type(s)|Description|Optional|Default value|
-|-------|-------|-----------|--------|-------------|
-| field | string | Path to a field | No | No |
-| reducer | string | Option to specify how to reduce values | Yes | &#x27;sum&#x27; |
-
-No description  
-#### <a name='data-repeater' href='#data-repeater'>#</a> data-repeater
-
-|Name(s)|Type(s)|Description|Optional|Default value|
-|-------|-------|-----------|--------|-------------|
-| field | string | Path to a field | No | No |
-| attribute | string | Attribute to use as identifier when collecting data | Yes | No |
-
-No description  
+```js
+data-map: {
+  field: 'foo', // Path to a field.
+  reducer: 'sum', // Option to specify how to reduce values. Default: 'sum'. Optional.
+}
+```
+```js
+data-repeater: {
+  field: 'foo', // Path to a field.
+  attribute: 'foo', // Attribute to use as identifier when collecting data. Optional.
+}
+```
 
 ## Table
 

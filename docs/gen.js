@@ -47,6 +47,46 @@ function domkdir(curpath, skipFile) {
   }
 }
 
+function traverseTypdef(def) {
+  let nested = {};
+  if (!def.properties) {
+    return;
+  }
+  def.properties.forEach((prop) => {
+    if (prop.type.names[0] === 'object') { // might have nested props
+      nested[prop.name] = prop;
+      prop._nested = [];
+    }
+    if (/\./gi.test(prop.name)) {
+      let names = prop.name.split('.');
+      let pp = {
+        name: names[names.length - 1],
+        description: prop.description,
+        type: prop.type,
+        defaultvalue: prop.defaultvalue,
+        optional: prop.optional
+      };
+
+      let container = nested[names[0]];
+      if (names.length === 2) {
+        nested[names[0]]._nested.push(pp);
+      } else {
+        for (let n = 0; n < names.length - 1; n++) {
+          if (!container._nested) {
+            container._nested = [];
+          }
+          let foo = container._nested.filter(f => f.name === names[n + 1])[0];
+          if (foo) {
+            container = foo;
+          }
+        }
+        container._nested.push(pp);
+      }
+      prop.skip = true;
+    }
+  });
+}
+
 function getJSDOCData(inputFile) {
   const data = JSON.parse(fs.readFileSync(inputFile)).docs;
 
@@ -73,6 +113,9 @@ function getJSDOCData(inputFile) {
       const parent = resolve(parentFilePath, output);
       parent.children = parent.children || [];
       parent.children.push(path.basename(filePath));
+    }
+    if (i.kind === 'typedef') {
+      traverseTypdef(i);
     }
   });
 

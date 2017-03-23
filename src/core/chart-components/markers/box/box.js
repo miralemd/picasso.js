@@ -32,7 +32,38 @@ const DEFAULT_STYLE_SETTINGS = {
 };
 
 /**
- * @typedef marker-box
+ * @typedef settings
+ * @type {object}
+ * @property {object} major
+ * @property {string} major.scale - The scale to use along the major axis
+ * @property {object} minor
+ * @property {string} minor.scale - The scale to use along the minor axis
+ * @property {string} [orientation='vertical']
+ * @property {object} [box]
+ * @property {boolean} [box.show=true]
+ * @property {string} [box.fill='#fff']
+ * @property {string} [box.stroke='#000']
+ * @property {number} [box.strokeWidth=1]
+ * @property {number} [box.width=1]
+ * @property {number} [box.maxWidth=100]
+ * @property {number} [box.minWidth=5]
+ * @property {object} [line]
+ * @property {boolean} [line.show=true]
+ * @property {string} [stroke='#000']
+ * @property {number} [strokeWidth=1]
+ * @property {object} [whisker]
+ * @property {boolean} [whisker.show=true]
+ * @property {string} [whisker.stroke='#000']
+ * @property {number} [whisker.strokeWidth=1]
+ * @property {number} [whisker.width=1]
+ * @property {object} [median]
+ * @property {number} [median.show=true]
+ * @property {number} [median.stroke='#000']
+ * @property {number} [median.strokeWidth=1]
+ */
+
+/**
+ * @typedef box-marker
  * @property {string} type - "box"
  * @property {marker-box-data} data - Box data
  * @property {marker-box-settings} settings - Box marker settings
@@ -67,12 +98,13 @@ const DEFAULT_STYLE_SETTINGS = {
  */
 
 /**
- * @typedef marker-box-data
- * @property {marker-box-data-ref} [min] - min
- * @property {marker-box-data-ref} [max] - max
- * @property {marker-box-data-ref} [start] - start
- * @property {marker-box-data-ref} [end] - end
- * @property {marker-box-data-ref} [med] - med
+ * @typedef data
+ * @type {object}
+ * @property {number} [min] - min
+ * @property {number} [max] - max
+ * @property {number} [start] - start
+ * @property {number} [end] - end
+ * @property {number} [med] - med
  */
 
 const boxMarkerComponent = {

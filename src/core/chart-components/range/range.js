@@ -96,6 +96,16 @@ function teardown(state) {
   state.renderer = undefined;
 }
 
+/**
+ * @typedef settings
+ * @type {object}
+ * @property {string} brush - Name of brush instance
+ * @property {string} scale - Name of a scale
+ * @property {string} [direction='horizontal'] - Direction of the brush
+ * @property {string} [fill='#ccc'] - Fill color
+ * @property {number} [opacity=1] - Layer opacity
+ */
+
 const rangeComponent = {
   require: ['chart', 'settings', 'renderer'],
   defaultSettings: {

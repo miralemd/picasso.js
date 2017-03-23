@@ -8,11 +8,12 @@ import { resolveForDataValues } from '../../style';
 import crispify from '../../transposer/crispifier';
 
 /**
- * @typedef axis-settings
- * @property {object} [labels] Labels settings
+ * @typedef settings
+ * @type {object}
+ * @property {object} [labels] - Labels settings
  * @property {boolean} [labels.show = true]
- * @property {boolean} [labels.tilted = false] Only supported on a horizontal axis
- * @property {number} [labels.tiltAngle = 40] Angle in degrees, capped between -90 and 90
+ * @property {boolean} [labels.tilted = false] - Only supported on a horizontal axis
+ * @property {number} [labels.tiltAngle = 40] - Angle in degrees, capped between -90 and 90
  * @property {number} [labels.maxEdgeBleed = Infinity]
  * @property {string} [labels.fontFamily = 'Arial']
  * @property {string} [labels.fontSize = '12px']
@@ -30,7 +31,7 @@ import crispify from '../../transposer/crispifier';
  * @property {number} [ticks.tickSize = 4 (discrete) or 8 (continuous)]
  * @property {string} [ticks.stroke = '#cccccc']
  * @property {number} [ticks.strokeWidth = 1]
- * @property {object} [minorTicks] Only on a continuous axis
+ * @property {object} [minorTicks] - Only on a continuous axis
  * @property {boolean} [minorTicks.show = true]
  * @property {number} [minorTicks.margin = 0]
  * @property {number} [minorTicks.tickSize = 3]
