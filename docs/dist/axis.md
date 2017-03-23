@@ -12,7 +12,7 @@
 | labels | object | Labels settings | Yes | No |
 | labels.show | boolean | No | Yes | true |
 | labels.tilted | boolean | Only supported on a horizontal axis | Yes | No |
-| labels.tiltAngle | number | No | Yes | 40 |
+| labels.tiltAngle | number | Angle in degrees, capped between -90 and 90 | Yes | 40 |
 | labels.maxEdgeBleed | number | No | Yes | Infinity |
 | labels.fontFamily | string | No | Yes | &#x27;Arial&#x27; |
 | labels.fontSize | string | No | Yes | &#x27;12px&#x27; |

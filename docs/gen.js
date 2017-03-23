@@ -22,32 +22,28 @@ const MD_TEMPLATES_FOLDER = 'src/templates/';
 const MD_INPUT_FOLDER = 'src/input/';
 const MD_OUTPUT_FOLDER = 'dist/';
 const POSTPROCESS_ROOT = 'src/';
+const CODE_FOLDER = '../src/';
 
 const toPostProcess = [];
 
 function fixPath(str) {
-  if (path.sep === '\\') {
-    // change path separator for windows paths
-    str = str.replace(/\\/g, '/');
-  }
-  const find = '/picasso.js/src';
-  const cut = str.indexOf(find) + find.length;
-  return str.length === cut ? '' : str.substr(cut);
+  return path.relative(CODE_FOLDER, str);
 }
 
 function domkdir(curpath, skipFile) {
-  curpath = curpath.split('/');
+  let tryPath = curpath;
   if (skipFile) {
-    curpath.pop();
+    tryPath = path.dirname(tryPath);
   }
-
-  const rebuiltPath = [];
-  for (let i = 0; i < curpath.length; i++) {
-    rebuiltPath.push(curpath[i]);
-    const tryPath = rebuiltPath.join('/');
-    if (!fs.existsSync(tryPath)) {
-      fs.mkdirSync(tryPath);
-    }
+  // find missing directories
+  let dirs = [];
+  while (tryPath && !fs.existsSync(tryPath)) {
+    dirs.push(tryPath);
+    tryPath = path.dirname(tryPath);
+  }
+  // create them
+  for (let i = dirs.length - 1; i >= 0; --i) {
+    fs.mkdirSync(dirs[i]);
   }
 }
 
@@ -60,25 +56,23 @@ function getJSDOCData(inputFile) {
     let filePath = (i && i.meta && fixPath(i.meta.path)) || '';
 
     if (filePath) {
-      filePath += `/${i.meta.filename}/${i.longname}`;
+      filePath = path.join(filePath, i.meta.filename, i.longname);
       filePath = filePath.replace(/\./gi, '-');
 
       if (filePath.indexOf('~') !== -1) {
-        filePath = filePath.replace(/~/gi, '/');
+        filePath = filePath.replace(/~/gi, path.sep);
       }
       if (filePath.indexOf('#') !== -1) {
-        filePath = filePath.replace(/#/gi, '/');
+        filePath = filePath.replace(/#/gi, path.sep);
       }
 
       resolve(filePath, output, i);
 
-      let parentFilePath = filePath.split('/');
-      parentFilePath.pop();
-      parentFilePath = parentFilePath.join('/');
+      let parentFilePath = path.dirname(filePath);
 
       const parent = resolve(parentFilePath, output);
       parent.children = parent.children || [];
-      parent.children.push(filePath.replace(`${parentFilePath}/`, ''));
+      parent.children.push(path.basename(filePath));
     }
   });
 
@@ -93,7 +87,7 @@ const jsdoc = getJSDOCData(JSDOC_INPUT);
 function registerTemplates(cb) {
   glob(`${MD_TEMPLATES_FOLDER}**/*.md`, {}, (err, files) => {
     files.forEach((file) => {
-      const title = file.split('/').pop().replace(/\.md/gi, '');
+      const title = path.basename(file, '.md');
       const content = `${fs.readFileSync(file)}`;
       handlebars.registerPartial(title, content);
     });
@@ -133,15 +127,13 @@ function doPostProcess(content, jsdocdata) {
 function compileMarkdownFiles(jsdocdata) {
   glob(`${MD_INPUT_FOLDER}/**/*.md`, {}, (err, files) => {
     files.forEach((file) => {
-      file = path.resolve(file);
-      const inputBasepath = path.resolve(MD_INPUT_FOLDER);
-      const relativePath = file.replace(inputBasepath, '');
+      const relativePath = path.relative(MD_INPUT_FOLDER, file);
       const template = handlebars.compile(`${fs.readFileSync(file)}`);
       let title = path.basename(file, '.md');
 
       title = title.charAt(0).toUpperCase() + title.substr(1);
 
-      domkdir(MD_OUTPUT_FOLDER + relativePath, true);
+      domkdir(path.join(MD_OUTPUT_FOLDER, relativePath), true);
 
       jsdocdata.registry = [];
       jsdocdata.title = title;
