@@ -1,6 +1,7 @@
-{{postprocess 'header'}}
+# `grid-line` component
 
 ## Basic grid
+
 The grid as a component is pretty easy to set up, to get started, you'll suffice with:
 
 ```js
@@ -19,6 +20,7 @@ This will work fine for a scatter plot or other chart with two linear scales.
 You do not have to specify both the X and Y in case you're drawing a box plot or distribution chart.
 
 ## Advanced example
+
 ```js
 {
   type: 'grid-line',

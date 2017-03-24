@@ -1,6 +1,10 @@
 # Component
 
+Components make up the visual parts of a chart, these typically include axis, grid-lines and data points encoded in various ways.
+
 ## Using components in a chart
+
+Each component has a `type` property which identifies the type of component to create.
 
 To use components, you need to add them in the `components` array:
 
@@ -22,30 +26,29 @@ picasso.chart({
 
 Some properties are general and can be used on all components:
 
-* `dock` String. Dock setting. Any of `top` | `right` | `bottom` | `left`
-* `displayOrder` Number. 
-* `prioOrder` Number. 
-* `minimumLayoutMode` String. 
-* `created` Function. Lifecycle hook.
-* `beforeMount` Function. Lifecycle hook.
-* `mounted` Function. Lifecycle hook.
-* `beforeRender` Function. Lifecycle hook.
-* `beforeUpdate` Function. Lifecycle hook.
-* `updated` Function. Lifecycle hook.
-* `beforeDestroy` Function. Lifecycle hook.
-* `destroyed` Function. Lifecycle hook.
+* `dock` *string*. Dock setting. Any of `top` | `right` | `bottom` | `left`
+* `displayOrder` *number*. 
+* `prioOrder` *number*. 
+* `minimumLayoutMode` *string*. 
+* `created` *function*. Lifecycle hook.
+* `beforeMount` *function*. Lifecycle hook.
+* `mounted` *function*. Lifecycle hook.
+* `beforeRender` *function*. Lifecycle hook.
+* `beforeUpdate` *function*. Lifecycle hook.
+* `updated` *function*. Lifecycle hook.
+* `beforeDestroy` *function*. Lifecycle hook.
+* `destroyed` *function*. Lifecycle hook.
 
 
 ## Bundled components
 
 Picasso.js comes with a pre-bundled set of components:
 
-- [Box marker](./markers.md#Box%20marker)
-- [Point marker](./markers.md#Point%20marker)
-- [Axis](./axis.md)
-- [Grid](./grid.md)
-- [Text](./text.md)
-
+- [box-marker](./components/box-marker.md)
+- [point-marker](./components/point-marker.md)
+- [axis](./components/axis.md)
+- [grid-line](./components/grid-line.md)
+- [text](./components/text.md)
 
 ## Register a custom component
 
@@ -53,20 +56,20 @@ To register a component, use the `picasso.component` function.
 
 ### `picasso.component(name, definition)`
 
-- `name` String. Name of the component to register.
-- `definition` Object
-  * `dock` String. 
-  * `displayOrder` Number. 
-  * `prioOrder` Number. 
-  * `minimumLayoutMode` String. 
-  * `created` Function (optional). Lifecycle hook.
-  * `beforeMount` Function (optional). Lifecycle hook.
-  * `mounted` Function (optional). Lifecycle hook.
-  * `beforeRender` Function (optional). Lifecycle hook.
-  * `beforeUpdate` Function (optional). Lifecycle hook.
-  * `updated` Function (optional). Lifecycle hook.
-  * `beforeDestroy` Function (optional). Lifecycle hook.
-  * `destroyed` Function (optional). Lifecycle hook.
+- `name` *string*. Name of the component to register.
+- `definition` *object*
+  * `dock` *string*. 
+  * `displayOrder` *number*. 
+  * `prioOrder` *number*. 
+  * `minimumLayoutMode` *string*. 
+  * `created` *function* (optional). Lifecycle hook.
+  * `beforeMount` *function* (optional). Lifecycle hook.
+  * `mounted` *function* (optional). Lifecycle hook.
+  * `beforeRender` *function* (optional). Lifecycle hook.
+  * `beforeUpdate` *function* (optional). Lifecycle hook.
+  * `updated` *function* (optional). Lifecycle hook.
+  * `beforeDestroy` *function* (optional). Lifecycle hook.
+  * `destroyed` *function* (optional). Lifecycle hook.
 
 ## Component lifecycle hooks
 
