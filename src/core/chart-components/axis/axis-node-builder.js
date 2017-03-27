@@ -91,7 +91,7 @@ export function filterOverlappingLabels(labels, ticks) {
   }
 }
 
-function discreteCalcMaxTextRect({ measureText, settings, innerRect, scale }) {
+function discreteCalcMaxTextRect({ measureText, settings, innerRect, scale, tilted, layered }) {
   const h = measureText({
     text: 'M',
     fontSize: settings.labels.fontSize,
@@ -101,9 +101,9 @@ function discreteCalcMaxTextRect({ measureText, settings, innerRect, scale }) {
   const textRect = { width: 0, height: h };
   if (settings.align === 'left' || settings.align === 'right') {
     textRect.width = innerRect.width - labelsSpacing(settings) - settings.paddingEnd;
-  } else if (settings.labels.layered) {
+  } else if (layered) {
     textRect.width = (scale.bandwidth() * innerRect.width) * 2;
-  } else if (!settings.labels.layered && settings.labels.tilted) {
+  } else if (tilted) {
     const radians = Math.abs(settings.labels.tiltAngle) * (Math.PI / 180);
     textRect.width = (innerRect.height - labelsSpacing(settings) - settings.paddingEnd - (h * Math.cos(radians))) / Math.sin(radians);
   } else {
@@ -112,7 +112,7 @@ function discreteCalcMaxTextRect({ measureText, settings, innerRect, scale }) {
   return textRect;
 }
 
-function continuousCalcMaxTextRect({ measureText, settings, innerRect, ticks }) {
+function continuousCalcMaxTextRect({ measureText, settings, innerRect, ticks, tilted, layered }) {
   const h = measureText({
     text: 'M',
     fontSize: settings.labels.fontSize,
@@ -122,9 +122,9 @@ function continuousCalcMaxTextRect({ measureText, settings, innerRect, ticks }) 
   const textRect = { width: 0, height: h };
   if (settings.align === 'left' || settings.align === 'right') {
     textRect.width = innerRect.width - labelsSpacing(settings) - settings.paddingEnd;
-  } else if (settings.labels.layered) {
+  } else if (layered) {
     textRect.width = (innerRect.width / majorTicks(ticks).length) * 0.75 * 2;
-  } else if (!settings.labels.layered && settings.labels.tilted) {
+  } else if (tilted) {
     const radians = Math.abs(settings.labels.tiltAngle) * (Math.PI / 180);
     textRect.width = (innerRect.height - labelsSpacing(settings) - settings.paddingEnd - (h * Math.cos(radians))) / Math.sin(radians);
   } else {
@@ -154,7 +154,7 @@ export default function nodeBuilder(isDiscrete) {
     return discrete;
   }
 
-  function build({ settings, scale, innerRect, outerRect, measureText, ticks }) {
+  function build({ settings, scale, innerRect, outerRect, measureText, ticks, state }) {
     const nodes = [];
     const major = majorTicks(ticks);
     const minor = minorTicks(ticks);
@@ -163,6 +163,8 @@ export default function nodeBuilder(isDiscrete) {
       align: settings.align,
       outerRect
     };
+    const tilted = state.labels.activeMode === 'tilted';
+    const layered = state.labels.activeMode === 'layered';
     let majorTickNodes;
 
     if (settings.line.show) {
@@ -179,20 +181,20 @@ export default function nodeBuilder(isDiscrete) {
       majorTickNodes = tickBuilder(major, buildOpts);
     }
     if (settings.labels.show) {
-      const textRect = calcMaxTextRectFn({ measureText, settings, innerRect, ticks, scale });
+      const textRect = calcMaxTextRectFn({ measureText, settings, innerRect, ticks, scale, tilted, layered });
       const padding = labelsSpacing(settings);
       buildOpts.stepSize = getStepSizeFn({ innerRect, scale, ticks, settings });
       buildOpts.style = settings.labels;
       buildOpts.padding = padding;
       buildOpts.maxWidth = textRect.width;
       buildOpts.maxHeight = textRect.height;
-      buildOpts.layered = settings.labels.layered;
-      buildOpts.tilted = !settings.labels.layered && settings.labels.tilted && (settings.align === 'top' || settings.align === 'bottom');
+      buildOpts.tilted = tilted;
+      buildOpts.layered = layered;
       buildOpts.angle = settings.labels.tiltAngle;
       buildOpts.paddingEnd = settings.paddingEnd;
 
       let labelNodes = [];
-      if (settings.labels.layered && (settings.align === 'top' || settings.align === 'bottom')) {
+      if (layered && (settings.align === 'top' || settings.align === 'bottom')) {
         labelNodes = layeredLabelBuilder(major, buildOpts, settings, measureText);
       } else {
         labelNodes = labelBuilder(major, buildOpts, measureText);

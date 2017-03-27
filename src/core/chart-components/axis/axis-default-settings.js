@@ -2,15 +2,15 @@ export function discreteDefaultSettings() {
   return {
     labels: {
       show: true,
-      tilted: false,
       tiltAngle: 40,
       maxEdgeBleed: Infinity,
       fontFamily: 'Arial',
       fontSize: '12px',
       fill: '#595959',
       margin: 6,
-      layered: false,
-      maxSize: 250
+      maxSize: 250,
+      mode: 'auto',
+      maxGlyphCount: NaN
     },
     line: {
       show: false,
@@ -31,15 +31,14 @@ export function continuousDefaultSettings() {
   return {
     labels: {
       show: true,
-      tilted: false,
       tiltAngle: 40,
       maxEdgeBleed: Infinity,
       fontFamily: 'Arial',
       fontSize: '12px',
       fill: '#595959',
       margin: 4,
-      layered: false,
-      maxSize: 250
+      maxSize: 250,
+      mode: 'horizontal'
     },
     line: {
       show: true,

@@ -10,33 +10,34 @@ import crispify from '../../transposer/crispifier';
 /**
  * @typedef settings
  * @type {object}
+ * @property {object} [labels] Labels settings
  * @property {object} [labels] - Labels settings
- * @property {boolean} [labels.show = true]
- * @property {boolean} [labels.tilted = false] - Only supported on a horizontal axis
- * @property {number} [labels.tiltAngle = 40] - Angle in degrees, capped between -90 and 90
- * @property {number} [labels.maxEdgeBleed = Infinity]
- * @property {string} [labels.fontFamily = 'Arial']
- * @property {string} [labels.fontSize = '12px']
- * @property {string} [labels.fill = '#595959']
- * @property {number} [labels.margin = 6 (discrete) or 4 (continuous)] Space between tick and label
- * @property {boolean} [labels.layered = false] Only supported on a horizontal axis. If true forces tilted to false
- * @property {number} [labels.maxSize = 250]
+ * @property {boolean} [labels.show=true]
+ * @property {string} [labels.mode='auto'] - Control how labels arrange themself. Availabe modes are auto, horizontal, layered and tilted. Only horizontal is supported on a continuous axis
+ * @property {number} [labels.tiltAngle=40] - Angle in degrees, capped between -90 and 90
+ * @property {number} [labels.maxEdgeBleed=Infinity]
+ * @property {string} [labels.fontFamily='Arial']
+ * @property {string} [labels.fontSize='12px']
+ * @property {string} [labels.fill='#595959']
+ * @property {number} [labels.margin] - Space between tick and label. Default to 6 (discrete) or 4 (continuous)
+ * @property {number} [labels.maxSize=250]
+ * @property {number} [labels.maxGlyphCount=NaN] - Is used to measure the largest possible size a label
  * @property {object} [line]
- * @property {boolean} [line.show = true]
- * @property {number} [line.strokeWidth = 1]
- * @property {string} [line.stroke = '#cccccc']
+ * @property {boolean} [line.show=true]
+ * @property {number} [line.strokeWidth=1]
+ * @property {string} [line.stroke='#cccccc']
  * @property {object} [ticks]
- * @property {boolean} [ticks.show = true]
- * @property {number} [ticks.margin = 0]
- * @property {number} [ticks.tickSize = 4 (discrete) or 8 (continuous)]
- * @property {string} [ticks.stroke = '#cccccc']
- * @property {number} [ticks.strokeWidth = 1]
+ * @property {boolean} [ticks.show=true]
+ * @property {number} [ticks.margin=0]
+ * @property {number} [ticks.tickSize] - Default to 4 (discrete) or 8 (continuous)
+ * @property {string} [ticks.stroke='#cccccc']
+ * @property {number} [ticks.strokeWidth=1]
  * @property {object} [minorTicks] - Only on a continuous axis
- * @property {boolean} [minorTicks.show = true]
- * @property {number} [minorTicks.margin = 0]
- * @property {number} [minorTicks.tickSize = 3]
- * @property {string} [minorTicks.stroke = '#E6E6E6']
- * @property {number} [minorTicks.strokeWidth = 1]
+ * @property {boolean} [minorTicks.show=true]
+ * @property {number} [minorTicks.margin=0]
+ * @property {number} [minorTicks.tickSize=3]
+ * @property {string} [minorTicks.stroke='#e6e6e6']
+ * @property {number} [minorTicks.strokeWidth=1]
  */
 
 function alignTransform({ align, inner }) {
@@ -65,6 +66,21 @@ function resolveInitialStyle(settings, baseStyles, chart) {
   return ret;
 }
 
+function updateActiveMode(state, settings, isDiscrete) {
+  const mode = settings.labels.mode;
+
+  if (!isDiscrete) {
+    return 'horizontal';
+  }
+
+  if (mode === 'auto') {
+    return state.labels.activeMode;
+  } else if (['layered', 'tilted'].indexOf !== -1 && ['top', 'bottom'].indexOf(settings.dock) !== -1) {
+    return mode;
+  }
+  return 'horizontal';
+}
+
 const axisComponent = {
   require: ['chart', 'renderer', 'dockConfig'],
   defaultSettings: {
@@ -77,6 +93,11 @@ const axisComponent = {
     this.innerRect = { width: 0, height: 0, x: 0, y: 0 };
     this.outerRect = { width: 0, height: 0, x: 0, y: 0 };
     this.isDiscrete = !!this.scale.bandwidth;
+    this.state = {
+      labels: {
+        activeMode: 'horizontal'
+      }
+    };
 
     if (this.isDiscrete) {
       this.defaultStyleSettings = discreteDefaultSettings();
@@ -108,11 +129,16 @@ const axisComponent = {
     });
 
     this.axisSettings = axisSettings;
+    this.updateState();
+  },
+  updateState() {
+    this.state.labels.activeMode = updateActiveMode(this.state, this.axisSettings, this.isDiscrete);
   },
   preferredSize(opts) {
     const {
       formatter,
-      axisSettings
+      axisSettings,
+      state
     } = this;
 
     const reqSize = calcRequiredSize({
@@ -124,7 +150,8 @@ const axisComponent = {
       settings: axisSettings,
       setEdgeBleed: (val) => {
         this.dockConfig.edgeBleed = val;
-      }
+      },
+      state
     });
 
     return reqSize;
@@ -172,7 +199,8 @@ const axisComponent = {
       axisSettings,
       innerRect,
       outerRect,
-      ticks
+      ticks,
+      state
     } = this;
 
     const nodes = [];
@@ -182,7 +210,8 @@ const axisComponent = {
       innerRect,
       outerRect,
       measureText: this.renderer.measureText,
-      ticks
+      ticks,
+      state
     }));
 
     crispify.multiple(nodes);

@@ -27,6 +27,7 @@ picasso.chart({
 Some properties are general and can be used on all components:
 
 * `dock` *string*. Dock setting. Any of `top` | `right` | `bottom` | `left`
+* `show` *boolean*. True if component should be rendered.
 * `displayOrder` *number*. 
 * `prioOrder` *number*. 
 * `minimumLayoutMode` *string*. 
@@ -59,6 +60,7 @@ To register a component, use the `picasso.component` function.
 - `name` *string*. Name of the component to register.
 - `definition` *object*
   * `dock` *string*. 
+  * `show` *boolean*.
   * `displayOrder` *number*. 
   * `prioOrder` *number*. 
   * `minimumLayoutMode` *string*. 
