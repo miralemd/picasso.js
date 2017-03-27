@@ -88,6 +88,20 @@ describe('GeoPolygon', () => {
         { x: 0, y: 50 }
       ]);
     });
+
+    it('should handle negative points', () => {
+      polygon = create({ vertices: [
+        { x: -20, y: -10 },
+        { x: 0, y: -10 },
+        { x: 20, y: 10 }
+      ] });
+      expect(polygon.bounds()).to.deep.equal([
+        { x: -20, y: -10 },
+        { x: 20, y: -10 },
+        { x: 20, y: 10 },
+        { x: -20, y: 10 }
+      ]);
+    });
   });
 
   describe('Intersection', () => {

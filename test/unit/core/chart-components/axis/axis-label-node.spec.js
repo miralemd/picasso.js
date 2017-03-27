@@ -292,19 +292,11 @@ describe('Axis Label Node', () => {
     });
 
     describe('Collider', () => {
-      it('should not have a collider if stepSize is undefined', () => {
-        buildOpts.stepSize = undefined;
+      it('should have a bounds collider if stepSize is zero', () => {
+        buildOpts.stepSize = 0;
         const label = buildLabel(tick, buildOpts);
 
-        expect(label.collider).to.equal(undefined);
-      });
-
-      it('should not have a collider if layered', () => {
-        buildOpts.stepSize = 0.2;
-        buildOpts.layered = true;
-        const label = buildLabel(tick, buildOpts);
-
-        expect(label.collider).to.equal(undefined);
+        expect(label.collider).to.be.an.object;
       });
 
       describe('align left', () => {
@@ -418,7 +410,7 @@ describe('Axis Label Node', () => {
           buildOpts.align = 'top';
         });
 
-        it('should have a collider', () => {
+        it('should have a collider for horizontal labels', () => {
           buildOpts.stepSize = 0.2;
           const label = buildLabel(tick, buildOpts);
 
@@ -428,6 +420,62 @@ describe('Axis Label Node', () => {
             y: 0,
             width: buildOpts.stepSize,
             height: buildOpts.innerRect.height
+          };
+
+          expect(label.collider).to.deep.equal(expected);
+        });
+
+        it('should have a collider for layered labels', () => {
+          buildOpts.stepSize = 0.2;
+          buildOpts.layered = true;
+          const label = buildLabel(tick, buildOpts);
+
+          expected = {
+            type: 'polygon',
+            vertices: [
+              { x: 20, y: 80 },
+              { x: 30, y: 80 },
+              { x: 30, y: 90 },
+              { x: 20, y: 90 }
+            ]
+          };
+
+          expect(label.collider).to.deep.equal(expected);
+        });
+
+        it('should have a collider for tilted labels', () => {
+          buildOpts.stepSize = 0.2;
+          buildOpts.tilted = true;
+          buildOpts.angle = 45;
+          const label = buildLabel(tick, buildOpts);
+
+          expected = {
+            type: 'polygon',
+            vertices: [
+              { x: 23.82148869802242, y: 86.46446609406726 },
+              { x: 30.892556509887896, y: 93.53553390593274 },
+              { x: 47.35702260395516, y: 90 },
+              { x: 47.35702260395516, y: 80 }
+            ]
+          };
+
+          expect(label.collider).to.deep.equal(expected);
+        });
+
+        it('should have a collider for tilted labels with a negative angle', () => {
+          buildOpts.stepSize = 0.2;
+          buildOpts.tilted = true;
+          buildOpts.angle = -45;
+          const label = buildLabel(tick, buildOpts);
+
+          expected = {
+            type: 'polygon',
+            vertices: [
+              { x: 19.107443490112104, y: 93.53553390593274 },
+              { x: 26.17851130197758, y: 86.46446609406726 },
+              { x: 2.6429773960448415, y: 80 },
+              { x: 2.6429773960448415, y: 90 }
+            ]
           };
 
           expect(label.collider).to.deep.equal(expected);
@@ -471,7 +519,7 @@ describe('Axis Label Node', () => {
           buildOpts.align = 'bottom';
         });
 
-        it('should have a collider', () => {
+        it('should have a collider for horizontal labels', () => {
           buildOpts.stepSize = 0.2;
           const label = buildLabel(tick, buildOpts);
 
@@ -481,6 +529,62 @@ describe('Axis Label Node', () => {
             y: 0,
             width: buildOpts.stepSize,
             height: buildOpts.innerRect.height
+          };
+
+          expect(label.collider).to.deep.equal(expected);
+        });
+
+        it('should have a collider for layered labels', () => {
+          buildOpts.stepSize = 0.2;
+          buildOpts.layered = true;
+          const label = buildLabel(tick, buildOpts);
+
+          expected = {
+            type: 'polygon',
+            vertices: [
+              { x: 20, y: 10 },
+              { x: 30, y: 10 },
+              { x: 30, y: 20 },
+              { x: 20, y: 20 }
+            ]
+          };
+
+          expect(label.collider).to.deep.equal(expected);
+        });
+
+        it('should have a collider for tilted labels', () => {
+          buildOpts.stepSize = 0.2;
+          buildOpts.tilted = true;
+          buildOpts.angle = 45;
+          const label = buildLabel(tick, buildOpts);
+
+          expected = {
+            type: 'polygon',
+            vertices: [
+              { x: 32.071067811865476, y: 2.9289321881345245 },
+              { x: 39.14213562373095, y: 10 },
+              { x: 8.535533905932738, y: 13.535533905932738 },
+              { x: 8.535533905932738, y: 3.5355339059327378 }
+            ]
+          };
+
+          expect(label.collider).to.deep.equal(expected);
+        });
+
+        it('should have a collider for tilted labels with a negative angle', () => {
+          buildOpts.stepSize = 0.2;
+          buildOpts.tilted = true;
+          buildOpts.angle = -45;
+          const label = buildLabel(tick, buildOpts);
+
+          expected = {
+            type: 'polygon',
+            vertices: [
+              { x: 10.857864376269049, y: 10 },
+              { x: 17.928932188134524, y: 2.9289321881345245 },
+              { x: 41.46446609406726, y: 3.5355339059327378 },
+              { x: 41.46446609406726, y: 13.535533905932738 }
+            ]
           };
 
           expect(label.collider).to.deep.equal(expected);

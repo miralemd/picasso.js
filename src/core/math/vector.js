@@ -66,3 +66,17 @@ export function projectOnto(v1, v2) {
     y: v2.y * m
   };
 }
+
+export function rotate(v, radians, origin = { x: 0, y: 0 }) {
+  const cos = Math.cos(radians);
+  const sin = Math.sin(radians);
+
+  const t1 = sub(v, origin);
+
+  const t2 = {
+    x: (cos * t1.x) - (sin * t1.y),
+    y: (sin * t1.x) + (cos * t1.y)
+  };
+
+  return add(t2, origin);
+}

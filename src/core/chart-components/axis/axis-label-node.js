@@ -1,4 +1,5 @@
 import extend from 'extend';
+import { rotate as rotateVector } from '../../math/vector';
 
 function checkText(text) {
   return typeof text === 'string' || typeof text === 'number' ? text : '-';
@@ -130,7 +131,7 @@ function bandwidthCollider(tick, struct, buildOpts) {
   collider.height = heightClip > 0 ? collider.height - heightClip : collider.height;
 }
 
-function tiltedCollider(tick, struct) {
+function boundsCollider(tick, struct) {
   struct.collider = {
     type: 'polygon',
     vertices: [
@@ -142,10 +143,44 @@ function tiltedCollider(tick, struct) {
   };
 }
 
-function appendCollider(tick, struct, buildOpts) {
-  if (!buildOpts.stepSize || buildOpts.layered) { return; }
+function tiltedCollider(tick, struct, buildOpts) {
+  const radians = buildOpts.angle * (Math.PI / 180);
+  const halfWidth = Math.max(buildOpts.stepSize / 2, struct.boundingRect.height / 2); // Handle if bandwidth is zero
+  const startAnchor = struct.anchor === 'start';
+  const em = struct.anchor === 'end' && radians < 0;
+  const sp = struct.anchor === 'start' && radians >= 0;
+  const y = struct.boundingRect.y + (sp || em ? struct.boundingRect.height : 0);
+  // Generate starting points at bandwidth boundaries
+  const points = [
+    { x: struct.x - halfWidth, y },
+    { x: struct.x + halfWidth, y }
+  ].map(p => rotateVector(p, radians, { x: struct.x, y: struct.y })); // Rotate around center point to counteract labels rotation
 
-  if (buildOpts.tilted) {
+  // Append points to wrap polygon around label
+  const margin = 10; // extend slightly to handle single char labels better
+  const leftPoint = {
+    x: startAnchor ? struct.boundingRect.x + struct.boundingRect.width + margin : struct.boundingRect.x - margin,
+    y: struct.boundingRect.y + struct.boundingRect.height
+  };
+
+  const rightPoint = {
+    x: startAnchor ? struct.boundingRect.x + struct.boundingRect.width + margin : struct.boundingRect.x - margin,
+    y: struct.boundingRect.y
+  };
+
+  const orderedPoints = radians >= 0 ? [leftPoint, rightPoint] : [rightPoint, leftPoint];
+  points.push(...orderedPoints);
+
+  struct.collider = {
+    type: 'polygon',
+    vertices: points
+  };
+}
+
+function appendCollider(tick, struct, buildOpts) {
+  if (buildOpts.layered || !buildOpts.stepSize) {
+    boundsCollider(tick, struct);
+  } else if (buildOpts.tilted) {
     tiltedCollider(tick, struct, buildOpts);
   } else {
     bandwidthCollider(tick, struct, buildOpts);

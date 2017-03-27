@@ -62,7 +62,9 @@ export default class GeoPolygon {
    */
   containsPoint(point) {
     // TODO handle polygon that is a straight line, current impl gives a non-deterministic output, that is depending on number of vertices
-    if (this._zeroSize || !rectContainsPoint(this.bounds(), point)) { return false; }
+    if (this._zeroSize || !rectContainsPoint(this.bounds(), point)) {
+      return false;
+    }
 
     let even = true;
     const num = this.vertices.length;
@@ -139,9 +141,9 @@ export default class GeoPolygon {
 
       this._bounds = [
         { x: xMin, y: yMin },
-        { x: xMin + xMax, y: yMin },
-        { x: xMin + xMax, y: yMin + yMax },
-        { x: xMin, y: yMin + yMax }
+        { x: xMax, y: yMin },
+        { x: xMax, y: yMax },
+        { x: xMin, y: yMax }
       ];
     }
 
