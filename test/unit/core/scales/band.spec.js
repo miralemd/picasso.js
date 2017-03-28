@@ -39,6 +39,39 @@ describe('OrdinalScale', () => {
       expect(scale('B')).to.equal(1 / 3);
       expect(scale('C')).to.equal(2 / 3);
     });
+
+    describe('with maxPxStep', () => {
+      it('with start align should adjust correctly', () => {
+        fieldValues = ['A', 'B'].map(v => ({ label: v, id: v }));
+        settings.maxPxStep = 10;
+        settings.align = 0;
+        scale = band(settings, fields, dataset);
+        const pxScale = scale.pxScale(100);
+        expect(pxScale.step()).to.approximately(0.1, 0.000001);
+        expect(pxScale('A')).to.equals(0.0);
+        expect(pxScale('B')).to.equals(0.1);
+      });
+
+      it('with padding should return correct step size', () => {
+        fieldValues = ['A', 'B'].map(v => ({ label: v, id: v }));
+        settings.maxPxStep = 10;
+        settings.padding = 0.1;
+        scale = band(settings, fields, dataset);
+        const pxScale = scale.pxScale(100);
+        expect(pxScale.step()).to.approximately(0.1, 0.000001);
+      });
+
+      it('with center align and padding should return correct step size', () => {
+        fieldValues = ['A', 'B'].map(v => ({ label: v, id: v }));
+        settings.maxPxStep = 10;
+        settings.paddingOuter = 1;
+        settings.align = 0.5;
+        scale = band(settings, fields, dataset);
+        const pxScale = scale.pxScale(100);
+        expect(pxScale('A')).to.approximately(0.4, 0.000001);
+        expect(pxScale('B')).to.approximately(0.5, 0.000001);
+      });
+    });
   });
 
   it('should accept domain and range parameters', () => {

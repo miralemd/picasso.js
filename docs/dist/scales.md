@@ -192,6 +192,16 @@ Get the last value of the domain
 | Returns | Array.&lt;Object&gt; | Array of ticks | ... | ... |
 
 Generate discrete ticks  
+#### <a name='band.pxScale' href='#band.pxScale'>#</a> **band.pxScale**(*number size*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| size | number | No | No | No |
+| Returns | band | No | ... | ... |
+
+if required creates a new scale with a restricted range
+so that step size is at most maxPxStep
+otherwise it returns itself  
 
 ## Sequential color scale
 

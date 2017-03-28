@@ -6,7 +6,8 @@ const AVAILABLE_SETTINGS = [
   'paddingOuter',
   'paddingInner',
   'align',
-  'invert'
+  'invert',
+  'maxPxStep'
 ];
 
 function unique(values) {
@@ -55,38 +56,72 @@ export default function scaleBand(settings, fields, dataset) {
    */
   const band = d3ScaleBand();
 
-  band.data = function data() {
-    return dataset ? dataset.map({ self: { source: settings.source, type: 'qual' } }, { source: settings.source }) : [];
-  };
+  // I would like to define this outside of scaleBand but it cause the documentation to be in the wrong order
+  function augmentScaleBand(band, settings, dataset) { // eslint-disable-line no-shadow
+    band.data = function data() {
+      return dataset ? dataset.map({ self: { source: settings.source, type: 'qual' } }, { source: settings.source }) : [];
+    };
+
+    /**
+     * Get the first value of the domain
+     * @return { number }
+     */
+    band.start = function start() {
+      return band.domain()[0];
+    };
+
+    /**
+     * Get the last value of the domain
+     * @return { number }
+     */
+    band.end = function end() {
+      return band.domain()[band.domain().length - 1];
+    };
+
+    /**
+     * Generate discrete ticks
+     * @return {Object[]} Array of ticks
+     */
+    band.ticks = function ticks(input = {}) {
+      input.scale = band;
+      return generateDiscreteTicks(input);
+    };
+  }
+  augmentScaleBand(band, settings, dataset);
+
+  const stgns = generateSettings(settings || {}, fields);
 
   /**
-   * Get the first value of the domain
-   * @return { number }
+   * if required creates a new scale with a restricted range
+   * so that step size is at most maxPxStep
+   * otherwise it returns itself
+   * @param { number } size
+   * @return { band }
    */
-  band.start = function start() {
-    return band.domain()[0];
+  band.pxScale = function pxScale(size) {
+    const max = stgns.maxPxStep;
+    if (isNaN(max)) {
+      return band;
+    }
+    const n = band.domain().length;
+    const sizeRelativeToStep = Math.max(1, (n - band.paddingInner()) + (2 * band.paddingOuter()));
+
+    if (sizeRelativeToStep * max >= size) {
+      return band;
+    }
+
+    const newBand = band.copy();
+    augmentScaleBand(newBand, settings, dataset);
+    const t = (sizeRelativeToStep * max) / size;
+    const offset = (1 - t) * band.align();
+    newBand.range(stgns.invert ? [t + offset, offset] : [offset, t + offset]);
+
+    return newBand;
   };
 
-  /**
-   * Get the last value of the domain
-   * @return { number }
-   */
-  band.end = function end() {
-    return band.domain()[band.domain().length - 1];
-  };
-
-  /**
-   * Generate discrete ticks
-   * @return {Object[]} Array of ticks
-   */
-  band.ticks = function ticks(input = {}) {
-    input.scale = band;
-    return generateDiscreteTicks(input);
-  };
 
   if (fields && fields[0]) {
     const values = fields[0].values();
-    const stgns = generateSettings(settings, fields);
     const uniq = unique(values).map(v => v.label);
 
     band.domain(uniq);
