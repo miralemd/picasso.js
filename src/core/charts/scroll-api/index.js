@@ -11,16 +11,19 @@ export function createOrUpdate(options, oldApi) {
   return s;
 }
 
-export default function builder(obj, oldScrollApis, isPartial) {
+export default function builder(obj, oldScrollApis) {
   const scrollApis = {};
   for (const n in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, n)) {
-      scrollApis[n] = createOrUpdate(obj[n], oldScrollApis ? oldScrollApis[n] : null, isPartial);
+      scrollApis[n] = createOrUpdate(obj[n], oldScrollApis ? oldScrollApis[n] : null);
     }
   }
   return scrollApis;
 }
 
-export function getScrollApi(v, scrollApis) {
+export function getOrCreateScrollApi(v, scrollApis) {
+  if (!scrollApis[v]) {
+    scrollApis[v] = scrollApi();
+  }
   return scrollApis[v];
 }

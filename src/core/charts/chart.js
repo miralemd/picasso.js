@@ -10,7 +10,7 @@ import {
 import dataRegistry from '../data/index';
 import buildFormatters, { getOrCreateFormatter } from './formatter';
 import buildScales, { getOrCreateScale } from './scales';
-import buildScroll, { getScrollApi } from './scroll-api';
+import buildScroll, { getOrCreateScrollApi } from './scroll-api';
 import brush from '../brush';
 import component from '../component';
 import componentFactory from '../component/component-factory';
@@ -213,7 +213,7 @@ function chart(definition) {
     }
     currentScales = buildScales(scales, dataset);
     currentFormatters = buildFormatters(formatters, dataset);
-    currentScrollApis = buildScroll(scroll, currentScrollApis, partialData);
+    currentScrollApis = buildScroll(scroll, currentScrollApis);
   };
 
   const render = () => {
@@ -504,7 +504,7 @@ function chart(definition) {
    * @return {scroll-api}
    */
   instance.scroll = function scroll(name = 'default') {
-    return getScrollApi(name, currentScrollApis);
+    return getOrCreateScrollApi(name, currentScrollApis);
   };
 
   instance.dataset = function datasetFn() {
