@@ -2,6 +2,7 @@ import shapeFactory from './shapes';
 import { resolveSettings } from '../../settings-setup';
 import { resolveForDataObject } from '../../../style';
 import { notNumber } from '../../../utils/math';
+import { updateScaleSize } from '../../../scales';
 
 const DEFAULT_DATA_SETTINGS = {
   shape: 'circle',
@@ -158,6 +159,8 @@ const pointMarkerComponent = {
   },
   render({ data }) {
     const { width, height } = this.rect;
+    updateScaleSize(this.local, 'x', width);
+    updateScaleSize(this.local, 'y', height);
     const points = data.map((p, i) => {
       const obj = resolveForDataObject(this.local, p, i);
       obj.errorShape = resolveForDataObject(this.local.errorShape, p, i);

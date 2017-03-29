@@ -43,9 +43,20 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
     doodle = doodler(settings);
   };
 
-  fn.onData = (data) => {
+  fn.onData = (data, rect) => {
     items = [];
     resolvedStyle = resolveInitialStyle(settings, defaultStyles, chart);
+
+    if (major && major.pxScale) {
+      const flipXY = settings.orientation === 'horizontal';
+      const majorLenght = flipXY ? rect.height : rect.width;
+      major = major.pxScale(majorLenght);
+    }
+    if (minor && minor.pxScale) { // is this needed or is minor never a band scale
+      const flipXY = settings.orientation === 'horizontal';
+      const minorLenght = flipXY ? rect.width : rect.height;
+      minor = minor.pxScale(minorLenght);
+    }
 
     // Calculate the minimum data point distance
     if (major && !major.bandwidth) {

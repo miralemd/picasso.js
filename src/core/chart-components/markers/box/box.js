@@ -143,7 +143,7 @@ const boxMarkerComponent = {
     // Calculate box width
     this.boxWidth = this.dispersion.bandwidth() * this.rect.width;
 
-    this.dispersion.onData(data);
+    this.dispersion.onData(data, this.rect);
 
     return this.dispersion.render(this.rect, this.buildShapes);
   },

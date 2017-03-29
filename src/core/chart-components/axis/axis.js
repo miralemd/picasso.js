@@ -6,6 +6,7 @@ import calcRequiredSize from './axis-size-calculator';
 import resolveSettingsForPath from '../settings-setup';
 import { resolveForDataValues } from '../../style';
 import crispify from '../../transposer/crispifier';
+import { scaleWithSize } from '../../scales';
 
 /**
  * @typedef settings
@@ -190,7 +191,8 @@ const axisComponent = {
 
     const distance = this.align === 'top' || this.align === 'bottom' ? innerRect.width : innerRect.height;
 
-    this.ticks = scale.ticks({
+    this.pxScale = scaleWithSize(scale, distance);
+    this.ticks = this.pxScale.ticks({
       distance,
       formatter
     });
@@ -207,7 +209,7 @@ const axisComponent = {
     const nodes = [];
     nodes.push(...this.concreteNodeBuilder.build({
       settings: axisSettings,
-      scale: this.scale,
+      scale: this.pxScale,
       innerRect,
       outerRect,
       measureText: this.renderer.measureText,

@@ -1,6 +1,7 @@
 import extend from 'extend';
 import { transposer } from '../../transposer/transposer';
 import { continuousDefaultSettings } from '../axis/axis-default-settings';
+import { updateScaleSize } from '../../scales';
 
 /**
  * Generate array of lines (ticks) from scale
@@ -43,6 +44,8 @@ const gridLineComponent = {
     // Setup scales
     this.x = this.settings.x ? this.chart.scale(this.settings.x) : null;
     this.y = this.settings.y ? this.chart.scale(this.settings.y) : null;
+    updateScaleSize(this, 'x', this.rect.width);
+    updateScaleSize(this, 'y', this.rect.height);
 
     // Return an empty array to abort rendering when no scales are available to renderer
     if (!this.x && !this.y) {

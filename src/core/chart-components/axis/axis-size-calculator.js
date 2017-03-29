@@ -1,3 +1,5 @@
+import { scaleWithSize } from '../../scales';
+
 function isMajorTick(tick) {
   return !tick.isMinor;
 }
@@ -149,6 +151,7 @@ export default function calcRequiredSize({
     const align = settings.align;
     const horizontal = align === 'top' || align === 'bottom';
     const distance = horizontal ? rect.width : rect.height;
+    scale = scaleWithSize(scale, distance);
     const majorTicks = scale.ticks({
       settings,
       distance,

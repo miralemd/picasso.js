@@ -1,3 +1,5 @@
+import { scaleWithSize } from '../../scales';
+
 const FILL = '#ccc';
 const OPACITY = 1;
 
@@ -122,7 +124,9 @@ const rangeComponent = {
   render() {
     const stngs = this.settings.settings;
     const brush = this.chart.brush(stngs.brush);
-    const scale = this.chart.scale(stngs.scale);
+    const direction = stngs.direction || 'horizontal';
+    const distance = direction === 'horizontal' ? this.rect.width : this.rect.height;
+    const scale = scaleWithSize(this.chart.scale(stngs.scale), distance);
 
     teardown(this.state);
     setup(this.state, brush, scale, this.renderer);
@@ -130,7 +134,7 @@ const rangeComponent = {
     this.state.rect = this.rect;
     this.state.fill = stngs.fill || FILL;
     this.state.opacity = typeof stngs.opacity !== 'undefined' ? stngs.opacity : OPACITY;
-    this.state.direction = stngs.direction || 'horizontal';
+    this.state.direction = direction;
 
     return shapes(this.state);
   },
