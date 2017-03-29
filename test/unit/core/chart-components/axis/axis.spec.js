@@ -38,6 +38,14 @@ describe('Axis', () => {
     return component;
   }
 
+  function updateComponent(comp) {
+    comp.set({ settings: config });
+    comp.beforeUpdate();
+    comp.beforeRender();
+    comp.update();
+    comp.updated();
+  }
+
   beforeEach(() => {
     const f = formatter('d3-number')(' ');
     renderSpy = sinon.spy();
@@ -65,6 +73,45 @@ describe('Axis', () => {
       formatter: 'f',
       settings: {}
     };
+  });
+
+  describe('Lifecycle', () => {
+    describe('Update', () => {
+      it('should handle an update where scale type changes from discrete to continuous', () => {
+        scale = band();
+        scale.domain([0, 1, 2, 3, 4, 5]);
+
+        config.settings.labels = { show: true };
+        const axis = createAndRenderAxis({
+          inner: { x: 0, y: 0, width: 100, height: 100 },
+          outer: { x: 0, y: 0, width: 100, height: 100 }
+        });
+        verifyNumberOfNodes(6, 0);
+
+        renderSpy.reset();
+
+        scale = linear();
+        updateComponent(axis);
+        verifyNumberOfNodes(3, 0);
+      });
+
+      it('should handle an update where scale type changes from continuous to discrete', () => {
+        scale = linear();
+        config.settings.labels = { show: true };
+        const axis = createAndRenderAxis({
+          inner: { x: 0, y: 0, width: 100, height: 100 },
+          outer: { x: 0, y: 0, width: 100, height: 100 }
+        });
+        verifyNumberOfNodes(3, 4);
+
+        renderSpy.reset();
+
+        scale = band();
+        scale.domain([0, 1, 2, 3, 4, 5]);
+        updateComponent(axis);
+        verifyNumberOfNodes(6, 7);
+      });
+    });
   });
 
   describe('continuous', () => {

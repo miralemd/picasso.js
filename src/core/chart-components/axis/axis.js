@@ -110,6 +110,7 @@ const axisComponent = {
     this.resolveSettings(this.settings);
   },
   resolveSettings(settings) {
+    this.isDiscrete = !!this.scale.bandwidth;
     const styleSettings = resolveInitialStyle(settings.settings, this.defaultStyleSettings, this.chart);
     const axisSettings = extend(true, {}, this.settings, settings.settings, styleSettings);
 

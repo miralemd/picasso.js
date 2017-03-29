@@ -31,6 +31,10 @@
   }
   ```
 
+### Fixed
+
+- PIC-119 Update doesn't trigger re-resolving of scale type
+
 ## 0.12.4
 
 ### Fixed
