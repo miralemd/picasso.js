@@ -46,32 +46,7 @@ function setRanges(state) {
   });
 }
 
-function nodes(state) {
-  if (!state.active) {
-    return [];
-  }
-  let vStart = state.start;
-  let vEnd = state.current;
-  if (state.active.idx !== -1) {
-    if (state.active.mode === 'foo') {
-      vStart = Math.min(state.active.start, state.active.end);
-      vEnd = Math.max(state.active.start, state.active.end);
-    } else if (state.active.mode === 'modify') {
-      vStart = Math.min(state.start, state.current);
-      vEnd = Math.max(state.start, state.current);
-    } else {
-      const posDelta = state.active.limitHigh - state.active.end;
-      const negDelta = state.active.limitLow - state.active.start;
-      let delta = state.current - state.start;
-      if (delta < 0) {
-        delta = Math.max(delta, negDelta);
-      } else {
-        delta = Math.min(delta, posDelta);
-      }
-      vStart = state.active.start + delta;
-      vEnd = state.active.end + delta;
-    }
-  }
+function addRangeElements(els, state, vStart, vEnd) {
   const start = state.scale(vStart) * state.size;
   const end = state.scale(vEnd) * state.size;
   const height = Math.abs(start - end);
@@ -87,7 +62,7 @@ function nodes(state) {
 
   const isVertical = state.direction === VERTICAL;
 
-  if (state.direction === VERTICAL) {
+  if (isVertical) {
     cssTop = `${Math.min(start, end)}px`;
     cssLeft = 0;
     cssWidth = '100%';
@@ -98,8 +73,6 @@ function nodes(state) {
     cssWidth = `${height}px`;
     cssHeight = '100%';
   }
-
-  let els = [];
 
   // active range area
   els.push(state.h('div', {
@@ -233,6 +206,46 @@ function nodes(state) {
   // }, [
   //   `${state.format(start < end ? vEnd : vStart)}`
   // ]));
+}
+
+function nodes(state) {
+  if (!state.active) {
+    return [];
+  }
+  let vStart = state.start;
+  let vEnd = state.current;
+  if (state.active.idx !== -1) {
+    if (state.active.mode === 'foo') {
+      vStart = Math.min(state.active.start, state.active.end);
+      vEnd = Math.max(state.active.start, state.active.end);
+    } else if (state.active.mode === 'modify') {
+      vStart = Math.min(state.start, state.current);
+      vEnd = Math.max(state.start, state.current);
+    } else {
+      const posDelta = state.active.limitHigh - state.active.end;
+      const negDelta = state.active.limitLow - state.active.start;
+      let delta = state.current - state.start;
+      if (delta < 0) {
+        delta = Math.max(delta, negDelta);
+      } else {
+        delta = Math.min(delta, posDelta);
+      }
+      vStart = state.active.start + delta;
+      vEnd = state.active.end + delta;
+    }
+  }
+
+  let els = [];
+
+  // add active range
+  addRangeElements(els, state, vStart, vEnd);
+
+  // add all other ranges
+  state.ranges.forEach((r, i) => {
+    if (i !== state.active.idx) {
+      addRangeElements(els, state, Math.min(r.min, r.max), Math.max(r.min, r.max));
+    }
+  });
 
   return els;
 }
