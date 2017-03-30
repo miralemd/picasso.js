@@ -1,77 +1,36 @@
-// import { scaleLinear as linear, scaleBand as band } from 'd3-scale';
-import componentFactory from '../../../../../src/core/component/component-factory';
+import componentFactoryFixture from '../../../../helpers/component-factory-fixture';
 import axisComponent from '../../../../../src/core/chart-components/axis/axis';
 import linear from '../../../../../src/core/scales/linear';
 import band from '../../../../../src/core/scales/band';
-import formatter from '../../../../../src/core/formatter';
 
 describe('Axis', () => {
-  let chart;
-  let renderer;
   let config;
-  let renderSpy;
   let scale = {};
+  let componentFixture;
+  let opts;
+  let chart;
 
-  function verifyNumberOfNodes(tNodes, lNodes) {
-    const nodes = renderSpy.args[0][0];
-    const textNodes = nodes.filter(n => n.type === 'text');
-    const lineNodes = nodes.filter(n => n.type === 'line');
-    expect(textNodes.length, 'Unexpected number of text nodes').to.equal(tNodes);
-    expect(lineNodes.length, 'Unexpected number of line nodes').to.equal(lNodes);
-  }
+  function verifyNumberOfNodes(type, expectedNbrOfNodes) {
+    const nodes = componentFixture.getRenderOutput().filter(n => n.type === type);
 
-  function createAndRenderAxis(opts) {
-    const {
-      inner,
-      outer
-    } = opts;
-    const component = componentFactory(axisComponent, {
-      settings: config,
-      chart,
-      renderer
-    });
-    component.beforeMount();
-    component.resize(inner, outer);
-    component.beforeRender();
-    component.render();
-    component.mounted();
-    return component;
-  }
-
-  function updateComponent(comp) {
-    comp.set({ settings: config });
-    comp.beforeUpdate();
-    comp.beforeRender();
-    comp.update();
-    comp.updated();
+    expect(nodes.length, `Unexpected number of ${type} nodes`).to.equal(expectedNbrOfNodes);
   }
 
   beforeEach(() => {
-    const f = formatter('d3-number')(' ');
-    renderSpy = sinon.spy();
-    chart = {
-      brush: () => ({
-        on: () => {}
-      }),
-      scale: () => scale,
-      dataset: () => {},
-      container: () => {},
-      formatter: () => f
-    };
-    renderer = {
-      size: () => ({ width: 100, height: 100 }),
-      render: renderSpy,
-      appendTo: () => {},
-      measureText: ({ text }) => ({
-        width: text.toString().length,
-        height: 5
-      })
-    };
+    componentFixture = componentFactoryFixture();
+
+    chart = componentFixture.mocks().chart;
+    chart.scale.returns(scale);
 
     config = {
       scale: 'y',
       formatter: 'f',
       settings: {}
+    };
+
+    opts = {
+      inner: { x: 0, y: 0, width: 100, height: 100 },
+      outer: { x: 0, y: 0, width: 100, height: 100 }
     };
   });
 
@@ -80,36 +39,34 @@ describe('Axis', () => {
       it('should handle an update where scale type changes from discrete to continuous', () => {
         scale = band();
         scale.domain([0, 1, 2, 3, 4, 5]);
-
+        chart.scale.returns(scale);
         config.settings.labels = { show: true };
-        const axis = createAndRenderAxis({
-          inner: { x: 0, y: 0, width: 100, height: 100 },
-          outer: { x: 0, y: 0, width: 100, height: 100 }
-        });
-        verifyNumberOfNodes(6, 0);
 
-        renderSpy.reset();
+        componentFixture.simulateCreate(axisComponent, config);
+        componentFixture.simulateRender(opts);
 
-        scale = linear();
-        updateComponent(axis);
-        verifyNumberOfNodes(3, 0);
+        verifyNumberOfNodes('text', 6);
+
+        chart.scale.returns(linear());
+        componentFixture.simulateUpdate();
+        verifyNumberOfNodes('text', 3);
       });
 
       it('should handle an update where scale type changes from continuous to discrete', () => {
         scale = linear();
+        chart.scale.returns(scale);
         config.settings.labels = { show: true };
-        const axis = createAndRenderAxis({
-          inner: { x: 0, y: 0, width: 100, height: 100 },
-          outer: { x: 0, y: 0, width: 100, height: 100 }
-        });
-        verifyNumberOfNodes(3, 4);
 
-        renderSpy.reset();
+        componentFixture.simulateCreate(axisComponent, config);
+        componentFixture.simulateRender(opts);
+
+        verifyNumberOfNodes('text', 3);
 
         scale = band();
         scale.domain([0, 1, 2, 3, 4, 5]);
-        updateComponent(axis);
-        verifyNumberOfNodes(6, 7);
+        chart.scale.returns(scale);
+        componentFixture.simulateUpdate();
+        verifyNumberOfNodes('text', 6);
       });
     });
   });
@@ -117,103 +74,76 @@ describe('Axis', () => {
   describe('continuous', () => {
     beforeEach(() => {
       scale = linear();
-      /* chartMock.scale.type = 'linear';
-      chartMock.scale.sources = ['fieldSource'];*/
+      chart.scale.returns(scale);
     });
-
-    /*
-    it('should instantiate a default formatter derived from the first field', () => {
-      createAndRenderAxis();
-      expect(formatterSpy.args[0][0]).to.deep.equal({ source: 'fieldSource' });
-    });
-
-    it('should instantiate a formatter referenced by name', () => {
-      formatterSpy.reset(); // Reset spy here because init is done in beforeEach
-      config.formatter = 'customFormatter';
-      createAndRenderAxis();
-      expect(formatterSpy.args[0][0]).to.equal('customFormatter');
-    });
-
-    it('should instantiate a formatter derived from a configured field', () => {
-      formatterSpy.reset(); // Reset spy here because init is done in beforeEach
-      config.formatter = { source: 'customSource' };
-      createAndRenderAxis();
-      expect(formatterSpy.args[0][0]).to.deep.equal({ source: 'customSource' });
-    });
-    */
 
     ['left', 'right', 'top', 'bottom'].forEach((d) => {
       it(`should align to ${d}`, () => {
         config.settings.align = d;
-        createAndRenderAxis({
-          inner: { x: 0, y: 0, width: 100, height: 100 },
-          outer: { x: 0, y: 0, width: 100, height: 100 }
-        });
-        verifyNumberOfNodes(3, 4);
+        componentFixture.simulateCreate(axisComponent, config);
+        componentFixture.simulateRender(opts);
+
+        verifyNumberOfNodes('text', 3);
+        verifyNumberOfNodes('line', 4);
       });
     });
 
     it('should not render labels when disabled', () => {
       config.settings.labels = { show: false };
-      createAndRenderAxis({
-        inner: { x: 0, y: 0, width: 100, height: 100 },
-        outer: { x: 0, y: 0, width: 100, height: 100 }
-      });
-      verifyNumberOfNodes(0, 4);
+      componentFixture.simulateCreate(axisComponent, config);
+      componentFixture.simulateRender(opts);
+
+      verifyNumberOfNodes('text', 0);
+      verifyNumberOfNodes('line', 4);
     });
 
     it('should not render axis line when disabled', () => {
       config.settings.line = { show: false };
-      createAndRenderAxis({
-        inner: { x: 0, y: 0, width: 100, height: 100 },
-        outer: { x: 0, y: 0, width: 100, height: 100 }
-      });
-      verifyNumberOfNodes(3, 3);
+      componentFixture.simulateCreate(axisComponent, config);
+      componentFixture.simulateRender(opts);
+
+      verifyNumberOfNodes('text', 3);
+      verifyNumberOfNodes('line', 3);
     });
 
     it('should not render ticks when disabled', () => {
       config.settings.ticks = { show: false };
-      createAndRenderAxis({
-        inner: { x: 0, y: 0, width: 100, height: 100 },
-        outer: { x: 0, y: 0, width: 100, height: 100 }
-      });
-      verifyNumberOfNodes(3, 1);
+      componentFixture.simulateCreate(axisComponent, config);
+      componentFixture.simulateRender(opts);
+
+      verifyNumberOfNodes('text', 3);
+      verifyNumberOfNodes('line', 1);
     });
   });
 
   describe('discrete', () => {
-    let data;
-
     beforeEach(() => {
-      data = ['d1', 'd2', 'd3'];
-      chart.data = data;
       scale = band();
       scale.domain([0, 1, 2]);
       scale.range([0, 1]);
-      chart.scale().type = 'band';
-      /* chartMock.scale().sources = ['source'];*/
+      chart.scale.returns(scale);
     });
 
     ['left', 'right', 'top', 'bottom'].forEach((d) => {
       it(`should align to ${d}`, () => {
         config.settings.align = d;
-        createAndRenderAxis({
-          inner: { x: 0, y: 0, width: 100, height: 100 },
-          outer: { x: 0, y: 0, width: 100, height: 100 }
-        });
-        verifyNumberOfNodes(3, 0);
+        componentFixture.simulateCreate(axisComponent, config);
+        componentFixture.simulateRender(opts);
+
+        verifyNumberOfNodes('text', 3);
+        verifyNumberOfNodes('line', 0);
       });
     });
 
     ['top', 'bottom'].forEach((d) => {
       it(`should support layered labels for ${d} aligned axis`, () => {
         config.settings.align = d;
-        config.settings.labels = { layered: true };
-        createAndRenderAxis({
-          inner: { x: 0, y: 0, width: 100, height: 100 },
-          outer: { x: 0, y: 0, width: 100, height: 100 }
-        });
-        verifyNumberOfNodes(3, 0);
+        config.settings.labels = { mode: 'layered' };
+        componentFixture.simulateCreate(axisComponent, config);
+        componentFixture.simulateRender(opts);
+
+        verifyNumberOfNodes('text', 3);
+        verifyNumberOfNodes('line', 0);
       });
     });
   });

@@ -1,13 +1,13 @@
-
-import componentFactory from '../../../../../src/core/component/component-factory';
+import componentFactoryFixture from '../../../../helpers/component-factory-fixture';
 import boxMarker from '../../../../../src/core/chart-components/markers/box/box';
 import { create } from '../../../../../src/core/charts/scales';
 
 describe('box marker', () => {
   let rendererOutput;
   let chart;
-  let renderer;
   let shapeFn;
+  let componentFixture;
+  let opts;
 
   beforeEach(() => {
     const table = {
@@ -16,40 +16,17 @@ describe('box marker', () => {
     const dataset = {
       map: sinon.stub()
     };
-    shapeFn = (type, p) => { p.type = type; return p; };
-    chart = {
-      brush: () => ({
-        on: () => {}
-      }),
-      container: () => ({}),
-      table: () => table,
-      dataset: () => dataset,
-      scale: sinon.stub()
+    opts = {
+      inner: { x: 10, y: 20, width: 100, height: 200 }
     };
-    renderer = {
-      appendTo: () => {},
-      render: p => (rendererOutput = p),
-      size: () => {}
-    };
-  });
 
-  function createAndRenderComponent(opts) {
-    const {
-      config,
-      inner
-    } = opts;
-    const instance = componentFactory(boxMarker, {
-      settings: config,
-      chart,
-      renderer
-    });
-    instance.beforeMount();
-    instance.resize(inner);
-    instance.beforeRender();
-    instance.render();
-    instance.mounted();
-    return instance;
-  }
+    componentFixture = componentFactoryFixture();
+
+    shapeFn = (type, p) => { p.type = type; return p; };
+    chart = componentFixture.mocks().chart;
+    chart.dataset.returns(dataset);
+    chart.table.returns(table);
+  });
 
   it('should not render boxes with default settings', () => {
     const config = {
@@ -59,10 +36,8 @@ describe('box marker', () => {
 
     chart.dataset().map.returns([{}]);
 
-    createAndRenderComponent({
-      inner: { x: 10, y: 20, width: 100, height: 200 },
-      config
-    });
+    componentFixture.simulateCreate(boxMarker, config);
+    rendererOutput = componentFixture.simulateRender(opts);
 
     expect(rendererOutput).to.deep.equal([]);
   });
@@ -105,10 +80,8 @@ describe('box marker', () => {
     chart.scale.withArgs({ scale: 'x' }).returns(xScale);
     chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
-    createAndRenderComponent({
-      inner: { x: 10, y: 20, width: 100, height: 200 },
-      config
-    });
+    componentFixture.simulateCreate(boxMarker, config);
+    rendererOutput = componentFixture.simulateRender(opts);
 
     expect(rendererOutput).to.deep.equal([
       {
@@ -246,10 +219,8 @@ describe('box marker', () => {
     chart.scale.withArgs({ scale: 'x' }).returns(xScale);
     chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
-    createAndRenderComponent({
-      inner: { x: 10, y: 20, width: 100, height: 200 },
-      config
-    });
+    componentFixture.simulateCreate(boxMarker, config);
+    rendererOutput = componentFixture.simulateRender(opts);
 
     expect(rendererOutput).to.deep.equal([
       {
@@ -307,10 +278,8 @@ describe('box marker', () => {
     chart.scale.withArgs({ scale: 'x' }).returns(xScale);
     chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
-    createAndRenderComponent({
-      inner: { x: 10, y: 20, width: 100, height: 200 },
-      config
-    });
+    componentFixture.simulateCreate(boxMarker, config);
+    rendererOutput = componentFixture.simulateRender(opts);
 
     expect(rendererOutput).to.deep.equal([
       {
@@ -373,10 +342,8 @@ describe('box marker', () => {
     chart.scale.withArgs({ scale: 'x' }).returns(xScale);
     chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
-    createAndRenderComponent({
-      inner: { x: 10, y: 20, width: 100, height: 200 },
-      config
-    });
+    componentFixture.simulateCreate(boxMarker, config);
+    rendererOutput = componentFixture.simulateRender(opts);
 
     expect(rendererOutput).to.deep.equal([
       {
@@ -490,6 +457,10 @@ describe('box marker', () => {
       }
     ];
 
+    opts = {
+      inner: { x: 0, y: 0, width: 200, height: 20 }
+    };
+
     chart.dataset().map.returns(dataset);
 
     const xScale = create({ type: 'band' });
@@ -499,10 +470,8 @@ describe('box marker', () => {
     chart.scale.withArgs({ scale: 'x' }).returns(xScale);
     chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
-    createAndRenderComponent({
-      inner: { x: 0, y: 0, width: 200, height: 20 },
-      config
-    });
+    componentFixture.simulateCreate(boxMarker, config);
+    rendererOutput = componentFixture.simulateRender(opts);
 
     const items = [
       {

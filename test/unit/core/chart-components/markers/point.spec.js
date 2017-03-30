@@ -1,32 +1,12 @@
-
-import componentFactory from '../../../../../src/core/component/component-factory';
+import componentFactoryFixture from '../../../../helpers/component-factory-fixture';
 import pointComponent from '../../../../../src/core/chart-components/markers/point/point';
 
 describe('point marker', () => {
   let renderedPoints;
   let chart;
-  let renderer;
   let shapeFn;
-
-  function createAndRenderPoint(opts) {
-    const {
-      inner,
-      outer,
-      config
-    } = opts;
-    const component = componentFactory(pointComponent, {
-      settings: config,
-      chart,
-      renderer
-    });
-    component.beforeMount();
-    component.resize(inner, outer);
-    component.mounted();
-    component.beforeRender();
-    component.render();
-    component.mounted();
-    return component;
-  }
+  let componentFixture;
+  let opts;
 
   beforeEach(() => {
     const table = {
@@ -35,21 +15,15 @@ describe('point marker', () => {
     const dataset = {
       map: sinon.stub()
     };
+    opts = {
+      inner: { x: 10, y: 20, width: 100, height: 200 }
+    };
     shapeFn = (type, p) => { p.type = type; return p; };
-    chart = {
-      brush: () => ({
-        on: () => {}
-      }),
-      container: () => ({}),
-      table: () => table,
-      dataset: () => dataset,
-      scale: sinon.stub()
-    };
-    renderer = {
-      appendTo: () => {},
-      render: p => (renderedPoints = p),
-      size: () => {}
-    };
+    componentFixture = componentFactoryFixture();
+    chart = componentFixture.mocks().chart;
+    chart.dataset.returns(dataset);
+    chart.table.returns(table);
+    chart.dataset().map.returns([{}]);
   });
 
   it('should render points with default settings', () => {
@@ -57,11 +31,10 @@ describe('point marker', () => {
       shapeFn,
       data: { mapTo: 'does not matter', groupBy: 'does not matter' }
     };
-    chart.dataset().map.returns([{}]);
-    createAndRenderPoint({
-      inner: { x: 10, y: 20, width: 100, height: 200 },
-      config
-    });
+
+    componentFixture.simulateCreate(pointComponent, config);
+    renderedPoints = componentFixture.simulateRender(opts);
+
     expect(renderedPoints).to.deep.equal([{
       type: 'circle',
       label: '',
@@ -89,11 +62,10 @@ describe('point marker', () => {
         y: true
       }
     };
-    chart.dataset().map.returns([{}]);
-    createAndRenderPoint({
-      inner: { x: 10, y: 20, width: 100, height: 200 },
-      config
-    });
+
+    componentFixture.simulateCreate(pointComponent, config);
+    renderedPoints = componentFixture.simulateRender(opts);
+
     expect(renderedPoints).to.deep.equal([{
       type: 'circle',
       label: '',
@@ -125,11 +97,10 @@ describe('point marker', () => {
         size: 4
       }
     };
-    chart.dataset().map.returns([{}]);
-    createAndRenderPoint({
-      inner: { x: 10, y: 20, width: 100, height: 200 },
-      config
-    });
+
+    componentFixture.simulateCreate(pointComponent, config);
+    renderedPoints = componentFixture.simulateRender(opts);
+
     expect(renderedPoints).to.deep.equal([{
       type: 'rect',
       label: 'etikett',
@@ -163,10 +134,9 @@ describe('point marker', () => {
     chart.dataset().map.returns([{
       label: 'a'
     }]);
-    createAndRenderPoint({
-      inner: { x: 10, y: 20, width: 100, height: 200 },
-      config
-    });
+    componentFixture.simulateCreate(pointComponent, config);
+    renderedPoints = componentFixture.simulateRender(opts);
+
     expect(renderedPoints).to.deep.equal([{
       type: 'a',
       label: 'etikett',
@@ -215,10 +185,9 @@ describe('point marker', () => {
       m3: 1.2
     }]);
 
-    createAndRenderPoint({
-      inner: { x: 10, y: 20, width: 100, height: 200 },
-      config
-    });
+    componentFixture.simulateCreate(pointComponent, config);
+    renderedPoints = componentFixture.simulateRender(opts);
+
     expect(renderedPoints).to.deep.equal([{
       type: 'circle',
       label: 'etta',
@@ -265,10 +234,8 @@ describe('point marker', () => {
     xScale.bandwidth = () => 0.2; // max size: width * 0.2 -> 20
     chart.scale.onCall(0).returns(xScale);
 
-    createAndRenderPoint({
-      inner: { x: 10, y: 20, width: 100, height: 200 }, // point size limits: [2,20]
-      config
-    });
+    componentFixture.simulateCreate(pointComponent, config);
+    renderedPoints = componentFixture.simulateRender(opts);
 
     expect(renderedPoints.map(p => p.size)).to.deep.equal([2, 2 + (18 * 0.4), 20]);
   });

@@ -1,54 +1,48 @@
 
-import componentFactory from '../../../../../src/core/component/component-factory';
+import componentFactoryFixture from '../../../../helpers/component-factory-fixture';
 import lineComponent from '../../../../../src/core/chart-components/grid/line';
 
 describe('line marker', () => {
   let rendererOutput;
   let chart;
-  let renderer;
   let shapeFn;
+  let componentFixture;
+  let opts;
+  let xScale;
+  let yScale;
+  let xTick;
+  let yTick;
 
   beforeEach(() => {
-    const table = {
-      findField: sinon.stub()
+    xTick = {
+      position: 0.5,
+      isMinor: false
     };
-    const dataset = {
-      map: sinon.stub()
+    yTick = {
+      position: 0.5,
+      isMinor: false
     };
-    shapeFn = (type, p) => { p.type = type; return p; };
-    chart = {
-      brush: () => ({
-        on: () => {}
-      }),
-      container: () => ({}),
-      table: () => table,
-      dataset: () => dataset,
-      scale: sinon.stub()
+    xScale = {
+      cachedTicks: () => [xTick]
     };
-    renderer = {
-      appendTo: () => {},
-      render: p => (rendererOutput = p),
-      size: () => {}
+    yScale = {
+      cachedTicks: () => [yTick]
     };
-  });
 
-  function createAndRenderComponent(opts) {
-    const {
-      config,
-      inner
-    } = opts;
-    const instance = componentFactory(lineComponent, {
-      settings: config,
-      chart,
-      renderer
+    opts = {
+      inner: { x: 10, y: 20, width: 100, height: 200 }
+    };
+
+    componentFixture = componentFactoryFixture();
+
+    chart = componentFixture.mocks().chart;
+    chart.dataset = () => ({
+      map: componentFixture.sandbox().stub()
     });
-    instance.beforeMount();
-    instance.resize(inner);
-    instance.beforeRender();
-    instance.render();
-    instance.mounted();
-    return instance;
-  }
+    chart.dataset().map.returns([{}]);
+    chart.scale.withArgs({ scale: 'x' }).returns(xScale);
+    chart.scale.withArgs({ scale: 'y' }).returns(yScale);
+  });
 
   it('should not render lines with default settings and no scales', () => {
     const config = {
@@ -56,12 +50,8 @@ describe('line marker', () => {
       data: { mapTo: 'does not matter', groupBy: 'does not matter' }
     };
 
-    chart.dataset().map.returns([{}]);
-
-    createAndRenderComponent({
-      inner: { x: 10, y: 20, width: 100, height: 200 },
-      config
-    });
+    componentFixture.simulateCreate(lineComponent, config);
+    rendererOutput = componentFixture.simulateRender(opts);
 
     expect(rendererOutput).to.deep.equal([]);
   });
@@ -74,26 +64,8 @@ describe('line marker', () => {
       y: { scale: 'y' }
     };
 
-    chart.dataset().map.returns([{}]);
-
-    const xScale = v => v;
-    xScale.cachedTicks = () => [{
-      position: 0.5,
-      isMinor: false
-    }];
-    chart.scale.withArgs({ scale: 'x' }).returns(xScale);
-
-    const yScale = v => v;
-    yScale.cachedTicks = () => [{
-      position: 0.5,
-      isMinor: false
-    }];
-    chart.scale.withArgs({ scale: 'y' }).returns(yScale);
-
-    createAndRenderComponent({
-      inner: { x: 10, y: 20, width: 100, height: 200 },
-      config
-    });
+    componentFixture.simulateCreate(lineComponent, config);
+    rendererOutput = componentFixture.simulateRender(opts);
 
     expect(rendererOutput).to.deep.equal([
       {
@@ -126,19 +98,8 @@ describe('line marker', () => {
       x: { scale: 'x' }
     };
 
-    chart.dataset().map.returns([{}]);
-
-    const xScale = v => v;
-    xScale.cachedTicks = () => [{
-      position: 0.5,
-      isMinor: false
-    }];
-    chart.scale.withArgs({ scale: 'x' }).returns(xScale);
-
-    createAndRenderComponent({
-      inner: { x: 10, y: 20, width: 100, height: 200 },
-      config
-    });
+    componentFixture.simulateCreate(lineComponent, config);
+    rendererOutput = componentFixture.simulateRender(opts);
 
     expect(rendererOutput).to.deep.equal([
       {
@@ -161,19 +122,8 @@ describe('line marker', () => {
       y: { scale: 'y' }
     };
 
-    chart.dataset().map.returns([{}]);
-
-    const yScale = v => v;
-    yScale.cachedTicks = () => [{
-      position: 0.5,
-      isMinor: false
-    }];
-    chart.scale.withArgs({ scale: 'y' }).returns(yScale);
-
-    createAndRenderComponent({
-      inner: { x: 10, y: 20, width: 100, height: 200 },
-      config
-    });
+    componentFixture.simulateCreate(lineComponent, config);
+    rendererOutput = componentFixture.simulateRender(opts);
 
     expect(rendererOutput).to.deep.equal([
       {
@@ -200,26 +150,11 @@ describe('line marker', () => {
       }
     };
 
-    chart.dataset().map.returns([{}]);
+    xTick.isMinor = true;
+    yTick.isMinor = true;
 
-    const xScale = v => v;
-    xScale.cachedTicks = () => [{
-      position: 0.5,
-      isMinor: true
-    }];
-    chart.scale.withArgs({ scale: 'x' }).returns(xScale);
-
-    const yScale = v => v;
-    yScale.cachedTicks = () => [{
-      position: 0.5,
-      isMinor: true
-    }];
-    chart.scale.withArgs({ scale: 'y' }).returns(yScale);
-
-    createAndRenderComponent({
-      inner: { x: 10, y: 20, width: 100, height: 200 },
-      config
-    });
+    componentFixture.simulateCreate(lineComponent, config);
+    rendererOutput = componentFixture.simulateRender(opts);
 
     expect(rendererOutput).to.deep.equal([
       {
@@ -259,26 +194,10 @@ describe('line marker', () => {
       }
     };
 
-    chart.dataset().map.returns([{}]);
+    xTick.isMinor = true;
 
-    const xScale = v => v;
-    xScale.cachedTicks = () => [{
-      position: 0.5,
-      isMinor: true
-    }];
-    chart.scale.withArgs({ scale: 'x' }).returns(xScale);
-
-    const yScale = v => v;
-    yScale.cachedTicks = () => [{
-      position: 0.5,
-      isMinor: false
-    }];
-    chart.scale.withArgs({ scale: 'y' }).returns(yScale);
-
-    createAndRenderComponent({
-      inner: { x: 10, y: 20, width: 100, height: 200 },
-      config
-    });
+    componentFixture.simulateCreate(lineComponent, config);
+    rendererOutput = componentFixture.simulateRender(opts);
 
     expect(rendererOutput).to.deep.equal([]);
   });
