@@ -1,6 +1,8 @@
 # Changelog
 
-## [BREAKING] Unreleased
+## Unreleased
+
+## [BREAKING] 0.13
 
 ### Breaking changes
 
