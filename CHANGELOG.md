@@ -34,6 +34,7 @@
 ### Fixed
 
 - PIC-119 Update doesn't trigger re-resolving of scale type
+- PIC-122 Batch brush items
 
 ## 0.12.4
 

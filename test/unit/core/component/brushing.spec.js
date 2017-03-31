@@ -1,28 +1,187 @@
-import { styler } from '../../../../src/core/component/brushing';
+import {
+  styler,
+  resolveTapEvent
+} from '../../../../src/core/component/brushing';
 
 describe('Brushing', () => {
-  describe('Styler', () => {
-    let dummyComponent;
-    let consume;
-    let nodes;
-    let brusherStub;
+  let nodes;
+
+  beforeEach(() => {
+    nodes = [
+      {
+        type: 'rect',
+        fill: 'yellow',
+        stroke: 'pink',
+        data: 0
+      },
+      {
+        type: 'rect',
+        fill: 'yellow',
+        stroke: 'pink',
+        data: 1
+      }
+    ];
+  });
+
+  describe('Resolver', () => {
+    let trigger;
+    let config;
+    let eventMock;
+    let data;
+    let brushContext;
 
     beforeEach(() => {
-      nodes = [
+      brushContext = {
+        setValues: sinon.spy(),
+        toggleValues: sinon.spy(),
+        addValues: sinon.spy(),
+        removeValues: sinon.spy()
+      };
+
+      data = [
         {
-          type: 'rect',
-          fill: 'yellow',
-          stroke: 'pink',
-          data: 0
+          self: {
+            source: { field: 'foo' },
+            value: 1337
+          }
         },
         {
-          type: 'rect',
-          fill: 'yellow',
-          stroke: 'pink',
-          data: 1
+          self: {
+            source: { field: 'bar' },
+            value: 42
+          }
+        },
+        {
+          self: {
+            source: { field: 'bez' },
+            value: 33
+          }
         }
       ];
 
+      config = {
+        renderer: {
+          itemsAt: sinon.stub().returns([]),
+          element: () => ({
+            getBoundingClientRect: sinon.stub().returns({ left: 0, top: 0, width: 100, height: 100 })
+          })
+        },
+        chart: {
+          brush: sinon.stub().returns(brushContext)
+        },
+        data
+      };
+
+      trigger = {
+        contexts: ['test'],
+        data: ['self']
+      };
+
+      eventMock = {
+        clientX: 50,
+        clientY: 50
+      };
+    });
+
+    it('should bin multiple collisions into a single brush call', () => {
+      config.renderer.itemsAt.returns([
+        { node: { data: 0 } },
+        { node: { data: 1 } }
+      ]);
+
+      resolveTapEvent({ e: eventMock, t: trigger, config });
+
+      expect(brushContext.toggleValues.callCount).to.equal(1);
+      expect(brushContext.toggleValues.args[0][0]).to.deep.equal([
+        { key: data[0].self.source.field, value: data[0].self.value },
+        { key: data[1].self.source.field, value: data[1].self.value }
+      ]);
+    });
+
+    it('should handle when there is no collision', () => {
+      config.renderer.itemsAt.returns([]);
+
+      resolveTapEvent({ e: eventMock, t: trigger, config });
+
+      expect(brushContext.toggleValues).to.not.have.been.called;
+    });
+
+    it('should default to "self" if no data context is configured', () => {
+      config.renderer.itemsAt.returns([{ node: { data: 0 } }]);
+      trigger.data = undefined;
+
+      resolveTapEvent({ e: eventMock, t: trigger, config });
+
+      expect(brushContext.toggleValues.args[0][0]).to.deep.equal([{ key: data[0].self.source.field, value: data[0].self.value }]);
+    });
+
+    it('should not attempt to resolve any collisions if event origin is outside the component area', () => {
+      eventMock.clientX = 250;
+      eventMock.clientY = 250;
+
+      resolveTapEvent({ e: eventMock, t: trigger, config });
+
+      expect(config.renderer.itemsAt.callCount).to.equal(0);
+    });
+
+    describe('should use configured action', () => {
+      beforeEach(() => {
+        config.renderer.itemsAt.returns([{ node: { data: 0 } }]);
+      });
+
+      it('add', () => {
+        trigger.action = 'add';
+
+        resolveTapEvent({ e: eventMock, t: trigger, config });
+
+        expect(brushContext.addValues.callCount).to.equal(1);
+      });
+
+      it('remove', () => {
+        trigger.action = 'remove';
+
+        resolveTapEvent({ e: eventMock, t: trigger, config });
+
+        expect(brushContext.removeValues.callCount).to.equal(1);
+      });
+
+      it('set', () => {
+        trigger.action = 'set';
+
+        resolveTapEvent({ e: eventMock, t: trigger, config });
+
+        expect(brushContext.setValues.callCount).to.equal(1);
+      });
+    });
+
+    describe('touch events', () => {
+      beforeEach(() => {
+        eventMock.changedTouches = [
+          { clientX: 50, clientY: 50 }
+        ];
+      });
+
+      it('should resolve collisions with a touchRadius if configured', () => {
+        const radius = 5;
+        trigger.touchRadius = radius;
+
+        resolveTapEvent({ e: eventMock, t: trigger, config });
+
+        expect(config.renderer.itemsAt.args[0][0]).to.deep.equal({
+          cx: 50,
+          cy: 50,
+          r: radius
+        });
+      });
+    });
+  });
+
+  describe('Styler', () => {
+    let dummyComponent;
+    let consume;
+    let brusherStub;
+
+    beforeEach(() => {
       dummyComponent = {
         chart: {
           brush: sinon.stub()

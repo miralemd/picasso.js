@@ -110,17 +110,17 @@ export function styler(obj, { context, data, style }) {
   };
 }
 
-function brushDataPoint({
-  dataPoint,
+function brushDataPoints({
+  dataPoints,
   action,
   chart,
-  config
+  trigger
 }) {
-  if (typeof dataPoint === 'undefined' || !config) {
+  if (!dataPoints.length || !trigger) {
     return;
   }
 
-  const dataProps = config.data || ['self'];
+  const dataProps = trigger.data || ['self'];
   const items = [];
 
   let actionFn = 'toggleValues';
@@ -132,7 +132,8 @@ function brushDataPoint({
     actionFn = 'setValues';
   }
 
-  if (dataPoint !== null) {
+  for (let i = 0; i < dataPoints.length; i++) {
+    const dataPoint = dataPoints[i];
     dataProps.forEach((p) => {
       if (dataPoint[p]) {
         items.push({ key: dataPoint[p].source.field, value: dataPoint[p].value });
@@ -140,26 +141,32 @@ function brushDataPoint({
     });
   }
 
-  config.contexts.forEach((c) => {
+  trigger.contexts.forEach((c) => {
     chart.brush(c)[actionFn](items);
   });
 }
 
-function brushFromSceneNode({
-  node,
+function brushFromSceneNodes({
+  nodes,
   action,
   chart,
   data,
-  config
+  trigger
 }) {
-  const dataAttrib = node.data;
-  const dataPoint = dataAttrib !== null ? data[+dataAttrib] : null;
+  const dataPoints = [];
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i];
+    const dataAttrib = node.data;
+    if (dataAttrib !== null) {
+      dataPoints.push(data[+dataAttrib]);
+    }
+  }
 
-  brushDataPoint({
-    dataPoint,
+  brushDataPoints({
+    dataPoints,
     action,
     chart,
-    config
+    trigger
   });
 }
 
@@ -190,7 +197,7 @@ function uniqueDataCollisions(collisions, data, config) {
 }
 
 function resolveEvent({ collisions, t, config, action }) {
-  let brushCollisions = [{ node: { data: null } }];
+  let brushCollisions = [];
   let resolved = false;
 
   if (collisions.length > 0) {
@@ -204,14 +211,13 @@ function resolveEvent({ collisions, t, config, action }) {
     }
   }
 
-  brushCollisions.forEach((collision) => {
-    brushFromSceneNode({
-      node: collision.node,
-      action,
-      chart: config.chart,
-      data: config.data,
-      config: t
-    });
+  const nodes = brushCollisions.map(c => c.node);
+  brushFromSceneNodes({
+    nodes,
+    action,
+    chart: config.chart,
+    data: config.data,
+    trigger: t
   });
 
   return resolved;
@@ -253,7 +259,6 @@ function resolveCollisions(e, t, renderer) {
 
   return renderer.itemsAt(p);
 }
-
 
 function resolveAction(action, e, def) {
   if (action) {
