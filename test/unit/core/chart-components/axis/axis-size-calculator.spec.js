@@ -168,6 +168,19 @@ describe('Axis size calculator', () => {
       });
     });
 
+    describe('horizontal', () => {
+      it('should handle when there are no ticks', () => {
+        isDiscrete = true;
+        settings.dock = 'left';
+        settings.align = 'left';
+        settings.labels.show = true;
+        state.labels.activeMode = 'horizontal';
+        scale.ticks = sinon.stub().returns([]);
+        const size = sizeFn(rect);
+        expect(size.size).to.equal(14); // Return the size of padding, ticks, margin but not the label size
+      });
+    });
+
     describe('layered', () => {
       it('should return correct size when docked at bottom', () => {
         settings.dock = 'bottom';
@@ -187,6 +200,18 @@ describe('Axis size calculator', () => {
         state.labels.activeMode = 'tilted';
         const size = sizeFn(rect);
         expect(size.size).to.approximately(19.1158, 0.0001);
+      });
+
+      it('should handle when there are no ticks', () => {
+        isDiscrete = true;
+        settings.dock = 'bottom';
+        settings.align = 'bottom';
+        settings.labels.show = true;
+        state.labels.activeMode = 'tilted';
+        scale.ticks = sinon.stub().returns([]);
+        const size = sizeFn(rect);
+        expect(size.size).to.equal(14); // Return the size of padding, ticks, margin but not the label size
+        expect(size.edgeBleed).to.deep.equal({ left: 10, top: 0, right: 0, bottom: 0 }); // left is paddingEnd
       });
 
       it('max width', () => {

@@ -50,13 +50,15 @@ function alignTransform({ align, inner }) {
   return { y: inner.y + inner.height };
 }
 
-function getAlign(dock, align, isDiscrete) {
-  if (dock && !align) {
-    return dock;
-  } else if (!dock && !align) {
-    return isDiscrete ? 'bottom' : 'left';
+function resolveAlign(align, dock) {
+  const horizontal = ['top', 'bottom'];
+  const vertical = ['left', 'right'];
+  if (horizontal.indexOf(align) !== -1 && vertical.indexOf(dock) === -1) {
+    return align;
+  } else if (vertical.indexOf(align) !== -1 && horizontal.indexOf(dock) === -1) {
+    return align;
   }
-  return align;
+  return dock; // Invalid align, return current dock as default
 }
 
 function resolveInitialStyle(settings, baseStyles, chart) {
@@ -91,68 +93,74 @@ const axisComponent = {
     paddingEnd: 10
   },
   created() {
-    this.innerRect = { width: 0, height: 0, x: 0, y: 0 };
-    this.outerRect = { width: 0, height: 0, x: 0, y: 0 };
-    this.isDiscrete = !!this.scale.bandwidth;
+    // State is a representation of properties that are private to this component defintion and may be modified by only in this context.
     this.state = {
+      isDiscrete: !!this.scale.bandwidth,
+      isHorizontal: false,
       labels: {
         activeMode: 'horizontal'
-      }
+      },
+      ticks: [],
+      innerRect: { width: 0, height: 0, x: 0, y: 0 },
+      outerRect: { width: 0, height: 0, x: 0, y: 0 },
+      defaultStyleSettings: undefined,
+      defaultDock: undefined,
+      concreteNodeBuilder: undefined,
+      settings: undefined
     };
 
-    if (this.isDiscrete) {
-      this.defaultStyleSettings = discreteDefaultSettings();
-      this.defaultDock = 'bottom';
+    if (this.state.isDiscrete) {
+      this.state.defaultStyleSettings = discreteDefaultSettings();
+      this.state.defaultDock = 'bottom';
+      this.state.defaultAlign = 'bottom';
     } else {
-      this.defaultStyleSettings = continuousDefaultSettings();
-      this.defaultDock = 'left';
+      this.state.defaultStyleSettings = continuousDefaultSettings();
+      this.state.defaultDock = 'left';
+      this.state.defaultAlign = 'left';
     }
 
-    this.resolveSettings(this.settings);
+    this.setState(this.settings);
   },
-  resolveSettings(settings) {
-    this.isDiscrete = !!this.scale.bandwidth;
-    const styleSettings = resolveInitialStyle(settings.settings, this.defaultStyleSettings, this.chart);
-    const axisSettings = extend(true, {}, this.settings, settings.settings, styleSettings);
+  setState(settings) {
+    this.state.isDiscrete = !!this.scale.bandwidth;
+    const styleSettings = resolveInitialStyle(settings.settings, this.state.defaultStyleSettings, this.chart);
+    this.state.settings = extend(true, {}, this.settings, settings.settings, styleSettings);
 
-    const dock = typeof axisSettings.dock !== 'undefined' ? axisSettings.dock : this.defaultDock;
-    const align = getAlign(dock, axisSettings.align, this.isDiscrete);
+    const dock = typeof this.state.settings.dock !== 'undefined' ? this.state.settings.dock : this.state.defaultDock;
+    const align = typeof this.state.settings.align !== 'undefined' ? this.state.settings.align : this.state.defaultAlign;
 
-    this.concreteNodeBuilder = nodeBuilder(this.isDiscrete);
+    this.state.concreteNodeBuilder = nodeBuilder(this.state.isDiscrete);
 
-    axisSettings.dock = dock;
-    axisSettings.align = align;
-    axisSettings.labels.tiltAngle = Math.max(-90, Math.min(axisSettings.labels.tiltAngle, 90));
+    this.state.settings.dock = dock;
+    this.state.settings.align = resolveAlign(align, dock);
+    this.state.settings.labels.tiltAngle = Math.max(-90, Math.min(this.state.settings.labels.tiltAngle, 90));
     this.dockConfig.dock = dock; // Override the dock setting (TODO should be removed)
-    this.align = align;
 
     Object.keys(styleSettings).forEach((a) => {
-      axisSettings[a] = resolveForDataValues(axisSettings[a]);
+      this.state.settings[a] = resolveForDataValues(this.state.settings[a]);
     });
 
-    this.axisSettings = axisSettings;
-    this.updateState();
-  },
-  updateState() {
-    this.state.labels.activeMode = updateActiveMode(this.state, this.axisSettings, this.isDiscrete);
+    this.state.isHorizontal = this.state.settings.align === 'top' || this.state.settings.align === 'bottom';
+    this.state.labels.activeMode = updateActiveMode(this.state, this.state.settings, this.state.isDiscrete);
   },
   preferredSize(opts) {
     const {
       formatter,
-      axisSettings,
-      state
+      state,
+      scale
     } = this;
 
+    const distance = this.state.isHorizontal ? opts.inner.width : opts.inner.height;
+
+    this.state.pxScale = scaleWithSize(scale, distance);
+
     const reqSize = calcRequiredSize({
-      isDiscrete: this.isDiscrete,
+      isDiscrete: this.state.isDiscrete,
       rect: opts.inner,
       formatter,
       measureText: this.renderer.measureText,
-      scale: this.scale,
-      settings: axisSettings,
-      setEdgeBleed: (val) => {
-        this.dockConfig.edgeBleed = val;
-      },
+      scale: this.state.pxScale,
+      settings: this.state.settings,
       state
     });
 
@@ -162,7 +170,7 @@ const axisComponent = {
     const {
       settings
     } = opts;
-    this.resolveSettings(settings);
+    this.setState(settings);
   },
   resize(opts) {
     const {
@@ -170,50 +178,44 @@ const axisComponent = {
       outer
     } = opts;
 
-    const extendedInner = {};
-    extend(extendedInner, inner, alignTransform({
-      align: this.align,
+    const extendedInner = extend({}, inner, alignTransform({
+      align: this.state.settings.align,
       inner
     }));
 
     const finalOuter = outer || extendedInner;
-    extend(this.innerRect, extendedInner);
-    extend(this.outerRect, finalOuter);
+    extend(this.state.innerRect, extendedInner);
+    extend(this.state.outerRect, finalOuter);
 
     return outer;
   },
   beforeRender() {
     const {
-      innerRect,
       scale,
       formatter
     } = this;
 
-    const distance = this.align === 'top' || this.align === 'bottom' ? innerRect.width : innerRect.height;
+    const distance = this.state.isHorizontal ? this.state.innerRect.width : this.state.innerRect.height;
 
-    this.pxScale = scaleWithSize(scale, distance);
-    this.ticks = this.pxScale.ticks({
+    this.state.pxScale = scaleWithSize(scale, distance);
+    this.state.ticks = this.state.pxScale.ticks({
       distance,
       formatter
     });
   },
   render() {
     const {
-      axisSettings,
-      innerRect,
-      outerRect,
-      ticks,
       state
     } = this;
 
     const nodes = [];
-    nodes.push(...this.concreteNodeBuilder.build({
-      settings: axisSettings,
-      scale: this.pxScale,
-      innerRect,
-      outerRect,
+    nodes.push(...this.state.concreteNodeBuilder.build({
+      settings: this.state.settings,
+      scale: this.state.pxScale,
+      innerRect: this.state.innerRect,
+      outerRect: this.state.outerRect,
       measureText: this.renderer.measureText,
-      ticks,
+      ticks: this.state.ticks,
       state
     }));
 
