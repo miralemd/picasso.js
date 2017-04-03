@@ -2,36 +2,38 @@
 
 ## Unreleased
 
-## [BREAKING] 0.13
+## [BREAKING] 0.13.0
 
 ### Breaking changes
 
-- Removed `layered` & `tilted` properties from Axis component and replaced them with a `mode` property taking either `auto`, `horizontal`, `layered` or `tilted`
-  ```js
-  {
-    type: 'axis',
-    settings : {
-      labels: {
-        mode: 'tilted' // Default is auto
+- Removed `layered` & `tilted` properties from `axis` component and replaced them with a `mode` property taking either `auto`, `horizontal`, `layered` or `tilted`
+
+    ```js
+    {
+      type: 'axis',
+      settings : {
+        labels: {
+          mode: 'tilted' // Default is auto
+        }
       }
     }
-  }
-  ```
+    ```
 
 ### Added
 
 - PIC-117 Automagically switch to tilted labels when appropriate
 - Added `maxGlyphCount` on axis component.
-  ```js
-  {
-    type: 'axis',
-    settings : {
-      labels: {
-        maxGlyphCount: 20
+
+    ```js
+    {
+      type: 'axis',
+      settings : {
+        labels: {
+          maxGlyphCount: 20
+        }
       }
     }
-  }
-  ```
+    ```
 
 ### Fixed
 
