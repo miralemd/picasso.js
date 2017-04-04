@@ -124,28 +124,6 @@ function addRangeElements(els, state, vStart, vEnd) {
     })
   ]));
 
-  // bubble
-  // els.push(state.h('div', {
-  //   style: {
-  //     position: 'absolute',
-  //     borderRadius: '6px',
-  //     border: '1px solid #666',
-  //     backgroundColor: '#fff',
-  //     padding: '5px 9px',
-  //     textAlign: 'center',
-  //     overflow: 'hidden',
-  //     textOverflow: 'ellipsis',
-  //     whiteSpace: 'nowrap',
-  //     maxWidth: '150px',
-  //     minWidth: '50px',
-  //     minHeight: '1em',
-  //     right: '8px',
-  //     top: `calc(${cssTop} - 12px)`
-  //   }
-  // }, [
-  //   `${state.format(start < end ? vStart : vEnd)}`
-  // ]));
-
   // edge
   els.push(state.h('div', {
     on: {
@@ -185,27 +163,74 @@ function addRangeElements(els, state, vStart, vEnd) {
     })
   ]));
 
-  // bubble
-  // els.push(state.h('div', {
-  //   style: {
-  //     position: 'absolute',
-  //     borderRadius: '6px',
-  //     border: '1px solid #666',
-  //     backgroundColor: '#fff',
-  //     padding: '5px 9px',
-  //     textAlign: 'center',
-  //     overflow: 'hidden',
-  //     textOverflow: 'ellipsis',
-  //     whiteSpace: 'nowrap',
-  //     maxWidth: '150px',
-  //     minWidth: '50px',
-  //     minHeight: '1em',
-  //     right: '8px',
-  //     top: `calc(${bottom - borderHit}px - 12px)`
-  //   }
-  // }, [
-  //   `${state.format(start < end ? vEnd : vStart)}`
-  // ]));
+  if (state.bubbles && state.bubbles.show) {
+    const fontSize = state.bubbles.fontSize;
+    const fontFamily = state.bubbles.fontFamily;
+    const fill = state.bubbles.fill;
+    const startAlign = state.bubbles.align !== 'end';
+    let bubbleDock;
+    if (isVertical) {
+      bubbleDock = startAlign ? 'left' : 'right';
+    } else {
+      bubbleDock = startAlign ? 'top' : 'bottom';
+    }
+
+    const bubbleSyle = {
+      position: 'relative',
+      borderRadius: '6px',
+      border: '1px solid #666',
+      backgroundColor: '#fff',
+      padding: '5px 9px',
+      textAlign: 'center',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      maxWidth: '150px',
+      minWidth: '50px',
+      minHeight: '1em',
+      fontSize,
+      fontFamily,
+      color: fill
+    };
+
+    // bubble wrapper
+    els.push(state.h('div', {
+      style: {
+        position: 'absolute',
+        [bubbleDock]: '0',
+        [isVertical ? 'top' : 'left']: `${top}px`
+      }
+    }, [
+      // bubble
+      state.h('div', {
+        style: {
+          ...bubbleSyle,
+          transform: isVertical ? 'translate(0,-50%)' : 'translate(-50%,0)'
+        }
+      }, [
+        `${state.format(start < end ? vStart : vEnd)}`
+      ])
+    ]));
+
+    // bubble wrapper
+    els.push(state.h('div', {
+      style: {
+        position: 'absolute',
+        [bubbleDock]: '0',
+        [isVertical ? 'top' : 'left']: `${bottom}px`
+      }
+    }, [
+      // bubble
+      state.h('div', {
+        style: {
+          ...bubbleSyle,
+          transform: isVertical ? 'translate(0,-50%)' : 'translate(-50%,0)'
+        }
+      }, [
+        `${state.format(start < end ? vEnd : vStart)}`
+      ])
+    ]));
+  }
 }
 
 function nodes(state) {
@@ -237,15 +262,15 @@ function nodes(state) {
 
   let els = [];
 
-  // add active range
-  addRangeElements(els, state, vStart, vEnd);
-
   // add all other ranges
   state.ranges.forEach((r, i) => {
     if (i !== state.active.idx) {
       addRangeElements(els, state, Math.min(r.min, r.max), Math.max(r.min, r.max));
     }
   });
+
+  // add active range
+  addRangeElements(els, state, vStart, vEnd);
 
   return els;
 }
@@ -296,7 +321,15 @@ function findActive(state, value) {
 const brushRangeComponent = {
   require: ['chart', 'settings', 'renderer'],
   defaultSettings: {
-    settings: {}
+    settings: {
+      bubbles: {
+        show: true,
+        align: 'start',
+        fontSize: '14px',
+        fontFamily: 'Arial',
+        fill: '#595959'
+      }
+    }
   },
   renderer: 'dom',
   // on: {
@@ -325,6 +358,7 @@ const brushRangeComponent = {
     const offset = this.renderer.element().getBoundingClientRect();
 
     this.state.direction = stngs.direction === 'vertical' ? VERTICAL : HORIZONTAL;
+    this.state.bubbles = stngs.bubbles;
     this.state.scale = scale;
     this.state.offset = offset;
     this.state.brush = stngs.brush;
@@ -406,7 +440,6 @@ const brushRangeComponent = {
         this.state.start = activeRange.start;
         activeRange.mode = 'modify';
       }
-      // }
     } else {
       activeRange = {
         idx: -1,
