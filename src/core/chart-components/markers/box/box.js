@@ -36,6 +36,9 @@ const DEFAULT_STYLE_SETTINGS = {
  * @type {object}
  * @property {object} major
  * @property {string} major.scale - The scale to use along the major axis
+ * @property {string|object} [major.ref='self'] - Reference to the data property along the major axis
+ * @property {string} major.ref.start - Reference to the data property of the start value along the major axis
+ * @property {string} major.ref.end - Reference to the data property of the end value along the major axis
  * @property {object} minor
  * @property {string} minor.scale - The scale to use along the minor axis
  * @property {string} [orientation='vertical']
@@ -172,15 +175,23 @@ const boxMarkerComponent = {
       return width / measureWidth;
     }
 
-    item.style.box.width = computeWidth(item.style.box.minWidth, item.style.box.maxWidth, item.style.box.width, this.dispersion.bandwidth());
-    item.style.whisker.width = computeWidth(item.style.box.minWidth, item.style.box.maxWidth, item.style.whisker.width, this.dispersion.bandwidth());
+    let bandwidth = this.dispersion.bandwidth();
+    const span = item.majorEnd - item.majorStart;
+    let majorStart = item.major;
+    if (item.majorStart !== null && !isNaN(span)) {
+      majorStart = item.majorStart + (span * 0.5);
+      bandwidth = span;
+    }
+
+    item.style.box.width = computeWidth(item.style.box.minWidth, item.style.box.maxWidth, item.style.box.width, bandwidth);
+    item.style.whisker.width = computeWidth(item.style.box.minWidth, item.style.box.maxWidth, item.style.whisker.width, bandwidth);
 
     // Draw the box
     if (item.style.box.show && !notNumber(item.start) && !notNumber(item.end)) {
       const high = Math.max(item.start, item.end);
       const low = Math.min(item.start, item.end);
       shapes.push(doodle.box(
-        item.major,
+        majorStart,
         low,
         (high - low),
         item.style,
