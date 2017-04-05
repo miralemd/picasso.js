@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- PIC-120 Property displayOrder of text component should be set to default value instead of 99
+
 ## [BREAKING] 0.13.0
 
 ### Breaking changes

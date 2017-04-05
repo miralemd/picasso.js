@@ -102,7 +102,7 @@ const textComponent = {
   require: ['renderer', 'chart'],
   defaultSettings: {
     dock: 'bottom',
-    displayOrder: 99,
+    displayOrder: 0,
     prioOrder: 0,
     anchor: 'center',
     paddingStart: 5,
