@@ -116,7 +116,7 @@ function brushDataPoints({
   chart,
   trigger
 }) {
-  if (!dataPoints.length || !trigger) {
+  if (!trigger) {
     return;
   }
 

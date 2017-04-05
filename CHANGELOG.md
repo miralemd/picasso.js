@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- PIC-126 Brush over doesn't trigger update if no collisions occur
 - PIC-120 Property displayOrder of text component should be set to default value instead of 99
 
 ## [BREAKING] 0.13.0
