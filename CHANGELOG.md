@@ -14,14 +14,15 @@
     }
     ```
 
+### Added
+
+- Support for dimension range brush
+
 ### Fixed
 
-- PIC-127 Brush setValues doesn't handle unique values properly
-
-### Fixed
-
-- PIC-126 Brush over doesn't trigger update if no collisions occur
 - PIC-120 Property displayOrder of text component should be set to default value instead of 99
+- PIC-126 Brush over doesn't trigger update if no collisions occur
+- PIC-127 Brush setValues doesn't handle unique values properly
 - PIC-129 Bounding rect of a line should never have a height or width of zero
 
 ## [BREAKING] 0.13.0
