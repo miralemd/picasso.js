@@ -178,7 +178,8 @@ const scrollbarComponent = {
           position: 'relative',
           width: '100%',
           height: '100%',
-          background: this.settings.settings.backgroundColor
+          background: this.settings.settings.backgroundColor,
+          pointerEvents: 'auto'
         }
       },
       [].concat(h('div', {

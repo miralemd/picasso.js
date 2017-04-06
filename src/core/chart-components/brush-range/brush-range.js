@@ -108,7 +108,8 @@ function addRangeElements(els, state, vStart, vEnd) {
       left: cssLeft,
       top: cssTop,
       height: isVertical ? `${borderHit}px` : '100%',
-      width: isVertical ? '100%' : `${borderHit}px`
+      width: isVertical ? '100%' : `${borderHit}px`,
+      pointerEvents: 'auto'
     }
   }, [
     // line
@@ -146,7 +147,8 @@ function addRangeElements(els, state, vStart, vEnd) {
       right: isVertical ? '' : `${state.size - parseInt(cssLeft, 10) - parseInt(cssWidth, 10)}px`,
       top: isVertical ? `${bottom - borderHit}px` : '0',
       height: isVertical ? `${borderHit}px` : '100%',
-      width: isVertical ? '100%' : `${borderHit}px`
+      width: isVertical ? '100%' : `${borderHit}px`,
+      pointerEvents: 'auto'
     }
   }, [
     state.h('div', {
@@ -190,7 +192,8 @@ function addRangeElements(els, state, vStart, vEnd) {
       minHeight: '1em',
       fontSize,
       fontFamily,
-      color: fill
+      color: fill,
+      pointerEvents: 'auto'
     };
 
     // bubble wrapper

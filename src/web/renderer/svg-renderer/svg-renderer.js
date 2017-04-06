@@ -48,8 +48,10 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
       el.style.position = 'absolute';
       el.style['-webkit-font-smoothing'] = 'antialiased';
       el.style['-moz-osx-font-smoothing'] = 'antialiased';
+      el.style.pointerEvents = 'none';
       el.setAttribute('xmlns', ns);
       group = element.ownerDocument.createElementNS(ns, 'g');
+      group.style.pointerEvents = 'auto';
       el.appendChild(group);
     }
 

@@ -46,6 +46,7 @@ export default function renderer(opts = {}) {
       el.style.position = 'absolute';
       el.style['-webkit-font-smoothing'] = 'antialiased';
       el.style['-moz-osx-font-smoothing'] = 'antialiased';
+      el.style.pointerEvents = 'none';
     }
 
     element.appendChild(el);
