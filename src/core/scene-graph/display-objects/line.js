@@ -34,12 +34,13 @@ export default class Line extends DisplayObject {
     }
 
     const [xMin, yMin, xMax, yMax] = getMinMax(p);
+    const hasSize = xMin !== xMax || yMin !== yMax;
 
     return {
       x: xMin,
       y: yMin,
-      width: xMax - xMin,
-      height: yMax - yMin
+      width: hasSize ? Math.max(1, xMax - xMin) : 0,
+      height: hasSize ? Math.max(1, yMax - yMin) : 0
     };
   }
 

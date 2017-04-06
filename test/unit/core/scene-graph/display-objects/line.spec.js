@@ -123,7 +123,7 @@ describe('Line', () => {
       line = createLine(shape);
       line.resolveLocalTransform();
       // TODO Should height/width be zero on a axis aligned line? Account for EPSILON?
-      expect(line.boundingRect(true)).to.deep.equal({ x: 2.1213203435596424, y: 0.7071067811865477, width: 2.8284271247461903, height: 2.220446049250313e-16 });
+      expect(line.boundingRect(true)).to.deep.equal({ x: 2.1213203435596424, y: 0.7071067811865477, width: 2.8284271247461903, height: 1 });
     });
 
     it('should return correct value with a negative vector direction', () => {
@@ -208,8 +208,8 @@ describe('Line', () => {
       const e = [
         { x: 2.1213203435596424, y: 0.7071067811865477 },
         { x: 4.949747468305833, y: 0.7071067811865477 },
-        { x: 4.949747468305833, y: 0.7071067811865479 },
-        { x: 2.1213203435596424, y: 0.7071067811865479 }
+        { x: 4.949747468305833, y: 1.7071067811865477 },
+        { x: 2.1213203435596424, y: 1.7071067811865477 }
       ];
       expect(line.bounds(true)).to.deep.equal(e);
     });
