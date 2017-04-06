@@ -20,7 +20,7 @@ trigger: [{
   action: 'toggle',
   contexts: ['selection', 'tooltip'],
   data: ['x'],
-  propagation 'stop', // 'stop' => prevent trigger to propagate further then to first shape || 'data' => only tap on shapes with unique data values
+  propagation: 'stop', // 'stop' => prevent trigger to propagate further then to first shape
   globalPropagation: 'stop', // 'stop' => prevent trigger of same type to be triggered on other components
   touchRadius: 24
 }],

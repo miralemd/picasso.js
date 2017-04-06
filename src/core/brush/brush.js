@@ -60,10 +60,9 @@ function collectUnique(items) {
 
     if (idx === -1) {
       filteredSet[key].push(value);
-    } else {
-      filteredSet[key].splice(idx, 1);
     }
   });
+
   return filteredSet;
 }
 

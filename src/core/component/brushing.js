@@ -170,32 +170,6 @@ function brushFromSceneNodes({
   });
 }
 
-function uniqueDataCollisions(collisions, data, config) {
-  const dataProps = config.data || ['self'];
-
-  const uniqueCollisions = [];
-  const values = [];
-
-  collisions.forEach((c) => {
-    // Check if collision has unique data values
-    const isUnique = dataProps.every((dp) => {
-      const dataPoint = data[c.node.data];
-      const v = dataPoint[dp].value;
-      if (values.indexOf(v) !== -1) {
-        return false;
-      }
-      values.push(v);
-      return true;
-    });
-
-    if (isUnique) {
-      uniqueCollisions.push(c);
-    }
-  });
-
-  return uniqueCollisions;
-}
-
 function resolveEvent({ collisions, t, config, action }) {
   let brushCollisions = [];
   let resolved = false;
@@ -206,8 +180,6 @@ function resolveEvent({ collisions, t, config, action }) {
 
     if (t.propagation === 'stop') {
       brushCollisions = [collisions[collisions.length - 1]];
-    } else if (t.propagation === 'data') {
-      brushCollisions = uniqueDataCollisions(collisions, config.data, t);
     }
   }
 

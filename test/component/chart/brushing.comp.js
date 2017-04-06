@@ -182,39 +182,6 @@ describe('Brushing', () => {
         expect(inactiveShapes).to.be.of.length(1);
         expect(activeShapes[0].attrs).to.deep.equal(c1.attrs);
       });
-
-      it('data', () => {
-        pointMarker.brush.trigger[0].propagation = 'data';
-        pointMarker.settings.x = undefined;
-        settings.components.push(pointMarker);
-        data = [
-          [
-            ['Product', 'Cost'],
-            ['Cars', 1], // overlap with Trucks
-            ['Trucks', 1], // overlap with Cars
-            ['Planes', 3]
-          ]
-        ];
-
-        const instance = chart({
-          element,
-          data: { data },
-          settings
-        });
-
-        const c = instance.findShapes('circle');
-        simulateClick(instance.element, {
-          x: c[0].attrs.cx,
-          y: c[0].attrs.cy
-        });
-        const activeShapes = instance.getAffectedShapes('test');
-        const inactiveShapes = instance.findShapes('[fill="red"]');
-
-        expect(activeShapes).to.be.of.length(2);
-        expect(inactiveShapes).to.be.of.length(1);
-        expect(activeShapes[0].attrs).to.deep.equal(c[0].attrs);
-        expect(activeShapes[1].attrs).to.deep.equal(c[1].attrs);
-      });
     });
 
     describe('global propagation', () => {

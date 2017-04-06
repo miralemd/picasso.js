@@ -419,7 +419,7 @@ describe('brush', () => {
       vcoll = sandbox.stub().returns(v);
     });
 
-    it('should not toggle duplicate values', () => {
+    it('should toggle duplicate values', () => {
       const items = [
         { key: 'products', value: 'Bike' },
         { key: 'regions', value: 'south' },
@@ -434,7 +434,10 @@ describe('brush', () => {
         values: {}
       });
 
-      expect(toggled).to.eql([[], []]);
+      expect(toggled).to.deep.equal([[
+        { id: 'products', values: ['Bike'] },
+        { id: 'regions', values: ['south'] }
+      ], []]);
     });
 
     it('should toggle on new values', () => {
@@ -566,6 +569,27 @@ describe('brush', () => {
       });
 
       expect(changed[1]).to.eql([{ id: 'products', values: ['Cars', 'Skateboards'] }]);
+    });
+
+    it('should set duplicate values', () => {
+      const items = [
+        { key: 'products', value: 'Bike' },
+        { key: 'regions', value: 'south' },
+        { key: 'regions', value: 'south' },
+        { key: 'products', value: 'Bike' },
+        { key: 'products', value: 'Bike' },
+        { key: 'products', value: 'Bike' }
+      ];
+      const changed = set({
+        items,
+        vc: vcoll,
+        vCollection: {}
+      });
+
+      expect(changed).to.deep.equal([[
+        { id: 'products', values: ['Bike'] },
+        { id: 'regions', values: ['south'] }
+      ], []]);
     });
   });
 

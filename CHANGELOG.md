@@ -1,6 +1,22 @@
 # Changelog
 
-## Unreleased
+## [BREAKING] Unreleased
+
+### Breaking changes
+
+- Removed `propagation` option `data` from brush trigger. The default behavior is now as if data was option was set.
+
+    ```js
+    brush: {
+      trigger: [{
+        propagation: 'data' // Removed
+      }]
+    }
+    ```
+
+### Fixed
+
+- PIC-127 Brush setValues doesn't handle unique values properly
 
 ### Fixed
 
