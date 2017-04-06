@@ -58,12 +58,18 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
       minor = minor.pxScale(minorLenght);
     }
 
+    const bw = major && major.bandwidth ? major.bandwidth() : 0;
+
+    const majorRef = settings.major ? settings.major.ref || 'self' : 'self';
+    const majorStartRef = typeof majorRef === 'object' ? settings.major.ref.start : null;
+    const majorEndRef = typeof majorRef === 'object' ? settings.major.ref.end : null;
+
     // Calculate the minimum data point distance
-    if (major && !major.bandwidth) {
-      const pointCoords = data.map(d => d.self.value);
+    if (major && !major.bandwidth && typeof majorRef === 'string') {
+      const pointCoords = data.map(d => d[majorRef].value);
 
       // Sort values
-      pointCoords.sort();
+      pointCoords.sort((a, b) => a - b);
 
       let minSpace = pointCoords[pointCoords.length - 1];
       for (let i = 0; i < pointCoords.length; i++) {
@@ -83,16 +89,25 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
         obj[part] = resolveForDataObject(resolvedStyle[part], d, i);
       });
 
-      items.push({
+      const it = {
         style: obj,
-        major: major && d.self ? major(d.self.value) + (major.bandwidth() / 2) : 0.5,
+        majorStart: major && d[majorStartRef] ? major(d[majorStartRef].value) : null,
+        majorEnd: major && d[majorEndRef] ? major(d[majorEndRef].value) : null,
         min: minor && 'min' in d ? minor(d.min.value) : null,
         max: minor && 'max' in d ? minor(d.max.value) : null,
         start: minor && 'start' in d ? minor(d.start.value) : null,
         end: minor && 'end' in d ? minor(d.end.value) : null,
         med: minor && 'med' in d ? minor(d.med.value) : null,
         data: i
-      });
+      };
+
+      if (it.majorStart !== null) { // if a majorstart/end are defined, calculate the midpoint
+        it.major = (it.majorStart + it.majorEnd) / 2;
+      } else {
+        it.major = major && d[majorRef] ? major(d[majorRef].value) + (bw / 2) : 0.5;
+      }
+
+      items.push(it);
     });
   };
 

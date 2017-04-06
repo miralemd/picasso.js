@@ -21,6 +21,10 @@ data: {
 settings: {
   major: { // 
     scale: 'foo', // The scale to use along the major axis.
+    ref: { // Reference to the data property along the major axis. Default: 'self'. Optional.
+      start: 'foo', // Reference to the data property of the start value along the major axis.
+      end: 'foo', // Reference to the data property of the end value along the major axis.
+    },
   },
   minor: { // 
     scale: 'foo', // The scale to use along the minor axis.
