@@ -12,7 +12,7 @@ const isReservedProperty = prop => [
   'on', 'preferredSize', 'created', 'beforeMount', 'mounted', 'resize',
   'beforeUpdate', 'updated', 'beforeRender', 'render', 'beforeDestroy',
   'destroyed', 'defaultSettings', 'data', 'settings', 'formatter',
-  'scale', 'chart', 'dockConfig'
+  'scale', 'chart', 'dockConfig', 'mediator'
 ].some(name => name === prop);
 
 const isNativeEvent = name => (
@@ -23,6 +23,7 @@ function prepareContext(ctx, definition, opts) {
   const {
     require = []
   } = definition;
+  const mediatorSettings = definition.mediator || {};
   const {
     settings,
     formatter,
@@ -30,7 +31,8 @@ function prepareContext(ctx, definition, opts) {
     data,
     renderer,
     chart,
-    dockConfig
+    dockConfig,
+    mediator
   } = opts;
 
   // TODO add setters and log warnings / errors to console
@@ -45,6 +47,9 @@ function prepareContext(ctx, definition, opts) {
   });
   Object.defineProperty(ctx, 'scale', {
     get: scale
+  });
+  Object.defineProperty(ctx, 'mediator', {
+    get: mediator
   });
 
   Object.keys(definition).forEach((key) => {
@@ -65,7 +70,6 @@ function prepareContext(ctx, definition, opts) {
         get: renderer
       });
     } else if (req === 'chart') {
-      ctx.chart = chart;
       Object.defineProperty(ctx, 'chart', {
         get: chart
       });
@@ -74,6 +78,10 @@ function prepareContext(ctx, definition, opts) {
         get: dockConfig
       });
     }
+  });
+
+  Object.keys(mediatorSettings).forEach((eventName) => {
+    ctx.mediator.on(eventName, mediatorSettings[eventName].bind(ctx));
   });
 }
 
@@ -96,13 +104,14 @@ function updateDockConfig(config, settings) {
 // beforeUpdate -> beforeRender -> render -> updated
 
 // TODO support es6 classes
-export default function componentFactory(definition, options = {}) {
+function componentFactory(definition, options = {}) {
   const {
     defaultSettings = {}
   } = definition;
   const {
     chart,
     container,
+    mediator,
     renderer // Used by tests
   } = options;
   const config = options.settings || {};
@@ -331,7 +340,8 @@ export default function componentFactory(definition, options = {}) {
     formatter: () => formatter,
     renderer: () => rend,
     chart: () => chart,
-    dockConfig: () => dockConfig
+    dockConfig: () => dockConfig,
+    mediator: () => mediator
   });
 
   prepareContext(instanceContext, config, {
@@ -341,7 +351,8 @@ export default function componentFactory(definition, options = {}) {
     formatter: () => formatter,
     renderer: () => rend,
     chart: () => chart,
-    dockConfig: () => dockConfig
+    dockConfig: () => dockConfig,
+    mediator: () => mediator
   });
 
   fn.getBrushedShapes = function getBrushedShapes(context, mode, props) {
@@ -444,3 +455,5 @@ export default function componentFactory(definition, options = {}) {
 
   return fn;
 }
+
+export default componentFactory;

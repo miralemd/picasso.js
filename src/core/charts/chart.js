@@ -14,6 +14,7 @@ import buildScroll, { getOrCreateScrollApi } from './scroll-api';
 import brush from '../brush';
 import component from '../component';
 import componentFactory from '../component/component-factory';
+import mediatorFactory from '../mediator';
 
 /**
  * @typedef Chart.Props
@@ -104,6 +105,7 @@ function chart(definition) {
     ...definition,
     ...chartMixins.filter(mixinName => !isReservedProperty(mixinName))
   };
+  const mediator = mediatorFactory();
   let currentComponents = []; // Augmented components
   let visibleComponents = [];
 
@@ -120,6 +122,7 @@ function chart(definition) {
     const compInstance = componentFactory(componentDefinition, {
       settings: compSettings,
       chart: instance,
+      mediator,
       container
     });
     return {

@@ -19,6 +19,7 @@ import textComponent from './core/chart-components/text';
 import scrollbarComponent from './core/chart-components/scrollbar';
 import brushRangeComponent from './core/chart-components/brush-range';
 import rangeComponent from './core/chart-components/range';
+import interactionComponent from './core/chart-components/interaction';
 
 // Plugin API
 function use(plugin, options = {}) {
@@ -44,6 +45,7 @@ use(gridLineComponent);
 use(scrollbarComponent);
 use(brushRangeComponent);
 use(rangeComponent);
+use(interactionComponent);
 
 /**
  * The mother of all namespaces
