@@ -151,6 +151,27 @@ export default function qBrush(brush, opts = {}, layout) {
         });
       }
     }
+    if (b.type === 'range' && info.type === 'dimension') {
+      const ranges = b.brush.ranges();
+      if (ranges.length) {
+        hasValues = true;
+        if (!methods.selectHyperCubeContinuousRange) {
+          methods.selectHyperCubeContinuousRange = {
+            path: info.path,
+            ranges: []
+          };
+        }
+        methods.selectHyperCubeContinuousRange.ranges.push({
+          qDimIx: info.index,
+          qRange: {
+            qMin: ranges[0].min,
+            qMax: ranges[0].max,
+            qMinInclEq: true,
+            qMaxInclEq: false
+          }
+        });
+      }
+    }
     if (b.type === 'value' && info.type === 'dimension') {
       if (byCells) {
         if (!methods.selectHyperCubeCells) {
@@ -189,6 +210,13 @@ export default function qBrush(brush, opts = {}, layout) {
     selections.push({
       method: 'rangeSelectHyperCubeValues',
       params: [methods.rangeSelectHyperCubeValues.path, methods.rangeSelectHyperCubeValues.ranges]
+    });
+  }
+
+  if (methods.selectHyperCubeContinuousRange) {
+    selections.push({
+      method: 'selectHyperCubeContinuousRange',
+      params: [methods.selectHyperCubeContinuousRange.path, methods.selectHyperCubeContinuousRange.ranges]
     });
   }
 

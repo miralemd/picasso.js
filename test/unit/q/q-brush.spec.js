@@ -81,6 +81,31 @@ describe('q-brush', () => {
     });
   });
 
+  describe('selectHyperCubeContinuousRange', () => {
+    beforeEach(() => {
+      brush.brushes.returns([{
+        id: '/qHyperCube/qDimensionInfo/1',
+        type: 'range',
+        brush: {
+          ranges: () => [{ min: 11, max: 23 }]
+        }
+      }]);
+    });
+
+    it('should have method="selectHyperCubeContinuousRange"', () => {
+      const selections = qBrush(brush);
+      expect(selections[0].method).to.equal('selectHyperCubeContinuousRange');
+    });
+
+    it('should have valid params', () => {
+      const selections = qBrush(brush);
+      expect(selections[0].params).to.eql([
+        '/qHyperCubeDef',
+        [{ qDimIx: 1, qRange: { qMin: 11, qMax: 23, qMinInclEq: true, qMaxInclEq: false } }]
+      ]);
+    });
+  });
+
   describe('selectHyperCubeCells', () => {
     beforeEach(() => {
       brush.brushes.returns([{
