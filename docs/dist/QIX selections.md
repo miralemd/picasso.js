@@ -53,6 +53,26 @@ const selection = picasso.q.brush(b)[0];
 // }
 ```
 
+## By dimension range
+
+Brushing dimension ranges:
+
+```js
+const b = chart.brush('selection');
+b.addRange('/qHyperCube/qDimensionInfo/1', { min: 13, max: 35 });
+
+const selection = picasso.q.brush(b)[0];
+// {
+//   method: 'selectHyperCubeContinuousRange',
+//   params: ['/qHyperCubeDef', [
+//     {
+//       qDimIx: 1,
+//       qRange: { qMin: 13, qMax: 35, qMinIncEq: true, qMaxInclEq: false }
+//     }
+//   ]]
+// }
+```
+
 ## By row indices
 
 Brushing by table row index and column:
