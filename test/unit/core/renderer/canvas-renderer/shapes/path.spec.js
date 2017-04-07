@@ -8,7 +8,8 @@ describe('Canvas path', () => {
       beginPath: () => { },
       moveTo: () => { },
       lineTo: () => { },
-      stroke: () => { }
+      stroke: () => { },
+      closePath: () => {}
     };
     gMock = sinon.mock(g);
   });
@@ -40,6 +41,18 @@ describe('Canvas path', () => {
       gMock.expects('moveTo').once().withArgs(10, 10);
       gMock.expects('moveTo').once().withArgs(5, 30);
       render({ d: 'M 10 10 m -5 20' }, { g, doStroke: true });
+      gMock.verify();
+    });
+
+    it('should run closePath with Z', () => {
+      gMock.expects('closePath').once();
+      render({ d: 'M 16 90 L13 37 L3 14 Z' }, { g, doStroke: true });
+      gMock.verify();
+    });
+
+    it('should run closePath with z', () => {
+      gMock.expects('closePath').once();
+      render({ d: 'M 16 90 L13 37 L3 14 z' }, { g, doStroke: true });
       gMock.verify();
     });
   });

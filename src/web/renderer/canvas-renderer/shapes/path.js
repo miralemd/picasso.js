@@ -5,7 +5,7 @@ export default function render(path, { g, doStroke }) {
   const points = [];
   g.beginPath();
   for (let i = 0; i < commands.length; i++) {
-    const params = commands[i].match(/([ml])\s?(\S+)(?:\s|,)(\S+)/i);
+    const params = commands[i].match(/([mlz])\s?(\S+)?(?:\s|,)?(\S+)?/i);
     const command = params[1];
     const x = +params[2];
     const y = +params[3];
@@ -25,6 +25,10 @@ export default function render(path, { g, doStroke }) {
       case 'l':
         prevPoint = { x: prevPoint.x + x, y: prevPoint.y + y };
         g.lineTo(prevPoint.x, prevPoint.y);
+        break;
+      case 'Z':
+      case 'z':
+        g.closePath();
         break;
       default:
         break;

@@ -1,4 +1,5 @@
 import componentFactory from '../../src/core/component/component-factory';
+import elementMock from '../mocks/element-mock';
 
 export default function componentFactoryFixture() {
   let comp;
@@ -6,6 +7,7 @@ export default function componentFactoryFixture() {
   let rendererMock;
   let rendererOutput = [];
   const sandbox = sinon.sandbox.create();
+  const container = elementMock();
 
   const fn = function func() {
     chartMock = {
@@ -26,7 +28,8 @@ export default function componentFactoryFixture() {
       measureText: ({ text }) => ({
         width: text.toString().length,
         height: 5
-      })
+      }),
+      element: () => container
     };
 
     return fn;

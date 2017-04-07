@@ -29,7 +29,8 @@ class DisplayObject extends Node {
       maxWidth,
       opacity,
       transform,
-      data
+      data,
+      strokeDasharray
     } = v;
 
     const attrs = this.attrs;
@@ -66,6 +67,9 @@ class DisplayObject extends Node {
     }
     if (typeof data !== 'undefined') {
       this.data = data;
+    }
+    if (typeof strokeDasharray !== 'undefined') {
+      this.attrs['stroke-dasharray'] = strokeDasharray;
     }
   }
 

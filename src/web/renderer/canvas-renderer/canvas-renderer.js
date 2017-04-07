@@ -27,9 +27,15 @@ function applyContext(g, s, shapeToCanvasMap, computed = {}) {
 
     const shapeCmd = cmd[0];
     const canvasCmd = cmd[1];
+    const convertCmd = cmd[2];
 
     if ((shapeCmd in s.attrs && !(canvasCmd in computed)) && g[canvasCmd] !== s.attrs[shapeCmd]) {
-      g[canvasCmd] = s.attrs[shapeCmd];
+      const val = convertCmd ? convertCmd(s.attrs[shapeCmd]) : s.attrs[shapeCmd];
+      if (typeof g[canvasCmd] === 'function') {
+        g[canvasCmd](val);
+      } else {
+        g[canvasCmd] = val;
+      }
     }
   }
 
@@ -109,7 +115,8 @@ export function renderer(sceneFn = sceneFactory) {
     ['stroke', 'strokeStyle'],
     ['opacity', 'globalAlpha'],
     ['globalAlpha', 'globalAlpha'],
-    ['stroke-width', 'lineWidth']
+    ['stroke-width', 'lineWidth'],
+    ['stroke-dasharray', 'setLineDash', p => (Array.isArray(p) ? p : p.split(','))]
   ];
 
   const canvasRenderer = () => {};
