@@ -116,6 +116,10 @@ class DisplayObject extends Node {
     return hasCollisionOnNode(this, circle);
   }
 
+  intersectsPolygon(polygon) {
+    return hasCollisionOnNode(this, polygon);
+  }
+
   resolveLocalTransform(m = new Matrix()) {
     if (typeof this.attrs.transform !== 'undefined') { resolveTransform(this.attrs.transform, m); }
     this.modelViewMatrix = m.clone();

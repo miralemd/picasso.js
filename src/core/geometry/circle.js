@@ -54,6 +54,14 @@ export default class GeoCircle {
     return false;
   }
 
+  /**
+   * Currently not support
+   * @return {boolean} FALSE
+   */
+  intersectsPolygon() { // eslint-disable-line
+    return false;
+  }
+
   points() {
     return [
       {

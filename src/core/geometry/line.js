@@ -48,6 +48,14 @@ export default class GeoLine {
     return isCircleIntersectingLineSegment(c, this.vectors);
   }
 
+  /**
+   * Currently not support
+   * @return {boolean} FALSE
+   */
+  intersectsPolygon() { // eslint-disable-line
+    return false;
+  }
+
   points() {
     return [
       { x: this.x1, y: this.y1 },

@@ -64,6 +64,14 @@ export default class GeoRect {
     return isCircleIntersectingRect(c.cx, c.cy, c.r, this.center.x, this.center.y, this.width, this.height);
   }
 
+  /**
+   * Currently not support
+   * @return {boolean} FALSE
+   */
+  intersectsPolygon() { // eslint-disable-line
+    return false;
+  }
+
   points() {
     return [
       { x: this.x, y: this.y },

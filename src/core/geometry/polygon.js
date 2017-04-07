@@ -123,6 +123,14 @@ export default class GeoPolygon {
   }
 
   /**
+   * Currently not support
+   * @return {boolean} FALSE
+   */
+  intersectsPolygon() { // eslint-disable-line
+    return false;
+  }
+
+  /**
    * Get the vertices
    * @return {Object[]} vertices
    */

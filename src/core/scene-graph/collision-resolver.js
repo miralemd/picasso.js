@@ -124,10 +124,11 @@ function hasCollision(nodes, intersectionType, input) {
 
 function resolveShape(shape, ratio = 1) {
   const {
-    x, y,
-    width, height,
-    x1, x2, y1, y2,
-    cx, cy, r
+    x, y, // Point
+    width, height, // Rect
+    x1, x2, y1, y2, // Line
+    cx, cy, r, // Circle
+    vertices // Polygon
   } = shape || {};
   let _shape = {};
 
@@ -147,6 +148,9 @@ function resolveShape(shape, ratio = 1) {
   } else if (isNumber(x) && isNumber(y)) {
     _shape = scalarMultiply(shape, ratio);
     return ['containsPoint', _shape];
+  } else if (Array.isArray(vertices)) {
+    _shape.vertices = vertices.map(vertex => scalarMultiply(vertex, ratio));
+    return ['intersectsPolygon', _shape];
   }
   return [];
 }
