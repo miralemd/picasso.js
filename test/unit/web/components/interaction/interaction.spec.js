@@ -1,6 +1,6 @@
 import componentFactoryFixture from '../../../../helpers/component-factory-fixture';
 import hammerMock from '../../../../helpers/hammer-mock';
-import interactionComponent from '../../../../../src/core/chart-components/interaction/interaction';
+import interactionComponent from '../../../../../src/web/components/interaction/interaction';
 
 describe('interaction', () => {
   let componentFixture;

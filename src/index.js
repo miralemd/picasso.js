@@ -20,7 +20,7 @@ import scrollbarComponent from './core/chart-components/scrollbar';
 import brushRangeComponent from './core/chart-components/brush-range';
 import rangeComponent from './core/chart-components/range';
 import brushLassoComponent from './core/chart-components/brush-lasso';
-import interactionComponent from './core/chart-components/interaction';
+import interactionComponent from './web/components/interaction';
 
 // Plugin API
 function use(plugin, options = {}) {
