@@ -1,5 +1,5 @@
-import { sqrDistance } from '../math/vector';
-import { isCircleIntersectingRect, isCircleIntersectingLineSegment } from '../math/intersection';
+import { pointsToLine, pointsToRect } from '../math/intersection';
+import NarrowPhaseCollision from '../math/narrow-phase-collision';
 
 export default class GeoCircle {
   constructor({ cx = 0, cy = 0, r = 0, minRadius = 0 } = {}) {
@@ -11,55 +11,30 @@ export default class GeoCircle {
     this.cy = cy;
     this.r = Math.max(r, minRadius);
     this.vector = { x: this.cx, y: this.cy };
-    this.zeroSize = r <= 0;
   }
 
   containsPoint(p) {
-    if (this.zeroSize) { return false; }
-
-    const sqrDist = sqrDistance(this.vector, p);
-
-    if (sqrDist <= Math.pow(this.r, 2)) {
-      return true;
-    }
-    return false;
+    return NarrowPhaseCollision.testCirclePoint(this, p);
   }
 
   intersectsLine(points) {
-    if (this.zeroSize) { return false; }
+    const line = pointsToLine(points);
 
-    return isCircleIntersectingLineSegment(this, points);
+    return NarrowPhaseCollision.testCircleLine(this, line);
   }
 
   intersectsRect(points) {
-    if (this.zeroSize) { return false; }
-    const width = points[2].x - points[0].x;
-    const height = points[2].y - points[0].y;
-    const centerX = points[0].x + (width / 2);
-    const centerY = points[0].y + (height / 2);
+    const rect = pointsToRect(points);
 
-    return isCircleIntersectingRect(this.cx, this.cy, this.r, centerX, centerY, width, height);
+    return NarrowPhaseCollision.testCircleRect(this, rect);
   }
 
   intersectsCircle(c) {
-    if (this.zeroSize || c.r <= 0) { return false; }
-
-    const dx = this.cx - c.cx;
-    const dy = this.cy - c.cy;
-    const sqrDist = Math.pow(dx, 2) + Math.pow(dy, 2);
-
-    if (sqrDist <= Math.pow(this.r + c.r, 2)) {
-      return true;
-    }
-    return false;
+    return NarrowPhaseCollision.testCircleCircle(this, c);
   }
 
-  /**
-   * Currently not support
-   * @return {boolean} FALSE
-   */
-  intersectsPolygon() { // eslint-disable-line
-    return false;
+  intersectsPolygon(polygon) {
+    return NarrowPhaseCollision.testCirclePolygon(this, polygon);
   }
 
   points() {

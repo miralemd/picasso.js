@@ -1,9 +1,7 @@
 import {
-  isLineIntersectingLine,
-  getMinMax,
-  rectContainsPoint,
-  isCircleIntersectingLineSegment
+  getMinMax
 } from '../math/intersection';
+import NarrowPhaseCollision from '../math/narrow-phase-collision';
 
 function close(vertices) {
   const first = vertices[0];
@@ -61,25 +59,7 @@ export default class GeoPolygon {
    * @return {boolean} TRUE if Point is inside the polygon
    */
   containsPoint(point) {
-    // TODO handle polygon that is a straight line, current impl gives a non-deterministic output, that is depending on number of vertices
-    if (this._zeroSize || !rectContainsPoint(this.bounds(), point)) {
-      return false;
-    }
-
-    let even = true;
-    const num = this.vertices.length;
-    this._minMax = this._minMax ? this._minMax : getMinMax(this.vertices);
-    const [xMin] = this._minMax;
-    const rayStart = { x: xMin - 1, y: point.y };
-
-    for (let i = 0; i < num - 1; i++) {
-      const v1 = this.vertices[i];
-      const v2 = this.vertices[i + 1];
-      if (!(v1.y < point.y && v2.y < point.y) && !(v1.y > point.y && v2.y > point.y)) { // filterout any edges that does not cross the ray
-        even = isLineIntersectingLine(v1, v2, rayStart, point) ? !even : even;
-      }
-    }
-    return !even;
+    return NarrowPhaseCollision.testPolygonPoint(this, point);
   }
 
   /**
@@ -92,18 +72,7 @@ export default class GeoPolygon {
    * @return {boolean} TRUE if Circle is intersecting the polygon
    */
   intersectsCircle(circle) {
-    // TODO handle polygon that is a straight line, current impl will interrept it is a true, if radius is extended onto any of the edges
-    if (this._zeroSize || circle.r <= 0) { return false; }
-
-    if (this.containsPoint({ x: circle.cx, y: circle.cy })) { return true; }
-
-    const num = this.edges.length;
-    for (let i = 0; i < num; i++) {
-      if (isCircleIntersectingLineSegment(circle, this.edges[i])) {
-        return true;
-      }
-    }
-    return false;
+    return NarrowPhaseCollision.testCirclePolygon(circle, this);
   }
 
   /**

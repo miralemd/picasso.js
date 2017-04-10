@@ -1,4 +1,5 @@
-import { isLineIntersectingLine, isPointOnLine, isLineSegmentIntersectingRect, isCircleIntersectingLineSegment } from '../math/intersection';
+import { pointsToLine, pointsToRect } from '../math/intersection';
+import NarrowPhaseCollision from '../math/narrow-phase-collision';
 
 export default class GeoLine {
   constructor({ x1 = 0, y1 = 0, x2 = 0, y2 = 0, tolerance = 0 } = {}) {
@@ -17,35 +18,25 @@ export default class GeoLine {
   }
 
   containsPoint(p) {
-    if (this.zeroSize) {
-      return false;
-    }
     if (this.tolerance > 0) {
       const c = { cx: p.x, cy: p.y, r: this.tolerance };
-      return this.intersectsCircle(c);
+      return NarrowPhaseCollision.testCircleLine(c, this);
     }
-    return isPointOnLine(this.vectors[0], this.vectors[1], p);
+    return NarrowPhaseCollision.testLinePoint(this, p);
   }
 
   intersectsLine(points) {
-    if (this.zeroSize) {
-      return false;
-    }
-    return isLineIntersectingLine(this.vectors[0], this.vectors[1], points[0], points[1]);
+    const line = pointsToLine(points);
+    return NarrowPhaseCollision.testLineLine(this, line);
   }
 
   intersectsRect(vertices) {
-    if (this.zeroSize) {
-      return false;
-    }
-    return isLineSegmentIntersectingRect(this.vectors, vertices);
+    const rect = pointsToRect(vertices);
+    return NarrowPhaseCollision.testRectLine(rect, this);
   }
 
   intersectsCircle(c) {
-    if (this.zeroSize) {
-      return false;
-    }
-    return isCircleIntersectingLineSegment(c, this.vectors);
+    return NarrowPhaseCollision.testCircleLine(c, this);
   }
 
   /**
