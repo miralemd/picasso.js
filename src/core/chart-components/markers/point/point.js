@@ -1,3 +1,4 @@
+import extend from 'extend';
 import shapeFactory from './shapes';
 import { resolveSettings } from '../../settings-setup';
 import { resolveForDataObject } from '../../../style';
@@ -13,9 +14,14 @@ const DEFAULT_DATA_SETTINGS = {
   opacity: 1,
   x: 0.5,
   y: 0.5,
-  size: 1,
-  maxSize: 100,
-  minSize: 5
+  size: 1
+};
+
+const SIZE_LIMITS = {
+  maxPx: 10000,
+  minPx: 1,
+  maxRel: 1,
+  minRel: 0.1
 };
 
 const DEFAULT_ERROR_SETTINGS = {
@@ -40,6 +46,11 @@ const DEFAULT_ERROR_SETTINGS = {
  * @property {marker-point-number} [size=1] - size of shape
  * @property {marker-point-number} [opacity=1] - opacity of shape
  * @property {marker-point-string} [shape="circle"] - type of shape
+ * @property {object} [sizeLimits]
+ * @property {number} [sizeLimits.maxPx=10000] - maximum size in pixels
+ * @property {number} [sizeLimits.minPx=1] - minimum size in pixels
+ * @property {number} [sizeLimits.maxRel=1] - maximum size relative calculated bounding box of allowed size
+ * @property {number} [sizeLimits.minRel=0.1] - minimum size relative calculated bounding box of allowed size
  */
 
 /**
@@ -93,20 +104,30 @@ const DEFAULT_ERROR_SETTINGS = {
   * @property {marker-point-data-accessor} [fn] - Data accessor. Custom data accessor which will be called for each datum. The return value is used for the specified property.
   */
 
-function getSpaceFromScale(s, space) {
+function getPxSpaceFromScale(s, space) {
   if (s && typeof s.bandwidth === 'function') { // some kind of ordinal scale
-    return Math.max(1, s.bandwidth() * space);
+    return {
+      isBandwidth: true,
+      value: Math.max(1, s.bandwidth() * space)
+    };
   }
-  return Math.max(1, space / 10);
+  return {
+    isBandwidth: false,
+    value: Math.max(1, space)
+  };
 }
 
-function getPointSizeLimits(x, y, width, height) {
-  const xSpace = getSpaceFromScale(x ? x.scale : undefined, width);
-  const ySpace = getSpaceFromScale(y ? y.scale : undefined, height);
-  const space = Math.min(xSpace, ySpace);
-  const min = Math.max(1, Math.floor(space / 10)); // set min size to be 10 (arbitrary choice) times smaller than allowed space
-  const max = Math.max(min, Math.min(Math.floor(space)));
-  return [min, max];
+function getPointSizeLimits(x, y, width, height, limits) {
+  const xSpacePx = getPxSpaceFromScale(x ? x.scale : undefined, width, limits);
+  const ySpacePx = getPxSpaceFromScale(y ? y.scale : undefined, height, limits);
+  let maxSizePx = Math.min(xSpacePx.value, ySpacePx.value) * limits.maxRel;
+  let minSizePx = Math.min(xSpacePx.value, ySpacePx.value) * limits.minRel;
+  // if (!xSpacePx.isBandwidth && !ySpacePx.isBandwidth) {
+  //   maxSizePx = maxSizePx;
+  // }
+  const min = Math.max(1, Math.floor(minSizePx));
+  const max = Math.max(1, Math.floor(maxSizePx));
+  return { min, max, maxGlobal: limits.maxPx, minGlobal: limits.minPx };
 }
 
 function calculateLocalSettings(stngs, chart) {
@@ -120,13 +141,13 @@ function createDisplayPoints(dataPoints, { x, y, width, height }, pointSize, sha
    !isNaN(p.x + p.y)
   ).map((p) => {
     const s = notNumber(p.size) ? p.errorShape : p;
-    const size = pointSize[0] + (s.size * (pointSize[1] - pointSize[0]));
+    const size = pointSize.min + (s.size * (pointSize.max - pointSize.min));
     const shape = shapeFn(s.shape, {
       label: p.label,
       x: p.x * width,
       y: p.y * height,
       fill: p.fill,
-      size: Math.min(p.maxSize, Math.max(p.minSize, size)),
+      size: Math.min(pointSize.maxGlobal, Math.max(pointSize.minGlobal, size)),
       stroke: s.stroke,
       strokeWidth: s.strokeWidth,
       opacity: p.opacity
@@ -161,13 +182,14 @@ const pointMarkerComponent = {
     const { width, height } = this.rect;
     updateScaleSize(this.local, 'x', width);
     updateScaleSize(this.local, 'y', height);
+    const limits = extend({}, SIZE_LIMITS, this.settings.settings.sizeLimits);
     const points = data.map((p, i) => {
       const obj = resolveForDataObject(this.local, p, i);
       obj.errorShape = resolveForDataObject(this.local.errorShape, p, i);
       obj.dataIndex = i;
       return obj;
     });
-    const pointSize = getPointSizeLimits(this.local.x, this.local.y, width, height);
+    const pointSize = getPointSizeLimits(this.local.x, this.local.y, width, height, limits);
     return createDisplayPoints(points, this.rect, pointSize, this.settings.shapeFn || shapeFactory);
   }
 };

@@ -14,6 +14,12 @@ settings: {
   size: 1, // size of shape. Default: 1. Optional.
   opacity: 1, // opacity of shape. Default: 1. Optional.
   shape: "circle", // type of shape. Default: "circle". Optional.
+  sizeLimits: { //  Optional.
+    maxPx: 10000, // maximum size in pixels. Default: 10000. Optional.
+    minPx: 1, // minimum size in pixels. Default: 1. Optional.
+    maxRel: 1, // maximum size relative calculated bounding box of allowed size. Default: 1. Optional.
+    minRel: 0.1, // minimum size relative calculated bounding box of allowed size. Default: 0.1. Optional.
+  },
 }
 ```
 
