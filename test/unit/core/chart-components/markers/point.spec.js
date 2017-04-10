@@ -41,7 +41,7 @@ describe('point marker', () => {
       x: 50,
       y: 100,
       fill: '#999',
-      size: 10,
+      size: 100,
       stroke: '#ccc',
       strokeWidth: 0,
       opacity: 1,
@@ -57,6 +57,7 @@ describe('point marker', () => {
         shape: 1,
         label: true,
         fill: 123,
+        size: 'random',
         opacity: 'red',
         x: false,
         y: true
@@ -72,7 +73,7 @@ describe('point marker', () => {
       x: 50,
       y: 100,
       fill: '#999',
-      size: 10,
+      size: 100,
       stroke: '#ccc',
       strokeWidth: 0,
       opacity: 1,
@@ -94,7 +95,10 @@ describe('point marker', () => {
         opacity: 0.7,
         x: 0.8,
         y: 0.3,
-        size: 4
+        size: 0,
+        sizeLimits: {
+          minRel: 0.2
+        }
       }
     };
 
@@ -107,7 +111,7 @@ describe('point marker', () => {
       x: 80,
       y: 60,
       fill: 'red',
-      size: 37,
+      size: 20,
       stroke: 'blue',
       strokeWidth: 2,
       opacity: 0.7,
@@ -128,7 +132,10 @@ describe('point marker', () => {
         opacity: () => 0.7,
         x: () => 0.8,
         y: () => 0.3,
-        size: () => 4
+        size: () => 1,
+        sizeLimits: {
+          maxRel: 0.5 // 50% of min(width, height)
+        }
       }
     };
     chart.dataset().map.returns([{
@@ -143,7 +150,7 @@ describe('point marker', () => {
       x: 80,
       y: 60,
       fill: 'red',
-      size: 37,
+      size: 50,
       stroke: 'blue',
       strokeWidth: 2,
       opacity: 0.7,
@@ -165,7 +172,10 @@ describe('point marker', () => {
         x: { fn() { return this.data.m2; } },
         y: { ref: 'm3', fn: v => v },
         size: { ref: 'm1', fn: (v, i) => i },
-        minSize: 0 // Set here to avoid hitting the limit
+        sizeLimits: {
+          minRel: 0.2,
+          maxRel: 2
+        }
       }
     };
 
@@ -194,7 +204,7 @@ describe('point marker', () => {
       x: -0.2 * 100,
       y: 0.3 * 200,
       fill: 'red',
-      size: 1, // min value of [1,10]
+      size: 20, // value of minRel * min(width, height)
       stroke: 'stroke:red',
       strokeWidth: 5,
       opacity: 0.5,
@@ -205,7 +215,7 @@ describe('point marker', () => {
       x: 0.7 * 100,
       y: 1.2 * 200,
       fill: 'green',
-      size: 10, // max value of [1,10]
+      size: 200, // value of maxRel * min(width, height)
       stroke: 'stroke:green',
       strokeWidth: 4,
       opacity: 0.4,
@@ -219,8 +229,7 @@ describe('point marker', () => {
       data: { mapTo: '', groupBy: '' },
       settings: {
         x: { scale: 'whatever', ref: 'm1', fn: v => v.value },
-        size: { ref: 'm1', fn: v => v.value },
-        minSize: 0
+        size: { ref: 'm1', fn: v => v.value }
       }
     };
     // chart.table().findField.withArgs('foo').returns({ values: () => ['data 1', 'data 2', 'data 3'] });

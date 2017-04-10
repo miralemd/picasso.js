@@ -4,6 +4,34 @@
 
 ### Breaking changes
 
+- `minSize` and `maxSize` settings in the `point-marker` component have been moved and renamed:
+
+    Old:
+    ```js
+    settings: {
+      maxSize: 100,
+      minSize: 5
+    }
+    ```
+
+    New:
+    ```js
+    settings: {
+      sizeLimits: {
+        maxPx: 500,
+        minPx: 1
+      }
+    }
+    ```
+
+### Fixed
+
+- PIC-114 - Ratio between box and outlier is not kept
+
+## [BREAKING] 0.14.0
+
+### Breaking changes
+
 - Removed `propagation` option `data` from brush trigger. The default behavior is now as if data was option was set.
 
     ```js
