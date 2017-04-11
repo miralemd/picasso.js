@@ -1,6 +1,8 @@
 # Changelog
 
-## [BREAKING] Unreleased
+## Unreleased
+
+## [BREAKING] 0.15.0
 
 ### Breaking changes
 
@@ -26,7 +28,7 @@
 
 ### Added
 
-- Reference line component added (ref-line)
+- Reference lines component
 
 ### Fixed
 
