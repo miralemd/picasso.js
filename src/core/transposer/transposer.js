@@ -78,28 +78,54 @@ class Transposer {
     return this;
   }
 
+  processItem(item) {
+    let newItem = {};
+    const flipXY = (typeof item.flipXY !== 'undefined' ? item.flipXY : this.flipXY);
+
+    if (item.fn && typeof item.fn === 'function') {
+      let width = flipXY ? this.height : this.width;
+      let height = flipXY ? this.width : this.height;
+
+      item = item.fn({ width, height, flipXY });
+
+      const objectKeys = Object.keys(item);
+
+      for (let ki = 0, kl = objectKeys.length; ki < kl; ki++) {
+        let key = objectKeys[ki];
+        const nkey = Transposer.evaluateKey(key, flipXY);
+        newItem[nkey] = item[key];
+      }
+    } else {
+      const objectKeys = Object.keys(item);
+
+      for (let ki = 0, kl = objectKeys.length; ki < kl; ki++) {
+        let key = objectKeys[ki];
+        const nkey = Transposer.evaluateKey(key, flipXY);
+        const nval = this.transposeCoordinate(nkey, item[key], flipXY);
+        newItem[nkey] = nval;
+      }
+    }
+
+    if (this.crisp) {
+      crispify(newItem);
+    }
+
+    return newItem;
+  }
+
   /**
    * Get the output of the transposer
    *
    * @return {Array}   Array of objects
    */
   output() {
-    const items = this.storage.map((item) => {
-      const newItem = {};
-      const flipXY = (typeof item.flipXY !== 'undefined' ? item.flipXY : this.flipXY);
+    let items = [];
 
-      Object.keys(item).forEach((key) => {
-        const nkey = Transposer.evaluateKey(key, flipXY);
-        const nval = this.transposeCoordinate(nkey, item[key], flipXY);
-        newItem[nkey] = nval;
-      });
+    for (let i = 0, l = this.storage.length; i < l; i++) {
+      let newItem = this.processItem(this.storage[i]);
 
-      if (this.crisp) {
-        crispify(newItem);
-      }
-
-      return newItem;
-    });
+      items.push(newItem);
+    }
 
     return items;
   }
@@ -113,9 +139,6 @@ class Transposer {
     this.storage = [];
     this.flipXY = false;
     this.crisp = false;
-
-    this.flipX = false;
-    this.flipY = false;
 
     this.width = 0;
     this.height = 0;

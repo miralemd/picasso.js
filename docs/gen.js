@@ -219,6 +219,10 @@ handlebars.registerHelper('ifCond', function ifCond(v1, operator, v2, options) {
   }
 });
 
+handlebars.registerHelper('ifDefined', function ifDefined(value, options) {
+  return typeof value !== 'undefined' ? options.fn(this) : options.inverse(this);
+});
+
 handlebars.registerHelper('anchor', (name) => {
   name = encodeURIComponent(name);
   jsdoc.registry = jsdoc.registry || [];

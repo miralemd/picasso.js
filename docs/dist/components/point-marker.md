@@ -10,7 +10,7 @@ settings: {
   y: 0.5, // y coordinate. Default: 0.5. Optional.
   fill: "#999", // fill color. Default: "#999". Optional.
   stroke: "#ccc", // stroke color. Default: "#ccc". Optional.
-  strokeWidth: , // stroke width. Optional.
+  strokeWidth: 0, // stroke width. Default: 0. Optional.
   size: 1, // size of shape. Default: 1. Optional.
   opacity: 1, // opacity of shape. Default: 1. Optional.
   shape: "circle", // type of shape. Default: "circle". Optional.

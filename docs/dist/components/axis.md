@@ -103,7 +103,7 @@ settings: {
     fill: '#595959', //  Default: '#595959'. Optional.
     margin: 3.14, // Space between tick and label. Default to 6 (discrete) or 4 (continuous). Optional.
     maxSize: 250, //  Default: 250. Optional.
-    maxGlyphCount: 3.14, // Is used to measure the largest possible size a label. Optional.
+    maxGlyphCount: , // Is used to measure the largest possible size a label. Default: . Optional.
   },
   line: { //  Optional.
     show: true, //  Default: true. Optional.
@@ -112,14 +112,14 @@ settings: {
   },
   ticks: { //  Optional.
     show: true, //  Default: true. Optional.
-    margin: 3.14, //  Optional.
+    margin: 0, //  Default: 0. Optional.
     tickSize: 3.14, // Default to 4 (discrete) or 8 (continuous). Optional.
     stroke: '#cccccc', //  Default: '#cccccc'. Optional.
     strokeWidth: 1, //  Default: 1. Optional.
   },
   minorTicks: { // Only on a continuous axis. Optional.
     show: true, //  Default: true. Optional.
-    margin: 3.14, //  Optional.
+    margin: 0, //  Default: 0. Optional.
     tickSize: 3, //  Default: 3. Optional.
     stroke: '#e6e6e6', //  Default: '#e6e6e6'. Optional.
     strokeWidth: 1, //  Default: 1. Optional.

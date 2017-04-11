@@ -5,11 +5,11 @@
 ```js
 settings: {
   expand: 3.14, // Expand the output range. Optional.
-  invert: true, // Invert the output range. Optional.
+  invert: false, // Invert the output range. Default: false. Optional.
   include: [3, 7], // Include specified numbers in the output range. Optional.
   ticks: { //  Optional.
-    tight: true, //  Optional.
-    forceBounds: true, //  Optional.
+    tight: false, //  Default: false. Optional.
+    forceBounds: false, //  Default: false. Optional.
     distance: 100, // Approximate distance between each tick. Default: 100. Optional.
   },
   minorTicks: { //  Optional.

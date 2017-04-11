@@ -6,10 +6,11 @@ import { updateScaleSize } from '../../scales';
 /**
  * Generate array of lines (ticks) from scale
  *
- * @param  {Object} scale    A scale supplied by the chart
- * @param  {Object} settings The settings object from the grid line component
- * @param  {Object} rect     The rect containing width and height to renderer in
- * @return {Array}           Returns an array of ticks
+ * @param {object} scale - A scale supplied by the chart
+ * @param {object} settings - The settings object from the grid line component
+ * @param {object} rect - The rect containing width and height to renderer in
+ * @returns {array} - Returns an array of ticks
+ * @ignore
  */
 function lineGen(scale, distance) {
   if (!scale || !distance) {

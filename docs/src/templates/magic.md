@@ -20,5 +20,5 @@ Magic resolution of this file, function or object is not possible.
 {{/with}}
 {{else}}
 Context {{ ctx }} is not available {{get ctx this}}
-{{log 'Context unavailable ' ctx}}
+{{error 'Context unavailable ' ctx}}
 {{/if}}

@@ -165,7 +165,7 @@ const selection = picasso.q.brush(b, {}, layout)[0];
 // }
 ```
 
-Assuming a `layout` of: 
+Assuming a `layout` of:
 ```js
 {
   qHyperCube: {
@@ -189,6 +189,3 @@ then `qMeasureIx` is calculated as follows:
 
 which results in `2 + 1 + 2 + 2 = 7`
 
-## API reference
-
-{{>magic ctx='q.brush.q-brush-js'}}
