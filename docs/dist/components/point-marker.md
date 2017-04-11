@@ -17,8 +17,10 @@ settings: {
   sizeLimits: { //  Optional.
     maxPx: 10000, // maximum size in pixels. Default: 10000. Optional.
     minPx: 1, // minimum size in pixels. Default: 1. Optional.
-    maxRel: 1, // maximum size relative calculated bounding box of allowed size. Default: 1. Optional.
-    minRel: 0.1, // minimum size relative calculated bounding box of allowed size. Default: 0.1. Optional.
+    maxRelExtent: 0.1, // maximum size relative linear scale extent. Default: 0.1. Optional.
+    minRelExtent: 0.01, // minimum size relative linear scale extent. Default: 0.01. Optional.
+    maxRelDiscrete: 1, // maximum size relative discrete scale banwidth. Default: 1. Optional.
+    minRelDiscrete: 0.1, // minimum size relative discrete scale bandwidth. Default: 0.1. Optional.
   },
 }
 ```

@@ -20,8 +20,10 @@ const DEFAULT_DATA_SETTINGS = {
 const SIZE_LIMITS = {
   maxPx: 10000,
   minPx: 1,
-  maxRel: 1,
-  minRel: 0.1
+  maxRelExtent: 0.1,
+  minRelExtent: 0.01,
+  maxRelDiscrete: 1,
+  minRelDiscrete: 0.1
 };
 
 const DEFAULT_ERROR_SETTINGS = {
@@ -49,8 +51,10 @@ const DEFAULT_ERROR_SETTINGS = {
  * @property {object} [sizeLimits]
  * @property {number} [sizeLimits.maxPx=10000] - maximum size in pixels
  * @property {number} [sizeLimits.minPx=1] - minimum size in pixels
- * @property {number} [sizeLimits.maxRel=1] - maximum size relative calculated bounding box of allowed size
- * @property {number} [sizeLimits.minRel=0.1] - minimum size relative calculated bounding box of allowed size
+ * @property {number} [sizeLimits.maxRelExtent=0.1] - maximum size relative linear scale extent
+ * @property {number} [sizeLimits.minRelExtent=0.01] - minimum size relative linear scale extent
+ * @property {number} [sizeLimits.maxRelDiscrete=1] - maximum size relative discrete scale banwidth
+ * @property {number} [sizeLimits.minRelDiscrete=0.1] - minimum size relative discrete scale bandwidth
  */
 
 /**
@@ -120,11 +124,8 @@ function getPxSpaceFromScale(s, space) {
 function getPointSizeLimits(x, y, width, height, limits) {
   const xSpacePx = getPxSpaceFromScale(x ? x.scale : undefined, width, limits);
   const ySpacePx = getPxSpaceFromScale(y ? y.scale : undefined, height, limits);
-  let maxSizePx = Math.min(xSpacePx.value, ySpacePx.value) * limits.maxRel;
-  let minSizePx = Math.min(xSpacePx.value, ySpacePx.value) * limits.minRel;
-  // if (!xSpacePx.isBandwidth && !ySpacePx.isBandwidth) {
-  //   maxSizePx = maxSizePx;
-  // }
+  let maxSizePx = Math.min(xSpacePx.value * limits[xSpacePx.isBandwidth ? 'maxRelDiscrete' : 'maxRelExtent'], ySpacePx.value * limits[ySpacePx.isBandwidth ? 'maxRelDiscrete' : 'maxRelExtent']);
+  let minSizePx = Math.min(xSpacePx.value * limits[xSpacePx.isBandwidth ? 'maxRelDiscrete' : 'minRelExtent'], ySpacePx.value * limits[ySpacePx.isBandwidth ? 'maxRelDiscrete' : 'minRelExtent']);
   const min = Math.max(1, Math.floor(minSizePx));
   const max = Math.max(1, Math.floor(maxSizePx));
   return { min, max, maxGlobal: limits.maxPx, minGlobal: limits.minPx };
