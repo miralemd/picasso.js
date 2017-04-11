@@ -230,7 +230,13 @@ describe('point marker', () => {
       data: { mapTo: '', groupBy: '' },
       settings: {
         x: { scale: 'whatever', ref: 'm1', fn: v => v.value },
-        size: { ref: 'm1', fn: v => v.value }
+        size: { ref: 'm1', fn: v => v.value },
+        sizeLimits: {
+          maxRelDiscrete: 2,
+          minRelDiscrete: 0.5,
+          maxRelExtent: 100,
+          minRelExtent: 100
+        }
       }
     };
     // chart.table().findField.withArgs('foo').returns({ values: () => ['data 1', 'data 2', 'data 3'] });
@@ -241,12 +247,12 @@ describe('point marker', () => {
       { m1: { value: 1 } }
     ]);
     const xScale = v => v;
-    xScale.bandwidth = () => 0.2; // max size: width * 0.2 -> 20
+    xScale.bandwidth = () => 0.2; // max size: width * 0.2 * maxRelDiscrete -> 40, // min size: width * 0.2 * minRelDiscrete -> 10
     chart.scale.onCall(0).returns(xScale);
 
     componentFixture.simulateCreate(pointComponent, config);
     renderedPoints = componentFixture.simulateRender(opts);
 
-    expect(renderedPoints.map(p => p.size)).to.deep.equal([2, 2 + (18 * 0.4), 20]);
+    expect(renderedPoints.map(p => p.size)).to.deep.equal([10, 10 + (30 * 0.4), 40]);
   });
 });

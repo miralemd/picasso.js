@@ -125,7 +125,7 @@ function getPointSizeLimits(x, y, width, height, limits) {
   const xSpacePx = getPxSpaceFromScale(x ? x.scale : undefined, width, limits);
   const ySpacePx = getPxSpaceFromScale(y ? y.scale : undefined, height, limits);
   let maxSizePx = Math.min(xSpacePx.value * limits[xSpacePx.isBandwidth ? 'maxRelDiscrete' : 'maxRelExtent'], ySpacePx.value * limits[ySpacePx.isBandwidth ? 'maxRelDiscrete' : 'maxRelExtent']);
-  let minSizePx = Math.min(xSpacePx.value * limits[xSpacePx.isBandwidth ? 'maxRelDiscrete' : 'minRelExtent'], ySpacePx.value * limits[ySpacePx.isBandwidth ? 'maxRelDiscrete' : 'minRelExtent']);
+  let minSizePx = Math.min(xSpacePx.value * limits[xSpacePx.isBandwidth ? 'minRelDiscrete' : 'minRelExtent'], ySpacePx.value * limits[ySpacePx.isBandwidth ? 'minRelDiscrete' : 'minRelExtent']);
   const min = Math.max(1, Math.floor(minSizePx));
   const max = Math.max(1, Math.floor(maxSizePx));
   return { min, max, maxGlobal: limits.maxPx, minGlobal: limits.minPx };
