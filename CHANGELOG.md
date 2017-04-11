@@ -24,6 +24,10 @@
     }
     ```
 
+### Added
+
+- Reference line component added (ref-line)
+
 ### Fixed
 
 - PIC-114 - Ratio between box and outlier is not kept
@@ -156,7 +160,7 @@
 - PIC-4 Categorical color scale
 - PIC-6 QIX attribute dimension support
 - PIC-104 Control visibility of components
- 
+
     ```js
     components: [
       {
