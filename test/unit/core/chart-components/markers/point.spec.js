@@ -41,7 +41,7 @@ describe('point marker', () => {
       x: 50,
       y: 100,
       fill: '#999',
-      size: 100,
+      size: 10,
       stroke: '#ccc',
       strokeWidth: 0,
       opacity: 1,
@@ -73,7 +73,7 @@ describe('point marker', () => {
       x: 50,
       y: 100,
       fill: '#999',
-      size: 100,
+      size: 10,
       stroke: '#ccc',
       strokeWidth: 0,
       opacity: 1,
@@ -97,7 +97,8 @@ describe('point marker', () => {
         y: 0.3,
         size: 0,
         sizeLimits: {
-          minRel: 0.2
+          minRelExtent: 0.2,
+          maxRelExtent: 1
         }
       }
     };
@@ -134,7 +135,7 @@ describe('point marker', () => {
         y: () => 0.3,
         size: () => 1,
         sizeLimits: {
-          maxRel: 0.5 // 50% of min(width, height)
+          maxRelExtent: 0.5 // 50% of min(width, height)
         }
       }
     };
@@ -173,8 +174,8 @@ describe('point marker', () => {
         y: { ref: 'm3', fn: v => v },
         size: { ref: 'm1', fn: (v, i) => i },
         sizeLimits: {
-          minRel: 0.2,
-          maxRel: 2
+          minRelExtent: 0.2,
+          maxRelExtent: 2
         }
       }
     };

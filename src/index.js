@@ -18,7 +18,7 @@ import refLineComponent from './core/chart-components/ref-lines';
 import axisComponent from './core/chart-components/axis';
 import textComponent from './core/chart-components/text';
 import scrollbarComponent from './core/chart-components/scrollbar';
-import brushRangeComponent from './core/chart-components/brush-range';
+import brushRangeComponent from './web/components/brush-range';
 import rangeComponent from './core/chart-components/range';
 import brushLassoComponent from './core/chart-components/brush-lasso';
 import interactionComponent from './web/components/interaction';
