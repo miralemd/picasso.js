@@ -111,6 +111,8 @@ export default function scaleBand(settings, fields, dataset) {
     }
 
     const newBand = band.copy();
+    newBand.sources = band.sources;
+    newBand.type = band.type;
     augmentScaleBand(newBand, settings, dataset);
     const t = (sizeRelativeToStep * max) / size;
     const offset = (1 - t) * band.align();

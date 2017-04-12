@@ -1,4 +1,3 @@
-/* global document */
 
 function findActive(state, value) {
   let rs = state.ranges;
