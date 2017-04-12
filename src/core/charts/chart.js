@@ -6,7 +6,6 @@ import {
   detectTouchSupport,
   isValidTapEvent
 } from '../utils/event-type';
-
 import dataRegistry from '../data/index';
 import buildFormatters, { getOrCreateFormatter } from './formatter';
 import buildScales, { getOrCreateScale } from './scales';
@@ -15,6 +14,7 @@ import brush from '../brush';
 import component from '../component';
 import componentFactory from '../component/component-factory';
 import mediatorFactory from '../mediator';
+import NarrowPhaseCollision from '../math/narrow-phase-collision';
 
 /**
  * @typedef Chart.Props
@@ -501,6 +501,19 @@ function chart(definition) {
       shapes.push(...c.instance.findShapes(selector));
     });
     return shapes;
+  };
+
+  instance.componentsFromPoint = (p) => {
+    const br = element.getBoundingClientRect();
+    const tp = { x: p.x - br.left, y: p.y - br.top };
+    const ret = [];
+    visibleComponents.forEach((c) => {
+      const r = c.instance.getRect();
+      if (NarrowPhaseCollision.testRectPoint(r, tp)) {
+        ret.push(c.instance.def);
+      }
+    });
+    return ret;
   };
 
   /**
