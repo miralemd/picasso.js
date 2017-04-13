@@ -11,5 +11,6 @@ export default {
       obj[key] = EventEmitter.prototype[key];
     });
     EventEmitter.init(obj);
+    return obj;
   }
 };

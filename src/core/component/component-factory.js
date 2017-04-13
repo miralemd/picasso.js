@@ -1,5 +1,5 @@
 import extend from 'extend';
-
+import EventEmitter from '../utils/event-emitter';
 import { list as listMixins } from './component-mixins';
 import rendererFn from '../renderer/index';
 import {
@@ -15,10 +15,6 @@ const isReservedProperty = prop => [
   'scale', 'chart', 'dockConfig', 'mediator'
 ].some(name => name === prop);
 
-const isNativeEvent = name => (
-  !/^tap|^swipe|^press|^rotate|^pinch|^pan/.test(name)
-);
-
 function prepareContext(ctx, definition, opts) {
   const {
     require = []
@@ -32,7 +28,8 @@ function prepareContext(ctx, definition, opts) {
     renderer,
     chart,
     dockConfig,
-    mediator
+    mediator,
+    instance
   } = opts;
 
   // TODO add setters and log warnings / errors to console
@@ -77,6 +74,10 @@ function prepareContext(ctx, definition, opts) {
       Object.defineProperty(ctx, 'dockConfig', {
         get: dockConfig
       });
+    } else if (req === 'instance') {
+      Object.defineProperty(ctx, 'instance', {
+        get: instance
+      });
     }
   });
 
@@ -92,6 +93,14 @@ function updateDockConfig(config, settings) {
   config.minimumLayoutMode = settings.minimumLayoutMode;
   config.show = settings.show;
   return config;
+}
+
+function setUpEmitter(ctx, emitter, settings) {
+  // Object.defineProperty(ctx, 'emitter', )
+  Object.keys(settings.on || {}).forEach((eventName) => {
+    emitter.on(eventName, settings.on[eventName].bind(ctx));
+  });
+  ctx.emit = (name, event) => emitter.emit(name, event);
 }
 
 // First render
@@ -115,10 +124,9 @@ function componentFactory(definition, options = {}) {
     renderer // Used by tests
   } = options;
   const config = options.settings || {};
-
+  const emitter = EventEmitter.mixin({});
   let settings = extend(true, {}, defaultSettings, config);
   let data = [];
-  let listeners = [];
   let scale;
   let formatter;
   let element;
@@ -344,7 +352,8 @@ function componentFactory(definition, options = {}) {
     renderer: () => rend,
     chart: () => chart,
     dockConfig: () => dockConfig,
-    mediator: () => mediator
+    mediator: () => mediator,
+    instance: () => instanceContext
   });
 
   prepareContext(instanceContext, config, {
@@ -409,43 +418,14 @@ function componentFactory(definition, options = {}) {
       addBrushTriggers();
     }
 
-    Object.keys(definition.on || {}).forEach((key) => {
-      if (isNativeEvent(key)) {
-        const listener = (e) => {
-          definition.on[key].call(definitionContext, e);
-        };
-        element.addEventListener(key, listener);
-        listeners.push({
-          key,
-          listener
-        });
-      }
-    });
-
-    Object.keys(config.on || {}).forEach((key) => {
-      if (isNativeEvent(key)) {
-        const listener = (e) => {
-          config.on[key].call(instanceContext, e);
-        };
-        element.addEventListener(key, listener);
-        listeners.push({
-          key,
-          listener
-        });
-      }
-    });
+    setUpEmitter(instanceContext, emitter, config);
+    setUpEmitter(definitionContext, emitter, definition);
   };
 
   fn.mounted = () => mounted(element);
 
   fn.unmount = () => {
-    if (element) {
-      listeners.forEach(({ key, listener }) => {
-        element.removeEventListener(key, listener);
-      });
-      listeners = [];
-    }
-
+    emitter.removeAllListeners();
     brushTriggers.tap = [];
     brushTriggers.over = [];
     brushStylers.forEach((brushStyler) => {
@@ -474,6 +454,12 @@ function componentFactory(definition, options = {}) {
    * @experimental
    */
   fn.def = definitionContext;
+
+  /**
+   * Expose instanceCtx on "instance"
+   * @experimental
+   */
+  fn.ctx = instanceContext;
 
   fn.renderer = () => rend;
 

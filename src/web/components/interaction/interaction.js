@@ -26,7 +26,7 @@ function getDefaultOptions(type, options) {
 }
 
 const interactionComponent = {
-  require: ['chart'],
+  require: ['chart', 'instance'],
   mounted() {
     const mc = this.mc = new Hammer.Manager(this.chart.element);
     this.settings.actions.forEach((action) => {
@@ -35,7 +35,7 @@ const interactionComponent = {
       if (Hammer[gestureType]) {
         mc.add(new Hammer[gestureType](getDefaultOptions(action.type, action.options)));
         Object.keys(action.handlers).forEach((eventName) => {
-          mc.on(eventName, action.handlers[eventName].bind(this));
+          mc.on(eventName, action.handlers[eventName].bind(this.instance));
         });
       }
     });
