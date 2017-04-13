@@ -45,12 +45,8 @@ export default class GeoRect {
     return NarrowPhaseCollision.testCircleRect(c, this);
   }
 
-  /**
-   * Currently not support
-   * @return {boolean} FALSE
-   */
-  intersectsPolygon() { // eslint-disable-line
-    return false;
+  intersectsPolygon(polygon) {
+    return NarrowPhaseCollision.testPolygonRect(polygon, this);
   }
 
   points() {

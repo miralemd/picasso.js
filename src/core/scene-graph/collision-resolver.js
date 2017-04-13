@@ -1,5 +1,6 @@
 import createCollision from './collision';
 import { scalarMultiply } from '../math/vector';
+import { create as createPolygon } from '../geometry/polygon';
 import { getLineVectors, getRectVertices } from '../math/intersection';
 
 function appendParentNode(node, collision) {
@@ -150,7 +151,7 @@ function resolveShape(shape, ratio = 1) {
     return ['containsPoint', _shape];
   } else if (Array.isArray(vertices)) {
     _shape.vertices = vertices.map(vertex => scalarMultiply(vertex, ratio));
-    return ['intersectsPolygon', _shape];
+    return ['intersectsPolygon', createPolygon(_shape)];
   }
   return [];
 }

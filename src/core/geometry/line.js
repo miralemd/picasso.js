@@ -39,12 +39,8 @@ export default class GeoLine {
     return NarrowPhaseCollision.testCircleLine(c, this);
   }
 
-  /**
-   * Currently not support
-   * @return {boolean} FALSE
-   */
-  intersectsPolygon() { // eslint-disable-line
-    return false;
+  intersectsPolygon(polygon) {
+    return NarrowPhaseCollision.testPolygonLine(polygon, this);
   }
 
   points() {

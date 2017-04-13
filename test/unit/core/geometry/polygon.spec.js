@@ -76,6 +76,26 @@ describe('GeoPolygon', () => {
         [{ x: 50, y: 25 }, { x: 0, y: 25 }]
       ]);
     });
+
+    it('should remove any duplicate sibling vertices', () => {
+      polygon = create();
+      polygon.set({ vertices: [
+        { x: 0, y: 0 },
+        { x: 0, y: 0 }, // Remove
+        { x: 10, y: 0 },
+        { x: 0, y: 10 },
+        { x: 10, y: 0 }, // Do not remove
+        { x: 10, y: 0 }, // Remove
+        { x: 0, y: 0 }
+      ] });
+      expect(polygon.vertices).to.deep.equal([
+        { x: 0, y: 0 },
+        { x: 10, y: 0 },
+        { x: 0, y: 10 },
+        { x: 10, y: 0 },
+        { x: 0, y: 0 }
+      ]);
+    });
   });
 
   describe('bounds', () => {
@@ -190,6 +210,22 @@ describe('GeoPolygon', () => {
           ]
         });
         expect(polygon.intersectsCircle(c)).to.equal(false);
+      });
+    });
+
+    describe('intersectsLine', () => {
+      it('should intersect line', () => {
+        const line = { x1: 25, y1: 20, x2: 25, y2: 10 }; // Both points inside polygon
+        polygon = create({ vertices: convexPolygon });
+        expect(polygon.intersectsLine(line)).to.equal(true);
+      });
+    });
+
+    describe('intersectsRect', () => {
+      it('should intersect rect', () => {
+        const rect = { x: 25, y: 10, width: 6, height: 6 };
+        polygon = create({ vertices: convexPolygon });
+        expect(polygon.intersectsRect(rect)).to.equal(true);
       });
     });
   });

@@ -12,6 +12,17 @@ function close(vertices) {
   }
 }
 
+function removeDuplicates(vertices) {
+  for (let i = 0; i < vertices.length - 1; i++) {
+    const v0 = vertices[i];
+    const v1 = vertices[i + 1];
+    if (v0.x === v1.x && v0.y === v1.y) {
+      vertices.splice(i, 1);
+      i--;
+    }
+  }
+}
+
 export default class GeoPolygon {
   /**
    * Construct a new GeoPolygon instance
@@ -36,9 +47,12 @@ export default class GeoPolygon {
   set({ vertices = [] } = {}) {
     this.vertices = vertices.slice();
     this.edges = [];
-    this._zeroSize = vertices.length < 2; // TODO check if all points are the same?
 
-    if (this._zeroSize) { return; }
+    removeDuplicates(this.vertices);
+
+    if (this.vertices.length <= 2) {
+      return;
+    }
 
     close(this.vertices);
 
@@ -75,20 +89,12 @@ export default class GeoPolygon {
     return NarrowPhaseCollision.testCirclePolygon(circle, this);
   }
 
-  /**
-   * Currently not support
-   * @return {boolean} FALSE
-   */
-  intersectsLine() { // eslint-disable-line
-    return false;
+  intersectsLine(line) {
+    return NarrowPhaseCollision.testPolygonLine(this, line);
   }
 
-  /**
-   * Currently not support
-   * @return {boolean} FALSE
-   */
-  intersectsRect() { // eslint-disable-line
-    return false;
+  intersectsRect(rect) {
+    return NarrowPhaseCollision.testPolygonRect(this, rect);
   }
 
   /**

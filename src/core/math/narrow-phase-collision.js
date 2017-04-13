@@ -25,7 +25,23 @@ function circleHasNoSize(circle) {
   return circle.r <= 0;
 }
 
+function toFewEdges(polygon) {
+  return polygon.edges.length <= 2;
+}
+
 export default class NarrowPhaseCollision {
+  /**
+   * Test if a Circle contains a point. If so, returns true and false otherwise.
+   * Circle muse have a radius greater then 0.
+   * @param {object} circle
+   * @param {number} circle.cx - center x-coordinate
+   * @param {number} circle.cy - center y-coordinate
+   * @param {number} circle.r - circle radius
+   * @param {object} point
+   * @param {number} point.x - x-coordinate
+   * @param {number} point.y - y-coordinate
+   * @return {boolean} true if circle contains point
+   */
   static testCirclePoint(circle, point) {
     if (circleHasNoSize(circle)) {
       return false;
@@ -40,6 +56,21 @@ export default class NarrowPhaseCollision {
     return false;
   }
 
+  /**
+   * Test if a Circle collide with a rectangle. If so, returns true and false otherwise.
+   * Circle muse have a radius greater then 0.
+   * Rectangle must have a width and height greather then 0.
+   * @param {object} circle
+   * @param {number} circle.cx - center x-coordinate
+   * @param {number} circle.cy - center y-coordinate
+   * @param {number} circle.r - circle radius
+   * @param {object} rect
+   * @param {number} rect.x - x-coordinate
+   * @param {number} rect.y - y-coordinate
+   * @param {number} rect.width - width
+   * @param {number} rect.height - height
+   * @return {boolean} true if circle collide with rectangle
+  */
   static testCircleRect(circle, rect) {
     if (rectHasNoSize(rect) || circleHasNoSize(circle)) {
       return false;
@@ -63,6 +94,21 @@ export default class NarrowPhaseCollision {
     return sqrDist <= Math.pow(r, 2);
   }
 
+  /**
+   * Test if a Circle collide with a line segment. If so, returns true and false otherwise.
+   * Circle muse have a radius greater then 0.
+   * Line must have a length greater then 0.
+   * @param {object} circle
+   * @param {number} circle.cx - center x-coordinate
+   * @param {number} circle.cy - center y-coordinate
+   * @param {number} circle.r - circle radius
+   * @param {object} line
+   * @param {number} line.x1 - x-coordinate
+   * @param {number} line.y1 - y-coordinate
+   * @param {number} line.x1 - x-coordinate
+   * @param {number} line.y1 - y-coordinate
+   * @return {boolean} true if circle collide with line
+  */
   static testCircleLine(circle, line) {
     if (circleHasNoSize(circle) || lineHasNoLength(line)) {
       return false;
@@ -77,9 +123,22 @@ export default class NarrowPhaseCollision {
     const pointOnLine = closestPointToLine(p1, p2, center);
     const dist = sqrDistance(pointOnLine, center);
 
-    return dist <= Math.pow(circle.r, 2) && isPointOnLine(p1, p2, pointOnLine) && circle.r > 0;
+    return dist <= Math.pow(circle.r, 2) && isPointOnLine(p1, p2, pointOnLine);
   }
 
+   /**
+   * Test if a Circle collide with another Circle. If so, returns true and false otherwise.
+   * Both circles muse have a radius greater then 0.
+   * @param {object} circle
+   * @param {number} circle.cx - center x-coordinate
+   * @param {number} circle.cy - center y-coordinate
+   * @param {number} circle.r - circle radius
+   * @param {object} circle
+   * @param {number} circle.cx - center x-coordinate
+   * @param {number} circle.cy - center y-coordinate
+   * @param {number} circle.r - circle radius
+   * @return {boolean} true if circle collide with circle
+  */
   static testCircleCircle(circle1, circle2) {
     if (circleHasNoSize(circle1) || circleHasNoSize(circle2)) { return false; }
 
@@ -93,9 +152,29 @@ export default class NarrowPhaseCollision {
     return false;
   }
 
+  /**
+   * Test if a Circle collide with Polygon. If so, returns true and false otherwise.
+   * Circle muse have a radius greater then 0.
+   * Polygon must contain at least 2 vertices
+   * @param {object} circle
+   * @param {number} circle.cx - center x-coordinate
+   * @param {number} circle.cy - center y-coordinate
+   * @param {number} circle.r - circle radius
+   * @param {object} polygon
+   * @param {Array} polygon.vertices - Array of vertices
+   * @param {object} polygon.vertices.vertex
+   * @param {number} polygon.vertices.vertex.x - x-coordinate
+   * @param {number} polygon.vertices.vertex.y - y-coordinate
+   * @param {Array} polygon.edges - Array of edges
+   * @param {Array} polygon.edges.edge - Array of points
+   * @param {object} polygon.edges.edge.point
+   * @param {number} polygon.edges.edge.point.x - x-coordinate
+   * @param {number} polygon.edges.edge.point.y - y-coordinate
+   * @return {boolean} true if circle collide with polygon
+  */
   static testCirclePolygon(circle, polygon) {
     // TODO handle polygon that is a straight line, current impl will interrept it is a true, if radius is extended onto any of the edges
-    if (polygon.vertices.length < 2 || circleHasNoSize(circle)) {
+    if (toFewEdges(polygon) || circleHasNoSize(circle)) {
       return false;
     }
 
@@ -105,18 +184,38 @@ export default class NarrowPhaseCollision {
     }
 
     const num = polygon.edges.length;
+
     for (let i = 0; i < num; i++) {
       const edge = pointsToLine(polygon.edges[i]);
       if (NarrowPhaseCollision.testCircleLine(circle, edge)) {
         return true;
       }
     }
+
     return false;
   }
 
+  /**
+   * Test if a Polygon contains a Point. If so, returns true and false otherwise.
+   * Polygon must contain at least 2 vertices
+   * @param {object} polygon
+   * @param {Array} polygon.vertices - Array of vertices
+   * @param {object} polygon.vertices.vertex
+   * @param {number} polygon.vertices.vertex.x - x-coordinate
+   * @param {number} polygon.vertices.vertex.y - y-coordinate
+   * @param {Array} polygon.edges - Array of edges
+   * @param {Array} polygon.edges.edge - Array of points
+   * @param {object} polygon.edges.edge.point
+   * @param {number} polygon.edges.edge.point.x - x-coordinate
+   * @param {number} polygon.edges.edge.point.y - y-coordinate
+   * @param {object} point
+   * @param {number} point.x - x-coordinate
+   * @param {number} point.y - y-coordinate
+   * @return {boolean} true if polygon conatins point
+  */
   static testPolygonPoint(polygon, point) {
     // TODO handle polygon that is a straight line, current impl gives a non-deterministic output, that is depending on number of vertices
-    if (polygon.vertices.length < 2 || !NarrowPhaseCollision.testRectPoint(pointsToRect(polygon.bounds()), point)) {
+    if (toFewEdges(polygon) || !NarrowPhaseCollision.testRectPoint(pointsToRect(polygon.bounds()), point)) {
       return false;
     }
 
@@ -134,6 +233,102 @@ export default class NarrowPhaseCollision {
     return !even;
   }
 
+  /**
+   * Test if a Polygon collider with a line. If so, returns true and false otherwise.
+   * Polygon must contain at least 3 edges.
+   * Line must have length greater then 0.
+   * @param {object} polygon
+   * @param {Array} polygon.vertices - Array of vertices
+   * @param {object} polygon.vertices.vertex
+   * @param {number} polygon.vertices.vertex.x - x-coordinate
+   * @param {number} polygon.vertices.vertex.y - y-coordinate
+   * @param {Array} polygon.edges - Array of edges
+   * @param {Array} polygon.edges.edge - Array of points
+   * @param {object} polygon.edges.edge.point
+   * @param {number} polygon.edges.edge.point.x - x-coordinate
+   * @param {number} polygon.edges.edge.point.y - y-coordinate
+   * @param {object} line
+   * @param {number} line.x1 - x-coordinate
+   * @param {number} line.y1 - y-coordinate
+   * @param {number} line.x1 - x-coordinate
+   * @param {number} line.y1 - y-coordinate
+   * @return {boolean} true if polygon collider with line
+  */
+  static testPolygonLine(polygon, line) {
+    // TODO handle polygon that is a straight line, current impl gives a non-deterministic output, that is depending on number of vertices
+    if (toFewEdges(polygon)) {
+      return false;
+    }
+
+    for (let i = 0, num = polygon.edges.length; i < num; i++) {
+      const edge = pointsToLine(polygon.edges[i]);
+      if (NarrowPhaseCollision.testLineLine(line, edge)) {
+        return true;
+      }
+    }
+
+    const [p1, p2] = getLineVectors(line);
+
+    return NarrowPhaseCollision.testPolygonPoint(polygon, p1) ||
+      NarrowPhaseCollision.testPolygonPoint(polygon, p2);
+  }
+
+  /**
+   * Test if a Polygon collider with a rectangle. If so, returns true and false otherwise.
+   * Polygon must contain at least 3 edges.
+   * Rectangle must width and height greater then 0.
+   * @param {object} polygon
+   * @param {Array} polygon.vertices - Array of vertices
+   * @param {object} polygon.vertices.vertex
+   * @param {number} polygon.vertices.vertex.x - x-coordinate
+   * @param {number} polygon.vertices.vertex.y - y-coordinate
+   * @param {Array} polygon.edges - Array of edges
+   * @param {Array} polygon.edges.edge - Array of points
+   * @param {object} polygon.edges.edge.point
+   * @param {number} polygon.edges.edge.point.x - x-coordinate
+   * @param {number} polygon.edges.edge.point.y - y-coordinate
+   * @param {object} rect
+   * @param {number} rect.x - x-coordinate
+   * @param {number} rect.y - y-coordinate
+   * @param {number} rect.width - width
+   * @param {number} rect.height - height
+   * @return {boolean} true if polygon collider with rect
+  */
+  static testPolygonRect(polygon, rect) {
+    // TODO handle polygon that is a straight line, current impl gives a non-deterministic output, that is depending on number of vertices
+    if (toFewEdges(polygon)) {
+      return false;
+    }
+
+    for (let i = 0, num = polygon.edges.length; i < num; i++) {
+      const edge = pointsToLine(polygon.edges[i]);
+      if (NarrowPhaseCollision.testRectLine(rect, edge)) {
+        return true;
+      }
+    }
+
+    const [p1, p2, p3, p4] = getRectVertices(rect);
+    return NarrowPhaseCollision.testPolygonPoint(polygon, p1) ||
+      NarrowPhaseCollision.testPolygonPoint(polygon, p2) ||
+      NarrowPhaseCollision.testPolygonPoint(polygon, p3) ||
+      NarrowPhaseCollision.testPolygonPoint(polygon, p4);
+  }
+
+  /**
+   * Test if a Rectangle collide with another rectangle. If so, returns true and false otherwise.
+   * Both rectangles must have a width and height greather then 0.
+   * @param {object} rect
+   * @param {number} rect.x - x-coordinate
+   * @param {number} rect.y - y-coordinate
+   * @param {number} rect.width - width
+   * @param {number} rect.height - height
+   * @param {object} rect
+   * @param {number} rect.x - x-coordinate
+   * @param {number} rect.y - y-coordinate
+   * @param {number} rect.width - width
+   * @param {number} rect.height - height
+   * @return {boolean} true if rectangle collide with rectangle
+  */
   static testRectRect(rect1, rect2) {
     if (rectHasNoSize(rect1) || rectHasNoSize(rect2)) {
       return false;
@@ -145,6 +340,19 @@ export default class NarrowPhaseCollision {
       rect2.y <= rect1.y + rect1.height;
   }
 
+  /**
+   * Test if a Rectangle contains a Point. If so, returns true and false otherwise.
+   * Rectangle must have a width and height greather then 0.
+   * @param {object} rect
+   * @param {number} rect.x - x-coordinate
+   * @param {number} rect.y - y-coordinate
+   * @param {number} rect.width - width
+   * @param {number} rect.height - height
+   * @param {object} point
+   * @param {number} point.x - x-coordinate
+   * @param {number} point.y - y-coordinate
+   * @return {boolean} true if rectangle contains point
+  */
   static testRectPoint(rect, point) {
     if (rectHasNoSize(rect)) { return false; }
 
@@ -154,8 +362,24 @@ export default class NarrowPhaseCollision {
       point.y <= rect.y + rect.height;
   }
 
+  /**
+   * Test if a Rectangle collider with a line. If so, returns true and false otherwise.
+   * Rectangle must have a width and height greather then 0.
+   * Line must have length greater then 0.
+   * @param {object} rect
+   * @param {number} rect.x - x-coordinate
+   * @param {number} rect.y - y-coordinate
+   * @param {number} rect.width - width
+   * @param {number} rect.height - height
+   * @param {object} line
+   * @param {number} line.x1 - x-coordinate
+   * @param {number} line.y1 - y-coordinate
+   * @param {number} line.x1 - x-coordinate
+   * @param {number} line.y1 - y-coordinate
+   * @return {boolean} true if rectangle collide with line
+  */
   static testRectLine(rect, line) {
-    if (lineHasNoLength(line) || rect.width <= 0 || rect.height <= 0) { return false; }
+    if (lineHasNoLength(line) || rectHasNoSize(rect)) { return false; }
 
     const [p1, p2] = getLineVectors(line);
 
@@ -174,6 +398,21 @@ export default class NarrowPhaseCollision {
     return false;
   }
 
+  /**
+   * Test if a Line collider with another line. If so, returns true and false otherwise.
+   * Both lines must have length greater then 0.
+   * @param {object} line
+   * @param {number} line.x1 - x-coordinate
+   * @param {number} line.y1 - y-coordinate
+   * @param {number} line.x1 - x-coordinate
+   * @param {number} line.y1 - y-coordinate
+   * @param {object} line
+   * @param {number} line.x1 - x-coordinate
+   * @param {number} line.y1 - y-coordinate
+   * @param {number} line.x1 - x-coordinate
+   * @param {number} line.y1 - y-coordinate
+   * @return {boolean} true if line collide with line
+  */
   static testLineLine(line1, line2) {
     const [p1, p2] = getLineVectors(line1);
     const [p3, p4] = getLineVectors(line2);
@@ -224,6 +463,19 @@ export default class NarrowPhaseCollision {
     return false;
   }
 
+  /**
+   * Test if a Line contains a Point. If so, returns true and false otherwise.
+   * Line must have length greater then 0.
+   * @param {object} line
+   * @param {number} line.x1 - x-coordinate
+   * @param {number} line.y1 - y-coordinate
+   * @param {number} line.x1 - x-coordinate
+   * @param {number} line.y1 - y-coordinate
+   * @param {object} point
+   * @param {number} point.x - x-coordinate
+   * @param {number} point.y - y-coordinate
+   * @return {boolean} true if line contains point
+  */
   static testLinePoint(line, point) {
     if (lineHasNoLength(line)) {
       return false;
