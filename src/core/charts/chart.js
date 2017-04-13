@@ -6,6 +6,7 @@ import {
   detectTouchSupport,
   isValidTapEvent
 } from '../utils/event-type';
+import shapeDeducer from '../utils/type-deducer';
 import dataRegistry from '../data/index';
 import buildFormatters, { getOrCreateFormatter } from './formatter';
 import buildScales, { getOrCreateScale } from './scales';
@@ -83,6 +84,42 @@ const isReservedProperty = prop => [
   'beforeUpdate', 'updated', 'beforeRender', 'render', 'beforeDestroy',
   'destroyed', 'data', 'settings'
 ].some(name => name === prop);
+
+function addComponentDelta(shape, containerBounds, componentBounds) {
+  const dx = containerBounds.left - componentBounds.left;
+  const dy = containerBounds.top - componentBounds.top;
+  const type = shapeDeducer(shape);
+  const deltaShape = extend(true, {}, shape);
+
+  switch (type) {
+    case 'circle':
+      deltaShape.cx += dx;
+      deltaShape.cy += dy;
+      break;
+    case 'polygon':
+      for (let i = 0, num = deltaShape.vertices.length; i < num; i++) {
+        const v = deltaShape.vertices[i];
+        v.x += dx;
+        v.y += dy;
+      }
+      break;
+    case 'line':
+      deltaShape.x1 += dx;
+      deltaShape.y1 += dy;
+      deltaShape.x2 += dx;
+      deltaShape.y2 += dy;
+      break;
+    case 'point':
+    case 'rect':
+      deltaShape.x += dx;
+      deltaShape.y += dy;
+      break;
+    default:
+      break;
+  }
+
+  return deltaShape;
+}
 
 /**
  * The chart creator
@@ -514,6 +551,67 @@ function chart(definition) {
       }
     });
     return ret;
+  };
+
+  /**
+   * Get all nodes colliding with a geometrical shape (circle, line, rectangle, point, polygon).
+   *
+   * The input shape is identified based on the geometrical attributes in the following order: circle => line => rectangle => point => polygon.
+   * Note that not all nodes on a scene have collision detection enabled.
+   * @param {Object} shape - A geometrical shape. Coordinates are relative to the top-left corner of the chart instance container.
+   * @param {Object} opts - Options
+   * @param {Array[]} [opts.components] - Array of components to include in the lookup. If no components are specified, all components will be included.
+   * @param {string} [opts.components.component.key] - Component key
+   * @param {string} [opts.components.component.propagation] - if set to `stop`, will start lookup on top visible shape and propagate downwards until a shape is found.
+   * @param {string} [opts.propagation] - if set to `stop`, will start lookup on top visible component and propagate downwards until a component has at least a match.
+   * @return {Object[]} Array of objects containing colliding nodes
+   *
+   * @example
+   * chart.shapesAt(
+   *  {
+   *    x: 0,
+   *    y: 0,
+   *    width: 100,
+   *    height: 100
+   *  },
+   *  {
+   *    components: [
+   *      { key: 'key1', propagation: 'stop' },
+   *      { key: 'key2' }
+   *    ],
+   *    propagation: 'stop'
+   *  }
+   * );
+   */
+  instance.shapesAt = (shape, opts = {}) => {
+    const result = [];
+    const containerBounds = element.getBoundingClientRect();
+    let comps = visibleComponents; // Assume that visibleComponents is ordererd according to displayOrder
+
+    if (Array.isArray(opts.components) && opts.components.length > 0) {
+      const compKeys = opts.components.map(c => c.key);
+      comps = visibleComponents
+        .filter(c => compKeys.indexOf(c.key) !== -1)
+        .map(c => ({
+          instance: c.instance,
+          opts: opts.components[compKeys.indexOf(c.key)]
+        }));
+    }
+
+    for (let i = comps.length - 1; i >= 0; i--) {
+      const c = comps[i];
+      const componentBounds = c.instance.renderer().element().getBoundingClientRect();
+      const deltaShape = addComponentDelta(shape, containerBounds, componentBounds);
+      const shapes = c.instance.shapesAt(deltaShape, c.opts);
+      const stopPropagation = shapes.length > 0 && opts.propagation === 'stop';
+
+      result.push(...shapes);
+
+      if (result.length > 0 && stopPropagation) {
+        return result;
+      }
+    }
+    return result;
   };
 
   /**

@@ -198,6 +198,9 @@ chartInstance.update({
 ### `instance.findShapes()`
 
 
+### `instance.shapesAt()`
+
+
 ### `instance.brush()`
 
 

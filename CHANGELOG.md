@@ -2,6 +2,23 @@
 
 ## Unreleased
 
+### Added
+
+- PIC-133 Enable user to do lookup on shapes by using a geometrical shape as input
+
+    ```js
+    chartInstance.shapesAt(
+      { x: 100, y: 100, width: 100, height: 100 },
+      {
+        components: [
+          { key: 'key1', propagation: 'stop' },
+          { key: 'key2' }
+        ],
+        propagation: 'stop'
+      }
+    );
+    ```
+
 ## [BREAKING] 0.15.0
 
 ### Breaking changes

@@ -375,7 +375,31 @@ function componentFactory(definition, options = {}) {
     return shapes;
   };
 
-  fn.findShapes = selector => rend.findShapes(selector);
+  fn.findShapes = (selector) => {
+    const shapes = rend.findShapes(selector);
+    for (let i = 0, num = shapes.length; i < num; i++) {
+      shapes[i].key = settings.key;
+    }
+
+    return shapes;
+  };
+
+  fn.shapesAt = (shape, opts = {}) => {
+    const items = rend.itemsAt(shape);
+    let shapes;
+
+    if (opts && opts.propagation === 'stop' && items.length > 0) {
+      shapes = [items.pop().node];
+    } else {
+      shapes = items.map(i => i.node);
+    }
+
+    for (let i = 0, num = shapes.length; i < num; i++) {
+      shapes[i].key = settings.key;
+    }
+
+    return shapes;
+  };
 
   fn.mount = () => {
     element = rend.element && rend.element() ? element : rend.appendTo(container);

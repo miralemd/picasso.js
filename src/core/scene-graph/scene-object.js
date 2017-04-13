@@ -71,7 +71,7 @@ export class SceneObject {
 
   /**
    * Get the node type
-   * @return {String} Node type
+   * @return {string} - Node type
    */
   get type() {
     return this._type;
@@ -79,7 +79,7 @@ export class SceneObject {
 
   /**
    * Get the associated data
-   * @return {String|Number|Object} Data
+   * @return {string|number|Object} - Data
    */
   get data() {
     return this._data;
@@ -87,7 +87,7 @@ export class SceneObject {
 
   /**
    * Get the node attributes
-   * @return {Object} Node attributes
+   * @return {Object} - Node attributes
    */
   get attrs() {
     return this._attrs;
@@ -95,7 +95,7 @@ export class SceneObject {
 
   /**
    * Get the element the scene is attached to
-   * @return {HTMLElement} Element the scene is attached to
+   * @return {HTMLElement} - Element the scene is attached to
    */
   get element() {
     return this._element;
@@ -103,10 +103,26 @@ export class SceneObject {
 
   /**
   * Set the element the scene is attached to
-  * @param  {HTMLElement} e Element the scene is attached to
+  * @param {HTMLElement} e - Element the scene is attached to
   */
   set element(e) {
     this._element = e;
+  }
+
+  /**
+  * Get the key of the component this shape belong to.
+  * @return {string} - Key
+  */
+  get key() {
+    return this._key;
+  }
+
+  /**
+  * Set the key of the component this shape belong to.
+  * @param {string} k - Key
+  */
+  set key(k) {
+    this._key = k;
   }
 
   /**
