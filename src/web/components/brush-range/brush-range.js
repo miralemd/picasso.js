@@ -1,5 +1,7 @@
 import buildRange from './brush-range-node-builder';
 import { start, end, move } from './brush-range-interaction';
+import linear from '../../../core/scales/linear';
+import { scaleWithSize } from '../../../core/scales';
 
 const TARGET_SIZE = 5;
 const VERTICAL = 0;
@@ -113,6 +115,21 @@ function setRanges(state) {
   });
 }
 
+function findClosest(value, scale) {
+  let name;
+  let minDist = Infinity;
+  const domain = scale.domain();
+  const halfBandwidth = scale.bandwidth() / 2;
+  for (let i = 0; i < domain.length; ++i) {
+    const d = Math.abs(value - halfBandwidth - scale(domain[i]));
+    if (d < minDist) {
+      minDist = d;
+      name = domain[i];
+    }
+  }
+  return name;
+}
+
 const brushRangeComponent = {
   require: ['chart', 'settings', 'renderer'],
   defaultSettings: {
@@ -149,25 +166,35 @@ const brushRangeComponent = {
     this.state.rect = this.rect;
 
     const stngs = this.settings.settings;
-    const scale = this.chart.scale(stngs.scale);
+    const direction = stngs.direction === 'vertical' ? VERTICAL : HORIZONTAL;
+    const size = this.state.rect[direction === VERTICAL ? 'height' : 'width'];
+    const scale = scaleWithSize(this.chart.scale(stngs.scale), size);
     const offset = this.renderer.element().getBoundingClientRect();
 
-    this.state.direction = stngs.direction === 'vertical' ? VERTICAL : HORIZONTAL;
+    this.state.direction = direction;
     this.state.bubbles = stngs.bubbles;
-    this.state.scale = scale;
     this.state.offset = offset;
     this.state.brush = stngs.brush;
     this.state.brushInstance = this.chart.brush(this.state.brush);
     this.state.renderer = this.renderer;
-    this.state.format = this.chart.field(this.state.scale.sources[0]).field.formatter();
     this.state.multi = !!stngs.multiple;
     this.state.h = h;
-    this.state.size = this.state.rect[this.state.direction === VERTICAL ? 'height' : 'width'];
+    this.state.size = size;
     this.state.cssCoord = {
       offset: this.state.direction === VERTICAL ? 'top' : 'left',
       coord: this.state.direction === VERTICAL ? 'y' : 'x',
       pos: this.state.direction === VERTICAL ? 'deltaY' : 'deltaX'
     };
+
+    if (scale.type !== 'linear') {
+      this.state.scale = linear();
+      this.state.scale.sources = scale.sources;
+      this.state.format = v => findClosest(v, scale);
+    } else {
+      this.state.scale = scale;
+      this.state.format = this.chart.field(this.state.scale.sources[0]).field.formatter();
+    }
+
     return [];
   },
   start(e) {
