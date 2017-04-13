@@ -547,7 +547,7 @@ function chart(definition) {
     visibleComponents.forEach((c) => {
       const r = c.instance.getRect();
       if (NarrowPhaseCollision.testRectPoint(r, tp)) {
-        ret.push(c.instance.def);
+        ret.push(c.instance.ctx);
       }
     });
     return ret;
