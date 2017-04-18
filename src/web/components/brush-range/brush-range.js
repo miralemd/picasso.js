@@ -147,7 +147,8 @@ const brushRangeComponent = {
   on: {
     rangeStart(e) { this.start(e); },
     rangeMove(e) { this.move(e); },
-    rangeEnd(e) { this.end(e); }
+    rangeEnd(e) { this.end(e); },
+    rangeClear(e) { this.clear(e); }
   },
   created() {
     this.rect = { x: 0, y: 0, width: 0, height: 0 };
@@ -208,6 +209,9 @@ const brushRangeComponent = {
     move(this.state, e);
     setRanges(this.state);
     render(this.state);
+  },
+  clear() {
+    this.state.renderer.render([]);
   }
 };
 
