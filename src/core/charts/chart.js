@@ -560,7 +560,7 @@ function chart(definition) {
    * Note that not all nodes on a scene have collision detection enabled.
    * @param {Object} shape - A geometrical shape. Coordinates are relative to the top-left corner of the chart instance container.
    * @param {Object} opts - Options
-   * @param {Array[]} [opts.components] - Array of components to include in the lookup. If no components are specified, all components will be included.
+   * @param {Object[]} [opts.components] - Array of components to include in the lookup. If no components are specified, all components will be included.
    * @param {string} [opts.components.component.key] - Component key
    * @param {string} [opts.components.component.propagation] - if set to `stop`, will start lookup on top visible shape and propagate downwards until a shape is found.
    * @param {string} [opts.propagation] - if set to `stop`, will start lookup on top visible component and propagate downwards until a component has at least a match.
@@ -612,6 +612,48 @@ function chart(definition) {
       }
     }
     return result;
+  };
+
+
+  /**
+   * Brush data by providing a collection of data bound shapes.
+   * @param {Array[]} shapes - An array of data bound shapes.
+   * @param {Object} config - Options
+   * @param {Object[]} opts.components - Array of components to include in the lookup.
+   * @param {string} [opts.components.component.key] - Component key
+   * @param {string[]} [opts.components.component.contexts] - Name of the brushing contexts to affect
+   * @param {string[]} [opts.components.component.data] - The mapped data properties to add to the brush
+   * @param {string} [opts.components.component.action] - Type of action to respond with
+   *
+   * @example
+   * const shapes = chartInstance.shapesAt(...);
+   * const config = {
+   *  components:[
+   *    {
+   *      key: 'key1',
+   *      contexts: ['myContext'],
+   *      data: ['self'],
+   *      action: 'add'
+   *    }
+   *  ]
+   * };
+   * chartInstance.brushFromShapes(shapes, config);
+   */
+  instance.brushFromShapes = (shapes, config = { components: [] }) => {
+    const configKeys = config.components.map(conf => conf.key);
+    visibleComponents.forEach((c) => {
+      const configIndex = configKeys.indexOf(c.key);
+      if (configIndex !== -1) {
+        const compShapes = [];
+        for (let i = 0, num = shapes.length; i < num; i++) {
+          const shape = shapes[i];
+          if (shape.key === c.key) {
+            compShapes.push(shape);
+          }
+        }
+        c.instance.brushFromShapes(compShapes, config.components[configIndex]);
+      }
+    });
   };
 
   /**

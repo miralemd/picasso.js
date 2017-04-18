@@ -5,7 +5,8 @@ import rendererFn from '../renderer/index';
 import {
   styler,
   resolveTapEvent,
-  resolveOverEvent
+  resolveOverEvent,
+  brushFromSceneNodes
 } from './brushing';
 
 const isReservedProperty = prop => [
@@ -408,6 +409,19 @@ function componentFactory(definition, options = {}) {
     }
 
     return shapes;
+  };
+
+  fn.brushFromShapes = (shapes, trigger = {}) => {
+    trigger.contexts = Array.isArray(trigger.contexts) ? trigger.contexts : [];
+    const action = trigger.action || 'toggle';
+
+    brushFromSceneNodes({
+      nodes: shapes,
+      action,
+      trigger,
+      chart,
+      data: brushArgs.data
+    });
   };
 
   fn.mount = () => {

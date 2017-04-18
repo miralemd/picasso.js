@@ -146,7 +146,7 @@ function brushDataPoints({
   });
 }
 
-function brushFromSceneNodes({
+export function brushFromSceneNodes({
   nodes,
   action,
   chart,
@@ -157,7 +157,7 @@ function brushFromSceneNodes({
   for (let i = 0; i < nodes.length; i++) {
     const node = nodes[i];
     const dataAttrib = node.data;
-    if (dataAttrib !== null) {
+    if (dataAttrib !== null && data.length > 0 && data[+dataAttrib]) {
       dataPoints.push(data[+dataAttrib]);
     }
   }
@@ -170,7 +170,7 @@ function brushFromSceneNodes({
   });
 }
 
-function resolveEvent({ collisions, t, config, action }) {
+export function resolveEvent({ collisions, t, config, action }) {
   let brushCollisions = [];
   let resolved = false;
 

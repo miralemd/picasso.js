@@ -158,4 +158,76 @@ describe('Chart', () => {
       expect(shapes.map(s => s.attrs.fill)).to.deep.equal(['blue', 'blue', 'green', 'red']); // Only return 1 circle for each component except blue which doesnt have propagation set to stop
     });
   });
+
+  describe('brushFromShapes', () => {
+    it('should brush provided shapes given that their parent component is configured and they have data bound to them', () => {
+      pointMarkerRed.brush = {
+        consume: [
+          {
+            context: 'test',
+            style: {
+              active: {
+                fill: 'black'
+              }
+            }
+          }
+        ]
+      };
+
+      settings.components.push(pointMarkerRed);
+      const instance = chart({
+        element,
+        data: { data },
+        settings
+      });
+
+      const shapes = instance.findShapes('circle');
+      instance.brushFromShapes(shapes, {
+        components: [{
+          key: 'key1',
+          contexts: ['test'],
+          data: ['self'],
+          action: 'add'
+        }]
+      });
+
+      const brushedShapes = instance.findShapes('circle');
+      expect(brushedShapes.map(s => s.attrs.fill)).to.deep.equal(['black', 'black']);
+    });
+
+    it('should not brush provided shapes doesnt have a their parent component configured', () => {
+      pointMarkerRed.brush = {
+        consume: [
+          {
+            context: 'test',
+            style: {
+              active: {
+                fill: 'black'
+              }
+            }
+          }
+        ]
+      };
+
+      settings.components.push(pointMarkerRed);
+      const instance = chart({
+        element,
+        data: { data },
+        settings
+      });
+
+      const shapes = instance.findShapes('circle');
+      instance.brushFromShapes(shapes, {
+        components: [{
+          key: 'unknown',
+          contexts: ['test'],
+          data: ['self'],
+          action: 'add'
+        }]
+      });
+
+      const brushedShapes = instance.findShapes('circle');
+      expect(brushedShapes.map(s => s.attrs.fill)).to.deep.equal(['red', 'red']);
+    });
+  });
 });
