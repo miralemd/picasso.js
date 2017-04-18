@@ -11,6 +11,9 @@ export function refLabelDefaultSettings() {
     fontFamily: 'Arial',
     fontSize: '12px',
     opacity: 1,
+    maxWidth: 1,
+    maxWidthPx: 9999,
+    padding: 5,
     background: {
       fill: '#fff',
       stroke: 'transparent',
@@ -60,12 +63,13 @@ export function alignmentToNumber(align) {
  * @param {object[]} items - Array of all items (for collision detection)
  * @ignore
  */
-export function createLineWithLabel({ blueprint, renderer, p, settings, items }) {
+export function createLineWithLabel({ chart, blueprint, renderer, p, settings, items }) {
   let doesNotCollide = true;
   let line = false;
   let rect = false;
   let label = false;
-  let style = extend({}, settings.style.line, p.style || {});
+  let value = false;
+  let style = extend(true, {}, settings.style.line, p.line || {});
 
   // Use the transposer to handle actual positioning
   line = blueprint.processItem({
@@ -80,29 +84,67 @@ export function createLineWithLabel({ blueprint, renderer, p, settings, items })
   });
 
   if (p.label) {
-    const item = extend({}, refLabelDefaultSettings(), settings.style.label || {}, { fill: style.stroke }, p.label);
+    const item = extend(true, refLabelDefaultSettings(), settings.style.label || {}, { fill: style.stroke }, p.label);
+    let formatter;
+    let measuredValue = {
+      width: 0,
+      height: 0
+    };
+    let valueString = '';
 
-    // We start by measuring the text
-    let measured = renderer.measureText({
+    if (typeof p.formatter === 'string') {
+      formatter = chart.formatter(p.formatter);
+    } else if (typeof p.formatter === 'object') {
+      formatter = chart.formatter(p.formatter);
+      // TODO - Add support for array as source into formatter
+    } else if (typeof p.scale !== 'undefined' && typeof p.scale.sources !== 'undefined') {
+      formatter = chart.formatter({ source: p.scale.sources[0] });
+      // TODO - Add support for array as source into formatter
+    }
+
+    if (formatter) {
+      valueString = ` (${formatter(p.value)})`;
+    } else if (p.scale) {
+      valueString = ` (${p.value})`;
+    }
+
+    if (valueString) {
+      measuredValue = renderer.measureText({
+        text: valueString,
+        fontFamily: item.fontFamily,
+        fontSize: item.fontSize
+      });
+    }
+
+    // Measure the label text
+    let measuredLabel = renderer.measureText({
       text: item.text || '',
       fontFamily: item.fontFamily,
       fontSize: item.fontSize
     });
 
-    let labelPadding = p.label.padding || 5;
+    let measured = {
+      width: measuredLabel.width + measuredValue.width,
+      height: Math.max(measuredLabel.height, measuredValue.height)
+    };
 
-    let anchor = item.anchor === 'end' ? 'end' : 'start';
+    let labelPadding = item.padding;
 
-    let align = alignmentToNumber(p.flipXY ? p.label.vAlign : p.label.align);
-    let vAlign = alignmentToNumber(p.flipXY ? p.label.align : p.label.vAlign);
+    // let anchor = item.anchor === 'end' ? 'end' : 'start';
 
-    let rectWidth = (p.flipXY ? measured.height : measured.width) + (labelPadding * 2);
-    let rectHeight = (p.flipXY ? measured.width : measured.height) + (labelPadding * 2);
+    let align = alignmentToNumber(p.flipXY ? item.vAlign : item.align);
+    let vAlign = alignmentToNumber(p.flipXY ? item.align : item.vAlign);
+
+    let calcWidth = Math.min(1 + measured.width + (labelPadding * 2), item.maxWidth * blueprint.width, item.maxWidthPx);
+    let calcHeight = measured.height + (labelPadding * 2);
+
+    let rectWidth = (p.flipXY ? calcHeight : calcWidth);
+    let rectHeight = (p.flipXY ? calcWidth : calcHeight);
 
     rect = blueprint.processItem({
       fn: ({ width, height }) => ({
         type: 'rect',
-        x: (p.position * width) + -(((p.flipXY ? measured.height : measured.width) + (labelPadding * 2)) * (1 - align)),
+        x: (p.position * width) - ((p.flipXY ? calcHeight : calcWidth) * (1 - align)),
         y: Math.abs((vAlign * height) - (rectHeight * vAlign)),
         width: rectWidth,
         height: rectHeight,
@@ -131,10 +173,24 @@ export function createLineWithLabel({ blueprint, renderer, p, settings, items })
         opacity: item.opacity,
         fontFamily: item.fontFamily,
         fontSize: item.fontSize,
-        x: rect.x + labelPadding + (anchor === 'end' ? measured.width : 0),
+        x: rect.x + labelPadding,
         y: rect.y + (rect.height / 2) + (measured.height / 3),
-        anchor
+        maxWidth: rect.width - (labelPadding * 2) - measuredValue.width,
+        anchor: 'start'
       };
+
+      if (valueString) {
+        value = {
+          type: 'text',
+          text: valueString || '',
+          fill: item.fill,
+          opacity: item.opacity,
+          fontFamily: item.fontFamily,
+          fontSize: item.fontSize,
+          x: label.x + 3 + (rect.width - (measuredValue.width + (labelPadding * 2))),
+          y: label.y
+        };
+      }
 
       // Detect collisions with other labels/rects or lines
       for (let i = 0, len = items.length; i < len; i++) {
@@ -165,5 +221,8 @@ export function createLineWithLabel({ blueprint, renderer, p, settings, items })
   // Only push rect & label if we haven't collided and both are defined
   if (doesNotCollide && rect && label) {
     items.push(rect, label);
+    if (value) {
+      items.push(value);
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { alignmentToNumber } from '../../../../../src/core/chart-components/ref-lines/lines-and-labels';
+import { alignmentToNumber } from '../../../../../src/core/chart-components/ref-line/lines-and-labels';
 
 describe('alignmentToNumber', () => {
   it('should fallback on undefined, Infinity and NaN', () => {

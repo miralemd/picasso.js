@@ -14,7 +14,7 @@ import './web';
 import boxMarkerComponent from './core/chart-components/markers/box';
 import pointMarkerComponent from './core/chart-components/markers/point';
 import gridLineComponent from './core/chart-components/grid';
-import refLineComponent from './core/chart-components/ref-lines';
+import refLineComponent from './core/chart-components/ref-line';
 import axisComponent from './core/chart-components/axis';
 import textComponent from './core/chart-components/text';
 import scrollbarComponent from './core/chart-components/scrollbar';

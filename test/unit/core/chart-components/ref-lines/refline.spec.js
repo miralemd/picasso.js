@@ -1,6 +1,6 @@
 
 import componentFactory from '../../../../../src/core/component/component-factory';
-import refLineComponent from '../../../../../src/core/chart-components/ref-lines/refline';
+import refLineComponent from '../../../../../src/core/chart-components/ref-line/refline';
 
 describe('reference lines', () => {
   let rendererOutput;
@@ -73,9 +73,9 @@ describe('reference lines', () => {
       lines: {
         x: [
           {
-            value: 0.2,
+            value: 0.3,
             scale: { scale: 'x' },
-            style: {
+            line: {
               stroke: 'green',
               strokeWidth: 2
             },
@@ -111,8 +111,8 @@ describe('reference lines', () => {
           stroke: 'green',
           strokeWidth: 2,
           type: 'line',
-          x1: 174,
-          x2: 174,
+          x1: 261,
+          x2: 261,
           y1: 0,
           y2: 813
         },
@@ -123,8 +123,8 @@ describe('reference lines', () => {
           stroke: 'transparent',
           strokeWidth: 0,
           type: 'rect',
-          width: 116,
-          x: 58,
+          width: 189,
+          x: 72,
           y: 769
         },
         {
@@ -132,10 +132,21 @@ describe('reference lines', () => {
           fill: 'green',
           fontFamily: 'Arial',
           fontSize: '20px',
+          maxWidth: 97,
           opacity: 1,
           text: 'اسم عربي',
           type: 'text',
-          x: 68,
+          x: 82,
+          y: 799
+        },
+        {
+          fill: 'green',
+          fontFamily: 'Arial',
+          fontSize: '20px',
+          opacity: 1,
+          text: ' (0.3)',
+          type: 'text',
+          x: 182,
           y: 799
         }
       ]
@@ -150,7 +161,7 @@ describe('reference lines', () => {
         y: [
           {
             value: 0.3,
-            style: {
+            line: {
               stroke: 'green',
               strokeWidth: 2
             },
@@ -198,7 +209,7 @@ describe('reference lines', () => {
           stroke: 'transparent',
           strokeWidth: 0,
           type: 'rect',
-          width: 116,
+          width: 117,
           x: 0,
           y: 244
         },
@@ -207,6 +218,7 @@ describe('reference lines', () => {
           fill: 'green',
           fontFamily: 'Arial',
           fontSize: '20px',
+          maxWidth: 97,
           opacity: 1,
           text: 'asdftest',
           type: 'text',
@@ -267,8 +279,8 @@ describe('reference lines', () => {
           stroke: 'transparent',
           strokeWidth: 0,
           type: 'rect',
-          width: 53,
-          x: 817,
+          width: 54,
+          x: 816,
           y: 219
         },
         {
@@ -276,10 +288,11 @@ describe('reference lines', () => {
           fill: '#000',
           fontFamily: 'Arial',
           fontSize: '12px',
+          maxWidth: 44,
           opacity: 1,
           text: 'QwErTy',
           type: 'text',
-          x: 822,
+          x: 821,
           y: 235.8
         }
       ]

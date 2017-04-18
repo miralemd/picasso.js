@@ -4,29 +4,32 @@ import { oobManager } from './oob';
 import { createLineWithLabel } from './lines-and-labels';
 
 /**
- * @typedef settings
+ * @typedef component
+ * @experimental
  * @type {object}
  * @property {refline-generic-style} [style=refline-generic-style] - x coordinate
- * @property {reflines-x[]} [x=refline-line[]] - lines along X
- * @property {reflines-y[]} [y=refline-line[]] - lines along Y
+ * @property {object} lines - X & Y Lines
+ * @property {reflines-x[]} [lines.x=refline-line[]] - lines along X
+ * @property {reflines-y[]} [lines.y=refline-line[]] - lines along Y
  */
 
 /**
  * @typedef refline-generic-style
  * @property {refline-oob-style} [oob=refline-oob-style] - Style for out of bounds object (oob)
  * @property {refline-line} [line=refline-line] - Generic style for lines
+ * @property {refline-line-label} [label=refline-line-label] - Generic style for labels
  */
 
 /**
  * @typedef refline-oob-style
  * @property {boolean} [show=true] - Show out of bounds items
  * @property {string} [type=undefined] - EXPERIMENTAL:  Set this to 'arc' for an experimental out of bounds shape (only works with SVG)
- * @property {integer} [width=10] - Width of the out of bounds object
+ * @property {number} [width=10] - Width of the out of bounds object
  * @property {string} [fill='#1A1A1A'] - Fill color of the OOB object
  * @property {string} [stroke='transparent'] - Stroke of the OOB object
- * @property {integer} [strokeWidth=0] - Stroke width of the OOB object
- * @property {integer} [opacity=1] - Opacity of the OOB object
- * @property {refline-generic-text} [opacity=refline-generic-text] - Text configuration for out of bounds
+ * @property {number} [strokeWidth=0] - Stroke width of the OOB object
+ * @property {number} [opacity=1] - Opacity of the OOB object
+ * @property {refline-generic-text} [text=refline-generic-text] - Text configuration for out of bounds
  * @property {refline-generic-object} [triangle=refline-generic-object] - The triangle in OOB
  * @property {object} [padding] - Padding on X
  * @property {number} [padding.x=28] - Padding on X
@@ -40,47 +43,54 @@ import { createLineWithLabel } from './lines-and-labels';
  * @property {string} [fontFamily='Arial'] - Font family
  * @property {string} [fill='#fff'] - Fill color
  * @property {string} [stroke='transparent'] - Stroke
- * @property {integer} [strokeWidth=0] - Stroke width
- * @property {integer} [opacity=1] - Opacity
+ * @property {number} [strokeWidth=0] - Stroke width
+ * @property {number} [opacity=1] - Opacity
  */
 
 /**
  * @typedef refline-line
- * @property {integer} value - The value of the reference line. If a scale is specified, it is applied.
+ * @property {number} value - The value of the reference line. If a scale is specified, it is applied.
  * @property {Scale} [scale=undefined] - Scale to use (if undefined will use normalized value 0-1)
- * @property {refline-generic-object} [style=refline-generic-object] - The style of the line
- * @property {refline-line-label} [style=refline-line-label] - The label style of the line
+ * @property {refline-generic-object} [line=refline-generic-object] - The style of the line
+ * @property {refline-line-label} [label=refline-line-label] - The label style of the line
  */
 
 /**
  * @typedef refline-line-label
- * @property {integer} padding=5 - Padding inside the label
+ * @property {number} padding=5 - Padding inside the label
  * @property {string} [text=''] - Text
  * @property {string} [fontSize='12px'] - Font size
  * @property {string} [fontFamily='Arial'] - Font family
  * @property {string} [stroke='transparent'] - Stroke
- * @property {integer} [strokeWidth=0] - Stroke width
- * @property {integer} [opacity=1] - Opacity
+ * @property {number} [strokeWidth=0] - Stroke width
+ * @property {number} [opacity=1] - Opacity
  * @property {number|string} [align=0] - Alignment property left to right (0 = left, 1 = right). Also supports string ('left', 'center', 'middle', 'right')
  * @property {number|string} [vAlign=0] - Alignment property top to bottom (0 = top, 1 = bottom). Also supports string ('top', 'center', 'middle', 'bottom')
+ * @property {number} [maxWidth=1] - The maximum relative width to the width of the rendering area (see maxWidthPx below aswell)
+ * @property {number} [maxWidthPx=9999] - The maximum width in pixels.
  * @property {refline-line-label-background} [background=refline-line-label-background] - The background style (rect behind text)
  */
 
- /**
-  * @typedef refline-line-label-background
-  * @property {string} [fill='#fff'] - Fill color
-  * @property {string} [stroke='transparent'] - Stroke
-  * @property {integer} [strokeWidth=0] - Stroke width
-  * @property {integer} [opacity=0.5] - Opacity
-  */
+/**
+ * @example
+ * // Labels will be rendered with the maximum size of the smallest value of maxWidth and maxWidthPx size, so you may specify maxWidth 0.8 but maxWidthPx 100 and will never be over 100px and never over 80% of the renderable area.
+ */
 
- /**
-  * @typedef refline-generic-object
-  * @property {string} [fill='#fff'] - Fill color
-  * @property {string} [stroke='transparent'] - Stroke
-  * @property {integer} [strokeWidth=0] - Stroke width
-  * @property {integer} [opacity=1] - Opacity
-  */
+/**
+ * @typedef refline-line-label-background
+ * @property {string} [fill='#fff'] - Fill color
+ * @property {string} [stroke='transparent'] - Stroke
+ * @property {number} [strokeWidth=0] - Stroke width
+ * @property {number} [opacity=0.5] - Opacity
+ */
+
+/**
+ * @typedef refline-generic-object
+ * @property {string} [fill='#fff'] - Fill color
+ * @property {string} [stroke='transparent'] - Stroke
+ * @property {number} [strokeWidth=0] - Stroke width
+ * @property {number} [opacity=1] - Opacity
+ */
 
 const refLineComponent = {
   require: ['chart', 'renderer', 'dockConfig'],
@@ -114,6 +124,9 @@ const refLineComponent = {
       },
       line: {
         stroke: '#000'
+      },
+      label: {
+        strokeWidth: 0
       }
     }
   },
@@ -161,7 +174,7 @@ const refLineComponent = {
     this.lines.x = this.lines.x.map((line) => {
       if (line.scale) {
         let scale = this.chart.scale(line.scale);
-        return extend(line, { position: scale(line.value) });
+        return extend(line, { scale, position: scale(line.value) });
       }
 
       return extend(line, { position: line.value });
@@ -171,7 +184,7 @@ const refLineComponent = {
     this.lines.y = this.lines.y.map((line) => {
       if (line.scale) {
         let scale = this.chart.scale(line.scale);
-        return extend(line, { position: scale(line.value), flipXY: true });
+        return extend(line, { scale, position: scale(line.value), flipXY: true });
       }
 
       return extend(line, { position: line.value, flipXY: true });
@@ -202,7 +215,7 @@ const refLineComponent = {
 
       if (show) {
         // Create line with labels
-        createLineWithLabel({ blueprint: this.blueprint, renderer: this.renderer, p, settings, items });
+        createLineWithLabel({ chart: this.chart, blueprint: this.blueprint, renderer: this.renderer, p, settings, items });
       }
     });
 

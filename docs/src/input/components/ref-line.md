@@ -1,8 +1,8 @@
-# `ref-line` (Reference Lines) component
+# `ref-line` (Reference Line) component [*EXPERIMENTAL*]
 
-A component that renders reference lines according to configuration
+A component that renders reference line(s) according to configuration
 
 ## Component settings
 
-{{>magic ctx='core.chart-components.ref-lines.refline-js'}}
+{{>magic ctx='core.chart-components.ref-line.refline-js'}}
 
