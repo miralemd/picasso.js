@@ -1,8 +1,8 @@
 import { sqrDistance } from '../../math/vector';
 
 function getPoint(rendererBounds, event) {
-  const eventOffsetX = event.srcEvent ? event.srcEvent.clientX : event.clientX;
-  const eventOffsetY = event.srcEvent ? event.srcEvent.clientY : event.clientY;
+  const eventOffsetX = event.center.x;
+  const eventOffsetY = event.center.y;
   return {
     x: eventOffsetX - rendererBounds.left,
     y: eventOffsetY - rendererBounds.top

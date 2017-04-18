@@ -25,9 +25,9 @@ describe('brush-lasso', () => {
   });
 
   it('should show lasso', () => {
-    instance.def.start({ clientX: 1, clientY: 2 });
-    instance.def.move({ clientX: 11, clientY: 12 });
-    instance.def.move({ clientX: 11, clientY: 0 });
+    instance.def.start({ center: { x: 1, y: 2 } });
+    instance.def.move({ center: { x: 11, y: 12 } });
+    instance.def.move({ center: { x: 11, y: 0 } });
     rendererOutput = componentFixture.getRenderOutput().reduce((a, b) => (a.type === 'path' ? a : b), {});
 
     let expected = {
@@ -47,8 +47,8 @@ describe('brush-lasso', () => {
   });
 
   it('should show startPoint', () => {
-    instance.def.start({ clientX: 1, clientY: 2 });
-    instance.def.move({ clientX: 10, clientY: 10 });
+    instance.def.start({ center: { x: 1, y: 2 } });
+    instance.def.move({ center: { x: 10, y: 10 } });
     rendererOutput = componentFixture.getRenderOutput().reduce((a, b) => (a.type === 'circle' ? a : b), {});
 
     let expected = {
@@ -72,8 +72,8 @@ describe('brush-lasso', () => {
     config.settings.snapIndicator.threshold = 7;
 
     instance = componentFixture.simulateCreate(brushLasso, config);
-    instance.def.start({ clientX: 0, clientY: 0 });
-    instance.def.move({ clientX: 6, clientY: 0 });
+    instance.def.start({ center: { x: 0, y: 0 } });
+    instance.def.move({ center: { x: 6, y: 0 } });
 
     rendererOutput = componentFixture.getRenderOutput().reduce((a, b) => (a.type === 'line' ? a : b), {});
 
@@ -96,8 +96,8 @@ describe('brush-lasso', () => {
   it('should not show snapIndicator if distance is larger then threshold', () => {
     config.settings.snapIndicator.threshold = 5;
     instance = componentFixture.simulateCreate(brushLasso, config);
-    instance.def.start({ clientX: 0, clientY: 0 });
-    instance.def.move({ clientX: 6, clientY: 0 });
+    instance.def.start({ center: { x: 0, y: 0 } });
+    instance.def.move({ center: { x: 6, y: 0 } });
     rendererOutput = componentFixture.getRenderOutput();
 
     expect(rendererOutput.some(node => node.type === 'line')).to.equal(false);
@@ -105,10 +105,10 @@ describe('brush-lasso', () => {
 
   // TODO Currently does allow it, TBD if it should continues to
   // it('should not allow a path renderer outside the component container', () => {
-  //   instance.def.start({ clientX: 0, clientY: 0 });
-  //   instance.def.move({ clientX: -10, clientY: 10 }); // x outside
-  //   instance.def.move({ clientX: 10, clientY: 2000 }); // y outside
-  //   instance.def.end({ clientX: 0, clientY: 0 });
+  //   instance.def.start({ x: 0, y: 0 });
+  //   instance.def.move({ x: -10, y: 10 }); // x outside
+  //   instance.def.move({ x: 10, y: 2000 }); // y outside
+  //   instance.def.end({ x: 0, y: 0 });
   //   rendererOutput = componentFixture.getRenderOutput().reduce((a, b) => (a.type === 'path' ? a : b), {});
 
   //   let expected = {
@@ -139,7 +139,7 @@ describe('brush-lasso', () => {
     });
 
     it('should not call render on "start"', () => {
-      instance.def.start({ clientX: 0, clientY: 0 });
+      instance.def.start({ center: { x: 0, y: 0 } });
 
       expect(spy).to.not.have.been.called;
       expect(shapesAtStub).to.not.have.been.called;
@@ -147,8 +147,8 @@ describe('brush-lasso', () => {
     });
 
     it('should call render on "move"', () => {
-      instance.def.start({ clientX: 0, clientY: 0 }); // needed to init state
-      instance.def.move({ clientX: 10, clientY: 10 });
+      instance.def.start({ center: { x: 0, y: 0 } }); // needed to init state
+      instance.def.move({ center: { x: 10, y: 10 } });
 
       expect(spy).to.have.been.called.once;
       expect(shapesAtStub).to.have.been.called.once;
@@ -156,8 +156,8 @@ describe('brush-lasso', () => {
     });
 
     it('should call render on "end"', () => {
-      instance.def.start({ clientX: 0, clientY: 0 }); // needed to init state
-      instance.def.end({ clientX: 10, clientY: 10 });
+      instance.def.start({ center: { x: 0, y: 0 } }); // needed to init state
+      instance.def.end({ center: { x: 10, y: 10 } });
 
       expect(spy).to.have.been.called.once;
       expect(shapesAtStub).to.have.been.called.once;
@@ -165,7 +165,7 @@ describe('brush-lasso', () => {
     });
 
     it('should not call render on "move" if lasso has not been initiated', () => {
-      instance.def.move({ clientX: 10, clientY: 10 });
+      instance.def.move({ center: { x: 10, y: 10 } });
 
       expect(spy).to.not.have.been.called;
       expect(shapesAtStub).to.not.have.been.called;
@@ -173,7 +173,7 @@ describe('brush-lasso', () => {
     });
 
     it('should not call render on "end" if lasso has not been initiated', () => {
-      instance.def.end({ clientX: 10, clientY: 10 });
+      instance.def.end({ center: { x: 10, y: 10 } });
 
       expect(spy).to.not.have.been.called;
       expect(shapesAtStub).to.not.have.been.called;
@@ -191,8 +191,8 @@ describe('brush-lasso', () => {
       };
 
       instance = componentFixture.simulateCreate(brushLasso, config);
-      instance.def.start({ clientX: 1, clientY: 2 });
-      instance.def.move({ clientX: 11, clientY: 12 });
+      instance.def.start({ center: { x: 1, y: 2 } });
+      instance.def.move({ center: { x: 11, y: 12 } });
       rendererOutput = componentFixture.getRenderOutput().reduce((a, b) => (a.type === 'path' ? a : b), {});
 
       let expected = {
@@ -220,8 +220,8 @@ describe('brush-lasso', () => {
       };
 
       instance = componentFixture.simulateCreate(brushLasso, config);
-      instance.def.start({ clientX: 1, clientY: 2 });
-      instance.def.move({ clientX: 11, clientY: 12 });
+      instance.def.start({ center: { x: 1, y: 2 } });
+      instance.def.move({ center: { x: 11, y: 12 } });
       rendererOutput = componentFixture.getRenderOutput().reduce((a, b) => (a.type === 'line' ? a : b), {});
 
       const expected = {
@@ -250,8 +250,8 @@ describe('brush-lasso', () => {
       };
 
       instance = componentFixture.simulateCreate(brushLasso, config);
-      instance.def.start({ clientX: 1, clientY: 2 });
-      instance.def.move({ clientX: 11, clientY: 12 });
+      instance.def.start({ center: { x: 1, y: 2 } });
+      instance.def.move({ center: { x: 11, y: 12 } });
       rendererOutput = componentFixture.getRenderOutput().reduce((a, b) => (a.type === 'circle' ? a : b), {});
 
       let expected = {
