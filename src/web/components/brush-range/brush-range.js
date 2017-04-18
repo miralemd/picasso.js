@@ -144,17 +144,11 @@ const brushRangeComponent = {
     }
   },
   renderer: 'dom',
-  // on: {
-  //   panstart(e) {
-  //     this.start(e);
-  //   },
-  //   panend(e) {
-  //     this.end(e);
-  //   },
-  //   panmove(e) {
-  //     this.move(e);
-  //   }
-  // },
+  on: {
+    rangeStart(e) { this.start(e); },
+    rangeMove(e) { this.move(e); },
+    rangeEnd(e) { this.end(e); }
+  },
   created() {
     this.rect = { x: 0, y: 0, width: 0, height: 0 };
     this.state = {};
