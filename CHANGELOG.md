@@ -2,6 +2,34 @@
 
 ## Unreleased
 
+- ref-line's `style` property has been renamed to `line`:
+
+    Old:
+    ```js
+    lines: {
+      x: [{
+        value: 0.2,
+        style: {
+          stroke: 'green',
+          strokeWidth: 2
+        },
+      }]
+    }
+    ```
+
+    New:
+    ```js
+    lines: {
+      x: [{
+        value: 0.2,
+        line: {
+          stroke: 'green',
+          strokeWidth: 2
+        },
+      }]
+    }
+    ```
+
 ### Added
 
 - PIC-133 Enable user to do lookup on shapes by using a geometrical shape as input
