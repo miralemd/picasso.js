@@ -40,6 +40,8 @@ export default function renderer(opts = {}) {
 
   dom.root = () => el;
 
+  dom.itemsAt = () => [];
+
   dom.appendTo = (element) => {
     if (!el) {
       el = createElement('div');

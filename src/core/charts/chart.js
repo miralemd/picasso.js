@@ -702,7 +702,13 @@ function chart(definition) {
     }
   };
 
-  instance.component = key => currentComponents[findComponentIndexByKey(key)];
+  instance.component = (key) => {
+    const idx = findComponentIndexByKey(key);
+    if (idx !== -1) {
+      return currentComponents[idx].instance.ctx;
+    }
+    return undefined;
+  };
 
   created();
 
