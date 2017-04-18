@@ -47,6 +47,26 @@
     );
     ```
 
+- PIC-134 Enable user to brush on data bound shapes (nodes)
+
+    ```js
+    chartInstance.brushFromShapes(shapes
+      {
+        components: [
+          { 
+            key: 'key1',
+            contexts: ['myContext'],
+            data: ['self'],
+            action: 'add'
+          }
+        ]
+      }
+    );
+    ```
+
+- PIC-124 Detect lasso selection 'action'
+
+
 ## [BREAKING] 0.15.0
 
 ### Breaking changes

@@ -5,6 +5,18 @@ import createCanvasGradient from './canvas-gradient';
 
 const reg = registry();
 
+function toLineDash(p) {
+  if (Array.isArray(p)) {
+    return p;
+  } else if (typeof p === 'string') {
+    if (p.indexOf(',' !== -1)) {
+      return p.split(',');
+    }
+    return p.split(' ');
+  }
+  return [];
+}
+
 function dpiScale(g) {
   const dpr = typeof window === 'undefined' ? 1 : window.devicePixelRatio || 1;
   const backingStorePixelRatio = g.webkitBackingStorePixelRatio ||
@@ -116,7 +128,7 @@ export function renderer(sceneFn = sceneFactory) {
     ['opacity', 'globalAlpha'],
     ['globalAlpha', 'globalAlpha'],
     ['stroke-width', 'lineWidth'],
-    ['stroke-dasharray', 'setLineDash', p => (Array.isArray(p) ? p : p.split(','))]
+    ['stroke-dasharray', 'setLineDash', toLineDash]
   ];
 
   const canvasRenderer = () => {};
