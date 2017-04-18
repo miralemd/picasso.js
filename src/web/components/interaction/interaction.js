@@ -31,6 +31,9 @@ const interactionComponent = {
     const mc = this.mc = new Hammer.Manager(this.chart.element);
     this.settings.actions.forEach((action) => {
       action.options = action.options || {};
+      if (typeof action.options.enable === 'function') {
+        action.options.enable = action.options.enable.bind(this.instance);
+      }
       const gestureType = getGestureType(action.type);
       if (Hammer[gestureType]) {
         mc.add(new Hammer[gestureType](getDefaultOptions(action.type, action.options)));
