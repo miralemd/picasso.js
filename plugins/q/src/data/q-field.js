@@ -1,6 +1,8 @@
 import resolve from '../json-path-resolver';
 import { createFromMetaInfo } from '../formatter';
 
+/* eslint prefer-spread:0 */
+
 const specialTextValues = {
   '-3': (meta) => {
     if ('othersLabel' in meta) {
@@ -67,26 +69,29 @@ function traverseNode(node) {
   }
 
   if (children[0].qType === 'P') {
-    // rows = rows.concat(children[0].qSubNodes.map(traverseNode)[0]);
-    for (let i = 0; i < children.length; i++) {
-      const pp = children[i].qSubNodes.map(traverseNode).map(v => v[0]);
+    for (let i = 0, len = children.length; i < len; i++) {
+      const subNodes = children[i].qSubNodes;
+      let traversed;
+      const pp = [];
+      for (let j = 0, subs = subNodes.length; j < subs; j++) {
+        traversed = traverseNode(subNodes[j]);
+        pp.push.apply(pp, traversed);
+      }
       pseudos.push(pp);
     }
     const first = pseudos[0];
-    pseudos.slice(1).forEach((p) => {
-      // log(n.qText, 'pesudorodfsdfws', p);
-      first.forEach((row, r) => {
-        // log('a', r, p[r]);
-        const lastRowValue = p[r].slice(-1)[0];
-        row.push(lastRowValue);
-      });
-    });
-    rows = rows.concat(pseudos[0]);
-    // log('rows', rows);
+    let last;
+    for (let p = 1; p < pseudos.length; p++) {
+      for (let c = 0; c < first.length; c++) {
+        last = pseudos[p][c].slice(-1)[0];
+        first[c].push(last);
+      }
+    }
+    rows.push.apply(rows, pseudos[0]);
   } else {
     for (let i = 0; i < children.length; i++) {
       if (children[i].qType !== 'T') {
-        rows = rows.concat(traverseNode(children[i]));
+        rows.push.apply(rows, traverseNode(children[i]));
       }
     }
   }
@@ -98,11 +103,11 @@ function traverseNode(node) {
   return rows;
 }
 
-function transformStackedToStraight(root) {
+export function transformStackedToStraight(root) {
   const nodes = root ? root.qSubNodes : [];
   let matrix = [];
   for (let i = 0; i < nodes.length; i++) {
-    matrix = matrix.concat(traverseNode(nodes[i]));
+    matrix.push.apply(matrix, traverseNode(nodes[i]));
   }
   return matrix;
 }
@@ -118,9 +123,9 @@ function collectData({ colIdx, pages, fieldMeta, attrIdx, attrDimIdx }) {
   let values = [];
   pages.forEach((p) => {
     if (p.qMatrix) {
-      values = values.concat(collectStraightData(colIdx, p, fieldMeta, attrIdx, attrDimIdx));
+      values.push.apply(values, collectStraightData(colIdx, p, fieldMeta, attrIdx, attrDimIdx));
     } else if (p.qData) { // assume stacked data
-      values = values.concat(collectStackedData(colIdx, p, fieldMeta, attrIdx, attrDimIdx));
+      values.push.apply(values, collectStackedData(colIdx, p, fieldMeta, attrIdx, attrDimIdx));
     }
   });
   return values;
@@ -146,6 +151,7 @@ const valuesFn = d => collectData({
 const formatterFn = d => createFromMetaInfo(d.meta, d.localeInfo);
 
 export default function qField(fieldFn, data, { id } = {}) {
+  let valuesCache;
   return fieldFn(data, {
     id,
     formatter: formatterFn,
@@ -154,6 +160,11 @@ export default function qField(fieldFn, data, { id } = {}) {
     type: typeFn,
     tags: tagsFn,
     title: titleFn,
-    values: valuesFn
+    values: (d) => {
+      if (!valuesCache) {
+        valuesCache = valuesFn(d);
+      }
+      return valuesCache;
+    }
   });
 }
