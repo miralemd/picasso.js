@@ -34,6 +34,8 @@
 
 ### Added
 
+- PIC-7 Continuous range selection
+- PIC-8 Lasso selection
 - PIC-133 Enable user to do lookup on shapes by using a geometrical shape as input
 
     ```js
