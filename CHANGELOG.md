@@ -2,11 +2,15 @@
 
 ## Unreleased
 
-## [BREAKING] 0.16.0
-
 ### Fixed
 
 - PIC-136 EventEmitter mem leak
+
+### Internal
+
+- Performance improved for QIX data transformations
+
+## [BREAKING] 0.16.0
 
 ### Breaking changes
 
