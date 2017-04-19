@@ -437,8 +437,6 @@ function chart(definition) {
       currentComponents.forEach((comp) => {
         if (comp.updateWith && comp.visible) {
           toUpdate.push(comp);
-        } else {
-          toRender.push(comp);
         }
       });
     } else {

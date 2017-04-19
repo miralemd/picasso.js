@@ -4,6 +4,10 @@
 
 ## [BREAKING] 0.16.0
 
+### Fixed
+
+- PIC-136 EventEmitter mem leak
+
 ### Breaking changes
 
 - chart definition and component definitions no longer accept `on` property to bind events when instantiating a new instance or when update an existing one. Instead events can be bound in the `mounted` hook.
