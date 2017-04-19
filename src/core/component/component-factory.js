@@ -445,6 +445,7 @@ function componentFactory(definition, options = {}) {
     brushStylers.forEach((brushStyler) => {
       brushStyler.cleanUp();
     });
+    brushStylers.length = 0;
   };
 
   fn.onBrushTap = (e) => {
