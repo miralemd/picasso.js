@@ -4,6 +4,27 @@
 
 ### Breaking changes
 
+- chart definition and component definitions no longer accept `on` property to bind events when instantiating a new instance or when update an existing one. Instead events can be bound in the `mounted` hook.
+
+    ```js
+    picasso.chart({
+      element,
+      data,
+      settings: {
+        components: [
+          {
+            on: { // Removed
+              ...
+            }
+          }
+        ]
+      },
+      on: { // Removed
+        ...
+      }
+    })
+    ```
+
 - ref-line's `style` property has been renamed to `line`:
 
     Old:
