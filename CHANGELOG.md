@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## [BREAKING] Unreleased
+
+### Breaking changes
 
 - ref-line's `style` property has been renamed to `line`:
 
