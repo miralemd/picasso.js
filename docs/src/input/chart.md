@@ -14,7 +14,6 @@ The `picasso.chart` function will create and render a chart.
     * `scales` Object (optional). Scales to use when rendering. [More](./scales.md).
     * `formatters` Object (optional). The element to render the chart into. [More](./formatters.md).
     * `brush` Object (optional). Brushes to use. [More](./brush.md).
-  * `on` Object (optional). Event listeners to bind.
   * `created` Function (optional). Lifecycle hook.
   * `beforeMount` Function (optional). Lifecycle hook.
   * `mounted` Function (optional). Lifecycle hook.
@@ -201,6 +200,9 @@ chartInstance.update({
 ### `instance.shapesAt()`
 
 
+### `instance.brushFromShapes()`
+
+
 ### `instance.brush()`
 
 
@@ -209,21 +211,6 @@ chartInstance.update({
 
 ### `instance.data()`
 
-
-## Binding events
-
-Event listeners that are put inside the `on` object will automatically be bound when mounting the chart.
-
-
-```js
-const chartInstance = picasso.chart({
-  on: {
-    click: function(e) {
-      console.log('Click', e);
-    }
-  }
-});
-```
 
 _Note that you should not use arrow functions to let the `this` context inside methods to be bound to the instance_
 
@@ -254,11 +241,6 @@ const chartInstance = picasso.chart({
   },
   mounted: function() {
     console.log('Chart was mounted');
-  },
-  on: {
-    click: function(e) {
-      console.log('Click', e);
-    }
   }
 });
 

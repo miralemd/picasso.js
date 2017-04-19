@@ -50,6 +50,11 @@ Picasso.js comes with a pre-bundled set of components:
 - [axis](./components/axis.md)
 - [grid-line](./components/grid-line.md)
 - [text](./components/text.md)
+- [ref-line](./components/ref-line.md)
+- [range](./components/range.md)
+- [brush-range](./components/brush-range.md)
+- [brush-lasso](./components/brush-lasso.md)
+- [interaction](./components/interaction.md)
 
 ## Register a custom component
 
