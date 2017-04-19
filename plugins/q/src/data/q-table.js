@@ -1,4 +1,5 @@
 import { qField } from '../q';
+import { transformStackedToStraight } from './q-field';
 import resolve from '../json-path-resolver';
 
 const DIM_RX = /^\/(?:qHyperCube\/)?qDimensionInfo(?:\/(\d+))?/;
@@ -55,7 +56,7 @@ function attrDimField(hc, fieldIdx, attrDimIdx, localeInfo) {
   return qField(data, { id });
 }
 
-function stackedHyperCubeFieldsFn(hc, localeInfo) {
+function stackedHyperCubeFieldsFn(hc, localeInfo, transformedPages) {
   const dimz = hc.qDimensionInfo.length;
   return hc.qDimensionInfo.concat(hc.qMeasureInfo).map((f, idx) => {
     let dataContentIdx = idx;
@@ -65,7 +66,7 @@ function stackedHyperCubeFieldsFn(hc, localeInfo) {
     }
     const data = {
       meta: f,
-      pages: hc.qStackedDataPages,
+      pages: transformedPages || hc.qStackedDataPages,
       idx: dataContentIdx,
       localeInfo
     };
@@ -116,15 +117,27 @@ function attrDimFieldsFn(hc, localeInfo) {
 function fieldsFn(data) {
   const hc = data.cube;
   const hasDimInfo = typeof hc.qDimensionInfo !== 'undefined';
+  let transformed;
+  if (hc.qMode === 'K') {
+    transformed = hc.qStackedDataPages.map(page => ({
+      qArea: {
+        qLeft: 0,
+        qTop: page.qArea ? page.qArea.qTop : 0,
+        qWidth: hc.qDimensionInfo.length + hc.qMeasureInfo.length,
+        qHeight: page.qArea ? page.qArea.qHeight : 100
+      },
+      qMatrix: transformStackedToStraight(page.qData[0])
+    }));
+  }
   if (Array.isArray(hc.qDimensionInfo)) {
     if (hc.qMode === 'K') {
-      return stackedHyperCubeFieldsFn(hc, data.localeInfo);
+      return stackedHyperCubeFieldsFn(hc, data.localeInfo, transformed);
     }
-    return hyperCubeFieldsFn(hc, data.localeInfo);
+    return hyperCubeFieldsFn(hc, data.localeInfo, transformed);
   } else if (hasDimInfo) {
-    return listObjectFieldsFn(hc, data.localeInfo);
+    return listObjectFieldsFn(hc, data.localeInfo, transformed);
   } else if (hc.qSize) {
-    return attrDimFieldsFn(hc, data.localeInfo);
+    return attrDimFieldsFn(hc, data.localeInfo, transformed);
   }
   return [];
 }

@@ -23,11 +23,11 @@ export const reducers = {
   last: values => values[values.length - 1],
   min: (values) => {
     const filtered = filters.numeric(values);
-    return !filtered.length ? NaN : Math.min(...filtered);
+    return !filtered.length ? NaN : Math.min.apply(null, filtered);
   },
   max: (values) => {
     const filtered = filters.numeric(values);
-    return !filtered.length ? NaN : Math.max(...filtered);
+    return !filtered.length ? NaN : Math.max.apply(null, filtered);
   },
   sum: (values) => {
     const filtered = filters.numeric(values);
@@ -54,13 +54,13 @@ export function collectRepeating(repeater, ds) {
   const dataSource = repeater ? ds.findField(repeater.source) : null;
   if (dataSource && dataSource.field) {
     fieldValues = dataSource.field.values();
-    fieldValues.forEach((v, i) => {
-      const id = idAttribute === '$index' ? i : v[idAttribute];
+    for (let i = 0, id, len = fieldValues.length; i < len; i++) {
+      id = idAttribute === '$index' ? i : fieldValues[i][idAttribute];
       if (!ids[id]) {
         ids[id] = {};
         collection.push(ids[id]);
       }
-    });
+    }
   } else if (typeof repeater === 'undefined') {
     singleGroup = {};
     collection.push(singleGroup);
@@ -101,7 +101,7 @@ export function collectValues({
     if (group) {
       if (!group[key]) {
         group[key] = {
-          values: [],
+          _values: [],
           source: {
             field: source,
             type,
@@ -110,9 +110,9 @@ export function collectValues({
         };
       }
       if (valueProperty === '$index') {
-        group[key].values.push(typeof v.index !== 'undefined' ? v.index : i);
+        group[key]._values.push(typeof v.index !== 'undefined' ? v.index : i);
       } else {
-        group[key].values.push(v[valueProperty]);
+        group[key]._values.push(v[valueProperty]);
       }
       group[key].source.indices.push(i);
     }
@@ -174,8 +174,8 @@ function reduceValues(key, values, reducer) {
     v = values[i];
     if (v[key]) {
       reducerFn = typeof reducer === 'function' ? reducer : reducers[reducer || 'sum'];
-      v[key].value = reducerFn(v[key].values);
-      delete v[key].values;
+      v[key].value = reducerFn(v[key]._values);
+      // delete v[key].values;
     }
   }
 }
