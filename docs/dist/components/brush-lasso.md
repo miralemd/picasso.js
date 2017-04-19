@@ -2,7 +2,7 @@
 
 ## Definition
 
-The brush-lasso component have 4 different types of mediator listeners that can be utilized to visulize a lasso and brush on components.
+The brush-lasso component have 4 different types of listeners that can be utilized to visulize a lasso and brush on components.
 
 * lassoStart - Initilize the lasso. This will make the other listeners active. If a start has not been triggered, the other listerers have no effect.
 * lassoMove - To create a lasso, at least one lassoMove has to be triggered. On each lassoMove a draw call is performed and a brush is trigged on the line segment created between the previous lasso coordinate and the current cooridnate.
@@ -76,18 +76,19 @@ picasso.chart({
       },
       {
         type: 'interaction',
+        require: ['chart'],
         actions: [
           {
             type: 'Pan',
             handlers: {
               panstart: function onPanStart(e) {
-                this.mediator.emit('lassoStart', e); // If it should on trigger on a specific component, use chartInstance.componentsFromPoint() to determine if start is valid or not
+                this.chart.component('lassoComp').emit('lassoStart', e); // If it should on trigger on a specific component, use chartInstance.componentsFromPoint() to determine if start is valid or not
               },
               pan: function onPan(e) {
-                this.mediator.emit('lassoMove', e);
+                this.chart.component('lassoComp').emit('lassoMove', e);
               },
               panend: function onPanEnd(e) {
-                this.mediator.emit('lassoEnd', e);
+                this.chart.component('lassoComp').emit('lassoEnd', e);
               }
             }
           }

@@ -236,7 +236,7 @@ const brushLassoComponent = {
       }
     }
   },
-  mediator: {
+  on: {
     lassoStart(e) {
       this.start(e);
     },
