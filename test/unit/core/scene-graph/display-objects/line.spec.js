@@ -289,4 +289,25 @@ describe('Line', () => {
       expect(line.intersectsCircle(c)).to.equal(true);
     });
   });
+
+  describe('intersectsPolygon', () => {
+    it('should include transformation when resolving collision', () => {
+      shape.x1 = 115;
+      shape.y1 = 125;
+      shape.x2 = 115;
+      shape.y2 = 104;
+      shape.transform = 'translate(-100, -100)';
+      line = createLine(shape);
+      line.resolveLocalTransform();
+
+      const vertices = [
+        { x: 0, y: 25 },
+        { x: 25, y: 0 },
+        { x: 50, y: 25 },
+        { x: 0, y: 25 }
+      ];
+
+      expect(line.intersectsPolygon({ vertices })).to.equal(true);
+    });
+  });
 });

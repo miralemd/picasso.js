@@ -283,4 +283,24 @@ describe('Circle', () => {
       expect(circle.intersectsCircle({ cx: 15, cy: 30, r: 1 })).to.equal(true);
     });
   });
+
+  describe('intersectsPolygon', () => {
+    it('should include transformation when resolving polygon', () => {
+      shape.cx = 125;
+      shape.cy = 115;
+      shape.r = 1;
+      shape.transform = 'translate(-100, -100)';
+      circle = createCircle(shape);
+      circle.resolveLocalTransform();
+
+      const vertices = [
+        { x: 0, y: 25 },
+        { x: 25, y: 0 },
+        { x: 50, y: 25 },
+        { x: 0, y: 25 }
+      ];
+
+      expect(circle.intersectsPolygon({ vertices })).to.equal(true);
+    });
+  });
 });

@@ -282,4 +282,25 @@ describe('Rect', () => {
       expect(rect.intersectsCircle({ cx: 15, cy: 30, r: 1 })).to.equal(true);
     });
   });
+
+  describe('intersectsPolygon', () => {
+    it('should include transformation when resolving rect', () => {
+      shape.x = 110;
+      shape.y = 120;
+      shape.width = 10;
+      shape.height = 10;
+      shape.transform = 'translate(-100, -100)';
+      rect = createRect(shape);
+      rect.resolveLocalTransform();
+
+      const vertices = [
+        { x: 0, y: 25 },
+        { x: 25, y: 0 },
+        { x: 50, y: 25 },
+        { x: 0, y: 25 }
+      ];
+
+      expect(rect.intersectsPolygon({ vertices })).to.equal(true);
+    });
+  });
 });

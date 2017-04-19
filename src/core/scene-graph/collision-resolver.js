@@ -59,11 +59,17 @@ function resolveGeometryCollision(node, type, input) {
       const p = { x: input.cx, y: input.cy };
       ({ x: transformedInput.cx, y: transformedInput.cy } = node.inverseModelViewMatrix.transformPoint(p));
       transformedInput.r = input.r;
+    } else if (Array.isArray(input.vertices)) { // Polygon
+      transformedInput.vertices = node.inverseModelViewMatrix.transformPoints(input.vertices);
     } else { // Point
       transformedInput = node.inverseModelViewMatrix.transformPoint(input);
     }
   } else {
     transformedInput = input;
+  }
+
+  if (Array.isArray(transformedInput.vertices)) {
+    transformedInput = createPolygon(transformedInput); // TODO Shouldn't have to do this here, currently its beacause a collision algorithm optimization, i.e. caching of polygon bounds
   }
 
   const collider = node._collider.fn;
@@ -151,7 +157,7 @@ function resolveShape(shape, ratio = 1) {
     return ['containsPoint', _shape];
   } else if (Array.isArray(vertices)) {
     _shape.vertices = vertices.map(vertex => scalarMultiply(vertex, ratio));
-    return ['intersectsPolygon', createPolygon(_shape)];
+    return ['intersectsPolygon', _shape];
   }
   return [];
 }
