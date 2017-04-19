@@ -50,7 +50,7 @@ refline-generic-text: {
 ```
 ```js
 refline-line: {
-  value: , // The value of the reference line. If a scale is specified, it is applied..
+  value: 3.14, // The value of the reference line. If a scale is specified, it is applied..
   scale: , // Scale to use (if undefined will use normalized value 0-1). Optional.
   line: refline-generic-object, // The style of the line. Default: refline-generic-object. Optional.
   label: refline-line-label, // The label style of the line. Default: refline-line-label. Optional.
