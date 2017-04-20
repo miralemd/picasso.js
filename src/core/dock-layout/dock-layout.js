@@ -104,18 +104,21 @@ function reduceLayoutRect(logicalContainerRect, components, hiddenComponents) {
   };
   const edgeBleed = { left: 0, right: 0, top: 0, bottom: 0 };
 
-  components.sort((a, b) => a.config.prioOrder() - b.config.prioOrder());
+  const sortedComponents = components.slice();
+  sortedComponents.sort((a, b) => a.config.prioOrder() - b.config.prioOrder()); // lower prioOrder will have higher prio
 
-  for (let i = 0; i < components.length; ++i) {
-    const c = components[i];
+  for (let i = 0; i < sortedComponents.length; ++i) {
+    const c = sortedComponents[i];
     cacheSize(c, logicalContainerRect);
 
     if (!reduceSingleLayoutRect(logicalContainerRect, reducedRect, edgeBleed, c)) {
-      components.splice(i, 1);
+      sortedComponents.splice(i, 1);
       hiddenComponents.push(c.instance);
       --i;
     }
   }
+  components.length = 0;
+  components.push(...sortedComponents);
   reduceEdgeBleed(logicalContainerRect, reducedRect, edgeBleed);
   return reducedRect;
 }
