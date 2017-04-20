@@ -59,7 +59,18 @@ export default function scaleBand(settings, fields, dataset) {
   // I would like to define this outside of scaleBand but it cause the documentation to be in the wrong order
   function augmentScaleBand(band, settings, dataset) { // eslint-disable-line no-shadow
     band.data = function data() {
-      return dataset ? dataset.map({ self: { source: settings.source, type: 'qual' } }, { source: settings.source }) : [];
+      return dataset ? dataset.map(
+        {
+          self: {
+            source: settings.source, type: 'qual'
+          },
+          value: {
+            source: settings.source, type: 'qual', property: 'id'
+          }
+        },
+        {
+          source: settings.source
+        }) : [];
     };
 
     /**

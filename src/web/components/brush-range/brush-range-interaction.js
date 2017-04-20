@@ -50,7 +50,7 @@ export function start({ state, e, renderer, ranges, targetSize }) {
   }
 
   state.offset = renderer.element().getBoundingClientRect();
-  state.ranges = ranges(state, state.brushInstance);
+  state.ranges = ranges(state, state.fauxBrushInstance || state.brushInstance);
   state.started = true;
   const startPoint = (e.center[state.cssCoord.coord] - e[state.cssCoord.pos]) - state.offset[state.cssCoord.offset];
   const relStart = (e.center[state.cssCoord.coord]) - state.offset[state.cssCoord.offset];
@@ -139,7 +139,7 @@ export function end(state, ranges) {
   }
 
   state.started = false;
-  state.ranges = ranges(state, state.brushInstance);
+  state.ranges = ranges(state, state.fauxBrushInstance || state.brushInstance);
   findActive(state, state.current);
 }
 export function move(state, e) {
