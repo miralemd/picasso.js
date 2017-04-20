@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Added
+
+- Brush values from band scale (discrete range)
+
+## 0.16.1
+
 ### Fixed
 
 - PIC-136 EventEmitter mem leak
