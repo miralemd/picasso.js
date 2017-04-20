@@ -2,6 +2,7 @@ import buildRange from './brush-range-node-builder';
 import { start, end, move } from './brush-range-interaction';
 import linear from '../../../core/scales/linear';
 import { scaleWithSize } from '../../../core/scales';
+import brushFactory from '../../../core/brush';
 
 const TARGET_SIZE = 5;
 const VERTICAL = 0;
@@ -111,7 +112,15 @@ function setRanges(state) {
     });
   }
   state.scale.sources.forEach((s) => {
-    state.brushInstance.setRange(s, rs);
+    if (state.fauxBrushInstance) {
+      let values = state.findValues(rs).map(v => ({ key: s, value: v }));
+      // state.brushInstance.removeValues(values);
+      // state.brushInstance.addValues(values);
+      state.brushInstance.setValues(values);
+      state.fauxBrushInstance.setRange(s, rs);
+    } else {
+      state.brushInstance.setRange(s, rs);
+    }
   });
 }
 
@@ -128,6 +137,27 @@ function findClosest(value, scale) {
     }
   }
   return name;
+}
+
+function findValues(rangesValues, scale) {
+  const domain = scale.domain();
+  const values = [];
+  rangesValues.forEach((range) => {
+    const startIdx = domain.indexOf(findClosest(range.min, scale));
+    const endIdx = domain.indexOf(findClosest(range.max, scale));
+    values.push.apply(values, domain.slice(Math.min(startIdx, endIdx), Math.max(startIdx, endIdx) + 1)); /* eslint prefer-spread:0 */
+  });
+
+  const dataValues = new Array(values.length);
+  const data = scale.data();
+  let d;
+  let idx;
+  for (let i = 0, len = values.length; i < len; i++) {
+    idx = domain.indexOf(values[i]);
+    d = data[idx];
+    dataValues[i] = d.value !== 'undefined' ? d.value.value : values[i];
+  }
+  return dataValues;
 }
 
 const brushRangeComponent = {
@@ -201,7 +231,11 @@ const brushRangeComponent = {
       this.state.scale = linear();
       this.state.scale.sources = scale.sources;
       this.state.format = v => findClosest(v, scale);
+      this.state.fauxBrushInstance = brushFactory();
+      this.state.findValues = valueRanges => findValues(valueRanges, scale);
     } else {
+      this.state.fauxBrushInstance = null;
+      this.state.findValues = null;
       this.state.scale = scale;
       this.state.format = this.chart.field(this.state.scale.sources[0]).field.formatter();
     }
