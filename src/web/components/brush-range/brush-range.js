@@ -261,6 +261,9 @@ const brushRangeComponent = {
     render(this.state);
   },
   clear() {
+    if (this.state.fauxBrushInstance) {
+      this.state.fauxBrushInstance.clear();
+    }
     this.state.renderer.render([]);
   }
 };
