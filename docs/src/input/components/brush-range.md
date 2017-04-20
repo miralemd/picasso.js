@@ -10,7 +10,18 @@
   settings: {
     brush: 'highlight', // brush to apply changes to 
     scale: 'y', // scale to extract data from 
-    direction: 'vertical'
+    direction: 'vertical',
+    bubbles: {
+      show: true
+      align: 'start', // or end
+      fontSize: '14px',
+      fontFamily: 'Arial',
+      fill: '#595959'
+    },
+    target: { // render matching overlay on target component (optional)
+      component: 'y-axis',
+      fill: 'rgb(82,204,82)'
+    }
   }
 }
 ```
@@ -30,13 +41,13 @@ picasso.chart({
         rangeRef = 'rangeSelectionY'
       }
       // delegate 'start' event to relevant brush-range component
-      this.component(rangeRef).instance.def.start(e);
+      this.component(rangeRef).emit('rangeStart', e);
     },
     panmove: function(e) {
-      this.component(rangeRef).instance.def.move(e);
+      this.component(rangeRef).emit('rangeMove', e);
     },
     panend: function(e) {
-      this.component(rangeRef).instance.def.end(e);
+      this.component(rangeRef).emit('rangeEnd', e);
     }
   },
   element: element,
@@ -58,6 +69,9 @@ picasso.chart({
           brush: 'highlight', 
           scale: 'y',
           direction: 'vertical'
+        },
+        target: {
+          component: 'y-axis'
         }
       },
       { 
@@ -67,6 +81,9 @@ picasso.chart({
           brush: 'highlight', 
           scale: 'x',
           direction: 'horizontal'
+        },
+        target: {
+          component: 'x-axis'
         }
       }
     ]

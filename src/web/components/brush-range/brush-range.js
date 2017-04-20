@@ -140,6 +140,10 @@ const brushRangeComponent = {
         fontSize: '14px',
         fontFamily: 'Arial',
         fill: '#595959'
+      },
+      fill: '#ccc',
+      target: {
+        fill: '#ccc'
       }
     }
   },
@@ -166,8 +170,20 @@ const brushRangeComponent = {
     const scale = scaleWithSize(this.chart.scale(stngs.scale), size);
     const offset = this.renderer.element().getBoundingClientRect();
 
+    const target = stngs.target ? this.chart.component(stngs.target.component) : null;
+    if (target) {
+      this.state.targetRect = {
+        x: target.rect.x - this.rect.x,
+        y: target.rect.y - this.rect.y,
+        width: target.rect.width,
+        height: target.rect.height
+      };
+    } else {
+      this.state.targetRect = null;
+    }
+
     this.state.direction = direction;
-    this.state.bubbles = stngs.bubbles;
+    this.state.settings = stngs;
     this.state.offset = offset;
     this.state.brush = stngs.brush;
     this.state.brushInstance = this.chart.brush(this.state.brush);

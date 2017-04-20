@@ -91,6 +91,20 @@ function buildBubble({ h, isVertical, label, otherValue, idx, pos, align, style 
   ]);
 }
 
+function buildArea({ h, isVertical, top, height, color }) {
+  return h('div', {
+    style: {
+      backgroundColor: color,
+      opacity: 0.2,
+      position: 'absolute',
+      left: isVertical ? 0 : `${top}px`,
+      top: isVertical ? `${top}px` : 0,
+      height: isVertical ? `${height}px` : '100%',
+      width: isVertical ? '100%' : `${height}px`
+    }
+  }, []);
+}
+
 export default function buildRange({ borderHit, els, isVertical, state, vStart, vEnd, idx }) {
   const start = state.scale(vStart) * state.size;
   const end = state.scale(vEnd) * state.size;
@@ -98,35 +112,39 @@ export default function buildRange({ borderHit, els, isVertical, state, vStart, 
   const top = Math.min(start, end);
   const bottom = top + height;
 
-  let cssTop;
-  let cssLeft;
-  let cssWidth;
-  let cssHeight;
-
-  if (isVertical) {
-    cssTop = `${top}px`;
-    cssLeft = 0;
-    cssWidth = '100%';
-    cssHeight = `${height}px`;
-  } else {
-    cssTop = '0';
-    cssLeft = `${top}px`;
-    cssWidth = `${height}px`;
-    cssHeight = '100%';
+  if (state.targetRect) {
+    const targetSize = isVertical ? state.targetRect.height : state.targetRect.width;
+    const targetStart = state.scale(vStart) * targetSize;
+    const targetEnd = state.scale(vEnd) * targetSize;
+    const targetHeight = Math.abs(targetStart - targetEnd);
+    const targetTop = Math.min(targetStart, targetEnd);
+    els.push(state.h('div', {
+      style: {
+        position: 'absolute',
+        left: `${state.targetRect.x}px`,
+        top: `${state.targetRect.y}px`,
+        height: `${state.targetRect.height}px`,
+        width: `${state.targetRect.width}px`
+      }
+    }, [
+      buildArea({
+        h: state.h,
+        isVertical,
+        top: targetTop,
+        height: targetHeight,
+        color: state.settings.target.fill
+      })
+    ]));
   }
 
   // active range area
-  els.push(state.h('div', {
-    style: {
-      backgroundColor: '#ccc',
-      opacity: 0.2,
-      position: 'absolute',
-      left: cssLeft,
-      top: cssTop,
-      height: cssHeight,
-      width: cssWidth
-    }
-  }, []));
+  els.push(buildArea({
+    h: state.h,
+    isVertical,
+    top,
+    height,
+    color: state.settings.fill
+  }));
 
   els.push(buildLine({
     h: state.h,
@@ -146,10 +164,11 @@ export default function buildRange({ borderHit, els, isVertical, state, vStart, 
     align: 'end'
   }));
 
-  if (state.bubbles && state.bubbles.show) {
-    const fontSize = state.bubbles.fontSize;
-    const fontFamily = state.bubbles.fontFamily;
-    const fill = state.bubbles.fill;
+  const bubbles = state.settings.bubbles;
+  if (bubbles && bubbles.show) {
+    const fontSize = bubbles.fontSize;
+    const fontFamily = bubbles.fontFamily;
+    const fill = bubbles.fill;
     const style = {
       fontSize,
       fontFamily,
@@ -159,7 +178,7 @@ export default function buildRange({ borderHit, els, isVertical, state, vStart, 
     els.push(buildBubble({
       h: state.h,
       isVertical,
-      align: state.bubbles.align,
+      align: bubbles.align,
       style,
       idx,
       otherValue: start < end ? vEnd : vStart,
@@ -170,7 +189,7 @@ export default function buildRange({ borderHit, els, isVertical, state, vStart, 
     els.push(buildBubble({
       h: state.h,
       isVertical,
-      align: state.bubbles.align,
+      align: bubbles.align,
       style,
       idx,
       otherValue: start < end ? vStart : vEnd,
