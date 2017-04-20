@@ -2,9 +2,11 @@
 
 ## Unreleased
 
+## 0.17.0
+
 ### Added
 
-- Brush values from band scale (discrete range)
+- Support range brush on band scale
 
 ## 0.16.1
 
