@@ -83,3 +83,13 @@ To register a component, use the `picasso.component` function.
 __TODO__
 
 (Note that the lifecycle hooks in the component definition __does not__ share the same context as hooks used in the component settings of a chart).
+
+## Component displayOrder
+
+The `displayOrder` property is used by the layout engine to lay out components. Components are interpreted in the ascending order of the `displayOrder` value. The layout engine apply the value in two ways, the first is the order in which components are rendererd. The second is the area components are laid out in when they have a direction, i.e. docked to either top, bottom, left or right.
+
+If docked at the same area, the component with a higher `displayOrder` will be rendered on top of the component with a lower `displayOrder`. It can be seen as defining a z-index. A lower `displayOrder` also means that a component will be laid out first in a given direction, i.e. laid out closer to the central area (non-directional area) then a component with a higher `displayOrder`. It can it this case be seen as the x-index or y-index.
+
+## Component prioOrder
+
+The `prioOrder` property is used to define the order in which components are added to the layout engine, this is done before any components are laid out. When there is not enough space to add any more components to a given area, all components not all ready added, are then discarded. The `prioOrder` is interpreted in the ascending order. Such that a lower value is added to the layout engine first.
