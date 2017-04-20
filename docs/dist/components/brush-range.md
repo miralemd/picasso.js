@@ -10,7 +10,18 @@
   settings: {
     brush: 'highlight', // brush to apply changes to 
     scale: 'y', // scale to extract data from 
-    direction: 'vertical'
+    direction: 'vertical',
+    bubbles: {
+      show: true
+      align: 'start', // or end
+      fontSize: '14px',
+      fontFamily: 'Arial',
+      fill: '#595959'
+    },
+    target: { // render matching overlay on target component (optional)
+      component: 'y-axis',
+      fill: 'rgb(82,204,82)'
+    }
   }
 }
 ```
@@ -21,24 +32,6 @@
 var rangeRef;
 
 picasso.chart({
-  // attach event handlers to chart (assume picasso-hammer plugin is used)
-  on: {
-    panstart: function(e) {
-      if (e.direction === 2 || e.direction === 4) {
-        rangeRef = 'rangeSelectionX'
-      } else {
-        rangeRef = 'rangeSelectionY'
-      }
-      // delegate 'start' event to relevant brush-range component
-      this.component(rangeRef).instance.def.start(e);
-    },
-    panmove: function(e) {
-      this.component(rangeRef).instance.def.move(e);
-    },
-    panend: function(e) {
-      this.component(rangeRef).instance.def.end(e);
-    }
-  },
   element: element,
   data: data, 
   settings: {
@@ -58,6 +51,9 @@ picasso.chart({
           brush: 'highlight', 
           scale: 'y',
           direction: 'vertical'
+        },
+        target: {
+          component: 'y-axis'
         }
       },
       { 
@@ -67,7 +63,36 @@ picasso.chart({
           brush: 'highlight', 
           scale: 'x',
           direction: 'horizontal'
+        },
+        target: {
+          component: 'x-axis'
         }
+      },
+      {
+        type: 'interaction',
+        actions: [{
+          type: 'Pan',
+          options: {
+            event: 'range'
+          },
+          handlers: {
+            rangestart: function(e) {
+              if (e.direction === 2 || e.direction === 4) {
+                rangeRef = 'rangeSelectionX'
+              } else {
+                rangeRef = 'rangeSelectionY'
+              }
+              // delegate 'start' event to relevant brush-range component
+              this.component(rangeRef).emit('rangeStart', e);
+            },
+            rangemove: function(e) {
+              this.component(rangeRef).emit('rangeMove', e);
+            },
+            rangend: function(e) {
+              this.component(rangeRef).emit('rangeEnd', e);
+            }
+          }
+        }]
       }
     ]
   }
