@@ -36,6 +36,7 @@ describe('interaction', () => {
     };
     let interaction = componentFixture.simulateCreate(interactionComponent, config);
     componentFixture.simulateRender({});
+    expect(interaction.def.mc).to.be.an('object');
     expect(interaction.def.mc.listeners('tap').length).to.equal(1);
     expect(interaction.def.mc.listeners('click').length).to.equal(1);
   });
@@ -54,6 +55,7 @@ describe('interaction', () => {
     };
     let interaction = componentFixture.simulateCreate(interactionComponent, config);
     componentFixture.simulateRender({});
+    expect(interaction.def.mc).to.be.an('undefined');
     expect(interaction.def.chart.element.listeners.length).to.equal(1);
   });
 });

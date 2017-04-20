@@ -28,7 +28,6 @@ function getDefaultOptions(type, options) {
 const interactionComponent = {
   require: ['chart', 'instance'],
   mounted() {
-    const mc = this.mc = new Hammer.Manager(this.chart.element);
     this.settings.actions.forEach((action) => {
       action.options = action.options || {};
 
@@ -42,10 +41,11 @@ const interactionComponent = {
 
       // set up gestures
       const type = getGestureType(action.type);
-      if (Hammer[type]) {
-        mc.add(new Hammer[type](getDefaultOptions(action.type, action.options)));
+      if (Hammer && Hammer[type]) {
+        this.mc = this.mc || new Hammer.Manager(this.chart.element);
+        this.mc.add(new Hammer[type](getDefaultOptions(action.type, action.options)));
         Object.keys(action.handlers).forEach((eventName) => {
-          mc.on(eventName, action.handlers[eventName]);
+          this.mc.on(eventName, action.handlers[eventName]);
         });
       }
 
@@ -58,14 +58,16 @@ const interactionComponent = {
     });
 
     // setup mixing gestures
-    this.settings.actions.forEach((action) => {
-      if (action.recognizeWith) {
-        mc.get(action.options.event || action.type.toLowerCase()).recognizeWith(action.recognizeWith.split(' '));
-      }
-      if (action.requireFailure) {
-        mc.get(action.options.event || action.type.toLowerCase()).requireFailure(action.requireFailure.split(' '));
-      }
-    });
+    if (Hammer) {
+      this.settings.actions.forEach((action) => {
+        if (action.recognizeWith) {
+          this.mc.get(action.options.event || action.type.toLowerCase()).recognizeWith(action.recognizeWith.split(' '));
+        }
+        if (action.requireFailure) {
+          this.mc.get(action.options.event || action.type.toLowerCase()).requireFailure(action.requireFailure.split(' '));
+        }
+      });
+    }
   },
   defaultSettings: {
     actions: []
@@ -75,13 +77,13 @@ const interactionComponent = {
   },
   updated() {
     this.settings.actions.forEach((action) => {
-      if ((action.options || {}).enable && action.type.toLowerCase() === 'native') {
+      if (action.type.toLowerCase() === 'native' && action.options.enable !== undefined) {
         let enable = typeof action.options.enable === 'function' ? action.options.enable() : action.options.enable;
         Object.keys(action.handlers).forEach((eventName) => {
-          const listener = action.handlers[eventName];
-          this.chart.element.removeEventListener(eventName, listener);
+          const handler = action.handlers[eventName];
+          this.chart.element.removeEventListener(eventName, handler);
           if (enable) {
-            this.chart.element.addEventListener(eventName, listener);
+            this.chart.element.addEventListener(eventName, handler);
           }
         });
       }
