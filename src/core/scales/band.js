@@ -65,7 +65,7 @@ export default function scaleBand(settings, fields, dataset) {
             source: settings.source, type: 'qual'
           },
           value: {
-            source: settings.source, type: 'qual', property: 'id'
+            source: settings.source, type: 'qual', reducer: 'first', property: 'id'
           }
         },
         {
