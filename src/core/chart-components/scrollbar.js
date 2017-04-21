@@ -7,19 +7,17 @@
  * @property {boolean} [width = 16]
  */
 
-function start(_scrollbar, pos, elem) {
+function start(_scrollbar, pos) {
   const dock = _scrollbar.settings.dock;
   const invert = _scrollbar.settings.settings.invert;
   const horizontal = dock === 'top' || dock === 'bottom';
-  const containerRect = elem.getBoundingClientRect();
-  const containerStart = containerRect[horizontal ? 'left' : 'top'];
   const lengthAttr = horizontal ? 'width' : 'height';
   const length = _scrollbar.rect[lengthAttr];
   const scroll = _scrollbar.chart.scroll(_scrollbar.settings.scroll);
   let currentMove;
 
   { // local scope to allow reuse of variable names later
-    let offset = pos[horizontal ? 'clientX' : 'clientY'] - containerStart;
+    let offset = pos[horizontal ? 'x' : 'y'];
     if (invert) {
       offset = length - offset;
     }
@@ -41,7 +39,7 @@ function start(_scrollbar, pos, elem) {
   }
 
   const update = (p) => {
-    let offset = p[horizontal ? 'clientX' : 'clientY'] - containerStart;
+    let offset = p[horizontal ? 'x' : 'y'];
     if (invert) {
       offset = length - offset;
     }
@@ -58,7 +56,7 @@ function start(_scrollbar, pos, elem) {
     scroll.moveTo(scrollStart);
   };
   const end = (p) => {
-    let offset = p[horizontal ? 'clientX' : 'clientY'] - containerStart;
+    let offset = p[horizontal ? 'x' : 'y'];
     if (invert) {
       offset = length - offset;
     }
@@ -80,46 +78,44 @@ function start(_scrollbar, pos, elem) {
   };
 }
 
+function getLocalPos(event, renderer) {
+  const containerRect = renderer.element().getBoundingClientRect();
+  return {
+    x: event.center.x - containerRect.left,
+    y: event.center.y - containerRect.top
+  };
+}
+
 const scrollbarComponent = {
-  require: ['chart'],
+  require: ['chart', 'renderer'],
   on: {
-    touchstart(event) {
-      event.preventDefault();
-      if (event.touches.length !== 1) {
-        this.currentMove = null;
-        return;
-      }
-      this.currentMove = start(this, event.touches[0], event.currentTarget);
+    panStart(event) {
+      const pos = getLocalPos(event, this.renderer);
+      const startPos = {
+        x: pos.x - event.deltaX,
+        y: pos.y - event.deltaY
+      };
+      this.currentMove = start(this, startPos);
+      this.currentMove.update(pos);
     },
-    touchmove(event) {
-      if (event.touches.length !== 1) {
-        this.currentMove = null;
-        return;
-      }
+    panMove(event) {
       if (!this.currentMove) { return; }
-      this.currentMove.update(event.touches[0]);
+      const pos = getLocalPos(event, this.renderer);
+      this.currentMove.update(pos);
     },
-    touchend(event) {
+    panEnd(event) {
       if (!this.currentMove) { return; }
-      this.currentMove.end(event.changedTouches[0]);
+      const pos = getLocalPos(event, this.renderer);
+      this.currentMove.end(pos);
       this.currentMove = null;
     },
-    touchcancel() {
+    panCancel() {
       this.currentMove = null;
     },
-    mousedown(event) {
-      event.preventDefault();
-      const currentMove = start(this, event, event.currentTarget);
-      const mousemove = (e) => {
-        currentMove.update(e);
-      };
-      const mouseup = (e) => {
-        document.removeEventListener('mousemove', mousemove);
-        document.removeEventListener('mouseup', mouseup);
-        currentMove.end(e);
-      };
-      document.addEventListener('mousemove', mousemove);
-      document.addEventListener('mouseup', mouseup);
+    tap(event) {
+      const pos = getLocalPos(event, this.renderer);
+      const move = start(this, pos);
+      move.end(pos);
     }
   },
   defaultSettings: {
