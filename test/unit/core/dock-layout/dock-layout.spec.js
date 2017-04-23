@@ -5,7 +5,8 @@ describe('Dock Layout', () => {
   const componentMock = function componentMock({
     dock = '',
     size = 0,
-    order = 0,
+    displayOrder = 0,
+    prioOrder = 0,
     edgeBleed = {},
     minimumLayoutMode,
     show = true
@@ -16,7 +17,7 @@ describe('Dock Layout', () => {
 
     const dummy = function dummy() {};
 
-    dummy.dockConfig = dockConfig({ dock, displayOrder: order, show });
+    dummy.dockConfig = dockConfig({ dock, displayOrder, show, prioOrder });
     dummy.dockConfig.requiredSize(rect => ({ size: rect.width * size, edgeBleed }));
     dummy.dockConfig.minimumLayoutMode(minimumLayoutMode);
 
@@ -331,6 +332,47 @@ describe('Dock Layout', () => {
       expect(visible).to.include(topComp);
       expect(hidden).to.include(leftComp);
       expect(hidden).to.include(bottomComp);
+    });
+  });
+
+  describe('prioOrder', () => {
+    it('should remove components with higher prioOrder given not enough space and they have the same orientation', () => {
+      const leftComp = componentMock({ dock: 'left', size: 0.5, prioOrder: 1 }); // Remove
+      const rightComp = componentMock({ dock: 'right', size: 0.5, prioOrder: -1 }); // Keep
+      const topComp = componentMock({ dock: 'top', size: 0.15, prioOrder: 2 }); // Keep as only the vertical docked components are out of space
+      const mainComp = componentMock();
+
+      const rect = { x: 0, y: 0, width: 1000, height: 1000 };
+      const dl = dockLayout();
+      dl.addComponent(leftComp);
+      dl.addComponent(rightComp);
+      dl.addComponent(mainComp);
+      dl.addComponent(topComp);
+
+      const { visible, hidden } = dl.layout(rect);
+
+      expect(visible).to.include(rightComp);
+      expect(visible).to.include(mainComp);
+      expect(visible).to.include(topComp);
+      expect(hidden).to.include(leftComp);
+    });
+
+    it('should not change the order in which components are displayed', () => {
+      const leftComp = componentMock({ dock: 'left', size: 0.1, prioOrder: 1, displayOrder: -1 }); // Keep and render first
+      const rightComp = componentMock({ dock: 'left', size: 0.1, prioOrder: -1, displayOrder: 1 }); // Keep and render last
+      const mainComp = componentMock();
+
+      const rect = { x: 0, y: 0, width: 1000, height: 1000 };
+      const dl = dockLayout();
+      dl.addComponent(leftComp);
+      dl.addComponent(rightComp);
+      dl.addComponent(mainComp);
+
+      const { visible } = dl.layout(rect);
+
+      expect(visible[0]).to.equal(leftComp);
+      expect(visible[1]).to.equal(mainComp);
+      expect(visible[2]).to.equal(rightComp);
     });
   });
 });
