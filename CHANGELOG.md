@@ -12,6 +12,7 @@
 
 ### Fixed
 
+- PIC-137 Axis always disappear if dock is updated from horizontal to vertical
 - PIC-136 EventEmitter mem leak
 
 ### Internal

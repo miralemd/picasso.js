@@ -72,13 +72,13 @@ function resolveInitialStyle(settings, baseStyles, chart) {
 function updateActiveMode(state, settings, isDiscrete) {
   const mode = settings.labels.mode;
 
-  if (!isDiscrete) {
+  if (!isDiscrete || !state.isHorizontal) {
     return 'horizontal';
   }
 
   if (mode === 'auto') {
     return state.labels.activeMode;
-  } else if (['layered', 'tilted'].indexOf !== -1 && ['top', 'bottom'].indexOf(settings.dock) !== -1) {
+  } else if (['layered', 'tilted'].indexOf(settings.labels.mode) !== -1 && ['top', 'bottom'].indexOf(settings.dock) !== -1) {
     return mode;
   }
   return 'horizontal';
