@@ -11,24 +11,51 @@ describe('interaction', () => {
     hammerMock();
   });
 
-  it('simple tap', () => {
+  it('configure simple tap', () => {
     const config = {
       actions: [
         {
-          // triple tap
           type: 'Tap',
           options: {
             event: 'tap'
           },
           handlers: {
-            tap: function tap() {
+            tap() {
               // event handler for the event specified in options
+            }
+          }
+        },
+        {
+          type: 'Click',
+          handlers: {
+            click() {
+              // event handler for the click event
             }
           }
         }]
     };
     let interaction = componentFixture.simulateCreate(interactionComponent, config);
     componentFixture.simulateRender({});
+    expect(interaction.def.mc).to.be.an('object');
     expect(interaction.def.mc.listeners('tap').length).to.equal(1);
+    expect(interaction.def.mc.listeners('click').length).to.equal(1);
+  });
+
+  it('bind native events', () => {
+    const config = {
+      actions: [
+        {
+          type: 'Native',
+          handlers: {
+            mouseover() {
+              // event handler for the event with the same name as the function
+            }
+          }
+        }]
+    };
+    let interaction = componentFixture.simulateCreate(interactionComponent, config);
+    componentFixture.simulateRender({});
+    expect(interaction.def.mc).to.be.an('undefined');
+    expect(interaction.def.chart.element.listeners.length).to.equal(1);
   });
 });

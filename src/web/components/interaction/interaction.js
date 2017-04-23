@@ -28,28 +28,46 @@ function getDefaultOptions(type, options) {
 const interactionComponent = {
   require: ['chart', 'instance'],
   mounted() {
-    const mc = this.mc = new Hammer.Manager(this.chart.element);
     this.settings.actions.forEach((action) => {
       action.options = action.options || {};
+
+      // bind correct instance to functions
       if (typeof action.options.enable === 'function') {
         action.options.enable = action.options.enable.bind(this.instance);
       }
-      const gestureType = getGestureType(action.type);
-      if (Hammer[gestureType]) {
-        mc.add(new Hammer[gestureType](getDefaultOptions(action.type, action.options)));
+      Object.keys(action.handlers).forEach((eventName) => {
+        action.handlers[eventName] = action.handlers[eventName].bind(this.instance);
+      });
+
+      // set up gestures
+      const type = getGestureType(action.type);
+      if (Hammer && Hammer[type]) {
+        this.mc = this.mc || new Hammer.Manager(this.chart.element);
+        this.mc.add(new Hammer[type](getDefaultOptions(action.type, action.options)));
         Object.keys(action.handlers).forEach((eventName) => {
-          mc.on(eventName, action.handlers[eventName].bind(this.instance));
+          this.mc.on(eventName, action.handlers[eventName]);
+        });
+      }
+
+      // setup native events
+      if (type.toLowerCase() === 'native') {
+        Object.keys(action.handlers).forEach((eventName) => {
+          this.chart.element.addEventListener(eventName, action.handlers[eventName]);
         });
       }
     });
-    this.settings.actions.forEach((action) => {
-      if (action.recognizeWith) {
-        mc.get(action.options.event || action.type.toLowerCase()).recognizeWith(action.recognizeWith.split(' '));
-      }
-      if (action.requireFailure) {
-        mc.get(action.options.event || action.type.toLowerCase()).requireFailure(action.requireFailure.split(' '));
-      }
-    });
+
+    // setup mixing gestures
+    if (Hammer) {
+      this.settings.actions.forEach((action) => {
+        if (action.recognizeWith) {
+          this.mc.get(action.options.event || action.type.toLowerCase()).recognizeWith(action.recognizeWith.split(' '));
+        }
+        if (action.requireFailure) {
+          this.mc.get(action.options.event || action.type.toLowerCase()).requireFailure(action.requireFailure.split(' '));
+        }
+      });
+    }
   },
   defaultSettings: {
     actions: []
@@ -57,8 +75,30 @@ const interactionComponent = {
   render() {
     // functional component, do not have to render anything
   },
-  destroyed() {
+  updated() {
+    this.settings.actions.forEach((action) => {
+      if (action.type.toLowerCase() === 'native' && action.options.enable !== undefined) {
+        let enable = typeof action.options.enable === 'function' ? action.options.enable() : action.options.enable;
+        Object.keys(action.handlers).forEach((eventName) => {
+          const handler = action.handlers[eventName];
+          this.chart.element.removeEventListener(eventName, handler);
+          if (enable) {
+            this.chart.element.addEventListener(eventName, handler);
+          }
+        });
+      }
+    });
+  },
+  unmounted() {
+    // unbind events
     this.mc.destroy();
+    this.settings.actions.forEach((action) => {
+      if (action.type.toLowerCase() === 'native') {
+        Object.keys(action.handlers).forEach((eventName) => {
+          this.chart.element.removeEventListener(eventName, action.handlers[eventName]);
+        });
+      }
+    });
   }
 };
 

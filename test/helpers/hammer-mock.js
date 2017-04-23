@@ -16,6 +16,10 @@ class Manager {
     }
     return null;
   }
+  destroy() {
+    this.gestures = [];
+    this.removeAllListeners();
+  }
 }
 
 class BaseGesture {
