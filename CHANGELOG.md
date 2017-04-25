@@ -1,6 +1,17 @@
 # Changelog
 
-## Unreleased
+## [BREAKING] Unreleased
+
+### Breaking changes
+
+- Updated scrollbar to expect delegated hammer events.
+See updated example in picasso-sandbox for how to use
+
+### Added
+
+- Fix selecting correct values for discrete range selection on multi-dimensional hypercube
+- PIC-115 Add support for binding native events with interaction component
+- PIC-135 PrioOrder doesn't work as expected
 
 ## 0.17.0
 
