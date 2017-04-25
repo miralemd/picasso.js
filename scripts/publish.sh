@@ -1,5 +1,5 @@
 ## temporarily set private flag to true
-sed -i .tmp 's/^\(  "private": \).*/\1false,/g' package.json
+sed --in-place=".tmp" 's/^\(  "private": \).*/\1false,/g' package.json
 
 ## publish
 npm publish
