@@ -10,23 +10,11 @@ class Manager {
   }
   get(event) {
     for (let i = 0; i < this.gestures.length; ++i) {
-      if (this.gestures[i].options.event === event) {
+      if (this.gestures[i].opts.event === event) {
         return this.gestures[i];
       }
     }
     return null;
-  }
-  remove(gesture) {
-    let i = 0;
-    for (; i < this.gestures.length; ++i) {
-      if (this.gestures[i].options.event === gesture) {
-        break;
-      }
-    }
-    this.gestures.splice(i, 1);
-  }
-  off(event, callback) {
-    this.removeListener(event, callback);
   }
   destroy() {
     this.gestures = [];
@@ -35,20 +23,8 @@ class Manager {
 }
 
 class BaseGesture {
-  constructor(options) {
-    this.options = options;
-    this._recognizeWith = [];
-    this._requireFailure = [];
-  }
-  set(options) {
-    this.options = options;
-  }
-  recognizeWith(gestures) {
-    this._recognizeWith = this._recognizeWith.concat(gestures);
-  }
-
-  requireFailure(gestures) {
-    this._requireFailure = this._requireFailure.concat(gestures);
+  constructor(opts) {
+    this.opts = opts;
   }
 }
 
