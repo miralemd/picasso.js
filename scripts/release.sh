@@ -31,12 +31,12 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   npm -s run test
 
   ## set version in picasso.js/package.json
-  sed -i .tmp "s/^\(  \"version\": \).*/\1\"$VERSION\",/g" package.json
+  sed --in-place=".tmp" -e "s/^\(  \"version\": \).*/\1\"$VERSION\",/g" package.json
   rm package.json.tmp
 
   ## update version in plugins
   for dir in plugins/*/ ; do
-    sed -i .tmp -e "s/^\(  \"version\": \).*/\1\"$VERSION\",/g" $dir/package.json
+    sed --in-place=".tmp" -e "s/^\(  \"version\": \).*/\1\"$VERSION\",/g" $dir/package.json
     rm $dir/package.json.tmp
   done;
 
