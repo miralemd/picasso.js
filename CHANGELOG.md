@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+## 0.18.2 - 2017-04-26
+
+### Fixed
+
+- PIC-143 shapesAt doesn't work for containers with bounds collider
+
 ## 0.18.1 - 2017-04-25
 
 ### Removed
