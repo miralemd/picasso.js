@@ -40,7 +40,13 @@ function resolveFrontChildCollision(node, type, input) {
 
 function resolveBoundsCollision(node, type, input) {
   const collider = node._collider.fn;
-  if (collider[type](input)) {
+  let transformedInput = input;
+
+  if (Array.isArray(input.vertices)) {
+    transformedInput = createPolygon(input); // TODO Shouldn't have to do this here, currently its beacause a collision algorithm optimization, i.e. caching of polygon bounds
+  }
+
+  if (collider[type](transformedInput)) {
     const c = createCollision(node);
 
     appendParentNode(node, c);

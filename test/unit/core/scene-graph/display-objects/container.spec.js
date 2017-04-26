@@ -547,6 +547,20 @@ describe('Container', () => {
 
         expect(items).to.be.empty;
       });
+
+      it('should handle polygon as input shape', () => {
+        container = createContainer({ collider: { type: 'bounds' }, fill: 'container' });
+        container.addChild(createRect({ x: 500, y: 500, width: 100, height: 100, fill: 'containerRect1' }));
+        container.addChild(createRect({ x: 500, y: 500, width: 200, height: 200, fill: 'containerRect2' }));
+        const vertices = [
+          { x: 0, y: 0 },
+          { x: 500, y: 550 },
+          { x: 600, y: 50 }
+        ];
+        const items = container.getItemsFrom({ vertices });
+
+        expect(items).to.not.be.empty;
+      });
     });
 
     describe('FrontChild', () => {
