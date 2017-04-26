@@ -1,6 +1,12 @@
 # Changelog
 
-## [BREAKING] Unreleased
+## 0.18.1 - 2017-04-25
+
+### Removed
+
+- PIC-115 Support for binding native events with interaction component
+
+## [BREAKING] 0.18.0 - 2017-04-25 [YANKED]
 
 ### Breaking changes
 
@@ -9,28 +15,34 @@ See updated example in picasso-sandbox for how to use
 
 ### Added
 
-- Fix selecting correct values for discrete range selection on multi-dimensional hypercube
-- PIC-115 Add support for binding native events with interaction component
+- PIC-115 Support for binding native events with interaction component
+
+### Fixed
+
+- Selecting correct values for discrete range selection on multi-dimensional hypercube
 - PIC-135 PrioOrder doesn't work as expected
 
-## 0.17.0
+## 0.17.0 - 2017-04-20
 
 ### Added
 
 - Support range brush on band scale
 
-## 0.16.1
-
 ### Fixed
 
 - PIC-137 Axis always disappear if dock is updated from horizontal to vertical
+
+## 0.16.1 - 2017-04-19
+
+### Fixed
+
 - PIC-136 EventEmitter mem leak
 
 ### Internal
 
 - Performance improved for QIX data transformations
 
-## [BREAKING] 0.16.0
+## [BREAKING] 0.16.0 - 2017-04-19
 
 ### Breaking changes
 
@@ -122,7 +134,7 @@ See updated example in picasso-sandbox for how to use
 - PIC-124 Detect lasso selection 'action'
 
 
-## [BREAKING] 0.15.0
+## [BREAKING] 0.15.0 - 2017-04-11
 
 ### Breaking changes
 
@@ -154,7 +166,7 @@ See updated example in picasso-sandbox for how to use
 
 - PIC-114 - Ratio between box and outlier is not kept
 
-## [BREAKING] 0.14.0
+## [BREAKING] 0.14.0 - 2017-04-06
 
 ### Breaking changes
 
@@ -179,7 +191,7 @@ See updated example in picasso-sandbox for how to use
 - PIC-127 Brush setValues doesn't handle unique values properly
 - PIC-129 Bounding rect of a line should never have a height or width of zero
 
-## [BREAKING] 0.13.0
+## [BREAKING] 0.13.0 - 2017-03-31
 
 ### Breaking changes
 
@@ -217,26 +229,26 @@ See updated example in picasso-sandbox for how to use
 - PIC-119 Update doesn't trigger re-resolving of scale type
 - PIC-122 Batch brush items
 
-## 0.12.4
+## 0.12.4 - 2017-03-17
 
 ### Fixed
 
 - PIC-113 globalPropagation property doesn't work on brush trigger
 
-## 0.12.3
+## 0.12.3 - 2017-03-17
 
 ### Fixed
 
 - PIC-112 - Discrete axis doesn't hide when labels overlap
 - Event handlers for brush stylers are not cleared during update
 
-## 0.12.2
+## 0.12.2 - 2017-03-16
 
 ### Fixed
 
 - q plugin exports don't work in AMD
 
-## 0.12.1
+## 0.12.1 - 2017-03-16
 
 - ?
 
@@ -244,7 +256,7 @@ See updated example in picasso-sandbox for how to use
 
 - PIC-112 Discrete axis doesn't hide when labels overlap
 
-## [BREAKING] 0.12.0
+## [BREAKING] 0.12.0 - 2017-03-15
 
 ### Breaking changes
 
@@ -296,7 +308,7 @@ See updated example in picasso-sandbox for how to use
 - Flatten formatters (keeping backward compatibility). Example: `picasso.formatter('d3')('number')` → `picasso.formatter('d3-number')`.
 
 
-## [BREAKING] 0.11.0
+## [BREAKING] 0.11.0 - 2017-03-07
 
 ### Breaking changes
 
@@ -326,7 +338,7 @@ See updated example in picasso-sandbox for how to use
 - PIC-2 Sequential scale
 - PIC-3 Threshold color scale
 
-## [BREAKING] 0.10.0
+## [BREAKING] 0.10.0 - 2017-02-28
 
 ### Breaking changes
 
@@ -356,7 +368,7 @@ See updated example in picasso-sandbox for how to use
 
 - PIC-83 'click' trigger at start of gesture
 
-## 0.9.2
+## 0.9.2 - 2017-02-23
 
 ### Fixed
 
@@ -371,13 +383,13 @@ See updated example in picasso-sandbox for how to use
     brush.removeAllInterceptors();
     ```
 
-## 0.9.1
+## 0.9.1 - 2017-02-22
 
 ### Fixed
 
 - Box-marker without major scale falls back to `minWidth` setting due to `bandwith` defaulting to `0` - should default to `1`
 
-## [BREAKING] 0.9.0
+## [BREAKING] 0.9.0 - 2017-02-21
 
 ### Breaking changes
 
@@ -452,7 +464,7 @@ See updated example in picasso-sandbox for how to use
 - PIC-75 `NaN` values on measures messes up the min/max on the scale
 - PIC-43 When less then half of a label is visible then the axes will not be visible
 
-## 0.8.0
+## 0.8.0 - 2017-02-15
 
 ### Added
 
@@ -471,7 +483,7 @@ See updated example in picasso-sandbox for how to use
 
  - PIC-69 EffectiveInterColumnSortOrder not taken into account
 
-## [BREAKING] 0.7.0
+## [BREAKING] 0.7.0 - 2017-02-06
 
 ### Breaking changes
 
@@ -514,7 +526,7 @@ See updated example in picasso-sandbox for how to use
 - Formatter source lookup on dataset
 
 
-## 0.5.0
+## 0.5.0 - 2017-01-24
 
 ### Added
 
@@ -553,7 +565,7 @@ See updated example in picasso-sandbox for how to use
 
 - Transpile es6 versions of d3 modules
 
-## [BREAKING] 0.4.0
+## [BREAKING] 0.4.0 - 2016-01-16
 
 ### Breaking changes
 
@@ -666,7 +678,7 @@ See updated example in picasso-sandbox for how to use
       pic.brush('highlight').addValue('products', 'Bike');
     ```
 
-## [BREAKING] 0.3.0
+## [BREAKING] 0.3.0 - 2016-12-20
 
 ### Added
 
@@ -691,7 +703,7 @@ See updated example in picasso-sandbox for how to use
 - Scale with same min and max automatically expands the values to ensure a range exists
 - Stroke-width works as intended on canvas
 
-## [BREAKING] 0.2.0
+## [BREAKING] 0.2.0 - 2016-10-24
 
 ### Added
 
@@ -704,6 +716,6 @@ See updated example in picasso-sandbox for how to use
 
 - [BREAKING] Point marker configuration
 
-## 0.1.0
+## **0.1.0** - 2016-06-30
 
 - Initial release
