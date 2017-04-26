@@ -2,7 +2,13 @@
 
 ## Unreleased
 
-## 0.18.2 - 2017-04-26
+## 0.18.3 - 2017-04-26
+
+### Fixed
+
+- wrong version in `package.json`
+
+## 0.18.2 - 2017-04-26 [YANKED]
 
 ### Fixed
 
