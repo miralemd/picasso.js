@@ -13,9 +13,9 @@ function validateComponent(component) {
 }
 
 
-function cacheSize(c, containerRect) {
+function cacheSize(c, reducedRect, containerRect) {
   if (typeof c.cachedSize === 'undefined') {
-    const size = c.config.requiredSize()(containerRect);
+    const size = c.config.requiredSize()(reducedRect, containerRect);
     if (typeof size === 'object') {
       c.cachedSize = Math.ceil(size.size);
       c.edgeBleed = size.edgeBleed;
@@ -109,7 +109,7 @@ function reduceLayoutRect(logicalContainerRect, components, hiddenComponents) {
 
   for (let i = 0; i < sortedComponents.length; ++i) {
     const c = sortedComponents[i];
-    cacheSize(c, logicalContainerRect);
+    cacheSize(c, reducedRect, logicalContainerRect);
 
     if (!reduceSingleLayoutRect(logicalContainerRect, reducedRect, edgeBleed, c)) {
       sortedComponents.splice(i, 1);

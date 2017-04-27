@@ -18,7 +18,7 @@ describe('Dock Layout', () => {
     const dummy = function dummy() {};
 
     dummy.dockConfig = dockConfig({ dock, displayOrder, show, prioOrder });
-    dummy.dockConfig.requiredSize(rect => ({ size: rect.width * size, edgeBleed }));
+    dummy.dockConfig.requiredSize((inner, outer) => ({ size: outer.width * size, edgeBleed }));
     dummy.dockConfig.minimumLayoutMode(minimumLayoutMode);
 
     dummy.resize = function resize(...args) {

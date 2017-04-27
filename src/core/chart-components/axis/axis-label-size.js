@@ -9,12 +9,15 @@ function isVerticalLabelOverlapping({
 }) {
   const size = rect.height;
   const textHeight = measureText('M').height;
-  for (let i = 1; i < majorTicks.length; ++i) {
-    const d = size * Math.abs(majorTicks[i - 1].position - majorTicks[i].position);
-    if (d < textHeight) {
-      return true;
-    }
+  if (majorTicks.length < 2) {
+    return false;
   }
+
+  const d = size * Math.abs(majorTicks[0].position - majorTicks[1].position);
+  if (d < textHeight) {
+    return true;
+  }
+
   return false;
 }
 
