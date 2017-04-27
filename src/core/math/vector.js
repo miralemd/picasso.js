@@ -51,14 +51,6 @@ export function dot(v1, v2) {
   return (v1.x * v2.x) + (v1.y * v2.y);
 }
 
-export function dot3(a, b, c) {
-  return ((c.x - a.x) * (b.x - a.x)) + ((c.y - a.y) * (b.y - a.y));
-}
-
-export function crossProduct(a, b, c) {
-  return ((c.y - a.y) * (b.x - a.x)) - ((c.x - a.x) * (b.y - a.y));
-}
-
 export function projectOnto(v1, v2) {
   const m = dot(v1, v2) / dot(v2, v2) || 1;
   return {

@@ -1,4 +1,4 @@
-import { add, sub, projectOnto, distanceX, distanceY, dot3, crossProduct, sqrDistance } from './vector';
+import { add, sub, projectOnto, distanceX, distanceY, sqrDistance, distance } from './vector';
 
 const EPSILON = 1e-12;
 
@@ -10,22 +10,7 @@ export function closestPointToLine(start, end, p) {
 }
 
 export function isPointOnLine(start, end, p) {
-  const c = crossProduct(start, end, p);
-  if (Math.abs(c) > EPSILON) {
-    return false;
-  }
-
-  const d = dot3(start, end, p);
-  if (d < 0) {
-    return false;
-  }
-
-  const sqrDist = sqrDistance(start, end);
-  if (d > sqrDist) {
-    return false;
-  }
-
-  return true;
+  return (distance(start, p) + distance(end, p)) - distance(start, end) < EPSILON;
 }
 
 export function rectContainsPoint(rectVertices, point) {

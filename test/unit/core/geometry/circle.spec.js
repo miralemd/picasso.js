@@ -159,15 +159,15 @@ describe('GeoCircle', () => {
 
         expect(c.intersectsRect(rect)).to.equal(false);
       });
-      // Broken, needs to be fixed
-      it.skip('should not intersect if the width of the rect is zero', () => {
+
+      it('should not intersect if the width of the rect is zero', () => {
         const c = new GeoCircle({ cx: 10, cy: 20, r: 10 });
         const rect = getRectVertices({ x: 10, y: 20, width: 0, height: 200 });
 
         expect(c.intersectsRect(rect)).to.equal(false);
       });
-      // Broken, needs to be fixed
-      it.skip('should not intersect if the height of the rect is zero', () => {
+
+      it('should not intersect if the height of the rect is zero', () => {
         const c = new GeoCircle({ cx: 10, cy: 20, r: 10 });
         const rect = getRectVertices({ x: 10, y: 20, width: 100, height: 0 });
 
