@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Fixed
+
+- PIC-132 - Poor accuracy when calculating overlapping labels in preferedSize
+- PIC-138 - Circle Line collision test fails when it shouldn't
+- PIC-145 - Picasso becomes unresponsive when trying to render really long labels
+
 ## 0.18.3 - 2017-04-26
 
 ### Fixed
@@ -9,6 +15,8 @@
 - wrong version in `package.json`
 
 ## 0.18.2 - 2017-04-26 [YANKED]
+
+_Yanked due to `package.json` not having correct version in tagged commit_
 
 ### Fixed
 
