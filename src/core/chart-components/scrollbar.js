@@ -187,7 +187,7 @@ const scrollbarComponent = {
           [horizontal ? 'left' : 'top']: `${thumbStart}px`,
           [horizontal ? 'top' : 'left']: '25%',
           [horizontal ? 'height' : 'width']: '50%', // ${width}px
-          [lengthAttr]: `${thumbRange}px`,
+          [lengthAttr]: `${Math.max(1, thumbRange)}px`,
           background: this.settings.settings.thumbColor
         }
       }))
