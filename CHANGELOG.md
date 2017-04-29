@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.18.4 - 2017-04-28
+
 ### Fixed
 
 - PIC-132 - Poor accuracy when calculating overlapping labels in preferedSize
