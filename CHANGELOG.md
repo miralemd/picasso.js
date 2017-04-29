@@ -7,6 +7,7 @@
 - PIC-132 - Poor accuracy when calculating overlapping labels in preferedSize
 - PIC-138 - Circle Line collision test fails when it shouldn't
 - PIC-145 - Picasso becomes unresponsive when trying to render really long labels
+- PIC-146 - Support rendering scroll bar when it is very small (e.g. less than 0.5 pixel)
 
 ## 0.18.3 - 2017-04-26
 
