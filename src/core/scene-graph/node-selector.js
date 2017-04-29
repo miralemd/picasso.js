@@ -147,7 +147,12 @@ function find(s, object) {
   if (object.isBranch) {
     groups = tokenize(s);
     descendants = object.descendants;
-    groups.forEach((tokens) => {
+
+    let tokens;
+
+    for (let gi = 0, glen = groups.length; gi < glen; gi++) {
+      tokens = groups[gi];
+
       const levels = [];
       let filtered = descendants.slice();
       let hasRemainder = false;
@@ -185,15 +190,15 @@ function find(s, object) {
       });
 
       groupResults.push(selected);
-    });
+    }
 
-    groupResults.forEach((nodes) => {
-      nodes.forEach((node) => {
-        if (result.indexOf(node) < 0) {
-          result.push(node);
+    for (let i = 0, len = groupResults.length; i < len; i++) {
+      for (let ni = 0, nlen = groupResults[i].length; ni < nlen; ni++) {
+        if (result.indexOf(groupResults[i][ni]) < 0) {
+          result.push(groupResults[i][ni]);
         }
-      });
-    });
+      }
+    }
   }
 
   return result || [];

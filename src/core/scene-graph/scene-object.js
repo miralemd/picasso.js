@@ -27,10 +27,11 @@ function colliderToShape(node, dpi) {
     const type = collider.type;
     let points = collider.fn.points();
     points = mvm ? mvm.transformPoints(points) : points;
-    points.forEach((p) => {
-      p.x /= dpi;
-      p.y /= dpi;
-    });
+
+    for (let i = 0, len = points.length; i < len; i++) {
+      points[i].x /= dpi;
+      points[i].y /= dpi;
+    }
 
     if (type === 'rect' || type === 'bounds') {
       const rect = pointsToRect(points);

@@ -50,8 +50,11 @@ function resolveMatrixCmd(matrix, transform) {
 
 export default function resolveTransform(t, matrix) {
   const transforms = parseTransform(t);
+  let transform;
 
-  transforms.forEach((transform) => {
+  for (let i = 0, len = transforms.length; i < len; i++) {
+    transform = transforms[i];
+
     if (transform.cmd === 'rotate') {
       resolveRotateCmd(matrix, transform);
     } else if (transform.cmd === 'scale') {
@@ -61,5 +64,5 @@ export default function resolveTransform(t, matrix) {
     } else if (transform.cmd === 'translate') {
       resolveTranslateCmd(matrix, transform);
     }
-  });
+  }
 }

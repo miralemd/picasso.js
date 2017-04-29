@@ -17,7 +17,9 @@ function appendParentNode(node, collision) {
 }
 
 function appendInputShape(shape, collisions) {
-  collisions.forEach((c) => { c.input = shape; });
+  for (let i = 0, len = collisions.length; i < len; i++) {
+    collisions[i].input = shape;
+  }
 }
 
 function resolveFrontChildCollision(node, type, input) {

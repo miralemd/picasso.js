@@ -16,7 +16,10 @@ const styleContext = contextFactory(
 );
 
 function traverse(items, parent, matrix) {
-  items.forEach((s) => {
+  let s;
+  for (let i = 0, len = items.length; i < len; i++) {
+    s = items[i];
+
     // Save the current style context to be able to inherit styles
     s = styleContext.save(s);
 
@@ -43,7 +46,7 @@ function traverse(items, parent, matrix) {
 
     // Revert to previous style context
     styleContext.restore();
-  });
+  }
 }
 
 export default function scene({ items, stage, dpi }) {
