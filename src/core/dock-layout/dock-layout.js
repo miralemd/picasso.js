@@ -1,6 +1,7 @@
 import extend from 'extend';
 import dockConfig from './dock-config';
 import resolveLayout, { resolveSettings } from './dock-settings-resolver';
+import { getRectVertices, pointsToRect } from '../math/intersection';
 
 function validateComponent(component) {
   const expectedProperties = ['resize'];
@@ -11,7 +12,6 @@ function validateComponent(component) {
     }
   });
 }
-
 
 function cacheSize(c, reducedRect, containerRect) {
   if (typeof c.cachedSize === 'undefined') {
@@ -136,6 +136,11 @@ function appendScaleRatio(rect, outerRect, logicalContainerRect, containerRect) 
   logicalContainerRect.scaleRatio = scaleRatio;
 }
 
+function boundingBox(rects) {
+  const points = [].concat(...rects.map(getRectVertices));
+  return pointsToRect(points);
+}
+
 function positionComponents(components, logicalContainerRect, reducedRect, containerRect) {
   const vRect = { x: reducedRect.x, y: reducedRect.y, width: reducedRect.width, height: reducedRect.height };
   const hRect = { x: reducedRect.x, y: reducedRect.y, width: reducedRect.width, height: reducedRect.height };
@@ -203,10 +208,10 @@ function positionComponents(components, logicalContainerRect, reducedRect, conta
         outerRect.height = rect.height = reducedRect.height;
     }
     if (/^@/.test(d)) {
-      const ref = referencedComponents[d.replace('@', '')];
-      if (ref) {
-        outerRect = extend(true, {}, ref.outerRect);
-        rect = extend(true, {}, ref.rect);
+      const refs = d.split(',').map(r => referencedComponents[r.replace('@', '')]).filter(r => !!r);
+      if (refs.length > 0) {
+        outerRect = boundingBox(refs.map(r => r.outerRect));
+        rect = boundingBox(refs.map(r => r.rect));
       }
     } else {
       appendScaleRatio(rect, outerRect, logicalContainerRect, containerRect);
