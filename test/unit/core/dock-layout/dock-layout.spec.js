@@ -358,8 +358,8 @@ describe('Dock Layout', () => {
     });
 
     it('should not change the order in which components are displayed', () => {
-      const leftComp = componentMock({ dock: 'left', size: 0.1, prioOrder: 1, displayOrder: -1 }); // Keep and render first
-      const rightComp = componentMock({ dock: 'left', size: 0.1, prioOrder: -1, displayOrder: 1 }); // Keep and render last
+      const leftComp = componentMock({ dock: 'left', size: 0.1, prioOrder: 1 }); // Keep and render first
+      const rightComp = componentMock({ dock: 'left', size: 0.1, prioOrder: -1 }); // Keep and render last
       const mainComp = componentMock();
 
       const rect = { x: 0, y: 0, width: 1000, height: 1000 };
@@ -370,9 +370,9 @@ describe('Dock Layout', () => {
 
       const { visible } = dl.layout(rect);
 
-      expect(visible[0]).to.equal(leftComp);
-      expect(visible[1]).to.equal(mainComp);
-      expect(visible[2]).to.equal(rightComp);
+      expect(visible[0]).to.equal(leftComp); // Prio 1
+      expect(visible[1]).to.equal(rightComp); // Prio -1
+      expect(visible[2]).to.equal(mainComp); // Prio 0
     });
   });
 });

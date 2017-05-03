@@ -117,8 +117,10 @@ function reduceLayoutRect(logicalContainerRect, components, hiddenComponents) {
       --i;
     }
   }
+
+  const filteredUnsortedComps = components.filter(c => sortedComponents.indexOf(c) !== -1);
   components.length = 0;
-  components.push(...sortedComponents);
+  components.push(...filteredUnsortedComps);
   reduceEdgeBleed(logicalContainerRect, reducedRect, edgeBleed);
   return reducedRect;
 }
