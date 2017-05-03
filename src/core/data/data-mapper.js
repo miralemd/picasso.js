@@ -128,8 +128,11 @@ export function collectValues({
  * @private
  * @return {String}           [description]
  */
-export function collectMapping(key, m, repeating, ds, collector = collectValues) {
+export function collectMapping(key, m, repeating, ds, collector = collectValues, cache) {
   const ff = ds.findField(m.source); // , ds.tables());
+  if (!cache.formatters[m.source] && ff.field) {
+    cache.formatters[m.source] = ff.field.formatter();
+  }
   let fieldValues = [];
   let syncValues = repeating.fieldValues;
   let type = m.type || 'quant';
@@ -166,15 +169,18 @@ export function collectMapping(key, m, repeating, ds, collector = collectValues)
   });
 }
 
-function reduceValues(key, values, reducer) {
+function reduceValues(key, values, reducer, cache) {
   const len = values.length;
   let v;
   let reducerFn;
+  let formatter;
   for (let i = 0; i < len; i++) {
     v = values[i];
     if (v[key]) {
       reducerFn = typeof reducer === 'function' ? reducer : reducers[reducer || 'sum'];
       v[key].value = reducerFn(v[key]._values);
+      formatter = cache.formatters[v[key].source.field];
+      v[key].label = formatter ? formatter(v[key].value) : String(v[key].value);
       // delete v[key].values;
     }
   }
@@ -188,6 +194,9 @@ function reduceValues(key, values, reducer) {
  * @return {String}          [description]
  */
 export function mapData(mapper, repeater, ds) {
+  let cache = {
+    formatters: {}
+  };
   const collected = collectRepeating(repeater, ds);
 
   let mapping = mapper;
@@ -209,12 +218,13 @@ export function mapData(mapper, repeater, ds) {
     if (isPrimitive(m)) {
       collected.collection.forEach((c) => {
         c[key] = {
-          value: m
+          value: m,
+          label: String(m)
         };
       });
     } else {
-      collectMapping(key, m, collected, ds);
-      reduceValues(key, collected.collection, m.reducer);
+      collectMapping(key, m, collected, ds, collectValues, cache);
+      reduceValues(key, collected.collection, m.reducer, cache);
     }
   });
   return collected.collection;
