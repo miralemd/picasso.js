@@ -175,6 +175,7 @@ export default function buildRange({ borderHit, els, isVertical, state, vStart, 
       color: fill
     };
 
+    const range = [vStart, vEnd];
     els.push(buildBubble({
       h: state.h,
       isVertical,
@@ -182,7 +183,7 @@ export default function buildRange({ borderHit, els, isVertical, state, vStart, 
       style,
       idx,
       otherValue: start < end ? vEnd : vStart,
-      label: `${state.format(start < end ? vStart : vEnd)}`,
+      label: `${state.format(start < end ? vStart : vEnd, range)}`,
       pos: top
     }));
 
@@ -193,7 +194,7 @@ export default function buildRange({ borderHit, els, isVertical, state, vStart, 
       style,
       idx,
       otherValue: start < end ? vStart : vEnd,
-      label: `${state.format(start < end ? vEnd : vStart)}`,
+      label: `${state.format(start < end ? vEnd : vStart, range)}`,
       pos: bottom
     }));
   }

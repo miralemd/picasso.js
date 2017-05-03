@@ -139,10 +139,18 @@ function findClosest(value, scale) {
   return name;
 }
 
+function rangesOverlap(r1, r2) {
+  return Math.min(...r1) <= Math.max(...r2) && Math.max(...r1) >= Math.min(...r2);
+}
+
 function findValues(rangesValues, scale) {
   const domain = scale.domain();
+  const scaleRange = scale.range();
   const values = [];
   rangesValues.forEach((range) => {
+    if (!rangesOverlap(scaleRange, [range.min, range.max])) {
+      return;
+    }
     const startIdx = domain.indexOf(findClosest(range.min, scale));
     const endIdx = domain.indexOf(findClosest(range.max, scale));
     values.push.apply(values, domain.slice(Math.min(startIdx, endIdx), Math.max(startIdx, endIdx) + 1)); /* eslint prefer-spread:0 */
@@ -230,7 +238,12 @@ const brushRangeComponent = {
     if (scale.type !== 'linear') {
       this.state.scale = linear();
       this.state.scale.sources = scale.sources;
-      this.state.format = v => findClosest(v, scale);
+      this.state.format = (v, r) => {
+        if (!rangesOverlap(scale.range(), r)) {
+          return '-';
+        }
+        return findClosest(v, scale);
+      };
       this.state.fauxBrushInstance = brushFactory();
       this.state.findValues = valueRanges => findValues(valueRanges, scale);
     } else {
