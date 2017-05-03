@@ -288,11 +288,15 @@ describe('data-mapper', () => {
   describe('collectMapping', () => {
     let ds;
     let sandbox;
+    let cache;
+    let formatter;
     beforeEach(() => {
       sandbox = sinon.sandbox.create();
       ds = {
         findField: sandbox.stub()
       };
+      cache = { formatters: {} };
+      formatter = sandbox.stub();
     });
 
     it('should call collector with proper arguments', () => {
@@ -307,11 +311,12 @@ describe('data-mapper', () => {
       ds.findField.returns({
         field: {
           values: () => 'dummyValues',
-          type: () => 'dimension'
+          type: () => 'dimension',
+          formatter: () => formatter
         }
       });
       const collector = sandbox.stub();
-      collectMapping('x', mapping, groups, ds, collector);
+      collectMapping('x', mapping, groups, ds, collector, cache);
 
       expect(collector).to.have.been.calledWith({
         key: 'x',
@@ -341,16 +346,18 @@ describe('data-mapper', () => {
       ds.findField.onCall(0).returns({
         field: {
           values: () => 'dummyValues',
-          type: () => 'measure'
+          type: () => 'measure',
+          formatter: () => formatter
         }
       });
       ds.findField.onCall(1).returns({
         field: {
-          values: () => 'customSyncValues'
+          values: () => 'customSyncValues',
+          formatter: () => formatter
         }
       });
       const collector = sandbox.stub();
-      collectMapping('x', mapping, groups, ds, collector);
+      collectMapping('x', mapping, groups, ds, collector, cache);
 
       expect(collector).to.have.been.calledWith({
         key: 'x',
@@ -423,48 +430,55 @@ describe('data-mapper', () => {
       ds.findField.withArgs('/0/0').returns({
         field: {
           values: () => productGroup,
-          type: () => 'dimension'
+          type: () => 'dimension',
+          formatter: () => v => `dim:${v}`
         }
       });
 
       ds.findField.withArgs('/0/1').returns({
         field: {
           values: () => product,
-          type: () => 'dimension'
+          type: () => 'dimension',
+          formatter: () => v => v
         }
       });
 
       ds.findField.withArgs('/0/2').returns({
         field: {
           values: () => year,
-          type: () => 'dimension'
+          type: () => 'dimension',
+          formatter: () => v => v
         }
       });
 
       ds.findField.withArgs('/0/3').returns({
         field: {
           values: () => sales,
-          type: () => 'measure'
+          type: () => 'measure',
+          formatter: () => v => `€${v}`
         }
       });
 
       ds.findField.withArgs('/0/4').returns({
         field: {
           values: () => margin,
-          type: () => 'measure'
+          type: () => 'measure',
+          formatter: () => v => `${v * 100}%`
         }
       });
 
       ds.findField.withArgs('/1/1').returns({
         field: {
           values: () => color,
-          type: () => 'dimension'
+          type: () => 'dimension',
+          formatter: () => v => v
         }
       });
 
       ds.findField.withArgs('/1/0').returns({
         field: {
-          values: () => colorToProductGroupLink
+          values: () => colorToProductGroupLink,
+          formatter: () => v => v
         }
       });
     });
@@ -477,13 +491,13 @@ describe('data-mapper', () => {
       const values = mapData({}, groupBy, ds);
       expect(values).to.eql([
         {
-          self: { value: 'Cars', source: { field: '/0/0', indices: [0, 1], type: 'qual' }, _values: ['Cars', 'Cars'] }
+          self: { value: 'Cars', label: 'dim:Cars', source: { field: '/0/0', indices: [0, 1], type: 'qual' }, _values: ['Cars', 'Cars'] }
         },
         {
-          self: { value: 'Bikes', source: { field: '/0/0', indices: [2], type: 'qual' }, _values: ['Bikes'] }
+          self: { value: 'Bikes', label: 'dim:Bikes', source: { field: '/0/0', indices: [2], type: 'qual' }, _values: ['Bikes'] }
         },
         {
-          self: { value: 'Shoes', source: { field: '/0/0', indices: [3, 4], type: 'qual' }, _values: ['Shoes', 'Shoes'] }
+          self: { value: 'Shoes', label: 'dim:Shoes', source: { field: '/0/0', indices: [3, 4], type: 'qual' }, _values: ['Shoes', 'Shoes'] }
         }
       ]);
     });
@@ -495,7 +509,7 @@ describe('data-mapper', () => {
       const values = mapData(mapper, undefined, ds);
       expect(values).to.eql([
         {
-          sales: { value: 215, source: { field: '/0/3', indices: [0, 1, 2, 3, 4], type: 'quant' }, _values: [56, 59, 30, 70, 0] }
+          sales: { value: 215, label: '€215', source: { field: '/0/3', indices: [0, 1, 2, 3, 4], type: 'quant' }, _values: [56, 59, 30, 70, 0] }
         }
       ]);
     });
@@ -512,29 +526,29 @@ describe('data-mapper', () => {
       const values = mapData(mapper, groupBy, ds);
       expect(values).to.eql([
         {
-          self: { value: 'Cars', source: { field: '/0/0', indices: [0], type: 'qual' }, _values: ['Cars'] },
-          sales: { value: 56, source: { field: '/0/3', indices: [0], type: 'quant' }, _values: [56] },
-          margin: { value: -2, source: { field: '/0/4', indices: [0], type: 'quant' }, _values: [-2] }
+          self: { value: 'Cars', label: 'dim:Cars', source: { field: '/0/0', indices: [0], type: 'qual' }, _values: ['Cars'] },
+          sales: { value: 56, label: '€56', source: { field: '/0/3', indices: [0], type: 'quant' }, _values: [56] },
+          margin: { value: -2, label: '-200%', source: { field: '/0/4', indices: [0], type: 'quant' }, _values: [-2] }
         },
         {
-          self: { value: 'Cars', source: { field: '/0/0', indices: [1], type: 'qual' }, _values: ['Cars'] },
-          sales: { value: 59, source: { field: '/0/3', indices: [1], type: 'quant' }, _values: [59] },
-          margin: { value: -3, source: { field: '/0/4', indices: [1], type: 'quant' }, _values: [-3] }
+          self: { value: 'Cars', label: 'dim:Cars', source: { field: '/0/0', indices: [1], type: 'qual' }, _values: ['Cars'] },
+          sales: { value: 59, label: '€59', source: { field: '/0/3', indices: [1], type: 'quant' }, _values: [59] },
+          margin: { value: -3, label: '-300%', source: { field: '/0/4', indices: [1], type: 'quant' }, _values: [-3] }
         },
         {
-          self: { value: 'Bikes', source: { field: '/0/0', indices: [2], type: 'qual' }, _values: ['Bikes'] },
-          sales: { value: 30, source: { field: '/0/3', indices: [2], type: 'quant' }, _values: [30] },
-          margin: { value: 0.4, source: { field: '/0/4', indices: [2], type: 'quant' }, _values: [0.4] }
+          self: { value: 'Bikes', label: 'dim:Bikes', source: { field: '/0/0', indices: [2], type: 'qual' }, _values: ['Bikes'] },
+          sales: { value: 30, label: '€30', source: { field: '/0/3', indices: [2], type: 'quant' }, _values: [30] },
+          margin: { value: 0.4, label: '40%', source: { field: '/0/4', indices: [2], type: 'quant' }, _values: [0.4] }
         },
         {
-          self: { value: 'Shoes', source: { field: '/0/0', indices: [3], type: 'qual' }, _values: ['Shoes'] },
-          sales: { value: 70, source: { field: '/0/3', indices: [3], type: 'quant' }, _values: [70] },
-          margin: { value: 0.5, source: { field: '/0/4', indices: [3], type: 'quant' }, _values: [0.5] }
+          self: { value: 'Shoes', label: 'dim:Shoes', source: { field: '/0/0', indices: [3], type: 'qual' }, _values: ['Shoes'] },
+          sales: { value: 70, label: '€70', source: { field: '/0/3', indices: [3], type: 'quant' }, _values: [70] },
+          margin: { value: 0.5, label: '50%', source: { field: '/0/4', indices: [3], type: 'quant' }, _values: [0.5] }
         },
         {
-          self: { value: 'Shoes', source: { field: '/0/0', indices: [4], type: 'qual' }, _values: ['Shoes'] },
-          sales: { value: 0, source: { field: '/0/3', indices: [4], type: 'quant' }, _values: [0] },
-          margin: { value: -0.4, source: { field: '/0/4', indices: [4], type: 'quant' }, _values: [-0.4] }
+          self: { value: 'Shoes', label: 'dim:Shoes', source: { field: '/0/0', indices: [4], type: 'qual' }, _values: ['Shoes'] },
+          sales: { value: 0, label: '€0', source: { field: '/0/3', indices: [4], type: 'quant' }, _values: [0] },
+          margin: { value: -0.4, label: '-40%', source: { field: '/0/4', indices: [4], type: 'quant' }, _values: [-0.4] }
         }
       ]);
     });
@@ -551,19 +565,19 @@ describe('data-mapper', () => {
       const values = mapData(mapper, groupBy, ds);
       expect(values).to.eql([
         {
-          self: { value: 'Cars', source: { field: '/0/0', indices: [0, 1], type: 'qual' }, _values: ['Cars', 'Cars'] },
-          sales: { value: 115, source: { field: '/0/3', indices: [0, 1], type: 'quant' }, _values: [56, 59] },
-          margin: { value: -2, source: { field: '/0/4', indices: [0, 1], type: 'quant' }, _values: [-2, -3] }
+          self: { value: 'Cars', label: 'dim:Cars', source: { field: '/0/0', indices: [0, 1], type: 'qual' }, _values: ['Cars', 'Cars'] },
+          sales: { value: 115, label: '€115', source: { field: '/0/3', indices: [0, 1], type: 'quant' }, _values: [56, 59] },
+          margin: { value: -2, label: '-200%', source: { field: '/0/4', indices: [0, 1], type: 'quant' }, _values: [-2, -3] }
         },
         {
-          self: { value: 'Bikes', source: { field: '/0/0', indices: [2], type: 'qual' }, _values: ['Bikes'] },
-          sales: { value: 30, source: { field: '/0/3', indices: [2], type: 'quant' }, _values: [30] },
-          margin: { value: 0.4, source: { field: '/0/4', indices: [2], type: 'quant' }, _values: [0.4] }
+          self: { value: 'Bikes', label: 'dim:Bikes', source: { field: '/0/0', indices: [2], type: 'qual' }, _values: ['Bikes'] },
+          sales: { value: 30, label: '€30', source: { field: '/0/3', indices: [2], type: 'quant' }, _values: [30] },
+          margin: { value: 0.4, label: '40%', source: { field: '/0/4', indices: [2], type: 'quant' }, _values: [0.4] }
         },
         {
-          self: { value: 'Shoes', source: { field: '/0/0', indices: [3, 4], type: 'qual' }, _values: ['Shoes', 'Shoes'] },
-          sales: { value: 70, source: { field: '/0/3', indices: [3, 4], type: 'quant' }, _values: [70, 0] },
-          margin: { value: 0.5, source: { field: '/0/4', indices: [3, 4], type: 'quant' }, _values: [0.5, -0.4] }
+          self: { value: 'Shoes', label: 'dim:Shoes', source: { field: '/0/0', indices: [3, 4], type: 'qual' }, _values: ['Shoes', 'Shoes'] },
+          sales: { value: 70, label: '€70', source: { field: '/0/3', indices: [3, 4], type: 'quant' }, _values: [70, 0] },
+          margin: { value: 0.5, label: '50%', source: { field: '/0/4', indices: [3, 4], type: 'quant' }, _values: [0.5, -0.4] }
         }
       ]);
     });
@@ -579,16 +593,16 @@ describe('data-mapper', () => {
       const values = mapData(mapper, groupBy, ds);
       expect(values).to.eql([
         {
-          self: { value: 'Cars', source: { field: '/0/0', indices: [0, 1], type: 'qual' }, _values: ['Cars', 'Cars'] },
-          color: { value: 'red', source: { field: '/1/1', indices: [0], type: 'qual' }, _values: ['red'] }
+          self: { value: 'Cars', label: 'dim:Cars', source: { field: '/0/0', indices: [0, 1], type: 'qual' }, _values: ['Cars', 'Cars'] },
+          color: { value: 'red', label: 'red', source: { field: '/1/1', indices: [0], type: 'qual' }, _values: ['red'] }
         },
         {
-          self: { value: 'Bikes', source: { field: '/0/0', indices: [2], type: 'qual' }, _values: ['Bikes'] },
-          color: { value: 'blue', source: { field: '/1/1', indices: [1], type: 'qual' }, _values: ['blue'] }
+          self: { value: 'Bikes', label: 'dim:Bikes', source: { field: '/0/0', indices: [2], type: 'qual' }, _values: ['Bikes'] },
+          color: { value: 'blue', label: 'blue', source: { field: '/1/1', indices: [1], type: 'qual' }, _values: ['blue'] }
         },
         {
-          self: { value: 'Shoes', source: { field: '/0/0', indices: [3, 4], type: 'qual' }, _values: ['Shoes', 'Shoes'] },
-          color: { value: 'green', source: { field: '/1/1', indices: [2], type: 'qual' }, _values: ['green'] }
+          self: { value: 'Shoes', label: 'dim:Shoes', source: { field: '/0/0', indices: [3, 4], type: 'qual' }, _values: ['Shoes', 'Shoes'] },
+          color: { value: 'green', label: 'green', source: { field: '/1/1', indices: [2], type: 'qual' }, _values: ['green'] }
         }
       ]);
     });
@@ -605,16 +619,16 @@ describe('data-mapper', () => {
       const values = mapData(mapper, groupBy, ds);
       expect(values).to.eql([
         {
-          self: { value: 'Cars', source: { field: '/0/0', indices: [0, 1], type: 'qual' }, _values: ['Cars', 'Cars'] },
-          year: { value: '2012, 2013', source: { field: '/0/2', indices: [0, 1], type: 'quant' }, _values: ['2012', '2013'] }
+          self: { value: 'Cars', label: 'dim:Cars', source: { field: '/0/0', indices: [0, 1], type: 'qual' }, _values: ['Cars', 'Cars'] },
+          year: { value: '2012, 2013', label: '2012, 2013', source: { field: '/0/2', indices: [0, 1], type: 'quant' }, _values: ['2012', '2013'] }
         },
         {
-          self: { value: 'Bikes', source: { field: '/0/0', indices: [2], type: 'qual' }, _values: ['Bikes'] },
-          year: { value: '2014', source: { field: '/0/2', indices: [2], type: 'quant' }, _values: ['2014'] }
+          self: { value: 'Bikes', label: 'dim:Bikes', source: { field: '/0/0', indices: [2], type: 'qual' }, _values: ['Bikes'] },
+          year: { value: '2014', label: '2014', source: { field: '/0/2', indices: [2], type: 'quant' }, _values: ['2014'] }
         },
         {
-          self: { value: 'Shoes', source: { field: '/0/0', indices: [3, 4], type: 'qual' }, _values: ['Shoes', 'Shoes'] },
-          year: { value: '2014, 2012', source: { field: '/0/2', indices: [3, 4], type: 'quant' }, _values: ['2014', '2012'] }
+          self: { value: 'Shoes', label: 'dim:Shoes', source: { field: '/0/0', indices: [3, 4], type: 'qual' }, _values: ['Shoes', 'Shoes'] },
+          year: { value: '2014, 2012', label: '2014, 2012', source: { field: '/0/2', indices: [3, 4], type: 'quant' }, _values: ['2014', '2012'] }
         }
       ]);
     });
@@ -631,22 +645,22 @@ describe('data-mapper', () => {
       const values = mapData(mapper, groupBy, ds);
       expect(values).to.eql([
         {
-          self: { value: 'Cars', source: { field: '/0/0', indices: [0, 1], type: 'qual' }, _values: ['Cars', 'Cars'] },
-          num: { value: 3 },
-          s: { value: 'foo' },
-          b: { value: false }
+          self: { value: 'Cars', label: 'dim:Cars', source: { field: '/0/0', indices: [0, 1], type: 'qual' }, _values: ['Cars', 'Cars'] },
+          num: { value: 3, label: '3' },
+          s: { value: 'foo', label: 'foo' },
+          b: { value: false, label: 'false' }
         },
         {
-          self: { value: 'Bikes', source: { field: '/0/0', indices: [2], type: 'qual' }, _values: ['Bikes'] },
-          num: { value: 3 },
-          s: { value: 'foo' },
-          b: { value: false }
+          self: { value: 'Bikes', label: 'dim:Bikes', source: { field: '/0/0', indices: [2], type: 'qual' }, _values: ['Bikes'] },
+          num: { value: 3, label: '3' },
+          s: { value: 'foo', label: 'foo' },
+          b: { value: false, label: 'false' }
         },
         {
-          self: { value: 'Shoes', source: { field: '/0/0', indices: [3, 4], type: 'qual' }, _values: ['Shoes', 'Shoes'] },
-          num: { value: 3 },
-          s: { value: 'foo' },
-          b: { value: false }
+          self: { value: 'Shoes', label: 'dim:Shoes', source: { field: '/0/0', indices: [3, 4], type: 'qual' }, _values: ['Shoes', 'Shoes'] },
+          num: { value: 3, label: '3' },
+          s: { value: 'foo', label: 'foo' },
+          b: { value: false, label: 'false' }
         }
       ]);
     });
