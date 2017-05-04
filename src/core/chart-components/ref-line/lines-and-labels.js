@@ -1,9 +1,5 @@
 import extend from 'extend';
-import {
-  rectCollidesWithRect,
-  isLineSegmentIntersectingRect,
-  getLineVectors,
-  getRectVertices } from '../../math/intersection';
+import Collision from '../../math/narrow-phase-collision';
 
 export function refLabelDefaultSettings() {
   return {
@@ -142,17 +138,22 @@ export function createLineWithLabel({ chart, blueprint, renderer, p, settings, i
     let rectHeight = (p.flipXY ? calcWidth : calcHeight);
 
     rect = blueprint.processItem({
-      fn: ({ width, height }) => ({
-        type: 'rect',
-        x: (p.position * width) - ((p.flipXY ? calcHeight : calcWidth) * (1 - align)),
-        y: Math.abs((vAlign * height) - (rectHeight * vAlign)),
-        width: rectWidth,
-        height: rectHeight,
-        stroke: item.background.stroke,
-        strokeWidth: item.background.strokeWidth,
-        fill: item.background.fill,
-        opacity: item.background.opacity
-      }),
+      fn: ({ width, height }) => {
+        let x = (p.position * width) - ((p.flipXY ? calcHeight : calcWidth) * (1 - align));
+        x = p.flipXY ? x : Math.max(x, 0);
+        const y = Math.max(Math.abs((vAlign * height) - (rectHeight * vAlign)), 0);
+        return {
+          type: 'rect',
+          x,
+          y,
+          width: p.flipXY ? rectWidth : Math.min(rectWidth, blueprint.width - x),
+          height: rectHeight,
+          stroke: item.background.stroke,
+          strokeWidth: item.background.strokeWidth,
+          fill: item.background.fill,
+          opacity: item.background.opacity
+        };
+      },
       flipXY: p.flipXY || false // This flips individual points (Y-lines)
     });
 
@@ -199,13 +200,13 @@ export function createLineWithLabel({ chart, blueprint, renderer, p, settings, i
         if (curItem.type === 'rect') {
           // We only detect rects here, since rects are always behind labels,
           // and we wouldn't want to measure text one more time
-          if (rectCollidesWithRect(rect, curItem)) {
+          if (Collision.testRectRect(rect, curItem)) {
             doesNotCollide = false;
           }
         } else if (curItem.type === 'line') {
           // This will only collide when flipXY are the same for both objects,
           // So it only collides on objects on the same "axis"
-          if (p.flipXY === curItem.flipXY && isLineSegmentIntersectingRect(getLineVectors(curItem), getRectVertices(rect))) {
+          if (p.flipXY === curItem.flipXY && Collision.testRectLine(rect, curItem)) {
             doesNotCollide = false;
           }
         }
