@@ -34,6 +34,24 @@ describe('Axis', () => {
     };
   });
 
+  describe('Settings', () => {
+    beforeEach(() => {
+      scale = band();
+      chart.scale.returns(scale);
+    });
+
+    describe('Defaults', () => {
+      ['left', 'right', 'top', 'bottom'].forEach((d) => {
+        it(`should default align when docked at ${d}`, () => {
+          config.dock = d;
+          componentFixture.simulateCreate(axisComponent, config);
+
+          expect(componentFixture.instance().def.state.settings.align).to.equal(d);
+        });
+      });
+    });
+  });
+
   describe('Lifecycle', () => {
     describe('Update', () => {
       it('should handle an update where scale type changes from discrete to continuous', () => {

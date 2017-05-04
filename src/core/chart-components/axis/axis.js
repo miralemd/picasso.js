@@ -112,11 +112,9 @@ const axisComponent = {
     if (this.state.isDiscrete) {
       this.state.defaultStyleSettings = discreteDefaultSettings();
       this.state.defaultDock = 'bottom';
-      this.state.defaultAlign = 'bottom';
     } else {
       this.state.defaultStyleSettings = continuousDefaultSettings();
       this.state.defaultDock = 'left';
-      this.state.defaultAlign = 'left';
     }
 
     this.setState(this.settings);
@@ -127,12 +125,11 @@ const axisComponent = {
     this.state.settings = extend(true, {}, this.settings, settings.settings, styleSettings);
 
     const dock = typeof this.state.settings.dock !== 'undefined' ? this.state.settings.dock : this.state.defaultDock;
-    const align = typeof this.state.settings.align !== 'undefined' ? this.state.settings.align : this.state.defaultAlign;
 
     this.state.concreteNodeBuilder = nodeBuilder(this.state.isDiscrete);
 
     this.state.settings.dock = dock;
-    this.state.settings.align = resolveAlign(align, dock);
+    this.state.settings.align = resolveAlign(this.state.settings.align, dock);
     this.state.settings.labels.tiltAngle = Math.max(-90, Math.min(this.state.settings.labels.tiltAngle, 90));
     this.dockConfig.dock = dock; // Override the dock setting (TODO should be removed)
 
