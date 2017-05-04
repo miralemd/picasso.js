@@ -62,7 +62,7 @@ export class SceneObject {
    * Read-only object representing a node on the scene.
    */
   constructor(node) {
-    this._bounds = node.boundingRect ? () => node.boundingRect(true) : () => ({ x: 0, y: 0, width: 0, height: 0 });
+    this._bounds = node.boundingRect ? (withTransform = true) => node.boundingRect(withTransform) : () => ({ x: 0, y: 0, width: 0, height: 0 });
     this._attrs = node.attrs;
     this._type = node.type;
     this._data = node.data;
@@ -133,6 +133,20 @@ export class SceneObject {
    */
   get bounds() {
     const bounds = this._bounds();
+    bounds.x /= this._dpi;
+    bounds.y /= this._dpi;
+    bounds.width /= this._dpi;
+    bounds.height /= this._dpi;
+    return bounds;
+  }
+
+  /**
+   * Get bounding rectangle of the node withing it's local coordinate system.
+   * Origin is in the top-left corner of the scene element.
+   * @return {Object} Bounding rectangle of the node.
+   */
+  get localBounds() {
+    const bounds = this._bounds(false);
     bounds.x /= this._dpi;
     bounds.y /= this._dpi;
     bounds.width /= this._dpi;
