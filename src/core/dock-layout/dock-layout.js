@@ -26,9 +26,10 @@ function cacheSize(c, reducedRect, containerRect) {
   return c.cachedSize;
 }
 
-function validateReduceRect(logicalContainerRect, reducedRect) {
-  const minReduceWidth = logicalContainerRect.width * 0.5;
-  const minReduceHeight = logicalContainerRect.height * 0.5;
+function validateReduceRect(logicalContainerRect, reducedRect, settings) {
+  // Absolute value for width/height should have predence over relative value
+  const minReduceWidth = Math.min(settings.center.minWidth, logicalContainerRect.width) || Math.max(logicalContainerRect.width * settings.center.minWidthRatio, 1);
+  const minReduceHeight = Math.min(settings.center.minHeight, logicalContainerRect.height) || Math.max(logicalContainerRect.height * settings.center.minHeightRatio, 1);
   return reducedRect.width >= minReduceWidth && reducedRect.height >= minReduceHeight;
 }
 
@@ -78,14 +79,14 @@ function reduceEdgeBleed(logicalContainerRect, reducedRect, edgeBleed) {
   }
 }
 
-function reduceSingleLayoutRect(logicalContainerRect, reducedRect, edgeBleed, c) {
+function reduceSingleLayoutRect(logicalContainerRect, reducedRect, edgeBleed, c, settings) {
   const newReduceRect = extend({}, reducedRect);
   const newEdgeBeed = extend({}, edgeBleed);
   reduceDocRect(newReduceRect, c);
   addEdgeBleed(newEdgeBeed, c);
   reduceEdgeBleed(logicalContainerRect, newReduceRect, newEdgeBeed);
 
-  const isValid = validateReduceRect(logicalContainerRect, newReduceRect);
+  const isValid = validateReduceRect(logicalContainerRect, newReduceRect, settings);
   if (!isValid) {
     return false;
   }
@@ -95,7 +96,7 @@ function reduceSingleLayoutRect(logicalContainerRect, reducedRect, edgeBleed, c)
   return true;
 }
 
-function reduceLayoutRect(logicalContainerRect, components, hiddenComponents) {
+function reduceLayoutRect(logicalContainerRect, components, hiddenComponents, settings) {
   const reducedRect = {
     x: logicalContainerRect.x,
     y: logicalContainerRect.y,
@@ -111,7 +112,7 @@ function reduceLayoutRect(logicalContainerRect, components, hiddenComponents) {
     const c = sortedComponents[i];
     cacheSize(c, reducedRect, logicalContainerRect);
 
-    if (!reduceSingleLayoutRect(logicalContainerRect, reducedRect, edgeBleed, c)) {
+    if (!reduceSingleLayoutRect(logicalContainerRect, reducedRect, edgeBleed, c, settings)) {
       sortedComponents.splice(i, 1);
       hiddenComponents.push(c.instance);
       --i;
@@ -253,10 +254,27 @@ function checkShowSettings(components, hiddenComponents, settings, logicalContai
   }
 }
 
+/**
+ * @typedef dockLayout
+ * @type {object}
+ * @property {object} [size] - Physical size
+ * @property {number} [size.width] - Width in pixels
+ * @property {number} [size.height]- Height in pixels
+ * @property {object} [logicalSize] - Logical size
+ * @property {number} [logicalSize.width] - Width in pixels
+ * @property {number} [logicalSize.height] - Height in pixels
+ * @property {boolean} [logicalSize.preserveAspectRatio=false] - If true, takes the smallest ratio of width/height between logical and physical size ( physical / logical ).
+ * @property {object} [center]
+ * @property {number} [center.minWidthRatio=0.5] - Value between 0 and 1
+ * @property {number} [center.minHeightRatio=0.5] - Value between 0 and 1
+ * @property {number} [center.minWidth] - Width in pixels
+ * @property {number} [center.minHeight] - Height in pixels
+ */
+
 export default function dockLayout(initialSettings) {
   const components = [];
   const hiddenComponents = [];
-  let settings = initialSettings ? resolveSettings(initialSettings) : {};
+  let settings = resolveSettings(initialSettings);
 
   const docker = function docker() {};
 
@@ -285,7 +303,7 @@ export default function dockLayout(initialSettings) {
   docker.layout = function layout(container) {
     const [logicalContainerRect, containerRect] = resolveLayout(container, settings);
     checkShowSettings(components, hiddenComponents, settings, logicalContainerRect);
-    const reduced = reduceLayoutRect(logicalContainerRect, components, hiddenComponents);
+    const reduced = reduceLayoutRect(logicalContainerRect, components, hiddenComponents, settings);
     positionComponents(components, logicalContainerRect, reduced, containerRect);
     return {
       visible: components.map(c => c.instance),

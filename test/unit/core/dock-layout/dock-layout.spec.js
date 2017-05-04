@@ -178,7 +178,7 @@ describe('Dock Layout', () => {
       expect(output.containerRect, 'ContainerRect had incorrect size').to.deep.include({ x: 0, y: 0, width: 100, height: 200 });
     });
 
-    it('should ignore NaN values and fallback to default size value', () => {
+    it('should ignore size and logicalSize NaN values and fallback to default size value', () => {
       settings = {
         logicalSize: {
           width: undefined,
@@ -197,6 +197,200 @@ describe('Dock Layout', () => {
       const output = mainComp.resize();
 
       expect(output.containerRect, 'ContainerRect had incorrect size').to.deep.include({ x: 0, y: 0, width: 1000, height: 1200 });
+    });
+
+    it('should use minWidthRatio', () => {
+      settings = {
+        center: {
+          minWidthRatio: 1
+        }
+      };
+
+      const leftComp = componentMock({ dock: 'left', size: 0.10 });
+      const bottomComp = componentMock({ dock: 'bottom', size: 0.30 });
+      const mainComp = componentMock();
+      const dl = dockLayout();
+      dl.addComponent(mainComp);
+      dl.addComponent(leftComp);
+      dl.addComponent(bottomComp);
+      dl.settings(settings);
+
+      const { visible, hidden } = dl.layout(container);
+
+      expect(visible).to.include(mainComp);
+      expect(visible).to.include(bottomComp);
+      expect(hidden).to.include(leftComp); // Because ratio 1, this component should be hidden
+    });
+
+    it('should use minHeightRatio', () => {
+      settings = {
+        center: {
+          minHeightRatio: 1
+        }
+      };
+
+      const leftComp = componentMock({ dock: 'left', size: 0.10 });
+      const bottomComp = componentMock({ dock: 'bottom', size: 0.30 });
+      const mainComp = componentMock();
+      const dl = dockLayout();
+      dl.addComponent(mainComp);
+      dl.addComponent(leftComp);
+      dl.addComponent(bottomComp);
+      dl.settings(settings);
+
+      const { visible, hidden } = dl.layout(container);
+
+      expect(visible).to.include(mainComp);
+      expect(hidden).to.include(bottomComp); // Because ratio 1, this component should be hidden
+      expect(visible).to.include(leftComp);
+    });
+
+    it('should clamp min width/height ratios to min value of 0', () => {
+      settings = {
+        center: {
+          minWidthRatio: -1,
+          minHeightRatio: -1
+        }
+      };
+
+      const leftComp = componentMock({ dock: 'left', size: 0.9 });
+      const bottomComp = componentMock({ dock: 'bottom', size: 0.9 });
+      const mainComp = componentMock();
+      const dl = dockLayout();
+      dl.addComponent(mainComp);
+      dl.addComponent(leftComp);
+      dl.addComponent(bottomComp);
+      dl.settings(settings);
+
+      const { visible } = dl.layout(container);
+
+      // Expect it to behave as ratio is set to 0
+      expect(visible).to.include(mainComp);
+      expect(visible).to.include(bottomComp);
+      expect(visible).to.include(leftComp);
+    });
+
+    it('should clamp min width/height ratios to max value of 1', () => {
+      settings = {
+        center: {
+          minWidthRatio: 10,
+          minHeightRatio: 10
+        }
+      };
+
+      const leftComp = componentMock({ dock: 'left', size: 0.1 });
+      const bottomComp = componentMock({ dock: 'bottom', size: 0.1 });
+      const mainComp = componentMock();
+      const dl = dockLayout();
+      dl.addComponent(mainComp);
+      dl.addComponent(leftComp);
+      dl.addComponent(bottomComp);
+      dl.settings(settings);
+
+      const { visible, hidden } = dl.layout(container);
+
+      // Expect it to behave as ratio is set to 1
+      expect(visible).to.include(mainComp);
+      expect(hidden).to.include(bottomComp);
+      expect(hidden).to.include(leftComp);
+    });
+
+    it('should use minWidth and have predence on minWidthRatio', () => {
+      settings = {
+        center: {
+          minWidthRatio: 0,
+          minWidth: container.width
+        }
+      };
+
+      const leftComp = componentMock({ dock: 'left', size: 0.10 });
+      const bottomComp = componentMock({ dock: 'bottom', size: 0.30 });
+      const mainComp = componentMock();
+      const dl = dockLayout();
+      dl.addComponent(mainComp);
+      dl.addComponent(leftComp);
+      dl.addComponent(bottomComp);
+      dl.settings(settings);
+
+      const { visible, hidden } = dl.layout(container);
+
+      expect(visible).to.include(mainComp);
+      expect(visible).to.include(bottomComp);
+      expect(hidden).to.include(leftComp); // Because width === container width 1, this component should be hidden
+    });
+
+    it('should use minHeight and have predence on minHeightRatio', () => {
+      settings = {
+        center: {
+          minHeightRatio: 0,
+          minHeight: container.height
+        }
+      };
+
+      const leftComp = componentMock({ dock: 'left', size: 0.10 });
+      const bottomComp = componentMock({ dock: 'bottom', size: 0.30 });
+      const mainComp = componentMock();
+      const dl = dockLayout();
+      dl.addComponent(mainComp);
+      dl.addComponent(leftComp);
+      dl.addComponent(bottomComp);
+      dl.settings(settings);
+
+      const { visible, hidden } = dl.layout(container);
+
+      expect(visible).to.include(mainComp);
+      expect(hidden).to.include(bottomComp); // Because height === container height 1, this component should be hidden
+      expect(visible).to.include(leftComp);
+    });
+
+    it('should clamp min width/height to the logical size', () => {
+      settings = {
+        center: {
+          minWidth: 333333,
+          minHeight: 333333
+        }
+      };
+
+      const leftComp = componentMock({ dock: 'left', size: 0.10 });
+      const bottomComp = componentMock({ dock: 'bottom', size: 0.10 });
+      const mainComp = componentMock();
+      const dl = dockLayout();
+      dl.addComponent(mainComp);
+      dl.addComponent(leftComp);
+      dl.addComponent(bottomComp);
+      dl.settings(settings);
+
+      const { visible, hidden } = dl.layout(container);
+
+      // Expect it to behave as if required with/height is equal to the logical size
+      expect(visible).to.include(mainComp);
+      expect(hidden).to.include(bottomComp);
+      expect(hidden).to.include(leftComp);
+    });
+
+    it('should ignore min width/height of less then or equal to 0', () => {
+      settings = {
+        center: {
+          minWidth: 0,
+          minHeight: -1
+        }
+      };
+
+      const leftComp = componentMock({ dock: 'left', size: 0.10 });
+      const bottomComp = componentMock({ dock: 'bottom', size: 0.10 });
+      const mainComp = componentMock();
+      const dl = dockLayout();
+      dl.addComponent(mainComp);
+      dl.addComponent(leftComp);
+      dl.addComponent(bottomComp);
+      dl.settings(settings);
+
+      const { visible } = dl.layout(container);
+
+      // Expect it to behave as if required with/height is equal default value
+      expect(visible).to.include(mainComp);
+      expect(visible).to.include(bottomComp);
+      expect(visible).to.include(leftComp);
     });
   });
 

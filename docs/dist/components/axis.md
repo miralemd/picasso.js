@@ -60,7 +60,6 @@ Limit the vertical size to 80px and use a angle of 35 degrees on the labels.
     },
     minorTicks: {
       show: true,
-      count: 3,
       tickSize: 3
     }
   }
