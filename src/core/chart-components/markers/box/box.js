@@ -180,7 +180,7 @@ const boxMarkerComponent = {
     let majorStart = item.major;
     if (item.majorStart !== null && !isNaN(span)) {
       majorStart = item.majorStart + (span * 0.5);
-      bandwidth = span;
+      bandwidth = Math.abs(span);
     }
 
     item.style.box.width = computeWidth(item.style.box.minWidth, item.style.box.maxWidth, item.style.box.width, bandwidth);
