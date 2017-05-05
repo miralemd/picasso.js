@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+## 0.19.0
+
+### Added
+
+- PIC-20 - Labeling strategy for vertical bars
+  - See [labels documentation](./docs/dist/components/labels.md)
+- PIC-144 - Allow the size ratio of the central dock area to be configured
+  - See [dock-layout documentation](./docs/dist/dock-layout.md)
+
+### Fixed
+
+- PIC-150 - Wrong default align if docked at top right
+- PIC-151 - Scales ref start/end not inverted when scale is inverted
+- PIC-152 - Brush range visual style
+- PIC-153 - Ref line labels disappear when aprt of label is outside dock area
+
 ## 0.18.4 - 2017-04-28
 
 ### Fixed
