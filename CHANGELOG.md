@@ -17,6 +17,7 @@
 - PIC-151 - Scales ref start/end not inverted when scale is inverted
 - PIC-152 - Brush range visual style
 - PIC-153 - Ref line labels disappear when aprt of label is outside dock area
+- Box markers now align properly to axis and themselves (no 1px diff/off)
 
 ## 0.18.4 - 2017-04-28
 
