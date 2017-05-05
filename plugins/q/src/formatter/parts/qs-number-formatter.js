@@ -296,7 +296,7 @@ class NumberFormatter {
     };
     prep = this._prepared;
 
-    const patternSeparator = this.localeInfo ? this.localeInfo.qListSep : ';';
+    const patternSeparator = this.localeInfo && this.localeInfo.qListSep ? this.localeInfo.qListSep : ';';
 
     pattern = pattern.split(patternSeparator);
     prep.positive.pattern = pattern[0];
