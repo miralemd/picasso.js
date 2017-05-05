@@ -57,7 +57,7 @@ function hammer(chart, mediator, element) {
         gesture.options.enable = true;
       }
       if (typeof gesture.options.enable === 'function') {
-        gesture.options.enable = gesture.options.enable.bind(instance)();
+        gesture.options.enable = gesture.options.enable.bind(instance);
       }
       // setup hammer gestures
       const type = getGestureType(gesture.type);
