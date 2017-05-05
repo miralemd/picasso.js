@@ -20,7 +20,8 @@
     },
     target: { // render matching overlay on target component (optional)
       component: 'y-axis',
-      fill: 'rgb(82,204,82)'
+      fill: 'rgba(82,204,82,0.2)',
+      fillActive: 'rgba(82,204,82,0.4)' // target area color on hover
     }
   }
 }
