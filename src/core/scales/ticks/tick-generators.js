@@ -131,16 +131,23 @@ function forceTicksAtBounds(ticks, scale, formatter) {
     ticks.splice(0, 0, {
       position: range[0],
       label: formatter(scale.start()),
-      isMinor: false
+      isMinor: false,
+      value: scale.start()
     });
+  } else if (ticks[0] && ticks[0].isMinor) {
+    ticks[0].isMinor = false; // Convert to major tick
   }
 
+  const lastTick = ticks[ticks.length - 1];
   if (ticksP.indexOf(range[1]) === -1) {
     ticks.push({
       position: range[1],
       label: formatter(scale.end()),
-      isMinor: false
+      isMinor: false,
+      value: scale.end()
     });
+  } else if (lastTick && lastTick.isMinor) {
+    lastTick.isMinor = false; // Convert to major tick
   }
 }
 

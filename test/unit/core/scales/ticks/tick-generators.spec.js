@@ -131,8 +131,43 @@ describe('Tick generators', () => {
         settings.ticks.forceBounds = true;
         scale.domain([-99842.82122359527, 99888.12805374675]);
         const ticks = scale.ticks(input);
-        expect(ticks[0].position).to.equal(scale.range()[0]);
-        expect(ticks[ticks.length - 1].position).to.equal(scale.range()[1]);
+        const majorTicks = ticks.filter(t => !t.isMinor);
+        expect(majorTicks[0]).to.deep.equal({
+          position: 0,
+          label: '-99842.8212236',
+          isMinor: false,
+          value: -99842.82122359527
+        });
+        expect(majorTicks[majorTicks.length - 1]).to.deep.equal({
+          position: 1,
+          label: '99888.1280537',
+          isMinor: false,
+          value: 99888.12805374675
+        });
+      });
+
+      it('should be able to force ticks at bounds with minorTicks', () => {
+        settings.ticks.tight = false;
+        settings.ticks.forceBounds = true;
+        settings.minorTicks = {
+          count: 3 // Should trigger minorTicks on -50 and 450, those should be replace by major ticks
+        };
+        scale.domain([-50, 450]);
+        const ticks = scale.ticks(input);
+        const majorTicks = ticks.filter(t => !t.isMinor);
+
+        expect(majorTicks[0]).to.deep.equal({
+          position: 0,
+          label: '-50',
+          isMinor: false,
+          value: -50
+        });
+        expect(majorTicks[majorTicks.length - 1]).to.deep.equal({
+          position: 1,
+          label: '450',
+          isMinor: false,
+          value: 450
+        });
       });
     });
   });
