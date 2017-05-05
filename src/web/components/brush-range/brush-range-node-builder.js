@@ -91,17 +91,19 @@ function buildBubble({ h, isVertical, label, otherValue, idx, pos, align, style 
   ]);
 }
 
-function buildArea({ h, isVertical, top, height, color }) {
+function buildArea({ h, isVertical, top, height, color, on }) {
   return h('div', {
     style: {
       backgroundColor: color,
-      opacity: 0.2,
+      // opacity: 0.2,
       position: 'absolute',
       left: isVertical ? 0 : `${top}px`,
       top: isVertical ? `${top}px` : 0,
       height: isVertical ? `${height}px` : '100%',
-      width: isVertical ? '100%' : `${height}px`
-    }
+      width: isVertical ? '100%' : `${height}px`,
+      pointerEvents: 'auto'
+    },
+    on
   }, []);
 }
 
@@ -118,6 +120,23 @@ export default function buildRange({ borderHit, els, isVertical, state, vStart, 
     const targetEnd = state.scale(vEnd) * targetSize;
     const targetHeight = Math.abs(targetStart - targetEnd);
     const targetTop = Math.min(targetStart, targetEnd);
+    const targetArea = {
+      h: state.h,
+      isVertical,
+      top: targetTop,
+      height: targetHeight,
+      color: state.settings.target.fill
+    };
+    if (typeof state.settings.target.fillActive !== 'undefined') {
+      targetArea.on = {
+        mouseover() {
+          this.elm.style.backgroundColor = state.settings.target.fillActive || state.settings.target.fill;
+        },
+        mouseout() {
+          this.elm.style.backgroundColor = state.settings.target.fill;
+        }
+      };
+    }
     els.push(state.h('div', {
       style: {
         position: 'absolute',
@@ -127,24 +146,18 @@ export default function buildRange({ borderHit, els, isVertical, state, vStart, 
         width: `${state.targetRect.width}px`
       }
     }, [
-      buildArea({
-        h: state.h,
-        isVertical,
-        top: targetTop,
-        height: targetHeight,
-        color: state.settings.target.fill
-      })
+      buildArea(targetArea)
     ]));
   }
 
   // active range area
-  els.push(buildArea({
-    h: state.h,
-    isVertical,
-    top,
-    height,
-    color: state.settings.fill
-  }));
+  // els.push(buildArea({
+  //   h: state.h,
+  //   isVertical,
+  //   top,
+  //   height,
+  //   color: state.settings.fill
+  // }));
 
   els.push(buildLine({
     h: state.h,
