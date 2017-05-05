@@ -11,8 +11,8 @@ export function createFromMetaInfo(meta, localeInfo) {
     return timeFormat(meta.qNumFormat.qFmt, meta.qNumFormat.qType, localeInfo);
   }
   let pattern = '#';
-  let thousand = localeInfo && localeInfo.qThousandSep ? localeInfo.qThousandSep : ',';
-  let decimal = localeInfo && localeInfo.qDecimalSep ? localeInfo.qDecimalSep : '.';
+  let thousand = localeInfo && typeof localeInfo.qThousandSep !== 'undefined' ? localeInfo.qThousandSep : ',';
+  let decimal = localeInfo && typeof localeInfo.qDecimalSep !== 'undefined' ? localeInfo.qDecimalSep : '.';
   let type = 'U';
   let isAuto = meta && !!meta.qIsAutoFormat;
   if (meta && meta.qNumFormat) {
