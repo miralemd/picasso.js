@@ -235,7 +235,7 @@ const boxMarkerComponent = {
           y1: item.med * height,
           x1: majorStartModified - Math.floor(boxWidth / 2),
           y2: item.med * height,
-          x2: majorEnd - Math.floor(boxWidth / 2)
+          x2: majorStartModified + Math.floor(boxWidth / 2)
         }),
         crisp: true
       }));
