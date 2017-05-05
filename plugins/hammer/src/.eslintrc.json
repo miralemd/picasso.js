@@ -1,6 +1,9 @@
 {
+  "globals": {
+    "Hammer": true
+  },
   "env": {
     "browser": true,
-    "node": false
+    "node": true
   }
 }

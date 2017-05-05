@@ -6,7 +6,8 @@ import {
   dataset,
   field,
   table,
-  component
+  component,
+  interaction
 } from './core';
 import './web';
 
@@ -34,7 +35,8 @@ function use(plugin, options = {}) {
     field,
     table,
     formatter,
-    component
+    component,
+    interaction
   }, options);
 }
 
@@ -66,5 +68,6 @@ export {
   field,
   table,
   use,
-  component
+  component,
+  interaction
 };

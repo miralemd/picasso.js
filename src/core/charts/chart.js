@@ -14,6 +14,7 @@ import buildScroll, { getOrCreateScrollApi } from './scroll-api';
 import brush from '../brush';
 import component from '../component';
 import componentFactory from '../component/component-factory';
+import interaction from '../interaction';
 import mediatorFactory from '../mediator';
 import NarrowPhaseCollision from '../math/narrow-phase-collision';
 
@@ -149,6 +150,7 @@ function chart(definition) {
   let currentScales = null; // Built scales
   let currentFormatters = null; // Built formatters
   let currentScrollApis = null; // Build scroll apis
+  let currentInteractions = [];
 
   let dataset = [];
   const brushes = {};
@@ -364,10 +366,19 @@ function chart(definition) {
       element.addEventListener(event.key, event.listener);
       listeners.push(event);
     });
+
+    const { interactions = [] } = settings;
+    currentInteractions = interactions.map((intSettings) => {
+      const intDefinition = interaction(intSettings.type)(instance, mediator, element);
+      intDefinition.set(intSettings);
+      return intDefinition;
+    });
   };
 
   const unmount = () => {
     listeners.forEach(({ key, listener }) => element.removeEventListener(key, listener));
+    currentInteractions.forEach(inter => inter.destroy(element));
+    currentInteractions = [];
   };
 
   /**
@@ -707,6 +718,20 @@ function chart(definition) {
     }
     return undefined;
   };
+
+  Object.defineProperty(instance, 'interactions', {
+    get() {
+      return {
+        instances: currentInteractions,
+        on() {
+          currentInteractions.forEach(i => i.on());
+        },
+        off() {
+          currentInteractions.forEach(i => i.off());
+        }
+      };
+    }
+  });
 
   created();
 

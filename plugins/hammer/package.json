@@ -1,7 +1,7 @@
 {
   "name": "@qlik/picasso-hammer",
   "version": "0.19.0",
-  "description": "Hammer JS module for Picasso",
+  "description": "Hammer JS interaction mixin for Picasso",
   "license": "ISC",
   "private": true,
   "publishConfig": {
@@ -12,19 +12,13 @@
     "url": "ssh://git@github.com:qlik-trial/picasso.js.git"
   },
   "scripts": {
-    "build": "webpack -p --output-filename [name].min.js",
-    "build:debug": "webpack --debug --devtool source-map --output-pathinfo"
+    "build": "node ../../node_modules/webpack/bin/webpack -p --output-filename [name].min.js",
+    "build:debug": "node ../../node_modules/webpack/bin/webpack --debug --devtool source-map --output-pathinfo",
+    "test": "node ../../node_modules/after-work.js/bin/aw-test-runner \"./test/**/*.spec.js\""
   },
   "files": [
     "/dist"
   ],
   "main": "dist/picasso-hammer.js",
-  "devDependencies": {
-    "babel-core": "^6.14.0",
-    "babel-loader": "^6.2.10",
-    "babel-preset-es2015": "^6.14.0",
-    "hammerjs": "^2.0.8",
-    "webpack": "^2.2.1"
-  },
   "dependencies": {}
 }

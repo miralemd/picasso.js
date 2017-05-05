@@ -1,5 +1,7 @@
 /* global Hammer */
 
+// DEPRECATED - will be removed
+
 const translateKnownTypes = {
   click: 'Tap',
   Click: 'Tap'

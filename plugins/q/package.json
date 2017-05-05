@@ -12,19 +12,15 @@
     "url": "ssh://git@github.com:qlik-trial/picasso.js.git"
   },
   "scripts": {
-    "build": "webpack -p --output-filename [name].min.js",
-    "build:debug": "webpack --debug --devtool source-map --output-pathinfo"
+    "build": "node ../../node_modules/webpack/bin/webpack -p --output-filename [name].min.js",
+    "build:debug": "node ../../node_modules/webpack/bin/webpack --debug --devtool source-map --output-pathinfo"
   },
   "files": [
     "/dist"
   ],
   "main": "dist/picasso-q.js",
   "devDependencies": {
-    "babel-core": "^6.14.0",
-    "babel-loader": "^6.2.10",
-    "babel-preset-es2015": "^6.14.0",
-    "number-format.js": "^1.1.10",
-    "webpack": "^2.2.1"
+    "number-format.js": "^1.1.10"
   },
   "dependencies": {}
 }

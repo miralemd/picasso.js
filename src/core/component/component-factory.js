@@ -98,8 +98,11 @@ function updateDockConfig(config, settings) {
 
 function setUpEmitter(ctx, emitter, settings) {
   // Object.defineProperty(ctx, 'emitter', )
-  Object.keys(settings.on || {}).forEach((eventName) => {
-    emitter.on(eventName, settings.on[eventName].bind(ctx));
+  Object.keys(settings.on || {}).forEach((event) => {
+    ctx.eventListeners = ctx.eventListeners || [];
+    const listener = settings.on[event].bind(ctx);
+    ctx.eventListeners.push({ event, listener });
+    emitter.on(event, listener);
   });
   ctx.emit = (name, event) => emitter.emit(name, event);
 }
@@ -439,7 +442,11 @@ function componentFactory(definition, options = {}) {
   fn.mounted = () => mounted(element);
 
   fn.unmount = () => {
-    emitter.removeAllListeners();
+    [instanceContext, definitionContext].forEach((ctx) => {
+      (ctx.eventListeners || []).forEach(({ event, listener }) => {
+        emitter.removeListener(event, listener);
+      });
+    });
     brushTriggers.tap = [];
     brushTriggers.over = [];
     brushStylers.forEach((brushStyler) => {

@@ -4,6 +4,7 @@
 	<meta charset="utf-8">
   <base href="/">
   <script src="dist/picasso.js"></script>
+  <script src="node_modules/hammerjs/hammer.min.js"></script>
   <script src="plugins/hammer/dist/picasso-hammer.js"></script>
 	<style>
 		#container {
@@ -32,11 +33,6 @@
             ['Trucks', 450000]
           ]
         ]
-      },
-      on: {
-        tap() {
-          window.tapCount++;
-        }
       },
       settings: {
         scales: {
@@ -74,6 +70,17 @@
               ref: 'y'
             }
           }
+        }],
+        interactions: [{
+          type: 'hammer',
+          gestures: [{
+            type: 'Tap',
+            events: {
+              tap(e) {
+                window.tapCount++;
+              }
+            }
+          }]
         }]
       }
     });
