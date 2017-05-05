@@ -477,7 +477,7 @@ describe('box marker', () => {
       {
         type: 'rect',
         x: -0.5,
-        y: 6.5,
+        y: 5.5,
         height: 7,
         width: 40,
         show: true,
@@ -493,8 +493,8 @@ describe('box marker', () => {
       },
       {
         type: 'rect',
-        x: 40.5,
-        y: 6.5,
+        x: 39.5,
+        y: 5.5,
         height: 7,
         width: 40,
         show: true,
@@ -511,7 +511,7 @@ describe('box marker', () => {
       {
         type: 'rect',
         x: 79.5,
-        y: 6.5,
+        y: 5.5,
         height: 7,
         width: 40,
         show: true,
@@ -527,8 +527,8 @@ describe('box marker', () => {
       },
       {
         type: 'rect',
-        x: 120.5,
-        y: 6.5,
+        x: 119.5,
+        y: 5.5,
         height: 7,
         width: 40,
         show: true,
@@ -545,7 +545,7 @@ describe('box marker', () => {
       {
         type: 'rect',
         x: 159.5,
-        y: 6.5,
+        y: 5.5,
         height: 7,
         width: 40,
         show: true,

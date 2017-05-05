@@ -71,17 +71,6 @@ export default function doodler(settings) {
     );
   };
 
-  doodle.median = function median(x, y, style = { box: {} }) {
-    const width = style.box.width || 1;
-    return doodle.horizontalLine(
-      x,
-      y,
-      width,
-      'median',
-      style
-    );
-  };
-
   doodle.box = function box(x, y, height, style = { box: {} }) {
     const width = style.box.width || 1;
     return doodle.style({

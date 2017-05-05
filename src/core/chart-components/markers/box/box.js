@@ -1,3 +1,5 @@
+import extend from 'extend';
+
 import dispersion from '../generic/dispersion';
 import { notNumber } from '../../../utils/math';
 
@@ -157,15 +159,14 @@ const boxMarkerComponent = {
 
     this.updateSettings(settings);
   },
-  buildShapes(item) {
+  buildShapes({ item, blueprint, doodle }) {
     if (notNumber(item.major)) {
       return [];
     }
 
-    const doodle = this.dispersion.doodle();
     const shapes = [];
 
-    const measureWidth = this.dispersion.blueprint().flipXY ? this.rect.height : this.rect.width;
+    const measureWidth = blueprint.flipXY ? this.rect.height : this.rect.width;
 
     function computeWidth(minWidth, maxWidth, multiplier, bandwidth) {
       let width = (bandwidth * measureWidth) * multiplier;
@@ -183,43 +184,70 @@ const boxMarkerComponent = {
       bandwidth = Math.abs(span);
     }
 
-    item.style.box.width = computeWidth(item.style.box.minWidth, item.style.box.maxWidth, item.style.box.width, bandwidth);
     item.style.whisker.width = computeWidth(item.style.box.minWidth, item.style.box.maxWidth, item.style.whisker.width, bandwidth);
+
+    let majorStartModified;
+    let majorEnd;
+    let boxWidth;
 
     // Draw the box
     if (item.style.box.show && !notNumber(item.start) && !notNumber(item.end)) {
       const high = Math.max(item.start, item.end);
       const low = Math.min(item.start, item.end);
-      shapes.push(doodle.box(
-        majorStart,
-        low,
-        (high - low),
-        item.style,
-        item.data
-      ));
+
+      shapes.push(blueprint.processItem({
+        fn: ({ width, height }) => {
+          let highModified = Math.floor(high * height);
+          let lowModified = Math.floor(low * height);
+
+          majorStartModified = Math.round(majorStart * width);
+          majorEnd = Math.round((majorStart + (item.style.box.width * bandwidth)) * width);
+          boxWidth = majorEnd - majorStartModified;
+
+          boxWidth = Math.max(item.style.box.minWidth, Math.min(item.style.box.maxWidth, boxWidth));
+
+          return extend(doodle.style({}, 'box', item.style), {
+            type: 'rect',
+            x: majorStartModified - Math.floor(boxWidth / 2),
+            y: lowModified,
+            height: highModified - lowModified,
+            width: boxWidth
+          });
+        },
+        crisp: true
+      }));
     }
 
     if (item.style.line.show && !notNumber(item.min) && !notNumber(item.start)) {
       // Draw the line min - start
-      shapes.push(doodle.verticalLine(item.major, item.start, item.min, 'line', item.style, item.data));
+      shapes.push(blueprint.processItem(doodle.verticalLine(item.major, item.start, item.min, 'line', item.style, item.data)));
     }
     if (item.style.line.show && !notNumber(item.max) && !notNumber(item.end)) {
       // Draw the line end - max (high)
-      shapes.push(doodle.verticalLine(item.major, item.max, item.end, 'line', item.style, item.data));
+      shapes.push(blueprint.processItem(doodle.verticalLine(item.major, item.max, item.end, 'line', item.style, item.data)));
     }
 
     // Draw the median line
     if (item.style.median.show && !notNumber(item.med)) {
-      shapes.push(doodle.median(item.major, item.med, item.style, item.data));
+      shapes.push(blueprint.processItem({
+        fn: ({ height }) => extend(doodle.style({}, 'median', item.style), {
+          type: 'line',
+          y1: item.med * height,
+          x1: majorStartModified - Math.floor(boxWidth / 2),
+          y2: item.med * height,
+          x2: majorEnd - Math.floor(boxWidth / 2)
+        }),
+        crisp: true
+      }));
     }
 
     // Draw the whiskers
     if (item.style.whisker.show && !notNumber(item.min) && !notNumber(item.max)) {
       // Low whisker
-      shapes.push(doodle.whisker(item.major, item.min, item.style, item.data));
+      shapes.push(blueprint.processItem(doodle.whisker(item.major, item.min, item.style, item.data)));
 
       // High whisker
-      shapes.push(doodle.whisker(item.major, item.max, item.style, item.data));
+      shapes.push(blueprint.processItem(doodle.whisker(item.major, item.max, item.style, item.data)));
     }
 
     return shapes;

@@ -139,19 +139,21 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
     blueprint.flipXY = settings.orientation === 'horizontal';
     blueprint.crisp = true;
 
+    let output = [];
+
     items.forEach((item, idx) => {
-      const shapes = buildShapes(item);
+      const shapes = buildShapes({ item, blueprint, doodle });
       shapes.forEach((shape) => {
         shape.data = idx;
         shape.collider = { type: null };
-        blueprint.push(shape);
       });
+      output.push(...shapes);
     });
 
-    const output = blueprint.output();
     if (output.length === 0) {
       return output;
     }
+
     return items.map((item, idx) => {
       const container = {
         type: 'container',

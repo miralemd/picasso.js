@@ -81,6 +81,7 @@ class Transposer {
   processItem(item) {
     let newItem = {};
     const flipXY = (typeof item.flipXY !== 'undefined' ? item.flipXY : this.flipXY);
+    const crisp = (typeof item.crisp !== 'undefined' ? item.crisp : this.crisp);
 
     if (item.fn && typeof item.fn === 'function') {
       let width = flipXY ? this.height : this.width;
@@ -106,7 +107,7 @@ class Transposer {
       }
     }
 
-    if (this.crisp) {
+    if (crisp) {
       crispify(newItem);
     }
 

@@ -49,13 +49,6 @@ describe('Doodler', () => {
     expect(whisker.y1).to.eql(2);
   });
 
-  it('should doodle median correctly', () => {
-    const median = doodle.median(1, 2);
-
-    expect(median.type).to.eql('line');
-    expect(median.y1).to.eql(2);
-  });
-
   it('should doodle a box correctly', () => {
     expect(doodle.box(1, 2, 3)).to.eql(
       {
