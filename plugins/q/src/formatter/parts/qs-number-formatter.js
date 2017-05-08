@@ -426,7 +426,7 @@ class NumberFormatter {
         if (decimalPartPattern) {
           const nDecimals = Math.max(0, Math.min(14, decimalPartPattern.length)); // the length of e.g. 0000#####
           const nZeroes = decimalPartPattern.replace(/#+$/, '').length;
-          let decimalPart = (absValue % 1).toFixed(nDecimals).slice(2).replace(/0+$/, ''); // remove trailing zeroes
+          let decimalPart = (this.type === 'I' ? 0 : absValue % 1).toFixed(nDecimals).slice(2).replace(/0+$/, ''); // remove trailing zeroes
 
           for (i = decimalPart.length; i < nZeroes; i++) {
             decimalPart += '0';

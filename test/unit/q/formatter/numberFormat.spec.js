@@ -34,11 +34,19 @@ describe('numberFormat', () => {
         });
 
         it('should round values correctly when type is "I"', () => {
-          f = formatter('#', ',', '.', 'I');
+          f = formatter('0', ',', '.', 'I');
 
           expect(f(0.3)).to.equal('0');
           expect(f(-0.3)).to.equal('0');
           expect(f(-0.6)).to.equal('-1');
+        });
+
+        it('should round values correctly when type is "I"', () => {
+          f = formatter('0.00', ',', '.', 'I');
+          expect(f(0.25)).to.equal('0.00');
+          expect(f(0.75)).to.equal('1.00');
+          expect(f(1.25)).to.equal('1.00');
+          expect(f(1.75)).to.equal('2.00');
         });
 
         it('should round values correctly when type is "F"', () => {
