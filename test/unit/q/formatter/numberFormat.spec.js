@@ -442,6 +442,15 @@ describe('numberFormat', () => {
           expect(f(50)).to.equal('l');
         });
 
+        it('should support coercible values', () => {
+          f = formatter('$0.0');
+          expect(f('')).to.equal('$0.0');
+          expect(f(true)).to.equal('$1.0');
+          expect(f(false)).to.equal('$0.0');
+          expect(f(undefined)).to.equal('undefined');
+          expect(f(null)).to.equal('$0.0');
+        });
+
         describe('format', () => {
           it('should use the passed arguments instead of the ones passed at construction', () => {
             f = formatter('0');
@@ -503,8 +512,8 @@ describe('numberFormat', () => {
           expect(f('NaN')).to.equal('NaN');
         });
 
-        it('should not format strings', () => {
-          expect(f('')).to.equal('');
+        it('should not format non-numerics', () => {
+          expect(f('$3.2')).to.equal('$3.2');
           expect(f('Hello World')).to.equal('Hello World');
         });
 

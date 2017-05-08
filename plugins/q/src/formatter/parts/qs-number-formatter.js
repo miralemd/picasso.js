@@ -339,11 +339,14 @@ class NumberFormatter {
       t,
       i,
       numericPattern,
-      decimalPartPattern;
+      decimalPartPattern,
+      original = value;
 
     if (isNaN(value)) {
-      return value;
+      return `${original}`;
     }
+
+    value = +value;
 
     if (prep.pattern === false) {
       return value.toString();
