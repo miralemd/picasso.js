@@ -288,6 +288,23 @@ function chart(definition) {
     visible.forEach((comp) => { comp.visible = true; });
   };
 
+  function setInteractions(interactions = []) {
+    const current = {};
+    const newKeys = interactions.filter(it => !!it.key).map(it => it.key);
+    currentInteractions.forEach((cit) => {
+      if (cit.key && newKeys.indexOf(cit.key) !== -1) { // keep old instance
+        current[cit.key] = cit;
+      } else {
+        cit.destroy();
+      }
+    });
+    currentInteractions = interactions.map((intSettings) => {
+      const intDefinition = intSettings.key && current[intSettings.key] ? current[intSettings.key] : interaction(intSettings.type)(instance, mediator, element);
+      intDefinition.set(intSettings);
+      return intDefinition;
+    });
+  }
+
   // Browser only
   const mount = () => {
     element.innerHTML = '';
@@ -367,18 +384,20 @@ function chart(definition) {
       listeners.push(event);
     });
 
-    const { interactions = [] } = settings;
-    currentInteractions = interactions.map((intSettings) => {
-      const intDefinition = interaction(intSettings.type)(instance, mediator, element);
-      intDefinition.set(intSettings);
-      return intDefinition;
-    });
+    // const { interactions = [] } = settings;
+    setInteractions(settings.interactions);
+    // currentInteractions = interactions.map((intSettings) => {
+    //   const intDefinition = interaction(intSettings.type)(instance, mediator, element);
+    //   intDefinition.set(intSettings);
+    //   return intDefinition;
+    // });
   };
 
   const unmount = () => {
     listeners.forEach(({ key, listener }) => element.removeEventListener(key, listener));
-    currentInteractions.forEach(inter => inter.destroy(element));
-    currentInteractions = [];
+    setInteractions();
+    // currentInteractions.forEach(inter => inter.destroy(element));
+    // currentInteractions = [];
   };
 
   /**
@@ -392,6 +411,7 @@ function chart(definition) {
     }
     if (newProps.settings) {
       settings = newProps.settings;
+      setInteractions(newProps.settings.interactions);
     }
 
     beforeUpdate();

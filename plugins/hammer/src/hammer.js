@@ -25,12 +25,14 @@ function hammer(chart, mediator, element) {
   let settings;
   let instance;
   let mc;
+  let key;
   let hammerGestures = [];
   /**
    * Set default settings
    * @private
    */
   function setDefaultSettings(newSettings) {
+    key = newSettings.key;
     settings = newSettings;
     instance = { chart, mediator, settings };
     settings.gestures = settings.gestures || [];
@@ -102,6 +104,10 @@ function hammer(chart, mediator, element) {
   }
 
   return {
+    get key() {
+      return key;
+    },
+
     set(newSettings) {
       setDefaultSettings(newSettings);
       removeAddedEvents();

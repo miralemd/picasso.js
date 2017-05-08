@@ -6,12 +6,14 @@ export default function native(chart, mediator, element) {
   let instance = { chart, mediator, element };
   let nativeEvents = [];
   let settings;
+  let itKey;
 
   /**
    * Set default settings
    * @private
    */
   function setDefaultSettings(newSettings) {
+    itKey = newSettings.key;
     settings = newSettings;
     settings.events = settings.events || [];
     if (settings.enable === undefined) {
@@ -50,6 +52,9 @@ export default function native(chart, mediator, element) {
   }
 
   return {
+    get key() {
+      return itKey;
+    },
     /**
      * Updates this with new settings
      */
