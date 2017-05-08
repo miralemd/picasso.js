@@ -2,6 +2,12 @@
 
 ## [UNRELEASED]
 
+## 0.20.1 - 2017-05-08
+
+### Fixed
+
+- QSFormatter formats wrong when `qType='I'` and format pattern has a decimal part
+
 ## 0.20.0 - 2017-05-08
 
 ### Added
