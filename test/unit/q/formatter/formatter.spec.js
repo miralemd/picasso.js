@@ -107,4 +107,14 @@ describe('qs-formatter', () => {
     }, qLocaleInfo);
     expect(f(3)).to.equal('1900 januari tisdag');
   });
+
+  it('should use default values if localeInfo object is empty', () => {
+    const f = createFromMetaInfo({
+      qNumFormat: {
+        qIsAutoFormat: true
+      },
+      qIsAutoFormat: true
+    }, {});
+    expect(f(3)).to.equal('3');
+  });
 });
