@@ -7,6 +7,7 @@ export default function native(chart, mediator, element) {
   let nativeEvents = [];
   let settings;
   let itKey;
+  let isOn = true;
 
   /**
    * Set default settings
@@ -61,18 +62,22 @@ export default function native(chart, mediator, element) {
     set(newSettings) {
       setDefaultSettings(newSettings);
       removeAddedEvents();
-      addEvents();
+      if (isOn) {
+        addEvents();
+      }
     },
     /**
      * Turns off interactions
      */
     off() {
+      isOn = false;
       removeAddedEvents();
     },
     /**
      * Turns off interactions
      */
     on() {
+      isOn = true;
       if (nativeEvents.length === 0) {
         addEvents();
       }

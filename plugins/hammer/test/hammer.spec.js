@@ -60,6 +60,14 @@ describe('hammer interaction mixin', () => {
     hammerInteraction.on();
     expect(element.listeners.length).to.equal(3);
   });
+  it('should not add event listeners when state is off', () => {
+    hammerInteraction.set(settings);
+    expect(element.listeners.length).to.equal(3);
+    hammerInteraction.off();
+    expect(element.listeners.length).to.equal(0);
+    hammerInteraction.set(settings);
+    expect(element.listeners.length).to.equal(0);
+  });
   it('should change hammer events when set is called with new props', () => {
     hammerInteraction.set(settings);
     expect(element.listeners.length).to.equal(3);

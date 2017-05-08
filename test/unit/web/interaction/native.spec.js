@@ -50,6 +50,14 @@ describe('native interaction mixin', () => {
     nativeInteraction.on();
     expect(element.listeners.length).to.equal(2);
   });
+  it('should not add event listeners when state is off', () => {
+    nativeInteraction.set(settings);
+    expect(element.listeners.length).to.equal(2);
+    nativeInteraction.off();
+    expect(element.listeners.length).to.equal(0);
+    nativeInteraction.set(settings);
+    expect(element.listeners.length).to.equal(0);
+  });
   it('should change native events when set is called with new props', () => {
     nativeInteraction.set(settings);
     expect(element.listeners.length).to.equal(2);

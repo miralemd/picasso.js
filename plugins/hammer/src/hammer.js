@@ -27,6 +27,7 @@ function hammer(chart, mediator, element) {
   let mc;
   let key;
   let hammerGestures = [];
+  let isOn = true;
   /**
    * Set default settings
    * @private
@@ -111,18 +112,22 @@ function hammer(chart, mediator, element) {
     set(newSettings) {
       setDefaultSettings(newSettings);
       removeAddedEvents();
-      addRecognizers();
+      if (isOn) {
+        addRecognizers();
+      }
     },
     /**
      * Turns off interactions
      */
     off() {
+      isOn = false;
       removeAddedEvents();
     },
     /**
      * Turns off interactions
      */
     on() {
+      isOn = true;
       if (hammerGestures.length === 0) {
         addRecognizers();
       }
