@@ -1,3 +1,4 @@
+import Collisions from '../../../core/math/narrow-phase-collision';
 
 function findActive(state, value) {
   let rs = state.ranges;
@@ -49,16 +50,22 @@ export function start({ state, e, renderer, ranges, targetSize }) {
     target = null;
   }
 
+  const tempState = {
+    started: true
+  };
+
   state.offset = renderer.element().getBoundingClientRect();
   state.ranges = ranges(state, state.fauxBrushInstance || state.brushInstance);
-  state.started = true;
+  const relX = x - state.offset.left; // coordinate relative renderer
+  const relY = y - state.offset.top;
   const startPoint = (e.center[state.cssCoord.coord] - e[state.cssCoord.pos]) - state.offset[state.cssCoord.offset];
   const relStart = (e.center[state.cssCoord.coord]) - state.offset[state.cssCoord.offset];
   const rel = relStart / state.size;
   let v = state.scale.invert(rel);
   let vStart = state.scale.invert(startPoint / state.size);
-  state.start = vStart;
-  state.current = v;
+
+  tempState.start = vStart;
+  tempState.current = v;
 
   let rs = state.ranges;
   const limits = {
@@ -90,7 +97,7 @@ export function start({ state, e, renderer, ranges, targetSize }) {
   }
 
   if (activeIdx === -1 && !state.multi) {
-    state.ranges = [];
+    tempState.ranges = [];
     limits.min = state.scale.min();
     limits.max = state.scale.max();
   }
@@ -107,16 +114,16 @@ export function start({ state, e, renderer, ranges, targetSize }) {
     };
 
     if (target && target.hasAttribute('data-other-value')) {
-      state.start = parseFloat(target.getAttribute('data-other-value'));
+      tempState.start = parseFloat(target.getAttribute('data-other-value'));
       activeRange.mode = 'modify';
     } else {
       let pxStart = state.scale(activeRange.start) * state.size;
       let pxEnd = state.scale(activeRange.end) * state.size;
       if (Math.abs(startPoint - pxStart) <= targetSize) {
-        state.start = activeRange.end;
+        tempState.start = activeRange.end;
         activeRange.mode = 'modify';
       } else if (Math.abs(startPoint - pxEnd) <= targetSize) {
-        state.start = activeRange.start;
+        tempState.start = activeRange.start;
         activeRange.mode = 'modify';
       }
     }
@@ -131,13 +138,15 @@ export function start({ state, e, renderer, ranges, targetSize }) {
     };
   }
 
-  state.active = activeRange;
+  tempState.active = activeRange;
+
+  if (activeRange.mode !== 'modify' && state.targetRect && !Collisions.testRectPoint(state.targetRect, { x: relX, y: relY })) {
+    // do nothing
+  } else {
+    Object.keys(tempState).forEach(key => (state[key] = tempState[key]));
+  }
 }
 export function end(state, ranges) {
-  if (!state.started) {
-    return;
-  }
-
   state.started = false;
   state.ranges = ranges(state, state.fauxBrushInstance || state.brushInstance);
   findActive(state, state.current);

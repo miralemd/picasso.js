@@ -265,10 +265,16 @@ const brushRangeComponent = {
     });
   },
   end() {
+    if (!this.state.started) {
+      return;
+    }
     end(this.state, ranges);
     render(this.state);
   },
   move(e) {
+    if (!this.state.started) {
+      return;
+    }
     move(this.state, e);
     setRanges(this.state);
     render(this.state);
