@@ -1,6 +1,26 @@
 # Changelog
 
-## Unreleased
+## [UNRELEASED] 0.20.0
+
+### Added
+
+- PIC-115 - Interaction manager
+- PIC-74 - Option to disable interactivity
+- Hover effect on brush range target area
+
+### Changed
+
+- A brushed range can now only be moved/created within the target area, if such is specified.
+
+### Fixed
+
+- Error in number formatter when formatting numeric strings
+- Bad number formatting when localeInfo object is empty
+- Median line in box-plot renders poorly
+
+### Deprecated
+
+- `interaction` component has been deprecated and replaced with `settings.interactions`
 
 ## 0.19.0 - 2017-05-05
 
