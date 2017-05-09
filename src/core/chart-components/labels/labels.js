@@ -29,11 +29,18 @@ const labelsComponent = {
     let comp;
     let nodeData;
 
+    let originalRect = {
+      x: this.rect.x * this.rect.scaleRatio.x,
+      width: this.rect.width * this.rect.scaleRatio.x,
+      y: this.rect.y * this.rect.scaleRatio.y,
+      height: this.rect.height * this.rect.scaleRatio.y
+    };
+
     (stngs.sources || []).forEach((source) => {
       if (source.strategy && source.strategy.type === 'bar' && source.component) {
         comp = this.chart.component(source.component);
         if (comp) {
-          nodes = this.chart.shapesAt(this.rect, {
+          nodes = this.chart.shapesAt(originalRect, {
             components: [{ key: source.component }]
           });
           nodeData = comp.data;
