@@ -147,10 +147,6 @@ export class SceneObject {
    */
   get localBounds() {
     const bounds = this._bounds(false);
-    bounds.x /= this._dpi;
-    bounds.y /= this._dpi;
-    bounds.width /= this._dpi;
-    bounds.height /= this._dpi;
     return bounds;
   }
 
