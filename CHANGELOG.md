@@ -2,6 +2,18 @@
 
 ## [UNRELEASED]
 
+## 0.20.3 - 2017-05-09
+
+### Fixed
+
+- Bounds for labels rect mismatch the coordinate system of the scene object bounds
+
+## 0.20.2 - 2017-05-09
+
+### Fixed
+
+- Local bounds for scene objects are divided by dpi value
+
 ## 0.20.1 - 2017-05-08
 
 ### Fixed
