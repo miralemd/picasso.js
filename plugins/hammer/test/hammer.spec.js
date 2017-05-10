@@ -92,4 +92,32 @@ describe('hammer interaction mixin', () => {
     hammerInteraction.destroy();
     expect(element.listeners.length).to.equal(0);
   });
+  it('set recognizewith and requirefailure', () => {
+    settings = {
+      type: 'hammer',
+      enable: true,
+      gestures: [{
+        type: 'Tap',
+        options: {
+          event: 'tap'
+        },
+        events: {
+          tap() {}
+        },
+        recognizeWith: 'double ',
+        requireFailure: 'double '
+      }, {
+        type: 'Tap',
+        options: {
+          event: 'double',
+          taps: 2
+        },
+        events: {
+          double() {}
+        },
+        recognizeWith: 'tap '
+      }]
+    };
+    expect(hammerInteraction.set.bind(this, settings)).to.not.throw(Error);
+  });
 });

@@ -81,10 +81,10 @@ function hammer(chart, mediator, element) {
       const type = getGestureType(gesture.type);
       if (Hammer && Hammer[type]) {
         if (gesture.recognizeWith) {
-          mc.get(gesture.options.event).recognizeWith(gesture.recognizeWith.split(' '));
+          mc.get(gesture.options.event).recognizeWith(gesture.recognizeWith.split(' ').filter(e => e !== ''));
         }
         if (gesture.requireFailure) {
-          mc.get(gesture.options.event).requireFailure(gesture.requireFailure.split(' '));
+          mc.get(gesture.options.event).requireFailure(gesture.requireFailure.split(' ').filter(e => e !== ''));
         }
       }
     });
@@ -105,10 +105,24 @@ function hammer(chart, mediator, element) {
   }
 
   return {
+    /**
+     * Getter for the key.
+     */
     get key() {
       return key;
     },
-
+    /**
+     * Updates this with new settings
+     * @typedef settings
+     * @type {object}
+     * @property {string} [type] - The interaction type. Is 'hammer' for this component
+     * @property {boolean|function} [enable] - Should the interaction be enabled or not.
+     * This is only run when adding event handlers. In effect at startup, update or during on/off.
+     * It does not run during every event loop.
+     * @property {object} [events] - The keys in this object is the names of native events
+     * that should be added to the chart element and they should all point to function which
+     * will be the corresponding event handler.
+     */
     set(newSettings) {
       setDefaultSettings(newSettings);
       removeAddedEvents();
@@ -142,6 +156,7 @@ function hammer(chart, mediator, element) {
       }
       mc = null;
       instance = null;
+      settings = null;
     }
   };
 }

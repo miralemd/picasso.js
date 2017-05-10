@@ -53,11 +53,23 @@ export default function native(chart, mediator, element) {
   }
 
   return {
+    /**
+     * Getter for the key.
+     */
     get key() {
       return itKey;
     },
     /**
      * Updates this with new settings
+     * @typedef settings
+     * @type {object}
+     * @property {string} [type] - The interaction type. Is 'native' for this component
+     * @property {boolean|function} [enable=true] - Should the interactions defined here be enabled or not.
+     * This is only run when adding event handlers. In effect at startup, update or during on/off.
+     * It does not run during every event loop.
+     * @property {array} [gestures] - The keys in this object is the names of native events
+     * that should be added to the chart element and they should all point to function which
+     * will be the corresponding event handler.
      */
     set(newSettings) {
       setDefaultSettings(newSettings);
@@ -88,6 +100,7 @@ export default function native(chart, mediator, element) {
     destroy() {
       removeAddedEvents();
       instance = null;
+      settings = null;
     }
   };
 }

@@ -16,6 +16,7 @@ class Manager {
     this.gestures = [];
   }
   add(gesture) {
+    gesture.manager = this;
     this.gestures.push(gesture);
   }
   remove(event) {
@@ -53,11 +54,43 @@ class Manager {
 class BaseGesture {
   constructor(opts) {
     this.opts = opts;
+    this._recognizeWith = [];
+    this._requireFailure = [];
+  }
+
+  recognizeWith(events) {
+    events.forEach((event) => {
+      if (this.manager.get(event)) {
+        this._recognizeWith.push(event);
+      } else {
+        throw new Error(`event "${event}" does not exist`);
+      }
+    });
+  }
+
+  requireFailure(events) {
+    events.forEach((event) => {
+      if (this.manager.get(event)) {
+        this._requireFailure.push(event);
+      } else {
+        throw new Error(`event "${event}" does not exist`);
+      }
+    });
   }
 }
 
-class Tap extends BaseGesture {}
-class Pan extends BaseGesture {}
+class Tap extends BaseGesture {
+  constructor(opts) {
+    opts.event = opts.event || 'tap';
+    super(opts);
+  }
+}
+class Pan extends BaseGesture {
+  constructor(opts) {
+    opts.event = opts.event || 'pan';
+    super(opts);
+  }
+}
 
 function hammerMock() {
   const Hammer = {};
