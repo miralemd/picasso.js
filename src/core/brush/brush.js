@@ -10,7 +10,12 @@ function add({
 }) {
   const changedMap = {};
   const changed = [];
-  items.forEach(({ key, value }) => {
+  let key;
+  let value;
+
+  for (let i = 0, num = items.length; i < num; i++) {
+    key = items[i].key;
+    value = items[i].value;
     if (!values[key]) {
       values[key] = vc();
     }
@@ -19,11 +24,14 @@ function add({
       changedMap[key] = changedMap[key] || [];
       changedMap[key].push(value);
     }
-  });
+  }
 
-  Object.keys(changedMap).forEach((key) => {
+  const keys = Object.keys(changedMap);
+  for (let i = 0, num = keys.length; i < num; i++) {
+    key = keys[i];
     changed.push({ id: key, values: changedMap[key] });
-  });
+  }
+
   return changed;
 }
 
@@ -33,26 +41,35 @@ function remove({
 }) {
   const changedMap = {};
   const changed = [];
-  items.forEach(({ key, value }) => {
-    if (!values[key]) {
-      return;
-    }
+  let key;
+  let value;
 
-    if (values[key].remove(value)) {
+  for (let i = 0, num = items.length; i < num; i++) {
+    key = items[i].key;
+    value = items[i].value;
+    if (values[key] && values[key].remove(value)) {
       changedMap[key] = changedMap[key] || [];
       changedMap[key].push(value);
     }
-  });
+  }
 
-  Object.keys(changedMap).forEach((key) => {
+  const keys = Object.keys(changedMap);
+  for (let i = 0, num = keys.length; i < num; i++) {
+    key = keys[i];
     changed.push({ id: key, values: changedMap[key] });
-  });
+  }
+
   return changed;
 }
 
 function collectUnique(items) {
   const filteredSet = {};
-  items.forEach(({ key, value }) => {
+  let key;
+  let value;
+
+  for (let i = 0, num = items.length; i < num; i++) {
+    key = items[i].key;
+    value = items[i].value;
     if (!filteredSet[key]) {
       filteredSet[key] = [];
     }
@@ -61,7 +78,7 @@ function collectUnique(items) {
     if (idx === -1) {
       filteredSet[key].push(value);
     }
-  });
+  }
 
   return filteredSet;
 }
@@ -91,9 +108,17 @@ export function toggle({
   const added = [];
   const removed = [];
   const filteredSet = collectUnique(items);
+  let key;
+  let value;
+  let fs;
 
-  Object.keys(filteredSet).forEach((key) => {
-    filteredSet[key].forEach((value) => {
+  const setKeys = Object.keys(filteredSet);
+  for (let i = 0, num = setKeys.length; i < num; i++) {
+    key = setKeys[i];
+    fs = filteredSet[key];
+
+    for (let k = 0, len = fs.length; k < len; k++) {
+      value = fs[k];
       if (!values[key] || !values[key].contains(value)) {
         createValueCollection({
           key,
@@ -107,32 +132,42 @@ export function toggle({
         removedMap[key].push(value);
         values[key].remove(value);
       }
-    });
-  });
+    }
+  }
 
-  Object.keys(addedMap).forEach((key) => {
+  const addedKeys = Object.keys(addedMap);
+  for (let i = 0, num = addedKeys.length; i < num; i++) {
+    key = addedKeys[i];
     added.push({ id: key, values: addedMap[key] });
-  });
+  }
 
-  Object.keys(removedMap).forEach((key) => {
+  const removedKeys = Object.keys(removedMap);
+  for (let i = 0, num = removedKeys.length; i < num; i++) {
+    key = removedKeys[i];
     removed.push({ id: key, values: removedMap[key] });
-  });
+  }
 
   return [added, removed];
 }
 
 function diff(old, current) {
   const changed = [];
-  Object.keys(old).forEach((key) => {
+  const keys = Object.keys(old);
+  let key;
+  let changedValues;
+  const filterFn = v => current[key].indexOf(v) === -1;
+
+  for (let i = 0, num = keys.length; i < num; i++) {
+    key = keys[i];
     if (!current[key]) {
       changed.push({ id: key, values: old[key] });
     } else {
-      const changedValues = old[key].filter(v => current[key].indexOf(v) === -1);
+      changedValues = old[key].filter(filterFn);
       if (changedValues.length) {
         changed.push({ id: key, values: changedValues });
       }
     }
-  });
+  }
 
   return changed;
 }
@@ -143,29 +178,36 @@ export function set({
   vc
 }) {
   const addedMap = {};
+  const filteredSet = collectUnique(items);
   let added = [];
   let removed = [];
-  const filteredSet = collectUnique(items);
+  let key;
 
   const oldMap = {};
-  Object.keys(vCollection).forEach((key) => {
+  const vcKeys = Object.keys(vCollection);
+  for (let i = 0, num = vcKeys.length; i < num; i++) {
+    key = vcKeys[i];
     oldMap[key] = vCollection[key].values().slice();
     delete vCollection[key];
-  });
+  }
 
-  Object.keys(filteredSet).forEach((key) => {
-    filteredSet[key].forEach((value) => {
-      if (!vCollection[key] || !vCollection[key].contains(value)) {
-        createValueCollection({
-          key,
-          value,
-          collection: vCollection,
-          obj: addedMap,
-          fn: vc
-        });
-      }
-    });
-  });
+  const createValueCollectionFn = (value) => {
+    if (!vCollection[key] || !vCollection[key].contains(value)) {
+      createValueCollection({
+        key,
+        value,
+        collection: vCollection,
+        obj: addedMap,
+        fn: vc
+      });
+    }
+  };
+
+  const fsKeys = Object.keys(filteredSet);
+  for (let i = 0, num = fsKeys.length; i < num; i++) {
+    key = fsKeys[i];
+    filteredSet[key].forEach(createValueCollectionFn);
+  }
 
   removed = diff(oldMap, addedMap);
   added = diff(addedMap, oldMap);
@@ -464,21 +506,28 @@ export default function brush({
 
   fn.containsMappedData = (d, props, mode) => {
     let status = [];
-    Object.keys(d).forEach((key, i) => {
+    const keys = Object.keys(d);
+    let key;
+    let source;
+    let type;
+    let value;
+
+    for (let i = 0, num = keys.length; i < num; i++) {
+      key = keys[i];
       status[i] = { key, i, bool: false };
-      const source = d[key].source && d[key].source.field;
+      source = d[key].source && d[key].source.field;
       if (!source) {
-        return;
+        return false;
       }
 
-      const type = d[key].source.type === 'quant' ? 'range' : 'value';
-      const value = d[key].value;
+      type = d[key].source.type === 'quant' ? 'range' : 'value';
+      value = d[key].value;
       if (type === 'range' && ranges[source] && ranges[source].containsValue(value)) {
         status[i].bool = true;
       } else if (type === 'value' && values[source] && values[source].contains(value)) {
         status[i].bool = true;
       }
-    });
+    }
 
     if (props) {
       status = status.filter(b => props.indexOf(b.key) !== -1);
