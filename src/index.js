@@ -22,7 +22,6 @@ import scrollbarComponent from './core/chart-components/scrollbar';
 import brushRangeComponent from './web/components/brush-range';
 import rangeComponent from './core/chart-components/range';
 import brushLassoComponent from './core/chart-components/brush-lasso';
-import interactionComponent from './web/components/interaction';
 import labelsComponent from './core/chart-components/labels';
 
 // Plugin API
@@ -52,7 +51,6 @@ use(scrollbarComponent);
 use(brushRangeComponent);
 use(rangeComponent);
 use(brushLassoComponent);
-use(interactionComponent);
 use(labelsComponent);
 
 /**

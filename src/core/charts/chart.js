@@ -383,21 +383,12 @@ function chart(definition) {
       element.addEventListener(event.key, event.listener);
       listeners.push(event);
     });
-
-    // const { interactions = [] } = settings;
     setInteractions(settings.interactions);
-    // currentInteractions = interactions.map((intSettings) => {
-    //   const intDefinition = interaction(intSettings.type)(instance, mediator, element);
-    //   intDefinition.set(intSettings);
-    //   return intDefinition;
-    // });
   };
 
   const unmount = () => {
     listeners.forEach(({ key, listener }) => element.removeEventListener(key, listener));
     setInteractions();
-    // currentInteractions.forEach(inter => inter.destroy(element));
-    // currentInteractions = [];
   };
 
   /**
