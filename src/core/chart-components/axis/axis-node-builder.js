@@ -2,6 +2,7 @@ import buildLine from './axis-line-node';
 import buildLabel from './axis-label-node';
 import buildTick from './axis-tick-node';
 import NarrowPhaseCollision from '../../math/narrow-phase-collision';
+import { getClampedValue } from './axis-label-size';
 
 function tickSpacing(settings) {
   let spacing = 0;
@@ -107,6 +108,9 @@ function discreteCalcMaxTextRect({ measureText, settings, innerRect, scale, tilt
   } else {
     textRect.width = scale.bandwidth() * innerRect.width;
   }
+
+  textRect.width = getClampedValue({ value: textRect.width, maxValue: settings.labels.maxLengthPx, minValue: settings.labels.minLengthPx });
+
   return textRect;
 }
 
@@ -128,6 +132,9 @@ function continuousCalcMaxTextRect({ measureText, settings, innerRect, ticks, ti
   } else {
     textRect.width = (innerRect.width / majorTicks(ticks).length) * 0.75;
   }
+
+  textRect.width = getClampedValue({ value: textRect.width, maxValue: settings.labels.maxLengthPx, minValue: settings.labels.minLengthPx });
+
   return textRect;
 }
 

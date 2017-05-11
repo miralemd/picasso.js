@@ -11,7 +11,6 @@ import { scaleWithSize } from '../../scales';
 /**
  * @typedef settings
  * @type {object}
- * @property {object} [labels] Labels settings
  * @property {object} [labels] - Labels settings
  * @property {boolean} [labels.show=true]
  * @property {string} [labels.mode='auto'] - Control how labels arrange themself. Availabe modes are auto, horizontal, layered and tilted. Only horizontal is supported on a continuous axis
@@ -21,7 +20,8 @@ import { scaleWithSize } from '../../scales';
  * @property {string} [labels.fontSize='12px']
  * @property {string} [labels.fill='#595959']
  * @property {number} [labels.margin] - Space between tick and label. Default to 6 (discrete) or 4 (continuous)
- * @property {number} [labels.maxSize=250]
+ * @property {number} [labels.maxLengthPx=150] - Max length of labels in pixels
+ * @property {number} [labels.minLengthPx=0] - Min length of labels in pixels. Labels will always at least require this much space
  * @property {number} [labels.maxGlyphCount=NaN] - Is used to measure the largest possible size a label
  * @property {object} [line]
  * @property {boolean} [line.show=true]

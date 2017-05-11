@@ -8,7 +8,7 @@ export function discreteDefaultSettings() {
       fontSize: '12px',
       fill: '#595959',
       margin: 6,
-      maxSize: 250,
+      maxLengthPx: 150,
       mode: 'auto',
       maxGlyphCount: NaN
     },
@@ -37,7 +37,7 @@ export function continuousDefaultSettings() {
       fontSize: '12px',
       fill: '#595959',
       margin: 4,
-      maxSize: 250,
+      maxLengthPx: 150,
       mode: 'horizontal'
     },
     line: {

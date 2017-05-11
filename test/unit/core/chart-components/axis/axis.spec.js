@@ -40,6 +40,131 @@ describe('Axis', () => {
       chart.scale.returns(scale);
     });
 
+    describe('maxLengthPx', () => {
+      // maxLengthPx should set the maxWidth value of a text node to it-self
+      beforeEach(() => {
+        scale = band();
+        scale.domain(['AAAAAAAAAA', 'BBBBBBBBB']);
+        chart.scale.returns(scale);
+        config.settings.labels = {
+          show: true,
+          maxLengthPx: 10,
+          mode: 'horizontal'
+        };
+      });
+
+      it('should limit text nodes max width in horizontal mode and docked vertically', () => {
+        config.dock = 'left';
+
+        componentFixture.simulateCreate(axisComponent, config);
+        componentFixture.simulateRender(opts);
+        const textNodes = componentFixture.getRenderOutput().filter(n => n.type === 'text');
+
+        expect(textNodes[0].maxWidth).to.equal(10);
+        expect(textNodes[1].maxWidth).to.equal(10);
+      });
+
+      it('should limit text nodes max width in horizontal mode and docked horizontally', () => {
+        config.dock = 'bottom';
+
+        componentFixture.simulateCreate(axisComponent, config);
+        componentFixture.simulateRender(opts);
+        const textNodes = componentFixture.getRenderOutput().filter(n => n.type === 'text');
+
+        expect(textNodes[0].maxWidth).to.equal(10);
+        expect(textNodes[1].maxWidth).to.equal(10);
+      });
+
+      it('should limit text nodes max width in tilted mode', () => {
+        config.dock = 'bottom';
+        config.settings.labels.mode = 'tilted';
+
+        componentFixture.simulateCreate(axisComponent, config);
+        componentFixture.simulateRender(opts);
+        const textNodes = componentFixture.getRenderOutput().filter(n => n.type === 'text');
+
+        expect(textNodes[0].maxWidth).to.equal(10);
+        expect(textNodes[1].maxWidth).to.equal(10);
+      });
+
+      it('should limit text nodes max width in layered mode', () => {
+        config.dock = 'bottom';
+        config.settings.labels.mode = 'layered';
+
+        componentFixture.simulateCreate(axisComponent, config);
+        componentFixture.simulateRender(opts);
+        const textNodes = componentFixture.getRenderOutput().filter(n => n.type === 'text');
+
+        expect(textNodes[0].maxWidth).to.equal(10);
+        expect(textNodes[1].maxWidth).to.equal(10);
+      });
+    });
+
+    describe('minLengthPx', () => {
+      /* minLengthPx only really comes into effect when a label is shorten the minLength, we simulate this by
+        generating short labels and configuring a "high" minimum length.
+      */
+      beforeEach(() => {
+        scale = band();
+        scale.domain(['A', 'B']);
+        chart.scale.returns(scale);
+        config.settings.labels = {
+          show: true,
+          minLengthPx: 100,
+          mode: 'horizontal'
+        };
+      });
+
+      it('should limit text nodes min width in horizontal mode and docked vertically', () => {
+        config.dock = 'left';
+
+        componentFixture.simulateCreate(axisComponent, config);
+        componentFixture.simulateRender(opts);
+        const textNodes = componentFixture.getRenderOutput().filter(n => n.type === 'text');
+
+        expect(textNodes[0].maxWidth).to.equal(100);
+        expect(textNodes[1].maxWidth).to.equal(100);
+      });
+
+      it('should limit text nodes min width in horizontal mode and docked horizontally', () => {
+        config.dock = 'bottom';
+
+        componentFixture.simulateCreate(axisComponent, config);
+        componentFixture.simulateRender(opts);
+        const textNodes = componentFixture.getRenderOutput().filter(n => n.type === 'text');
+
+        expect(textNodes[0].maxWidth).to.equal(100);
+        expect(textNodes[1].maxWidth).to.equal(100);
+      });
+
+      it('should limit text nodes min width in tilted mode', () => {
+        config.dock = 'bottom';
+        config.settings.labels.mode = 'tilted';
+        config.settings.labels.minLengthPx = 100;
+        opts.inner.width = 1000;
+        opts.outer.width = 1000;
+
+        componentFixture.simulateCreate(axisComponent, config);
+        componentFixture.simulateRender(opts);
+        const textNodes = componentFixture.getRenderOutput().filter(n => n.type === 'text');
+
+        expect(textNodes[0].maxWidth).to.approximately(124.7220, 0.0001);
+        expect(textNodes[1].maxWidth).to.approximately(124.7220, 0.0001);
+      });
+
+      it('should limit text nodes min width in layered mode', () => {
+        config.dock = 'bottom';
+        config.settings.labels.mode = 'layered';
+
+        componentFixture.simulateCreate(axisComponent, config);
+        componentFixture.simulateRender(opts);
+        const textNodes = componentFixture.getRenderOutput().filter(n => n.type === 'text');
+
+        expect(textNodes[0].maxWidth).to.equal(100);
+        expect(textNodes[1].maxWidth).to.equal(100);
+      });
+    });
+
     describe('Defaults', () => {
       ['left', 'right', 'top', 'bottom'].forEach((d) => {
         it(`should default align when docked at ${d}`, () => {

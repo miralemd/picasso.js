@@ -15,7 +15,7 @@ The axis need only a scale defined to generate either a continuous or discrete a
 
 ### Discrete axis
 
-Limit the vertical size to 80px and use a angle of 35 degrees on the labels.
+Limit the label length to 80px and use a angle of 35 degrees on the labels.
 
 ```js
 {
@@ -27,7 +27,7 @@ Limit the vertical size to 80px and use a angle of 35 degrees on the labels.
       mode: 'tilted',
       fontSize: '15px',
       tiltAngle: 35,
-      maxSize: 80,
+      maxLengthPx: 80,
       maxEdgeBleed: 50
     },
     line: {
@@ -91,7 +91,6 @@ Under the hood - `maxGlyphCount` is a multipler on the size of the character `M`
 
 ```js
 settings: {
-  labels: , // Labels settings. Optional.
   labels: { // Labels settings. Optional.
     show: true, //  Default: true. Optional.
     mode: 'auto', // Control how labels arrange themself. Availabe modes are auto, horizontal, layered and tilted. Only horizontal is supported on a continuous axis. Default: 'auto'. Optional.
@@ -101,7 +100,8 @@ settings: {
     fontSize: '12px', //  Default: '12px'. Optional.
     fill: '#595959', //  Default: '#595959'. Optional.
     margin: 3.14, // Space between tick and label. Default to 6 (discrete) or 4 (continuous). Optional.
-    maxSize: 250, //  Default: 250. Optional.
+    maxLengthPx: 150, // Max length of labels in pixels. Default: 150. Optional.
+    minLengthPx: 0, // Min length of labels in pixels. Labels will always at least require this much space. Default: 0. Optional.
     maxGlyphCount: , // Is used to measure the largest possible size a label. Default: . Optional.
   },
   line: { //  Optional.

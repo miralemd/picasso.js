@@ -132,6 +132,22 @@ function isToLarge({
   });
 }
 
+export function getClampedValue({ value, maxValue, minValue, range, modifier }) {
+  if (!isNaN(range) && !isNaN(modifier)) {
+    value = range * modifier;
+  }
+
+  if (value > maxValue) {
+    value = maxValue;
+  }
+
+  if (value < minValue) {
+    value = minValue;
+  }
+
+  return value;
+}
+
 export default function getSize({
   isDiscrete,
   rect,
@@ -143,6 +159,10 @@ export default function getSize({
 }) {
   let size = 0;
   const edgeBleed = { left: 0, top: 0, right: 0, bottom: 0 };
+  const {
+    maxLengthPx: maxValue,
+    minLengthPx: minValue
+  } = settings.labels;
 
   if (settings.labels.show) {
     const align = settings.align;
@@ -152,8 +172,7 @@ export default function getSize({
       settings,
       distance,
       formatter
-    })
-    .filter(isMajorTick);
+    }).filter(isMajorTick);
 
     const measure = (text) => {
       const m = measureText({
@@ -161,9 +180,7 @@ export default function getSize({
         fontSize: settings.labels.fontSize,
         fontFamily: settings.labels.fontFamily
       });
-      if (settings.labels.maxWidth) { // TODO deprecate maxWidth?
-        m.width = Math.min(m.width, settings.labels.maxWidth);
-      }
+      m.width = getClampedValue({ value: m.width, maxValue, minValue });
       return m;
     };
 
@@ -183,11 +200,11 @@ export default function getSize({
     let sizeFromTextRect;
     if (state.labels.activeMode === 'tilted') {
       const radians = Math.abs(settings.labels.tiltAngle) * (Math.PI / 180); // angle in radians
-      sizeFromTextRect = r => (r.width * Math.sin(radians)) + (r.height * Math.cos(radians));
+      sizeFromTextRect = r => (getClampedValue({ value: r.width, maxValue, minValue }) * Math.sin(radians)) + (r.height * Math.cos(radians));
     } else if (horizontal) {
       sizeFromTextRect = r => r.height;
     } else {
-      sizeFromTextRect = r => r.width;
+      sizeFromTextRect = r => getClampedValue({ value: r.width, maxValue, minValue });
     }
 
     let labels;
@@ -204,7 +221,7 @@ export default function getSize({
     }
     const tickMeasures = labels.map(measure);
     const labelSizes = tickMeasures.map(sizeFromTextRect);
-    const textSize = Math.min(settings.labels.maxSize, Math.max(...labelSizes, 0));
+    const textSize = Math.max(...labelSizes, 0);
     size += textSize;
     size += settings.labels.margin;
 

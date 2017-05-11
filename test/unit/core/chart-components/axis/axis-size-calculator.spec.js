@@ -214,15 +214,26 @@ describe('Axis size calculator', () => {
         expect(size.edgeBleed).to.deep.equal({ left: 10, top: 0, right: 0, bottom: 0 }); // left is paddingEnd
       });
 
-      it('max width', () => {
+      it('maxLengthPx', () => {
         settings.dock = 'bottom';
         settings.align = 'bottom';
         settings.labels.show = true;
-        settings.labels.maxWidth = 5;
+        settings.labels.maxLengthPx = 5;
         state.labels.activeMode = 'tilted';
         ticks[0].label = 'AAAAAAAAAAAAAA';
         const size = sizeFn(rect);
         expect(size.size).to.approximately(21.0442, 0.0001);
+      });
+
+      it('minLengthPx', () => {
+        settings.dock = 'bottom';
+        settings.align = 'bottom';
+        settings.labels.show = true;
+        settings.labels.minLengthPx = 150;
+        state.labels.activeMode = 'tilted';
+        ticks[0].label = 'A';
+        const size = sizeFn(rect);
+        expect(size.size).to.approximately(114.248363, 0.0001);
       });
 
       it('require edgeBleed', () => {

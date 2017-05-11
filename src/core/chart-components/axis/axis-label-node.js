@@ -1,4 +1,3 @@
-import extend from 'extend';
 import { rotate as rotateVector } from '../../math/vector';
 
 function checkText(text) {
@@ -6,7 +5,9 @@ function checkText(text) {
 }
 
 function appendStyle(struct, buildOpts) {
-  extend(struct, buildOpts.style);
+  ['fill', 'fontSize', 'fontFamily'].forEach((style) => {
+    struct[style] = buildOpts.style[style];
+  });
 }
 
 function adjustForEnds(struct, buildOpts) {

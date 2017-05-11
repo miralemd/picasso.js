@@ -15,7 +15,7 @@ The axis need only a scale defined to generate either a continuous or discrete a
 
 ### Discrete axis
 
-Limit the vertical size to 80px and use a angle of 35 degrees on the labels.
+Limit the label length to 80px and use a angle of 35 degrees on the labels.
 
 ```js
 {
@@ -27,7 +27,7 @@ Limit the vertical size to 80px and use a angle of 35 degrees on the labels.
       mode: 'tilted',
       fontSize: '15px',
       tiltAngle: 35,
-      maxSize: 80,
+      maxLengthPx: 80,
       maxEdgeBleed: 50
     },
     line: {
