@@ -1,4 +1,5 @@
 'use strict'; // eslint-disable-line
+/* eslint no-script-url: 0 */
 
 const fs = require('fs');
 const path = require('path');
@@ -6,8 +7,44 @@ const path = require('path');
 const Handlebars = require('handlebars');
 const marked = require('marked');
 
+const mkdRend = new marked.Renderer();
+
+mkdRend.link = function link(href, title, text) {
+  let targetBlank = true;
+
+  if (this.options.sanitize) {
+    let prot;
+    try {
+      prot = decodeURIComponent(unescape(href))
+      .replace(/[^\w:]/g, '')
+      .toLowerCase();
+    } catch (e) {
+      return '';
+    }
+    if (prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0 || prot.indexOf('data:') === 0) {
+      return '';
+    }
+  }
+
+  if (href.substring(0, 4) !== 'http' && href.substring(href.length - 3) === '.md') {
+    href = href.replace(/\.md$/gi, '.html');
+    targetBlank = false;
+  }
+
+  let out = `<a href="${href}"`;
+  if (title) {
+    out += ` title="${title}"`;
+  }
+  if (targetBlank) {
+    out += ' target="_blank"';
+  }
+  out += `>${text}</a>`;
+
+  return out;
+};
+
 marked.setOptions({
-  renderer: new marked.Renderer(),
+  renderer: mkdRend,
   gfm: true,
   tables: true,
   breaks: false,
