@@ -1,6 +1,20 @@
 # Changelog
 
-## [UNRELEASED]
+## 0.20.4 - 2017-05-15
+
+- patternSeparator in qs-number-formatter in q-plugin is now fixed set to ';' instead of localeInfo.qListSep
+
+## 0.20.3 - 2017-05-09
+
+### Fixed
+
+- Bounds for labels rect mismatch the coordinate system of the scene object bounds
+
+## 0.20.2 - 2017-05-09
+
+### Fixed
+
+- Local bounds for scene objects are divided by dpi value
 
 ## 0.20.3 - 2017-05-09
 
@@ -202,7 +216,7 @@ See updated example in picasso-sandbox for how to use
     chartInstance.brushFromShapes(shapes
       {
         components: [
-          { 
+          {
             key: 'key1',
             contexts: ['myContext'],
             data: ['self'],
