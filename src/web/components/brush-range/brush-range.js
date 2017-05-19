@@ -209,7 +209,7 @@ const brushRangeComponent = {
     const offset = this.renderer.element().getBoundingClientRect();
 
     const target = stngs.target ? this.chart.component(stngs.target.component) : null;
-    if (target) {
+    if (target && target.rect) {
       this.state.targetRect = {
         x: target.rect.x - this.rect.x,
         y: target.rect.y - this.rect.y,

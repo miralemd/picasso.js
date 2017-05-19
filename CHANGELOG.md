@@ -1,6 +1,14 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- PIC-164 Console error on brush-range target when component is hidden
+
 ## 0.20.4 - 2017-05-15
+
+### Fixed
 
 - patternSeparator in qs-number-formatter in q-plugin is now fixed set to ';' instead of localeInfo.qListSep
 
