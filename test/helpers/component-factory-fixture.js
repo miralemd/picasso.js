@@ -24,7 +24,7 @@ export default function componentFactoryFixture() {
     };
 
     rendererMock = {
-      size: () => ({ width: 100, height: 100 }),
+      size: rect => ({ width: rect.width || 100, height: rect.height || 100 }),
       render: (nodes) => { rendererOutput = nodes; },
       appendTo: () => {},
       measureText: ({ text }) => ({
@@ -74,13 +74,15 @@ export default function componentFactoryFixture() {
 
   fn.simulateUpdate = (settings) => {
     comp.set({ settings });
-    comp.beforeUpdate();
+    comp.beforeUpdate(settings);
     comp.beforeRender();
     comp.update();
     comp.updated();
 
     return rendererOutput;
   };
+
+  fn.simulateLayout = opts => comp.dockConfig.requiredSize({ inner: opts.inner, outer: opts.outer });
 
   fn.getRenderOutput = () => rendererOutput;
 
