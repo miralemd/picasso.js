@@ -1,10 +1,38 @@
 # Changelog
 
-## Unreleased
+## [BREAKING] Unreleased
 
 ### Fixed
 
 - PIC-164 Console error on brush-range target when component is hidden
+
+### Breaking changes
+
+- Text component defintion have updated and some properties are no longer possible to set in both the root defintion and in the settings property
+
+    ```js
+    {
+      type: 'text',
+      anchor: 'left', // Moved to settings
+      maxWidth: 12, // Removed
+      style: { fill: 'red' }, // Moved to settings
+      join: ';', // Moved to settings
+      paddingStart: 12, // Moved to settings
+      paddingEnd: 12, // Moved to settings
+      paddingLeft: 12, // Moved to settings
+      paddingRight: 12, // Moved to settings
+      settings: {
+        paddingStart: 12, // Still valid
+        paddingEnd: 12, // Still valid
+        paddingLeft: 12, // Still valid
+        paddingRight: 12, // Still valid
+        anchor: 'left', // Still valid
+        maxLengthPx: 12, // Replaced maxWidth
+        style: { fill: 'red' }, // Still valid
+        join: ';', // Still valid
+      }
+    }
+    ```
 
 ## 0.20.4 - 2017-05-15
 
