@@ -34,6 +34,10 @@
     }
     ```
 
+- Change discrete range select to keep existing selections and only add values added to the range and remove values leaving the range when it changes.
+  - setValues interceptor -> addValues & removeValues interceptor
+  - set-values event -> add-values & remove-values event
+
 ## 0.20.4 - 2017-05-15
 
 ### Fixed

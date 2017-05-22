@@ -644,4 +644,74 @@ describe('brush', () => {
       expect(rem.firstCall).to.have.been.calledWith('add-values', interceptor);
     });
   });
+
+  describe('addAndRemoveValues', () => {
+    let v;
+    let vcc;
+    let bb;
+    let valuesToAdd;
+    let valuesToRemove;
+    beforeEach(() => {
+      v = {
+        remove: sandbox.stub(),
+        add: sandbox.stub()
+      };
+      vcc = sandbox.stub().returns(v);
+      bb = brush({ vc: vcc, rc: noop });
+      bb.addValue('garage');
+
+      valuesToAdd = [{ key: 'garage', value: 'Car' }];
+      valuesToRemove = [{ key: 'garage', value: 'Bike' }];
+    });
+
+    it('should call value.remove() with value "Car"', () => {
+      bb.addAndRemoveValues(valuesToAdd, valuesToRemove);
+      expect(v.add).to.have.been.calledWith('Car');
+      expect(v.remove).to.have.been.calledWith('Bike');
+    });
+
+    it('should emit "update" event when state changes (by add)', () => {
+      const cb = sandbox.spy();
+      v.add.returns(true);
+      v.remove.returns(false);
+      bb.on('update', cb);
+      bb.addAndRemoveValues(valuesToAdd, valuesToRemove);
+      expect(v.add).to.have.been.calledWith('Car');
+      expect(v.remove).to.have.been.calledWith('Bike');
+      expect(cb.callCount).to.equal(1);
+    });
+
+    it('should emit "update" event when state changes (by remove)', () => {
+      const cb = sandbox.spy();
+      v.add.returns(false);
+      v.remove.returns(true);
+      bb.on('update', cb);
+      bb.addAndRemoveValues(valuesToAdd, valuesToRemove);
+      expect(v.add).to.have.been.calledWith('Car');
+      expect(v.remove).to.have.been.calledWith('Bike');
+      expect(cb.callCount).to.equal(1);
+    });
+
+    it('should emit "update" event once when state changes by add and remove', () => {
+      const cb = sandbox.spy();
+      v.add.returns(true);
+      v.remove.returns(true);
+      bb.on('update', cb);
+      bb.addAndRemoveValues(valuesToAdd, valuesToRemove);
+      expect(v.add).to.have.been.calledWith('Car');
+      expect(v.remove).to.have.been.calledWith('Bike');
+      expect(cb.callCount).to.equal(1);
+    });
+
+    it('should not emit "update" event when state does not change', () => {
+      const cb = sandbox.spy();
+      v.add.returns(false);
+      v.remove.returns(false);
+      bb.on('update', cb);
+      bb.addAndRemoveValues(valuesToAdd, valuesToRemove);
+      expect(v.add).to.have.been.calledWith('Car');
+      expect(v.remove).to.have.been.calledWith('Bike');
+      expect(cb.callCount).to.equal(0);
+    });
+  });
 });

@@ -413,6 +413,40 @@ export default function brush({
   };
 
   /**
+   * Add and remove values in a single operation
+   * almost the same as calling addValues and removeValues but only triggers one 'update' event
+   *
+   * If the state of the brush changes, an 'update' event is emitted.
+   *
+   * @param {object[]} addItems Items to add
+   * @param {object[]} removeItems Items to remove
+   */
+  fn.addAndRemoveValues = (addItems, removeItems) => {
+    const addIts = intercept(interceptors.addValues, addItems);
+    const removeIts = intercept(interceptors.removeValues, removeItems);
+    const added = add({
+      vc,
+      values,
+      items: addIts
+    });
+    const removed = remove({
+      values,
+      items: removeIts
+    });
+
+    fn.emit('add-values', addIts);
+    fn.emit('remove-values', removeIts);
+
+    if (added.length || removed.length) {
+      if (!activated) {
+        activated = true;
+        fn.emit('start');
+      }
+      fn.emit('update', added, removed);
+    }
+  };
+
+  /**
    * Toggles a primitive value in this brush context
    *
    * If the given value exist in this brush context, it will be removed. If it does not exist it will be added.

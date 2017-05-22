@@ -113,10 +113,18 @@ function setRanges(state) {
   }
   state.scale.sources.forEach((s) => {
     if (state.fauxBrushInstance) {
-      let values = state.findValues(rs).map(v => ({ key: s, value: v }));
-      // state.brushInstance.removeValues(values);
-      // state.brushInstance.addValues(values);
-      state.brushInstance.setValues(values);
+      let ordRS = ranges(state, state.fauxBrushInstance);
+      let oldValues = state.findValues(ordRS);
+      let values = state.findValues(rs);
+
+      let addedValues = values.filter(v => oldValues.indexOf(v) === -1);
+      let removedValues = oldValues.filter(v => values.indexOf(v) === -1);
+
+      let addItems = addedValues.map(v => ({ key: s, value: v }));
+      let removeItems = removedValues.map(v => ({ key: s, value: v }));
+
+      state.brushInstance.addAndRemoveValues(addItems, removeItems);
+
       state.fauxBrushInstance.setRange(s, rs);
     } else {
       state.brushInstance.setRange(s, rs);

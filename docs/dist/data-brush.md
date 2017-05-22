@@ -146,6 +146,17 @@ brush.removeValue('countries', 'Sweden');
 | items | Array.&lt;object&gt; | Items to remove | No | No |
 
 No description  
+#### <a name='brush.addAndRemoveValues' href='#brush.addAndRemoveValues'>#</a> **brush.addAndRemoveValues**(*Array.&lt;object&gt; addItems, Array.&lt;object&gt; removeItems*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| addItems | Array.&lt;object&gt; | Items to add | No | No |
+| removeItems | Array.&lt;object&gt; | Items to remove | No | No |
+
+Add and remove values in a single operation
+almost the same as calling addValues and removeValues but only triggers one &#x27;update&#x27; event
+
+If the state of the brush changes, an &#x27;update&#x27; event is emitted.  
 #### <a name='brush.toggleValue' href='#brush.toggleValue'>#</a> **brush.toggleValue**(*string key, string value*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|
