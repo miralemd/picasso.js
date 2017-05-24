@@ -48,6 +48,7 @@ export default class Path extends DisplayObject {
   set(v = {}) {
     super.set(v);
     this.attrs.d = v.d;
+    super.collider(v.collider);
     this.points = null;
   }
 

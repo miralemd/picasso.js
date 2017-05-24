@@ -2,7 +2,7 @@ function isNumber(v) {
   return typeof v === 'number' && !isNaN(v);
 }
 
-export default function deduceShapeType(shape) {
+export function getShapeType(shape) {
   const {
     x, y, // Point
     width, height, // Rect
@@ -23,4 +23,25 @@ export default function deduceShapeType(shape) {
     return 'polygon';
   }
   return null;
+}
+
+export function pointsToPath(points, close = true) {
+  let d = '';
+
+  for (let i = 0; i < points.length; i++) {
+    const p = points[i];
+    if (i === 0) {
+      d += `M${p.x} ${p.y}`;
+    } else {
+      d += `L${p.x} ${p.y}`;
+    }
+
+    d += ' ';
+  }
+
+  if (close) {
+    d += 'Z';
+  }
+
+  return d;
 }

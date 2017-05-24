@@ -6,7 +6,7 @@ import {
   detectTouchSupport,
   isValidTapEvent
 } from '../utils/event-type';
-import shapeDeducer from '../utils/type-deducer';
+import { getShapeType } from '../utils/shapes';
 import dataRegistry from '../data/index';
 import buildFormatters, { getOrCreateFormatter } from './formatter';
 import buildScales, { getOrCreateScale } from './scales';
@@ -89,7 +89,7 @@ const isReservedProperty = prop => [
 function addComponentDelta(shape, containerBounds, componentBounds) {
   const dx = containerBounds.left - componentBounds.left;
   const dy = containerBounds.top - componentBounds.top;
-  const type = shapeDeducer(shape);
+  const type = getShapeType(shape);
   const deltaShape = extend(true, {}, shape);
 
   switch (type) {

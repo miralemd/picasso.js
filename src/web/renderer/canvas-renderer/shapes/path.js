@@ -35,10 +35,10 @@ export default function render(path, { g, doStroke, doFill }) {
     }
     points.push(prevPoint);
   }
-  if (doStroke) {
-    g.stroke();
-  }
   if (doFill) {
     g.fill();
+  }
+  if (doStroke) {
+    g.stroke();
   }
 }

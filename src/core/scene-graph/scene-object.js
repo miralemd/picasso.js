@@ -1,23 +1,5 @@
 import { pointsToRect, pointsToCircle, pointsToLine } from '../math/intersection';
-
-function pointsToPath(points) {
-  let d = '';
-
-  for (let i = 0; i < points.length; i++) {
-    const p = points[i];
-    if (i === 0) {
-      d += `M${p.x} ${p.y}`;
-    } else {
-      d += `L${p.x} ${p.y}`;
-    }
-
-    d += ' ';
-  }
-
-  d += 'Z';
-
-  return d;
-}
+import { pointsToPath } from '../utils/shapes';
 
 function colliderToShape(node, dpi) {
   const collider = node.collider();
