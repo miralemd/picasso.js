@@ -9,7 +9,7 @@ function toLineDash(p) {
   if (Array.isArray(p)) {
     return p;
   } else if (typeof p === 'string') {
-    if (p.indexOf(',' !== -1)) {
+    if (p.indexOf(',') !== -1) {
       return p.split(',');
     }
     return p.split(' ');
