@@ -257,5 +257,24 @@ describe('Tick generators', () => {
       ];
       expect(ticks).to.deep.equal(expected);
     });
+
+    it('should support duplicate labels by separating values and labels', () => {
+      scale = band({ trackBy: 'id' });
+      scale.data = () => ([
+        { self: { value: 'alpha' }, id: { value: 'd1' } },
+        { self: { value: 'alpha' }, id: { value: 'd2' } },
+        { self: { value: 'beta' }, id: { value: 'd3' } }
+      ]);
+      scale.domain(data);
+      scale.range([0, 1]);
+
+      const ticks = scale.ticks();
+      const expected = [
+        { position: 0 + (scale.bandwidth() / 2), label: 'alpha' },
+        { position: (1 / 3) + (scale.bandwidth() / 2), label: 'alpha' },
+        { position: (2 / 3) + (scale.bandwidth() / 2), label: 'beta' }
+      ];
+      expect(ticks).to.deep.equal(expected);
+    });
   });
 });

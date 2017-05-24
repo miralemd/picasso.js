@@ -179,15 +179,16 @@ export function generateContinuousTicks({ settings, scale, distance, formatter }
   return ticks;
 }
 
-export function generateDiscreteTicks({ scale }) {
-  const dataSet = scale.data().length > 0 ?
-    scale.data().map(d => d.self.value) :
-    scale.domain(); // .map(d => ({ value: d }));
+export function generateDiscreteTicks({ scale }, trackBy) {
+  const domain = scale.domain();
+  const tracker = trackBy === 'id' ? 'id' : 'self';
+  const labels = scale.data().length > 0 ?
+    scale.data().map(d => d.self.value) : domain;
+  const values = scale.data().length > 0 ?
+    scale.data().map((d => d[tracker].value)) : domain;
 
-  return dataSet.map((d) => { // eslint-disable-line arrow-body-style
-    return {
-      position: scale(d) + (scale.bandwidth() / 2),
-      label: `${d}`
-    };
-  });
+  return values.map((d, i) => ({
+    position: scale(d) + (scale.bandwidth() / 2),
+    label: `${labels[i]}`
+  }));
 }
