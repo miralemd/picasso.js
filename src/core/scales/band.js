@@ -46,7 +46,7 @@ function generateSettings(settings, fields) {
  * @return { band }
  */
 
-export default function scaleBand(settings, fields, dataset) {
+export default function scaleBand(settings = {}, fields, dataset) {
   /**
    * An augmented {@link https://github.com/d3/d3-scale#_band|d3 band scale}
    * @alias band
@@ -64,7 +64,7 @@ export default function scaleBand(settings, fields, dataset) {
           self: {
             source: settings.source, type: 'qual'
           },
-          value: {
+          id: {
             source: settings.source, type: 'qual', reducer: 'first', property: 'id'
           }
         },
@@ -95,7 +95,7 @@ export default function scaleBand(settings, fields, dataset) {
      */
     band.ticks = function ticks(input = {}) {
       input.scale = band;
-      return generateDiscreteTicks(input);
+      return generateDiscreteTicks(input, settings.trackBy || 'label');
     };
   }
   augmentScaleBand(band, settings, dataset);
@@ -135,7 +135,7 @@ export default function scaleBand(settings, fields, dataset) {
 
   if (fields && fields[0]) {
     const values = fields[0].values();
-    const uniq = unique(values).map(v => v.label);
+    const uniq = unique(values).map(v => v[settings.trackBy || 'label']);
 
     band.domain(uniq);
     band.range(stgns.invert ? [1, 0] : [0, 1]);
