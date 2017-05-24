@@ -1,6 +1,8 @@
 # Changelog
 
-## [BREAKING] Unreleased
+## Unreleased
+
+## [BREAKING] 0.21.0 - 2017-05-24
 
 ## Added
 
