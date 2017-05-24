@@ -170,7 +170,11 @@ function placeInVerticalBars({
 
       if (bounds && placement) {
         justify = placement.justify;
-        fill = placement.fill;
+        if (typeof placement.fill === 'function') {
+          fill = placement.fill({ node, data: d }, i);
+        } else {
+          fill = placement.fill;
+        }
 
         if (direction === 'up') {
           justify = 1 - justify;
