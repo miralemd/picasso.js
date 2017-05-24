@@ -5,6 +5,7 @@ import resolveTransform from './../transform-resolver';
 import nodeSelector from './../node-selector';
 import createSceneObject from './../scene-object';
 import { resolveCollionsOnNode, hasCollisionOnNode } from '../collision-resolver';
+import { assignMappedAttribute } from '../attributes';
 
 class DisplayObject extends Node {
   constructor(type) {
@@ -19,57 +20,13 @@ class DisplayObject extends Node {
     this.node = v;
 
     const {
-      fill,
-      stroke,
-      strokeWidth,
-      fontFamily,
-      fontSize,
-      baseline,
-      anchor,
-      maxWidth,
-      opacity,
-      transform,
-      data,
-      strokeDasharray
+      data
     } = v;
 
-    const attrs = this.attrs;
+    assignMappedAttribute(this.attrs, v);
 
-    if (typeof fill !== 'undefined') {
-      attrs.fill = fill;
-    }
-    if (typeof stroke !== 'undefined') {
-      attrs.stroke = stroke;
-    }
-    if (typeof opacity !== 'undefined') {
-      attrs.opacity = opacity;
-    }
-    if (typeof strokeWidth !== 'undefined') {
-      attrs['stroke-width'] = strokeWidth;
-    }
-    if (typeof fontFamily !== 'undefined') {
-      attrs['font-family'] = fontFamily;
-    }
-    if (typeof fontSize !== 'undefined') {
-      attrs['font-size'] = fontSize;
-    }
-    if (typeof baseline !== 'undefined') {
-      attrs['dominant-baseline'] = baseline;
-    }
-    if (typeof anchor !== 'undefined') {
-      attrs['text-anchor'] = anchor;
-    }
-    if (typeof maxWidth !== 'undefined') {
-      attrs.maxWidth = maxWidth;
-    }
-    if (typeof transform !== 'undefined') {
-      attrs.transform = transform;
-    }
     if (typeof data !== 'undefined') {
       this.data = data;
-    }
-    if (typeof strokeDasharray !== 'undefined') {
-      this.attrs['stroke-dasharray'] = strokeDasharray;
     }
   }
 
