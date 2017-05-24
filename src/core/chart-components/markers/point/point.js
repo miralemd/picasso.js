@@ -184,9 +184,9 @@ const pointMarkerComponent = {
     updateScaleSize(this.local, 'x', width);
     updateScaleSize(this.local, 'y', height);
     const limits = extend({}, SIZE_LIMITS, this.settings.settings.sizeLimits);
-    const points = data.map((p, i) => {
-      const obj = resolveForDataObject(this.local, p, i);
-      obj.errorShape = resolveForDataObject(this.local.errorShape, p, i);
+    const points = data.map((p, i, all) => {
+      const obj = resolveForDataObject(this.local, p, i, all);
+      obj.errorShape = resolveForDataObject(this.local.errorShape, p, i, all);
       obj.dataIndex = i;
       return obj;
     });
