@@ -149,7 +149,7 @@ export function resolveForDataValues(styles, dataValues, index) {
   return ret;
 }
 
-export function resolveForDataObject(props, dataObj, index) {
+export function resolveForDataObject(props, dataObj, index, allData) {
   const ret = {};
   Object.keys(props).forEach((s) => {
     const exists = typeof props[s] !== 'undefined';
@@ -165,9 +165,9 @@ export function resolveForDataObject(props, dataObj, index) {
         fnContext.scale = props[s].scale;
       }
       if (typeof props[s].fn === 'function') {
-        ret[s] = props[s].fn(fnContext, hasExplicitDataProp ? dataObj[props[s].ref] : undefined, index);
+        ret[s] = props[s].fn(fnContext, hasExplicitDataProp ? dataObj[props[s].ref] : undefined, index, allData);
       } else {
-        ret[s] = props[s].call(fnContext, hasExplicitDataProp ? dataObj[props[s].ref] : undefined, index);
+        ret[s] = props[s].call(fnContext, hasExplicitDataProp ? dataObj[props[s].ref] : undefined, index, allData);
       }
     } else if (hasScale && (hasImplicitDataProp || hasExplicitDataProp)) {
       ret[s] = props[s].scale(propData.value);
