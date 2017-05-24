@@ -2,13 +2,20 @@
 
 ## [BREAKING] Unreleased
 
+## Added
+
+- PIC-159 - More shapes in marker components
+- PIC-165 - Color coding bars based on value
+- PIC-169 - Capability to create 'bridge' between bars
+
 ### Fixed
 
-- PIC-164 Console error on brush-range target when component is hidden
+- PIC-164 - Console error on brush-range target when component is hidden
+- PIC-167 - Different dimension values map to the same position
 
 ### Breaking changes
 
-- Text component defintion have updated and some properties are no longer possible to set in both the root defintion and in the settings property
+- Text component definition has been updated and some properties are no longer possible to set in both the root defintion and in the settings property
 
     ```js
     {
