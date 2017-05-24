@@ -1,9 +1,10 @@
 import extend from 'extend';
-import shapeFactory from './shapes';
+// import shapeFactory from './shapes';
 import { resolveSettings } from '../../settings-setup';
 import { resolveForDataObject } from '../../../style';
 import { notNumber } from '../../../utils/math';
 import { updateScaleSize } from '../../../scales';
+import shapeFactory from '../../../symbols';
 
 const DEFAULT_DATA_SETTINGS = {
   shape: 'circle',
@@ -14,7 +15,8 @@ const DEFAULT_DATA_SETTINGS = {
   opacity: 1,
   x: 0.5,
   y: 0.5,
-  size: 1
+  size: 1,
+  strokeDasharray: ''
 };
 
 const SIZE_LIMITS = {
@@ -32,7 +34,7 @@ const DEFAULT_ERROR_SETTINGS = {
     shape: 'saltire',
     size: 0.2,
     fill: undefined,
-    stroke: undefined,
+    stroke: '#333',
     strokeWidth: 2
   }
 };
@@ -142,8 +144,9 @@ function createDisplayPoints(dataPoints, { x, y, width, height }, pointSize, sha
    !isNaN(p.x + p.y)
   ).map((p) => {
     const s = notNumber(p.size) ? p.errorShape : p;
-    const size = pointSize.min + (s.size * (pointSize.max - pointSize.min));
-    const shape = shapeFn(s.shape, {
+    const size = s === p.errorShape ? pointSize.max : pointSize.min + (s.size * (pointSize.max - pointSize.min));
+    const shape = shapeFn({
+      type: s.shape === 'rect' ? 'square' : s.shape,
       label: p.label,
       x: p.x * width,
       y: p.y * height,
@@ -151,6 +154,7 @@ function createDisplayPoints(dataPoints, { x, y, width, height }, pointSize, sha
       size: Math.min(pointSize.maxGlobal, Math.max(pointSize.minGlobal, size)),
       stroke: s.stroke,
       strokeWidth: s.strokeWidth,
+      strokeDasharray: s.strokeDasharray,
       opacity: p.opacity
     });
 
