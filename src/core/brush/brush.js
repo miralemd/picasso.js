@@ -551,7 +551,7 @@ export default function brush({
       status[i] = { key, i, bool: false };
       source = d[key].source && d[key].source.field;
       if (!source) {
-        return false;
+        continue;
       }
 
       type = d[key].source.type === 'quant' ? 'range' : 'value';
