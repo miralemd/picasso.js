@@ -6,6 +6,8 @@
 
     <!-- import picasso and its dependencies-->
     <script src="../../dist/picasso.js"></script>
+    <script src="../../plugins/q/dist/picasso-q.js"></script>
+
 
     <style>
         body {
@@ -15,11 +17,12 @@
         }
 
         #container {
-            margin: 0 auto;
-            width: 600px;
-            height: 400px;
-            background: #fff;
-            position: relative;
+          position: absolute;
+          left: 10px;
+          right: 10px;
+          bottom: 10px;
+          top: 10px;
+          background: #fff;
         }
 
     </style>
@@ -379,27 +382,57 @@
 </script>
 
 <script>
-    var data = {
-        type: "q",
-        data: qLayout.qHyperCube
-    };
-    var settings = {
-        components: {
-            markers: [
-                {
-                    type: "point",
-                    data: { source: "/qHyperCube/qDimensionInfo/0" }, // loop over dimension values
-                    settings: {
-                        x: { source: "/qHyperCube/qMeasureInfo/0" }, // use values from first measure
-                        y: { source: "/qHyperCube/qMeasureInfo/1" }, // use values from second measure
-                        size: { source: "/qHyperCube/qMeasureInfo/2" }, // optional
-                        fill: { source: "/qHyperCube/qMeasureInfo/2", type: "color" } // optional
-                    }
-                }
-            ]
+
+  picasso.use(picassoQ);
+
+  var data = {
+    type: "q",
+    data: qLayout
+  };
+  var settings = {
+    scales: {
+      x: { source: "/qHyperCube/qMeasureInfo/0", expand: 0.1 },
+      y: { source: "/qHyperCube/qMeasureInfo/1", expand: 0.1 }
+    },
+    components: [{
+      type: 'axis',
+      scale: 'y',
+      dock: 'left'
+    }, {
+      type: 'axis',
+      scale: 'x',
+      dock: 'bottom'
+    }, {
+      type: "point-marker",
+      data: {
+        mapTo: {
+          x: { source: "/qHyperCube/qMeasureInfo/0" },
+          y: { source: "/qHyperCube/qMeasureInfo/1" },
+          size: { source: "/qHyperCube/qMeasureInfo/2" }
+        },
+        groupBy: { source: "/qHyperCube/qDimensionInfo/0" }
+      },
+      settings: {
+        x: { scale: 'x' }, // use values from first measure
+        y: { scale: 'y' }, // use values from second measure
+        size: {
+          scale: { source: "/qHyperCube/qMeasureInfo/2" }
+        },
+        fill: {
+          ref: "size",
+          scale: {
+            source: "/qHyperCube/qMeasureInfo/2",
+            type: "color"
+          }
         }
-    };
-    picasso.chart( document.querySelector( "#container" ), data, settings );
+      }
+    }]
+  };
+  picasso.chart({
+    element: document.querySelector( "#container" ),
+    data: data,
+    settings: settings
+  });
 </script>
 </body>
 </html>
