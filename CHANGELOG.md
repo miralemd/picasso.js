@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 0.21.2 - 2017-05-29
+
+### Fixed
+
+- Error thrown when trying to do a range selction on a band scale
+- `dom-renderer` is missing `findShapes` method
+- brush `containsMappedData` logic exits too early when a mapped data object is missing source data
+
 ## 0.21.1 - 2017-05-29
 
 ### Fixed
