@@ -42,6 +42,8 @@ export default function renderer(opts = {}) {
 
   dom.itemsAt = () => [];
 
+  dom.findShapes = () => [];
+
   dom.appendTo = (element) => {
     if (!el) {
       el = createElement('div');
