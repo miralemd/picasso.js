@@ -2,9 +2,15 @@
 
 ## Unreleased
 
+## 0.21.1 - 2017-05-29
+
+### Fixed
+
+- `strokeDasharray` property is not working in canvas context
+
 ## [BREAKING] 0.21.0 - 2017-05-24
 
-## Added
+### Added
 
 - PIC-159 - More shapes in marker components
 - PIC-165 - Color coding bars based on value
