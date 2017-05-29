@@ -175,7 +175,6 @@ const boxMarkerComponent = {
     function computeWidth(minWidth, maxWidth, multiplier, bandwidth) {
       let width = (bandwidth * measureWidth) * multiplier;
 
-      // width = Math.max(minWidth, Math.min(maxWidth, width));
       width = cap(minWidth, maxWidth, width);
 
       return width / measureWidth;
