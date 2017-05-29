@@ -171,7 +171,7 @@ function findValues(rangesValues, scale) {
   for (let i = 0, len = values.length; i < len; i++) {
     idx = domain.indexOf(values[i]);
     d = data[idx];
-    dataValues[i] = d.value !== 'undefined' ? d.value.value : values[i];
+    dataValues[i] = d.id !== 'undefined' ? d.id.value : values[i];
   }
   return dataValues;
 }
