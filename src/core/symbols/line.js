@@ -16,7 +16,7 @@ export default function line(options) {
   return {
     type: 'line',
     stroke: 'black',
-    strokeWidth: r / 2,
+    strokeWidth: 1,
     x1: x - (isVertical ? 0 : r),
     y1: y - (isVertical ? r : 0),
     x2: x + (isVertical ? 0 : r),

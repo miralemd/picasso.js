@@ -30,9 +30,7 @@ export default function nPolygon(options) {
 
   return {
     type: 'path',
-    stroke: 'black',
-    strokeWidth: 1,
-    fill: 'steelblue',
+    fill: 'black',
     d: pointsToPath(points)
   };
 }

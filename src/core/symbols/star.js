@@ -43,9 +43,7 @@ export default function star(options) {
 
   return {
     type: 'path',
-    stroke: 'black',
-    strokeWidth: 1,
-    fill: 'yellow',
+    fill: 'black',
     d: pointsToPath(points)
   };
 }
