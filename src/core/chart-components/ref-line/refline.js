@@ -163,11 +163,11 @@ const refLineComponent = {
       return [];
     }
 
-    let oob = {
-      x0: 0,
-      x1: 0,
-      y0: 0,
-      y1: 0
+    const oob = {
+      x0: [],
+      x1: [],
+      y0: [],
+      y1: []
     };
 
     // Convert a value to an actual position using the scale
@@ -193,7 +193,10 @@ const refLineComponent = {
     // Move out of bounds lines (OOB) to separate rendering
     this.lines.x = this.lines.x.filter((line) => {
       if (line.position < 0 || line.position > 1) {
-        oob[`x${line.position > 1 ? 1 : 0}`]++;
+        oob[`x${line.position > 1 ? 1 : 0}`].push({
+          value: line.value,
+          label: line.label.text
+        });
         return false;
       }
       return true;
@@ -201,7 +204,10 @@ const refLineComponent = {
 
     this.lines.y = this.lines.y.filter((line) => {
       if (line.position < 0 || line.position > 1) {
-        oob[`y${line.position > 1 ? 1 : 0}`]++;
+        oob[`y${line.position > 1 ? 1 : 0}`].push({
+          value: line.value,
+          label: line.label.text
+        });
         return false;
       }
       return true;

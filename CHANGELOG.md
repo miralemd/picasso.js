@@ -2,6 +2,10 @@
 
 ## [BREAKING] Unreleased
 
+### Added
+
+- PIC-175 Enable ref-line oob tooltip
+
 ### Breaking changes
 
 - data property has changed name to dataIndex in the SceneObject and Collision object

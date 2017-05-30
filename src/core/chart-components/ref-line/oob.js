@@ -63,7 +63,7 @@ export function oobManager({ blueprint, oob, settings, items }) {
     const key = oobKeys[i];
     const value = oob[key];
 
-    if (value > 0) {
+    if (value.length > 0) {
       let position = (key.charAt(1));
       let flipXY = key.charAt(0) === 'y';
 
@@ -102,7 +102,8 @@ export function oobManager({ blueprint, oob, settings, items }) {
             stroke: style.stroke,
             fill: style.fill,
             strokeWidth: style.strokeWidth || 0,
-            opacity: style.opacity
+            opacity: style.opacity,
+            data: value
           };
         },
         flipXY
@@ -113,7 +114,7 @@ export function oobManager({ blueprint, oob, settings, items }) {
 
       let text = {
         type: 'text',
-        text: value || '',
+        text: value.length || '',
         x: x - (style.width * 0.4),
         y: y + (style.width * 0.4),
         fontFamily: style.text.fontFamily,

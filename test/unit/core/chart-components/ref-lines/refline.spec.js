@@ -298,4 +298,82 @@ describe('reference lines', () => {
       ]
     );
   });
+
+  it('data binding on oob values', () => {
+    const config = {
+      shapeFn,
+      lines: {
+        y: [
+          {
+            value: 10,
+            label: {
+              text: 'QwErTy'
+            }
+          },
+          {
+            value: 20,
+            label: {
+              text: 'Oops.. I did it again'
+            }
+          }
+        ]
+      }
+    };
+
+    chart.dataset().map.returns([{}]);
+    const yScale = v => v;
+    chart.scale.withArgs({ scale: 'y' }).returns(yScale);
+
+    createAndRenderComponent({
+      inner: { x: 0, y: 0, width: 100, height: 200 },
+      config
+    });
+
+    expect(rendererOutput).to.deep.equal(
+      [
+        {
+          type: 'circle',
+          cy: 162,
+          cx: 15,
+          r: 10,
+          stroke: 'transparent',
+          fill: '#1A1A1A',
+          strokeWidth: 0,
+          opacity: 1,
+          data: [
+            {
+              label: 'QwErTy',
+              value: 10
+            },
+            {
+              label: 'Oops.. I did it again',
+              value: 20
+            }
+          ]
+        },
+        {
+          type: 'text',
+          text: 2,
+          x: 11,
+          y: 166,
+          fontFamily: 'Arial',
+          fontSize: '13px',
+          stroke: 'transparent',
+          fill: '#fff',
+          strokeWidth: 0,
+          opacity: 1
+        },
+        {
+          type: 'path',
+          d: '\n    M 7.5 173.25\n    L 22.5 173.25\n    L 15 180.75 Z\n  ',
+          x: 15,
+          y: 162,
+          stroke: 'transparent',
+          fill: '#4D4D4D',
+          strokeWidth: 0,
+          opacity: 1
+        }
+      ]
+    );
+  });
 });
