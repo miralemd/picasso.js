@@ -30,12 +30,12 @@ const SIZE_LIMITS = {
 
 const DEFAULT_ERROR_SETTINGS = {
   errorShape: {
-    opacity: 1,
     shape: 'saltire',
-    size: 0.2,
-    fill: undefined,
+    width: 2,
+    size: 0.5,
+    fill: '#333',
     stroke: '#333',
-    strokeWidth: 2
+    strokeWidth: 0
   }
 };
 
@@ -144,19 +144,23 @@ function createDisplayPoints(dataPoints, { x, y, width, height }, pointSize, sha
    !isNaN(p.x + p.y)
   ).map((p) => {
     const s = notNumber(p.size) ? p.errorShape : p;
-    const size = s === p.errorShape ? pointSize.max : pointSize.min + (s.size * (pointSize.max - pointSize.min));
-    const shape = shapeFn({
+    const size = pointSize.min + (s.size * (pointSize.max - pointSize.min));
+    const shapeSpec = {
       type: s.shape === 'rect' ? 'square' : s.shape,
       label: p.label,
       x: p.x * width,
       y: p.y * height,
-      fill: p.fill,
+      fill: s.fill,
       size: Math.min(pointSize.maxGlobal, Math.max(pointSize.minGlobal, size)),
       stroke: s.stroke,
       strokeWidth: s.strokeWidth,
       strokeDasharray: s.strokeDasharray,
-      opacity: p.opacity
-    });
+      opacity: s.opacity
+    };
+    if (s === p.errorShape) {
+      shapeSpec.width = s.width;
+    }
+    const shape = shapeFn(shapeSpec);
 
     shape.dataIndex = p.dataIndex;
     shape.data = p.data;
