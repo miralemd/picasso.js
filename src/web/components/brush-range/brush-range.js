@@ -147,6 +147,12 @@ function findClosest(value, scale) {
   return name;
 }
 
+function findClosestLabel(value, scale) {
+  const ticks = scale.ticks();
+  const idx = scale.domain().indexOf(findClosest(value, scale));
+  return idx !== -1 ? ticks[idx].label : '-';
+}
+
 function rangesOverlap(r1, r2) {
   return Math.min(...r1) <= Math.max(...r2) && Math.max(...r1) >= Math.min(...r2);
 }
@@ -250,7 +256,7 @@ const brushRangeComponent = {
         if (!rangesOverlap(scale.range(), r)) {
           return '-';
         }
-        return findClosest(v, scale);
+        return findClosestLabel(v, scale);
       };
       this.state.fauxBrushInstance = brushFactory();
       this.state.findValues = valueRanges => findValues(valueRanges, scale);
