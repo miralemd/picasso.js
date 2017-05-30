@@ -46,7 +46,8 @@ describe('point marker', () => {
       strokeWidth: 0,
       strokeDasharray: '',
       opacity: 1,
-      data: 0
+      dataIndex: 0,
+      data: {}
     }]);
   });
 
@@ -79,7 +80,8 @@ describe('point marker', () => {
       strokeWidth: 0,
       strokeDasharray: '',
       opacity: 1,
-      data: 0
+      dataIndex: 0,
+      data: {}
     }]);
   });
 
@@ -120,7 +122,8 @@ describe('point marker', () => {
       strokeWidth: 2,
       strokeDasharray: '2 5',
       opacity: 0.7,
-      data: 0
+      dataIndex: 0,
+      data: {}
     }]);
   });
 
@@ -161,7 +164,10 @@ describe('point marker', () => {
       strokeWidth: 2,
       strokeDasharray: '3 5',
       opacity: 0.7,
-      data: 0
+      dataIndex: 0,
+      data: {
+        label: 'a'
+      }
     }]);
   });
 
@@ -217,7 +223,15 @@ describe('point marker', () => {
       strokeWidth: 5,
       strokeDasharray: 'etta',
       opacity: 0.5,
-      data: 0
+      dataIndex: 0,
+      data: {
+        label: 'etta',
+        shape: 'circle',
+        fill: 'red',
+        m1: 5,
+        m2: -0.2,
+        m3: 0.3
+      }
     }, {
       type: 'square',
       label: 'tvåa',
@@ -229,7 +243,15 @@ describe('point marker', () => {
       strokeWidth: 4,
       strokeDasharray: 'tvåa',
       opacity: 0.4,
-      data: 1
+      dataIndex: 1,
+      data: {
+        label: 'tvåa',
+        shape: 'rect',
+        fill: 'green',
+        m1: 4,
+        m2: 0.7,
+        m3: 1.2
+      }
     }]);
   });
 

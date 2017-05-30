@@ -14,7 +14,8 @@ describe('Scene Object', () => {
       attrs: {
         a1: 123
       },
-      data: 1
+      dataIndex: 1,
+      data: 11
     };
 
     nodeMock.boundingRect = sinon.stub();
@@ -27,8 +28,12 @@ describe('Scene Object', () => {
     expect(sceneObject.type).to.equal('mock');
   });
 
-  it('should expose node data', () => {
-    expect(sceneObject.data).to.equal(1);
+  it('should expose node data index', () => {
+    expect(sceneObject.dataIndex).to.equal(1);
+  });
+
+  it('should expose node data value', () => {
+    expect(sceneObject.data).to.equal(11);
   });
 
   it('should expose node attributes', () => {

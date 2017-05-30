@@ -47,7 +47,7 @@ function labelBuilder(ticks, buildOpts, measureText) {
   return ticks.map((tick, i) => {
     buildOpts.textRect = calcActualTextRect({ tick, measureText, style: buildOpts.style });
     const label = buildLabel(tick, buildOpts);
-    label.data = i;
+    label.dataIndex = i;
     return label;
   });
 }
@@ -60,7 +60,7 @@ function layeredLabelBuilder(ticks, buildOpts, settings, measureText) {
     buildOpts.padding = i % 2 === 0 ? padding : padding2;
     buildOpts.textRect = calcActualTextRect({ tick, measureText, style: buildOpts.style });
     const label = buildLabel(tick, buildOpts);
-    label.data = i;
+    label.dataIndex = i;
     return label;
   });
 }

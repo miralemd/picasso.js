@@ -40,7 +40,7 @@ export function styler(obj, { context, data, style }) {
         });
       }
 
-      const nodeData = mappedData[nodes[i].data];
+      const nodeData = mappedData[nodes[i].dataIndex];
       const isActive = nodeData && brusher.containsMappedData(nodeData, dataProps);
       styleProps.forEach((s) => {
         if (isActive && s in active) {
@@ -156,7 +156,7 @@ export function brushFromSceneNodes({
   const dataPoints = [];
   for (let i = 0; i < nodes.length; i++) {
     const node = nodes[i];
-    const dataAttrib = node.data;
+    const dataAttrib = node.dataIndex;
     if (dataAttrib !== null && data.length > 0 && data[+dataAttrib]) {
       dataPoints.push(data[+dataAttrib]);
     }

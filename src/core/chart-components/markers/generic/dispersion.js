@@ -98,7 +98,8 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
         start: minor && 'start' in d ? minor(d.start.value) : null,
         end: minor && 'end' in d ? minor(d.end.value) : null,
         med: minor && 'med' in d ? minor(d.med.value) : null,
-        data: i
+        dataIndex: i,
+        data: d
       };
 
       if (it.majorStart !== null) { // if a majorstart/end are defined, calculate the midpoint
@@ -141,10 +142,11 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
 
     let output = [];
 
-    items.forEach((item, idx) => {
+    items.forEach((item) => {
       const shapes = buildShapes({ item, blueprint, doodle });
       shapes.forEach((shape) => {
-        shape.data = idx;
+        shape.dataIndex = item.dataIndex;
+        shape.data = item.data;
         shape.collider = { type: null };
       });
       output.push(...shapes);
@@ -157,13 +159,14 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
     return items.map((item, idx) => {
       const container = {
         type: 'container',
-        data: idx,
+        dataIndex: idx,
+        data: item.data,
         collider: { type: 'bounds' },
         children: []
       };
       for (let i = 0; i < output.length; i++) {
         const o = output[i];
-        if (o.data === container.data) {
+        if (o.dataIndex === container.dataIndex) {
           container.children.push(o);
           output.splice(i, 1);
           i--;

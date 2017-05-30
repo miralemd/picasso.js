@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased
+## [BREAKING] Unreleased
+
+### Breaking changes
+
+- data property has changed name to dataIndex in the SceneObject and Collision object
 
 ## 0.21.2 - 2017-05-29
 

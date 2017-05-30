@@ -47,6 +47,7 @@ export class SceneObject {
     this._bounds = node.boundingRect ? (withTransform = true) => node.boundingRect(withTransform) : () => ({ x: 0, y: 0, width: 0, height: 0 });
     this._attrs = node.attrs;
     this._type = node.type;
+    this._dataIndex = node.dataIndex;
     this._data = node.data;
     this._dpi = node.stage ? node.stage.dpi : 1;
     this._collider = () => colliderToShape(node, this._dpi);
@@ -58,6 +59,14 @@ export class SceneObject {
    */
   get type() {
     return this._type;
+  }
+
+  /**
+   * Get the index of the associated data
+   * @return {number} - Data index
+   */
+  get dataIndex() {
+    return this._dataIndex;
   }
 
   /**

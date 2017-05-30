@@ -86,13 +86,29 @@ describe('box marker', () => {
     expect(rendererOutput).to.deep.equal([
       {
         type: 'container',
-        data: 0,
+        dataIndex: 0,
+        data: {
+          self: { value: 0.5 },
+          min: { value: 0.2 },
+          start: { value: 0.4 },
+          med: { value: 0.5 },
+          end: { value: 0.6 },
+          max: { value: 0.8 }
+        },
         collider: {
           type: 'bounds'
         },
         children: [
           {
-            data: 0,
+            dataIndex: 0,
+            data: {
+              self: { value: 0.5 },
+              min: { value: 0.2 },
+              start: { value: 0.4 },
+              med: { value: 0.5 },
+              end: { value: 0.6 },
+              max: { value: 0.8 }
+            },
             fill: '#fff',
             height: 40,
             maxWidth: 100,
@@ -109,7 +125,15 @@ describe('box marker', () => {
             }
           },
           {
-            data: 0,
+            dataIndex: 0,
+            data: {
+              self: { value: 0.5 },
+              min: { value: 0.2 },
+              start: { value: 0.4 },
+              med: { value: 0.5 },
+              end: { value: 0.6 },
+              max: { value: 0.8 }
+            },
             show: true,
             stroke: '#ff0',
             strokeWidth: 1,
@@ -123,7 +147,15 @@ describe('box marker', () => {
             }
           },
           {
-            data: 0,
+            dataIndex: 0,
+            data: {
+              self: { value: 0.5 },
+              min: { value: 0.2 },
+              start: { value: 0.4 },
+              med: { value: 0.5 },
+              end: { value: 0.6 },
+              max: { value: 0.8 }
+            },
             show: true,
             stroke: '#ff0',
             strokeWidth: 1,
@@ -137,7 +169,15 @@ describe('box marker', () => {
             }
           },
           {
-            data: 0,
+            dataIndex: 0,
+            data: {
+              self: { value: 0.5 },
+              min: { value: 0.2 },
+              start: { value: 0.4 },
+              med: { value: 0.5 },
+              end: { value: 0.6 },
+              max: { value: 0.8 }
+            },
             show: true,
             stroke: '#00f',
             strokeWidth: 1,
@@ -153,7 +193,15 @@ describe('box marker', () => {
           {
             cx: 75,
             cy: 40,
-            data: 0,
+            dataIndex: 0,
+            data: {
+              self: { value: 0.5 },
+              min: { value: 0.2 },
+              start: { value: 0.4 },
+              med: { value: 0.5 },
+              end: { value: 0.6 },
+              max: { value: 0.8 }
+            },
             fill: '',
             r: 25,
             show: true,
@@ -172,7 +220,15 @@ describe('box marker', () => {
           {
             cx: 75,
             cy: 160,
-            data: 0,
+            dataIndex: 0,
+            data: {
+              self: { value: 0.5 },
+              min: { value: 0.2 },
+              start: { value: 0.4 },
+              med: { value: 0.5 },
+              end: { value: 0.6 },
+              max: { value: 0.8 }
+            },
             fill: '',
             r: 25,
             show: true,
@@ -225,13 +281,23 @@ describe('box marker', () => {
     expect(rendererOutput).to.deep.equal([
       {
         type: 'container',
-        data: 0,
+        dataIndex: 0,
+        data: {
+          self: { value: 0.5 },
+          start: { value: 0 },
+          end: { value: 0.6 }
+        },
         collider: {
           type: 'bounds'
         },
         children: [
           {
-            data: 0,
+            dataIndex: 0,
+            data: {
+              self: { value: 0.5 },
+              start: { value: 0 },
+              end: { value: 0.6 }
+            },
             fill: '#fff',
             height: 120,
             maxWidth: 100,
@@ -284,13 +350,23 @@ describe('box marker', () => {
     expect(rendererOutput).to.deep.equal([
       {
         type: 'container',
-        data: 0,
+        dataIndex: 0,
+        data: {
+          self: { value: 0.5 },
+          start: { value: 0.2 },
+          end: { value: 0.6 }
+        },
         collider: {
           type: 'bounds'
         },
         children: [
           {
-            data: 0,
+            dataIndex: 0,
+            data: {
+              self: { value: 0.5 },
+              start: { value: 0.2 },
+              end: { value: 0.6 }
+            },
             fill: '#fff',
             height: 80,
             maxWidth: 100,
@@ -348,13 +424,27 @@ describe('box marker', () => {
     expect(rendererOutput).to.deep.equal([
       {
         type: 'container',
-        data: 0,
+        dataIndex: 0,
+        data: {
+          self: { value: 0.5 },
+          start: { value: 0.4 },
+          end: { value: 0.6 },
+          min: { value: 0.2 },
+          max: { value: 0.8 }
+        },
         collider: {
           type: 'bounds'
         },
         children: [
           {
-            data: 0,
+            dataIndex: 0,
+            data: {
+              self: { value: 0.5 },
+              start: { value: 0.4 },
+              end: { value: 0.6 },
+              min: { value: 0.2 },
+              max: { value: 0.8 }
+            },
             fill: '#fff',
             height: 40,
             maxWidth: 100,
@@ -371,7 +461,14 @@ describe('box marker', () => {
             }
           },
           {
-            data: 0,
+            dataIndex: 0,
+            data: {
+              self: { value: 0.5 },
+              start: { value: 0.4 },
+              end: { value: 0.6 },
+              min: { value: 0.2 },
+              max: { value: 0.8 }
+            },
             show: true,
             stroke: '#000',
             strokeWidth: 1,
@@ -385,7 +482,14 @@ describe('box marker', () => {
             }
           },
           {
-            data: 0,
+            dataIndex: 0,
+            data: {
+              self: { value: 0.5 },
+              start: { value: 0.4 },
+              end: { value: 0.6 },
+              min: { value: 0.2 },
+              max: { value: 0.8 }
+            },
             show: true,
             stroke: '#000',
             strokeWidth: 1,
@@ -486,7 +590,14 @@ describe('box marker', () => {
         strokeWidth: 1,
         maxWidth: 100,
         minWidth: 5,
-        data: 0,
+        dataIndex: 0,
+        data: {
+          self: { value: 1 },
+          start: { value: 0.4 },
+          end: { value: 0.6 },
+          min: { value: 0.2 },
+          max: { value: 0.8 }
+        },
         collider: {
           type: null
         }
@@ -503,7 +614,14 @@ describe('box marker', () => {
         strokeWidth: 1,
         maxWidth: 100,
         minWidth: 5,
-        data: 1,
+        dataIndex: 1,
+        data: {
+          self: { value: 2 },
+          start: { value: 0.4 },
+          end: { value: 0.6 },
+          min: { value: 0.2 },
+          max: { value: 0.8 }
+        },
         collider: {
           type: null
         }
@@ -520,7 +638,14 @@ describe('box marker', () => {
         strokeWidth: 1,
         maxWidth: 100,
         minWidth: 5,
-        data: 2,
+        dataIndex: 2,
+        data: {
+          self: { value: 3 },
+          start: { value: 0.4 },
+          end: { value: 0.6 },
+          min: { value: 0.2 },
+          max: { value: 0.8 }
+        },
         collider: {
           type: null
         }
@@ -537,7 +662,14 @@ describe('box marker', () => {
         strokeWidth: 1,
         maxWidth: 100,
         minWidth: 5,
-        data: 3,
+        dataIndex: 3,
+        data: {
+          self: { value: 4 },
+          start: { value: 0.4 },
+          end: { value: 0.6 },
+          min: { value: 0.2 },
+          max: { value: 0.8 }
+        },
         collider: {
           type: null
         }
@@ -554,7 +686,14 @@ describe('box marker', () => {
         strokeWidth: 1,
         maxWidth: 100,
         minWidth: 5,
-        data: 4,
+        dataIndex: 4,
+        data: {
+          self: { value: 5 },
+          start: { value: 0.4 },
+          end: { value: 0.6 },
+          min: { value: 0.2 },
+          max: { value: 0.8 }
+        },
         collider: {
           type: null
         }

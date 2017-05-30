@@ -378,7 +378,7 @@ function componentFactory(definition, options = {}) {
       const sceneObjects = rend.findShapes('*');
       settings.brush.trigger.forEach((b) => {
         sceneObjects.forEach((sceneObject) => {
-          const nodeData = data[sceneObject.data];
+          const nodeData = data[sceneObject.dataIndex];
           if (nodeData && brusher.containsMappedData(nodeData, props || b.data, mode)) {
             shapes.push(sceneObject);
           }

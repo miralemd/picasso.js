@@ -12,13 +12,13 @@ describe('Brushing', () => {
         type: 'rect',
         fill: 'yellow',
         stroke: 'pink',
-        data: 0
+        dataIndex: 0
       },
       {
         type: 'rect',
         fill: 'yellow',
         stroke: 'pink',
-        data: 1
+        dataIndex: 1
       }
     ];
   });
@@ -85,8 +85,8 @@ describe('Brushing', () => {
 
     it('should bin multiple collisions into a single brush call', () => {
       config.renderer.itemsAt.returns([
-        { node: { data: 0 } },
-        { node: { data: 1 } }
+        { node: { dataIndex: 0 } },
+        { node: { dataIndex: 1 } }
       ]);
 
       resolveTapEvent({ e: eventMock, t: trigger, config });
@@ -107,7 +107,7 @@ describe('Brushing', () => {
     });
 
     it('should default to "self" if no data context is configured', () => {
-      config.renderer.itemsAt.returns([{ node: { data: 0 } }]);
+      config.renderer.itemsAt.returns([{ node: { dataIndex: 0 } }]);
       trigger.data = undefined;
 
       resolveTapEvent({ e: eventMock, t: trigger, config });
@@ -126,7 +126,7 @@ describe('Brushing', () => {
 
     describe('should use configured action', () => {
       beforeEach(() => {
-        config.renderer.itemsAt.returns([{ node: { data: 0 } }]);
+        config.renderer.itemsAt.returns([{ node: { dataIndex: 0 } }]);
       });
 
       it('add', () => {
@@ -271,7 +271,7 @@ describe('Brushing', () => {
               type: 'circle',
               fill: 'yellow',
               stroke: 'updateThis',
-              data: 0
+              dataIndex: 0
             },
             {
               type: 'container',
@@ -280,7 +280,7 @@ describe('Brushing', () => {
                   type: 'line',
                   fill: 'yellow',
                   stroke: 'updateThis',
-                  data: 0
+                  dataIndex: 0
                 }
               ]
             }

@@ -158,7 +158,8 @@ function createDisplayPoints(dataPoints, { x, y, width, height }, pointSize, sha
       opacity: p.opacity
     });
 
-    shape.data = p.dataIndex;
+    shape.dataIndex = p.dataIndex;
+    shape.data = p.data;
     return shape;
   });
 }
@@ -192,6 +193,7 @@ const pointMarkerComponent = {
       const obj = resolveForDataObject(this.local, p, i, all);
       obj.errorShape = resolveForDataObject(this.local.errorShape, p, i, all);
       obj.dataIndex = i;
+      obj.data = p;
       return obj;
     });
     const pointSize = getPointSizeLimits(this.local.x, this.local.y, width, height, limits);

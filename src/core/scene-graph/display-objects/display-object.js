@@ -20,10 +20,15 @@ class DisplayObject extends Node {
     this.node = v;
 
     const {
+      dataIndex,
       data
     } = v;
 
     assignMappedAttribute(this.attrs, v);
+
+    if (typeof dataIndex !== 'undefined') {
+      this.dataIndex = dataIndex;
+    }
 
     if (typeof data !== 'undefined') {
       this.data = data;
