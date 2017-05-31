@@ -2,6 +2,12 @@
 
 ## **Unreleased** - *(YYYY-MM-DD)*
 
+## **0.22.1** - *(2017-05-31)*
+
+### Fixed
+
+- Error thrown in `ref-line` component when trying to render a line without a label, whose value is out of bounds
+
 ## **0.22.0** - *(2017-05-31)* [BREAKING] 
 
 ### Added
