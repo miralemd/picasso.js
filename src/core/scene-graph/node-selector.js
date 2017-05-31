@@ -9,7 +9,7 @@ const SELECTOR_MAPS = {
 const FILTERS = {
   type: (c, objects) => { // eslint-disable-line arrow-body-style
     return objects.filter((o) => {
-      const type = o.constructor.name;
+      const type = o.type;
 
       if (type) {
         return type.toLowerCase() === c.toLowerCase();
