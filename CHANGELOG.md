@@ -6,9 +6,15 @@
 
 - PIC-175 Enable ref-line oob tooltip
 
+### Fixed
+
+- PIC-174 - Box plot bars disconnected with min/max on scale
+- PIC-177 - Range selection bubbles should display labels instead of id
+
 ### Breaking changes
 
-- data property has changed name to dataIndex in the SceneObject and Collision object
+- PIC-173 - Change `SceneObject` property `data` to `dataIndex`
+  - Calls to `getAffectedShapes`, `findShapes` and `shapesAt` on the chart instance return an array of `SceneObject`s, this object holds a `data` property which has been renamed to `dataIndex`, any references to it need to be updated.
 
 ## 0.21.2 - 2017-05-29
 
