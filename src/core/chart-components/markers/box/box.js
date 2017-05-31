@@ -112,6 +112,10 @@ const DEFAULT_STYLE_SETTINGS = {
  * @property {number} [med] - med
  */
 
+function cap(min, max, value) {
+  return Math.max(min, Math.min(max, value));
+}
+
 const boxMarkerComponent = {
   require: ['chart'],
   defaultSettings: {
@@ -171,7 +175,7 @@ const boxMarkerComponent = {
     function computeWidth(minWidth, maxWidth, multiplier, bandwidth) {
       let width = (bandwidth * measureWidth) * multiplier;
 
-      width = Math.max(minWidth, Math.min(maxWidth, width));
+      width = cap(minWidth, maxWidth, width);
 
       return width / measureWidth;
     }
@@ -197,14 +201,14 @@ const boxMarkerComponent = {
 
       shapes.push(blueprint.processItem({
         fn: ({ width, height }) => {
-          let highModified = Math.floor(high * height);
-          let lowModified = Math.floor(low * height);
+          let highModified = cap(-100, height + 200, Math.floor(high * height));
+          let lowModified = cap(-100, height + 200, Math.floor(low * height));
 
           majorStartModified = Math.round(majorStart * width);
           majorEnd = Math.round((majorStart + (item.style.box.width * bandwidth)) * width);
           boxWidth = majorEnd - majorStartModified;
 
-          boxWidth = Math.max(item.style.box.minWidth, Math.min(item.style.box.maxWidth, boxWidth));
+          boxWidth = cap(item.style.box.minWidth, item.style.box.maxWidth, boxWidth);
 
           return extend(doodle.style({}, 'box', item.style), {
             type: 'rect',
