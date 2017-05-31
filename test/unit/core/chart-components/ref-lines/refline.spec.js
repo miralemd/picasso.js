@@ -66,6 +66,36 @@ describe('reference lines', () => {
     expect(rendererOutput).to.deep.equal([]);
   });
 
+  it('should not render lines without value', () => {
+    const config = {
+      shapeFn,
+      data: { mapTo: 'does not matter', groupBy: 'does not matter' },
+      lines: {
+        x: [
+          {
+            line: { stroke: 'green' },
+            label: { text: 'Oops' }
+          }
+        ],
+        y: [
+          {
+            line: { stroke: 'green' },
+            label: { text: 'Oops' }
+          }
+        ]
+      }
+    };
+
+    chart.dataset().map.returns([{}]);
+
+    createAndRenderComponent({
+      inner: { x: 37, y: 0, width: 870, height: 813 },
+      config
+    });
+
+    expect(rendererOutput).to.deep.equal([]);
+  });
+
   it('should render basic line with RTL label on X with scale', () => {
     const config = {
       shapeFn,
@@ -299,7 +329,7 @@ describe('reference lines', () => {
     );
   });
 
-  it('data binding on oob values', () => {
+  it('should bind data for oob values', () => {
     const config = {
       shapeFn,
       lines: {
@@ -354,6 +384,70 @@ describe('reference lines', () => {
         {
           type: 'text',
           text: 2,
+          x: 11,
+          y: 166,
+          fontFamily: 'Arial',
+          fontSize: '13px',
+          stroke: 'transparent',
+          fill: '#fff',
+          strokeWidth: 0,
+          opacity: 1
+        },
+        {
+          type: 'path',
+          d: '\n    M 7.5 173.25\n    L 22.5 173.25\n    L 15 180.75 Z\n  ',
+          x: 15,
+          y: 162,
+          stroke: 'transparent',
+          fill: '#4D4D4D',
+          strokeWidth: 0,
+          opacity: 1
+        }
+      ]
+    );
+  });
+
+  it('should bind data for oob values without a label', () => {
+    const config = {
+      shapeFn,
+      lines: {
+        y: [
+          {
+            value: 10
+          }
+        ]
+      }
+    };
+
+    chart.dataset().map.returns([{}]);
+    const yScale = v => v;
+    chart.scale.withArgs({ scale: 'y' }).returns(yScale);
+
+    createAndRenderComponent({
+      inner: { x: 0, y: 0, width: 100, height: 200 },
+      config
+    });
+
+    expect(rendererOutput).to.deep.equal(
+      [
+        {
+          type: 'circle',
+          cy: 162,
+          cx: 15,
+          r: 10,
+          stroke: 'transparent',
+          fill: '#1A1A1A',
+          strokeWidth: 0,
+          opacity: 1,
+          data: [
+            {
+              value: 10
+            }
+          ]
+        },
+        {
+          type: 'text',
+          text: 1,
           x: 11,
           y: 166,
           fontFamily: 'Arial',

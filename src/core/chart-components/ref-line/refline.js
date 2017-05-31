@@ -3,6 +3,22 @@ import { transposer } from '../../transposer/transposer';
 import { oobManager } from './oob';
 import { createLineWithLabel } from './lines-and-labels';
 
+function createOobData(line) {
+  const data = {
+    value: line.value
+  };
+
+  if (line.label) {
+    data.label = line.label.text;
+  }
+
+  return data;
+}
+
+function filterUndefinedValue(line) {
+  return typeof line.value !== 'undefined';
+}
+
 /**
  * @typedef component
  * @experimental
@@ -171,7 +187,7 @@ const refLineComponent = {
     };
 
     // Convert a value to an actual position using the scale
-    this.lines.x = this.lines.x.map((line) => {
+    this.lines.x = this.lines.x.filter(filterUndefinedValue).map((line) => {
       if (line.scale) {
         let scale = this.chart.scale(line.scale);
         return extend(line, { scale, position: scale(line.value) });
@@ -181,7 +197,7 @@ const refLineComponent = {
     });
     // Set all Y lines to flipXY by default
     // This makes the transposer flip them individually
-    this.lines.y = this.lines.y.map((line) => {
+    this.lines.y = this.lines.y.filter(filterUndefinedValue).map((line) => {
       if (line.scale) {
         let scale = this.chart.scale(line.scale);
         return extend(line, { scale, position: scale(line.value), flipXY: true });
@@ -193,10 +209,7 @@ const refLineComponent = {
     // Move out of bounds lines (OOB) to separate rendering
     this.lines.x = this.lines.x.filter((line) => {
       if (line.position < 0 || line.position > 1) {
-        oob[`x${line.position > 1 ? 1 : 0}`].push({
-          value: line.value,
-          label: line.label.text
-        });
+        oob[`x${line.position > 1 ? 1 : 0}`].push(createOobData(line));
         return false;
       }
       return true;
@@ -204,10 +217,7 @@ const refLineComponent = {
 
     this.lines.y = this.lines.y.filter((line) => {
       if (line.position < 0 || line.position > 1) {
-        oob[`y${line.position > 1 ? 1 : 0}`].push({
-          value: line.value,
-          label: line.label.text
-        });
+        oob[`y${line.position > 1 ? 1 : 0}`].push(createOobData(line));
         return false;
       }
       return true;
