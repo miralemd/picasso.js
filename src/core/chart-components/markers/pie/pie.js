@@ -1,5 +1,4 @@
 import { pie, arc } from 'd3-shape';
-// import shapeFactory from '../point/shapes';
 import { resolveSettings } from '../../settings-setup';
 import { resolveForDataObject } from '../../../style';
 
@@ -16,11 +15,6 @@ const DEFAULT_DATA_SETTINGS = {
   cornerRadius: 1,
   offset: 0
 };
-
-// const SIZE_LIMITS = {
-//   minRadiusPx: 1,
-//   radiusOffset: 0.1
-// };
 
 function offsetSlice(centroid, offset, outerRadius, innerRadius) {
   let [vx, vy] = centroid;
@@ -47,7 +41,7 @@ function createDisplayPies(arcData, { x, y, width, height }, slices) {
     arcGen.cornerRadius(cornerRadius * slice.cornerRadius);
     slice.d = arcGen(a);
     const centroid = arcGen.centroid(a);
-    const offset = offsetSlice(centroid, slice.offset, or, ir);
+    const offset = slice.offset ? offsetSlice(centroid, slice.offset, or, ir) : { x: 0, y: 0 };
     slice.transform = `translate(${offset.x}, ${offset.y}) translate(${center.x}, ${center.y})`;
     return slice;
   });
@@ -56,8 +50,8 @@ function createDisplayPies(arcData, { x, y, width, height }, slices) {
 const pieComponent = {
   require: ['chart'],
   defaultSettings: {
-    angularStart: 0,
-    angularDistance: 2 * Math.PI,
+    startAngle: 0,
+    endAngle: 2 * Math.PI,
     padAngle: 0,
     settings: {},
     data: {}
@@ -85,8 +79,8 @@ const pieComponent = {
       return obj;
     });
     const pieGen = pie();
-    pieGen.startAngle(this.settings.angularStart);
-    pieGen.endAngle(this.settings.angularStart + this.settings.angularDistance);
+    pieGen.startAngle(this.settings.startAngle);
+    pieGen.endAngle(this.settings.endAngle);
     pieGen.padAngle(this.settings.padAngle);
     const arcData = pieGen(arcValues);
     return createDisplayPies(arcData, this.rect, slices);
@@ -108,8 +102,8 @@ export default pieComponent;
       source: 'dim'
     }
   },
-  angularStart: Math.PI,
-  angularDistance: Math.PI / 4,
+  startAngle: Math.PI,
+  endAngle: Math.PI / 4,
   slice: {
     fill: 'red',
     stroke: 'green',
