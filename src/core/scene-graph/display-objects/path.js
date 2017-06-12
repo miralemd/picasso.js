@@ -11,7 +11,7 @@ function pathToPoints(path) {
   const points = [];
   for (let i = 0; i < commands.length; i++) {
     const params = commands[i].match(/([mlz])\s?(\S+)?(?:\s|,)?(\S+)?/i);
-    if (!Array.isArray(params) || isNaN(params[2] + params[3])) {
+    if (!Array.isArray(params) || isNaN(params[2]) || isNaN(params[3])) {
       continue;
     }
     const command = params[1];

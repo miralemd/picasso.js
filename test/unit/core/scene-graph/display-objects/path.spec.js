@@ -84,6 +84,12 @@ describe('Path', () => {
       path = create({ d });
       expect(path.boundingRect()).to.deep.equal({ x: 0, y: 0, width: 100, height: 150 });
     });
+
+    it('should handle decimal characters', () => {
+      d = 'M0 0 L100.1 0 L100.1 150.2 L0 150.2';
+      path = create({ d });
+      expect(path.boundingRect()).to.deep.equal({ x: 0, y: 0, width: 100.1, height: 150.2 });
+    });
   });
 
   describe('Bounds', () => {
