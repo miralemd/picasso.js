@@ -214,7 +214,7 @@ function componentFactory(definition, options = {}) {
     get: () => data
   });
 
-  const rend = definition.renderer ? rendererFn(definition.renderer) : renderer || rendererFn();
+  const rend = definition.renderer ? renderer || rendererFn(definition.renderer) : renderer || rendererFn();
   brushArgs.renderer = rend;
 
   const dockConfig = {

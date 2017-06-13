@@ -22,6 +22,7 @@
     "test": "npm run test:unit && npm run test:plugins && npm run test:component",
     "test:coverage": "npm run test:unit:coverage && npm run test:component:coverage",
     "test:unit": "aw-test-runner \"./test/unit/**/*.spec.js\"",
+    "test:unit:debug": "aw-test-runner \"./test/unit/**/*.spec.js\" --debug",
     "test:plugins": "aw-test-runner \"./plugins/**/*.spec.js\"",
     "test:unit:watch": "aw-test-runner \"./test/unit/**/*.spec.js\" -w",
     "test:unit:coverage": "aw-test-coverage \"./test/unit/**/*.spec.js\" --dir test/unit/coverage",

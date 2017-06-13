@@ -21,7 +21,7 @@ The brush-lasso component have 4 different types of listeners that can be utiliz
         data: ['self'],
         action: 'add'
       ]
-    }
+    },
     snapIndicator: {
       threshold: 75, // Minimum distance in pixel before the snap indicator is displayed and the lasso is closed
       strokeDasharray: '5, 5',

@@ -216,15 +216,13 @@ function positionComponents(components, logicalContainerRect, reducedRect, conta
         outerRect = boundingBox(refs.map(r => r.outerRect));
         rect = boundingBox(refs.map(r => r.rect));
       }
-    } else {
-      appendScaleRatio(rect, outerRect, logicalContainerRect, containerRect);
-      if (c.key) {
-        referencedComponents[c.key] = { // store the size of this component
-          rect,
-          outerRect
-        };
-      }
+    } else if (c.key) {
+      referencedComponents[c.key] = { // store the size of this component
+        rect,
+        outerRect
+      };
     }
+    appendScaleRatio(rect, outerRect, logicalContainerRect, containerRect);
     c.instance.resize(rect, outerRect, logicalContainerRect);
     c.cachedSize = undefined;
   });

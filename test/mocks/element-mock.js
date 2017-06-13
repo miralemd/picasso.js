@@ -67,6 +67,9 @@ function element(name, rect = { x: 0, y: 0, width: 100, height: 100 }) {
         width: rect.width,
         height: rect.height
       };
+    },
+    contains(target) {
+      return this.children.indexOf(target) !== -1;
     }
   };
 

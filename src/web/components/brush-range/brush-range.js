@@ -1,72 +1,16 @@
-import buildRange from './brush-range-node-builder';
+import {
+  nodes,
+  getMoveDelta
+} from './brush-range-node-builder';
 import { start, end, move } from './brush-range-interaction';
 import linear from '../../../core/scales/linear';
 import { scaleWithSize } from '../../../core/scales';
 import brushFactory from '../../../core/brush';
-
-const TARGET_SIZE = 5;
-const VERTICAL = 0;
-const HORIZONTAL = 1;
-
-function nodes(state) {
-  if (!state.active) {
-    return [];
-  }
-  let vStart = state.start;
-  let vEnd = state.current;
-  if (state.active.idx !== -1) {
-    if (state.active.mode === 'foo') {
-      vStart = Math.min(state.active.start, state.active.end);
-      vEnd = Math.max(state.active.start, state.active.end);
-    } else if (state.active.mode === 'modify') {
-      vStart = Math.min(state.start, state.current);
-      vEnd = Math.max(state.start, state.current);
-    } else {
-      const posDelta = state.active.limitHigh - state.active.end;
-      const negDelta = state.active.limitLow - state.active.start;
-      let delta = state.current - state.start;
-      if (delta < 0) {
-        delta = Math.max(delta, negDelta);
-      } else {
-        delta = Math.min(delta, posDelta);
-      }
-      vStart = state.active.start + delta;
-      vEnd = state.active.end + delta;
-    }
-  }
-
-  let els = [];
-
-  const isVertical = state.direction === VERTICAL;
-
-  // add all other ranges
-  state.ranges.forEach((r, i) => {
-    if (i !== state.active.idx) {
-      buildRange({
-        borderHit: TARGET_SIZE,
-        els,
-        isVertical,
-        state,
-        vStart: Math.min(r.min, r.max),
-        vEnd: Math.max(r.min, r.max),
-        idx: i
-      });
-    }
-  });
-
-  // add active range
-  buildRange({
-    borderHit: TARGET_SIZE,
-    els,
-    isVertical,
-    state,
-    vStart,
-    vEnd,
-    idx: state.active.idx
-  });
-
-  return els;
-}
+import {
+  TARGET_SIZE,
+  VERTICAL,
+  HORIZONTAL
+} from './brush-range-const';
 
 function render(state) {
   state.renderer.render(nodes(state));
@@ -94,14 +38,7 @@ function setRanges(state) {
       rs[state.active.idx].min = Math.min(state.start, state.current);
       rs[state.active.idx].max = Math.max(state.start, state.current);
     } else {
-      const posDelta = state.active.limitHigh - state.active.end;
-      const negDelta = state.active.limitLow - state.active.start;
-      let delta = state.current - state.start;
-      if (delta < 0) {
-        delta = Math.max(delta, negDelta);
-      } else {
-        delta = Math.min(delta, posDelta);
-      }
+      const delta = getMoveDelta(state);
       rs[state.active.idx].min += delta;
       rs[state.active.idx].max += delta;
     }

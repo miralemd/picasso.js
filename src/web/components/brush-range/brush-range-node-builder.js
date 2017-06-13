@@ -1,3 +1,7 @@
+import {
+  TARGET_SIZE,
+  VERTICAL
+} from './brush-range-const';
 
 function buildLine({ h, isVertical, value, pos, align, borderHit }) {
   const isAlignStart = align !== 'end';
@@ -108,16 +112,17 @@ function buildArea({ h, isVertical, top, height, color, on }) {
 }
 
 export default function buildRange({ borderHit, els, isVertical, state, vStart, vEnd, idx }) {
-  const start = state.scale(vStart) * state.size;
-  const end = state.scale(vEnd) * state.size;
+  const hasScale = !!state.scale;
+  const start = hasScale ? state.scale(vStart) * state.size : vStart;
+  const end = hasScale ? state.scale(vEnd) * state.size : vEnd;
   const height = Math.abs(start - end);
   const top = Math.min(start, end);
   const bottom = top + height;
 
   if (state.targetRect) {
     const targetSize = isVertical ? state.targetRect.height : state.targetRect.width;
-    const targetStart = state.scale(vStart) * targetSize;
-    const targetEnd = state.scale(vEnd) * targetSize;
+    const targetStart = hasScale ? state.scale(vStart) * targetSize : vStart;
+    const targetEnd = hasScale ? state.scale(vEnd) * targetSize : vEnd;
     const targetHeight = Math.abs(targetStart - targetEnd);
     const targetTop = Math.min(targetStart, targetEnd);
     const targetArea = {
@@ -211,4 +216,70 @@ export default function buildRange({ borderHit, els, isVertical, state, vStart, 
       pos: bottom
     }));
   }
+}
+
+export function getMoveDelta(state) {
+  const posDelta = state.active.limitHigh - state.active.end;
+  const negDelta = state.active.limitLow - state.active.start;
+  let delta = state.current - state.start;
+  if (delta < 0) {
+    delta = Math.max(delta, negDelta);
+  } else {
+    delta = Math.min(delta, posDelta);
+  }
+
+  return delta;
+}
+
+export function nodes(state) {
+  if (!state.active) {
+    return [];
+  }
+  let vStart = state.start;
+  let vEnd = state.current;
+  if (state.active.idx !== -1) {
+    if (state.active.mode === 'foo') {
+      vStart = Math.min(state.active.start, state.active.end);
+      vEnd = Math.max(state.active.start, state.active.end);
+    } else if (state.active.mode === 'modify') {
+      vStart = Math.min(state.start, state.current);
+      vEnd = Math.max(state.start, state.current);
+    } else {
+      const delta = getMoveDelta(state);
+      vStart = state.active.start + delta;
+      vEnd = state.active.end + delta;
+    }
+  }
+
+  let els = [];
+
+  const isVertical = state.direction === VERTICAL;
+
+  // add all other ranges
+  state.ranges.forEach((r, i) => {
+    if (i !== state.active.idx) {
+      buildRange({
+        borderHit: TARGET_SIZE,
+        els,
+        isVertical,
+        state,
+        vStart: Math.min(r.min, r.max),
+        vEnd: Math.max(r.min, r.max),
+        idx: i
+      });
+    }
+  });
+
+  // add active range
+  buildRange({
+    borderHit: TARGET_SIZE,
+    els,
+    isVertical,
+    state,
+    vStart,
+    vEnd,
+    idx: state.active.idx
+  });
+
+  return els;
 }
