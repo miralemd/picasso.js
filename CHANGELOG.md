@@ -1,10 +1,13 @@
 # Changelog
 
-## **Unreleased** - *(2017-06-22)*
+## **Unreleased** - *(YYYY-MM-DD)*
+
+## **0.23.0** - *(2017-06-22)*
 
 ### Added
 
 - PIC-176 Discrete range selection based on shapes
+  - See [brush-area-dir](./docs/dist/components/brush-area-dir.md)
 
 ## **0.22.1** - *(2017-05-31)*
 
