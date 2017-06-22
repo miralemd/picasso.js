@@ -1,6 +1,10 @@
 # Changelog
 
-## **Unreleased** - *(YYYY-MM-DD)*
+## **Unreleased** - *(2017-06-22)*
+
+### Added
+
+- PIC-176 Discrete range selection based on shapes
 
 ## **0.22.1** - *(2017-05-31)*
 
