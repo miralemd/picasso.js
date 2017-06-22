@@ -100,6 +100,10 @@ function getBubbleLabel(state, value, range) {
   const compConfig = state.settings.brush.components.reduce((c0, c1) => (c0.key === labelShape.key ? c0 : c1));
   const dataConfig = compConfig.data || ['self'];
 
+  if (typeof state.settings.bubbles.label === 'function') {
+    return state.settings.bubbles.label(labelShape.data);
+  }
+
   return labelShape.data[dataConfig[0]].label;
 }
 
@@ -122,10 +126,10 @@ const brushAreaDirectionalComponent = {
   },
   renderer: 'dom',
   on: {
-    rangeStart(e) { this.start(e); },
-    rangeMove(e) { this.move(e); },
-    rangeEnd(e) { this.end(e); },
-    rangeClear(e) { this.clear(e); }
+    areaStart(e) { this.start(e); },
+    areaMove(e) { this.move(e); },
+    areaEnd(e) { this.end(e); },
+    areaClear(e) { this.clear(e); }
   },
   created() {
     this.rect = { x: 0, y: 0, width: 0, height: 0 };

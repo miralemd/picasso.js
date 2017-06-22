@@ -18,11 +18,12 @@
     },
     direction: 'vertical',
     bubbles: {
-      show: false
+      show: true,
       align: 'start', // or end
       fontSize: '14px',
       fontFamily: 'Arial',
-      fill: '#595959'
+      fill: '#595959',
+      label: data => data.self.label
     },
     target: { // render matching overlay on target component (optional)
       component: 'y-axis',
@@ -52,17 +53,17 @@ picasso.chart({
         type: 'Pan',
         options: {
           direction: Hammer.DIRECTION_VERTICAL,
-          event: 'minorrange'
+          event: 'minor'
         },
         events: {
-          minorrangestart: function(e) {
-            this.chart.component('area').emit('rangeStart', e);
+          minorstart: function(e) {
+            this.chart.component('area').emit('areaStart', e);
           },
-          minorrangemove: function(e) {
-            this.chart.component('area').emit('rangeMove', e);
+          minormove: function(e) {
+            this.chart.component('area').emit('areaMove', e);
           },
-          minorrangeend: function(e) {
-            this.chart.component('area').emit('rangeEnd', e);
+          minorend: function(e) {
+            this.chart.component('area').emit('areaEnd', e);
           }
         }
       }
