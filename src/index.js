@@ -23,6 +23,7 @@ import brushRangeComponent from './web/components/brush-range';
 import rangeComponent from './core/chart-components/range';
 import brushLassoComponent from './core/chart-components/brush-lasso';
 import labelsComponent from './core/chart-components/labels';
+import categoricalLegend from './core/chart-components/legend-cat';
 
 // Plugin API
 function use(plugin, options = {}) {
@@ -52,6 +53,7 @@ use(brushRangeComponent);
 use(rangeComponent);
 use(brushLassoComponent);
 use(labelsComponent);
+use(categoricalLegend);
 
 /**
  * The mother of all namespaces
