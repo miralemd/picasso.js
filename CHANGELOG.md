@@ -2,6 +2,10 @@
 
 ## **Unreleased** - *(YYYY-MM-DD)*
 
+### Added
+- PIC-178 Static categorical color legend
+  - See [legend-cat](./docs/dist/components/legend-cat.md)
+
 ## **0.23.0** - *(2017-06-22)*
 
 ### Added
