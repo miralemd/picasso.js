@@ -62,7 +62,13 @@ describe('q-brush', () => {
         id: '/qHyperCube/qMeasureInfo/3',
         type: 'range',
         brush: {
-          ranges: () => [{ min: 13, max: 17 }]
+          ranges: () => [{ min: 13, max: 17 }, { min: 4, max: 9 }]
+        }
+      }, {
+        id: '/qHyperCube/qMeasureInfo/1',
+        type: 'range',
+        brush: {
+          ranges: () => [{ min: -13, max: 6 }]
         }
       }]);
     });
@@ -76,7 +82,13 @@ describe('q-brush', () => {
       const selections = qBrush(brush);
       expect(selections[0].params).to.eql([
         '/qHyperCubeDef',
-        [{ qMeasureIx: 3, qRange: { qMin: 13, qMax: 17, qMinInclEq: true, qMaxInclEq: true } }]
+        [
+          { qMeasureIx: 3, qRange: { qMin: 13, qMax: 17, qMinInclEq: true, qMaxInclEq: true } },
+          { qMeasureIx: 3, qRange: { qMin: 4, qMax: 9, qMinInclEq: true, qMaxInclEq: true } },
+          { qMeasureIx: 1, qRange: { qMin: -13, qMax: 6, qMinInclEq: true, qMaxInclEq: true } }
+        ],
+        [],
+        true
       ]);
     });
   });
@@ -87,7 +99,13 @@ describe('q-brush', () => {
         id: '/qHyperCube/qDimensionInfo/1',
         type: 'range',
         brush: {
-          ranges: () => [{ min: 11, max: 23 }]
+          ranges: () => [{ min: 11, max: 23 }, { min: 3, max: 8 }]
+        }
+      }, {
+        id: '/qHyperCube/qDimensionInfo/2',
+        type: 'range',
+        brush: {
+          ranges: () => [{ min: -3, max: 1 }]
         }
       }]);
     });
@@ -101,7 +119,11 @@ describe('q-brush', () => {
       const selections = qBrush(brush);
       expect(selections[0].params).to.eql([
         '/qHyperCubeDef',
-        [{ qDimIx: 1, qRange: { qMin: 11, qMax: 23, qMinInclEq: true, qMaxInclEq: false } }]
+        [
+          { qDimIx: 1, qRange: { qMin: 11, qMax: 23, qMinInclEq: true, qMaxInclEq: false } },
+          { qDimIx: 1, qRange: { qMin: 3, qMax: 8, qMinInclEq: true, qMaxInclEq: false } },
+          { qDimIx: 2, qRange: { qMin: -3, qMax: 1, qMinInclEq: true, qMaxInclEq: false } }
+        ]
       ]);
     });
   });

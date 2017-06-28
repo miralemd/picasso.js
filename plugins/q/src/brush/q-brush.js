@@ -140,15 +140,15 @@ export default function qBrush(brush, opts = {}, layout) {
             ranges: []
           };
         }
-        methods.rangeSelectHyperCubeValues.ranges.push({
+        ranges.forEach(range => methods.rangeSelectHyperCubeValues.ranges.push({
           qMeasureIx: info.index,
           qRange: {
-            qMin: ranges[0].min,
-            qMax: ranges[0].max,
+            qMin: range.min,
+            qMax: range.max,
             qMinInclEq: true,
             qMaxInclEq: true
           }
-        });
+        }));
       }
     }
     if (b.type === 'range' && info.type === 'dimension') {
@@ -161,15 +161,15 @@ export default function qBrush(brush, opts = {}, layout) {
             ranges: []
           };
         }
-        methods.selectHyperCubeContinuousRange.ranges.push({
+        ranges.forEach(range => methods.selectHyperCubeContinuousRange.ranges.push({
           qDimIx: info.index,
           qRange: {
-            qMin: ranges[0].min,
-            qMax: ranges[0].max,
+            qMin: range.min,
+            qMax: range.max,
             qMinInclEq: true,
             qMaxInclEq: false
           }
-        });
+        }));
       }
     }
     if (b.type === 'value' && info.type === 'dimension') {
@@ -209,7 +209,7 @@ export default function qBrush(brush, opts = {}, layout) {
   if (methods.rangeSelectHyperCubeValues) {
     selections.push({
       method: 'rangeSelectHyperCubeValues',
-      params: [methods.rangeSelectHyperCubeValues.path, methods.rangeSelectHyperCubeValues.ranges]
+      params: [methods.rangeSelectHyperCubeValues.path, methods.rangeSelectHyperCubeValues.ranges, [], true]
     });
   }
 
