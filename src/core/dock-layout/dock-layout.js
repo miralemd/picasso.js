@@ -127,16 +127,33 @@ function reduceLayoutRect(logicalContainerRect, components, hiddenComponents, se
 }
 
 function appendScaleRatio(rect, outerRect, logicalContainerRect, containerRect) {
-  const scaleX = containerRect.width / logicalContainerRect.width;
-  const scaleY = containerRect.height / logicalContainerRect.height;
   const scaleRatio = {
-    x: logicalContainerRect.preserveAspectRatio ? Math.min(scaleX, scaleY) : scaleX,
-    y: logicalContainerRect.preserveAspectRatio ? Math.min(scaleX, scaleY) : scaleY
+    x: containerRect.width / logicalContainerRect.width,
+    y: containerRect.height / logicalContainerRect.height
+  };
+  const margin = {
+    left: 0,
+    top: 0
   };
 
+  if (logicalContainerRect.preserveAspectRatio) {
+    const xLessThenY = scaleRatio.x < scaleRatio.y;
+    // To preserve the aspect ratio, take the smallest ratio and apply in both directions to "meet" the size of the container
+    const minRatio = Math.min(scaleRatio.x, scaleRatio.y);
+    scaleRatio.x = minRatio;
+    scaleRatio.y = minRatio;
+    const area = xLessThenY ? 'height' : 'width';
+    const spread = (containerRect[area] - (logicalContainerRect[area] * scaleRatio.x)) * logicalContainerRect.align;
+    margin.left = xLessThenY ? 0 : spread;
+    margin.top = xLessThenY ? spread : 0;
+  }
+
   rect.scaleRatio = scaleRatio;
+  rect.margin = margin;
   outerRect.scaleRatio = scaleRatio;
+  outerRect.margin = margin;
   logicalContainerRect.scaleRatio = scaleRatio;
+  logicalContainerRect.margin = margin;
 }
 
 function boundingBox(rects) {
@@ -261,7 +278,8 @@ function checkShowSettings(components, hiddenComponents, settings, logicalContai
  * @property {object} [logicalSize] - Logical size
  * @property {number} [logicalSize.width] - Width in pixels
  * @property {number} [logicalSize.height] - Height in pixels
- * @property {boolean} [logicalSize.preserveAspectRatio=false] - If true, takes the smallest ratio of width/height between logical and physical size ( physical / logical ).
+ * @property {boolean} [logicalSize.preserveAspectRatio=false] - If true, takes the smallest ratio of width/height between logical and physical size ( physical / logical )
+ * @property {number} [logicalSize.align=0.5] - Normalized value between 0-1. Defines how the space around the scaled axis is spread in the container, with 0.5 meaning the spread is equal on both sides. Only applicable if preserveAspectRatio is set to true
  * @property {object} [center]
  * @property {number} [center.minWidthRatio=0.5] - Value between 0 and 1
  * @property {number} [center.minHeightRatio=0.5] - Value between 0 and 1

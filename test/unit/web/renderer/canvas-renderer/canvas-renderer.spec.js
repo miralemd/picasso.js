@@ -43,17 +43,17 @@ describe('canvas renderer', () => {
   });
 
   it('should return zero size when canvas is not initiated', () => {
-    expect(r.size()).to.deep.equal({ x: 0, y: 0, width: 0, height: 0, scaleRatio: { x: 1, y: 1 } });
+    expect(r.size()).to.deep.equal({ x: 0, y: 0, width: 0, height: 0, scaleRatio: { x: 1, y: 1 }, margin: { left: 0, top: 0 } });
   });
 
   it('should return size when called', () => {
-    r.size({ x: 50, y: 100, width: 200, height: 400, scaleRatio: { x: 3, y: 4 } });
-    expect(r.size()).to.deep.equal({ x: 50, y: 100, width: 200, height: 400, scaleRatio: { x: 3, y: 4 } });
+    r.size({ x: 50, y: 100, width: 200, height: 400, scaleRatio: { x: 3, y: 4 }, margin: { left: 5, top: 6 } });
+    expect(r.size()).to.deep.equal({ x: 50, y: 100, width: 200, height: 400, scaleRatio: { x: 3, y: 4 }, margin: { left: 5, top: 6 } });
   });
 
   it('should ignore NaN values and fallback to default size value', () => {
-    r.size({ x: undefined, y: undefined, width: undefined, height: undefined, scaleRatio: { x: undefined, y: undefined } });
-    expect(r.size()).to.deep.equal({ x: 0, y: 0, width: 0, height: 0, scaleRatio: { x: 1, y: 1 } });
+    r.size({ x: undefined, y: undefined, width: undefined, height: undefined, scaleRatio: { x: undefined, y: undefined }, margin: { left: undefined, top: undefined } });
+    expect(r.size()).to.deep.equal({ x: 0, y: 0, width: 0, height: 0, scaleRatio: { x: 1, y: 1 }, margin: { left: 0, top: 0 } });
   });
 
   it('should attach to given position in the container', () => {

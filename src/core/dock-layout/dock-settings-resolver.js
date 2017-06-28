@@ -30,6 +30,7 @@ function getRect(container, settings) {
   if (typeof settings.logicalSize !== 'undefined') {
     logicalContainerRect.width = isNaN(settings.logicalSize.width) ? containerRect.width : settings.logicalSize.width;
     logicalContainerRect.height = isNaN(settings.logicalSize.height) ? containerRect.height : settings.logicalSize.height;
+    logicalContainerRect.align = isNaN(settings.logicalSize.align) ? 0.5 : Math.min(Math.max(settings.logicalSize.align, 0), 1);
     logicalContainerRect.preserveAspectRatio = settings.logicalSize.preserveAspectRatio;
   } else {
     logicalContainerRect.width = containerRect.width;

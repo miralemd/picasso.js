@@ -37,7 +37,8 @@ dockLayout: {
   logicalSize: {
     width: 150,
     height: 150,
-    preserveAspectRatio: false
+    preserveAspectRatio: false,
+    align: 0.5
   },
   size: {
     width: 100,

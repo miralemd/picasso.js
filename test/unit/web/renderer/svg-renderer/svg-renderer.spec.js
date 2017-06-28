@@ -222,13 +222,13 @@ describe('svg renderer', () => {
   describe('size', () => {
     it('should return current size if no parameters are given', () => {
       svg.appendTo(element('div'));
-      svg.size({ x: 50, y: 100, width: 200, height: 400 });
-      expect(svg.size()).to.deep.equal({ x: 50, y: 100, width: 200, height: 400, scaleRatio: { x: 1, y: 1 } });
+      svg.size({ x: 50, y: 100, width: 200, height: 400, scaleRatio: { x: 2, y: 3 }, margin: { top: 4, left: 5 } });
+      expect(svg.size()).to.deep.equal({ x: 50, y: 100, width: 200, height: 400, scaleRatio: { x: 2, y: 3 }, margin: { top: 4, left: 5 } });
     });
 
     it('should ignore NaN values and fallback to default size value', () => {
-      svg.size({ x: undefined, y: undefined, width: undefined, height: undefined, scaleRatio: { x: undefined, y: undefined } });
-      expect(svg.size()).to.deep.equal({ x: 0, y: 0, width: 0, height: 0, scaleRatio: { x: 1, y: 1 } });
+      svg.size({ x: undefined, y: undefined, width: undefined, height: undefined, scaleRatio: { x: undefined, y: undefined }, margin: { top: undefined, left: undefined } });
+      expect(svg.size()).to.deep.equal({ x: 0, y: 0, width: 0, height: 0, scaleRatio: { x: 1, y: 1 }, margin: { top: 0, left: 0 } });
     });
   });
 });

@@ -37,7 +37,8 @@ dockLayout: {
   logicalSize: {
     width: 150,
     height: 150,
-    preserveAspectRatio: false
+    preserveAspectRatio: false,
+    align: 0.5
   },
   size: {
     width: 100,
@@ -63,7 +64,8 @@ dockLayout: {
   logicalSize: { // Logical size. Optional.
     width: 3.14, // Width in pixels. Optional.
     height: 3.14, // Height in pixels. Optional.
-    preserveAspectRatio: false, // If true, takes the smallest ratio of width/height between logical and physical size ( physical / logical ).. Default: false. Optional.
+    preserveAspectRatio: false, // If true, takes the smallest ratio of width/height between logical and physical size ( physical / logical ). Default: false. Optional.
+    align: 0.5, // Normalized value between 0-1. Defines how the space around the scaled axis is spread in the container, with 0.5 meaning the spread is equal on both sides. Only applicable if preserveAspectRatio is set to true. Default: 0.5. Optional.
   },
   center: { //  Optional.
     minWidthRatio: 0.5, // Value between 0 and 1. Default: 0.5. Optional.
