@@ -1,6 +1,6 @@
 {
   "name": "@qlik/picasso-hammer",
-  "version": "0.23.0",
+  "version": "0.24.0",
   "description": "Hammer JS interaction mixin for Picasso",
   "license": "ISC",
   "private": true,
