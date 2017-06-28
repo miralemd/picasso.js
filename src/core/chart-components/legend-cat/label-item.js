@@ -10,36 +10,36 @@ export function getMinimumViableNumber(...numberList) {
 }
 
 /**
- * Resolve PADDING object, number or string
+ * Resolve margin object, number or string
  *
- * @param  {number|object|string} PADDING - Multiple formats
- * @return {object} - Returns padding object with correct top, right, bottom, left and width/height
+ * @param  {number|object|string} margin - Multiple formats
+ * @return {object} - Returns margin object with correct top, right, bottom, left and width/height
  */
-export function resolvePadding(padding) {
-  if (typeof padding === 'object' && padding !== null) {
+export function resolveMargin(margin) {
+  if (typeof margin === 'object' && margin !== null) {
     const output = {};
-    output.top = parseFloat(padding.top || 0);
-    output.right = parseFloat((typeof padding.right === 'undefined' || isNaN(padding.right) ? output.top : padding.right) || 0);
-    output.bottom = parseFloat((typeof padding.bottom === 'undefined' || isNaN(padding.bottom) ? output.top : padding.bottom) || 0);
-    output.left = parseFloat((typeof padding.left === 'undefined' || isNaN(padding.left) ? output.right : padding.left) || 0);
+    output.top = parseFloat(margin.top || 0);
+    output.right = parseFloat((typeof margin.right === 'undefined' || isNaN(margin.right) ? output.top : margin.right) || 0);
+    output.bottom = parseFloat((typeof margin.bottom === 'undefined' || isNaN(margin.bottom) ? output.top : margin.bottom) || 0);
+    output.left = parseFloat((typeof margin.left === 'undefined' || isNaN(margin.left) ? output.right : margin.left) || 0);
 
     output.width = output.left + output.right;
     output.height = output.top + output.bottom;
 
     return output;
-  } else if (typeof padding === 'number') {
+  } else if (typeof margin === 'number') {
     return {
-      top: padding,
-      right: padding,
-      bottom: padding,
-      left: padding,
-      width: padding * 2,
-      height: padding * 2
+      top: margin,
+      right: margin,
+      bottom: margin,
+      left: margin,
+      width: margin * 2,
+      height: margin * 2
     };
-  } else if (typeof padding === 'string') {
-    const parts = padding.replace(/px/gi, '').split(' ');
+  } else if (typeof margin === 'string') {
+    const parts = margin.replace(/px/gi, '').split(' ');
 
-    return resolvePadding({
+    return resolveMargin({
       top: parts[0],
       right: parts[1],
       bottom: parts[2],
@@ -71,17 +71,17 @@ export function resolvePadding(padding) {
  * @param {Renderer} renderer - A renderer such as SVG, DOM, Canvas or Mock with measureText
  * @param {string} align - Alignment property, 'left' or 'right'.
  * @param {object} renderingArea - The area in an object to be rendered in.
- * @param {number} padding - Padding around the corners of the label
+ * @param {number} margin - Margin around the corners of the label
  * @return {Container} - Returns container with objects as children
  */
-export function labelItem({ x, y, maxWidth, maxHeight, color, fill, fontSize, fontFamily, labelText, renderer, align, renderingArea, padding, symbolPadding }) {
+export function labelItem({ x, y, maxWidth, maxHeight, color, fill, fontSize, fontFamily, labelText, renderer, align, renderingArea, margin, symbolPadding }) {
   maxWidth = typeof maxWidth === 'undefined' ? NaN : maxWidth;
   maxHeight = typeof maxHeight === 'undefined' ? NaN : maxHeight;
   align = typeof align === 'undefined' ? 'left' : align;
   fill = typeof fill === 'undefined' ? 'black' : fill;
   renderingArea = typeof renderingArea === 'undefined' ? { x: 0, y: 0, width: 0, height: 0 } : renderingArea;
-  padding = resolvePadding(padding);
-  symbolPadding = typeof symbolPadding === 'undefined' ? padding.right : symbolPadding;
+  margin = resolveMargin(margin);
+  symbolPadding = typeof symbolPadding === 'undefined' ? margin.right : symbolPadding;
 
   const labelMeasures = renderer.measureText({
     text: labelText,
@@ -89,12 +89,12 @@ export function labelItem({ x, y, maxWidth, maxHeight, color, fill, fontSize, fo
     fontSize
   });
 
-  const innerHeight = getMinimumViableNumber(maxHeight - padding.height, labelMeasures.height);
+  const innerHeight = getMinimumViableNumber(maxHeight - margin.height, labelMeasures.height);
 
   const fontSizeDiff = parseFloat(fontSize) / labelMeasures.height;
   const fontSizeMod = innerHeight * fontSizeDiff;
 
-  const wantedWidth = labelMeasures.width + innerHeight + padding.width + symbolPadding;
+  const wantedWidth = labelMeasures.width + innerHeight + margin.width + symbolPadding;
   const containerWidth = !isNaN(maxWidth) ? Math.min(maxWidth, wantedWidth) : wantedWidth;
 
   const container = {
@@ -102,14 +102,14 @@ export function labelItem({ x, y, maxWidth, maxHeight, color, fill, fontSize, fo
     x: align === 'left' ? x : renderingArea.width - x - containerWidth,
     y,
     width: containerWidth,
-    height: innerHeight + padding.height
+    height: innerHeight + margin.height
   };
 
   const symbol = {
     type: 'rect',
     fill: color,
-    x: align === 'left' ? container.x + padding.left : (container.x + container.width) - innerHeight - padding.right,
-    y: container.y + padding.top,
+    x: align === 'left' ? container.x + margin.left : (container.x + container.width) - innerHeight - margin.right,
+    y: container.y + margin.top,
     width: innerHeight,
     height: innerHeight
   };
@@ -119,7 +119,7 @@ export function labelItem({ x, y, maxWidth, maxHeight, color, fill, fontSize, fo
     anchor: align === 'left' ? 'start' : 'end',
     x: align === 'left' ? symbol.x + symbol.width + symbolPadding : symbol.x - symbolPadding,
     y: symbol.y + innerHeight + (-1),
-    maxWidth: container.width - symbol.width - (padding.width + symbolPadding),
+    maxWidth: container.width - symbol.width - (margin.width + symbolPadding),
     text: labelText,
     fill,
     fontSize: `${fontSizeMod}px`,

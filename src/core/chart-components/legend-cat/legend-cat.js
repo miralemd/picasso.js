@@ -1,13 +1,15 @@
-import { labelItem, resolvePadding } from './label-item';
+import { labelItem, resolveMargin } from './label-item';
 
 const categoricalLegend = {
   require: ['chart', 'settings', 'renderer'],
   defaultSettings: {
+    align: 'left',
     items: {
       fontSize: '12px',
       fontFamily: 'Arial',
       fill: '#595959',
-      padding: {
+      maxWidthPx: 150,
+      margin: {
         top: 5,
         right: 5,
         bottom: 0
@@ -18,7 +20,8 @@ const categoricalLegend = {
       fontSize: '18px',
       fontFamily: 'Arial',
       fill: '#595959',
-      padding: {
+      maxWidthPx: 200,
+      margin: {
         top: 0,
         right: 5,
         bottom: 5
@@ -29,6 +32,8 @@ const categoricalLegend = {
     const scale = this.chart.scale(this.settings.scale);
     const domain = scale.domain();
     const DOCK = this.settings.dock || 'center';
+    const DIRECTION = this.settings.direction || ((DOCK === 'top' || DOCK === 'bottom') ? 'horizontal' : 'vertical');
+    const HORIZONTAL = (DIRECTION === 'horizontal');
     let title = '';
 
     if (this.settings.title.text) {
@@ -37,8 +42,8 @@ const categoricalLegend = {
       title = this.chart.field(scale.sources[0]).field.title();
     }
 
-    const padding = resolvePadding(this.settings.items.padding);
-    const titlePadding = resolvePadding(this.settings.title.padding);
+    const margin = resolveMargin(this.settings.items.margin);
+    const titleMargin = resolveMargin(this.settings.title.margin);
 
     let prevContainer = {};
     let nextXitem = 0;
@@ -49,14 +54,15 @@ const categoricalLegend = {
     if (this.settings.title.show) {
       // Title
       prevContainer = labelItem({
-        x: DOCK === 'top' || DOCK === 'bottom' ? nextXitem : 0,
-        y: DOCK === 'left' || DOCK === 'right' ? nextYitem : 0,
+        x: HORIZONTAL ? nextXitem : 0,
+        y: !HORIZONTAL ? nextYitem : 0,
+        maxWidth: this.settings.title.maxWidthPx,
         fontSize: this.settings.title.fontSize,
         fontFamily: this.settings.title.fontFamily,
         labelText: title,
         renderer: this.renderer,
         renderingArea: this.rect,
-        padding: titlePadding,
+        margin: titleMargin,
         symbolPadding: -parseFloat(this.settings.title.fontSize) // This is too hacky. FIXME
       });
 
@@ -70,14 +76,15 @@ const categoricalLegend = {
       nextYitem += prevContainer.height || 0;
 
       const labelItemDef = {
-        x: DOCK === 'top' || DOCK === 'bottom' ? nextXitem : 0,
-        y: DOCK === 'left' || DOCK === 'right' ? nextYitem : 0,
+        x: HORIZONTAL ? nextXitem : 0,
+        y: !HORIZONTAL ? nextYitem : 0,
+        maxWidth: this.settings.items.maxWidthPx,
         fontSize: this.settings.items.fontSize,
         fontFamily: this.settings.items.fontFamily,
         labelText: cat,
         renderer: this.renderer,
         renderingArea: this.rect,
-        padding
+        margin
       };
 
       prevContainer = labelItem(labelItemDef);
@@ -98,7 +105,9 @@ const categoricalLegend = {
     const scale = this.chart.scale(this.settings.scale);
     const domain = scale.domain();
     const DOCK = this.settings.dock || 'center';
-    const ALIGN = this.settings.align || (DOCK === 'left' || DOCK === 'right' ? DOCK : 'left');
+    const ALIGN = this.settings.align;
+    const DIRECTION = this.settings.direction || ((DOCK === 'top' || DOCK === 'bottom') ? 'horizontal' : 'vertical');
+    const HORIZONTAL = (DIRECTION === 'horizontal');
     let title = '';
 
     if (this.settings.title.text) {
@@ -107,8 +116,8 @@ const categoricalLegend = {
       title = this.chart.field(scale.sources[0]).field.title();
     }
 
-    let padding = resolvePadding(this.settings.items.padding);
-    let titlePadding = resolvePadding(this.settings.title.padding);
+    const margin = resolveMargin(this.settings.items.margin);
+    const titleMargin = resolveMargin(this.settings.title.margin);
 
     const labels = [];
     let prevContainer = {};
@@ -118,9 +127,9 @@ const categoricalLegend = {
     if (this.settings.title.show) {
       // Title
       prevContainer = labelItem({
-        x: DOCK === 'top' || DOCK === 'bottom' ? nextXitem : 0,
-        y: DOCK === 'left' || DOCK === 'right' ? nextYitem : 0,
-        maxWidth: this.rect.width,
+        x: HORIZONTAL ? nextXitem : 0,
+        y: !HORIZONTAL ? nextYitem : 0,
+        maxWidth: Math.min(this.rect.width, this.settings.title.maxWidthPx),
         color: 'transparent',
         fill: this.settings.title.fill,
         fontSize: this.settings.title.fontSize,
@@ -129,7 +138,7 @@ const categoricalLegend = {
         renderer: this.renderer,
         align: ALIGN,
         renderingArea: this.rect,
-        padding: titlePadding,
+        margin: titleMargin,
         symbolPadding: -parseFloat(this.settings.title.fontSize) // This is too hacky. FIXME
       });
 
@@ -142,9 +151,9 @@ const categoricalLegend = {
       nextYitem += prevContainer.height || 0;
 
       const labelItemDef = {
-        x: DOCK === 'top' || DOCK === 'bottom' ? nextXitem : 0,
-        y: DOCK === 'left' || DOCK === 'right' ? nextYitem : 0,
-        maxWidth: this.rect.width,
+        x: HORIZONTAL ? nextXitem : 0,
+        y: !HORIZONTAL ? nextYitem : 0,
+        maxWidth: Math.min(this.rect.width, this.settings.items.maxWidthPx),
         color: scale(cat),
         fill: this.settings.items.fill,
         fontSize: this.settings.items.fontSize,
@@ -153,7 +162,7 @@ const categoricalLegend = {
         renderer: this.renderer,
         align: ALIGN,
         renderingArea: this.rect,
-        padding
+        margin
       };
 
       prevContainer = labelItem(labelItemDef);

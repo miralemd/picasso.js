@@ -1,4 +1,4 @@
-import { getMinimumViableNumber, labelItem, resolvePadding } from '../../../../../src/core/chart-components/legend-cat/label-item';
+import { getMinimumViableNumber, labelItem, resolveMargin } from '../../../../../src/core/chart-components/legend-cat/label-item';
 
 function assertNodeProperties(node, expected) {
   Object.keys(expected).forEach((key) => {
@@ -28,7 +28,7 @@ describe('getMinimumViableNumber', () => {
   });
 });
 
-describe('resolvePadding', () => {
+describe('resolveMargin', () => {
   it('should handle invalid formats', () => {
     let defaultResult = {
       top: 0,
@@ -39,10 +39,10 @@ describe('resolvePadding', () => {
       height: 0
     };
 
-    expect(resolvePadding()).to.be.eql(defaultResult);
-    expect(resolvePadding(null)).to.be.eql(defaultResult);
-    expect(resolvePadding(0)).to.be.eql(defaultResult);
-    expect(resolvePadding({})).to.be.eql(defaultResult);
+    expect(resolveMargin()).to.be.eql(defaultResult);
+    expect(resolveMargin(null)).to.be.eql(defaultResult);
+    expect(resolveMargin(0)).to.be.eql(defaultResult);
+    expect(resolveMargin({})).to.be.eql(defaultResult);
   });
 
   it('should handle single number', () => {
@@ -55,7 +55,7 @@ describe('resolvePadding', () => {
       height: 10
     };
 
-    expect(resolvePadding(5)).to.be.eql(expectedResult);
+    expect(resolveMargin(5)).to.be.eql(expectedResult);
   });
 
   it('should handle strings part 1', () => {
@@ -68,11 +68,11 @@ describe('resolvePadding', () => {
       height: 10
     };
 
-    expect(resolvePadding('5')).to.be.eql(expectedResult);
-    expect(resolvePadding('5px')).to.be.eql(expectedResult);
-    expect(resolvePadding('5px 5px')).to.be.eql(expectedResult);
-    expect(resolvePadding('5px 5px 5px')).to.be.eql(expectedResult);
-    expect(resolvePadding('5px 5px 5px 5px')).to.be.eql(expectedResult);
+    expect(resolveMargin('5')).to.be.eql(expectedResult);
+    expect(resolveMargin('5px')).to.be.eql(expectedResult);
+    expect(resolveMargin('5px 5px')).to.be.eql(expectedResult);
+    expect(resolveMargin('5px 5px 5px')).to.be.eql(expectedResult);
+    expect(resolveMargin('5px 5px 5px 5px')).to.be.eql(expectedResult);
   });
 
   it('should handle strings part 2', () => {
@@ -85,11 +85,11 @@ describe('resolvePadding', () => {
       height: 15
     };
 
-    expect(resolvePadding('9px 8px 6px 5px')).to.be.eql(expectedResult);
+    expect(resolveMargin('9px 8px 6px 5px')).to.be.eql(expectedResult);
   });
 
   it('should handle object input', () => {
-    expect(resolvePadding({ top: 7 })).to.be.eql({
+    expect(resolveMargin({ top: 7 })).to.be.eql({
       top: 7,
       right: 7,
       bottom: 7,
@@ -98,7 +98,7 @@ describe('resolvePadding', () => {
       height: 14
     });
 
-    expect(resolvePadding({ top: '8' })).to.be.eql({
+    expect(resolveMargin({ top: '8' })).to.be.eql({
       top: 8,
       right: 8,
       bottom: 8,
@@ -107,7 +107,7 @@ describe('resolvePadding', () => {
       height: 16
     });
 
-    expect(resolvePadding({ top: '8', right: 7 })).to.be.eql({
+    expect(resolveMargin({ top: '8', right: 7 })).to.be.eql({
       top: 8,
       right: 7,
       bottom: 8,
@@ -116,7 +116,7 @@ describe('resolvePadding', () => {
       height: 16
     });
 
-    expect(resolvePadding({ top: '8', right: 7, bottom: 9 })).to.be.eql({
+    expect(resolveMargin({ top: '8', right: 7, bottom: 9 })).to.be.eql({
       top: 8,
       right: 7,
       bottom: 9,
@@ -131,7 +131,7 @@ describe('resolvePadding', () => {
 describe('labelItem', () => {
   it('should handle basic left-aligned instructions', () => {
     let innerHeight = 12;
-    let padding = 5;
+    let margin = 5;
 
     let container = labelItem({
       x: 5,
@@ -145,15 +145,15 @@ describe('labelItem', () => {
       renderer,
       align: undefined,
       renderingArea: undefined,
-      padding
+      margin
     });
 
     let expectedContainer = {
       type: 'container',
       x: 5,
       y: 10,
-      width: 4 + innerHeight + (padding * 3), // Padding left, padding right, padding between items
-      height: innerHeight + (padding * 2)
+      width: 4 + innerHeight + (margin * 3), // Padding left, margin right, margin between items
+      height: innerHeight + (margin * 2)
     };
 
     let expectedSymbol = {
@@ -168,9 +168,9 @@ describe('labelItem', () => {
     let expectedText = {
       type: 'text',
       anchor: 'start',
-      x: expectedSymbol.x + expectedSymbol.width + padding,
+      x: expectedSymbol.x + expectedSymbol.width + margin,
       y: expectedSymbol.y + innerHeight + (-1),
-      maxWidth: expectedContainer.width - expectedSymbol.width - (padding * 3),
+      maxWidth: expectedContainer.width - expectedSymbol.width - (margin * 3),
       text: 'Test',
       fill: 'black',
       fontSize: `${innerHeight}px`,
@@ -184,7 +184,7 @@ describe('labelItem', () => {
 
   it('should handle basic right-aligned instructions', () => {
     let innerHeight = 12;
-    let padding = 5;
+    let margin = 5;
 
     let container = labelItem({
       x: 0,
@@ -203,21 +203,21 @@ describe('labelItem', () => {
         width: 200,
         height: 200
       },
-      padding
+      margin
     });
 
     let expectedContainer = {
       type: 'container',
-      x: 200 - 4 - innerHeight - (padding * 3),
+      x: 200 - 4 - innerHeight - (margin * 3),
       y: 0,
-      width: 4 + innerHeight + (padding * 3), // Padding left, padding right, padding between items
-      height: innerHeight + (padding * 2)
+      width: 4 + innerHeight + (margin * 3), // Padding left, margin right, margin between items
+      height: innerHeight + (margin * 2)
     };
 
     let expectedSymbol = {
       type: 'rect',
       fill: 'black',
-      x: 200 - innerHeight - padding,
+      x: 200 - innerHeight - margin,
       y: 5,
       width: innerHeight,
       height: innerHeight
@@ -226,9 +226,9 @@ describe('labelItem', () => {
     let expectedText = {
       type: 'text',
       anchor: 'end',
-      x: expectedSymbol.x - padding,
+      x: expectedSymbol.x - margin,
       y: expectedSymbol.y + innerHeight + (-1),
-      maxWidth: expectedContainer.width - expectedSymbol.width - (padding * 3),
+      maxWidth: expectedContainer.width - expectedSymbol.width - (margin * 3),
       text: 'Test',
       fill: 'black',
       fontSize: `${innerHeight}px`,
