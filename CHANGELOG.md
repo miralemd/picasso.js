@@ -2,15 +2,24 @@
 
 ## **Unreleased** - *(YYYY-MM-DD)*
 
+## **0.24.0** - *(2017-06-28)*
+
 ### Added
-- PIC-178 Static categorical color legend
+
+- PIC-178 - Static categorical color legend
   - See [legend-cat](./docs/dist/components/legend-cat.md)
+- PIC-157 - Layout alignment for scaled charts
+  - See `dockLayout.logicalSize.align` property in [dock-layout](./docs/dist/dock-layout.md)
+
+### Fixed
+
+- PIC-182 - Range selection for measure does not include multiple options
 
 ## **0.23.0** - *(2017-06-22)*
 
 ### Added
 
-- PIC-176 Discrete range selection based on shapes
+- PIC-176 - Discrete range selection based on shapes
   - See [brush-area-dir](./docs/dist/components/brush-area-dir.md)
 
 ## **0.22.1** - *(2017-05-31)*
@@ -23,7 +32,7 @@
 
 ### Added
 
-- PIC-175 Enable ref-line oob tooltip
+- PIC-175 - Enable ref-line oob tooltip
 
 ### Fixed
 
