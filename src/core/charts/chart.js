@@ -393,7 +393,7 @@ function chart(definition) {
 
   /**
    * Update the chart with new settings and / or data
-   * @param {} chart - Chart definition
+   * @param {Object} [chart] - Chart definition
    */
   instance.update = (newProps = {}) => {
     const { partialData } = newProps;
@@ -503,6 +503,9 @@ function chart(definition) {
     updated();
   };
 
+  /**
+   * Destroy the chart instance.
+   */
   instance.destroy = () => {
     beforeDestroy();
     currentComponents.forEach(comp => comp.instance.destroy());
@@ -515,7 +518,7 @@ function chart(definition) {
 
   /**
    * Get a field associated with the provided brush
-   * @param {String} path path to the field to fetch
+   * @param {string} path path to the field to fetch
    * @return {data-field}
    */
   instance.field = path => instance.dataset().findField(path);
@@ -544,8 +547,8 @@ function chart(definition) {
 
   /**
    * Get all nodes matching the provided selector
-   * @param {String} selector CSS selector [type, attribute or universal]
-   * @return {Object[]} Array of objects containing matching nodes
+   * @param {string} selector CSS selector [type, attribute or universal]
+   * @returns {Object[]} Array of objects containing matching nodes
    *
    * @example
    * chart.findShapes('Circle') // [<CircleNode>, <CircleNode>]
@@ -560,6 +563,11 @@ function chart(definition) {
     return shapes;
   };
 
+  /**
+   * Get components overlapping a point.
+   * @param {Object} p - Point with x- and y-cooridnate. The coordinate is relative to the browser viewport.
+   * @returns {Object[]} Array of component contexts
+   */
   instance.componentsFromPoint = (p) => {
     const br = element.getBoundingClientRect();
     const tp = { x: p.x - br.left, y: p.y - br.top };
@@ -584,7 +592,7 @@ function chart(definition) {
    * @param {string} [opts.components.component.key] - Component key
    * @param {string} [opts.components.component.propagation] - if set to `stop`, will start lookup on top visible shape and propagate downwards until a shape is found.
    * @param {string} [opts.propagation] - if set to `stop`, will start lookup on top visible component and propagate downwards until a component has at least a match.
-   * @return {Object[]} Array of objects containing colliding nodes
+   * @returns {Object[]} Array of objects containing colliding nodes
    *
    * @example
    * chart.shapesAt(
@@ -677,27 +685,41 @@ function chart(definition) {
   };
 
   /**
-   * @return {scroll-api}
+   * @param {string} name - Name of scroll api
+   * @returns {scroll-api}
    */
   instance.scroll = function scroll(name = 'default') {
     return getOrCreateScrollApi(name, currentScrollApis);
   };
 
+  /**
+   * The data set for this chart
+   * @returns {Object}
+   */
   instance.dataset = function datasetFn() {
     return dataset;
   };
 
+  /**
+   * Get the all registered scales
+   * @returns {Object[]} Array of scales
+   */
   instance.scales = function scales() {
     return currentScales;
   };
 
+  /**
+   * Get the all registered formatters
+   * @returns {Object[]} Array of formatters
+   */
   instance.formatters = function formatters() {
     return currentFormatters;
   };
 
   /**
-   * The brush context for this chart
-   * @return {data-brush}
+   * Get or create brush context for this chart
+   * @param {string} name - Name of the brush context. If no match is found, a new brush context is created and returned.
+   * @returns {data-brush}
    */
   instance.brush = function brushFn(name = 'default') {
     if (!brushes[name]) {
@@ -706,14 +728,40 @@ function chart(definition) {
     return brushes[name];
   };
 
+  /**
+   * Get or create a scale for this chart
+   * @param {string|Object} v - Scale reference or scale options
+   * @returns {Object} A scale
+   * @example
+   * instance.scale('nameOfMyScale'); // Fetch an existing scale by name
+   * instance.scale({ scale: 'nameOfMyScale' }); // Fetch an existing scale by name
+   * instance.scale({ source: '0/1', type: 'linear' }); // Create a new scale
+   */
   instance.scale = function scale(v) {
     return getOrCreateScale(v, currentScales, dataset);
   };
 
+  /**
+   * Get or create a formatter for this chart
+   * @param {string|Object} v - Formatter reference or formatter options
+   * @returns {Object} A formatter
+   * @example
+   * instance.formatter('nameOfMyFormatter'); // Fetch an existing formatter by name
+   * instance.formatter({ formatter: 'nameOfMyFormatter' }); // Fetch an existing formatter by name
+   * instance.formatter({ type: 'q' }); // Fetch an existing formatter by type
+   * instance.formatter({
+   *  formatter: 'd3',
+   *  type: 'number',
+   *  format: '1.0.%'
+   * }); // Create a new formatter
+   */
   instance.formatter = function formatter(v) {
     return getOrCreateFormatter(v, currentFormatters, dataset);
   };
 
+  /**
+   * @param {boolean} [val] - Toggle brushing on or off. If value is ommited, a toggle action is applied to the current state.
+   */
   instance.toggleBrushing = function toggleBrushing(val) {
     if (typeof val !== 'undefined') {
       stopBrushing = val;
@@ -722,6 +770,11 @@ function chart(definition) {
     }
   };
 
+  /**
+   * Get a component context
+   * @param {string} key - Component key
+   * @returns {Object} Component context
+   */
   instance.component = (key) => {
     const idx = findComponentIndexByKey(key);
     if (idx !== -1) {
@@ -730,6 +783,14 @@ function chart(definition) {
     return undefined;
   };
 
+  /**
+   * Get the all interactions instances
+   * @returns {Object} All interactions and properties to toggle them on or off
+   * @example
+   * instance.interactions.instances; // Array of all interaction instances
+   * instance.interactions.on(); // Toggle on all interactions instances
+   * instance.interactions.off(); // Toggle off all interactions instances
+   */
   Object.defineProperty(instance, 'interactions', {
     get() {
       return {
