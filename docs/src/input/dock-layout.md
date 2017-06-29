@@ -49,6 +49,10 @@ dockLayout: {
       minWidthRatio: 0.5,
       minHeightRatio: 0.5
     }
+  },
+  layoutMode: {
+    S: { width: 150, height: 150 }
+    L: { width: 300, height: 300 }
   }
 }
 ```

@@ -49,6 +49,10 @@ dockLayout: {
       minWidthRatio: 0.5,
       minHeightRatio: 0.5
     }
+  },
+  layoutMode: {
+    S: { width: 150, height: 150 }
+    L: { width: 300, height: 300 }
   }
 }
 ```
@@ -72,6 +76,16 @@ dockLayout: {
     minHeightRatio: 0.5, // Value between 0 and 1. Default: 0.5. Optional.
     minWidth: 3.14, // Width in pixels. Optional.
     minHeight: 3.14, // Height in pixels. Optional.
+  },
+  layoutMode: { // Dictionary with named sizes. Default: {}. Optional.
+    S: { //  Optional.
+      width: 3.14, // Width in pixels. Optional.
+      height: 3.14, // Height in pixels. Optional.
+    },
+    L: { //  Optional.
+      width: 3.14, // Width in pixels. Optional.
+      height: 3.14, // Height in pixels. Optional.
+    },
   },
 }
 ```

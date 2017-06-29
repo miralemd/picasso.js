@@ -285,6 +285,14 @@ function checkShowSettings(components, hiddenComponents, settings, logicalContai
  * @property {number} [center.minHeightRatio=0.5] - Value between 0 and 1
  * @property {number} [center.minWidth] - Width in pixels
  * @property {number} [center.minHeight] - Height in pixels
+ * @property {object} [layoutMode={}] - Dictionary with named sizes
+ * @property {object} [layoutMode.S]
+ * @property {number} [layoutMode.S.width] - Width in pixels
+ * @property {number} [layoutMode.S.height] - Height in pixels
+ * @property {object} [layoutMode.L]
+ * @property {number} [layoutMode.L.width] - Width in pixels
+ * @property {number} [layoutMode.L.height] - Height in pixels
+
  */
 
 export default function dockLayout(initialSettings) {
