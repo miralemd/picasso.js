@@ -95,6 +95,13 @@ export function labelItem({ x, y, maxWidth, maxHeight, color, fill, fontSize, fo
   const fontSizeMod = innerHeight * fontSizeDiff;
 
   const wantedWidth = labelMeasures.width + innerHeight + margin.width + symbolPadding;
+
+  if (isNaN(maxWidth)) {
+    maxWidth = renderingArea.width - x;
+  } else {
+    maxWidth = Math.min(maxWidth, renderingArea.width - x);
+  }
+
   const containerWidth = !isNaN(maxWidth) ? Math.min(maxWidth, wantedWidth) : wantedWidth;
 
   const container = {
@@ -119,7 +126,7 @@ export function labelItem({ x, y, maxWidth, maxHeight, color, fill, fontSize, fo
     anchor: align === 'left' ? 'start' : 'end',
     x: align === 'left' ? symbol.x + symbol.width + symbolPadding : symbol.x - symbolPadding,
     y: symbol.y + innerHeight + (-1),
-    maxWidth: container.width - symbol.width - (margin.width + symbolPadding),
+    maxWidth: (container.width - symbol.width - (margin.width + symbolPadding)) + 1,
     text: labelText,
     fill,
     fontSize: `${fontSizeMod}px`,

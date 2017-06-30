@@ -144,7 +144,7 @@ describe('labelItem', () => {
       labelText: 'Test',
       renderer,
       align: undefined,
-      renderingArea: undefined,
+      renderingArea: { x: 0, y: 0, width: 200, height: 200 },
       margin
     });
 
@@ -170,7 +170,7 @@ describe('labelItem', () => {
       anchor: 'start',
       x: expectedSymbol.x + expectedSymbol.width + margin,
       y: expectedSymbol.y + innerHeight + (-1),
-      maxWidth: expectedContainer.width - expectedSymbol.width - (margin * 3),
+      maxWidth: (expectedContainer.width - expectedSymbol.width - (margin * 3)) + 1,
       text: 'Test',
       fill: 'black',
       fontSize: `${innerHeight}px`,
@@ -228,8 +228,63 @@ describe('labelItem', () => {
       anchor: 'end',
       x: expectedSymbol.x - margin,
       y: expectedSymbol.y + innerHeight + (-1),
-      maxWidth: expectedContainer.width - expectedSymbol.width - (margin * 3),
+      maxWidth: (expectedContainer.width - expectedSymbol.width - (margin * 3)) + 1,
       text: 'Test',
+      fill: 'black',
+      fontSize: `${innerHeight}px`,
+      fontFamily: 'Arial'
+    };
+
+    assertNodeProperties(container, expectedContainer);
+    expect(container.children).to.deep.include(expectedSymbol);
+    expect(container.children).to.deep.include(expectedText);
+  });
+
+  it('should set maxWidth to edge of rendering area', () => {
+    let innerHeight = 12;
+    let margin = 5;
+
+    let renderingArea = { x: 0, y: 0, width: 35, height: 200 };
+
+    let container = labelItem({
+      x: 5,
+      y: 10,
+      maxWidth: undefined,
+      maxHeight: undefined,
+      color: 'black',
+      fontSize: `${innerHeight}px`,
+      fontFamily: 'Arial',
+      labelText: 'AbcdeAbcdeAbcdeAbcde', // 20 characters
+      renderer,
+      align: undefined,
+      renderingArea,
+      margin
+    });
+
+    let expectedContainer = {
+      type: 'container',
+      x: 5,
+      y: 10,
+      width: renderingArea.width - margin, // Padding left, margin right, margin between items
+      height: innerHeight + (margin * 2)
+    };
+
+    let expectedSymbol = {
+      type: 'rect',
+      fill: 'black',
+      x: 10,
+      y: 15,
+      width: innerHeight,
+      height: innerHeight
+    };
+
+    let expectedText = {
+      type: 'text',
+      anchor: 'start',
+      x: expectedSymbol.x + expectedSymbol.width + margin,
+      y: expectedSymbol.y + innerHeight + (-1),
+      maxWidth: (expectedContainer.width - expectedSymbol.width - (margin * 3)) + 1,
+      text: 'AbcdeAbcdeAbcdeAbcde',
       fill: 'black',
       fontSize: `${innerHeight}px`,
       fontFamily: 'Arial'
