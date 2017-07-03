@@ -8,10 +8,14 @@ import filesize from 'rollup-plugin-filesize';
 
 const isProduction = process.env.BUILD === 'production';
 
+const hasName = process.argv.indexOf('--name') + 1 || process.argv.indexOf('-n') + 1;
+const name = hasName ? process.argv[hasName] : 'picasso';
+const fileName = name.replace(/([A-Z])/g, (m, s) => `-${s.toLowerCase()}`);
+
 const config = {
   entry: 'src/index.js',
-  dest: 'dist/picasso.js',
-  moduleName: 'picasso',
+  dest: `dist/${fileName}.js`,
+  moduleName: name,
   format: 'umd',
   sourceMap: !isProduction,
   plugins: [
