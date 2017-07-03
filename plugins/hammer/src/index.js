@@ -1,5 +1,5 @@
 import hammer from './hammer';
 
-module.exports = function initialize(picasso) {
+export default function initialize(picasso) {
   picasso.interaction('hammer', hammer);
-};
+}

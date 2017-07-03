@@ -10,6 +10,6 @@ do
     cd ../plugins/${dir}
     yarn
     npm -s run build
-    npm -s run build:debug
+    npm -s run build:dev
     cd "${cwd}"
 done

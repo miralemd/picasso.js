@@ -12,8 +12,8 @@
     "url": "ssh://git@github.com:qlik-trial/picasso.js.git"
   },
   "scripts": {
-    "build": "node ../../node_modules/webpack/bin/webpack -p --output-filename [name].min.js",
-    "build:debug": "node ../../node_modules/webpack/bin/webpack --debug --devtool source-map --output-pathinfo",
+    "build": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js --name 'picassoHammer' --environment BUILD:production",
+    "build:dev": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js --name 'picassoHammer'",
     "test": "node ../../node_modules/after-work.js/bin/aw-test-runner \"./test/**/*.spec.js\""
   },
   "files": [
