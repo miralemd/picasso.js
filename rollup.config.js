@@ -5,6 +5,11 @@ import commonjs from 'rollup-plugin-commonjs';
 import babel from 'rollup-plugin-babel';
 import uglify from 'rollup-plugin-uglify';
 import filesize from 'rollup-plugin-filesize';
+import license from 'rollup-plugin-license';
+
+import path from 'path';
+
+const pkg = require(path.join(process.cwd(), 'package.json')); // eslint-disable-line
 
 const isProduction = process.env.BUILD === 'production';
 
@@ -34,5 +39,12 @@ if (isProduction) {
   config.dest = config.dest.replace(/js$/, 'min.js');
   config.plugins.push(uglify());
 }
+
+config.plugins.push(license({
+  banner: `
+    ${pkg.name} v${pkg.version}
+    Copyright (c) ${new Date().getFullYear()} QlikTech International AB
+  `
+}));
 
 export default config;
