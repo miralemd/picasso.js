@@ -1,6 +1,6 @@
 #!/bin/bash
 cd "$(dirname "$0")"
-cwd=pwd
+cwd=$(pwd)
 for dir in ./../plugins/*/
 do
     dir=${dir%*/}
