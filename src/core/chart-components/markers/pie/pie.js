@@ -16,6 +16,60 @@ const DEFAULT_DATA_SETTINGS = {
   offset: 0
 };
 
+/**
+ * @typedef settings
+ * @type {object}
+ * @property {number} [startAngle=0] - If angle is specified, sets the overall start angle of the pie to the specified function or number
+ * @property {number} [endAngle=2*Math.PI] - If angle is specified, sets the overall end angle of the pie to the specified function or number
+ * @property {number} [padAngle=0] - The pad angle here means the angular separation between each adjacent arc
+ * @property {object} [slice]
+ * @property {boolean} [slice.show=true]
+ * @property {string} [slice.fill='#fff']
+ * @property {string} [slice.stroke='#000']
+ * @property {number} [slice.strokeWidth=1]
+ * @property {number} [slice.opacity=1]
+ * @property {number} [slice.innerRadius=0] - The inner radius of the pie slice
+ * @property {number} [slice.outerRadius=1] - The outer radius of the pie slice
+ * @property {number} [slice.cornerRadius=0] - The corner radius of the pie slices corners in pixels
+ * @property {number|function} [slice.offset=0] - The relative radial offset of the slice
+ */
+
+/**
+ * @typedef pie
+ * @property {string} type - "pie"
+ * @property {pie-data} data - Pie data
+ * @property {pie-settings} settings - Pie settings
+ * @example
+ * {
+ *   type: 'pie',
+ *   data: {
+ *     mapTo: {
+ *       arc: { source: '/qHyperCube/qMeasureInfo/0' }
+ *     },
+ *     groupBy: { source: '/qHyperCube/qDimensionInfo/0' }
+ *   },
+ *   startAngle: Math.PI / 2,
+ *   endAngle: -Math.PI / 2,
+ *   slice: {
+ *     fill: 'green',
+ *     stroke: 'red',
+ *     strokeWidth: 2,
+ *     innerRadius: 0.6,
+ *     outerRadius 0.8,
+ *     opacity: 0.8,
+ *     offset: function(v) {
+ *       return ix === 1 ? 0.3 : 0;
+ *     }
+ *   }
+ * }
+ */
+
+/**
+ * @typedef data
+ * @type {object}
+ * @property {number} arc - value that represents the size of the arc
+ */
+
 function offsetSlice(centroid, offset, outerRadius, innerRadius) {
   let [vx, vy] = centroid;
   const vlen = Math.sqrt((vx * vx) + (vy * vy));
