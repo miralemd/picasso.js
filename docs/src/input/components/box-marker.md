@@ -4,12 +4,12 @@
 
 ### Data definition
 
-{{>magic ctx='core.chart-components.markers.box.box-js.data'}}
+{{>magic ctx='core.chart-components.markers.box.index-js.data'}}
 
 
 ### Settings
 
-{{>magic ctx='core.chart-components.markers.box.box-js.settings'}}
+{{>magic ctx='core.chart-components.markers.box.index-js.settings'}}
 
 ## Example
 

@@ -33,85 +33,6 @@ const DEFAULT_STYLE_SETTINGS = {
   }
 };
 
-/**
- * @typedef settings
- * @type {object}
- * @property {object} major
- * @property {string} major.scale - The scale to use along the major axis
- * @property {string|object} [major.ref='self'] - Reference to the data property along the major axis
- * @property {string} major.ref.start - Reference to the data property of the start value along the major axis
- * @property {string} major.ref.end - Reference to the data property of the end value along the major axis
- * @property {object} minor
- * @property {string} minor.scale - The scale to use along the minor axis
- * @property {string} [orientation='vertical']
- * @property {object} [box]
- * @property {boolean} [box.show=true]
- * @property {string} [box.fill='#fff']
- * @property {string} [box.stroke='#000']
- * @property {number} [box.strokeWidth=1]
- * @property {number} [box.width=1]
- * @property {number} [box.maxWidth=100]
- * @property {number} [box.minWidth=5]
- * @property {object} [line]
- * @property {boolean} [line.show=true]
- * @property {string} [stroke='#000']
- * @property {number} [strokeWidth=1]
- * @property {object} [whisker]
- * @property {boolean} [whisker.show=true]
- * @property {string} [whisker.stroke='#000']
- * @property {number} [whisker.strokeWidth=1]
- * @property {number} [whisker.width=1]
- * @property {object} [median]
- * @property {number} [median.show=true]
- * @property {number} [median.stroke='#000']
- * @property {number} [median.strokeWidth=1]
- */
-
-/**
- * @typedef box-marker
- * @property {string} type - "box"
- * @property {marker-box-data} data - Box data
- * @property {marker-box-settings} settings - Box marker settings
- * @example
- * {
- *   type: "box",
- *   data: {
- *    mapTo: {
- *      min: { source: "/qHyperCube/qMeasureInfo/0" },
- *      start: { source: "/qHyperCube/qMeasureInfo/1" },
- *      med: { source: "/qHyperCube/qMeasureInfo/2" },
- *      end: { source: "/qHyperCube/qMeasureInfo/3" },
- *      max: { source: "/qHyperCube/qMeasureInfo/4" },
- *    },
- *    groupBy: {
- *      source: "/qHyperCube/qDimensionInfo/0"
- *    }
- *  },
- *  settings: {
- *    major: {
- *      scale: { source: "/qHyperCube/qDimensionInfo/0" }
- *    },
- *    minor: {
- *      scale: { source: ["/qHyperCube/qMeasureInfo/0",
- *               "/qHyperCube/qMeasureInfo/1",
- *               "/qHyperCube/qMeasureInfo/2",
- *               "/qHyperCube/qMeasureInfo/3",
- *               "/qHyperCube/qMeasureInfo/4"] }
- *    }
- *  }
- * }
- */
-
-/**
- * @typedef data
- * @type {object}
- * @property {number} [min] - min
- * @property {number} [max] - max
- * @property {number} [start] - start
- * @property {number} [end] - end
- * @property {number} [med] - med
- */
-
 function cap(min, max, value) {
   return Math.max(min, Math.min(max, value));
 }
@@ -170,16 +91,6 @@ const boxMarkerComponent = {
 
     const shapes = [];
 
-    const measureWidth = blueprint.flipXY ? this.rect.height : this.rect.width;
-
-    function computeWidth(minWidth, maxWidth, multiplier, bandwidth) {
-      let width = (bandwidth * measureWidth) * multiplier;
-
-      width = cap(minWidth, maxWidth, width);
-
-      return width / measureWidth;
-    }
-
     let bandwidth = this.dispersion.bandwidth();
     const span = item.majorEnd - item.majorStart;
     let majorStart = item.major;
@@ -187,8 +98,6 @@ const boxMarkerComponent = {
       majorStart = item.majorStart + (span * 0.5);
       bandwidth = Math.abs(span);
     }
-
-    item.style.whisker.width = computeWidth(item.style.box.minWidth, item.style.box.maxWidth, item.style.whisker.width, bandwidth);
 
     let majorStartModified;
     let majorEnd;
@@ -248,10 +157,36 @@ const boxMarkerComponent = {
     // Draw the whiskers
     if (item.style.whisker.show && !notNumber(item.min) && !notNumber(item.max)) {
       // Low whisker
-      shapes.push(blueprint.processItem(doodle.whisker(item.major, item.min, item.style, item.data)));
+      let whiskerWidth = boxWidth * item.style.whisker.width;
+
+      shapes.push(blueprint.processItem({
+        fn: ({ height }) => extend(doodle.style({ type: 'line' }, 'whisker', item.style), {
+          y1: item.min * height,
+          x1: majorStartModified - Math.floor(whiskerWidth / 2),
+          y2: item.min * height,
+          x2: majorStartModified + Math.floor(whiskerWidth / 2),
+          cx: majorStartModified,
+          cy: item.min * height,
+          width: whiskerWidth,
+          r: whiskerWidth / 2
+        }),
+        crisp: true
+      }));
 
       // High whisker
-      shapes.push(blueprint.processItem(doodle.whisker(item.major, item.max, item.style, item.data)));
+      shapes.push(blueprint.processItem({
+        fn: ({ height }) => extend(doodle.style({ type: 'line' }, 'whisker', item.style), {
+          y1: item.max * height,
+          x1: majorStartModified - Math.floor(whiskerWidth / 2),
+          y2: item.max * height,
+          x2: majorStartModified + Math.floor(whiskerWidth / 2),
+          cx: majorStartModified,
+          cy: item.max * height,
+          width: whiskerWidth,
+          r: whiskerWidth / 2
+        }),
+        crisp: true
+      }));
     }
 
     return shapes;
