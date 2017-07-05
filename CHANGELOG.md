@@ -23,6 +23,11 @@
     whisker: { width: 0.5 } // whisker is half the width relative to box
     ```
 
+### Build
+
+- Changed to `rollup` as build tool
+  - This might re-introduce issue SUI-507
+
 ## **0.24.0** - *(2017-06-28)*
 
 ### Added
