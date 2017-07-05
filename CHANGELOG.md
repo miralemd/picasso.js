@@ -5,9 +5,21 @@
 ### Added
 
 - PIC-185 - Accept more expressiveness in categorical color legend
+- Optimized the way a component which consumes a brush is re-rendered - now re-renders only when the brushed state of a shape changes
 
 ### Breaking changes
-- PIC-149 - Whisker width is now relative to box then to bandwidth
+
+- PIC-149 - Whisker width is now relative to box instead of bandwidth
+
+    ```js
+    // old
+    box: { width: 0.5 }, // box is half the width of bandwidth
+    whisker: { width: 0.25 } // whisker is 1/4 the width of bandwidth, or half of boxes width
+
+    // new
+    box: { width: 0.5 }, // box is half the width of bandwidth
+    whisker: { width: 0.5 } // whisker is half the width relative to box
+    ```
 
 ## **0.24.0** - *(2017-06-28)*
 
