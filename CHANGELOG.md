@@ -2,6 +2,10 @@
 
 ## **Unreleased** - *(YYYY-MM-DD)*
 
+### Added
+
+- PIC-185 - Accept more expressiveness in categorical color legend
+
 ## **0.24.0** - *(2017-06-28)*
 
 ### Added
