@@ -1,33 +1,36 @@
+import { resolveForDataObject } from '../../style';
 import { labelItem, resolveMargin } from './label-item';
+
+const defaultSettings = {
+  align: 'left',
+  item: {
+    fontSize: '12px',
+    fontFamily: 'Arial',
+    fill: '#595959',
+    maxWidthPx: 150,
+    margin: {
+      top: 5,
+      right: 5,
+      bottom: 0
+    }
+  },
+  title: {
+    show: true,
+    fontSize: '18px',
+    fontFamily: 'Arial',
+    fill: '#595959',
+    maxWidthPx: 200,
+    margin: {
+      top: 0,
+      right: 5,
+      bottom: 5
+    }
+  }
+};
 
 const categoricalLegend = {
   require: ['chart', 'settings', 'renderer'],
-  defaultSettings: {
-    align: 'left',
-    items: {
-      fontSize: '12px',
-      fontFamily: 'Arial',
-      fill: '#595959',
-      maxWidthPx: 150,
-      margin: {
-        top: 5,
-        right: 5,
-        bottom: 0
-      }
-    },
-    title: {
-      show: true,
-      fontSize: '18px',
-      fontFamily: 'Arial',
-      fill: '#595959',
-      maxWidthPx: 200,
-      margin: {
-        top: 0,
-        right: 5,
-        bottom: 5
-      }
-    }
-  },
+  defaultSettings,
   preferredSize() {
     const scale = this.chart.scale(this.settings.scale);
     const domain = scale.domain();
@@ -42,7 +45,6 @@ const categoricalLegend = {
       title = this.chart.field(scale.sources[0]).field.title();
     }
 
-    const margin = resolveMargin(this.settings.items.margin);
     const titleMargin = resolveMargin(this.settings.title.margin);
 
     let prevContainer = {};
@@ -71,21 +73,26 @@ const categoricalLegend = {
     }
 
     // Items
-    domain.forEach((cat) => {
+    domain.forEach((cat, i, all) => {
       nextXitem += prevContainer.width || 0;
       nextYitem += prevContainer.height || 0;
 
-      const labelItemDef = {
-        x: HORIZONTAL ? nextXitem : 0,
-        y: !HORIZONTAL ? nextYitem : 0,
-        maxWidth: this.settings.items.maxWidthPx,
-        fontSize: this.settings.items.fontSize,
-        fontFamily: this.settings.items.fontFamily,
-        labelText: cat,
-        renderer: this.renderer,
-        renderingArea: this.rect,
-        margin
+      let data = {
+        value: cat,
+        index: i,
+        color: scale(cat)
       };
+
+      let labelItemDef = resolveForDataObject(this.settings.item, data, i, all);
+
+      labelItemDef.x = HORIZONTAL ? nextXitem : 0;
+      labelItemDef.y = !HORIZONTAL ? nextYitem : 0;
+      labelItemDef.maxWidth = labelItemDef.maxWidthPx;
+      labelItemDef.color = scale(cat);
+      labelItemDef.labelText = cat;
+      labelItemDef.renderer = this.renderer;
+      labelItemDef.renderingArea = this.rect;
+      labelItemDef.margin = resolveMargin(labelItemDef.margin);
 
       prevContainer = labelItem(labelItemDef);
 
@@ -116,7 +123,6 @@ const categoricalLegend = {
       title = this.chart.field(scale.sources[0]).field.title();
     }
 
-    const margin = resolveMargin(this.settings.items.margin);
     const titleMargin = resolveMargin(this.settings.title.margin);
 
     const labels = [];
@@ -146,24 +152,27 @@ const categoricalLegend = {
     }
 
     // Items
-    domain.forEach((cat) => {
+    domain.forEach((cat, i, all) => {
       nextXitem += prevContainer.width || 0;
       nextYitem += prevContainer.height || 0;
 
-      const labelItemDef = {
-        x: HORIZONTAL ? nextXitem : 0,
-        y: !HORIZONTAL ? nextYitem : 0,
-        maxWidth: Math.min(this.rect.width, this.settings.items.maxWidthPx),
-        color: scale(cat),
-        fill: this.settings.items.fill,
-        fontSize: this.settings.items.fontSize,
-        fontFamily: this.settings.items.fontFamily,
-        labelText: cat,
-        renderer: this.renderer,
-        align: ALIGN,
-        renderingArea: this.rect,
-        margin
+      let data = {
+        value: cat,
+        index: i,
+        color: scale(cat)
       };
+
+      let labelItemDef = resolveForDataObject(this.settings.item, data, i, all);
+
+      labelItemDef.x = HORIZONTAL ? nextXitem : 0;
+      labelItemDef.y = !HORIZONTAL ? nextYitem : 0;
+      labelItemDef.maxWidth = Math.min(this.rect.width, labelItemDef.maxWidthPx);
+      labelItemDef.color = scale(cat);
+      labelItemDef.labelText = cat;
+      labelItemDef.renderer = this.renderer;
+      labelItemDef.align = ALIGN;
+      labelItemDef.renderingArea = this.rect;
+      labelItemDef.margin = resolveMargin(labelItemDef.margin);
 
       prevContainer = labelItem(labelItemDef);
 

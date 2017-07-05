@@ -96,10 +96,12 @@ export function labelItem({ x, y, maxWidth, maxHeight, color, fill, fontSize, fo
 
   const wantedWidth = labelMeasures.width + innerHeight + margin.width + symbolPadding;
 
-  if (isNaN(maxWidth)) {
-    maxWidth = renderingArea.width - x;
-  } else {
-    maxWidth = Math.min(maxWidth, renderingArea.width - x);
+  if (renderingArea.width > 0) {
+    if (isNaN(maxWidth)) {
+      maxWidth = renderingArea.width - x;
+    } else {
+      maxWidth = Math.min(maxWidth, renderingArea.width - x);
+    }
   }
 
   const containerWidth = !isNaN(maxWidth) ? Math.min(maxWidth, wantedWidth) : wantedWidth;
