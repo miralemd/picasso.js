@@ -251,6 +251,7 @@ describe('Brushing', () => {
 
     it('update should apply styling values', () => {
       styler(dummyComponent, consume);
+      brusherStub.trigger('start');
       brusherStub.trigger('update');
 
       const output = dummyComponent.renderer.render.args[0][0];
@@ -288,6 +289,7 @@ describe('Brushing', () => {
         }
       );
       styler(dummyComponent, consume);
+      brusherStub.trigger('start');
       brusherStub.trigger('update');
 
       const output = dummyComponent.renderer.render.args[0][0];
