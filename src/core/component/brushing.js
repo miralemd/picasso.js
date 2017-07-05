@@ -26,11 +26,15 @@ export function styler(obj, { context, data, style }) {
     }
   });
 
+  const activeNodes = [];
+  let globalActivation = false; // track when we need to loop through all nodes, not just the active ones
+
   const update = () => {
     // TODO - render nodes only once, i.e. don't render for each brush, update nodes for all brushes and then render
     const nodes = reduceToLeafNodes(obj.nodes);
     const len = nodes.length;
     const mappedData = obj.data;
+    let globalChanged = false;
 
     for (let i = 0; i < len; i++) { // TODO - update only added and removed nodes
       if (!nodes[i].__style) {
@@ -42,22 +46,36 @@ export function styler(obj, { context, data, style }) {
 
       const nodeData = mappedData[nodes[i].dataIndex];
       const isActive = nodeData && brusher.containsMappedData(nodeData, dataProps);
-      styleProps.forEach((s) => {
-        if (isActive && s in active) {
-          nodes[i][s] = active[s];
-        } else if (!isActive && s in inactive) {
-          nodes[i][s] = inactive[s];
-        } else {
-          if (!nodes[i].__style) {
-            nodes[i].__style = nodes[i].__style || {};
-            styleProps.forEach((ss) => {
-              nodes[i].__style[ss] = nodes[i][ss]; // store original value
-            });
+      const activeIdx = activeNodes.indexOf(nodes[i]);
+      let changed = false;
+      if (isActive && activeIdx === -1) { // activated
+        activeNodes.push(nodes[i]);
+        changed = true;
+      } else if (!isActive && activeIdx !== -1) { // was active
+        activeNodes.splice(activeIdx, 1);
+        changed = true;
+      }
+      if (changed || globalActivation) {
+        styleProps.forEach((s) => {
+          if (isActive && s in active) {
+            nodes[i][s] = active[s];
+          } else if (!isActive && s in inactive) {
+            nodes[i][s] = inactive[s];
+          } else {
+            if (!nodes[i].__style) {
+              nodes[i].__style = nodes[i].__style || {};
+              styleProps.forEach((ss) => {
+                nodes[i].__style[ss] = nodes[i][ss]; // store original value
+              });
+            }
+            nodes[i][s] = nodes[i].__style[s];
           }
-          nodes[i][s] = nodes[i].__style[s];
-        }
-      });
+        });
+        globalChanged = true;
+      }
     }
+    globalActivation = false;
+    return globalChanged;
   };
 
   const onStart = () => {
@@ -69,6 +87,8 @@ export function styler(obj, { context, data, style }) {
         nodes[i].__style[s] = nodes[i][s]; // store original value
       });
     }
+    globalActivation = true;
+    activeNodes.length = 0;
     obj.renderer.render(obj.nodes);
   };
 
@@ -84,11 +104,20 @@ export function styler(obj, { context, data, style }) {
         nodes[i].__style = undefined;
       }
     }
+    activeNodes.length = 0;
     obj.renderer.render(obj.nodes);
   };
   const onUpdate = (/* added, removed */) => {
+    const changed = update();
+    if (changed) {
+      obj.renderer.render(obj.nodes);
+    }
+  };
+
+  const externalUpdate = () => {
+    activeNodes.length = 0;
+    globalActivation = true;
     update();
-    obj.renderer.render(obj.nodes);
   };
 
   brusher.on('start', onStart);
@@ -105,8 +134,8 @@ export function styler(obj, { context, data, style }) {
     isActive() {
       return brusher.isActive();
     },
-    cleanUp,
-    update
+    update: externalUpdate,
+    cleanUp
   };
 }
 
