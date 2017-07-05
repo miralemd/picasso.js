@@ -1,10 +1,13 @@
 # Changelog
 
-## **Unreleased** - *(YYYY-MM-DD)*
+## **Unreleased** - *(YYYY-MM-DD)* [BREAKING]
 
 ### Added
 
 - PIC-185 - Accept more expressiveness in categorical color legend
+
+### Breaking changes
+- PIC-149 - Whisker width is now relative to box then to bandwidth
 
 ## **0.24.0** - *(2017-06-28)*
 
