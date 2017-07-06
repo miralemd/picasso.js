@@ -10,7 +10,8 @@
 - Optimized the way a component which consumes a brush is re-rendered - now re-renders only when the brushed state of a shape changes
 
 ### Breaking changes
-- PIC-185 - Accept more expressiveness in categorical color legend (
+- PIC-185 - Accept more expressiveness in categorical color legend
+
     ```js
     // Items in legend-cat has been renamed to item
     // old
