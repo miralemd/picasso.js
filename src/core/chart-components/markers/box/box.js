@@ -28,8 +28,9 @@ const DEFAULT_STYLE_SETTINGS = {
     stroke: '#000',
     strokeWidth: 1,
     width: 1,
-    maxWidth: 100,
-    minWidth: 5
+    maxWidthPx: 100,
+    minWidthPx: 1,
+    minHeightPx: 1
   }
 };
 
@@ -117,13 +118,17 @@ const boxMarkerComponent = {
           majorEnd = Math.round((majorStart + (item.style.box.width * bandwidth)) * width);
           boxWidth = majorEnd - majorStartModified;
 
-          boxWidth = cap(item.style.box.minWidth, item.style.box.maxWidth, boxWidth);
+          boxWidth = cap(item.style.box.minWidthPx, item.style.box.maxWidthPx, boxWidth);
+
+          let wantedHeight = highModified - lowModified;
+          let boxHeight = Math.max(item.style.box.minHeightPx, wantedHeight);
+          let yModifier = (boxHeight - wantedHeight) / 2;
 
           return extend(doodle.style({}, 'box', item.style), {
             type: 'rect',
             x: majorStartModified - Math.floor(boxWidth / 2),
-            y: lowModified,
-            height: highModified - lowModified,
+            y: lowModified - yModifier,
+            height: boxHeight,
             width: boxWidth
           });
         },

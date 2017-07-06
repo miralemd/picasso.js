@@ -36,8 +36,9 @@ settings: {
     stroke: '#000', //  Default: '#000'. Optional.
     strokeWidth: 1, //  Default: 1. Optional.
     width: 1, //  Default: 1. Optional.
-    maxWidth: 100, //  Default: 100. Optional.
-    minWidth: 5, //  Default: 5. Optional.
+    maxWidthPx: 100, //  Default: 100. Optional.
+    minWidthPx: 1, //  Default: 1. Optional.
+    minHeightPx: 1, //  Default: 1. Optional.
   },
   line: { //  Optional.
     show: true, //  Default: true. Optional.
