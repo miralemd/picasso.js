@@ -11,7 +11,7 @@ component: {
   dock: 'center', // Docking of the component, top, right, bottom or left. Default: 'center'. Optional.
   align: 'left', // Alignment of items in the component, left or right. Default: 'left'. Optional.
   direction: 'vertical', // Direction of rendering, 'horizontal' or 'vertical'.. Default: 'vertical'. Optional.
-  items: { // Items settings. Optional.
+  item: { // Items settings. Optional.
     maxWidthPx: 150, // Maximum width of each item in px. Default: 150. Optional.
     fontSize: '12px', // Font size of label items. Default: '12px'. Optional.
     fontFamily: 'Arial', // Font family of label items. Default: 'Arial'. Optional.
