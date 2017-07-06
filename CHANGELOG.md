@@ -2,6 +2,19 @@
 
 ## **Unreleased** - *(YYYY-MM-DD)*
 
+- Changed default behaviour of box-marker box properties maxWidth & minWidth, added minHeightPx
+
+    ```js
+    // old
+    maxWidth: 100,
+    minWidth: 5,
+    
+    // new
+    maxWidthPx: 100,
+    minWidthPx: 1,
+    minHeightPx: 1,
+    ```
+
 ## **0.25.0** - *(2017-07-05)* [BREAKING]
 
 ### Added
