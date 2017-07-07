@@ -1,4 +1,4 @@
-# `range` component [*EXPERIMENTAL*] 
+# `range` component [*EXPERIMENTAL*]
 
 A component that renders active `brush` ranges.
 

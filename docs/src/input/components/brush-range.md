@@ -1,15 +1,15 @@
-# `brush-range` component [*EXPERIMENTAL*] 
+# `brush-range` component [*EXPERIMENTAL*]
 
 ## Definition
 
 ```js
-{ 
+{
   type: 'brush-range',
   key: 'rangeSelectionY', // component identifier
   preferredSize: () => 50,
   settings: {
-    brush: 'highlight', // brush to apply changes to 
-    scale: 'y', // scale to extract data from 
+    brush: 'highlight', // brush to apply changes to
+    scale: 'y', // scale to extract data from
     direction: 'vertical',
     bubbles: {
       show: true
@@ -34,7 +34,7 @@ var rangeRef;
 
 picasso.chart({
   element: element,
-  data: data, 
+  data: data,
   settings: {
     scales: {
       x: { source: x, expand: 0.2 }
@@ -45,11 +45,11 @@ picasso.chart({
         type: 'point-marker',
         ...
       },
-      { 
+      {
         type: 'brush-range',
         key: 'rangeSelectionY'
         settings: {
-          brush: 'highlight', 
+          brush: 'highlight',
           scale: 'y',
           direction: 'vertical'
         },
@@ -57,11 +57,11 @@ picasso.chart({
           component: 'y-axis'
         }
       },
-      { 
+      {
         type: 'brush-range',
         key: 'rangeSelectionX'
         settings: {
-          brush: 'highlight', 
+          brush: 'highlight',
           scale: 'x',
           direction: 'horizontal'
         },

@@ -10,17 +10,17 @@ The brush-lasso component have 4 different types of listeners that can be utiliz
 * lassoCancel - Cancel the current lasso by removing the visual parts and trigger an end event the brushes.
 
 ```js
-{ 
+{
   type: 'brush-lasso',
   key: 'lassoComp', // component identifier
   settings: {
     brush: {
-      components: [
-        key: 'key1' // Component key to trigger brush on
+      components: {
+        key: 'key1', // Component key to trigger brush on
         contexts: ['brushLasso'],
         data: ['self'],
         action: 'add'
-      ]
+      }
     },
     snapIndicator: {
       threshold: 75, // Minimum distance in pixel before the snap indicator is displayed and the lasso is closed
@@ -54,7 +54,7 @@ var lassoRef;
 
 picasso.chart({
   element: element,
-  data: data, 
+  data: data,
   settings: {
     components: [
       {
@@ -94,12 +94,12 @@ picasso.chart({
           }
         ]
       },
-      { 
+      {
         key: 'lassoComp',
         type: 'brush-lasso',
         brush: {
           components: [
-            { 
+            {
               key: 'key1',
               contexts: ['myLassoContext'],
               data: ['self']

@@ -1,20 +1,20 @@
-# `brush-area-dir` component [*EXPERIMENTAL*] 
+# `brush-area-dir` component [*EXPERIMENTAL*]
 
 ## Definition
 
 ```js
-{ 
+{
   type: 'brush-area-dir',
   key: 'area', // component identifier
   preferredSize: () => 50,
   settings: {
     brush: {
-      components: [
-        key: 'key1' // Component key to trigger brush on
+      components: {
+        key: 'key1', // Component key to trigger brush on
         contexts: ['highlight'],
         data: ['self'],
         action: 'add'
-      ]
+      }
     },
     direction: 'vertical',
     bubbles: {
@@ -41,7 +41,7 @@ var rangeRef;
 
 picasso.chart({
   element: element,
-  data: data, 
+  data: data,
   settings: {
     scales: {
       x: { source: x, expand: 0.2 }
@@ -79,17 +79,17 @@ picasso.chart({
         type: 'axis',
         scale: 'x',
       },
-      { 
+      {
         type: 'brush-area-dir',
         key: 'area'
         settings: {
           brush: {
-            components: [
+            components: {
               key: 'pm'
               contexts: ['highlight'],
               data: ['self'],
               action: 'add'
-            ]
+            }
           },
           direction: 'vertical',
           target: {
