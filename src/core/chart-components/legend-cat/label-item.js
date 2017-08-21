@@ -74,7 +74,7 @@ export function resolveMargin(margin) {
  * @param {number} margin - Margin around the corners of the label
  * @return {Container} - Returns container with objects as children
  */
-export function labelItem({ x, y, maxWidth, maxHeight, color, fill, fontSize, fontFamily, labelText, renderer, align, renderingArea, margin, symbolPadding }) {
+export function labelItem({ x, y, maxWidth, maxHeight, color, fill, fontSize, fontFamily, labelText, renderer, align, renderingArea, margin, symbolPadding, data }) {
   maxWidth = typeof maxWidth === 'undefined' ? NaN : maxWidth;
   maxHeight = typeof maxHeight === 'undefined' ? NaN : maxHeight;
   align = typeof align === 'undefined' ? 'left' : align;
@@ -82,6 +82,7 @@ export function labelItem({ x, y, maxWidth, maxHeight, color, fill, fontSize, fo
   renderingArea = typeof renderingArea === 'undefined' ? { x: 0, y: 0, width: 0, height: 0 } : renderingArea;
   margin = resolveMargin(margin);
   symbolPadding = typeof symbolPadding === 'undefined' ? margin.right : symbolPadding;
+  const dataIndex = data && data.index;
 
   const labelMeasures = renderer.measureText({
     text: labelText,
@@ -111,6 +112,16 @@ export function labelItem({ x, y, maxWidth, maxHeight, color, fill, fontSize, fo
     x: align === 'left' ? x : renderingArea.width - x - containerWidth,
     y,
     width: containerWidth,
+    height: innerHeight + margin.height,
+    dataIndex,
+    data
+  };
+
+  container.collider = {
+    type: 'rect',
+    x: align === 'left' ? x : renderingArea.width - x - containerWidth,
+    y,
+    width: containerWidth,
     height: innerHeight + margin.height
   };
 
@@ -120,7 +131,8 @@ export function labelItem({ x, y, maxWidth, maxHeight, color, fill, fontSize, fo
     x: align === 'left' ? container.x + margin.left : (container.x + container.width) - innerHeight - margin.right,
     y: container.y + margin.top,
     width: innerHeight,
-    height: innerHeight
+    height: innerHeight,
+    dataIndex
   };
 
   const label = {
@@ -132,7 +144,8 @@ export function labelItem({ x, y, maxWidth, maxHeight, color, fill, fontSize, fo
     text: labelText,
     fill,
     fontSize: `${fontSizeMod}px`,
-    fontFamily
+    fontFamily,
+    dataIndex
   };
 
   container.children = [symbol, label];

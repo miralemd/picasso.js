@@ -104,6 +104,7 @@ function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect,
     labelItemDef.align = ALIGN;
     labelItemDef.renderingArea = rect;
     labelItemDef.margin = resolveMargin(labelItemDef.margin);
+    labelItemDef.data = data;
 
     prevContainer = labelItem(labelItemDef);
 
