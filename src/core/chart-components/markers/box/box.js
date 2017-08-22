@@ -114,8 +114,8 @@ const boxMarkerComponent = {
           let highModified = cap(-100, height + 200, Math.floor(high * height));
           let lowModified = cap(-100, height + 200, Math.floor(low * height));
 
-          majorStartModified = Math.round(majorStart * width);
-          majorEnd = Math.round((majorStart + (item.style.box.width * bandwidth)) * width);
+          majorStartModified = Math.floor(majorStart * width);
+          majorEnd = Math.floor((majorStart + (item.style.box.width * bandwidth)) * width);
           boxWidth = majorEnd - majorStartModified;
 
           boxWidth = cap(item.style.box.minWidthPx, item.style.box.maxWidthPx, boxWidth);
@@ -138,11 +138,31 @@ const boxMarkerComponent = {
 
     if (item.style.line.show && !notNumber(item.min) && !notNumber(item.start)) {
       // Draw the line min - start
-      shapes.push(blueprint.processItem(doodle.verticalLine(item.major, item.start, item.min, 'line', item.style, item.data)));
+      // shapes.push(blueprint.processItem(doodle.verticalLine(item.major, item.start, item.min, 'line', item.style, item.data)));
+      shapes.push(blueprint.processItem({
+        fn: ({ height }) => extend(doodle.style({}, 'line', item.style), {
+          type: 'line',
+          y1: Math.floor(item.start * height),
+          x1: majorStartModified,
+          y2: Math.floor(item.min * height),
+          x2: majorStartModified
+        }),
+        crisp: true
+      }));
     }
     if (item.style.line.show && !notNumber(item.max) && !notNumber(item.end)) {
       // Draw the line end - max (high)
-      shapes.push(blueprint.processItem(doodle.verticalLine(item.major, item.max, item.end, 'line', item.style, item.data)));
+      // shapes.push(blueprint.processItem(doodle.verticalLine(item.major, item.max, item.end, 'line', item.style, item.data)));
+      shapes.push(blueprint.processItem({
+        fn: ({ height }) => extend(doodle.style({}, 'line', item.style), {
+          type: 'line',
+          y1: Math.floor(item.max * height),
+          x1: majorStartModified,
+          y2: Math.floor(item.end * height),
+          x2: majorStartModified
+        }),
+        crisp: true
+      }));
     }
 
     // Draw the median line
@@ -166,12 +186,12 @@ const boxMarkerComponent = {
 
       shapes.push(blueprint.processItem({
         fn: ({ height }) => extend(doodle.style({ type: 'line' }, 'whisker', item.style), {
-          y1: item.min * height,
+          y1: Math.floor(item.min * height),
           x1: majorStartModified - Math.floor(whiskerWidth / 2),
-          y2: item.min * height,
+          y2: Math.floor(item.min * height),
           x2: majorStartModified + Math.floor(whiskerWidth / 2),
           cx: majorStartModified,
-          cy: item.min * height,
+          cy: Math.floor(item.min * height),
           width: whiskerWidth,
           r: whiskerWidth / 2
         }),
@@ -181,12 +201,12 @@ const boxMarkerComponent = {
       // High whisker
       shapes.push(blueprint.processItem({
         fn: ({ height }) => extend(doodle.style({ type: 'line' }, 'whisker', item.style), {
-          y1: item.max * height,
+          y1: Math.floor(item.max * height),
           x1: majorStartModified - Math.floor(whiskerWidth / 2),
-          y2: item.max * height,
+          y2: Math.floor(item.max * height),
           x2: majorStartModified + Math.floor(whiskerWidth / 2),
           cx: majorStartModified,
-          cy: item.max * height,
+          cy: Math.floor(item.max * height),
           width: whiskerWidth,
           r: whiskerWidth / 2
         }),
