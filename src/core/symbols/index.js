@@ -1,3 +1,4 @@
+import { mappedAttributes } from '../scene-graph//attributes';
 import circle from './circle';
 import diamond from './diamond';
 import saltire from './saltire';
@@ -34,11 +35,10 @@ function createRectCollider({ x, y, size }) {
   };
 }
 
-function applyStyle(obj, style = {}) {
-  const styleProps = ['fill', 'stroke', 'strokeWidth', 'opacity', 'strokeDasharray'];
-  Object.keys(style).forEach((key) => {
-    if (styleProps.indexOf(key) !== -1) {
-      obj[key] = style[key];
+function applyOpts(obj, opts = {}) {
+  Object.keys(opts).forEach((key) => {
+    if (typeof mappedAttributes[key] !== 'undefined' && key !== 'transform') {
+      obj[key] = opts[key];
     }
   });
 }
@@ -46,19 +46,32 @@ function applyStyle(obj, style = {}) {
 /**
  * Factory function for symbols.
  * Options object is passed to symbols function.
- * @param {Object} options
+ * @param {Object} options - Options definition may contain any of the supported display-object attributes
  * @param {string} options.type - Type of symbol
  * @param {number} options.x - x-coordinate
  * @param {number} options.y - y-coordinate
+ * @param {number} options.size
+ * @param {object} [options.data]
+ * @param {number} [options.dataIndex]
  */
-export default function create(options = {}) {
+export default function create(options = {}) { // TODO handle reserverd properties x, y, size, data, etc..
   const fn = reg.get(options.type);
   if (fn) {
     const s = fn(options);
     if (!s.collider) {
       s.collider = createRectCollider(options);
     }
-    applyStyle(s, options);
+
+    applyOpts(s, options);
+
+    if (typeof options.dataIndex !== 'undefined') {
+      s.dataIndex = options.dataIndex;
+    }
+
+    if (typeof options.data !== 'undefined') {
+      s.data = options.data;
+    }
+
     return s;
   }
   return fn;

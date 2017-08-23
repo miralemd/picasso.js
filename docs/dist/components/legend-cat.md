@@ -22,6 +22,12 @@ component: {
       bottom: 5, // Bottom margin. Default: 5. Optional.
       left: 5, // Left margin. Default: 5. Optional.
     },
+    shape: { // Shape definition or shape type. Each shape may have their own unique properties that can also be set as part of the shape object.. Optional.
+      type: 'square', // Shape type. Default: 'square'. Optional.
+      fill: 'foo', // Fill of shape. Defaults to scale color if avaiable.. Optional.
+      stroke: 'foo', // Stroke of shape. Defaults to scale color if avaiable.. Optional.
+      strokeWidth: 1, // Stroke width of shape.. Default: 1. Optional.
+    },
   },
   title: { // Title settings. Optional.
     show: true, // Show the title. Default: true. Optional.

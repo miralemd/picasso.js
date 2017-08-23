@@ -146,6 +146,7 @@ describe('labelItem', () => {
       align: undefined,
       renderingArea: { x: 0, y: 0, width: 200, height: 200 },
       margin,
+      shape: { type: 'square' },
       data: { index: 1 }
     });
 
@@ -182,8 +183,8 @@ describe('labelItem', () => {
     };
 
     assertNodeProperties(container, expectedContainer);
-    expect(container.children).to.deep.include(expectedSymbol);
-    expect(container.children).to.deep.include(expectedText);
+    expect(container.children[0]).to.deep.include(expectedSymbol);
+    expect(container.children[1]).to.deep.include(expectedText);
   });
 
   it('should handle basic right-aligned instructions', () => {
@@ -208,6 +209,7 @@ describe('labelItem', () => {
         height: 200
       },
       margin,
+      shape: { type: 'square' },
       data: { index: 1 }
     });
 
@@ -243,8 +245,8 @@ describe('labelItem', () => {
     };
 
     assertNodeProperties(container, expectedContainer);
-    expect(container.children).to.deep.include(expectedSymbol);
-    expect(container.children).to.deep.include(expectedText);
+    expect(container.children[0]).to.deep.include(expectedSymbol);
+    expect(container.children[1]).to.deep.include(expectedText);
   });
 
   it('should set maxWidth to edge of rendering area', () => {
@@ -266,6 +268,7 @@ describe('labelItem', () => {
       align: undefined,
       renderingArea,
       margin,
+      shape: { type: 'square' },
       data: { index: 3 }
     });
 
@@ -301,7 +304,67 @@ describe('labelItem', () => {
     };
 
     assertNodeProperties(container, expectedContainer);
-    expect(container.children).to.deep.include(expectedSymbol);
-    expect(container.children).to.deep.include(expectedText);
+    expect(container.children[0]).to.deep.include(expectedSymbol);
+    expect(container.children[1]).to.deep.include(expectedText);
+  });
+
+  describe('shapes', () => {
+    let innerHeight = 12;
+    let margin = 5;
+    let itemDef;
+
+    beforeEach(() => {
+      itemDef = {
+        x: 0,
+        y: 0,
+        color: 'black',
+        fontSize: `${innerHeight}px`,
+        fontFamily: 'Arial',
+        labelText: 'Test',
+        renderer,
+        renderingArea: {
+          x: 0,
+          y: 0,
+          width: 200,
+          height: 200
+        },
+        margin,
+        shape: {
+          type: 'circle'
+        }
+      };
+    });
+
+    it('should fallback to color definition if fill is undefined', () => {
+      let container = labelItem(itemDef);
+
+      let expectedSymbol = {
+        type: 'circle',
+        fill: 'black',
+        stroke: 'black',
+        cx: (innerHeight / 2) + margin,
+        cy: 5 + (innerHeight / 2),
+        r: innerHeight / 2
+      };
+
+      assertNodeProperties(container.children[0], expectedSymbol);
+    });
+
+    it('should use defined properties', () => {
+      itemDef.shape.fill = 'red';
+      itemDef.shape.stroke = 'white';
+      let container = labelItem(itemDef);
+
+      let expectedSymbol = {
+        type: 'circle',
+        fill: 'red',
+        stroke: 'white',
+        cx: (innerHeight / 2) + margin,
+        cy: 5 + (innerHeight / 2),
+        r: innerHeight / 2
+      };
+
+      assertNodeProperties(container.children[0], expectedSymbol);
+    });
   });
 });

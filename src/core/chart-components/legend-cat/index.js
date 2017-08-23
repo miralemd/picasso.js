@@ -23,6 +23,11 @@ export default function categoricalLegend(picasso) {
  * @property {number} [item.margin.right=5] - Right margin
  * @property {number} [item.margin.bottom=5] - Bottom margin
  * @property {number} [item.margin.left=5] - Left margin
+ * @property {object|string} [item.shape] - Shape definition or shape type. Each shape may have their own unique properties that can also be set as part of the shape object.
+ * @property {string} [item.shape.type='square'] Shape type
+ * @property {string} [item.shape.fill] Fill of shape. Defaults to scale color if avaiable.
+ * @property {string} [item.shape.stroke] Stroke of shape. Defaults to scale color if avaiable.
+ * @property {string} [item.shape.strokeWidth=1] Stroke width of shape.
  * @property {object} [title] - Title settings
  * @property {boolean} [title.show=true] - Show the title
  * @property {string} [title.maxWidthPx=200] - Maximum width of the title item

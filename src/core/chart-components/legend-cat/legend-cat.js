@@ -12,6 +12,10 @@ const defaultSettings = {
       top: 5,
       right: 5,
       bottom: 0
+    },
+    shape: {
+      type: 'square',
+      strokeWidth: 0
     }
   },
   title: {
@@ -94,6 +98,9 @@ function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect,
     };
 
     let labelItemDef = resolveForDataObject(settings.item, data, i, all);
+    if (typeof settings.item.shape === 'object') {
+      labelItemDef.shape = resolveForDataObject(settings.item.shape, data, i, all); // TODO resolveForDataObject for probably handle deep structures...
+    }
 
     labelItemDef.x = HORIZONTAL ? nextXitem : 0;
     labelItemDef.y = !HORIZONTAL ? nextYitem : 0;

@@ -1,3 +1,5 @@
+import symbolFactory from '../../symbols';
+
 /**
  * Get the minimum viable number out of multiple ones
  *
@@ -72,9 +74,28 @@ export function resolveMargin(margin) {
  * @param {string} align - Alignment property, 'left' or 'right'.
  * @param {object} renderingArea - The area in an object to be rendered in.
  * @param {number} margin - Margin around the corners of the label
+ * @param {object} shape - Shape properties
  * @return {Container} - Returns container with objects as children
  */
-export function labelItem({ x, y, maxWidth, maxHeight, color, fill, fontSize, fontFamily, labelText, renderer, align, renderingArea, margin, symbolPadding, data }) {
+
+export function labelItem({
+  x,
+  y,
+  maxWidth,
+  maxHeight,
+  color,
+  fill,
+  fontSize,
+  fontFamily,
+  labelText,
+  renderer,
+  align,
+  renderingArea,
+  margin,
+  symbolPadding,
+  shape,
+  data
+}) {
   maxWidth = typeof maxWidth === 'undefined' ? NaN : maxWidth;
   maxHeight = typeof maxHeight === 'undefined' ? NaN : maxHeight;
   align = typeof align === 'undefined' ? 'left' : align;
@@ -125,22 +146,25 @@ export function labelItem({ x, y, maxWidth, maxHeight, color, fill, fontSize, fo
     height: innerHeight + margin.height
   };
 
-  const symbol = {
-    type: 'rect',
-    fill: color,
-    x: align === 'left' ? container.x + margin.left : (container.x + container.width) - innerHeight - margin.right,
-    y: container.y + margin.top,
-    width: innerHeight,
-    height: innerHeight,
-    dataIndex
+  const r = innerHeight / 2;
+  const symDef = {
+    type: typeof shape === 'object' && shape.type ? shape.type : shape,
+    x: (align === 'left' ? container.x + margin.left : (container.x + container.width) - innerHeight - margin.right) + r,
+    y: container.y + margin.top + r,
+    size: innerHeight,
+    fill: typeof shape === 'object' && shape.fill ? shape.fill : color,
+    stroke: typeof shape === 'object' && shape.stroke ? shape.stroke : color,
+    dataIndex,
+    ...shape
   };
+  const symbol = symbolFactory(symDef);
 
   const label = {
     type: 'text',
     anchor: align === 'left' ? 'start' : 'end',
-    x: align === 'left' ? symbol.x + symbol.width + symbolPadding : symbol.x - symbolPadding,
-    y: symbol.y + innerHeight + (-1),
-    maxWidth: (container.width - symbol.width - (margin.width + symbolPadding)) + 1,
+    x: align === 'left' ? symDef.x + r + symbolPadding : symDef.x - symbolPadding - r,
+    y: symDef.y + r + (-1),
+    maxWidth: (container.width - innerHeight - (margin.width + symbolPadding)) + 1,
     text: labelText,
     fill,
     fontSize: `${fontSizeMod}px`,
@@ -148,7 +172,7 @@ export function labelItem({ x, y, maxWidth, maxHeight, color, fill, fontSize, fo
     dataIndex
   };
 
-  container.children = [symbol, label];
+  container.children = [symbol, label].filter(c => !!c);
 
   return container;
 }
