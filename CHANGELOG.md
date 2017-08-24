@@ -2,6 +2,10 @@
 
 ## **Unreleased** - *(YYYY-MM-DD)* [BREAKING]
 
+### Fixed
+
+- PIC-190 Area range label is wrong when dragging for the first time
+
 ### Breaking changes
 - Changed default behaviour of box-marker box properties maxWidth & minWidth, added minHeightPx
 

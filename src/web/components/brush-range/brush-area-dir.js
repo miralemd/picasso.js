@@ -83,7 +83,7 @@ function getBubbleLabel(state, value, range) {
 
   const labelShape = shapes.reduce((s0, s1) => {
     // Min value
-    if (value === range[0]) {
+    if (value === min) {
       if (s0.collider[state.cssCoord.coord] <= s1.collider[state.cssCoord.coord]) {
         return s0;
       }
