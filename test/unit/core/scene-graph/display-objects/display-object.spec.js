@@ -35,7 +35,8 @@ describe('Display Object', () => {
         dataIndex: '11',
         data: {
           value: 11
-        }
+        },
+        id: '12'
       };
 
       _displayObject.set(args);
@@ -50,7 +51,8 @@ describe('Display Object', () => {
         'text-anchor': '7',
         maxWidth: '8',
         opacity: '9',
-        transform: '10'
+        transform: '10',
+        id: '12'
       });
       expect(_displayObject.dataIndex).to.equal('11');
       expect(_displayObject.data).to.deep.equal({
