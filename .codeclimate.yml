@@ -1,0 +1,32 @@
+engines:
+  fixme:
+    enabled: true
+  duplication:
+    enabled: true
+    exclude_paths:
+      - "test/"
+    config:
+      languages:
+      - javascript
+  eslint:
+    enabled: false
+ratings:
+  paths:
+  - "src/**.js"
+  - "plugins/hammer/src/**.js"
+  - "plugins/q/src/**.js"
+exclude_paths: 
+  - ".vscode/"
+  - "dist/"
+  - "docs/"
+  - "examples/"
+  - "node_modules/"
+  - "plugins/hammer/dist"
+  - "plugins/hammer/node_modules"
+  - "plugins/hammer/test"
+  - "plugins/q/dist"
+  - "plugins/q/node_modules"
+  - "plugins/q/test"
+  - "scripts/"
+  - "test/"
+  - "tools/"

@@ -26,6 +26,7 @@
     "test:plugins": "aw-test-runner \"./plugins/**/*.spec.js\"",
     "test:unit:watch": "aw-test-runner \"./test/unit/**/*.spec.js\" -w",
     "test:unit:coverage": "aw-test-coverage \"./test/unit/**/*.spec.js\" --dir test/unit/coverage",
+    "test:unit:coverage:publish": "codeclimate-test-reporter < test/unit/coverage/lcov.info",
     "test:component": "aw-test-runner \"./test/component/**/*.comp.js\"",
     "test:component:coverage": "aw-test-coverage \"./test/component/**/*.comp.js\"  --dir test/component/coverage",
     "test:integration:local": "node node_modules/protractor/bin/webdriver-manager update --standalone false && aw-webdriver-test-runner ./test/config/aw-config.js --specs \"./test/integration/**/*.int.js\" --aw-artifacts-path ./test/integration/artifacts",

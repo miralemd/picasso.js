@@ -32,6 +32,8 @@ test:
     - npm run lint
     - npm run test:coverage
     - npm run test:integration:local
+  post:
+    - npm run test:unit:coverage:publish
 
 deployment:
   docsnstats:
