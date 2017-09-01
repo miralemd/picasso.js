@@ -8,7 +8,7 @@ do
 
     echo Building ${dir}
     cd ../plugins/${dir}
-    yarn
+    npm i
     npm -s run build
     npm -s run build:dev
     cd "${cwd}"

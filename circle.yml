@@ -1,6 +1,6 @@
 machine:
   node:
-    version: 4.4.7
+    version: 8.4.0
   environment:
     PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
 
@@ -20,10 +20,7 @@ general:
 dependencies:
   override:
     - curl -u${ARTIFACTORY_USER}:${ARTIFACTORY_PWD} "https://qliktech.artifactoryonline.com/qliktech/api/npm/npm-local/auth/qlik" > ./.npmrc
-    - yarn global add babel-cli
-    - yarn
-  cache_directories:
-    - ~/.cache/yarn
+    - npm i
   post:
     - ./scripts/build-all.sh
 
