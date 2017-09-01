@@ -22,6 +22,10 @@
     minWidthPx: 1,
     minHeightPx: 1,
     ```
+    
+### Fixed
+
+- PIC-193 - Mis-alignment of whiskers and lines in box marker
 
 ## **0.25.0** - *(2017-07-05)* [BREAKING]
 
