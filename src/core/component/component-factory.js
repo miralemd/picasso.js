@@ -243,7 +243,7 @@ function componentFactory(definition, options = {}) {
 
     if (settings.data) {
       data = chart.dataset().map(settings.data.mapTo, settings.data.groupBy);
-    } else if (scale) {
+    } else if (scale && scale.data) {
       data = scale.data();
     } else {
       data = [];

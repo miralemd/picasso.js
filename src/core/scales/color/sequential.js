@@ -52,6 +52,7 @@ export default function scaleSequentialColor(settings = {}, fields) {
   extend(true, fn, s);
   const [min, max] = minmax(settings, fields);
   fn.range(settings.range || DEFAULT_COLORS);
+  fn.range(settings.invert ? fn.range().reverse() : fn.range());
   fn.domain(settings.domain || generateDomain(fn.range(), min, max));
 
   return fn;

@@ -24,6 +24,7 @@ import rangeComponent from './core/chart-components/range';
 import brushLassoComponent from './core/chart-components/brush-lasso';
 import labelsComponent from './core/chart-components/labels';
 import categoricalLegend from './core/chart-components/legend-cat';
+import sequentialLegend from './core/chart-components/legend-seq';
 
 // Plugin API
 function use(plugin, options = {}) {
@@ -54,6 +55,7 @@ use(rangeComponent);
 use(brushLassoComponent);
 use(labelsComponent);
 use(categoricalLegend);
+use(sequentialLegend);
 
 /**
  * The mother of all namespaces
