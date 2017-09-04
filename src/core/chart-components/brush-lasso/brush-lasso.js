@@ -150,7 +150,7 @@ function getBrushConfig(settings) {
     {
       key: b.key,
       contexts: b.contexts || ['lassoBrush'],
-      data: b.data || ['self'],
+      data: b.data || [''],
       action: b.action || 'add'
     }));
 }
@@ -201,7 +201,7 @@ function resetState() {
  * @property {object[]} brush.components - Array of components to brush on.
  * @property {string} [brush.components.component.key] - Component key
  * @property {string[]} [brush.components.component.contexts=['brushLasso']] - Name of the brushing contexts to affect
- * @property {string[]} [brush.components.component.data=['self']] - The mapped data properties to add to the brush
+ * @property {string[]} [brush.components.component.data=['']] - The mapped data properties to add to the brush
  * @property {string} [brush.components.component.action='add'] - Type of action to respond with
  */
 

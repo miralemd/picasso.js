@@ -52,7 +52,6 @@ function applyOpts(obj, opts = {}) {
  * @param {number} options.y - y-coordinate
  * @param {number} options.size
  * @param {object} [options.data]
- * @param {number} [options.dataIndex]
  */
 export default function create(options = {}) { // TODO handle reserverd properties x, y, size, data, etc..
   const fn = reg.get(options.type);
@@ -63,10 +62,6 @@ export default function create(options = {}) { // TODO handle reserverd properti
     }
 
     applyOpts(s, options);
-
-    if (typeof options.dataIndex !== 'undefined') {
-      s.dataIndex = options.dataIndex;
-    }
 
     if (typeof options.data !== 'undefined') {
       s.data = options.data;

@@ -133,6 +133,8 @@ describe('labelItem', () => {
     let innerHeight = 12;
     let margin = 5;
 
+    let data = { bar: 1 };
+
     let container = labelItem({
       x: 5,
       y: 10,
@@ -147,7 +149,7 @@ describe('labelItem', () => {
       renderingArea: { x: 0, y: 0, width: 200, height: 200 },
       margin,
       shape: { type: 'square' },
-      data: { index: 1 }
+      data
     });
 
     let expectedContainer = {
@@ -156,7 +158,7 @@ describe('labelItem', () => {
       y: 10,
       width: 4 + innerHeight + (margin * 3), // Padding left, margin right, margin between items
       height: innerHeight + (margin * 2),
-      dataIndex: 1
+      data
     };
 
     let expectedSymbol = {
@@ -166,7 +168,7 @@ describe('labelItem', () => {
       y: 15,
       width: innerHeight,
       height: innerHeight,
-      dataIndex: 1
+      data
     };
 
     let expectedText = {
@@ -179,7 +181,7 @@ describe('labelItem', () => {
       fill: 'black',
       fontSize: `${innerHeight}px`,
       fontFamily: 'Arial',
-      dataIndex: 1
+      data
     };
 
     assertNodeProperties(container, expectedContainer);
@@ -190,6 +192,8 @@ describe('labelItem', () => {
   it('should handle basic right-aligned instructions', () => {
     let innerHeight = 12;
     let margin = 5;
+
+    let data = { foo: 1 };
 
     let container = labelItem({
       x: 0,
@@ -210,7 +214,7 @@ describe('labelItem', () => {
       },
       margin,
       shape: { type: 'square' },
-      data: { index: 1 }
+      data
     });
 
     let expectedContainer = {
@@ -228,7 +232,7 @@ describe('labelItem', () => {
       y: 5,
       width: innerHeight,
       height: innerHeight,
-      dataIndex: 1
+      data
     };
 
     let expectedText = {
@@ -241,7 +245,7 @@ describe('labelItem', () => {
       fill: 'black',
       fontSize: `${innerHeight}px`,
       fontFamily: 'Arial',
-      dataIndex: 1
+      data
     };
 
     assertNodeProperties(container, expectedContainer);
@@ -254,6 +258,8 @@ describe('labelItem', () => {
     let margin = 5;
 
     let renderingArea = { x: 0, y: 0, width: 35, height: 200 };
+
+    let data = { bar: 1 };
 
     let container = labelItem({
       x: 5,
@@ -269,7 +275,7 @@ describe('labelItem', () => {
       renderingArea,
       margin,
       shape: { type: 'square' },
-      data: { index: 3 }
+      data
     });
 
     let expectedContainer = {
@@ -287,7 +293,7 @@ describe('labelItem', () => {
       y: 15,
       width: innerHeight,
       height: innerHeight,
-      dataIndex: 3
+      data
     };
 
     let expectedText = {
@@ -300,7 +306,7 @@ describe('labelItem', () => {
       fill: 'black',
       fontSize: `${innerHeight}px`,
       fontFamily: 'Arial',
-      dataIndex: 3
+      data
     };
 
     assertNodeProperties(container, expectedContainer);

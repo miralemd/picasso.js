@@ -4,6 +4,7 @@ import band from '../../scales/band';
 import sequential from '../../scales/color/sequential';
 import threshold from '../../scales/color/threshold';
 import categorical from '../../scales/color/categorical';
+import extractData from '../../data/extractor';
 
 const scaleRegistry = registry();
 
@@ -22,32 +23,33 @@ function getTypeFromMeta(fields) {
   return types.indexOf('linear') !== -1 ? 'linear' : 'band';
 }
 
-function findFields(dataset, sources) {
-  return sources.map((s) => {
-    const f = dataset.findField(s);
-    return f ? f.field : undefined;
-  });
-}
-
 function deduceScaleTypeFromOptions(options, fields) {
-  if (fields[0]) {
+  if (fields && fields[0]) {
     return getTypeFromMeta(fields);
   }
   return 'linear';
 }
 
 export function create(options, dataset, deps) {
-  let sources = [];
-  let fields = [];
-  if (options.source) {
-    sources = Array.isArray(options.source) ? options.source : [options.source];
-    fields = findFields(dataset, sources);
+  let dataSourceConfig = options.data;
+  if (options.source) { // DEPRECATION
+    deps.logger.warn('Deprecated: Scale data source configuration');
+    dataSourceConfig = {
+      extract: []
+    };
+    (Array.isArray(options.source) ? options.source : [options.source]).forEach((source) => {
+      dataSourceConfig.extract.push({
+        field: source
+      });
+    });
   }
-  let type = options.type || deduceScaleTypeFromOptions(options, fields);
+  let sources = [];
+  let data = extractData(dataSourceConfig, dataset, deps);
+  let type = options.type || deduceScaleTypeFromOptions(options, data.fields);
   let s;
 
   if (type === 'color') {
-    if (fields[0] && fields[0].type() === 'dimension') {
+    if (data.fields && data.fields[0] && data.fields[0].type() === 'dimension') {
       type = 'categorical-color';
     } else {
       type = 'sequential-color';
@@ -56,7 +58,7 @@ export function create(options, dataset, deps) {
 
   if (deps.scale.has(type)) {
     s = deps.scale.get(type);
-    s = s(options, fields, dataset, deps);
+    s = s(options, data.fields, dataset, deps);
     s.type = type;
     s.sources = sources;
   }

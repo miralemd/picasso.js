@@ -10,16 +10,6 @@ const AVAILABLE_SETTINGS = [
   'maxPxStep'
 ];
 
-function unique(values) {
-  const exists = {};
-  return values.filter((v) => {
-    if (exists[v.id]) {
-      return false;
-    }
-    return (exists[v.id] = true);
-  });
-}
-
 function evalSetting(settings, fields, name) {
   if (typeof settings[name] === 'function') {
     return settings[name](fields);
@@ -46,7 +36,7 @@ function generateSettings(settings, fields) {
  * @return { band }
  */
 
-export default function scaleBand(settings = {}, fields, dataset) {
+export default function scaleBand(settings = {}, data = {}) {
   /**
    * An augmented {@link https://github.com/d3/d3-scale#_band|d3 band scale}
    * @alias band
@@ -56,22 +46,22 @@ export default function scaleBand(settings = {}, fields, dataset) {
    */
   const band = d3ScaleBand();
 
+  const valueFn = typeof settings.value === 'function' ? settings.value : d => d.value;
+  const labelFn = typeof settings.label === 'function' ? settings.label : valueFn;
+  const items = data.items || [];
+  let values = [];
+  let labels = [];
+  for (let i = 0; i < items.length; i++) {
+    let v = valueFn(items[i]);
+    if (values.indexOf(v) === -1) {
+      values.push(v);
+      labels.push(labelFn(items[i]));
+    }
+  }
+
   // I would like to define this outside of scaleBand but it cause the documentation to be in the wrong order
-  function augmentScaleBand(band, settings, dataset) { // eslint-disable-line no-shadow
-    band.data = function data() {
-      return dataset ? dataset.map(
-        {
-          self: {
-            source: settings.source, type: 'qual'
-          },
-          id: {
-            source: settings.source, type: 'qual', reducer: 'first', property: 'id'
-          }
-        },
-        {
-          source: settings.source
-        }) : [];
-    };
+  function augmentScaleBand(band, settings) { // eslint-disable-line no-shadow
+    band.data = () => data;
 
     /**
      * Get the first value of the domain
@@ -89,6 +79,8 @@ export default function scaleBand(settings = {}, fields, dataset) {
       return band.domain()[band.domain().length - 1];
     };
 
+    band.labels = () => labels;
+
     /**
      * Generate discrete ticks
      * @return {Object[]} Array of ticks
@@ -98,9 +90,9 @@ export default function scaleBand(settings = {}, fields, dataset) {
       return generateDiscreteTicks(input, settings.trackBy || 'label');
     };
   }
-  augmentScaleBand(band, settings, dataset);
+  augmentScaleBand(band, settings);
 
-  const stgns = generateSettings(settings || {}, fields);
+  const stgns = generateSettings(settings || {}, data.fields);
 
   /**
    * if required creates a new scale with a restricted range
@@ -124,7 +116,7 @@ export default function scaleBand(settings = {}, fields, dataset) {
     const newBand = band.copy();
     newBand.sources = band.sources;
     newBand.type = band.type;
-    augmentScaleBand(newBand, settings, dataset);
+    augmentScaleBand(newBand, settings);
     const t = (sizeRelativeToStep * max) / size;
     const offset = (1 - t) * band.align();
     newBand.range(stgns.invert ? [t + offset, offset] : [offset, t + offset]);
@@ -132,18 +124,13 @@ export default function scaleBand(settings = {}, fields, dataset) {
     return newBand;
   };
 
+  band.domain(values);
+  band.range(stgns.invert ? [1, 0] : [0, 1]);
 
-  if (fields && fields[0]) {
-    const values = fields[0].values();
-    const uniq = unique(values).map(v => v[settings.trackBy || 'label']);
-
-    band.domain(uniq);
-    band.range(stgns.invert ? [1, 0] : [0, 1]);
-
-    band.padding(isNaN(stgns.padding) ? 0 : stgns.padding);
-    if (!isNaN(stgns.paddingInner)) { band.paddingInner(stgns.paddingInner); }
-    if (!isNaN(stgns.paddingOuter)) { band.paddingOuter(stgns.paddingOuter); }
-    band.align(isNaN(stgns.align) ? 0.5 : stgns.align);
-  }
+  band.padding(isNaN(stgns.padding) ? 0 : stgns.padding);
+  if (!isNaN(stgns.paddingInner)) { band.paddingInner(stgns.paddingInner); }
+  if (!isNaN(stgns.paddingOuter)) { band.paddingOuter(stgns.paddingOuter); }
+  band.align(isNaN(stgns.align) ? 0.5 : stgns.align);
+  // }
   return band;
 }

@@ -1,6 +1,7 @@
 import extend from 'extend';
 import EventEmitter from '../utils/event-emitter';
 import { list as listMixins } from './component-mixins';
+import extractData from '../data/extractor';
 import {
   styler as brushStyler,
   resolveTapEvent,
@@ -248,8 +249,8 @@ function componentFactory(definition, options = {}) {
     }
 
     if (settings.data) {
-      data = chart.dataset().map(settings.data.mapTo, settings.data.groupBy);
-    } else if (scale && scale.data) {
+      data = extractData(settings.data, chart.dataset, { logger: chart.logger() });
+    } else if (scale) {
       data = scale.data();
     } else {
       data = [];
@@ -388,7 +389,7 @@ function componentFactory(definition, options = {}) {
       const sceneObjects = rend.findShapes('*');
       settings.brush.trigger.forEach((b) => {
         sceneObjects.forEach((sceneObject) => {
-          const nodeData = data[sceneObject.dataIndex];
+          const nodeData = sceneObject.data;
           if (nodeData && brusher.containsMappedData(nodeData, props || b.data, mode)) {
             shapes.push(sceneObject);
           }

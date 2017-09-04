@@ -743,15 +743,24 @@ export default function brush({
     let status = [];
     const keys = Object.keys(d);
     let key;
+    let item;
     let source;
     let type;
     let value;
 
     for (let i = 0, num = keys.length; i < num; i++) {
       key = keys[i];
-      status[i] = { key, i, bool: false };
-      source = d[key].source && d[key].source.field;
-      if (!source) {
+      if (key === 'value') {
+        item = d;
+        status[i] = { key: '', i, bool: false };
+      } else if (key === 'source') {
+        continue;
+      } else {
+        item = d[key];
+        status[i] = { key, i, bool: false };
+      }
+      source = item.source && item.source.field;
+      if (typeof source === 'undefined') {
         continue;
       }
 
@@ -759,8 +768,8 @@ export default function brush({
         source = aliases[source];
       }
 
-      type = d[key].source.type === 'quant' ? 'range' : 'value';
-      value = d[key].value;
+      type = item.source.type === 'quant' ? 'range' : 'value';
+      value = item.value;
       if (type === 'range' && ranges[source]) {
         status[i].bool = Array.isArray(value) ? ranges[source].containsRange({ min: value[0], max: value[1] }) : ranges[source].containsValue(value);
       } else if (type === 'value' && values[source] && values[source].contains(value)) {

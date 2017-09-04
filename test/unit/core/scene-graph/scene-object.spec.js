@@ -28,10 +28,6 @@ describe('Scene Object', () => {
     expect(sceneObject.type).to.equal('mock');
   });
 
-  it('should expose node data index', () => {
-    expect(sceneObject.dataIndex).to.equal(1);
-  });
-
   it('should expose node data value', () => {
     expect(sceneObject.data).to.equal(11);
   });

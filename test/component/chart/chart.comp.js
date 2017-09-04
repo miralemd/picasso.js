@@ -13,19 +13,17 @@ describe('Chart', () => {
     element = createElement();
 
     data = [
-      [
-        ['Product', 'Cost'],
-        ['Cars', 1],
-        ['Trucks', 2]
-      ]
+      ['Product', 'Cost'],
+      ['Cars', 1],
+      ['Trucks', 2]
     ];
 
     pointMarkerRed = {
       key: 'key1',
       type: 'point-marker',
       data: {
-        groupBy: {
-          source: '/0/0'
+        extract: {
+          field: 0
         }
       },
       settings: {
@@ -37,8 +35,8 @@ describe('Chart', () => {
       key: 'key2',
       type: 'point-marker',
       data: {
-        groupBy: {
-          source: '/0/0'
+        extract: {
+          field: 0
         }
       },
       settings: {
@@ -50,8 +48,8 @@ describe('Chart', () => {
       key: 'key3',
       type: 'point-marker',
       data: {
-        groupBy: {
-          source: '/0/0'
+        extract: {
+          field: 0
         }
       },
       settings: {
@@ -186,7 +184,7 @@ describe('Chart', () => {
         components: [{
           key: 'key1',
           contexts: ['test'],
-          data: ['self'],
+          data: [''],
           action: 'add'
         }]
       });
@@ -221,7 +219,7 @@ describe('Chart', () => {
         components: [{
           key: 'unknown',
           contexts: ['test'],
-          data: ['self'],
+          data: [''],
           action: 'add'
         }]
       });

@@ -56,11 +56,8 @@ describe('reference lines', () => {
 
   it('should not render lines with default settings and no scales', () => {
     const config = {
-      shapeFn,
-      data: { mapTo: 'does not matter', groupBy: 'does not matter' }
+      shapeFn
     };
-
-    chart.dataset().map.returns([{}]);
 
     createAndRenderComponent({
       inner: { x: 37, y: 0, width: 870, height: 813 },
@@ -73,7 +70,6 @@ describe('reference lines', () => {
   it('should not render lines without value', () => {
     const config = {
       shapeFn,
-      data: { mapTo: 'does not matter', groupBy: 'does not matter' },
       lines: {
         x: [
           {
@@ -90,8 +86,6 @@ describe('reference lines', () => {
       }
     };
 
-    chart.dataset().map.returns([{}]);
-
     createAndRenderComponent({
       inner: { x: 37, y: 0, width: 870, height: 813 },
       config
@@ -103,7 +97,6 @@ describe('reference lines', () => {
   it('should render basic line with RTL label on X with scale', () => {
     const config = {
       shapeFn,
-      data: { mapTo: 'does not matter', groupBy: 'does not matter' },
       lines: {
         x: [
           {
@@ -124,8 +117,6 @@ describe('reference lines', () => {
         ]
       }
     };
-
-    chart.dataset().map.returns([{}]);
 
     const xScale = v => v;
     chart.scale.withArgs({ scale: 'x' }).returns(xScale);
@@ -190,7 +181,6 @@ describe('reference lines', () => {
   it('should render basic line with label on Y without scale', () => {
     const config = {
       shapeFn,
-      data: { mapTo: 'does not matter', groupBy: 'does not matter' },
       lines: {
         y: [
           {
@@ -210,8 +200,6 @@ describe('reference lines', () => {
         ]
       }
     };
-
-    chart.dataset().map.returns([{}]);
 
     const xScale = v => v;
     chart.scale.withArgs({ scale: 'x' }).returns(xScale);
@@ -266,7 +254,6 @@ describe('reference lines', () => {
   it('vAlign 0, align 1, default values and different text test', () => {
     const config = {
       shapeFn,
-      data: { mapTo: 'does not matter', groupBy: 'does not matter' },
       lines: {
         y: [
           {
@@ -280,8 +267,6 @@ describe('reference lines', () => {
         ]
       }
     };
-
-    chart.dataset().map.returns([{}]);
 
     const xScale = v => v;
     chart.scale.withArgs({ scale: 'x' }).returns(xScale);
@@ -354,7 +339,6 @@ describe('reference lines', () => {
       }
     };
 
-    chart.dataset().map.returns([{}]);
     const yScale = v => v;
     chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
@@ -423,7 +407,6 @@ describe('reference lines', () => {
       }
     };
 
-    chart.dataset().map.returns([{}]);
     const yScale = v => v;
     chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 

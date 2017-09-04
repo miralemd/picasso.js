@@ -5,20 +5,48 @@ import {
 
 describe('Brushing', () => {
   let nodes;
+  let data;
 
   beforeEach(() => {
+    data = [
+      {
+        value: 7,
+        source: { field: 'a' },
+        self: {
+          source: { field: 'foo' },
+          value: 1337
+        }
+      },
+      {
+        value: 13,
+        source: { field: 'b' },
+        self: {
+          source: { field: 'bar' },
+          value: 42
+        }
+      },
+      {
+        value: 9,
+        source: { field: 'c' },
+        self: {
+          source: { field: 'bez' },
+          value: 33
+        }
+      }
+    ];
+
     nodes = [
       {
         type: 'rect',
         fill: 'yellow',
         stroke: 'pink',
-        dataIndex: 0
+        data: data[0]
       },
       {
         type: 'rect',
         fill: 'yellow',
         stroke: 'pink',
-        dataIndex: 1
+        data: data[1]
       }
     ];
   });
@@ -27,7 +55,6 @@ describe('Brushing', () => {
     let trigger;
     let config;
     let eventMock;
-    let data;
     let brushContext;
 
     beforeEach(() => {
@@ -38,33 +65,6 @@ describe('Brushing', () => {
         removeValues: sinon.spy(),
         toggleRanges: sinon.spy()
       };
-
-      data = [
-        {
-          self: {
-            source: { field: 'foo' },
-            value: 1337
-          }
-        },
-        {
-          self: {
-            source: { field: 'bar' },
-            value: 42
-          }
-        },
-        {
-          self: {
-            source: { field: 'bez' },
-            value: 33
-          }
-        },
-        {
-          self: {
-            source: { field: 'bez', type: 'quant' },
-            value: [33, 50]
-          }
-        }
-      ];
 
       config = {
         renderer: {
@@ -92,8 +92,8 @@ describe('Brushing', () => {
 
     it('should bin multiple collisions into a single brush call', () => {
       config.renderer.itemsAt.returns([
-        { node: { dataIndex: 0 } },
-        { node: { dataIndex: 1 } }
+        { node: { data: data[0] } },
+        { node: { data: data[1] } }
       ]);
 
       resolveTapEvent({ e: eventMock, t: trigger, config });
@@ -141,13 +141,13 @@ describe('Brushing', () => {
       expect(brushContext.toggleValues).to.have.been.calledWith([]);
     });
 
-    it('should default to "self" if no data context is configured', () => {
-      config.renderer.itemsAt.returns([{ node: { dataIndex: 0 } }]);
+    it('should default to "" if no data context is configured', () => {
+      config.renderer.itemsAt.returns([{ node: { data: data[0] } }]);
       trigger.data = undefined;
 
       resolveTapEvent({ e: eventMock, t: trigger, config });
 
-      expect(brushContext.toggleValues.args[0][0]).to.deep.equal([{ key: data[0].self.source.field, value: data[0].self.value }]);
+      expect(brushContext.toggleValues.args[0][0]).to.deep.equal([{ key: data[0].source.field, value: data[0].value }]);
     });
 
     it('should not attempt to resolve any collisions if event origin is outside the component area', () => {
@@ -161,7 +161,7 @@ describe('Brushing', () => {
 
     describe('should use configured action', () => {
       beforeEach(() => {
-        config.renderer.itemsAt.returns([{ node: { dataIndex: 0 } }]);
+        config.renderer.itemsAt.returns([{ node: { data: data[0] } }]);
       });
 
       it('add', () => {
@@ -217,6 +217,8 @@ describe('Brushing', () => {
     let brusherStub;
 
     beforeEach(() => {
+      nodes[0].data = data[0];
+      nodes[1].data = data[1];
       dummyComponent = {
         chart: {
           brush: sinon.stub()
@@ -307,7 +309,7 @@ describe('Brushing', () => {
               type: 'circle',
               fill: 'yellow',
               stroke: 'updateThis',
-              dataIndex: 0
+              data: data[0]
             },
             {
               type: 'container',
@@ -316,7 +318,7 @@ describe('Brushing', () => {
                   type: 'line',
                   fill: 'yellow',
                   stroke: 'updateThis',
-                  dataIndex: 0
+                  data: data[0]
                 }
               ]
             }

@@ -1,12 +1,8 @@
-import init, { qDataset } from './q';
-import { numberFormat as qNumberFormatter, timeFormat as qTimeFormatter } from './formatter';
-import qBrushHelper from './brush/q-brush';
+import data from './data';
+// import qBrushHelper from './brush/q-brush';
 
-export default function initialize(picasso) {
-  init(picasso);
-  picasso.data('q', qDataset);
-  picasso.formatter('q-number', qNumberFormatter);
-  picasso.formatter('q-time', qTimeFormatter);
-}
+module.exports = function initialize(picasso) {
+  picasso.data('q', data);
+};
 
-initialize.qBrushHelper = qBrushHelper;
+// module.exports.qBrushHelper = qBrushHelper;

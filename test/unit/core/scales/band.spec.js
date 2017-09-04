@@ -3,38 +3,44 @@ import band from '../../../../src/core/scales/band';
 describe('OrdinalScale', () => {
   let scale;
   beforeEach(() => {
-    scale = band();
+    // scale = band();
   });
 
   it('should have empty domain as default', () => {
+    scale = band();
     expect(scale.domain()).to.deep.equal([]);
     expect(scale.range()).to.deep.equal([0, 1]);
   });
 
   describe('with input settings', () => {
-    let fieldValues;
+    let items;
     let settings;
-    const fields = [{ values: () => fieldValues }];
-    const dataset = { map: () => ['data'] };
+    const fields = [];
+    const dataset = {
+      fields: [{}],
+      items
+    };
     beforeEach(() => {
-      fieldValues = [];
+      items = [];
       settings = {};
-      scale = band(settings, fields, dataset);
+      // scale = band(settings, dataset);
     });
 
     it('should be able to fetch data', () => {
-      expect(scale.data()).to.deep.equal(['data']);
+      const ds = {};
+      scale = band({}, ds);
+      expect(scale.data()).to.equal(ds);
     });
 
     it('should set domain to correct field values', () => {
-      fieldValues = ['A', 'B', 'C'].map(v => ({ label: v, id: v }));
-      scale = band(settings, fields, dataset);
+      items = ['A', 'B', 'C'].map(v => ({ value: v }));
+      scale = band(settings, { fields: [], items });
       expect(scale.domain()).to.deep.equal(['A', 'B', 'C']);
     });
 
     it('should return correct field values', () => {
-      fieldValues = ['A', 'B', 'C'].map(v => ({ label: v, id: v }));
-      scale = band(settings, fields, dataset);
+      items = ['A', 'B', 'C'].map(v => ({ value: v, id: v }));
+      scale = band(settings, { fields: [], items });
       expect(scale('A')).to.equal(0);
       expect(scale('B')).to.equal(1 / 3);
       expect(scale('C')).to.equal(2 / 3);
@@ -42,10 +48,10 @@ describe('OrdinalScale', () => {
 
     describe('with maxPxStep', () => {
       it('with start align should adjust correctly', () => {
-        fieldValues = ['A', 'B'].map(v => ({ label: v, id: v }));
+        items = ['A', 'B'].map(v => ({ value: v, id: v }));
         settings.maxPxStep = 10;
         settings.align = 0;
-        scale = band(settings, fields, dataset);
+        scale = band(settings, { fields: [], items });
         const pxScale = scale.pxScale(100);
         expect(pxScale.step()).to.approximately(0.1, 0.000001);
         expect(pxScale('A')).to.equals(0.0);
@@ -53,7 +59,7 @@ describe('OrdinalScale', () => {
       });
 
       it('with padding should return correct step size', () => {
-        fieldValues = ['A', 'B'].map(v => ({ label: v, id: v }));
+        items = ['A', 'B'].map(v => ({ value: v, id: v }));
         settings.maxPxStep = 10;
         settings.padding = 0.1;
         scale = band(settings, fields, dataset);
@@ -62,11 +68,11 @@ describe('OrdinalScale', () => {
       });
 
       it('with center align and padding should return correct step size', () => {
-        fieldValues = ['A', 'B'].map(v => ({ label: v, id: v }));
+        items = ['A', 'B'].map(v => ({ value: v, id: v }));
         settings.maxPxStep = 10;
         settings.paddingOuter = 1;
         settings.align = 0.5;
-        scale = band(settings, fields, dataset);
+        scale = band(settings, { fields: [], items });
         const pxScale = scale.pxScale(100);
         expect(pxScale('A')).to.approximately(0.4, 0.000001);
         expect(pxScale('B')).to.approximately(0.5, 0.000001);

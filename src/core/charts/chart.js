@@ -7,6 +7,7 @@ import {
   isValidTapEvent
 } from '../utils/event-type';
 import { getShapeType } from '../utils/shapes';
+import datasources from '../data/data';
 import buildFormatters, { getOrCreateFormatter } from './formatter';
 import { builder as buildScales, getOrCreateScale } from './scales';
 import buildScroll, { getOrCreateScrollApi } from './scroll-api';
@@ -130,7 +131,7 @@ function addComponentDelta(shape, containerBounds, componentBounds) {
 function chart(definition, context) {
   let {
     element,
-    data = {},
+    data = [],
     settings = {},
     on = {}
   } = definition;
@@ -154,7 +155,7 @@ function chart(definition, context) {
   let currentScrollApis = null; // Build scroll apis
   let currentInteractions = [];
 
-  let dataset = [];
+  let dataset = () => {};
   const brushes = {};
   let stopBrushing = false;
 
@@ -253,12 +254,9 @@ function chart(definition, context) {
       scroll = {}
     } = _settings;
 
-    dataset = registries.data(_data.type)(_data.data);
+    dataset = datasources(_data, { logger });
     if (!partialData) {
       Object.keys(brushes).forEach(b => brushes[b].clear());
-    }
-    if (settings.logger) {
-      logger.level(settings.logger.level);
     }
     currentScales = buildScales(scales, dataset, { scale: registries.scale, theme });
     currentFormatters = buildFormatters(formatters, dataset, { formatter: registries.formatter, theme });
@@ -534,7 +532,7 @@ function chart(definition, context) {
    * The data set for this chart
    * @return {dataset}
    */
-  instance.data = () => instance.dataset();
+  instance.data = f => dataset(f);
 
   /**
    * Get all shapes associated with the provided context
@@ -667,7 +665,7 @@ function chart(definition, context) {
    *    {
    *      key: 'key1',
    *      contexts: ['myContext'],
-   *      data: ['self'],
+   *      data: [''],
    *      action: 'add'
    *    }
    *  ]
@@ -699,13 +697,7 @@ function chart(definition, context) {
     return getOrCreateScrollApi(name, currentScrollApis);
   };
 
-  /**
-   * The data set for this chart
-   * @returns {Object}
-   */
-  instance.dataset = function datasetFn() {
-    return dataset;
-  };
+  instance.dataset = f => dataset(f); // TODO - deprecate
 
   /**
    * Get the all registered scales
@@ -745,7 +737,7 @@ function chart(definition, context) {
    * instance.scale({ source: '0/1', type: 'linear' }); // Create a new scale
    */
   instance.scale = function scale(v) {
-    return getOrCreateScale(v, currentScales, dataset, { scale: registries.scale, theme });
+    return getOrCreateScale(v, currentScales, dataset, { scale: registries.scale, theme, logger });
   };
 
   /**

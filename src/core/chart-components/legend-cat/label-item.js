@@ -105,7 +105,6 @@ export function labelItem({
   renderingArea = typeof renderingArea === 'undefined' ? { x: 0, y: 0, width: 0, height: 0 } : renderingArea;
   margin = resolveMargin(margin);
   symbolPadding = typeof symbolPadding === 'undefined' ? margin.right : symbolPadding;
-  const dataIndex = data && data.index;
 
   const labelMeasures = renderer.measureText({
     text: labelText,
@@ -136,8 +135,7 @@ export function labelItem({
     y,
     width: containerWidth,
     height: innerHeight + margin.height,
-    data,
-    dataIndex
+    data
   };
 
   container.collider = {
@@ -156,8 +154,7 @@ export function labelItem({
     size: innerHeight,
     fill: typeof shape === 'object' && shape.fill ? shape.fill : color,
     stroke: typeof shape === 'object' && shape.stroke ? shape.stroke : color,
-    data,
-    dataIndex
+    data
   },
     shape
   );
@@ -173,8 +170,7 @@ export function labelItem({
     fill,
     fontSize: `${fontSizeMod}px`,
     fontFamily,
-    data,
-    dataIndex
+    data
   };
 
   container.children = [symbol, label].filter(c => !!c);

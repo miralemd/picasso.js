@@ -138,6 +138,8 @@ function createButtons({ HORIZONTAL, rect, buttonRectMinus, buttonRectPlus, butt
 function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect, chart, index = 0 }) {
   let title;
   const domain = scale.domain();
+  const dataItems = scale.data().items;
+  // const domainLabels = scale.labels ? scale.labels() : null;
 
   const THRESHOLD = scale.type === 'threshold-color';
   let sourceField;
@@ -195,11 +197,13 @@ function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect,
     nextXitem += prevContainer.width || 0;
     nextYitem += prevContainer.height || 0;
 
-    let data = {
-      value: cat,
-      index: i,
-      color: scale(cat)
-    };
+    const data = dataItems[i];
+
+    // let data = {
+    //   value: cat,
+    //   index: i,
+    //   color: scale(cat)
+    // };
 
     if (THRESHOLD) {
       data.domain = scale.domain();

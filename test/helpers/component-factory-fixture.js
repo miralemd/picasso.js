@@ -20,9 +20,9 @@ export default function componentFactoryFixture() {
       }),
       scale: sandbox.stub(),
       dataset: sandbox.stub(),
-      table: sandbox.stub(),
       container: sandbox.stub(),
       formatter: sandbox.stub(),
+      logger: sandbox.stub(),
       element: elementMock()
     };
 

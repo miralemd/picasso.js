@@ -36,18 +36,17 @@ describe('line marker', () => {
     componentFixture = componentFactoryFixture();
 
     chart = componentFixture.mocks().chart;
-    chart.dataset = () => ({
-      map: componentFixture.sandbox().stub()
-    });
-    chart.dataset().map.returns([{}]);
+    // chart.dataset = () => ({
+    //   extract: componentFixture.sandbox().stub()
+    // });
+    // chart.dataset().extract.returns([{}]);
     chart.scale.withArgs({ scale: 'x' }).returns(xScale);
     chart.scale.withArgs({ scale: 'y' }).returns(yScale);
   });
 
   it('should not render lines with default settings and no scales', () => {
     const config = {
-      shapeFn,
-      data: { mapTo: 'does not matter', groupBy: 'does not matter' }
+      shapeFn
     };
 
     componentFixture.simulateCreate(lineComponent, config);
@@ -59,7 +58,6 @@ describe('line marker', () => {
   it('should render lines with default settings and scales', () => {
     const config = {
       shapeFn,
-      data: { mapTo: 'does not matter', groupBy: 'does not matter' },
       x: { scale: 'x' },
       y: { scale: 'y' }
     };
@@ -94,7 +92,6 @@ describe('line marker', () => {
   it('should render X scale lines only', () => {
     const config = {
       shapeFn,
-      data: { mapTo: 'does not matter', groupBy: 'does not matter' },
       x: { scale: 'x' }
     };
 
@@ -118,7 +115,6 @@ describe('line marker', () => {
   it('should render Y scale lines only', () => {
     const config = {
       shapeFn,
-      data: { mapTo: 'does not matter', groupBy: 'does not matter' },
       y: { scale: 'y' }
     };
 
@@ -142,7 +138,6 @@ describe('line marker', () => {
   it('should render minorTicks', () => {
     const config = {
       shapeFn,
-      data: { mapTo: 'does not matter', groupBy: 'does not matter' },
       x: { scale: 'x' },
       y: { scale: 'y' },
       minorTicks: {
@@ -183,7 +178,6 @@ describe('line marker', () => {
   it('should not render disabled ticks', () => {
     const config = {
       shapeFn,
-      data: { mapTo: 'does not matter', groupBy: 'does not matter' },
       x: { scale: 'x' },
       y: { scale: 'y' },
       minorTicks: {

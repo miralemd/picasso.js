@@ -9,11 +9,12 @@ describe('box marker', () => {
   let opts;
 
   beforeEach(() => {
-    const table = {
-      findField: sinon.stub()
-    };
+    // const table = {
+    //   findField: sinon.stub()
+    // };
     const dataset = {
-      map: sinon.stub()
+      field: sinon.stub(),
+      extract: sinon.stub()
     };
     opts = {
       inner: { x: 10, y: 20, width: 100, height: 200 }
@@ -24,16 +25,14 @@ describe('box marker', () => {
     shapeFn = (type, p) => { p.type = type; return p; };
     chart = componentFixture.mocks().chart;
     chart.dataset.returns(dataset);
-    chart.table.returns(table);
+    // chart.table.returns(table);
   });
 
   it('should not render boxes with default settings', () => {
     const config = {
       shapeFn,
-      data: { mapTo: 'does not matter', groupBy: 'does not matter' }
+      data: []
     };
-
-    chart.dataset().map.returns([{}]);
 
     componentFixture.simulateCreate(boxMarker, config);
     rendererOutput = componentFixture.simulateRender(opts);
@@ -44,7 +43,9 @@ describe('box marker', () => {
   it('should render a single basic box with minor custom settings', () => {
     const config = {
       shapeFn,
-      data: { mapTo: 'does not matter since returned data is mocked', groupBy: 'does not matter' },
+      data: {
+        extract: {}
+      },
       settings: {
         major: { scale: 'x' },
         minor: { scale: 'y' },
@@ -63,7 +64,7 @@ describe('box marker', () => {
       }
     };
 
-    chart.dataset().map.returns([{
+    chart.dataset().extract.returns([{
       self: { value: 0.5 },
       min: { value: 0.2 },
       start: { value: 0.4 },
@@ -85,7 +86,6 @@ describe('box marker', () => {
     expect(rendererOutput).to.deep.equal([
       {
         type: 'container',
-        dataIndex: 0,
         data: {
           self: { value: 0.5 },
           min: { value: 0.2 },
@@ -99,7 +99,6 @@ describe('box marker', () => {
         },
         children: [
           {
-            dataIndex: 0,
             data: {
               self: { value: 0.5 },
               min: { value: 0.2 },
@@ -125,7 +124,6 @@ describe('box marker', () => {
             }
           },
           {
-            dataIndex: 0,
             data: {
               self: { value: 0.5 },
               min: { value: 0.2 },
@@ -147,7 +145,6 @@ describe('box marker', () => {
             }
           },
           {
-            dataIndex: 0,
             data: {
               self: { value: 0.5 },
               min: { value: 0.2 },
@@ -169,7 +166,6 @@ describe('box marker', () => {
             }
           },
           {
-            dataIndex: 0,
             data: {
               self: { value: 0.5 },
               min: { value: 0.2 },
@@ -193,7 +189,6 @@ describe('box marker', () => {
           {
             cx: 75,
             cy: 40,
-            dataIndex: 0,
             data: {
               self: { value: 0.5 },
               min: { value: 0.2 },
@@ -220,7 +215,6 @@ describe('box marker', () => {
           {
             cx: 75,
             cy: 160,
-            dataIndex: 0,
             data: {
               self: { value: 0.5 },
               min: { value: 0.2 },
@@ -252,7 +246,7 @@ describe('box marker', () => {
   it('should accept only end variable and draw a simple bar chart', () => {
     const config = {
       shapeFn,
-      data: { mapTo: 'does not matter since returned data is mocked', groupBy: 'does not matter' },
+      data: { extract: {} },
       settings: {
         major: { scale: 'x' },
         minor: { scale: 'y' },
@@ -262,7 +256,7 @@ describe('box marker', () => {
       }
     };
 
-    chart.dataset().map.returns([{
+    chart.dataset().extract.returns([{
       self: { value: 0.5 },
       start: { value: 0 },
       end: { value: 0.6 }
@@ -281,7 +275,6 @@ describe('box marker', () => {
     expect(rendererOutput).to.deep.equal([
       {
         type: 'container',
-        dataIndex: 0,
         data: {
           self: { value: 0.5 },
           start: { value: 0 },
@@ -292,7 +285,6 @@ describe('box marker', () => {
         },
         children: [
           {
-            dataIndex: 0,
             data: {
               self: { value: 0.5 },
               start: { value: 0 },
@@ -322,7 +314,7 @@ describe('box marker', () => {
   it('should accept start and end variable to draw a gantt chart', () => {
     const config = {
       shapeFn,
-      data: { mapTo: 'does not matter since returned data is mocked', groupBy: 'does not matter' },
+      data: { extract: {} },
       settings: {
         major: { scale: 'x' },
         minor: { scale: 'y' },
@@ -332,7 +324,7 @@ describe('box marker', () => {
       }
     };
 
-    chart.dataset().map.returns([{
+    chart.dataset().extract.returns([{
       self: { value: 0.5 },
       start: { value: 0.2 },
       end: { value: 0.6 }
@@ -351,7 +343,6 @@ describe('box marker', () => {
     expect(rendererOutput).to.deep.equal([
       {
         type: 'container',
-        dataIndex: 0,
         data: {
           self: { value: 0.5 },
           start: { value: 0.2 },
@@ -362,7 +353,6 @@ describe('box marker', () => {
         },
         children: [
           {
-            dataIndex: 0,
             data: {
               self: { value: 0.5 },
               start: { value: 0.2 },
@@ -392,7 +382,7 @@ describe('box marker', () => {
   it('should accept start, end, min and max values, without whiskers', () => {
     const config = {
       shapeFn,
-      data: { mapTo: 'does not matter since returned data is mocked', groupBy: 'does not matter' },
+      data: { extract: {} },
       settings: {
         major: { scale: 'x' },
         minor: { scale: 'y' },
@@ -405,7 +395,7 @@ describe('box marker', () => {
       }
     };
 
-    chart.dataset().map.returns([{
+    chart.dataset().extract.returns([{
       self: { value: 0.5 },
       start: { value: 0.4 },
       end: { value: 0.6 },
@@ -426,7 +416,6 @@ describe('box marker', () => {
     expect(rendererOutput).to.deep.equal([
       {
         type: 'container',
-        dataIndex: 0,
         data: {
           self: { value: 0.5 },
           start: { value: 0.4 },
@@ -439,7 +428,6 @@ describe('box marker', () => {
         },
         children: [
           {
-            dataIndex: 0,
             data: {
               self: { value: 0.5 },
               start: { value: 0.4 },
@@ -464,7 +452,6 @@ describe('box marker', () => {
             }
           },
           {
-            dataIndex: 0,
             data: {
               self: { value: 0.5 },
               start: { value: 0.4 },
@@ -485,7 +472,6 @@ describe('box marker', () => {
             }
           },
           {
-            dataIndex: 0,
             data: {
               self: { value: 0.5 },
               start: { value: 0.4 },
@@ -513,7 +499,7 @@ describe('box marker', () => {
   it('should not have the squeeze bug', () => {
     const config = {
       shapeFn,
-      data: { mapTo: 'does not matter since returned data is mocked', groupBy: 'does not matter' },
+      data: { extract: {} },
       settings: {
         major: { scale: 'x' },
         minor: { scale: 'y' },
@@ -568,7 +554,7 @@ describe('box marker', () => {
       inner: { x: 0, y: 0, width: 200, height: 20 }
     };
 
-    chart.dataset().map.returns(dataset);
+    chart.dataset().extract.returns(dataset);
 
     const xDomain = [1, 2, 3, 4, 5];
     const xScale = v => xDomain.indexOf(v) * 0.2;
@@ -597,7 +583,6 @@ describe('box marker', () => {
         maxWidthPx: 100,
         minHeightPx: 1,
         minWidthPx: 1,
-        dataIndex: 0,
         data: {
           self: { value: 1 },
           start: { value: 0.4 },
@@ -622,7 +607,6 @@ describe('box marker', () => {
         maxWidthPx: 100,
         minHeightPx: 1,
         minWidthPx: 1,
-        dataIndex: 1,
         data: {
           self: { value: 2 },
           start: { value: 0.4 },
@@ -647,7 +631,6 @@ describe('box marker', () => {
         maxWidthPx: 100,
         minHeightPx: 1,
         minWidthPx: 1,
-        dataIndex: 2,
         data: {
           self: { value: 3 },
           start: { value: 0.4 },
@@ -672,7 +655,6 @@ describe('box marker', () => {
         maxWidthPx: 100,
         minHeightPx: 1,
         minWidthPx: 1,
-        dataIndex: 3,
         data: {
           self: { value: 4 },
           start: { value: 0.4 },
@@ -697,7 +679,6 @@ describe('box marker', () => {
         maxWidthPx: 100,
         minHeightPx: 1,
         minWidthPx: 1,
-        dataIndex: 4,
         data: {
           self: { value: 5 },
           start: { value: 0.4 },

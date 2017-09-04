@@ -28,11 +28,9 @@ describe('Brushing', () => {
       element = createElement();
 
       data = [
-        [
-          ['Product', 'Cost'],
-          ['Cars', 1],
-          ['Trucks', 2]
-        ]
+        ['Product', 'Cost'],
+        ['Cars', 1],
+        ['Trucks', 2]
       ];
 
       brush = {
@@ -55,18 +53,29 @@ describe('Brushing', () => {
       pointMarker = {
         type: 'point-marker',
         data: {
-          mapTo: {
-            x: {
-              source: '/0/0', reducer: 'first', type: 'qual'
-            },
-            y: {
-              source: '/0/1'
+          extract: {
+            field: 0,
+            props: {
+              x: {
+                field: 0
+              },
+              y: {
+                field: 1
+              }
             }
-          },
-          groupBy: {
-            source: '/0/0',
-            attribute: '$index'
           }
+          // mapTo: {
+          //   x: {
+          //     source: '/0/0', reducer: 'first', type: 'qual'
+          //   },
+          //   y: {
+          //     source: '/0/1'
+          //   }
+          // },
+          // groupBy: {
+          //   source: '/0/0',
+          //   attribute: '$index'
+          // }
         },
         settings: {
           x: {
@@ -84,15 +93,16 @@ describe('Brushing', () => {
       boxMarker = {
         type: 'box-marker',
         data: {
-          mapTo: {
-            min: { source: '/0/1' },
-            start: { source: '/0/2' },
-            med: { source: '/0/3' },
-            end: { source: '/0/4' },
-            max: { source: '/0/5' }
-          },
-          groupBy: {
-            source: '/0/0'
+          extract: {
+            field: 0,
+            props: {
+              self: { field: 0 },
+              min: { field: 1 },
+              start: { field: 2 },
+              med: { field: 3 },
+              end: { field: 4 },
+              max: { field: 5 }
+            }
           }
         },
         settings: {
@@ -115,10 +125,10 @@ describe('Brushing', () => {
       settings = {
         scales: {
           d0: {
-            source: '/0/0'
+            data: { field: 0 }
           },
           m0: {
-            source: '/0/1',
+            data: { field: 1 },
             expand: 1 // Expand so that shapes dont end up at the boundaries
           }
         },
@@ -157,11 +167,9 @@ describe('Brushing', () => {
         pointMarker.settings.x = undefined;
         settings.components.push(pointMarker);
         data = [
-          [
-            ['Product', 'Cost'],
-            ['Cars', 1],
-            ['Trucks', 1]
-          ]
+          ['Product', 'Cost'],
+          ['Cars', 1],
+          ['Trucks', 1]
         ];
 
         const instance = chart({
@@ -191,10 +199,8 @@ describe('Brushing', () => {
         settings.components.push(pointMarker);
         settings.components.push(pointMarker);
         data = [
-          [
-            ['Product', 'Cost'],
-            ['Cars', 1]
-          ]
+          ['Product', 'Cost'],
+          ['Cars', 1]
         ];
 
         const instance = chart({
@@ -253,15 +259,15 @@ describe('Brushing', () => {
 
       it('box-marker', () => {
         data = [
-          [
-            ['Product', 'm0', 'm1', 'm2', 'm3', 'm4'],
-            ['Cars', 0.15, 0.3, 0.45, 0.5, 0.8],
-            ['Trucks', 0.25, 0.3, 0.5, 0.7, 0.9],
-            ['Planes', 0.1, 0.3, 0.6, 0.65, 0.69]
-          ]
+          ['Product', 'm0', 'm1', 'm2', 'm3', 'm4'],
+          ['Cars', 0.15, 0.3, 0.45, 0.5, 0.8],
+          ['Trucks', 0.25, 0.3, 0.5, 0.7, 0.9],
+          ['Planes', 0.1, 0.3, 0.6, 0.65, 0.69]
         ];
         settings.scales.mn = {
-          source: ['/0/1', '/0/2', '/0/3', '/0/4', '/0/5'],
+          data: {
+            fields: ['m0', 'm1', 'm2', 'm3', 'm4']
+          },
           expand: 0.1
         };
         settings.components.push(boxMarker);

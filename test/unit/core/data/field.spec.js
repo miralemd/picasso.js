@@ -35,7 +35,7 @@ describe('Field', () => {
     });
 
     it('should return values', () => {
-      expect(f.values()).to.deep.equal(['a', 'c', 'a']);
+      expect(f.items()).to.deep.equal(['a', 'c', 'a']);
     });
   });
 
@@ -75,7 +75,7 @@ describe('Field', () => {
     });
 
     it('should return values', () => {
-      expect(f.values()).to.deep.equal([1, 6, 6]);
+      expect(f.items()).to.deep.equal([1, 6, 6]);
     });
   });
 });

@@ -105,7 +105,7 @@ describe('picasso.js', () => {
         updated: updatedFn
       });
       chart.update({
-        data: {}
+        data: []
       });
 
       expect(updatedFn).to.have.been.called;

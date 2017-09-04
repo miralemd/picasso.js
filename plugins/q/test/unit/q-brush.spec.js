@@ -1,4 +1,4 @@
-import qBrush, { extractFieldFromId } from '../../../plugins/q/src/brush/q-brush';
+import qBrush, { extractFieldFromId } from '../../src/brush/q-brush';
 
 describe('q-brush', () => {
   let brush;

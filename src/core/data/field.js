@@ -10,6 +10,7 @@ const accessors = {
   type: data => data.type,
   title: data => data.title,
   values: data => data.values,
+  value: v => v,
   formatter: () => formatterFn('d3-number')('')
 };
 
@@ -21,71 +22,65 @@ const accessors = {
  * @return {field} Data field
  */
 export default function field(data, {
-  id,
   min = accessors.min,
   max = accessors.max,
   type = accessors.type,
   tags = accessors.tags,
   title = accessors.title,
   values = accessors.values,
+  value = accessors.value,
   formatter = accessors.formatter
 } = {}) {
-  /**
-   * @alias field
-   * @param {object} d Field data
-   */
-  function fn() {
-    return fn;
-  }
+  const f = {
+    /**
+     * Returns the current data used in this field.
+     * @return {object}
+     */
+    data: () => data,
 
-  fn.id = () => id;
+    /**
+     * Returns the tags.
+     * @return {string[]}
+     */
+    tags: () => tags(data),
 
-  /**
-   * Returns the current data used in this field.
-   * @return {object}
-   */
-  fn.data = () => data;
+    /**
+     * Returns this field's type: 'dimension' or 'measure'.
+     * @return {string}
+     */
+    type: () => type(data),
 
-  /**
-   * Returns the tags.
-   * @return {string[]}
-   */
-  fn.tags = () => tags(data);
+    /**
+     * Returns the min value of this field.
+     * @return {number}
+     */
+    min: () => min(data),
 
-  /**
-   * Returns this field's type: 'dimension' or 'measure'.
-   * @return {string}
-   */
-  fn.type = () => type(data);
+    /**
+     * Returns the max value of this field.
+     * @return {number}
+     */
+    max: () => max(data),
 
-  /**
-   * Returns the min value of this field.
-   * @return {number}
-   */
-  fn.min = () => min(data);
+    /**
+     * Returns this field's title.
+     * @return {string} [description]
+     */
+    title: () => title(data),
 
-  /**
-   * Returns the max value of this field.
-   * @return {number}
-   */
-  fn.max = () => max(data);
+    /**
+     * Returns the values of this field.
+     * @return {object[]}
+     */
+    items: () => values(data),
 
-  /**
-   * Returns this field's title.
-   * @return {string} [description]
-   */
-  fn.title = () => title(data);
+    /**
+     * Returns a formatter adapted to the content of this field.
+     */
+    formatter: () => formatter(data),
 
-  /**
-   * Returns the values of this field.
-   * @return {object[]}
-   */
-  fn.values = () => values(data);
+    value
+  };
 
-  /**
-   * Returns a formatter adapted to the content of this field.
-   */
-  fn.formatter = () => formatter(data);
-
-  return fn();
+  return f;
 }

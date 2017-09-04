@@ -1,6 +1,6 @@
 import resolve from '../../../../../src/core/data/json-path-mashup/json-path-resolver';
 
-describe('JSON Path resolver', () => {
+describe('JSON Path mashup resolver', () => {
   it('should resolve basic path', () => {
     let p = '/path/to/paradise',
       obj = {

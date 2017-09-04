@@ -1,53 +1,18 @@
-import resolve from './json-path-resolver';
-import field from './field';
-
 import {
-  findField,
-  getPropsInfo
+  getPropsInfo,
+  findField
 } from './util';
 
-const filters = {
-  numeric: values => values.filter(v => typeof v === 'number' && !isNaN(v))
-};
-
-function createFields(matrix, { cache }) {
-  if (!matrix) {
-    return;
-  }
-  const headers = matrix[0]; // assume headers are in first row TODO - add headers config
-
-  const content = matrix.slice(1);
-
-  headers.forEach((a, i) => {
-    const values = resolve(`//${i}`, content);
-    const numericValues = filters.numeric(values);
-    const isMeasure = numericValues.length > 0;
-    const type = isMeasure ? 'measure' : 'dimension';
-    const min = isMeasure ? Math.min(...numericValues) : NaN;
-    const max = isMeasure ? Math.max(...numericValues) : NaN;
-    // TODO Deal with tags
-
-    cache.fields.push(field({
-      title: headers[i],
-      values,
-      min,
-      max,
-      type,
-      value: v => v
-    }));
-  });
-}
-
-function extract(config, rawData, cache) {
+export default function transformStraight(config, cube, cache) {
   const cfgs = Array.isArray(config) ? config : [config];
   let dataItems = [];
   cfgs.forEach((cfg) => {
-    if (typeof cfg.field !== 'undefined') {
-      const f = findField(cfg.field, { cache });
+    if (cfg.field) {
+      const f = findField(cfg.field, { cube, cache });
       if (!f) {
         throw Error(`Field '${cfg.field}' not found`);
       }
-      const { props, main } = getPropsInfo(cfg, rawData, cache);
+      const { props, main } = getPropsInfo(cfg, cube, cache);
       const propsArr = Object.keys(props);
 
       const track = !!cfg.trackBy;
@@ -71,7 +36,7 @@ function extract(config, rawData, cache) {
           ret[prop] = {
             value: typeof p.value === 'function' ? p.value(value) : typeof p.value !== 'undefined' ? p.value : value  // eslint-disable-line no-nested-ternary
           };
-          if (typeof p.source !== 'undefined') {
+          if (p.source) {
             ret[prop].source = { field: p.source };
           }
         });
@@ -116,33 +81,4 @@ function extract(config, rawData, cache) {
     }
   });
   return dataItems;
-}
-
-/**
- * Create a new dataset with default settings
- * @alias dataset
- * @memberof picasso.data
- * @ignore
- * @return {dataset}
- */
-export default function dataset(matrix) {
-  const cache = {
-    fields: []
-  };
-
-  const data = {
-    raw: () => matrix,
-    field: query => findField(query, {
-      cache,
-      matrix
-    }),
-    extract: config => extract(config, matrix, cache),
-    hierarchy: () => null
-  };
-
-  createFields(matrix, {
-    cache
-  });
-
-  return data;
 }

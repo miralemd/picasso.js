@@ -104,7 +104,6 @@ function placeInVerticalBars({
   measurements,
   texts,
   rect,
-  data,
   fitsHorizontally
 }) {
   const labels = [];
@@ -128,7 +127,7 @@ function placeInVerticalBars({
   for (let i = 0, len = nodes.length; i < len; i++) {
     bounds = null;
     node = nodes[i];
-    d = data[node.dataIndex];
+    d = node.data;
     nodeTexts = texts[i];
     direction = typeof stngs.direction === 'function' ? stngs.direction(d) : stngs.direction || 'up';
     for (let j = 0; j < nodeTexts.length; j++) {
@@ -261,7 +260,7 @@ export function bars({
     if (!collisions.testRectRect(bounds, rect)) {
       continue;
     }
-    d = data[node.dataIndex];
+    d = node.data;
     for (let j = 0; j < labelSettings.length; j++) {
       lblStng = labelSettings[j];
       text = typeof lblStng.label === 'function' ? lblStng.label(d) : '';

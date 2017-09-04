@@ -65,7 +65,7 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
 
     // Calculate the minimum data point distance
     if (major && !major.bandwidth && typeof majorRef === 'string') {
-      const pointCoords = data.map(d => d[majorRef].value);
+      const pointCoords = data.items.map(d => d[majorRef].value);
 
       // Sort values
       pointCoords.sort((a, b) => a - b);
@@ -82,7 +82,7 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
       minDataPointDistance = minSpace;
     }
 
-    data.forEach((d, i, all) => {
+    data.items.forEach((d, i, all) => {
       const obj = {};
       Object.keys(resolvedStyle).forEach((part) => {
         // obj[part] = resolveForDataObject(resolvedStyle[part], d, i);
@@ -98,7 +98,6 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
         start: minor && 'start' in d ? minor(d.start.value) : null,
         end: minor && 'end' in d ? minor(d.end.value) : null,
         med: minor && 'med' in d ? minor(d.med.value) : null,
-        dataIndex: i,
         data: d
       };
 
@@ -145,7 +144,6 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
     items.forEach((item) => {
       const shapes = buildShapes({ item, blueprint, doodle });
       shapes.forEach((shape) => {
-        shape.dataIndex = item.dataIndex;
         shape.data = item.data;
         shape.collider = { type: null };
       });
@@ -156,17 +154,16 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
       return output;
     }
 
-    return items.map((item, idx) => {
+    return items.map((item) => {
       const container = {
         type: 'container',
-        dataIndex: idx,
         data: item.data,
         collider: { type: 'bounds' },
         children: []
       };
       for (let i = 0; i < output.length; i++) {
         const o = output[i];
-        if (o.dataIndex === container.dataIndex) {
+        if (o.data === container.data) {
           container.children.push(o);
           output.splice(i, 1);
           i--;

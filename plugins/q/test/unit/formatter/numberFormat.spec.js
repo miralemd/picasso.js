@@ -1,4 +1,4 @@
-import formatter from '../../../../plugins/q/src/formatter/numberFormat';
+import formatter from '../../../src/formatter/numberFormat';
 
 describe('numberFormat', () => {
   describe('formatter', () => {

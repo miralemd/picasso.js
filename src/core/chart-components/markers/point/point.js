@@ -161,7 +161,6 @@ function createDisplayPoints(dataPoints, { x, y, width, height }, pointSize, sha
     }
     const shape = shapeFn(shapeSpec);
 
-    shape.dataIndex = p.dataIndex;
     shape.data = p.data;
     return shape;
   });
@@ -192,10 +191,9 @@ const pointMarkerComponent = {
     updateScaleSize(this.local, 'x', width);
     updateScaleSize(this.local, 'y', height);
     const limits = extend({}, SIZE_LIMITS, this.settings.settings.sizeLimits);
-    const points = data.map((p, i, all) => {
+    const points = (data.items || []).map((p, i, all) => {
       const obj = resolveForItem(p, this.local, all);
       obj.errorShape = resolveForItem(p, this.local.errorShape, all);
-      obj.dataIndex = i;
       obj.data = p;
       return obj;
     });

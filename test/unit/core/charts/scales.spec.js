@@ -44,41 +44,77 @@ describe('scales', () => {
     deps.scale.has.withArgs('linear').returns(true);
     deps.scale.get.returns(scaleFn);
     const dataset = {
-      findField: sinon.stub()
+      field: sinon.stub()
     };
+    const datasetFn = () => dataset;
 
-    dataset.findField.withArgs('m1').returns({ field: {
+    dataset.field.withArgs('m1').returns({
       type: () => 'measure',
       min: () => 0,
       max: () => 1
-    } });
-    dataset.findField.withArgs('m2').returns({ field: {
+    });
+    dataset.field.withArgs('m2').returns({
       type: () => 'measure',
       min: () => 0,
       max: () => 1
-    } });
+    });
     const s = create({
-      source: ['m1', 'm2']
-    }, dataset, deps);
+      data: {
+        fields: ['m1', 'm2']
+      }
+    }, datasetFn);
     expect(s.type).to.equal('linear');
+  });
+
+  it('should exclude NaN values when calculating the combined min/max', () => {
+    const dataset = {
+      field: sinon.stub()
+    };
+    const datasetFn = () => dataset;
+
+    dataset.field.withArgs('m1').returns({
+      type: () => 'measure',
+      min: () => 'NaN',
+      max: () => 90
+    });
+    dataset.field.withArgs('m2').returns({
+      type: () => 'measure',
+      min: () => 13,
+      max: () => 70
+    });
+    dataset.field.withArgs('m3').returns({
+      type: () => 'measure',
+      min: () => -5,
+      max: () => 'NaN'
+    });
+    const s = create({
+      data: {
+        fields: ['m1', 'm2', 'm3']
+      }
+    }, datasetFn);
+    expect(s.min()).to.equal(-5);
+    expect(s.max()).to.equal(90);
   });
 
   it('should create band scale when source fields are dimensions', () => {
     deps.scale.has.withArgs('band').returns(true);
     deps.scale.get.returns(scaleFn);
     const dataset = {
-      findField: sinon.stub()
+      field: sinon.stub()
     };
+    const datasetFn = () => dataset;
 
-    dataset.findField.withArgs('d1').returns({ field: {
+    dataset.field.withArgs('d1').returns({
       type: () => 'dimension',
       values: () => [],
       min: () => 2015,
       max: () => 2017
-    } });
+    });
     const s = create({
-      source: ['d1']
-    }, dataset, deps);
+      data: {
+        fields: ['d1']
+      }
+    }, datasetFn);
     expect(s.type).to.equal('band');
   });
 });
