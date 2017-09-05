@@ -17,6 +17,7 @@ import componentFactory from '../component/component-factory';
 import interaction from '../interaction';
 import mediatorFactory from '../mediator';
 import NarrowPhaseCollision from '../math/narrow-phase-collision';
+import loggerFn from '../utils/logger';
 
 /**
  * @typedef Chart.Props
@@ -233,6 +234,8 @@ function chart(definition) {
     }
   };
 
+  const logger = loggerFn();
+
   const created = createCallback('created');
   const beforeMount = createCallback('beforeMount');
   const mounted = createCallback('mounted');
@@ -252,6 +255,9 @@ function chart(definition) {
     dataset = dataRegistry(_data.type)(_data.data);
     if (!partialData) {
       Object.keys(brushes).forEach(b => brushes[b].clear());
+    }
+    if (settings.logger) {
+      logger.level(settings.logger.level);
     }
     currentScales = buildScales(scales, dataset);
     currentFormatters = buildFormatters(formatters, dataset);
@@ -782,6 +788,8 @@ function chart(definition) {
     }
     return undefined;
   };
+
+  instance.logger = () => logger;
 
   /**
    * Get the all interactions instances
