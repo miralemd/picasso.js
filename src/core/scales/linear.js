@@ -81,6 +81,15 @@ function getMinMax(settings, fields) {
   };
 }
 
+function initNormScale(normScale, scale) {
+  if (normScale.instance) {
+    return;
+  }
+  normScale.instance = scale.copy();
+  normScale.instance.domain([scale.start(), scale.end()]);
+  normScale.instance.clamp(true);
+  normScale.instance.range(normScale.invert ? [1, 0] : [0, 1]);
+}
  /**
  * @alias scaleLinear
  * @memberof picasso
@@ -91,6 +100,7 @@ function getMinMax(settings, fields) {
 
 export default function scaleLinear(settings, fields) {
   const d3Scale = d3ScaleLinear();
+  const normScale = { instance: null, invert: false };
   let tickCache;
 
   /**
@@ -202,7 +212,9 @@ export default function scaleLinear(settings, fields) {
   fn.domain = function domain(values) {
     if (arguments.length) {
       d3Scale.domain(values);
-
+      if (normScale.instance) {
+        normScale.instance.domain([fn.start(), fn.end()]);
+      }
       return fn;
     }
     return d3Scale.domain();
@@ -220,15 +232,6 @@ export default function scaleLinear(settings, fields) {
     }
     return d3Scale.range();
   };
-
-  /**
-   * {@link https://github.com/d3/d3-scale#_continuous }
-   * @param { number } value A value within the domain value span
-   * @return { number } Interpolated from the range
-   */
-  // fn.get = function get(value) {
-  //   return notNumber(value) ? NaN : d3Scale(value);
-  // };
 
   /**
    * Get the first value of the domain
@@ -303,12 +306,46 @@ export default function scaleLinear(settings, fields) {
     cop.clamp(d3Scale.clamp());
     return cop;
   };
+
+  /**
+   * @param {number} d - A domain value
+   * @return {number} A normalized range output given in range 0-1
+   * @example
+   * const scale = scaleLinear().domain([0, 10]).range([0, 10000]);
+   * scale.norm(5); // Returns 0.5
+   * scale(5); // Returns 5000
+   *
+   * scale.domain([0, 2, 10]);
+   * scale.norm(5); // Returns 0.5
+   */
+  fn.norm = function norm(d) {
+    initNormScale(normScale, fn);
+
+    return normScale.instance(d);
+  };
+
+  /**
+   * @param {number} d - A normalized value in range 0-1
+   * @return {number} A corresponding domain value
+   * @example
+   * const scale = scaleLinear().domain([0, 10]).range([0, 10000]);
+   * scale.normInvert(0.5); // Returns 5
+   * scale.invert(5000); // Returns 5
+   */
+  fn.normInvert = function norm(t) {
+    initNormScale(normScale, fn);
+
+    return normScale.instance.invert(t);
+  };
+
   if (settings) {
     const stgns = generateSettings(settings, fields);
     const { mini, maxi } = getMinMax(stgns, fields);
 
     fn.domain([mini, maxi]);
     fn.range(stgns.invert ? [1, 0] : [0, 1]);
+    normScale.invert = stgns.invert;
   }
+
   return fn;
 }

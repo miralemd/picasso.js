@@ -123,6 +123,52 @@ describe('LinearScale', () => {
     expect(lin(-10)).to.equal(50);
   });
 
+  describe('norm', () => {
+    it('should output a normalized value', () => {
+      lin.domain([0, 10]).range([0, 100]);
+      expect(lin.norm(5)).to.equal(0.5);
+    });
+
+    it('should support piecewise linear values', () => {
+      lin.domain([0, 3, 10]).range([0, 50, 100]);
+      expect(lin.norm(2)).to.equal(0.2);
+    });
+
+    it('should always clamp output', () => {
+      lin.domain([0, 10]).range([0, 100]);
+      expect(lin.norm(20)).to.equal(1);
+    });
+
+    it('should sync domain changes', () => {
+      expect(lin.norm(0.5)).to.equal(0.5); // Assuming default domain [0, 1]
+      lin.domain([0, 10]).range([0, 100]);
+      expect(lin.norm(5)).to.equal(0.5);
+    });
+  });
+
+  describe('normInvert', () => {
+    it('should output a inverted value', () => {
+      lin.domain([0, 10]).range([0, 100]);
+      expect(lin.normInvert(0.5)).to.equal(5);
+    });
+
+    it('should support piecewise linear values', () => {
+      lin.domain([0, 3, 10]).range([0, 50, 100]);
+      expect(lin.normInvert(0.2)).to.equal(2);
+    });
+
+    it('should always clamp output', () => {
+      lin.domain([0, 3, 10]).range([0, 50, 100]);
+      expect(lin.normInvert(1.5)).to.equal(10);
+    });
+
+    it('should sync domain changes', () => {
+      expect(lin.normInvert(0.5)).to.equal(0.5); // Assuming default domain [0, 1]
+      lin.domain([0, 10]).range([0, 100]);
+      expect(lin.normInvert(0.5)).to.equal(5);
+    });
+  });
+
   describe('Color Scale', () => {
     it('should scale two rgb colors', () => {
       const c = lin.domain([0, 1]).range(['red', 'blue'])(0.5);

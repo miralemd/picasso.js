@@ -111,6 +111,18 @@ describe('Linear data scale', () => {
           expect(dataScale.range()).to.deep.equal([0, 1], `falsy value ${t} was not handled correctly`);
         });
       });
+
+      it('should be respected in the normalized output', () => {
+        settings.invert = true;
+        dataScale = linear(settings, fields);
+        expect(dataScale.norm(0)).to.equal(1); // Domain range is 0-100
+      });
+
+      it('should be respected in the normalized inverted output', () => {
+        settings.invert = true;
+        dataScale = linear(settings, fields);
+        expect(dataScale.normInvert(0)).to.equal(100); // Domain range is 0-100
+      });
     });
 
     describe('Expand', () => {

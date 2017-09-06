@@ -39,7 +39,7 @@ function generateDomain(range, min, max) {
  */
 
 export default function scaleSequentialColor(settings = {}, fields) {
-  const s = linear(fields, settings).clamp(true).interpolate(interpolateRgb);
+  const s = linear(settings, fields).clamp(true).interpolate(interpolateRgb);
 
   /**
    * @alias sequentialColor
