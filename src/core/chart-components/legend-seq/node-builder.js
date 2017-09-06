@@ -12,13 +12,32 @@ function applyAlignJustify(ctx, node) {
   node[cmd.coord] += wiggle;
 }
 
+function generateOffset(ctx) {
+  const offset = ctx.scale.domain().map(d => ctx.scale.norm(d));
+  const isInverted = offset[0] > offset[offset.length - 1];
+
+  if (isInverted & ctx.state.isVertical) { // Given input is [1, 0.2, 0], then output should be [0, 0.2, 1]
+    return offset.reverse();
+  } else if (ctx.state.isVertical) { // Given input is [0, 0.2, 1], then output should be [0, 0.8, 1]
+    return offset.reverse().map(o => 1 - o);
+  } else if (isInverted) { // Given input is [1, 0.8, 0], then output should be [0, 0.2, 1]
+    return offset.map(o => 1 - o);
+  }
+
+  return offset;
+}
+
 export function generateStopNodes(ctx) {
-  let ranges = ctx.state.isVertical ? ctx.scale.range().reverse() : ctx.scale.range();
-  return ranges.map((r, i) => ({
+  const offset = generateOffset(ctx);
+  const scale = ctx.scale;
+  const domain = ctx.state.isVertical ? scale.domain().reverse() : scale.domain();
+  let stops = domain.map((d, i) => ({
     type: 'stop',
-    color: r,
-    offset: i / Math.max(1, ranges.length - 1)
+    color: scale(d),
+    offset: offset[i]
   }));
+
+  return stops;
 }
 
 export function createTitleNode(ctx) {

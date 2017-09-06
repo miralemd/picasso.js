@@ -56,7 +56,7 @@ describe('Legend Sequential', () => {
           type: 'stop'
         },
         {
-          color: 'rgb(180,221,212)',
+          color: 'rgb(180, 221, 212)',
           offset: 1,
           type: 'stop'
         }],
@@ -178,6 +178,23 @@ describe('Legend Sequential', () => {
 
       expectedTickNodes[1].x = 75;
       expectedTickNodes[1].anchor = 'end';
+
+      expect(output).to.deep.equal(expectedOutput);
+      expect(componentFixture.simulateLayout(container)).to.equal(31);
+    });
+
+    it('should support an inverted sequential scale', () => {
+      const scaleInstance = sequentialScale({ invert: true });
+      scaleInstance.sources = [];
+      componentFixture.mocks().chart.scale.returns(scaleInstance);
+      userDef.settings.tick = { anchor: 'right' };
+      componentFixture.simulateCreate(legendSeq, userDef);
+      componentFixture.simulateRender(container);
+      const output = componentFixture.getRenderOutput();
+
+      expectedGradientNode.fill.stops.reverse();
+      expectedGradientNode.fill.stops[0].offset = 0;
+      expectedGradientNode.fill.stops[1].offset = 1;
 
       expect(output).to.deep.equal(expectedOutput);
       expect(componentFixture.simulateLayout(container)).to.equal(31);
@@ -320,6 +337,41 @@ describe('Legend Sequential', () => {
       expectedTickNodes[1].y = 5;
       expectedTickNodes[1].text = 1;
       expectedTickNodes[1].maxWidth = 22.5;
+      expectedTickNodes[1].anchor = 'end';
+      expectedTickNodes[1].dy = 5;
+
+      expect(output).to.deep.equal(expectedOutput);
+      expect(componentFixture.simulateLayout(container)).to.equal(35);
+    });
+
+    it('should support an inverted sequential scale', () => {
+      const scaleInstance = sequentialScale({ invert: true });
+      scaleInstance.sources = [];
+      componentFixture.mocks().chart.scale.returns(scaleInstance);
+      userDef.settings.tick = { anchor: 'top' };
+      componentFixture.simulateCreate(legendSeq, userDef);
+      componentFixture.simulateRender(container);
+      const output = componentFixture.getRenderOutput();
+
+      expectedTitleNode.anchor = 'end';
+      expectedTitleNode.x = 34.5;
+      expectedTitleNode.y = 20;
+
+      expectedGradientNode.x = 39.5;
+      expectedGradientNode.y = 80;
+      expectedGradientNode.width = 33;
+      expectedGradientNode.height = 15;
+      expectedGradientNode.fill.degree = 180;
+
+      expectedTickNodes[0].x = 39.5;
+      expectedTickNodes[0].y = 5;
+      expectedTickNodes[0].text = 0;
+      expectedTickNodes[0].maxWidth = 16.5;
+
+      expectedTickNodes[1].x = 72.5;
+      expectedTickNodes[1].y = 5;
+      expectedTickNodes[1].text = 1;
+      expectedTickNodes[1].maxWidth = 16.5;
       expectedTickNodes[1].anchor = 'end';
       expectedTickNodes[1].dy = 5;
 

@@ -106,10 +106,12 @@ function initState(ctx) {
           return 0;
         }
         let w = titleTextMetrics.width;
+        let mw = titleStgns.maxLengthPx;
         if (!isVertical) {
           w += titleStgns.padding;
+          mw += titleStgns.padding;
         }
-        return Math.min(w, titleStgns.maxLengthPx, state.rect.width);
+        return Math.min(w, mw, state.rect.width);
       },
       requiredHeight: () => {
         if (!titleStgns.show) {
@@ -132,8 +134,8 @@ function initState(ctx) {
       length: () => {
         const pos = isVertical ? 'height' : 'width';
         const fnPos = isVertical ? 'requiredHeight' : 'requiredWidth';
-        let size = (state.rect[pos] * ctx.settingsDef.legend.length) - state.title[fnPos]();
-        return Math.max(0, Math.min(size, ctx.settingsDef.legend.maxLengthPx));
+        const len = Math.min(state.rect[pos], state.rect[pos] * ctx.settingsDef.legend.length) - state.title[fnPos]();
+        return Math.max(0, Math.min(len, ctx.settingsDef.legend.maxLengthPx));
       }
     }
   };
