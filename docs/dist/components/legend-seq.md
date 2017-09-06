@@ -40,13 +40,13 @@ settings: {
     align: 0.5, // A value in the range 0-1 indicating horizontal alignment of the legend's content. 0 aligns to the left, 1 to the right.. Default: 0.5. Optional.
     justify: 0, // A value in the range 0-1 indicating vertical alignment of the legend's content. 0 aligns to the top, 1 to the bottom.. Default: 0. Optional.
   },
-  ticks: { //  Optional.
+  tick: { //  Optional.
     label: () => {}, // Function applied to all tick values, returned values are used as labels. Optional.
     fill: '#595959', //  Default: '#595959'. Optional.
     fontSize: '12px', //  Default: '12px'. Optional.
     fontFamily: 'Arial', //  Default: 'Arial'. Optional.
     maxLengthPx: 150, // Max length in pixels. Default: 150. Optional.
-    anchor: 'right', // Where to anchor the ticks in relation to the legend node, supported values are [top, bottom, left and right]. Default: 'right'. Optional.
+    anchor: 'right', // Where to anchor the tick in relation to the legend node, supported values are [top, bottom, left and right]. Default: 'right'. Optional.
     padding: 5, // padding in pixels to the legend node. Default: 5. Optional.
   },
   title: { // Title settings. Optional.
