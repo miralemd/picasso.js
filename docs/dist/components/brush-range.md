@@ -20,6 +20,8 @@
     },
     target: { // render matching overlay on target component (optional)
       component: 'y-axis',
+      selector: 'rect', // Instead of targeting a component, target shape/s
+      fillSelector: 'rect rect', // Target a subset of the selector as fill area
       fill: 'rgba(82,204,82,0.2)',
       fillActive: 'rgba(82,204,82,0.4)' // target area color on hover
     }

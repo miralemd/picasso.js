@@ -50,7 +50,7 @@ function resolveTitleAnchor(settings) {
 
 function initRect(ctx, size) {
   const rect = { x: 0, y: 0, width: 0, height: 0 };
-  const padding = ctx.settingsDef.padding;
+  const padding = ctx.stgns.padding;
   rect.x = padding.left;
   rect.y = padding.top;
   rect.width = size.width - padding.left - padding.right;
@@ -59,23 +59,26 @@ function initRect(ctx, size) {
   return rect;
 }
 
-function getTicks(ctx) {
-  const d = ctx.scale.domain();
-  let values = [d[0], d[d.length - 1]];
-  const tickFn = ctx.settingsDef.tick.label;
-  if (typeof tickFn === 'function') {
-    values = values.map(tickFn).map(String);
+function getTicks(ctx, majorScale) {
+  const values = majorScale.domain();
+  let labels = values;
+  const labelFn = ctx.stgns.tick.label ||
+    ctx.chart.formatter({ source: majorScale.sources[0] }) ||
+    ctx.formatter;
+  if (typeof labelFn === 'function') {
+    labels = values.map(labelFn).map(String);
   }
 
-  let ticks = values.map((value) => {
-    const label = typeof ctx.formatter === 'function' ? ctx.formatter(value) : value;
+  const ticks = values.map((value, i) => {
+    const label = labels[i];
     return {
       value,
       label,
+      pos: majorScale.norm(parseFloat(value, 10)),
       textMetrics: ctx.renderer.measureText({
         text: label,
-        fontSize: ctx.settingsDef.tick.fontSize,
-        fontFamily: ctx.settingsDef.tick.fontFamily
+        fontSize: ctx.stgns.tick.fontSize,
+        fontFamily: ctx.stgns.tick.fontFamily
       })
     };
   });
@@ -85,14 +88,16 @@ function getTicks(ctx) {
 
 function initState(ctx) {
   const isVertical = ctx.settings.dock !== 'top' && ctx.settings.dock !== 'bottom';
-  const titleStgns = ctx.settingsDef.title;
+  const titleStgns = ctx.stgns.title;
   const titleTextMetrics = ctx.renderer.measureText({
     text: titleStgns.text,
     fontSize: titleStgns.fontSize,
     fontFamily: titleStgns.fontFamily
   });
 
-  const tickValues = getTicks(ctx);
+  const fillScale = ctx.chart.scale(ctx.stgns.fill);
+  const majorScale = ctx.chart.scale(ctx.stgns.major);
+  const tickValues = getTicks(ctx, majorScale);
   const tickAnchor = resolveTickAnchor(ctx.settings);
 
   const state = {
@@ -125,17 +130,19 @@ function initState(ctx) {
       }
     },
     ticks: {
-      values: isVertical ? tickValues.reverse() : tickValues,
+      values: tickValues,
       anchor: tickAnchor,
-      length: Math.min(Math.max(...tickValues.map(t => t.textMetrics.width)), ctx.settingsDef.tick.maxLengthPx),
-      requiredHeight: () => (tickAnchor === 'top' ? Math.max(...state.ticks.values.map(t => t.textMetrics.height)) + ctx.settingsDef.tick.padding : 0)
+      length: Math.min(Math.max(...tickValues.map(t => t.textMetrics.width)), ctx.stgns.tick.maxLengthPx),
+      requiredHeight: () => (tickAnchor === 'top' ? Math.max(...state.ticks.values.map(t => t.textMetrics.height)) + ctx.stgns.tick.padding : 0)
     },
     legend: {
+      fillScale,
+      majorScale,
       length: () => {
         const pos = isVertical ? 'height' : 'width';
         const fnPos = isVertical ? 'requiredHeight' : 'requiredWidth';
-        const len = Math.min(state.rect[pos], state.rect[pos] * ctx.settingsDef.legend.length) - state.title[fnPos]();
-        return Math.max(0, Math.min(len, ctx.settingsDef.legend.maxLengthPx));
+        const len = Math.min(state.rect[pos], state.rect[pos] * ctx.stgns.length) - state.title[fnPos]();
+        return Math.max(0, Math.min(len, ctx.stgns.maxLengthPx));
       }
     }
   };
@@ -146,17 +153,18 @@ function initState(ctx) {
 /**
  * @typedef settings
  * @type {object}
+ * @property {string|object} fill - Reference to definition of sequential color scale
+ * @property {string|object} major - Reference to definition of linear scale
+ * @property {number} [size=15] - Size in pixels of the legend, if vertical is the width and height otherwise
+ * @property {number} [length=1] - A value in the range 0-1 indicating the length of the legend node
+ * @property {number} [maxLengthPx=250] - Max length in pixels
+ * @property {number} [align=0.5] - A value in the range 0-1 indicating horizontal alignment of the legend's content. 0 aligns to the left, 1 to the right.
+ * @property {number} [justify=0] - A value in the range 0-1 indicating vertical alignment of the legend's content. 0 aligns to the top, 1 to the bottom.
  * @property {object} [padding]
  * @property {number} [padding.left=5]
  * @property {number} [padding.right=5]
  * @property {number} [padding.top=5]
  * @property {number} [padding.bottom=5]
- * @property {object} [legend] - Legend gradient settings
- * @property {number} [legend.size=15] - Size in pixels of the legend, if vertical is the width and height otherwise
- * @property {number} [legend.length=1] - A value in the range 0-1 indicating the length of the legend node
- * @property {number} [legend.maxLengthPx=250] - Max length in pixels
- * @property {number} [legend.align=0.5] - A value in the range 0-1 indicating horizontal alignment of the legend's content. 0 aligns to the left, 1 to the right.
- * @property {number} [legend.justify=0] - A value in the range 0-1 indicating vertical alignment of the legend's content. 0 aligns to the top, 1 to the bottom.
  * @property {object} [tick]
  * @property {function} [tick.label] - Function applied to all tick values, returned values are used as labels
  * @property {string} [tick.fill='#595959']
@@ -182,18 +190,16 @@ const legendDef = {
     displayOrder: 0,
     dock: 'right',
     settings: {
+      size: 15,
+      length: 0.5,
+      maxLengthPx: 250,
+      align: 0.5,
+      justify: 0,
       padding: {
         left: 5,
         right: 5,
         top: 5,
         bottom: 5
-      },
-      legend: {
-        size: 15,
-        length: 0.5,
-        maxLengthPx: 250,
-        align: 0.5,
-        justify: 0
       },
       tick: {
         label: null,
@@ -221,10 +227,10 @@ const legendDef = {
     state.rect = initRect(this, opts.inner);
 
     // Init with size of legend
-    let prefSize = this.settingsDef.legend.size;
+    let prefSize = this.stgns.size;
 
     // Append paddings
-    const paddings = state.isVertical ? this.settingsDef.padding.left + this.settingsDef.padding.right : this.settingsDef.padding.top + this.settingsDef.padding.bottom;
+    const paddings = state.isVertical ? this.stgns.padding.left + this.stgns.padding.right : this.stgns.padding.top + this.stgns.padding.bottom;
     prefSize += paddings;
 
     // Append tick size
@@ -242,10 +248,10 @@ const legendDef = {
       }
       prefSize += Math.max(...state.ticks.values.map(t => t.textMetrics.height));
     }
-    prefSize += this.settingsDef.tick.padding;
+    prefSize += this.stgns.tick.padding;
 
     // Append or use title size
-    if (this.settingsDef.title.show) {
+    if (this.stgns.title.show) {
       if (state.title.anchor === 'left' || state.title.anchor === 'right') {
         prefSize = Math.max(state.title.textMetrics.height, prefSize);
       } else {
@@ -257,7 +263,12 @@ const legendDef = {
     return prefSize;
   },
   created() {
-    this.settingsDef = this.settings.settings;
+    this.stgns = this.settings.settings;
+
+    this.state = initState(this);
+  },
+  beforeUpdate(opts) {
+    this.stgns = opts.settings.settings;
 
     this.state = initState(this);
   },
@@ -265,17 +276,22 @@ const legendDef = {
     this.state.nodes = [];
     this.state.rect = initRect(this, opts.size);
 
-    if (this.settingsDef.title.show) {
+    if (this.stgns.title.show) {
       const titleNode = createTitleNode(this);
       this.state.nodes.push(titleNode);
     }
 
     const stopNodes = generateStopNodes(this);
     const rectNode = createLegendRectNode(this, stopNodes);
-    this.state.nodes.push(rectNode);
-
     const tickNodes = createTickNodes(this, rectNode);
-    this.state.nodes.push(...tickNodes);
+
+    const targetNode = { // The target node enables range selection component to limit its range to a specific area
+      id: 'legend-seq-target',
+      type: 'container',
+      children: [rectNode, tickNodes]
+    };
+
+    this.state.nodes.push(targetNode);
   },
   render() {
     return this.state.nodes;

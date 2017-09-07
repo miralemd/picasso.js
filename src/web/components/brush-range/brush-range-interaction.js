@@ -1,3 +1,4 @@
+import extend from 'extend';
 import Collisions from '../../../core/math/narrow-phase-collision';
 
 function rangelimits(state) {
@@ -168,18 +169,16 @@ export function start({ state, e, renderer, ranges, targetSize }) {
     started: true
   };
 
-  state.offset = renderer.element().getBoundingClientRect();
-  state.ranges = ranges(state, state.fauxBrushInstance || state.brushInstance);
+  state.offset = extend({}, renderer.element().getBoundingClientRect());
   const relX = x - state.offset.left; // coordinate relative renderer
   const relY = y - state.offset.top;
+  state.offset.left += state.targetRect ? state.targetRect.x : 0; // make offset relative to targetRect
+  state.offset.top += state.targetRect ? state.targetRect.y : 0;
+  state.ranges = ranges(state, state.fauxBrushInstance || state.brushInstance);
   const startPoint = (e.center[state.cssCoord.coord] - e[state.cssCoord.pos]) - state.offset[state.cssCoord.offset];
   const relStart = (e.center[state.cssCoord.coord]) - state.offset[state.cssCoord.offset];
-  const rel = relStart / state.size;
-  let v = state.scale.invert(rel);
-  let vStart = state.scale.invert(startPoint / state.size);
-
-  tempState.start = vStart;
-  tempState.current = v;
+  tempState.current = state.scale.normInvert(relStart / state.size);
+  tempState.start = state.scale.normInvert(startPoint / state.size);
 
   let rs = state.ranges;
   const limits = rangelimits(state);
@@ -191,12 +190,12 @@ export function start({ state, e, renderer, ranges, targetSize }) {
     limits.max = activeIdx + 1 < rs.length ? rs[activeIdx + 1].min : limits.max;
   } else {
     for (i = 0; i < rs.length; i++) {
-      if (rs[i].min <= vStart && vStart <= rs[i].max) {
+      if (rs[i].min <= tempState.start && tempState.start <= rs[i].max) {
         activeIdx = i;
         limits.min = i ? rs[i - 1].max : limits.min;
         limits.max = i + 1 < rs.length ? rs[i + 1].min : limits.max;
         break;
-      } else if (vStart < rs[i].min) {
+      } else if (tempState.start < rs[i].min) {
         limits.max = rs[i].min;
         limits.min = i ? rs[i - 1].max : limits.min;
         break;
@@ -228,8 +227,8 @@ export function start({ state, e, renderer, ranges, targetSize }) {
       tempState.start = parseFloat(target.getAttribute('data-other-value'));
       activeRange.mode = 'modify';
     } else {
-      let pxStart = state.scale(activeRange.start) * state.size;
-      let pxEnd = state.scale(activeRange.end) * state.size;
+      let pxStart = state.scale.norm(activeRange.start) * state.size;
+      let pxEnd = state.scale.norm(activeRange.end) * state.size;
       if (Math.abs(startPoint - pxStart) <= targetSize) {
         tempState.start = activeRange.end;
         activeRange.mode = 'modify';
@@ -241,8 +240,8 @@ export function start({ state, e, renderer, ranges, targetSize }) {
   } else {
     activeRange = {
       idx: -1,
-      start: vStart,
-      end: v,
+      start: tempState.start,
+      end: tempState.current,
       limitLow: limits.min,
       limitHigh: limits.max,
       mode: 'current'
@@ -274,7 +273,7 @@ export function endArea(state, ranges) {
 export function move(state, e) {
   const relY = e.center[state.cssCoord.coord] - state.offset[state.cssCoord.offset];
   const rel = relY / state.size;
-  const v = state.scale.invert(rel);
+  const v = state.scale.normInvert(rel);
   state.current = Math.max(Math.min(v, state.active.limitHigh), state.active.limitLow);
 }
 

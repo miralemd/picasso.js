@@ -22,6 +22,8 @@ describe('BrushRange Interaction', () => {
     state.scale.min = sinon.stub().returns(0);
     state.scale.max = sinon.stub().returns(1);
     state.scale.invert = x => x;
+    state.scale.norm = x => x;
+    state.scale.normInvert = x => x;
 
     event = {
       center: { x: 0.5, y: 0.5 },
@@ -37,7 +39,7 @@ describe('BrushRange Interaction', () => {
 
     beforeEach(() => {
       const boundingRect = {
-        let: 0,
+        left: 0,
         top: 0,
         height: 1,
         width: 1,
@@ -195,6 +197,53 @@ describe('BrushRange Interaction', () => {
         });
         expect(state.start, 'start').to.equals(0);
         expect(state.current, 'current').to.equals(0.5);
+      });
+
+      it('start if within targetRect', () => {
+        state.started = false;
+        state.targetRect = { // Event is targeting x: 0.5, y: 0.4
+          x: 0.3,
+          y: 0.2,
+          width: 1,
+          height: 1
+        };
+        start({
+          state,
+          e: event,
+          renderer,
+          ranges: () => [],
+          targetSize
+        });
+        expect(state.active).to.deep.equals({
+          start: 0.2,
+          end: 0.3,
+          idx: -1,
+          limitLow: 0,
+          limitHigh: 1,
+          mode: 'current'
+        });
+        expect(state.start).to.equals(0.2);
+        expect(state.current).to.equals(0.3);
+      });
+
+      it('not start if outside targetRect', () => {
+        state.started = false;
+        state.targetRect = { // Event is targeting x: 0.5, y: 0.4
+          x: 0.7,
+          y: 0.7,
+          width: 0.3,
+          height: 0.3
+        };
+        start({
+          state,
+          e: event,
+          renderer,
+          ranges: () => [],
+          targetSize
+        });
+        expect(state.active).to.equals(undefined);
+        expect(state.start).to.equals(undefined);
+        expect(state.current).to.equals(undefined);
       });
     });
   });

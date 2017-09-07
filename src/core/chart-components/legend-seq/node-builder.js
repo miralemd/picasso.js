@@ -8,41 +8,25 @@ function applyAlignJustify(ctx, node) {
   };
 
   wiggle = ctx.state.rect[cmd.pos] - ctx.state.legend.length() - ctx.state.title[cmd.fn]();
-  wiggle *= Math.min(1, Math.max(ctx.settingsDef.legend[cmd.type], 0));
+  wiggle *= Math.min(1, Math.max(ctx.stgns[cmd.type], 0));
   node[cmd.coord] += wiggle;
 }
 
-function generateOffset(ctx) {
-  const offset = ctx.scale.domain().map(d => ctx.scale.norm(d));
-  const isInverted = offset[0] > offset[offset.length - 1];
-
-  if (isInverted & ctx.state.isVertical) { // Given input is [1, 0.2, 0], then output should be [0, 0.2, 1]
-    return offset.reverse();
-  } else if (ctx.state.isVertical) { // Given input is [0, 0.2, 1], then output should be [0, 0.8, 1]
-    return offset.reverse().map(o => 1 - o);
-  } else if (isInverted) { // Given input is [1, 0.8, 0], then output should be [0, 0.2, 1]
-    return offset.map(o => 1 - o);
-  }
-
-  return offset;
-}
-
 export function generateStopNodes(ctx) {
-  const offset = generateOffset(ctx);
-  const scale = ctx.scale;
-  const domain = ctx.state.isVertical ? scale.domain().reverse() : scale.domain();
-  let stops = domain.map((d, i) => ({
+  const fillScale = ctx.state.legend.fillScale;
+  const majorScale = ctx.state.legend.majorScale;
+  const stops = fillScale.domain().map(d => ({
     type: 'stop',
-    color: scale(d),
-    offset: offset[i]
+    color: fillScale(d),
+    offset: Math.min(1, Math.max(0, majorScale.norm(d)))
   }));
 
-  return stops;
+  return stops.sort((a, b) => a.offset - b.offset);
 }
 
 export function createTitleNode(ctx) {
   const state = ctx.state;
-  const settings = ctx.settingsDef;
+  const settings = ctx.stgns;
   const isTickLeft = state.ticks.anchor === 'left';
   let x = state.rect.x;
   let y = state.rect.y;
@@ -82,17 +66,17 @@ export function createTitleNode(ctx) {
 
 export function createLegendRectNode(ctx, stops) {
   const state = ctx.state;
-  const settings = ctx.settingsDef;
+  const settings = ctx.stgns;
   const container = state.rect;
   let x = container.x;
   let y = container.y;
-  let width = state.isVertical ? settings.legend.size : state.legend.length();
-  let height = state.isVertical ? state.legend.length() : settings.legend.size;
+  let width = state.isVertical ? settings.size : state.legend.length();
+  let height = state.isVertical ? state.legend.length() : settings.size;
 
   if (state.ticks.anchor === 'left') {
-    x += state.rect.width - settings.legend.size;
+    x += state.rect.width - settings.size;
   } else if (state.ticks.anchor === 'top') {
-    y += state.rect.height - settings.legend.size;
+    y += state.rect.height - settings.size;
   }
 
   if (state.title.anchor === 'top') {
@@ -120,32 +104,43 @@ export function createLegendRectNode(ctx, stops) {
 
 export function createTickNodes(ctx, legendNode) {
   const state = ctx.state;
-  const settings = ctx.settingsDef;
+  const settings = ctx.stgns;
   let x = 0;
   let y = 0;
   let dx = 0;
   let dy = 0;
   let anchor = 'start';
+  const rangeSelectorRect = {
+    type: 'rect',
+    x: legendNode.x,
+    y: legendNode.y,
+    width: state.isVertical ? 0 : legendNode.width,
+    height: state.isVertical ? legendNode.height : 0,
+    fill: 'transparent'
+  };
 
-  const nodes = state.ticks.values.map((tick, i, ary) => { // Deal with invert
-    const m = i / Math.max(1, ary.length - 1);
-    dy = state.isVertical && i === 1 ? -(tick.textMetrics.height / 5) : tick.textMetrics.height;
+  const nodes = state.ticks.values.map((tick) => {
+    dy = state.isVertical && tick.pos === 1 ? -(tick.textMetrics.height / 5) : tick.textMetrics.height;
 
     if (state.ticks.anchor === 'right') {
-      x = legendNode.x + settings.legend.size + settings.tick.padding;
-      y = legendNode.y + (legendNode.height * m);
+      x = legendNode.x + settings.size + settings.tick.padding;
+      y = legendNode.y + (legendNode.height * tick.pos);
+
+      rangeSelectorRect.x = legendNode.x + legendNode.width;
     } else if (state.ticks.anchor === 'left') {
       x = legendNode.x - settings.tick.padding;
-      y = legendNode.y + (legendNode.height * m);
+      y = legendNode.y + (legendNode.height * tick.pos);
       anchor = 'end';
     } else if (state.ticks.anchor === 'top') {
-      x = legendNode.x + (legendNode.width * m);
+      x = legendNode.x + (legendNode.width * tick.pos);
       y = state.rect.y;
-      anchor = i === 0 ? 'start' : 'end';
+      anchor = tick.pos === 0 ? 'start' : 'end';
     } else if (state.ticks.anchor === 'bottom') {
-      x = legendNode.x + (legendNode.width * m);
+      x = legendNode.x + (legendNode.width * tick.pos);
       y = legendNode.y + legendNode.height + settings.tick.padding;
-      anchor = i === 0 ? 'start' : 'end';
+      anchor = tick.pos === 0 ? 'start' : 'end';
+
+      rangeSelectorRect.y = legendNode.y + legendNode.height;
     }
 
     const node = {
@@ -159,11 +154,17 @@ export function createTickNodes(ctx, legendNode) {
       fontFamily: settings.tick.fontFamily,
       fill: settings.tick.fill,
       maxWidth: state.isVertical ? settings.tick.maxLengthPx : Math.min(settings.tick.maxLengthPx, state.legend.length() / 2),
-      anchor
+      anchor,
+      width: tick.textMetrics.width,
+      height: tick.textMetrics.height
     };
 
     return node;
   });
 
-  return nodes;
+  return {
+    type: 'container',
+    id: 'legend-seq-ticks',
+    children: [...nodes, rangeSelectorRect]
+  };
 }

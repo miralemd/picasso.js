@@ -3,11 +3,23 @@ import {
   VERTICAL
 } from './brush-range-const';
 
-function buildLine({ h, isVertical, value, pos, align, borderHit }) {
+function buildLine({ h, isVertical, value, pos, align, borderHit, state }) {
   const isAlignStart = align !== 'end';
   const alignStart = { left: '0', top: '0' };
   const alignEnd = { right: '0', bottom: '0' };
   const alignStyle = isAlignStart ? alignStart : alignEnd;
+  let start = 0;
+  let width = '100%';
+  let height = '100%';
+
+  if (state.targetRect && state.settings.bubbles.align === 'start') {
+    width = `${state.targetRect.x + state.targetRect.width}px`;
+    height = `${state.targetRect.y + state.targetRect.height}px`;
+  } else if (state.targetRect && state.settings.bubbles.align === 'end') {
+    start = isVertical ? state.targetRect.x : state.targetRect.y;
+    width = `${state.rect.width - start}px`;
+    height = `${state.rect.height - start}px`;
+  }
 
   if (!isAlignStart) {
     pos -= borderHit;
@@ -31,10 +43,10 @@ function buildLine({ h, isVertical, value, pos, align, borderHit }) {
     style: {
       cursor: isVertical ? 'ns-resize' : 'ew-resize',
       position: 'absolute',
-      left: isVertical ? '0' : `${pos}px`,
-      top: isVertical ? `${pos}px` : '0',
-      height: isVertical ? `${borderHit}px` : '100%',
-      width: isVertical ? '100%' : `${borderHit}px`,
+      left: isVertical ? `${start}px` : `${pos}px`,
+      top: isVertical ? `${pos}px` : `${start}px`,
+      height: isVertical ? `${borderHit}px` : height,
+      width: isVertical ? width : `${borderHit}px`,
       pointerEvents: 'auto'
     }
   }, [
@@ -51,13 +63,21 @@ function buildLine({ h, isVertical, value, pos, align, borderHit }) {
   ]);
 }
 
-function buildBubble({ h, isVertical, label, otherValue, idx, pos, align, style }) {
+function buildBubble({ h, isVertical, label, otherValue, idx, pos, align, style, state }) {
   const isAlignStart = align !== 'end';
+  const isOutside = state.settings.bubbles.placement === 'outside';
+  let outside = 'none';
   let bubbleDock;
   if (isVertical) {
     bubbleDock = isAlignStart ? 'left' : 'right';
+    if (isOutside) {
+      outside = isAlignStart ? 'translate(-100%,  0px)' : 'translate(100%,  0px)';
+    }
   } else {
     bubbleDock = isAlignStart ? 'top' : 'bottom';
+    if (isOutside) {
+      outside = isAlignStart ? 'translate(0px, -100%)' : 'translate(0px,  100%)';
+    }
   }
 
   // bubble wrapper
@@ -65,7 +85,8 @@ function buildBubble({ h, isVertical, label, otherValue, idx, pos, align, style 
     style: {
       position: 'absolute',
       [bubbleDock]: '0',
-      [isVertical ? 'top' : 'left']: `${pos}px`
+      [isVertical ? 'top' : 'left']: `${pos}px`,
+      transform: outside
     }
   }, [
     // bubble
@@ -112,17 +133,22 @@ function buildArea({ h, isVertical, top, height, color, on }) {
 }
 
 export default function buildRange({ borderHit, els, isVertical, state, vStart, vEnd, idx }) {
+  let targetOffset = 0;
+  if (state.targetRect) {
+    targetOffset = isVertical ? state.targetRect.y : state.targetRect.x;
+  }
   const hasScale = !!state.scale;
-  const start = hasScale ? state.scale(vStart) * state.size : vStart;
-  const end = hasScale ? state.scale(vEnd) * state.size : vEnd;
+  const start = hasScale ? state.scale.norm(vStart) * state.size : vStart;
+  const end = hasScale ? state.scale.norm(vEnd) * state.size : vEnd;
   const height = Math.abs(start - end);
-  const top = Math.min(start, end);
+  const top = Math.min(start, end) + targetOffset;
   const bottom = top + height;
 
   if (state.targetRect) {
-    const targetSize = isVertical ? state.targetRect.height : state.targetRect.width;
-    const targetStart = hasScale ? state.scale(vStart) * targetSize : vStart;
-    const targetEnd = hasScale ? state.scale(vEnd) * targetSize : vEnd;
+    const target = state.targetFillRect || state.targetRect;
+    const targetSize = isVertical ? target.height : target.width;
+    const targetStart = hasScale ? state.scale.norm(vStart) * targetSize : vStart;
+    const targetEnd = hasScale ? state.scale.norm(vEnd) * targetSize : vEnd;
     const targetHeight = Math.abs(targetStart - targetEnd);
     const targetTop = Math.min(targetStart, targetEnd);
     const targetArea = {
@@ -145,10 +171,10 @@ export default function buildRange({ borderHit, els, isVertical, state, vStart, 
     els.push(state.h('div', {
       style: {
         position: 'absolute',
-        left: `${state.targetRect.x}px`,
-        top: `${state.targetRect.y}px`,
-        height: `${state.targetRect.height}px`,
-        width: `${state.targetRect.width}px`
+        left: `${target.x}px`,
+        top: `${target.y}px`,
+        height: `${target.height}px`,
+        width: `${target.width}px`
       }
     }, [
       buildArea(targetArea)
@@ -170,7 +196,8 @@ export default function buildRange({ borderHit, els, isVertical, state, vStart, 
     borderHit,
     value: start < end ? vStart : vEnd,
     pos: top,
-    align: 'start'
+    align: 'start',
+    state
   }));
 
   els.push(buildLine({
@@ -179,7 +206,8 @@ export default function buildRange({ borderHit, els, isVertical, state, vStart, 
     borderHit,
     value: start < end ? vEnd : vStart,
     pos: bottom,
-    align: 'end'
+    align: 'end',
+    state
   }));
 
   const bubbles = state.settings.bubbles;
@@ -202,7 +230,8 @@ export default function buildRange({ borderHit, els, isVertical, state, vStart, 
       idx,
       otherValue: start < end ? vEnd : vStart,
       label: `${state.format(start < end ? vStart : vEnd, range)}`,
-      pos: top
+      pos: top,
+      state
     }));
 
     els.push(buildBubble({
@@ -213,7 +242,8 @@ export default function buildRange({ borderHit, els, isVertical, state, vStart, 
       idx,
       otherValue: start < end ? vStart : vEnd,
       label: `${state.format(start < end ? vEnd : vStart, range)}`,
-      pos: bottom
+      pos: bottom,
+      state
     }));
   }
 }

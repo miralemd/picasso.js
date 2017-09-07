@@ -73,7 +73,7 @@ describe('Brush Area Directional', () => {
               cursor: 'ew-resize',
               position: 'absolute',
               left: '0px',
-              top: '0',
+              top: '0px',
               height: '100%',
               width: '5px',
               pointerEvents: 'auto'
@@ -117,7 +117,7 @@ describe('Brush Area Directional', () => {
               cursor: 'ew-resize',
               position: 'absolute',
               left: '95px',
-              top: '0',
+              top: '0px',
               height: '100%',
               width: '5px',
               pointerEvents: 'auto'
@@ -149,7 +149,8 @@ describe('Brush Area Directional', () => {
             style: {
               position: 'absolute',
               top: '0',
-              left: '0px'
+              left: '0px',
+              transform: 'none'
             }
           },
           children: [{
@@ -194,7 +195,8 @@ describe('Brush Area Directional', () => {
             style: {
               position: 'absolute',
               top: '0',
-              left: '100px'
+              left: '100px',
+              transform: 'none'
             }
           },
           children: [{
@@ -262,7 +264,7 @@ describe('Brush Area Directional', () => {
             style: {
               cursor: 'ns-resize',
               position: 'absolute',
-              left: '0',
+              left: '0px',
               top: '0px',
               height: '5px',
               width: '100%',
@@ -306,7 +308,7 @@ describe('Brush Area Directional', () => {
             style: {
               cursor: 'ns-resize',
               position: 'absolute',
-              left: '0',
+              left: '0px',
               top: '145px',
               height: '5px',
               width: '100%',
@@ -339,7 +341,8 @@ describe('Brush Area Directional', () => {
             style: {
               position: 'absolute',
               top: '0px',
-              left: '0'
+              left: '0',
+              transform: 'none'
             }
           },
           children: [{
@@ -384,7 +387,8 @@ describe('Brush Area Directional', () => {
             style: {
               position: 'absolute',
               top: '150px',
-              left: '0'
+              left: '0',
+              transform: 'none'
             }
           },
           children: [{

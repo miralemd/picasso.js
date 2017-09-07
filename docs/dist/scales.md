@@ -150,6 +150,39 @@ s.classify( 2 );
 s.domain(); // [10, 5, 5, 0]
 s.range(); // [0.75, 0.75, 0.25, 0.25]
 ```
+#### <a name='linear.norm' href='#linear.norm'>#</a> **linear.norm**(*number d*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| d | number | A domain value | No | No |
+| Returns | number | A normalized range output given in range 0-1 | ... | ... |
+
+No description  
+#### Examples
+
+```js
+const scale = scaleLinear().domain([0, 10]).range([0, 10000]);
+scale.norm(5); // Returns 0.5
+scale(5); // Returns 5000
+
+scale.domain([0, 2, 10]);
+scale.norm(5); // Returns 0.5
+```
+#### <a name='linear.normInvert' href='#linear.normInvert'>#</a> **linear.normInvert**(*number d*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| d | number | A normalized value in range 0-1 | No | No |
+| Returns | number | A corresponding domain value | ... | ... |
+
+No description  
+#### Examples
+
+```js
+const scale = scaleLinear().domain([0, 10]).range([0, 10000]);
+scale.normInvert(0.5); // Returns 5
+scale.invert(5000); // Returns 5
+```
 
 ## Band scale
 

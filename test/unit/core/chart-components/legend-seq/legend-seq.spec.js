@@ -1,6 +1,7 @@
 import componentFactoryFixture from '../../../../helpers/component-factory-fixture';
 import legendSeq from '../../../../../src/core/chart-components/legend-seq/legend-seq';
 import sequentialScale from '../../../../../src/core/scales/color/sequential';
+import linearScale from '../../../../../src/core/scales/linear';
 
 describe('Legend Sequential', () => {
   let componentFixture;
@@ -10,6 +11,7 @@ describe('Legend Sequential', () => {
   let expectedTickNodes;
   let expectedGradientNode;
   let container;
+  let chartMock;
 
   beforeEach(() => {
     container = {
@@ -19,19 +21,88 @@ describe('Legend Sequential', () => {
 
     componentFixture = componentFactoryFixture();
     userDef = {
-      scale: 'x',
       settings: {
+        fill: 'fillScale',
+        major: 'majorScale',
         title: {
           text: 'testing'
         }
       }
     };
 
-    const scaleInstance = sequentialScale();
-    scaleInstance.sources = [];
-    componentFixture.mocks().chart.scale.returns(scaleInstance);
+    chartMock = componentFixture.mocks().chart;
 
-    expectedOutput = [{
+    const seqScale = sequentialScale();
+    seqScale.sources = [];
+    chartMock.scale.withArgs('fillScale').returns(seqScale);
+    const linScale = linearScale();
+    linScale.sources = [];
+    chartMock.scale.withArgs('majorScale').returns(linScale);
+
+    expectedGradientNode = {
+      type: 'rect',
+      x: 5,
+      y: 15,
+      width: 15,
+      height: 35,
+      fill: {
+        type: 'gradient',
+        stops: [{
+          color: 'rgb(180, 221, 212)',
+          offset: 0,
+          type: 'stop'
+        },
+        {
+          color: 'rgb(34, 83, 90)',
+          offset: 1,
+          type: 'stop'
+        }],
+        degree: 90
+      }
+    };
+
+    expectedTickNodes = [
+      {
+        type: 'text',
+        x: 25,
+        y: 15,
+        dx: 0,
+        dy: 5,
+        text: 0,
+        fontSize: '12px',
+        fontFamily: 'Arial',
+        fill: '#595959',
+        maxWidth: 100,
+        anchor: 'start',
+        width: 1,
+        height: 5
+      },
+      {
+        type: 'text',
+        x: 25,
+        y: 50,
+        dx: 0,
+        dy: -1,
+        text: 1,
+        fontSize: '12px',
+        fontFamily: 'Arial',
+        fill: '#595959',
+        maxWidth: 100,
+        anchor: 'start',
+        width: 1,
+        height: 5
+      },
+      {
+        type: 'rect',
+        width: 0,
+        height: 35,
+        fill: 'transparent',
+        x: 20,
+        y: 15
+      }
+    ];
+
+    expectedTitleNode = {
       type: 'text',
       x: 5,
       y: 10,
@@ -41,58 +112,23 @@ describe('Legend Sequential', () => {
       fontFamily: 'Arial',
       maxWidth: 100,
       anchor: 'start'
-    },
-    {
-      type: 'rect',
-      x: 5,
-      y: 15,
-      width: 15,
-      height: 35,
-      fill: {
-        type: 'gradient',
-        stops: [{
-          color: 'rgb(34, 83, 90)',
-          offset: 0,
-          type: 'stop'
-        },
-        {
-          color: 'rgb(180, 221, 212)',
-          offset: 1,
-          type: 'stop'
-        }],
-        degree: 90
-      }
-    },
-    {
-      type: 'text',
-      x: 25,
-      y: 15,
-      dx: 0,
-      dy: 5,
-      text: 1,
-      fontSize: '12px',
-      fontFamily: 'Arial',
-      fill: '#595959',
-      maxWidth: 100,
-      anchor: 'start'
-    },
-    {
-      type: 'text',
-      x: 25,
-      y: 50,
-      dx: 0,
-      dy: -1,
-      text: 0,
-      fontSize: '12px',
-      fontFamily: 'Arial',
-      fill: '#595959',
-      maxWidth: 100,
-      anchor: 'start'
-    }];
+    };
 
-    expectedTitleNode = expectedOutput[0];
-    expectedGradientNode = expectedOutput[1];
-    expectedTickNodes = expectedOutput.slice(2);
+    expectedOutput = [
+      expectedTitleNode,
+      {
+        type: 'container',
+        id: 'legend-seq-target',
+        children: [
+          expectedGradientNode,
+          {
+            type: 'container',
+            id: 'legend-seq-ticks',
+            children: expectedTickNodes
+          }
+        ]
+      }
+    ];
   });
 
   it('defaults', () => {
@@ -156,6 +192,8 @@ describe('Legend Sequential', () => {
       expectedTickNodes[1].x = 75;
       expectedTickNodes[1].anchor = 'end';
 
+      expectedTickNodes[2].x = 80;
+
       expect(output).to.deep.equal(expectedOutput);
       expect(componentFixture.simulateLayout(container)).to.equal(31);
     });
@@ -179,6 +217,10 @@ describe('Legend Sequential', () => {
       expectedTickNodes[1].x = 75;
       expectedTickNodes[1].anchor = 'end';
 
+      expectedTickNodes[2].x = 80;
+      expectedTickNodes[2].y = 5;
+      expectedTickNodes[2].height = 45;
+
       expect(output).to.deep.equal(expectedOutput);
       expect(componentFixture.simulateLayout(container)).to.equal(31);
     });
@@ -186,7 +228,7 @@ describe('Legend Sequential', () => {
     it('should support an inverted sequential scale', () => {
       const scaleInstance = sequentialScale({ invert: true });
       scaleInstance.sources = [];
-      componentFixture.mocks().chart.scale.returns(scaleInstance);
+      chartMock.scale.withArgs('fillScale').returns(scaleInstance);
       userDef.settings.tick = { anchor: 'right' };
       componentFixture.simulateCreate(legendSeq, userDef);
       componentFixture.simulateRender(container);
@@ -221,9 +263,6 @@ describe('Legend Sequential', () => {
       expectedGradientNode.width = 33;
       expectedGradientNode.height = 15;
       expectedGradientNode.fill.degree = 180;
-      expectedGradientNode.fill.stops.reverse();
-      expectedGradientNode.fill.stops[0].offset = 0;
-      expectedGradientNode.fill.stops[1].offset = 1;
 
       expectedTickNodes[0].x = 39.5;
       expectedTickNodes[0].y = 5;
@@ -236,6 +275,11 @@ describe('Legend Sequential', () => {
       expectedTickNodes[1].maxWidth = 16.5;
       expectedTickNodes[1].anchor = 'end';
       expectedTickNodes[1].dy = 5;
+
+      expectedTickNodes[2].x = 39.5;
+      expectedTickNodes[2].y = 80;
+      expectedTickNodes[2].width = 33;
+      expectedTickNodes[2].height = 0;
 
       expect(output).to.deep.equal(expectedOutput);
       expect(componentFixture.simulateLayout(container)).to.equal(35);
@@ -256,9 +300,6 @@ describe('Legend Sequential', () => {
       expectedGradientNode.width = 33;
       expectedGradientNode.height = 15;
       expectedGradientNode.fill.degree = 180;
-      expectedGradientNode.fill.stops.reverse();
-      expectedGradientNode.fill.stops[0].offset = 0;
-      expectedGradientNode.fill.stops[1].offset = 1;
 
       expectedTickNodes[0].x = 39.5;
       expectedTickNodes[0].y = 25;
@@ -271,6 +312,11 @@ describe('Legend Sequential', () => {
       expectedTickNodes[1].maxWidth = 16.5;
       expectedTickNodes[1].anchor = 'end';
       expectedTickNodes[1].dy = 5;
+
+      expectedTickNodes[2].x = 39.5;
+      expectedTickNodes[2].y = 20;
+      expectedTickNodes[2].width = 33;
+      expectedTickNodes[2].height = 0;
 
       expect(output).to.deep.equal(expectedOutput);
       expect(componentFixture.simulateLayout(container)).to.equal(35);
@@ -291,9 +337,6 @@ describe('Legend Sequential', () => {
       expectedGradientNode.width = 33;
       expectedGradientNode.height = 15;
       expectedGradientNode.fill.degree = 180;
-      expectedGradientNode.fill.stops.reverse();
-      expectedGradientNode.fill.stops[0].offset = 0;
-      expectedGradientNode.fill.stops[1].offset = 1;
 
       expectedTickNodes[0].x = 27.5;
       expectedTickNodes[0].y = 5;
@@ -306,6 +349,11 @@ describe('Legend Sequential', () => {
       expectedTickNodes[1].maxWidth = 16.5;
       expectedTickNodes[1].anchor = 'end';
       expectedTickNodes[1].dy = 5;
+
+      expectedTickNodes[2].x = 27.5;
+      expectedTickNodes[2].y = 80;
+      expectedTickNodes[2].width = 33;
+      expectedTickNodes[2].height = 0;
 
       expect(output).to.deep.equal(expectedOutput);
       expect(componentFixture.simulateLayout(container)).to.equal(35);
@@ -324,9 +372,6 @@ describe('Legend Sequential', () => {
       expectedGradientNode.width = 45;
       expectedGradientNode.height = 15;
       expectedGradientNode.fill.degree = 180;
-      expectedGradientNode.fill.stops.reverse();
-      expectedGradientNode.fill.stops[0].offset = 0;
-      expectedGradientNode.fill.stops[1].offset = 1;
 
       expectedTickNodes[0].x = 27.5;
       expectedTickNodes[0].y = 5;
@@ -339,6 +384,11 @@ describe('Legend Sequential', () => {
       expectedTickNodes[1].maxWidth = 22.5;
       expectedTickNodes[1].anchor = 'end';
       expectedTickNodes[1].dy = 5;
+
+      expectedTickNodes[2].x = 27.5;
+      expectedTickNodes[2].y = 80;
+      expectedTickNodes[2].width = 45;
+      expectedTickNodes[2].height = 0;
 
       expect(output).to.deep.equal(expectedOutput);
       expect(componentFixture.simulateLayout(container)).to.equal(35);
@@ -374,6 +424,11 @@ describe('Legend Sequential', () => {
       expectedTickNodes[1].maxWidth = 16.5;
       expectedTickNodes[1].anchor = 'end';
       expectedTickNodes[1].dy = 5;
+
+      expectedTickNodes[2].x = 39.5;
+      expectedTickNodes[2].y = 80;
+      expectedTickNodes[2].width = 33;
+      expectedTickNodes[2].height = 0;
 
       expect(output).to.deep.equal(expectedOutput);
       expect(componentFixture.simulateLayout(container)).to.equal(35);

@@ -5,9 +5,10 @@
 ```js
 {
   type: 'legend-seq',
-  scale: 'color',
   dock: 'top', 
   settings: {
+    fill: 'colorScale',
+    major: 'measureScale',
     ticks: {
       label: (val, i, ary) => {
         let temp = ['Cold', 'Hot'];
@@ -21,24 +22,70 @@
 }
 ```
 
+## Example - Enable range selection
+
+To enable range selelection on a sequential legend, the legend component exposes two nodes that can be reference by the brush-range component as a target.
+This reference enables the brush-range component to limit the target area to a sub-area of the legends dock area.
+
+```js
+chartSettings = {
+  interactions: [
+    ... // Setup required brush-range interactions here.
+  ],
+  scales: {
+    myColorScale: { source: '0/1', type: 'color' },
+    myLinearScale: { source: '0/1', type: 'linear' },
+  },
+  components: [
+    {
+      type: 'legend-seq',
+      dock: 'right',
+      key: 'myLegend' // Reference by brush-range component,
+      settings: {
+        fill: 'myColorScale',
+        major: 'myLinearScale'
+      }
+    },
+    {
+      type: 'brush-range',
+      key: 'myBrushRange',
+      dock: '@myLegend', // Legend reference
+      settings: {
+        brush: 'highlight',
+        scale: 'myLinearScale',
+        direction: 'vertical',
+        bubbles: {
+          align: 'start',
+          placement: 'outside' // Render bubbles outside the @myLegend dock area
+        },
+        target: {
+          selector: '[id="legend-seq-target"]', // Define the target area. Must be reference a node from @myLegend
+          fillSelector: '[id="legend-seq-ticks"]', // Define the target fill area. Must be reference a node from @myLegend
+          fill: 'rgba(82,204,82,0.3)',
+        }
+      },
+  }]
+}
+```
+
 ## API reference - Table of contents
 
 
 
 ```js
 settings: {
+  fill: 'foo', // Reference to definition of sequential color scale.
+  major: 'foo', // Reference to definition of linear scale.
+  size: 15, // Size in pixels of the legend, if vertical is the width and height otherwise. Default: 15. Optional.
+  length: 1, // A value in the range 0-1 indicating the length of the legend node. Default: 1. Optional.
+  maxLengthPx: 250, // Max length in pixels. Default: 250. Optional.
+  align: 0.5, // A value in the range 0-1 indicating horizontal alignment of the legend's content. 0 aligns to the left, 1 to the right.. Default: 0.5. Optional.
+  justify: 0, // A value in the range 0-1 indicating vertical alignment of the legend's content. 0 aligns to the top, 1 to the bottom.. Default: 0. Optional.
   padding: { //  Optional.
     left: 5, //  Default: 5. Optional.
     right: 5, //  Default: 5. Optional.
     top: 5, //  Default: 5. Optional.
     bottom: 5, //  Default: 5. Optional.
-  },
-  legend: { // Legend gradient settings. Optional.
-    size: 15, // Size in pixels of the legend, if vertical is the width and height otherwise. Default: 15. Optional.
-    length: 1, // A value in the range 0-1 indicating the length of the legend node. Default: 1. Optional.
-    maxLengthPx: 250, // Max length in pixels. Default: 250. Optional.
-    align: 0.5, // A value in the range 0-1 indicating horizontal alignment of the legend's content. 0 aligns to the left, 1 to the right.. Default: 0.5. Optional.
-    justify: 0, // A value in the range 0-1 indicating vertical alignment of the legend's content. 0 aligns to the top, 1 to the bottom.. Default: 0. Optional.
   },
   tick: { //  Optional.
     label: () => {}, // Function applied to all tick values, returned values are used as labels. Optional.

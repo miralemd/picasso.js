@@ -11,6 +11,10 @@ import {
   VERTICAL,
   HORIZONTAL
 } from './brush-range-const';
+import {
+  pointsToRect,
+  getRectVertices
+} from '../../../core/math/intersection';
 
 function render(state) {
   state.renderer.render(nodes(state));
@@ -119,6 +123,46 @@ function findValues(rangesValues, scale) {
   return dataValues;
 }
 
+function resolveNodeBounds(targetNodes) {
+  const points = targetNodes.reduce((ary, node) => {
+    ary.push(...getRectVertices(node.bounds));
+    return ary;
+  }, []);
+  return pointsToRect(points);
+}
+
+function resolveTarget(ctx) {
+  const resolved = {
+    targetRect: null,
+    targetFillRect: null,
+    scale: null,
+    size: null
+  };
+  const stngs = ctx.settings.settings;
+  const target = stngs.target ? ctx.chart.component(stngs.target.component) : null;
+  const targetNodes = stngs.target && stngs.target.selector ? ctx.chart.findShapes(stngs.target.selector) : [];
+  const targetFillNodes = stngs.target && stngs.target.fillSelector ? ctx.chart.findShapes(stngs.target.fillSelector) : [];
+  if (targetNodes.length > 0) {
+    const bounds = resolveNodeBounds(targetNodes);
+    resolved.size = bounds[ctx.state.direction === VERTICAL ? 'height' : 'width'];
+    resolved.scale = scaleWithSize(ctx.chart.scale(stngs.scale), resolved.size);
+    resolved.targetRect = bounds;
+    if (targetFillNodes.length > 0) {
+      const fillBounds = resolveNodeBounds(targetFillNodes);
+      resolved.targetFillRect = fillBounds;
+    }
+  } else if (target && target.rect) {
+    resolved.targetRect = {
+      x: target.rect.x - ctx.state.rect.x,
+      y: target.rect.y - ctx.state.rect.y,
+      width: target.rect.width,
+      height: target.rect.height
+    };
+  }
+
+  return resolved;
+}
+
 const brushRangeComponent = {
   require: ['chart', 'settings', 'renderer'],
   defaultSettings: {
@@ -144,34 +188,24 @@ const brushRangeComponent = {
     rangeClear(e) { this.clear(e); }
   },
   created() {
-    this.rect = { x: 0, y: 0, width: 0, height: 0 };
     this.state = {};
   },
   beforeRender(opts) {
-    this.rect = opts.size;
+    this.state.rect = opts.size;
   },
   render(h) {
-    this.state.rect = this.rect;
-
     const stngs = this.settings.settings;
-    const direction = stngs.direction === 'vertical' ? VERTICAL : HORIZONTAL;
-    const size = this.state.rect[direction === VERTICAL ? 'height' : 'width'];
-    const scale = scaleWithSize(this.chart.scale(stngs.scale), size);
+    this.state.direction = stngs.direction === 'vertical' ? VERTICAL : HORIZONTAL;
     const offset = this.renderer.element().getBoundingClientRect();
+    const size = this.state.rect[this.state.direction === VERTICAL ? 'height' : 'width'];
+    let scale = scaleWithSize(this.chart.scale(stngs.scale), size);
 
-    const target = stngs.target ? this.chart.component(stngs.target.component) : null;
-    if (target && target.rect) {
-      this.state.targetRect = {
-        x: target.rect.x - this.rect.x,
-        y: target.rect.y - this.rect.y,
-        width: target.rect.width,
-        height: target.rect.height
-      };
-    } else {
-      this.state.targetRect = null;
-    }
+    const target = resolveTarget(this);
+    scale = target.scale ? target.scale : scale;
+    this.state.targetRect = target.targetRect;
+    this.state.targetFillRect = target.targetFillRect;
+    this.state.size = target.size === null ? size : target.size;
 
-    this.state.direction = direction;
     this.state.settings = stngs;
     this.state.offset = offset;
     this.state.brush = stngs.brush;
@@ -179,14 +213,13 @@ const brushRangeComponent = {
     this.state.renderer = this.renderer;
     this.state.multi = !!stngs.multiple;
     this.state.h = h;
-    this.state.size = size;
     this.state.cssCoord = {
       offset: this.state.direction === VERTICAL ? 'top' : 'left',
       coord: this.state.direction === VERTICAL ? 'y' : 'x',
       pos: this.state.direction === VERTICAL ? 'deltaY' : 'deltaX'
     };
 
-    if (scale.type !== 'linear') {
+    if (!{}.hasOwnProperty.call(scale, 'norm')) { // Non-linear scale if norm method is unavailable
       this.state.scale = linear();
       this.state.scale.sources = scale.sources;
       this.state.format = (v, r) => {
@@ -203,7 +236,6 @@ const brushRangeComponent = {
       this.state.scale = scale;
       this.state.format = this.chart.field(this.state.scale.sources[0]).field.formatter();
     }
-
     return [];
   },
   start(e) {
