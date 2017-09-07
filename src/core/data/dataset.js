@@ -1,10 +1,8 @@
 import resolve from './json-path-resolver';
 import field from './field';
+import extract from './extractor-matrix';
 
-import {
-  findField,
-  extract
-} from './util';
+import { findField } from './util';
 
 const filters = {
   numeric: values => values.filter(v => typeof v === 'number' && !isNaN(v))
@@ -56,7 +54,7 @@ export default function dataset(matrix) {
       cache,
       matrix
     }),
-    extract: config => extract(config, matrix, cache),
+    extract: config => extract(config, data, cache),
     hierarchy: () => null
   };
 

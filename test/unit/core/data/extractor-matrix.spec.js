@@ -6,8 +6,12 @@ describe('straight mapping', () => {
     { items: () => [3, 7, 2] }
   ];
 
+  const dataset = {
+    field: idx => fields[idx]
+  };
+
   it('should return dim field values based on default field accessor', () => {
-    const m = extract({ field: 0 }, null, { fields });
+    const m = extract({ field: 0 }, dataset);
     expect(m).to.eql([
       { value: 'SE', source: { field: 0 } },
       { value: 'IT', source: { field: 0 } },
@@ -16,7 +20,7 @@ describe('straight mapping', () => {
   });
 
   it('should return joined set when array of fields is used', () => {
-    const m = extract([{ field: 1 }, { field: 0 }], null, { fields });
+    const m = extract([{ field: 1 }, { field: 0 }], dataset);
     expect(m).to.eql([
       { value: 3, source: { field: 1 } },
       { value: 7, source: { field: 1 } },
@@ -31,7 +35,7 @@ describe('straight mapping', () => {
     const m = extract({
       field: 0,
       value: v => `-${v}-`
-    }, null, { fields });
+    }, dataset);
     expect(m).to.eql([
       { value: '-SE-', source: { field: 0 } },
       { value: '-IT-', source: { field: 0 } },
@@ -43,7 +47,7 @@ describe('straight mapping', () => {
     const m = extract({
       field: 0,
       props: { label: v => `(${v})` }
-    }, null, { fields });
+    }, dataset);
     expect(m).to.eql([
       { value: 'SE', source: { field: 0 }, label: { value: '(SE)', source: { field: 0 } } },
       { value: 'IT', source: { field: 0 }, label: { value: '(IT)', source: { field: 0 } } },
@@ -59,7 +63,7 @@ describe('straight mapping', () => {
         num: 0,
         bool: false
       }
-    }, null, { fields });
+    }, dataset);
     expect(m).to.eql([
       {
         value: 'foo',
@@ -88,7 +92,7 @@ describe('straight mapping', () => {
       props: {
         num: { field: 1 }
       }
-    }, null, { fields });
+    }, dataset);
     expect(m).to.eql([
       { value: 'SE', source: { field: 0 }, num: { value: 3, source: { field: 1 } } },
       { value: 'IT', source: { field: 0 }, num: { value: 7, source: { field: 1 } } },
@@ -103,7 +107,7 @@ describe('straight mapping', () => {
       props: {
         item: { field: 1 }
       }
-    }, null, { fields });
+    }, dataset);
     expect(m).to.eql([
       {
         item: { value: [3, 2], source: { field: 1 } }
@@ -119,6 +123,9 @@ describe('straight mapping', () => {
       { items: () => ['SE', 'IT', 'SE', 'SE', 'SE'] },
       { items: () => [5, 25, 4, 8, 7] }
     ];
+    const ds = {
+      field: idx => ffs[idx]
+    };
     const m = extract({
       field: 0,
       trackBy: v => v,
@@ -131,7 +138,7 @@ describe('straight mapping', () => {
         first: { field: 1, reduce: 'first' },
         last: { field: 1, reduce: 'last' }
       }
-    }, null, { fields: ffs });
+    }, ds);
     expect(m).to.eql([
       {
         item: { value: 'SE', source: { field: 0 } },

@@ -1,18 +1,17 @@
 import {
-  findField,
   getPropsInfo
 } from './util';
 
-export function extract(config, rawData, cache) {
+export default function extract(config, dataset, cache) {
   const cfgs = Array.isArray(config) ? config : [config];
   let dataItems = [];
   cfgs.forEach((cfg) => {
     if (typeof cfg.field !== 'undefined') {
-      const f = findField(cfg.field, { cache });
+      const f = dataset.field(cfg.field);
       if (!f) {
         throw Error(`Field '${cfg.field}' not found`);
       }
-      const { props, main } = getPropsInfo(cfg, rawData, cache);
+      const { props, main } = getPropsInfo(cfg, dataset, cache);
       const propsArr = Object.keys(props);
 
       const track = !!cfg.trackBy;

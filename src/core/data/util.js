@@ -52,7 +52,7 @@ export const reducers = {
   }
 };
 
-function normalizeProperties(cfg, rawData, cache, dataProperties) {
+function normalizeProperties(cfg, dataset, dataProperties) {
   const props = {};
   Object.keys(dataProperties).forEach((key) => {
     const pConfig = dataProperties[key];
@@ -68,7 +68,7 @@ function normalizeProperties(cfg, rawData, cache, dataProperties) {
     } else if (typeof pConfig === 'object') {
       if (pConfig.field) {
         prop.type = 'field';
-        prop.field = findField(pConfig.field, { rawData, cache });
+        prop.field = dataset.field(pConfig.field);
         if (!prop.field) {
           throw Error(`Field '${pConfig.field}' not found`);
         }
@@ -76,7 +76,7 @@ function normalizeProperties(cfg, rawData, cache, dataProperties) {
         prop.value = prop.field.value;
       } else {
         prop.source = cfg.field;
-        const f = findField(cfg.field, { rawData, cache });
+        const f = dataset.field(cfg.field);
         if (f) {
           prop.value = f.value;
         }
@@ -96,9 +96,9 @@ function normalizeProperties(cfg, rawData, cache, dataProperties) {
 }
 
 // normalize property mapping config
-export function getPropsInfo(cfg, cube, cache) {
-  const props = normalizeProperties(cfg, cube, cache, cfg.props || {});
-  const { main } = normalizeProperties(cfg, cube, cache, { main: { value: cfg.value } });
+export function getPropsInfo(cfg, dataset) {
+  const props = normalizeProperties(cfg, dataset, cfg.props || {});
+  const { main } = normalizeProperties(cfg, dataset, { main: { value: cfg.value } });
   return { props, main };
 }
 
