@@ -12,6 +12,46 @@ export function findField(query, { cache }) {
   return null;
 }
 
+const filters = {
+  numeric: values => values.filter(v => typeof v === 'number' && !isNaN(v))
+};
+
+const unfilteredReducers = {
+  sum: values => values.reduce((a, b) => a + b, 0)
+};
+
+// function isPrimitive(x) {
+//   const type = typeof x;
+//   return (type !== 'object' && type !== 'function');
+// }
+
+/**
+ * [reducers description]
+ * @type {Object}
+ * @private
+ */
+export const reducers = {
+  first: values => values[0],
+  last: values => values[values.length - 1],
+  min: (values) => {
+    const filtered = filters.numeric(values);
+    return !filtered.length ? NaN : Math.min.apply(null, filtered);
+  },
+  max: (values) => {
+    const filtered = filters.numeric(values);
+    return !filtered.length ? NaN : Math.max.apply(null, filtered);
+  },
+  sum: (values) => {
+    const filtered = filters.numeric(values);
+    return !filtered.length ? NaN : filtered.reduce((a, b) => a + b, 0);
+  },
+  avg: (values) => {
+    const filtered = filters.numeric(values);
+    const len = filtered.length;
+    return !len ? NaN : unfilteredReducers.sum(filtered) / len;
+  }
+};
+
 function normalizeProperties(cfg, rawData, cache, dataProperties) {
   const props = {};
   Object.keys(dataProperties).forEach((key) => {
@@ -46,6 +86,8 @@ function normalizeProperties(cfg, rawData, cache, dataProperties) {
       }
       if (typeof pConfig.reduce === 'function') {
         prop.reduce = pConfig.reduce;
+      } else if (pConfig.reduce) {
+        prop.reduce = reducers[pConfig.reduce];
       }
     }
   });
