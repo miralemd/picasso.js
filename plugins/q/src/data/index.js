@@ -45,18 +45,17 @@ function createAttrFields(idx, d, {
   }
 }
 
-export default function q(cube) {
+export default function q({
+  key,
+  data
+} = {}) {
   const cache = {
     attributeDimensionFields: [],
     attributeExpressionFields: [],
     fields: []
   };
 
-  const data = {
-    raw: () => cube,
-    extract: mapper => transform(mapper, cube, cache),
-    hierarchy: hierarchyConfig => hierarchy(hierarchyConfig, cube, cache)
-  };
+  const cube = data;
 
   if (!cube.qDimensionInfo) { // assume old data format
     throw new Error('The data input is not recognized as a hypercube');
@@ -85,11 +84,18 @@ export default function q(cube) {
     createAttrFields(dimensions.length + i, d, { cache, cube, pages });
   });
 
-  data.field = query => findField(query, {
-    cache,
-    cube,
-    pages
-  });
+  const dataset = {
+    key: () => key,
+    raw: () => cube,
+    field: query => findField(query, {
+      cache,
+      cube,
+      pages
+    }),
+    fields: () => cache.fields.slice(),
+    extract: mapper => transform(mapper, cube, cache),
+    hierarchy: hierarchyConfig => hierarchy(hierarchyConfig, cube, cache)
+  };
 
-  return data;
+  return dataset;
 }
