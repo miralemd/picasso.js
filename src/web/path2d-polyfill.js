@@ -1,0 +1,221 @@
+function polyFillPath2D(window) {
+  if (!window) {
+    return;
+  }
+  if (window.Path2D) {
+    return;
+  }
+
+  /**
+   * expected argument lengths
+   * @type {Object}
+   */
+  let argLength = { a: 7, c: 6, h: 1, l: 2, m: 2, q: 4, s: 4, t: 2, v: 1, z: 0 };
+
+  /**
+   * segment pattern
+   * @type {RegExp}
+   */
+  let segmentPattern = /([astvzqmhlc])([^astvzqmhlc]*)/ig;
+
+  let number = /-?[0-9]*\.?[0-9]+(?:e[-+]?\d+)?/ig;
+
+  function parseValues(args) {
+    let numbers = args.match(number);
+    return numbers ? numbers.map(Number) : [];
+  }
+
+  /**
+   * parse an svg path data string. Generates an Array
+   * of commands where each command is an Array of the
+   * form `[command, arg1, arg2, ...]`
+   *
+   * @param {String} path
+   * @return {Array}
+   */
+  function parse(path) {
+    let data = [];
+    path.replace(segmentPattern, (_, command, args) => {
+      let type = command.toLowerCase();
+      args = parseValues(args);
+
+          // overloaded moveTo
+      if (type === 'm' && args.length > 2) {
+        data.push([command].concat(args.splice(0, 2)));
+        type = 'l';
+        command = command === 'm' ? 'l' : 'L';
+      }
+
+      while (args.length !== argLength[type]) {
+        if (args.length < argLength[type]) {
+          throw new Error('malformed path data');
+        }
+        data.push([command].concat(args.splice(0, argLength[type])));
+      }
+      args.unshift(command);
+      return data.push(args);
+    });
+    return data;
+  }
+
+  /**
+   * Crates a Path2D polyfill object
+   * @constructor
+   * @param {String} path
+   */
+  function Path2D(path) {
+    this.segments = [];
+    if (path) {
+      this.segments = parse(path);
+    }
+  }
+  Path2D.prototype.moveTo = function moveTo(x, y) {
+    this.segments.push(['m', x, y]);
+  };
+  Path2D.prototype.lineTo = function lineTo(x, y) {
+    this.segments.push(['l', x, y]);
+  };
+  Path2D.prototype.arc = function arc(x, y, r, start, end, ccw) {
+    this.segments.push(['ac', x, y, r, start, end, !!ccw]);
+  };
+  Path2D.prototype.closePath = function closePath() {
+    this.segments.push(['z']);
+  };
+
+  let _fill = window.CanvasRenderingContext2D.prototype.fill;
+  let _stroke = window.CanvasRenderingContext2D.prototype.stroke;
+
+  function rotatePoint(point, angle) {
+    let nx = (point.x * Math.cos(angle)) - (point.y * Math.sin(angle));
+    let ny = (point.y * Math.cos(angle)) + (point.x * Math.sin(angle));
+    point.x = nx;
+    point.y = ny;
+  }
+
+  function translatePoint(point, dx, dy) {
+    point.x += dx;
+    point.y += dy;
+  }
+
+  function buildPath(canvas, segments) {
+    let endAngle,
+      startAngle,
+      largeArcFlag,
+      sweepFlag,
+      endPoint,
+      angle,
+      x,
+      y,
+      r,
+      b,
+      pathType,
+      centerPoint,
+      currentPoint = { x: 0, y: 0 };
+
+    canvas.beginPath();
+    for (let i = 0; i < segments.length; ++i) {
+      let s = segments[i];
+      pathType = s[0];
+      switch (pathType.toLowerCase()) {
+        case 'm':
+          canvas.moveTo(s[1], s[2]); // x, y
+          currentPoint.x = s[1];
+          currentPoint.y = s[2];
+          break;
+        case 'l':
+          canvas.lineTo(s[1], s[2]); // x, y
+          currentPoint.x = s[1];
+          currentPoint.y = s[2];
+          break;
+        case 'ac':
+          canvas.arc(s[1], s[2], s[3], s[4], s[5], s[6]);
+          x = s[1];
+          y = s[2];
+          r = s[3];
+          endAngle = s[5];
+          currentPoint.x = x + (r * Math.cos(endAngle));
+          currentPoint.y = y + (r * Math.sin(endAngle));
+          break;
+        case 'a':
+          r = s[1];
+            // s[2] = 2nd radius in ellipse, ignore
+            // s[3] = rotation of ellipse, ignore
+          largeArcFlag = s[4];
+          sweepFlag = s[5];
+          x = s[6];
+          y = s[7];
+
+          endPoint = { x, y };
+            // translate all points so that currentPoint is origin
+          translatePoint(endPoint, -currentPoint.x, -currentPoint.y);
+
+            // angle to destination
+          angle = Math.atan2(endPoint.y, endPoint.x);
+
+            // rotate points so that angle is 0
+          rotatePoint(endPoint, -angle);
+
+          b = endPoint.x / 2;
+            // var sweepAngle = Math.asin(b / r);
+
+          centerPoint = { x: 0, y: 0 };
+          centerPoint.x = endPoint.x / 2;
+          if ((sweepFlag && !largeArcFlag) || (!sweepFlag && largeArcFlag)) {
+            centerPoint.y = Math.sqrt((r * r) - (b * b));
+          } else {
+            centerPoint.y = -Math.sqrt((r * r) - (b * b));
+          }
+          startAngle = Math.atan2(-centerPoint.y, -centerPoint.x);
+          endAngle = Math.atan2(endPoint.y - centerPoint.y, endPoint.x - centerPoint.x);
+
+            // rotate back
+          startAngle += angle;
+          endAngle += angle;
+          rotatePoint(endPoint, angle);
+          rotatePoint(centerPoint, angle);
+
+            // translate points
+          translatePoint(endPoint, currentPoint.x, currentPoint.y);
+          translatePoint(centerPoint, currentPoint.x, currentPoint.y);
+
+          canvas.arc(centerPoint.x, centerPoint.y, r, startAngle, endAngle, !sweepFlag);
+
+          currentPoint.x = x;
+          currentPoint.y = y;
+          break;
+        case 'z':
+          canvas.closePath();
+          break;
+        default:
+          throw new Error(`${pathType} is not implemented`);
+      }
+    }
+  }
+
+  window.CanvasRenderingContext2D.prototype.fill = function fill(...args) {
+    let fillRule = 'nonzero';
+
+    if (args.length === 0 || (args.length === 1 && typeof args[0] === 'string')) {
+      _fill.apply(this, args);
+      return;
+    }
+    if (arguments.length === 2) {
+      fillRule = args[1];
+    }
+    let path = args[0];
+    buildPath(this, path.segments);
+    _fill.call(this, fillRule);
+  };
+
+  window.CanvasRenderingContext2D.prototype.stroke = function stroke(path) {
+    if (!path) {
+      _stroke.call(this);
+      return;
+    }
+    buildPath(this, path.segments);
+    _stroke.call(this);
+  };
+  window.Path2D = Path2D;
+}
+
+export default polyFillPath2D;
