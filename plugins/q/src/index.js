@@ -1,8 +1,8 @@
 import data from './data';
-// import qBrushHelper from './brush/q-brush';
+import qBrushHelper from './brush/q-brush';
 
-module.exports = function initialize(picasso) {
+export default function initialize(picasso) {
   picasso.data('q', data);
-};
+}
 
-// module.exports.qBrushHelper = qBrushHelper;
+initialize.qBrushHelper = qBrushHelper;
