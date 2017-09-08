@@ -138,7 +138,7 @@ export function styler(obj, { context, data, style }) {
   };
 }
 
-function brushDataPoints({
+export function brushDataPoints({
   dataPoints,
   action,
   chart,
@@ -167,18 +167,18 @@ function brushDataPoints({
   for (let i = 0; i < dataPoints.length; i++) {
     const dataPoint = dataPoints[i];
     dataProps.forEach((p) => {
-      let dp = dataPoint && !p ? dataPoint : dataPoint[p];
-      if (dp) {
-        if (Array.isArray(dp.value)) {
-          rangeBrush.items.push({
-            key: dp.source.field,
-            range: { min: dp.value[0], max: dp.value[1] }
-          });
+      let d = dataPoint && !p ? dataPoint : dataPoint[p];
+      if (d) {
+        let it = { key: d.source.field };
+        if (typeof d.source.key !== 'undefined') {
+          it.key = `${p.source.key}/${p.source.field}`;
+        }
+        if (Array.isArray(d.value)) {
+          it.range = { min: d.value[0], max: d.value[1] };
+          rangeBrush.items.push(it);
         } else {
-          valueBrush.items.push({
-            key: dp.source.field,
-            value: dp.value
-          });
+          it.value = d.value;
+          valueBrush.items.push(it);
         }
       }
     });

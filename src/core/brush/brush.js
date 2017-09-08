@@ -763,6 +763,9 @@ export default function brush({
       if (typeof source === 'undefined') {
         continue;
       }
+      if (typeof item.source.key !== 'undefined') {
+        source = `${item.source.key}/${source}`;
+      }
 
       if (source in aliases) {
         source = aliases[source];

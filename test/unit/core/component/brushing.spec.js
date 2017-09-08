@@ -13,7 +13,7 @@ describe('Brushing', () => {
         value: 7,
         source: { field: 'a' },
         self: {
-          source: { field: 'foo' },
+          source: { field: 'foo', key: 'cube' },
           value: 1337
         }
       },
@@ -21,7 +21,7 @@ describe('Brushing', () => {
         value: 13,
         source: { field: 'b' },
         self: {
-          source: { field: 'bar' },
+          source: { field: 'bar', key: 'corp' },
           value: 42
         }
       },
@@ -29,7 +29,7 @@ describe('Brushing', () => {
         value: 9,
         source: { field: 'c' },
         self: {
-          source: { field: 'bez' },
+          source: { field: 'bez', key: 'table' },
           value: 33
         }
       }
@@ -100,8 +100,8 @@ describe('Brushing', () => {
 
       expect(brushContext.toggleValues.callCount).to.equal(1);
       expect(brushContext.toggleValues.args[0][0]).to.deep.equal([
-        { key: data[0].self.source.field, value: data[0].self.value },
-        { key: data[1].self.source.field, value: data[1].self.value }
+        { key: `${data[0].self.source.key}/${data[0].self.source.field}`, value: data[0].self.value },
+        { key: `${data[1].self.source.key}/${data[1].self.source.field}`, value: data[1].self.value }
       ]);
     });
 

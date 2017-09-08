@@ -476,6 +476,13 @@ describe('brush', () => {
       expect(val.contains).to.have.been.calledWith('Bikes');
     });
 
+    it('should return true when data contains a brushed value from a data source with a key', () => {
+      bb.addValue('corp/products');
+      val.contains.returns(true);
+      expect(bb.containsMappedData({ value: 'Cars', source: { field: 'products', key: 'corp' } })).to.equal(true);
+      expect(val.contains).to.have.been.calledWith('Cars');
+    });
+
     it('should return false when data has no source', () => {
       bb.addRange('sales');
       v.containsValue.returns(true);
