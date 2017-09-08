@@ -38,29 +38,64 @@ function createFields(matrix, { cache }) {
 
 /**
  * Create a new dataset with default settings
- * @alias dataset
- * @memberof picasso.data
  * @ignore
  * @return {dataset}
  */
-export default function dataset(matrix) {
+export default function ds({
+  key,
+  data
+} = {}) {
   const cache = {
     fields: []
   };
 
-  const data = {
-    raw: () => matrix,
+  /**
+   * @alias dataset
+   * @typedef {object}
+   */
+  const dataset = {
+    /**
+     * Get the key identifying this dataset
+     * @returns {string}
+     */
+    key: () => key,
+
+    /**
+     * Get the raw data
+     * @returns {any}
+     */
+    raw: () => data,
+
+    /**
+     * Find a field within this dataset
+     * @returns {field}
+     */
     field: query => findField(query, {
       cache,
-      matrix
+      matrix: data
     }),
-    extract: config => extract(config, data, cache),
+
+    /**
+     * Get all fields within this dataset
+     * @returns {Array<field>}
+     */
+    fields: () => cache.fields.slice(),
+
+    /**
+     * Extract data items from this dataset
+     * @returns {data-extract}
+     */
+    extract: config => extract(config, dataset, cache),
+
+    /**
+     * @returns {null}
+     */
     hierarchy: () => null
   };
 
-  createFields(matrix, {
+  createFields(data, {
     cache
   });
 
-  return data;
+  return dataset;
 }

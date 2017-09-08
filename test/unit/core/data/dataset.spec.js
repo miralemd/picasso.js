@@ -2,24 +2,20 @@ import dataset from '../../../../src/core/data/dataset';
 
 describe('dataset', () => {
   describe('api', () => {
-    let d;
-    before(() => {
-      d = dataset();
-    });
-    it('#field', () => {
-      expect(d.field).to.be.a('function');
-    });
+    const d = dataset();
+    const api = {
+      key: 'function',
+      raw: 'function',
+      field: 'function',
+      fields: 'function',
+      extract: 'function',
+      hierarchy: 'function'
+    };
 
-    it('#raw', () => {
-      expect(d.raw).to.be.a('function');
-    });
-
-    it('#extract', () => {
-      expect(d.extract).to.be.a('function');
-    });
-
-    it('#hierarchy', () => {
-      expect(d.hierarchy).to.be.a('function');
+    Object.keys(api).forEach((key) => {
+      it(`#${key}`, () => {
+        expect(d[key]).to.be.a(api[key]);
+      });
     });
   });
 
@@ -31,7 +27,7 @@ describe('dataset', () => {
         ['Cars', 56],
         ['Cars', 59]
       ];
-      d = dataset(data);
+      d = dataset({ data });
     });
 
     it('should find the second field', () => {
