@@ -132,27 +132,26 @@ function createButtons({ HORIZONTAL, rect, buttonRectMinus, buttonRectPlus, butt
  * @param  {string} ALIGN - Alignment of the labels, 'left' or 'right'
  * @param  {Renderer} renderer - Current SVG/Canvas renderer for measuring text
  * @param  {object} rect - Rendering area rect, X, Y, Width and Height
- * @param  {object} chart - The chart object
  * @return {object} - returns labels, maxX and maxY for computing renderable area
  */
-function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect, chart, index = 0 }) {
+function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect, index }) {
   let title;
   const domain = scale.domain();
   const dataItems = scale.data().items;
   // const domainLabels = scale.labels ? scale.labels() : null;
 
   const THRESHOLD = scale.type === 'threshold-color';
-  let sourceField;
+  let sourceField = (scale.data().fields || [])[0];
   let formatter;
-  if (scale && scale.sources && scale.sources[0]) {
-    sourceField = chart.field(scale.sources[0]).field;
+  if (sourceField) {
     formatter = sourceField.formatter();
   }
 
-  if (settings.title.text) {
+  if (typeof settings.title.text !== 'undefined') {
     title = settings.title.text;
-  } else if (sourceField) {
-    title = sourceField.title();
+  } else if (scale) {
+    let field = (scale.data().fields || [])[0];
+    title = field ? field.title() : '';
   }
 
   const titleMargin = resolveMargin(settings.title.margin);
@@ -310,13 +309,12 @@ function renderLegend({ context, index = 0 }) {
   const {
     settings,
     renderer,
-    rect,
-    chart
+    rect
   } = context;
 
   const {
     labels
-  } = processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect, chart, index });
+  } = processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect, index });
 
   return labels;
 }
@@ -366,14 +364,13 @@ const categoricalLegend = {
 
     const {
       settings,
-      renderer,
-      chart
-    } = context;
+      renderer
+    } = this;
 
     const {
       maxX,
       maxY
-    } = processLabelItems({ settings, scale, HORIZONTAL, renderer, chart });
+    } = processLabelItems({ settings, scale, HORIZONTAL, renderer });
 
     return DOCK === 'left' || DOCK === 'right' ? maxX : maxY;
   },
