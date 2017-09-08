@@ -36,12 +36,10 @@ describe('Text component', () => {
 
     chart = componentFixture.mocks().chart;
     chart.scale.returns(scale);
-    const table = {
-      findField: () => ({
-        title: () => 'fakeTitle'
-      })
-    };
-    chart.dataset.returns({ tables: () => [table] });
+
+    scale.data = () => ({
+      fields: [{ title: () => 'fakeTitle' }]
+    });
 
     config = {
       text: 'Testing',
@@ -564,23 +562,27 @@ describe('Text component', () => {
     });
 
     it('join character', () => {
-      scale.sources = ['/0/0', '/1/0'];
+      scale.data = () => ({
+        fields: [{ title: () => 'fakeTitle1' }, { title: () => 'fakeTitle2' }]
+      });
       config.dock = 'left';
       config.scale = 'x';
       config.text = undefined;
       config.settings.join = '#';
       const node = simulateRender();
-      expect(node.text).to.equal('fakeTitle#fakeTitle');
+      expect(node.text).to.equal('fakeTitle1#fakeTitle2');
     });
 
     it('join as empty string', () => {
-      scale.sources = ['/0/0', '/1/0'];
+      scale.data = () => ({
+        fields: [{ title: () => 'fakeTitle1' }, { title: () => 'fakeTitle2' }]
+      });
       config.dock = 'left';
       config.scale = 'x';
       config.text = undefined;
       config.settings.join = '';
       const node = simulateRender();
-      expect(node.text).to.equal('fakeTitlefakeTitle');
+      expect(node.text).to.equal('fakeTitle1fakeTitle2');
     });
   });
 
@@ -705,7 +707,6 @@ describe('Text component', () => {
     });
 
     it('scale by reference', () => {
-      scale.sources = '/0/0';
       config.dock = 'left';
       config.scale = 'x';
       config.text = undefined;
@@ -714,12 +715,14 @@ describe('Text component', () => {
     });
 
     it('scale by reference with multiple sources', () => {
-      scale.sources = ['/0/0', '/1/0'];
+      scale.data = () => ({
+        fields: [{ title: () => 'fakeTitle1' }, { title: () => 'fakeTitle2' }]
+      });
       config.dock = 'left';
       config.scale = 'x';
       config.text = undefined;
       const node = simulateRender();
-      expect(node.text).to.equal('fakeTitle, fakeTitle');
+      expect(node.text).to.equal('fakeTitle1, fakeTitle2');
     });
   });
 });
