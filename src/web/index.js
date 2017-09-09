@@ -4,7 +4,9 @@ import svgRenderer from './renderer/svg-renderer/svg-renderer';
 import canvasRenderer from './renderer/canvas-renderer';
 import domRenderer from './renderer/dom-renderer';
 
-polyfillPath2D(window);
+if (typeof window !== 'undefined') {
+  polyfillPath2D(window);
+}
 
 renderer.register('svg', svgRenderer);
 renderer.register('canvas', canvasRenderer);
