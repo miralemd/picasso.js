@@ -70,16 +70,16 @@ function polyFillPath2D(window) {
     }
   }
   Path2D.prototype.moveTo = function moveTo(x, y) {
-    this.segments.push(['m', x, y]);
+    this.segments.push(['M', x, y]);
   };
   Path2D.prototype.lineTo = function lineTo(x, y) {
-    this.segments.push(['l', x, y]);
+    this.segments.push(['L', x, y]);
   };
   Path2D.prototype.arc = function arc(x, y, r, start, end, ccw) {
-    this.segments.push(['ac', x, y, r, start, end, !!ccw]);
+    this.segments.push(['AC', x, y, r, start, end, !!ccw]);
   };
   Path2D.prototype.closePath = function closePath() {
-    this.segments.push(['z']);
+    this.segments.push(['Z']);
   };
 
   let _fill = window.CanvasRenderingContext2D.prototype.fill;
@@ -116,35 +116,47 @@ function polyFillPath2D(window) {
     for (let i = 0; i < segments.length; ++i) {
       let s = segments[i];
       pathType = s[0];
-      switch (pathType.toLowerCase()) {
+      switch (pathType) {
         case 'm':
-          canvas.moveTo(s[1], s[2]); // x, y
-          currentPoint.x = s[1];
-          currentPoint.y = s[2];
+        case 'M':
+          if (pathType === 'm') {
+            x = currentPoint.x + s[1];
+            y = currentPoint.y + s[2];
+          } else {
+            x = s[1];
+            y = s[2];
+          }
+          canvas.moveTo(x, y);
+          currentPoint.x = x;
+          currentPoint.y = y;
           break;
         case 'l':
-          canvas.lineTo(s[1], s[2]); // x, y
-          currentPoint.x = s[1];
-          currentPoint.y = s[2];
-          break;
-        case 'ac':
-          canvas.arc(s[1], s[2], s[3], s[4], s[5], s[6]);
-          x = s[1];
-          y = s[2];
-          r = s[3];
-          endAngle = s[5];
-          currentPoint.x = x + (r * Math.cos(endAngle));
-          currentPoint.y = y + (r * Math.sin(endAngle));
+        case 'L':
+          if (pathType === 'l') {
+            x = currentPoint.x + s[1];
+            y = currentPoint.y + s[2];
+          } else {
+            x = s[1];
+            y = s[2];
+          }
+          canvas.lineTo(x, y);
+          currentPoint.x = x;
+          currentPoint.y = y;
           break;
         case 'a':
+        case 'A':
+          if (pathType === 'a') {
+            x = currentPoint.x + s[6];
+            y = currentPoint.y + s[7];
+          } else {
+            x = s[6];
+            y = s[7];
+          }
           r = s[1];
             // s[2] = 2nd radius in ellipse, ignore
             // s[3] = rotation of ellipse, ignore
           largeArcFlag = s[4];
           sweepFlag = s[5];
-          x = s[6];
-          y = s[7];
-
           endPoint = { x, y };
             // translate all points so that currentPoint is origin
           translatePoint(endPoint, -currentPoint.x, -currentPoint.y);
@@ -184,6 +196,7 @@ function polyFillPath2D(window) {
           currentPoint.y = y;
           break;
         case 'z':
+        case 'Z':
           canvas.closePath();
           break;
         default:
@@ -194,7 +207,6 @@ function polyFillPath2D(window) {
 
   window.CanvasRenderingContext2D.prototype.fill = function fill(...args) {
     let fillRule = 'nonzero';
-
     if (args.length === 0 || (args.length === 1 && typeof args[0] === 'string')) {
       _fill.apply(this, args);
       return;
