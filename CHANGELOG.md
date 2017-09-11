@@ -2,6 +2,59 @@
 
 ## **Unreleased** - *(YYYY-MM-DD)*
 
+### Added
+
+- PIC-38 Legend component for sequential color scale
+
+  ```js
+  {
+    type: 'legend-seq',
+    dock: 'top', 
+    settings: {
+      fill: 'colorScale',
+      major: 'measureScale',
+      ticks: {
+        label: (val, i, ary) => {
+          let temp = ['Cold', 'Hot'];
+          return temp[i % 2];
+        },
+      },
+      title: { 
+        text: 'ALL YOUR BASES BELONG TO US'
+      }
+    }
+  }
+  ```
+
+- PIC-195 Add ID attribute to enable css selection by ID
+
+  ```js
+  chartInstance.findShapes('[id="myNodeId"]');
+  ```
+  
+- PIC-179 Varying symbols in color legend
+
+```js
+{
+  type: 'legend-cat',
+  item: {
+    shape: function(a, i) { // As a function
+      return {
+        type:  'star',
+        fill: this.data.color,
+        points: 2 // Custom shape property only applicable to the "star" is valid here
+      };
+    },
+    shape: { // As an object
+        type: 'star',
+        stroke: 'black',
+        strokeWidth: 2,
+        points: function(a, i) { return i + 1 },
+      }
+    shape: 'n-polygon' // As a string
+}
+```
+
 ## **0.26.0** - *(2017-08-24)* [BREAKING]
 
 ### Fixed
