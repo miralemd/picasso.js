@@ -2,6 +2,8 @@
 
 ## **Unreleased** - *(YYYY-MM-DD)*
 
+## **0.28.0** - *(2017-09-11)*
+
 ### Added
 
 - PIC-38 Legend component for sequential color scale
@@ -34,46 +36,47 @@
   
 - PIC-179 Varying symbols in color legend
 
-```js
-{
-  type: 'legend-cat',
-  item: {
-    shape: function(a, i) { // As a function
-      return {
-        type:  'star',
-        fill: this.data.color,
-        points: 2 // Custom shape property only applicable to the "star" is valid here
-      };
-    },
-    shape: { // As an object
-        type: 'star',
-        stroke: 'black',
-        strokeWidth: 2,
-        points: function(a, i) { return i + 1 },
-      }
-    shape: 'n-polygon' // As a string
-}
-```
+  ```js
+  {
+    type: 'legend-cat',
+    item: {
+      shape: function(a, i) { // As a function
+        return {
+          type:  'star',
+          fill: this.data.color,
+          points: 2 // Custom shape property only applicable to the "star" is valid here
+        };
+      },
+      shape: { // As an object
+          type: 'star',
+          stroke: 'black',
+          strokeWidth: 2,
+          points: function(a, i) { return i + 1 },
+        }
+      shape: 'n-polygon' // As a string
+  }
+  ```
 
 - PIC-192 Scrollable categorical color legend
-```js
-{
-  type: 'legend-cat',
-  buttons: { // Scrolling buttons.
-    show: true, // Show the scroll/paging buttons (will still auto hide when not needed). Default: true. Optional.
-    rect: { // Settings for the rect of the buttons. Optional.
-      fill: 'transparent', // Fill color. Default: 'transparent'. Optional.
-      stroke: 'grey', // Stroke color. Default: 'grey'. Optional.
-      strokeWidth: 1, // Stroke width in pixels. Default: 1. Optional.
-    },
-    symbol: { // Settings for the symbol of the buttons. Optional.
-      fill: 'grey', // Symbol fill color. Default: 'grey'. Optional.
-      stroke: 'grey', // Stroke color. Default: 'grey'. Optional.
-      strokeWidth: 2, // Stroke width in pixels. Default: 2. Optional.
-    },
-  },
-}
-```
+
+  ```js
+  {
+    type: 'legend-cat',
+    buttons: { // Scrolling buttons.
+      show: true, // Show the scroll/paging buttons (will still auto hide when not needed). Default: true. Optional.
+      rect: { // Settings for the rect of the buttons. Optional.
+        fill: 'transparent', // Fill color. Default: 'transparent'. Optional.
+        stroke: 'grey', // Stroke color. Default: 'grey'. Optional.
+        strokeWidth: 1, // Stroke width in pixels. Default: 1. Optional.
+      },
+      symbol: { // Settings for the symbol of the buttons. Optional.
+        fill: 'grey', // Symbol fill color. Default: 'grey'. Optional.
+        stroke: 'grey', // Stroke color. Default: 'grey'. Optional.
+        strokeWidth: 2, // Stroke width in pixels. Default: 2. Optional.
+      },
+   },
+  }
+  ```
 
 
 ## **0.26.0** - *(2017-08-24)* [BREAKING]
