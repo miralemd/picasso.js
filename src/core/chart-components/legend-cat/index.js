@@ -40,4 +40,14 @@ export default function categoricalLegend(picasso) {
  * @property {number} [title.margin.right=5] - Right margin
  * @property {number} [title.margin.bottom=5] - Bottom margin
  * @property {number} [title.margin.left=5] - Left margin
+ * @property {object} [buttons] - Title settings
+ * @property {boolean} [buttons.show=true] - Show the scroll/paging buttons (will still auto hide when not needed)
+ * @property {object} [buttons.rect] - Settings for the rect of the buttons
+ * @property {string} [buttons.rect.fill='transparent'] - Fill color
+ * @property {string} [buttons.rect.stroke='grey'] - Stroke color
+ * @property {number} [buttons.rect.strokeWidth=1] - Stroke width in pixels
+ * @property {object} [buttons.symbol] - Settings for the symbol of the buttons
+ * @property {string} [buttons.symbol.fill='grey'] - Symbol fill color
+ * @property {string} [buttons.symbol.stroke='grey'] - Stroke color
+ * @property {number} [buttons.symbol.strokeWidth=2] - Stroke width in pixels
  */

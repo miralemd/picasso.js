@@ -43,6 +43,18 @@ component: {
       left: 5, // Left margin. Default: 5. Optional.
     },
   },
+  buttons: { // Title settings. Optional.
+    show: true, // Show the scroll/paging buttons (will still auto hide when not needed). Default: true. Optional.
+    rect: { // Settings for the rect of the buttons. Optional.
+      fill: 'transparent', // Fill color. Default: 'transparent'. Optional.
+      stroke: 'grey', // Stroke color. Default: 'grey'. Optional.
+      strokeWidth: 1, // Stroke width in pixels. Default: 1. Optional.
+    },
+    line: { // Settings for the line of the buttons. Optional.
+      stroke: 'grey', // Stroke color. Default: 'grey'. Optional.
+      strokeWidth: 1, // Stroke width in pixels. Default: 1. Optional.
+    },
+  },
 }
 ```
 
