@@ -10,10 +10,10 @@ A charting library streamlined for building visualizations for the Qlik Sense An
 
 ### Building
 
-1. Make sure you have `yarn` installed globally:
+1. Install dependencies:
 
     ```sh
-    $ npm install yarn -g
+    $ npm install
     ```
 
 2. Run the build script:
