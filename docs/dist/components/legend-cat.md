@@ -50,9 +50,10 @@ component: {
       stroke: 'grey', // Stroke color. Default: 'grey'. Optional.
       strokeWidth: 1, // Stroke width in pixels. Default: 1. Optional.
     },
-    line: { // Settings for the line of the buttons. Optional.
+    symbol: { // Settings for the symbol of the buttons. Optional.
+      fill: 'grey', // Symbol fill color. Default: 'grey'. Optional.
       stroke: 'grey', // Stroke color. Default: 'grey'. Optional.
-      strokeWidth: 1, // Stroke width in pixels. Default: 1. Optional.
+      strokeWidth: 2, // Stroke width in pixels. Default: 2. Optional.
     },
   },
 }
