@@ -55,6 +55,27 @@
 }
 ```
 
+- PIC-192 Scrollable categorical color legend
+```js
+{
+  type: 'legend-cat',
+  buttons: { // Scrolling buttons.
+    show: true, // Show the scroll/paging buttons (will still auto hide when not needed). Default: true. Optional.
+    rect: { // Settings for the rect of the buttons. Optional.
+      fill: 'transparent', // Fill color. Default: 'transparent'. Optional.
+      stroke: 'grey', // Stroke color. Default: 'grey'. Optional.
+      strokeWidth: 1, // Stroke width in pixels. Default: 1. Optional.
+    },
+    symbol: { // Settings for the symbol of the buttons. Optional.
+      fill: 'grey', // Symbol fill color. Default: 'grey'. Optional.
+      stroke: 'grey', // Stroke color. Default: 'grey'. Optional.
+      strokeWidth: 2, // Stroke width in pixels. Default: 2. Optional.
+    },
+  },
+}
+```
+
+
 ## **0.26.0** - *(2017-08-24)* [BREAKING]
 
 ### Fixed
