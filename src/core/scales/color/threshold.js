@@ -79,7 +79,7 @@ function generateNiceDomain(range, min, max) {
  * t.range(); // Generates from colors and domain: ['rgb(0,0,0)','rgb(85,85,85)','rgb(170,170,170)','rgb(255,255,255)']
  */
 
-export default function scaleThresholdColor(settings = {}, fields, dataset, { theme } = {}) {
+export default function scaleThresholdColor(settings = {}, { fields } = {}, { theme } = {}) {
   const d3Scale = scaleThreshold();
 
   /**

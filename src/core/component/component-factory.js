@@ -261,7 +261,7 @@ function componentFactory(definition, options = {}) {
     } else if (typeof settings.formatter === 'object') {
       formatter = chart.formatter(settings.formatter);
     } else if (typeof settings.scale === 'string') {
-      formatter = chart.formatter({ source: scale.sources[0] });
+      // formatter = chart.formatter({ source: scale.sources[0] });
     }
 
     style = theme.style(settings.style || {});

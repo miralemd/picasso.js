@@ -1,7 +1,7 @@
-import transformStraight from './transform-s';
-import { transformStacked, transformH } from './transform-k';
+import transformH from './transform-k';
+import kExtractor from './extractor-k';
+import SExtractor from './extractor-s';
 import { findField } from './util';
-import picker from '../json-path-resolver';
 import field from './field';
 
 function hierarchy(config = {}, cube, cache) {
@@ -11,11 +11,11 @@ function hierarchy(config = {}, cube, cache) {
   return transformH(config, cube, cache);
 }
 
-function transform(cfg, cube, cache) {
+function extractData(cfg, cube, cache) {
   if (cube.qMode === 'K') {
-    return transformStacked(cfg, cube, cache);
+    return kExtractor(cfg, cube, cache);
   } else if (cube.qMode === 'S') {
-    return transformStraight(cfg, cube, cache);
+    return SExtractor(cfg, cube, cache);
   }
   return [];
 }
@@ -23,24 +23,23 @@ function transform(cfg, cube, cache) {
 function createAttrFields(idx, d, {
   cache,
   cube,
-  pages
+  pages,
+  fieldExtractor
 }) {
   if (d.qAttrDimInfo) {
-    cache.attributeDimensionFields[idx] = d.qAttrDimInfo.map((attrDim, attrDimIdx) => (attrDim ? field({
+    cache.attributeDimensionFields[idx] = d.qAttrDimInfo.map(attrDim => (attrDim ? field({
       meta: attrDim,
-      idx,
       cube,
       pages,
-      attrDimIdx
+      fieldExtractor
     }) : undefined));
   }
   if (d.qAttrExprInfo) {
-    cache.attributeExpressionFields[idx] = d.qAttrExprInfo.map((attrExpr, attrIdx) => (attrExpr ? field({
+    cache.attributeExpressionFields[idx] = d.qAttrExprInfo.map(attrExpr => (attrExpr ? field({
       meta: attrExpr,
-      idx,
       cube,
       pages,
-      attrIdx
+      fieldExtractor
     }) : undefined));
   }
 }
@@ -63,25 +62,35 @@ export default function q({
 
   const pages = cube.qMode === 'K' ? cube.qStackedDataPages : cube.qDataPages;
 
-  const dimensions = picker('/qDimensionInfo', cube);
+  let fieldExtractor;
+
+  if (cube.qMode === 'K') {
+    fieldExtractor = f => kExtractor({ field: f }, cube, cache);
+  } else if (cube.qMode === 'S') {
+    fieldExtractor = f => SExtractor({ field: f }, cube, cache);
+  } else {
+    fieldExtractor = () => []; // TODO - throw unsupported error?
+  }
+
+  const dimensions = cube.qDimensionInfo;
   dimensions.forEach((d, i) => {
     cache.fields.push(field({
       meta: d,
-      idx: i,
       cube,
-      pages
+      pages,
+      fieldExtractor
     }));
-    createAttrFields(i, d, { cache, cube, pages });
+    createAttrFields(i, d, { cache, cube, pages, fieldExtractor });
   });
 
-  picker('/qMeasureInfo', cube).forEach((d, i) => {
+  cube.qMeasureInfo.forEach((d, i) => {
     cache.fields.push(field({
       meta: d,
-      idx: dimensions.length + i,
       cube,
-      pages
+      pages,
+      fieldExtractor
     }));
-    createAttrFields(dimensions.length + i, d, { cache, cube, pages });
+    createAttrFields(dimensions.length + i, d, { cache, cube, pages, fieldExtractor });
   });
 
   const dataset = {
@@ -93,7 +102,7 @@ export default function q({
       pages
     }),
     fields: () => cache.fields.slice(),
-    extract: mapper => transform(mapper, cube, cache),
+    extract: extractionConfig => extractData(extractionConfig, cube, cache),
     hierarchy: hierarchyConfig => hierarchy(hierarchyConfig, cube, cache)
   };
 

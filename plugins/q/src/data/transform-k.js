@@ -3,13 +3,12 @@ import {
 } from 'd3-hierarchy';
 
 import {
-  findField,
   getPropsInfo
 } from './util';
 
 import picker from '../json-path-resolver';
 
-export function getKPath(fieldIdx, cube) {
+function getKPath(fieldIdx, cube) {
   let idx = fieldIdx;
   const numDimz = cube.qDimensionInfo.length;
   const numMeas = cube.qMeasureInfo.length;
@@ -52,7 +51,7 @@ function getAttrPath(s, attrIdx, attrDimIdx) {
 }
 
 
-export function getPathToFieldItems(field, {
+function getPathToFieldItems(field, {
   cache,
   cube
 }) {
@@ -90,7 +89,7 @@ function getTreePath(field, { cache, cube }) {
   return s3.replace(/qData\/\*/, '');
 }
 
-export function transformH(config, cube, cache) {
+export default function transformH(config, cube, cache) {
   const rootPath = '/qStackedDataPages/*/qData';
 
   const root = picker(rootPath, cube);
@@ -197,92 +196,4 @@ export function transformH(config, cube, cache) {
   });
 
   return h;
-}
-
-export function transformStacked(config, cube, cache) {
-  const cfgs = Array.isArray(config) ? config : [config];
-  let dataItems = [];
-  cfgs.forEach((cfg) => {
-    if (cfg.field) {
-      const f = findField(cfg.field, { cube, cache });
-      if (!f) {
-        throw Error(`Field '${cfg.field}' not found`);
-      }
-      const { props, main } = getPropsInfo(cfg, cube, cache);
-      const propsArr = Object.keys(props);
-      const rootPath = '/qStackedDataPages/*/qData';
-      if (!cache.tree) {
-        const root = picker(rootPath, cube);
-        cache.tree = hierarchy(root[0], node => node.qSubNodes);
-      }
-      const itemsPath = getTreePath(f, { cube, cache });
-      const items = picker(itemsPath, cache.tree);
-      propsArr.forEach((prop) => {
-        const p = props[prop];
-        if (p.field) {
-          const fieldPath = getTreePath(p.field, { cube, cache });
-          if (fieldPath === itemsPath) {
-            p.isSame = true;
-          } else {
-            const isDescendant = fieldPath.match(/\//g).length > itemsPath.match(/\//g).length;
-            let pathToNode = '';
-            if (isDescendant) {
-              pathToNode = `${fieldPath.replace(itemsPath, '').replace(/^\/\*/, '')}/*/data`;
-            } else {
-              pathToNode = Math.ceil((itemsPath.match(/\//g).length - fieldPath.match(/\//g).length) / 2);
-            }
-            p.isDescendant = isDescendant;
-            p.path = pathToNode;
-          }
-        }
-      });
-      const mapped = items.map((item) => {
-        const ret = {
-          value: typeof main.value === 'function' ? main.value(item.data) : (typeof main.value !== 'undefined' ? main.value : item.data), // eslint-disable-line no-nested-ternary
-          source: {
-            field: cfg.field
-          }
-        };
-        propsArr.forEach((prop) => {
-          const p = props[prop];
-          let fn = v => v;
-          let value;
-          if (p.type === 'primitive') {
-            value = p.value;
-          } else {
-            if (typeof p.value === 'function') {
-              fn = v => p.value(v);
-            }
-            if (!p.field) {
-              value = item.data;
-            } else if (p.isSame) {
-              value = item.data;
-            } else if (p.isDescendant) {
-              value = picker(p.path, item);
-              if (Array.isArray(value)) {
-                value = value.map(fn);
-                fn = (v => v.join(', '));
-              }
-            } else if (p.path) { // ancestor
-              const num = p.path || 0;
-              let it = item;
-              for (let i = 0; i < num; i++) {
-                it = it.parent;
-              }
-              value = it.data;
-            }
-          }
-          ret[prop] = {
-            value: fn(value)
-          };
-          if (p.source) {
-            ret[prop].source = { field: p.source };
-          }
-        });
-        return ret;
-      });
-      dataItems.push(...mapped);
-    }
-  });
-  return dataItems;
 }

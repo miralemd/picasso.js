@@ -1,5 +1,5 @@
 import q from '../../src/data';
-import { getPathToFieldItems } from '../../src/data/transform-k';
+// import { getPathToFieldItems } from '../../src/data/transform-k';
 
 describe('data-transform', () => {
   const page = {
@@ -20,7 +20,7 @@ describe('data-transform', () => {
     ]
   };
 
-  describe('straight mapping', () => {
+  describe('straight extractor', () => {
     const cube = {
       qMode: 'S',
       qDimensionInfo: [{ label: 'A', qStateCounts: {} }, { label: 'B', qStateCounts: {} }],
@@ -29,7 +29,7 @@ describe('data-transform', () => {
     };
 
     it('should return dim field values based on default field accessor', () => {
-      const m = q(cube).extract({
+      const m = q({ key: 'nyckel', data: cube }).extract({
         field: '/qDimensionInfo/1'
       });
       expect(m).to.eql([
@@ -40,7 +40,7 @@ describe('data-transform', () => {
     });
 
     it('should return measure field values based on default field accessor', () => {
-      const m = q(cube).extract({
+      const m = q({ key: 'nyckel', data: cube }).extract({
         field: '/qMeasureInfo/0'
       });
       expect(m).to.eql([
@@ -51,7 +51,7 @@ describe('data-transform', () => {
     });
 
     it('should return joined set when array of fields is used', () => {
-      const m = q(cube).extract([{
+      const m = q({ key: 'nyckel', data: cube }).extract([{
         field: '/qMeasureInfo/0'
       }, {
         field: '/qDimensionInfo/1'
@@ -67,7 +67,7 @@ describe('data-transform', () => {
     });
 
     it('should return raw field values', () => {
-      const m = q(cube).extract({
+      const m = q({ key: 'nyckel', data: cube }).extract({
         field: '/qDimensionInfo/1',
         value: d => d
       });
@@ -79,7 +79,7 @@ describe('data-transform', () => {
     });
 
     it('should return mapped properties from same field', () => {
-      const m = q(cube).extract({
+      const m = q({ key: 'nyckel', data: cube }).extract({
         field: '/qDimensionInfo/1',
         value: d => d,
         props: {
@@ -106,7 +106,7 @@ describe('data-transform', () => {
     });
 
     it('should return primitive values', () => {
-      const m = q(cube).extract({
+      const m = q({ key: 'nyckel', data: cube }).extract({
         field: '/qDimensionInfo/1',
         value: 'foo',
         props: {
@@ -137,7 +137,7 @@ describe('data-transform', () => {
     });
 
     it('should return mapped properties from other fields', () => {
-      const m = q(cube).extract({
+      const m = q({ key: 'nyckel', data: cube }).extract({
         field: '/qDimensionInfo/1',
         value: d => d,
         props: {
@@ -168,17 +168,20 @@ describe('data-transform', () => {
 
     it('should return collected values', () => {
       const m = q({
-        qMode: 'S',
-        qDimensionInfo: [{ qStateCounts: {} }],
-        qMeasureInfo: [],
-        qDataPages: [{
-          qArea: { qLeft: 0, qTop: 5, qWidth: 1, qHeight: 3 },
-          qMatrix: [
-            [{ qNum: 3, qText: 'tre', qElemNumber: 1 }],
-            [{ qNum: 5, qText: 'fem', qElemNumber: 1 }],
-            [{ qNum: 1, qText: 'ett', qElemNumber: 3 }]
-          ]
-        }]
+        key: 'nyckel',
+        data: {
+          qMode: 'S',
+          qDimensionInfo: [{ qStateCounts: {} }],
+          qMeasureInfo: [],
+          qDataPages: [{
+            qArea: { qLeft: 0, qTop: 5, qWidth: 1, qHeight: 3 },
+            qMatrix: [
+              [{ qNum: 3, qText: 'tre', qElemNumber: 1 }],
+              [{ qNum: 5, qText: 'fem', qElemNumber: 1 }],
+              [{ qNum: 1, qText: 'ett', qElemNumber: 3 }]
+            ]
+          }]
+        }
       }).extract({
         field: '/qDimensionInfo/0',
         trackBy: 'qElemNumber',
@@ -205,17 +208,20 @@ describe('data-transform', () => {
 
     it('should return reduced values', () => {
       const m = q({
-        qMode: 'S',
-        qDimensionInfo: [{ qStateCounts: {} }],
-        qMeasureInfo: [],
-        qDataPages: [{
-          qArea: { qLeft: 0, qTop: 5, qWidth: 1, qHeight: 3 },
-          qMatrix: [
-            [{ qNum: 3, qText: 'tre', qElemNumber: 1 }],
-            [{ qNum: 5, qText: 'fem', qElemNumber: 1 }],
-            [{ qNum: 1, qText: 'ett', qElemNumber: 3 }]
-          ]
-        }]
+        key: 'nyckel',
+        data: {
+          qMode: 'S',
+          qDimensionInfo: [{ qStateCounts: {} }],
+          qMeasureInfo: [],
+          qDataPages: [{
+            qArea: { qLeft: 0, qTop: 5, qWidth: 1, qHeight: 3 },
+            qMatrix: [
+              [{ qNum: 3, qText: 'tre', qElemNumber: 1 }],
+              [{ qNum: 5, qText: 'fem', qElemNumber: 1 }],
+              [{ qNum: 1, qText: 'ett', qElemNumber: 3 }]
+            ]
+          }]
+        }
       }).extract({
         field: '/qDimensionInfo/0',
         trackBy: 'qElemNumber',
@@ -274,7 +280,7 @@ describe('data-transform', () => {
       qDataPages: [{ qMatrix: [] }]
     };
 
-    const d = q(cube);
+    const d = q({ key: 'nyckel', data: cube });
 
     it('should find attribute dimension on dimension', () => {
       const f = d.field('/qDimensionInfo/0/qAttrDimInfo/1');
@@ -294,303 +300,6 @@ describe('data-transform', () => {
     it('should find attribute expression on measure', () => {
       const f = d.field('/qMeasureInfo/2/qAttrExprInfo/1');
       expect(f.title()).to.eql('m attr expr title');
-    });
-  });
-
-  describe('stacked mapping', () => {
-    describe('paths', () => {
-      const cache = {
-        fields: [{}, {}, {}]
-      };
-      const cube = {
-        qDimensionInfo: [{}, {}],
-        qMeasureInfo: [{}]
-      };
-
-      it('should point to first dimension cells', () => {
-        const p = getPathToFieldItems(cache.fields[0], { cache, cube });
-        expect(p).to.eql('/qData/*/qSubNodes');
-      });
-      it('should point to second dimension cells', () => {
-        const p = getPathToFieldItems(cache.fields[1], { cache, cube });
-        expect(p).to.eql('/qData/*/qSubNodes/*/qSubNodes');
-      });
-      it('should point to first measure cells', () => {
-        const p = getPathToFieldItems(cache.fields[2], { cache, cube });
-        expect(p).to.eql('/qData/*/qSubNodes/*/qSubNodes/*/qSubNodes/0');
-      });
-    });
-
-    describe('paths with pseudo dim and reordered columns', () => {
-      const cache = {
-        fields: [{}, {}, {}, {}],
-        attributeDimensionFields: [null, [{}], null, [{}, {}]],
-        attributeExpressionFields: [[{}, {}], [{}]]
-      };
-      const cube = {
-        qDimensionInfo: [{}, {}],
-        qMeasureInfo: [{}, {}],
-        qEffectiveInterColumnSortOrder: [1, -1, 0]
-      };
-
-      it('should point to first dimension cells', () => {
-        const p = getPathToFieldItems(cache.fields[0], { cache, cube });
-        expect(p).to.eql('/qData/*/qSubNodes/*/qSubNodes/*/qSubNodes');
-      });
-      it('should point to second dimension cells', () => {
-        const p = getPathToFieldItems(cache.fields[1], { cache, cube });
-        expect(p).to.eql('/qData/*/qSubNodes');
-      });
-      it('should point to first measure cells', () => {
-        const p = getPathToFieldItems(cache.fields[2], { cache, cube });
-        expect(p).to.eql('/qData/*/qSubNodes/*/qSubNodes/0/qSubNodes/*/qSubNodes');
-      });
-      it('should point to first attrDim of second dimension', () => {
-        const p = getPathToFieldItems(cache.attributeDimensionFields[1][0], { cache, cube });
-        expect(p).to.eql('/qData/*/qSubNodes/*/qAttrDims/qValues/0');
-      });
-      it('should point to second attrExpr of first dimension', () => {
-        const p = getPathToFieldItems(cache.attributeExpressionFields[0][1], { cache, cube });
-        expect(p).to.eql('/qData/*/qSubNodes/*/qSubNodes/*/qSubNodes/*/qAttrExps/qValues/1');
-      });
-      it('should point to second attrDim of second measure', () => {
-        const p = getPathToFieldItems(cache.attributeDimensionFields[3][1], { cache, cube });
-        expect(p).to.eql('/qData/*/qSubNodes/*/qSubNodes/1/qSubNodes/*/qSubNodes/*/qAttrDims/qValues/1');
-      });
-    });
-
-    describe('containing two dimensions, one measure', () => {
-      const stackedPageWithoutPseudo = {
-        qArea: {
-          qLeft: 0,
-          qTop: 0,
-          qWidth: 2,
-          qHeight: 3
-        },
-        qData: [
-          {
-            qType: 'R',
-            qElemNo: 0,
-            qSubNodes: [
-              {
-                qText: 'Alpha',
-                qElemNo: 1,
-                qRow: 7,
-                qValue: 'NaN',
-                qSubNodes: [
-                  { qText: '$666', qElemNo: -1, qValue: 666, qType: 'T' },
-                  { qText: 'a1', qElemNo: 0, qRow: 8, qValue: 123, qSubNodes: [{ qValue: 45, qElemNo: 0, qRow: 8, qText: '$45.00', qAttrExps: { qValues: [{}, { qText: 'redish', qNum: 'NaN' }] } }] },
-                  { qText: 'a2', qElemNo: 3, qRow: 9, qValue: 135, qSubNodes: [{ qValue: 32, qElemNo: 0, qRow: 9, qText: '$32.00', qAttrExps: { qValues: [{}, { qText: 'white', qNum: false }] } }] }
-                ] },
-              {
-                qText: 'Beta',
-                qElemNo: 3,
-                qRow: 10,
-                qValue: 2,
-                qSubNodes: [
-                  { qText: '$667', qElemNo: -1, qRow: 11, qValue: 667, qType: 'T' },
-                  { qText: 'b1', qElemNo: 7, qRow: 12, qValue: 345, qSubNodes: [{ qValue: 13, qElemNo: 0, qRow: 12, qText: '$13.00', qAttrExps: { qValues: [{}, { qText: 'red', qNum: 987 }] } }] },
-                  { qText: 'b3', qElemNo: 9, qRow: 13, qValue: 276, qSubNodes: [{ qValue: 17, qElemNo: 0, qRow: 13, qText: '$17.00', qAttrExps: { qValues: [{}, { qText: 'green', qNum: 'NaN' }] } }] }
-                ]
-              }
-            ]
-          }
-        ]
-      };
-
-      const cube = {
-        qMode: 'K',
-        qDimensionInfo: [{ qStateCounts: {} }, { qStateCounts: {} }],
-        qMeasureInfo: [{ qMin: 1, qMax: 2 }],
-        qStackedDataPages: [stackedPageWithoutPseudo]
-      };
-
-      it('should return dim field values based on default field accessor', () => {
-        const m = q(cube).extract({
-          field: '/qDimensionInfo/0'
-        });
-        expect(m).to.eql([
-          { value: 1, source: { field: '/qDimensionInfo/0' } },
-          { value: 3, source: { field: '/qDimensionInfo/0' } }
-        ]);
-      });
-
-      it('should return measure field values based on default field accessor', () => {
-        const m = q(cube).extract({
-          field: '/qMeasureInfo/0'
-        });
-        expect(m).to.eql([
-          { value: 666, source: { field: '/qMeasureInfo/0' } },
-          { value: 45, source: { field: '/qMeasureInfo/0' } },
-          { value: 32, source: { field: '/qMeasureInfo/0' } },
-          { value: 667, source: { field: '/qMeasureInfo/0' } },
-          { value: 13, source: { field: '/qMeasureInfo/0' } },
-          { value: 17, source: { field: '/qMeasureInfo/0' } }
-        ]);
-      });
-
-      it('should return joined set from array of field configs', () => {
-        const m = q(cube).extract([{
-          field: '/qDimensionInfo/0'
-        }, {
-          field: '/qDimensionInfo/1'
-        }]);
-        expect(m).to.eql([
-           { value: 1, source: { field: '/qDimensionInfo/0' } },
-           { value: 3, source: { field: '/qDimensionInfo/0' } },
-           { value: -1, source: { field: '/qDimensionInfo/1' } },
-           { value: 0, source: { field: '/qDimensionInfo/1' } },
-           { value: 3, source: { field: '/qDimensionInfo/1' } },
-           { value: -1, source: { field: '/qDimensionInfo/1' } },
-           { value: 7, source: { field: '/qDimensionInfo/1' } },
-           { value: 9, source: { field: '/qDimensionInfo/1' } }
-        ]);
-      });
-
-      it('should return raw field values', () => {
-        const m = q(cube).extract({
-          field: '/qDimensionInfo/1',
-          value: d => d
-        });
-        expect(m).to.eql([
-          { value: stackedPageWithoutPseudo.qData[0].qSubNodes[0].qSubNodes[0], source: { field: '/qDimensionInfo/1' } },
-          { value: stackedPageWithoutPseudo.qData[0].qSubNodes[0].qSubNodes[1], source: { field: '/qDimensionInfo/1' } },
-          { value: stackedPageWithoutPseudo.qData[0].qSubNodes[0].qSubNodes[2], source: { field: '/qDimensionInfo/1' } },
-          { value: stackedPageWithoutPseudo.qData[0].qSubNodes[1].qSubNodes[0], source: { field: '/qDimensionInfo/1' } },
-          { value: stackedPageWithoutPseudo.qData[0].qSubNodes[1].qSubNodes[1], source: { field: '/qDimensionInfo/1' } },
-          { value: stackedPageWithoutPseudo.qData[0].qSubNodes[1].qSubNodes[2], source: { field: '/qDimensionInfo/1' } }
-        ]);
-      });
-
-      it('should return mapped properties from same field', () => {
-        const m = q(cube).extract({
-          field: '/qDimensionInfo/1',
-          value: d => d.qElemNo,
-          props: {
-            label: d => d.qText
-          }
-        });
-        expect(m).to.eql([
-          {
-            value: -1,
-            source: { field: '/qDimensionInfo/1' },
-            label: { value: '$666', source: { field: '/qDimensionInfo/1' } }
-          },
-          {
-            value: 0,
-            source: { field: '/qDimensionInfo/1' },
-            label: { value: 'a1', source: { field: '/qDimensionInfo/1' } }
-          },
-          {
-            value: 3,
-            source: { field: '/qDimensionInfo/1' },
-            label: { value: 'a2', source: { field: '/qDimensionInfo/1' } }
-          },
-          {
-            value: -1,
-            source: { field: '/qDimensionInfo/1' },
-            label: { value: '$667', source: { field: '/qDimensionInfo/1' } }
-          },
-          {
-            value: 7,
-            source: { field: '/qDimensionInfo/1' },
-            label: { value: 'b1', source: { field: '/qDimensionInfo/1' } }
-          },
-          {
-            value: 9,
-            source: { field: '/qDimensionInfo/1' },
-            label: { value: 'b3', source: { field: '/qDimensionInfo/1' } }
-          }
-        ]);
-      });
-
-      it('should return primitive values', () => {
-        const m = q(cube).extract({
-          field: '/qDimensionInfo/1',
-          value: 'foo',
-          props: {
-            num: 0,
-            bool: false
-          }
-        });
-        const v = {
-          value: 'foo',
-          source: { field: '/qDimensionInfo/1' },
-          num: { value: 0 },
-          bool: { value: false }
-        };
-        expect(m).to.eql([v, v, v, v, v, v]);
-      });
-
-      it('should return mapped properties to ancestor fields', () => {
-        const m = q(cube).extract({
-          field: '/qDimensionInfo/1',
-          value: d => d.qElemNo,
-          props: {
-            parent: {
-              field: '/qDimensionInfo/0',
-              value: d => d.qText
-            }
-          }
-        });
-        expect(m).to.eql([
-          {
-            value: -1,
-            source: { field: '/qDimensionInfo/1' },
-            parent: { value: 'Alpha', source: { field: '/qDimensionInfo/0' } }
-          },
-          {
-            value: 0,
-            source: { field: '/qDimensionInfo/1' },
-            parent: { value: 'Alpha', source: { field: '/qDimensionInfo/0' } }
-          },
-          {
-            value: 3,
-            source: { field: '/qDimensionInfo/1' },
-            parent: { value: 'Alpha', source: { field: '/qDimensionInfo/0' } }
-          },
-          {
-            value: -1,
-            source: { field: '/qDimensionInfo/1' },
-            parent: { value: 'Beta', source: { field: '/qDimensionInfo/0' } }
-          },
-          {
-            value: 7,
-            source: { field: '/qDimensionInfo/1' },
-            parent: { value: 'Beta', source: { field: '/qDimensionInfo/0' } }
-          },
-          {
-            value: 9,
-            source: { field: '/qDimensionInfo/1' },
-            parent: { value: 'Beta', source: { field: '/qDimensionInfo/0' } }
-          }
-        ]);
-      });
-
-      it('should return mapped properties to descendant fields', () => {
-        const m = q(cube).extract({
-          field: '/qDimensionInfo/0',
-          value: d => d.qElemNo,
-          props: {
-            descs: {
-              field: '/qDimensionInfo/1',
-              value: d => d.qText
-            }
-          }
-        });
-        expect(m).to.eql([
-          {
-            value: 1,
-            source: { field: '/qDimensionInfo/0' },
-            descs: { value: '$666, a1, a2', source: { field: '/qDimensionInfo/1' } }
-          },
-          {
-            value: 3,
-            source: { field: '/qDimensionInfo/0' },
-            descs: { value: '$667, b1, b3', source: { field: '/qDimensionInfo/1' } }
-          }
-        ]);
-      });
     });
   });
 
@@ -644,19 +353,19 @@ describe('data-transform', () => {
       };
 
       it('should return a root node', () => {
-        const m = q(cube).hierarchy();
+        const m = q({ key: 'nyckel', data: cube }).hierarchy();
         expect(m.data.value).to.eql(stackedPageWithoutPseudo.qData[0]);
       });
 
       it('should add a data property per node', () => {
-        const m = q(cube).hierarchy({
+        const m = q({ key: 'nyckel', data: cube }).hierarchy({
           value: d => d.qText
         });
         expect(m.descendants().map(child => child.data.value)).to.eql(['_rooot', 'Alpha', 'Beta', 'total: $666', 'a1', 'a2', 'total: $667', 'b1', 'b3', '$45.00', '$32.00', '$13.00', '$17.00']);
       });
 
       it('should add a data property of an ancestor node', () => {
-        const m = q(cube).hierarchy({
+        const m = q({ key: 'nyckel', data: cube }).hierarchy({
           props: {
             dimOne: {
               field: '/qDimensionInfo/0',
@@ -669,7 +378,7 @@ describe('data-transform', () => {
       });
 
       it('should add a data property of a descendant node', () => {
-        const m = q(cube).hierarchy({
+        const m = q({ key: 'nyckel', data: cube }).hierarchy({
           props: {
             desc: {
               field: '/qDimensionInfo/1',
@@ -696,7 +405,7 @@ describe('data-transform', () => {
       });
 
       it('should add a data property of reduced values', () => {
-        const m = q(cube).hierarchy({
+        const m = q({ key: 'nyckel', data: cube }).hierarchy({
           props: {
             desc: {
               field: '/qMeasureInfo/0',

@@ -3,6 +3,48 @@ const M_RX = /^\/(?:qHyperCube\/)?qMeasureInfo\/(\d+)/;
 const ATTR_EXPR_RX = /\/qAttrExprInfo\/(\d+)/;
 const ATTR_DIM_RX = /\/qAttrDimInfo\/(\d+)/;
 
+function flattenTree(children, steps, prop, arrIndexAtTargetDepth) {
+  const arr = [];
+  if (steps <= 0) {
+    const nodes = arrIndexAtTargetDepth >= 0 ? [children[arrIndexAtTargetDepth]] : children;
+    if (prop) {
+      arr.push(...nodes.map(v => v[prop]));
+    } else {
+      arr.push(...nodes);
+    }
+  } else {
+    for (let i = 0; i < children.length; i++) {
+      if (children[i].children && children[i].children.length) {
+        arr.push(...flattenTree(children[i].children, steps - 1, prop, arrIndexAtTargetDepth));
+      }
+    }
+  }
+  return arr;
+}
+
+export function treeAccessor(sourceDepth, targetDepth, prop, arrIndexAtTargetDepth) {
+  if (sourceDepth === targetDepth) {
+    return d => d;
+  }
+  if (sourceDepth > targetDepth) { // traverse upwards
+    const steps = Math.max(0, Math.min(100, sourceDepth - targetDepth));
+    const path = [...Array(steps)].map(String.prototype.valueOf, 'parent').join('.');
+    let fn;
+    if (prop) {
+      fn = Function('node', `return node.${path}.${prop};`); // eslint-disable-line no-new-func
+    } else {
+      fn = Function('node', `return node.${path};`); // eslint-disable-line no-new-func
+    }
+    return fn;
+  }
+  if (targetDepth > sourceDepth) { // flatten descendants
+    const steps = Math.max(0, Math.min(100, targetDepth - sourceDepth));
+    const fn = node => flattenTree(node.children, steps - 1, prop, arrIndexAtTargetDepth);
+    return fn;
+  }
+  return false;
+}
+
 function getAttrField({
   cache,
   idx,

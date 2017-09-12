@@ -23,7 +23,7 @@ describe('Sequential', () => {
       settings = {};
     });
     it('default settings', () => {
-      seq = sequential({}, null, null, { theme });
+      seq = sequential({}, null, { theme });
       expect(seq.domain()).to.deep.equal([0, 1]);
       expect(seq.range()).to.deep.equal(['rgb(180,221,212)', 'rgb(34, 83, 90)']);
     });
@@ -31,7 +31,7 @@ describe('Sequential', () => {
     it('max/min settings', () => {
       settings.min = 20;
       settings.max = 100;
-      seq = sequential(settings, null, null, { theme });
+      seq = sequential(settings, null, { theme });
       expect(seq.domain()).to.deep.equal([20, 100]);
       expect(seq.range()).to.deep.equal(['rgb(180,221,212)', 'rgb(34, 83, 90)']);
     });
@@ -44,13 +44,13 @@ describe('Sequential', () => {
     });
 
     it('only fields', () => {
-      seq = sequential({}, fields, null, { theme });
+      seq = sequential({}, { fields }, { theme });
       expect(seq.domain()).to.deep.equal([0, 100]);
       expect(seq.range()).to.deep.equal(['rgb(180,221,212)', 'rgb(34, 83, 90)']);
     });
 
     it('should invert scale', () => {
-      seq = sequential({ invert: true }, fields, null, { theme });
+      seq = sequential({ invert: true }, { fields }, { theme });
       expect(seq.domain()).to.deep.equal([0, 100]);
       expect(seq.range()).to.deep.equal(['rgb(34, 83, 90)', 'rgb(180,221,212)']);
     });
@@ -58,7 +58,7 @@ describe('Sequential', () => {
     it('invalid max/min on fields', () => {
       fields[0].min = () => 'oops';
       fields[0].max = () => 'ooops';
-      seq = sequential({}, fields);
+      seq = sequential({}, { fields });
       expect(seq.domain()).to.deep.equal([0, 1]);
     });
 
@@ -123,19 +123,19 @@ describe('Sequential', () => {
     });
     it('should add limits if missing', () => {
       settings.range = ['red', 'green', 'blue'];
-      seq = sequential(settings, fields);
+      seq = sequential(settings, { fields });
       expect(seq.domain()).to.deep.equal([0, 50, 100]);
     });
 
     it('should use input range if exists', () => {
       settings.range = ['red', 'green', 'blue'];
       settings.domain = [0, 25, 100];
-      seq = sequential(settings, fields);
+      seq = sequential(settings, { fields });
       expect(seq.domain()).to.deep.equal([0, 25, 100]);
     });
     it('should generate more limits', () => {
       settings.range = ['red', 'green', 'blue', 'purple', 'yellow', 'magenta', 'pink', 'azure', 'black', 'white', 'brown'];
-      seq = sequential(settings, fields);
+      seq = sequential(settings, { fields });
       expect(seq.domain()).to.deep.equal([0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]);
     });
   });
