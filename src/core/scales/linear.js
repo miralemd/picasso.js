@@ -115,7 +115,7 @@ export default function scaleLinear(settings, data) {
     return d3Scale(v);
   }
 
-  fn.data = () => [];
+  fn.data = () => data;
 
   /**
    * {@link https://github.com/d3/d3-scale#continuous_invert }

@@ -5,7 +5,6 @@ import {
 import picker from '../json-path-resolver';
 
 import {
-  findField,
   getPropsInfo,
   treeAccessor
 } from './util';
@@ -74,12 +73,13 @@ function getFieldAccessor(sourceDepthObject, targetDepthObject, prop) {
   };
 }
 
-export default function extract(config, cube, cache) {
+export default function extract(config, dataset, cache) {
   const cfgs = Array.isArray(config) ? config : [config];
   let dataItems = [];
   cfgs.forEach((cfg) => {
     if (cfg.field) {
-      const f = typeof cfg.field === 'object' ? cfg.fieldf : findField(cfg.field, { cube, cache });
+      const cube = dataset.raw();
+      const f = typeof cfg.field === 'object' ? cfg.field : dataset.field(cfg.field);
       if (!f) {
         throw Error(`Field '${cfg.field}' not found`);
       }

@@ -1,5 +1,4 @@
 import {
-  findField,
   getPropsInfo
 } from './util';
 
@@ -56,12 +55,37 @@ function getFieldAccessor(field, page, { cache }) {
 //   }
 // };
 
-export default function extract(config, cube, cache) {
+function datumExtract(propCfg, cell, {
+  key
+}) {
+  // {
+  //   value: typeof main.value === 'function' ? main.value(mainCell) : typeof main.value !== 'undefined' ? main.value : mainCell,  // eslint-disable-line no-nested-ternary
+  //   source: {
+  //     field: cfg.field
+  //   }
+  // }
+
+  const datum = {
+    value: typeof propCfg.value === 'function' ? propCfg.value(cell) : typeof propCfg.value !== 'undefined' ? propCfg.value : cell  // eslint-disable-line no-nested-ternary
+  };
+  if (propCfg.source) {
+    datum.source = {
+      key,
+      field: propCfg.source
+    };
+  }
+
+  return datum;
+}
+
+export default function extract(config, dataset, cache) {
   const cfgs = Array.isArray(config) ? config : [config];
   let dataItems = [];
   cfgs.forEach((cfg) => {
     if (cfg.field) {
-      const f = typeof cfg.field === 'object' ? cfg.field : findField(cfg.field, { cube, cache });
+      const cube = dataset.raw();
+      const sourceKey = dataset.key();
+      const f = typeof cfg.field === 'object' ? cfg.field : dataset.field(cfg.field);
       if (!f) {
         throw Error(`Field '${cfg.field}' not found`);
       }
@@ -82,12 +106,7 @@ export default function extract(config, cube, cache) {
         page.qMatrix.forEach((row, i) => {
           const rowIdx = page.qArea.qTop + i;
           const mainCell = { qRow: rowIdx, ...fn(row) };
-          const ret = {
-            value: typeof main.value === 'function' ? main.value(mainCell) : typeof main.value !== 'undefined' ? main.value : mainCell,  // eslint-disable-line no-nested-ternary
-            source: {
-              field: cfg.field
-            }
-          };
+          const ret = datumExtract(main, mainCell, { key: sourceKey });
 
           // loop through all props that need to be mapped and
           // assign 'value' and 'source' to each property
@@ -101,12 +120,7 @@ export default function extract(config, cube, cache) {
               }
               propCell = { qRow: rowIdx, ...propCellFn(row) };
             }
-            ret[prop] = {
-              value: typeof p.value === 'function' ? p.value(propCell) : typeof p.value !== 'undefined' ? p.value : propCell  // eslint-disable-line no-nested-ternary
-            };
-            if (p.source) {
-              ret[prop].source = { field: p.source };
-            }
+            ret[prop] = datumExtract(p, propCell, { key: sourceKey });
           });
 
           // collect items based on the trackBy value

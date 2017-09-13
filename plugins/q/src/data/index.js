@@ -4,18 +4,20 @@ import SExtractor from './extractor-s';
 import { findField } from './util';
 import field from './field';
 
-function hierarchy(config = {}, cube, cache) {
+function hierarchy(config = {}, dataset, cache) {
+  const cube = dataset.raw();
   if (!cube.qMode === 'K') {
     return null;
   }
   return transformH(config, cube, cache);
 }
 
-function extractData(cfg, cube, cache) {
+function extractData(cfg, dataset, cache) {
+  const cube = dataset.raw();
   if (cube.qMode === 'K') {
-    return kExtractor(cfg, cube, cache);
+    return kExtractor(cfg, dataset, cache);
   } else if (cube.qMode === 'S') {
-    return SExtractor(cfg, cube, cache);
+    return SExtractor(cfg, dataset, cache);
   }
   return [];
 }
@@ -62,12 +64,25 @@ export default function q({
 
   const pages = cube.qMode === 'K' ? cube.qStackedDataPages : cube.qDataPages;
 
+  const dataset = {
+    key: () => key,
+    raw: () => cube,
+    field: query => findField(query, {
+      cache,
+      cube,
+      pages
+    }),
+    fields: () => cache.fields.slice(),
+    extract: extractionConfig => extractData(extractionConfig, dataset, cache),
+    hierarchy: hierarchyConfig => hierarchy(hierarchyConfig, dataset, cache)
+  };
+
   let fieldExtractor;
 
   if (cube.qMode === 'K') {
-    fieldExtractor = f => kExtractor({ field: f }, cube, cache);
+    fieldExtractor = f => kExtractor({ field: f }, dataset, cache);
   } else if (cube.qMode === 'S') {
-    fieldExtractor = f => SExtractor({ field: f }, cube, cache);
+    fieldExtractor = f => SExtractor({ field: f }, dataset, cache);
   } else {
     fieldExtractor = () => []; // TODO - throw unsupported error?
   }
@@ -92,19 +107,6 @@ export default function q({
     }));
     createAttrFields(dimensions.length + i, d, { cache, cube, pages, fieldExtractor });
   });
-
-  const dataset = {
-    key: () => key,
-    raw: () => cube,
-    field: query => findField(query, {
-      cache,
-      cube,
-      pages
-    }),
-    fields: () => cache.fields.slice(),
-    extract: extractionConfig => extractData(extractionConfig, cube, cache),
-    hierarchy: hierarchyConfig => hierarchy(hierarchyConfig, cube, cache)
-  };
 
   return dataset;
 }

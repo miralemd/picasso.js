@@ -113,6 +113,6 @@ export default function ds({
  * @typedef {object} datum-extract
  * @property {any} value - The extracted value
  * @property {object} source - The data source of the extracted data
- * @property {string} key - The data-source key
- * @property {string} field - The source field
+ * @property {string} source.key - The data-source key
+ * @property {string} source.field - The source field
  */

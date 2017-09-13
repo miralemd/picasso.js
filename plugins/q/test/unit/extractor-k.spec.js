@@ -55,10 +55,27 @@ describe('q-data-extractor-k', () => {
       { title: () => 'c', value: d => d.qValue }
     ];
 
+    const dataset = {
+      raw: () => cube,
+      field: sinon.stub()
+    };
+
+    dataset.field.withArgs('/qDimensionInfo/0').returns(fields[0]);
+    dataset.field.withArgs('/qDimensionInfo/1').returns(fields[1]);
+    dataset.field.withArgs('/qMeasureInfo/0').returns(fields[2]);
+    const attrDimField = {
+      value: v => `-${v.qText}-`
+    };
+    dataset.field.withArgs('/qDimensionInfo/0/qAttrDimInfo/1').returns(attrDimField);
+
+    const attrExprField = {};
+
+    dataset.field.withArgs('/qDimensionInfo/1/qAttrExprInfo/2').returns(attrExprField);
+
     it('should return dim field values based on default field accessor', () => {
       const m = extract({
         field: '/qDimensionInfo/0'
-      }, cube, { fields });
+      }, dataset, { fields });
 
       expect(m).to.eql([
         { value: 1, source: { field: '/qDimensionInfo/0' } },
@@ -69,7 +86,7 @@ describe('q-data-extractor-k', () => {
     it('should return measure field values based on default field accessor', () => {
       const m = extract({
         field: '/qMeasureInfo/0'
-      }, cube, { fields });
+      }, dataset, { fields });
 
       expect(m).to.eql([
         { value: 45, source: { field: '/qMeasureInfo/0' } },
@@ -83,7 +100,7 @@ describe('q-data-extractor-k', () => {
       const m = extract([
         { field: '/qDimensionInfo/0' },
         { field: '/qDimensionInfo/0', value: v => v.qText }
-      ], cube, { fields });
+      ], dataset, { fields });
 
       expect(m).to.eql([
         { value: 1, source: { field: '/qDimensionInfo/0' } },
@@ -96,7 +113,7 @@ describe('q-data-extractor-k', () => {
     it('should return attr dim field values based on default field accessor', () => {
       const m = extract({
         field: '/qDimensionInfo/0/qAttrDimInfo/1'
-      }, cube, { fields, attributeDimensionFields: [[{}, { value: v => `-${v.qText}-` }]] });
+      }, dataset, { fields, attributeDimensionFields: [[{}, attrDimField]] });
 
       expect(m).to.eql([
         { value: '-AlphaDimAttr-', source: { field: '/qDimensionInfo/0/qAttrDimInfo/1' } },
@@ -112,10 +129,10 @@ describe('q-data-extractor-k', () => {
             field: '/qDimensionInfo/1/qAttrExprInfo/1', value: v => `-${v.qText}-`
           }
         }
-      }, cube, {
+      }, dataset, {
         fields,
         attributeDimensionFields: [],
-        attributeExpressionFields: [[], [{}, {}]] });
+        attributeExpressionFields: [[], [{}, attrExprField]] });
 
       expect(m).to.eql([
         {
@@ -138,7 +155,7 @@ describe('q-data-extractor-k', () => {
         props: {
           label: d => d.qText
         }
-      }, cube, { fields });
+      }, dataset, { fields });
 
       expect(m).to.eql([
         {
@@ -184,7 +201,7 @@ describe('q-data-extractor-k', () => {
             value: d => d.qText
           }
         }
-      }, cube, { fields });
+      }, dataset, { fields });
 
       expect(m).to.eql([
         {
@@ -230,7 +247,7 @@ describe('q-data-extractor-k', () => {
             value: d => d.qText
           }
         }
-      }, cube, { fields });
+      }, dataset, { fields });
       expect(m).to.eql([
         {
           value: 1,
@@ -253,7 +270,7 @@ describe('q-data-extractor-k', () => {
           num: 0,
           bool: false
         }
-      }, cube, { fields });
+      }, dataset, { fields });
 
       const v = {
         value: 'foo',
@@ -318,10 +335,20 @@ describe('q-data-extractor-k', () => {
       { title: () => 'd', value: d => d.qValue }
     ];
 
+    const dataset = {
+      raw: () => cube,
+      field: sinon.stub()
+    };
+
+    dataset.field.withArgs('/qDimensionInfo/0').returns(fields[0]);
+    dataset.field.withArgs('/qDimensionInfo/1').returns(fields[1]);
+    dataset.field.withArgs('/qMeasureInfo/0').returns(fields[2]);
+    dataset.field.withArgs('/qMeasureInfo/1').returns(fields[3]);
+
     it('should return proper pseudo measure', () => {
       const m = extract({
         field: '/qMeasureInfo/1'
-      }, cube, { fields });
+      }, dataset, { fields });
 
       expect(m).to.eql([
         { value: 0.34, source: { field: '/qMeasureInfo/1' } },
@@ -337,7 +364,7 @@ describe('q-data-extractor-k', () => {
             field: '/qDimensionInfo/1', value: v => v.qText
           }
         }
-      }, cube, { fields });
+      }, dataset, { fields });
 
       expect(m).to.eql([
         {
