@@ -522,19 +522,6 @@ function chart(definition, context) {
   };
 
   /**
-   * Get a field associated with the provided brush
-   * @param {string} path path to the field to fetch
-   * @return {data-field}
-   */
-  instance.field = path => instance.dataset().findField(path);
-
-  /**
-   * The data set for this chart
-   * @return {dataset}
-   */
-  instance.data = f => dataset(f);
-
-  /**
    * Get all shapes associated with the provided context
    * @param {String} context The brush context
    * @param {String} mode Property comparasion mode.
@@ -697,7 +684,12 @@ function chart(definition, context) {
     return getOrCreateScrollApi(name, currentScrollApis);
   };
 
-  instance.dataset = f => dataset(f); // TODO - deprecate
+  /**
+   * Get
+   * @param {string} key - Get the dataset identified by `key`
+   * @returns {dataset}
+   */
+  instance.dataset = key => dataset(key);
 
   /**
    * Get the all registered scales

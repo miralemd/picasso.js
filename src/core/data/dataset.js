@@ -68,6 +68,7 @@ export default function ds({
 
     /**
      * Find a field within this dataset
+     * @param {string} query - The field to find
      * @returns {field}
      */
     field: query => findField(query, {
@@ -83,7 +84,8 @@ export default function ds({
 
     /**
      * Extract data items from this dataset
-     * @returns {data-extract}
+     * @param {data-extract-config} config
+     * @returns {Array<datum-extract>}
      */
     extract: config => extract(config, dataset, cache),
 
@@ -99,3 +101,18 @@ export default function ds({
 
   return dataset;
 }
+
+/**
+ * @typedef {object} data-extract-config
+ * @property {string} field - The field to extract data from
+ * @property {function} value - The field value accessor
+ * @property {object} props - Additional properties to add to the extracted item
+ */
+
+/**
+ * @typedef {object} datum-extract
+ * @property {any} value - The extracted value
+ * @property {object} source - The data source of the extracted data
+ * @property {string} key - The data-source key
+ * @property {string} field - The source field
+ */

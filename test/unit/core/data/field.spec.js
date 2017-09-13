@@ -14,10 +14,6 @@ describe('Field', () => {
       f = field(dd);
     });
 
-    it('should return data', () => {
-      expect(f.data()).to.deep.equal(dd);
-    });
-
     it('should return min value', () => {
       expect(f.min()).to.equal(1);
     });

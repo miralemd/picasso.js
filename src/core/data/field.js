@@ -16,8 +16,6 @@ const accessors = {
 
 /**
  * Create a new field with default settings
- * @alias field
- * @memberof picasso.data
  * @ignore
  * @return {field} Data field
  */
@@ -31,16 +29,14 @@ export default function field(data, {
   value = accessors.value,
   formatter = accessors.formatter
 } = {}) {
+  /**
+   * @alias field
+   * @typedef {object}
+   */
   const f = {
     /**
-     * Returns the current data used in this field.
-     * @return {object}
-     */
-    data: () => data,
-
-    /**
      * Returns the tags.
-     * @return {string[]}
+     * @return {Array<string>}
      */
     tags: () => tags(data),
 
@@ -70,7 +66,7 @@ export default function field(data, {
 
     /**
      * Returns the values of this field.
-     * @return {object[]}
+     * @return {Array<datum-extract>}
      */
     items: () => values(data),
 
