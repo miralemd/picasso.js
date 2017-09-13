@@ -5,7 +5,7 @@ import {
   renderer,
   // temp
   dataset,
-  table,
+  // table,
   field
 } from './core';
 
@@ -53,7 +53,7 @@ function pic(config = {}, registries = {}) {
     logger,
     // -- temp -- // reconsider the data api when universal data is in place
     dataset,
-    table,
+    // table,
     field
   };
 
