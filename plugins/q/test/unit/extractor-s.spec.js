@@ -27,9 +27,9 @@ describe('extractor-s', () => {
   };
 
   const fields = [
-    { title: () => 'Dim1', value: d => d.qElemNumber },
-    { title: () => 'Dim2', value: d => d.qElemNumber },
-    { title: () => 'Meas1', value: d => d.qValue }
+    { title: () => 'Dim1', value: d => d.qElemNumber, key: () => 'qDimensionInfo/0' },
+    { title: () => 'Dim2', value: d => d.qElemNumber, key: () => 'qDimensionInfo/1' },
+    { title: () => 'Meas1', value: d => d.qValue, key: () => 'qMeasureInfo/0' }
   ];
 
   const dataset = {
@@ -38,90 +38,91 @@ describe('extractor-s', () => {
     field: sinon.stub()
   };
 
-  dataset.field.withArgs('/qDimensionInfo/0').returns(fields[0]);
-  dataset.field.withArgs('/qDimensionInfo/1').returns(fields[1]);
-  dataset.field.withArgs('/qMeasureInfo/0').returns(fields[2]);
+  dataset.field.withArgs('Dim1').returns(fields[0]);
+  dataset.field.withArgs('Dim2').returns(fields[1]);
+  dataset.field.withArgs('qMeasureInfo/0').returns(fields[2]);
 
   it('should return dim field values based on default field accessor', () => {
     const m = extract({
-      field: '/qDimensionInfo/1'
+      field: 'Dim2'
     }, dataset, { fields });
     expect(m).to.eql([
-      { value: 1, source: { field: '/qDimensionInfo/1', key: 'hyper' } },
-      { value: 2, source: { field: '/qDimensionInfo/1', key: 'hyper' } },
-      { value: 3, source: { field: '/qDimensionInfo/1', key: 'hyper' } }
+      { value: 1, source: { field: 'qDimensionInfo/1', key: 'hyper' } },
+      { value: 2, source: { field: 'qDimensionInfo/1', key: 'hyper' } },
+      { value: 3, source: { field: 'qDimensionInfo/1', key: 'hyper' } }
     ]);
   });
 
   it('should return measure field values based on default field accessor', () => {
     const m = extract({
-      field: '/qMeasureInfo/0'
+      field: 'qMeasureInfo/0'
     }, dataset, { fields });
     expect(m).to.eql([
-      { value: 53, source: { field: '/qMeasureInfo/0', key: 'hyper' } },
-      { value: 57, source: { field: '/qMeasureInfo/0', key: 'hyper' } },
-      { value: 51, source: { field: '/qMeasureInfo/0', key: 'hyper' } }
+      { value: 53, source: { field: 'qMeasureInfo/0', key: 'hyper' } },
+      { value: 57, source: { field: 'qMeasureInfo/0', key: 'hyper' } },
+      { value: 51, source: { field: 'qMeasureInfo/0', key: 'hyper' } }
     ]);
   });
 
   it('should return joined set when array of fields is used', () => {
     const m = extract([{
-      field: '/qMeasureInfo/0'
+      field: 'qMeasureInfo/0'
     }, {
-      field: '/qDimensionInfo/1'
+      field: 'Dim2'
     }], dataset, { fields });
     expect(m).to.eql([
-      { value: 53, source: { field: '/qMeasureInfo/0', key: 'hyper' } },
-      { value: 57, source: { field: '/qMeasureInfo/0', key: 'hyper' } },
-      { value: 51, source: { field: '/qMeasureInfo/0', key: 'hyper' } },
-      { value: 1, source: { field: '/qDimensionInfo/1', key: 'hyper' } },
-      { value: 2, source: { field: '/qDimensionInfo/1', key: 'hyper' } },
-      { value: 3, source: { field: '/qDimensionInfo/1', key: 'hyper' } }
+      { value: 53, source: { field: 'qMeasureInfo/0', key: 'hyper' } },
+      { value: 57, source: { field: 'qMeasureInfo/0', key: 'hyper' } },
+      { value: 51, source: { field: 'qMeasureInfo/0', key: 'hyper' } },
+      { value: 1, source: { field: 'qDimensionInfo/1', key: 'hyper' } },
+      { value: 2, source: { field: 'qDimensionInfo/1', key: 'hyper' } },
+      { value: 3, source: { field: 'qDimensionInfo/1', key: 'hyper' } }
     ]);
   });
 
   it('should return raw field values', () => {
     const m = extract({
-      field: '/qDimensionInfo/1',
+      field: 'Dim2',
       value: d => d
     }, dataset, { fields });
     expect(m).to.eql([
-      { value: { qNum: 3, qText: 'tre', qElemNumber: 1, qRow: 5 }, source: { field: '/qDimensionInfo/1', key: 'hyper' } },
-      { value: { qNum: 7, qText: 'sju', qElemNumber: 2, qRow: 6 }, source: { field: '/qDimensionInfo/1', key: 'hyper' } },
-      { value: { qNum: 1, qText: 'ett', qElemNumber: 3, qRow: 7 }, source: { field: '/qDimensionInfo/1', key: 'hyper' } }
+      { value: { qNum: 3, qText: 'tre', qElemNumber: 1, qRow: 5 }, source: { field: 'qDimensionInfo/1', key: 'hyper' } },
+      { value: { qNum: 7, qText: 'sju', qElemNumber: 2, qRow: 6 }, source: { field: 'qDimensionInfo/1', key: 'hyper' } },
+      { value: { qNum: 1, qText: 'ett', qElemNumber: 3, qRow: 7 }, source: { field: 'qDimensionInfo/1', key: 'hyper' } }
     ]);
   });
 
   it('should return mapped properties from same field', () => {
     const m = extract({
-      field: '/qDimensionInfo/1',
+      field: 'Dim2',
       value: d => d,
       props: {
         label: d => d.qText
       }
     }, dataset, { fields });
+
     expect(m).to.eql([
       {
         value: { qNum: 3, qText: 'tre', qElemNumber: 1, qRow: 5 },
-        source: { field: '/qDimensionInfo/1', key: 'hyper' },
-        label: { value: 'tre', source: { field: '/qDimensionInfo/1', key: 'hyper' } }
+        source: { field: 'qDimensionInfo/1', key: 'hyper' },
+        label: { value: 'tre', source: { field: 'qDimensionInfo/1', key: 'hyper' } }
       },
       {
         value: { qNum: 7, qText: 'sju', qElemNumber: 2, qRow: 6 },
-        source: { field: '/qDimensionInfo/1', key: 'hyper' },
-        label: { value: 'sju', source: { field: '/qDimensionInfo/1', key: 'hyper' } }
+        source: { field: 'qDimensionInfo/1', key: 'hyper' },
+        label: { value: 'sju', source: { field: 'qDimensionInfo/1', key: 'hyper' } }
       },
       {
         value: { qNum: 1, qText: 'ett', qElemNumber: 3, qRow: 7 },
-        source: { field: '/qDimensionInfo/1', key: 'hyper' },
-        label: { value: 'ett', source: { field: '/qDimensionInfo/1', key: 'hyper' } }
+        source: { field: 'qDimensionInfo/1', key: 'hyper' },
+        label: { value: 'ett', source: { field: 'qDimensionInfo/1', key: 'hyper' } }
       }
     ]);
   });
 
   it('should return primitive values', () => {
     const m = extract({
-      field: '/qDimensionInfo/1',
+      field: 'Dim2',
       value: 'foo',
       props: {
         num: 0,
@@ -131,19 +132,19 @@ describe('extractor-s', () => {
     expect(m).to.eql([
       {
         value: 'foo',
-        source: { field: '/qDimensionInfo/1', key: 'hyper' },
+        source: { field: 'qDimensionInfo/1', key: 'hyper' },
         num: { value: 0 },
         bool: { value: false }
       },
       {
         value: 'foo',
-        source: { field: '/qDimensionInfo/1', key: 'hyper' },
+        source: { field: 'qDimensionInfo/1', key: 'hyper' },
         num: { value: 0 },
         bool: { value: false }
       },
       {
         value: 'foo',
-        source: { field: '/qDimensionInfo/1', key: 'hyper' },
+        source: { field: 'qDimensionInfo/1', key: 'hyper' },
         num: { value: 0 },
         bool: { value: false }
       }
@@ -152,11 +153,11 @@ describe('extractor-s', () => {
 
   it('should return mapped properties from other fields', () => {
     const m = extract({
-      field: '/qDimensionInfo/1',
+      field: 'Dim2',
       value: d => d,
       props: {
         num: {
-          field: '/qMeasureInfo/0',
+          field: 'qMeasureInfo/0',
           value: d => d.qText
         }
       }
@@ -164,24 +165,27 @@ describe('extractor-s', () => {
     expect(m).to.eql([
       {
         value: { qNum: 3, qText: 'tre', qElemNumber: 1, qRow: 5 },
-        source: { field: '/qDimensionInfo/1', key: 'hyper' },
-        num: { value: '$53', source: { field: '/qMeasureInfo/0', key: 'hyper' } }
+        source: { field: 'qDimensionInfo/1', key: 'hyper' },
+        num: { value: '$53', source: { field: 'qMeasureInfo/0', key: 'hyper' } }
       },
       {
         value: { qNum: 7, qText: 'sju', qElemNumber: 2, qRow: 6 },
-        source: { field: '/qDimensionInfo/1', key: 'hyper' },
-        num: { value: '$57', source: { field: '/qMeasureInfo/0', key: 'hyper' } }
+        source: { field: 'qDimensionInfo/1', key: 'hyper' },
+        num: { value: '$57', source: { field: 'qMeasureInfo/0', key: 'hyper' } }
       },
       {
         value: { qNum: 1, qText: 'ett', qElemNumber: 3, qRow: 7 },
-        source: { field: '/qDimensionInfo/1', key: 'hyper' },
-        num: { value: '$51', source: { field: '/qMeasureInfo/0', key: 'hyper' } }
+        source: { field: 'qDimensionInfo/1', key: 'hyper' },
+        num: { value: '$51', source: { field: 'qMeasureInfo/0', key: 'hyper' } }
       }
     ]);
   });
 
   it('should return collected values', () => {
-    const fs = [{}];
+    const fs = [{
+      title: () => 'yes',
+      key: () => 'no'
+    }];
     const c = {
       qMode: 'S',
       qDimensionInfo: [{ qStateCounts: {} }],
@@ -201,7 +205,7 @@ describe('extractor-s', () => {
       field: sinon.stub().returns(fs[0])
     };
     const m = extract({
-      field: '/qDimensionInfo/0',
+      field: 'yes',
       trackBy: 'qElemNumber',
       props: {
         item: { value: d => d }
@@ -214,18 +218,21 @@ describe('extractor-s', () => {
             { qNum: 3, qText: 'tre', qElemNumber: 1, qRow: 5 },
             { qNum: 5, qText: 'fem', qElemNumber: 1, qRow: 6 }
           ],
-          source: { field: '/qDimensionInfo/0', key: 'nyckel' } }
+          source: { field: 'no', key: 'nyckel' } }
       },
       {
         item: {
           value: [{ qNum: 1, qText: 'ett', qElemNumber: 3, qRow: 7 }],
-          source: { field: '/qDimensionInfo/0', key: 'nyckel' } }
+          source: { field: 'no', key: 'nyckel' } }
       }
     ]);
   });
 
   it('should return reduced values', () => {
-    const fs = [{}];
+    const fs = [{
+      title: () => 'reduceMe',
+      key: () => 'reduuuced'
+    }];
     const c = {
       qMode: 'S',
       qDimensionInfo: [{ qStateCounts: {} }],
@@ -245,7 +252,7 @@ describe('extractor-s', () => {
       field: sinon.stub().returns(fs[0])
     };
     const m = extract({
-      field: '/qDimensionInfo/0',
+      field: 'reduceMe',
       trackBy: 'qElemNumber',
       props: {
         item: { value: d => d.qElemNumber },
@@ -255,14 +262,14 @@ describe('extractor-s', () => {
     }, ds, { fields: fs });
     expect(m).to.eql([
       {
-        item: { value: [1, 1], source: { field: '/qDimensionInfo/0', key: 'nyckel' } },
-        min: { value: 3, source: { field: '/qDimensionInfo/0', key: 'nyckel' } },
-        max: { value: 5, source: { field: '/qDimensionInfo/0', key: 'nyckel' } }
+        item: { value: [1, 1], source: { field: 'reduuuced', key: 'nyckel' } },
+        min: { value: 3, source: { field: 'reduuuced', key: 'nyckel' } },
+        max: { value: 5, source: { field: 'reduuuced', key: 'nyckel' } }
       },
       {
-        item: { value: [3], source: { field: '/qDimensionInfo/0', key: 'nyckel' } },
-        min: { value: 1, source: { field: '/qDimensionInfo/0', key: 'nyckel' } },
-        max: { value: 1, source: { field: '/qDimensionInfo/0', key: 'nyckel' } }
+        item: { value: [3], source: { field: 'reduuuced', key: 'nyckel' } },
+        min: { value: 1, source: { field: 'reduuuced', key: 'nyckel' } },
+        max: { value: 1, source: { field: 'reduuuced', key: 'nyckel' } }
       }
     ]);
   });

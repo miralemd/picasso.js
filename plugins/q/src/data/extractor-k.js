@@ -9,42 +9,47 @@ import {
   treeAccessor
 } from './util';
 
-function getFieldDepth(field, { cube, cache }) {
+const DIM_RX = /^qDimensionInfo(?:\/(\d+))?/;
+const M_RX = /^qMeasureInfo\/(\d+)/;
+const ATTR_EXPR_RX = /\/qAttrExprInfo\/(\d+)/;
+const ATTR_DIM_RX = /\/qAttrDimInfo\/(\d+)/;
+
+function getFieldDepth(field, { cube }) {
   if (!field) {
     return -1;
   }
-  let fieldIdx = cache.fields.indexOf(field);
+  let key = field.key();
+  let isFieldDimension = false;
+  let fieldIdx = -1; // cache.fields.indexOf(field);
   let attrIdx = -1;
   let attrDimIdx = -1;
   let fieldDepth = -1;
   let pseudoMeasureIndex = -1;
-  if (fieldIdx === -1) {
-    for (let i = 0; i < cache.attributeDimensionFields.length; i++) {
-      attrDimIdx = cache.attributeDimensionFields[i] ? cache.attributeDimensionFields[i].indexOf(field) : -1;
-      if (attrDimIdx !== -1) {
-        fieldIdx = i;
-        break;
-      }
-    }
+  let remainder;
+
+  if (DIM_RX.test(key)) {
+    isFieldDimension = true;
+    fieldIdx = +DIM_RX.exec(key)[1];
+    remainder = key.replace(DIM_RX, '');
+  } else if (M_RX.test(key)) {
+    pseudoMeasureIndex = +M_RX.exec(key)[1];
+    remainder = key.replace(M_RX, '');
   }
-  if (fieldIdx === -1) {
-    for (let i = 0; i < cache.attributeExpressionFields.length; i++) {
-      attrIdx = cache.attributeExpressionFields[i] ? cache.attributeExpressionFields[i].indexOf(field) : -1;
-      if (attrIdx !== -1) {
-        fieldIdx = i;
-        break;
-      }
+
+  if (remainder) {
+    if (ATTR_DIM_RX.exec(remainder)) {
+      attrDimIdx = +ATTR_DIM_RX.exec(remainder)[1];
+    } else if (ATTR_EXPR_RX.exec(remainder)) {
+      attrIdx = +ATTR_EXPR_RX.exec(remainder)[1];
     }
   }
 
-  const isFieldDimension = fieldIdx < cube.qDimensionInfo.length;
   const treeOrder = cube.qEffectiveInterColumnSortOrder;
 
   if (isFieldDimension) {
     fieldDepth = treeOrder ? treeOrder.indexOf(fieldIdx) : fieldIdx;
   } else if (treeOrder && treeOrder.indexOf(-1) !== -1) { // if pseudo dimension exists in sort order
     fieldDepth = treeOrder.indexOf(-1); // depth of pesudodimension
-    pseudoMeasureIndex = fieldIdx - cube.qDimensionInfo.length; // the index of the measure in the pseudo dimension level
   } else { // assume measure is at the bottom of the tree
     fieldDepth = cube.qDimensionInfo.length;
   }
@@ -80,10 +85,7 @@ export default function extract(config, dataset, cache) {
     if (cfg.field) {
       const cube = dataset.raw();
       const f = typeof cfg.field === 'object' ? cfg.field : dataset.field(cfg.field);
-      if (!f) {
-        throw Error(`Field '${cfg.field}' not found`);
-      }
-      const { props, main } = getPropsInfo(cfg, cube, cache);
+      const { props, main } = getPropsInfo(cfg, dataset);
       const propsArr = Object.keys(props);
       const rootPath = '/qStackedDataPages/*/qData';
       if (!cache.tree) {
@@ -112,7 +114,7 @@ export default function extract(config, dataset, cache) {
         const ret = {
           value: typeof main.value === 'function' ? main.value(itemData) : (typeof main.value !== 'undefined' ? main.value : itemData), // eslint-disable-line no-nested-ternary
           source: {
-            field: cfg.field
+            field: main.field.key()
           }
         };
         propsArr.forEach((prop) => {
@@ -146,8 +148,8 @@ export default function extract(config, dataset, cache) {
           ret[prop] = {
             value: fn ? fn(value) : value
           };
-          if (p.source) {
-            ret[prop].source = { field: p.source };
+          if (p.field) {
+            ret[prop].source = { field: p.field.key() };
           }
         });
         return ret;

@@ -3,6 +3,7 @@ import field from '../../../../src/core/data/field';
 describe('Field', () => {
   describe('defaults', () => {
     const dd = {
+      source: 'magic-table',
       min: 1,
       max: 2,
       tags: ['a', 'b'],
@@ -12,6 +13,10 @@ describe('Field', () => {
     let f;
     beforeEach(() => {
       f = field(dd);
+    });
+
+    it('should return id', () => {
+      expect(f.id()).to.equal('magic-table/wohoo');
     });
 
     it('should return min value', () => {

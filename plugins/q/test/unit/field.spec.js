@@ -14,11 +14,16 @@ describe('q-field', () => {
         qFallbackTitle: 'wohoo',
         qStateCounts: {}
       },
+      id: 'unique',
       cube: { qMode: 'S' },
       fieldExtractor: sinon.stub()
     };
     beforeEach(() => {
       f = qField(dd);
+    });
+
+    it('should return id', () => {
+      expect(f.id()).to.equal('unique');
     });
 
     it('should return min value', () => {

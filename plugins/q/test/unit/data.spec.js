@@ -1,7 +1,7 @@
 import q from '../../src/data';
 // import { getPathToFieldItems } from '../../src/data/transform-k';
 
-describe('data', () => {
+describe('magic', () => {
   describe('find field', () => {
     const cube = {
       qSize: { qcx: 3, qcy: 20 },
@@ -39,22 +39,24 @@ describe('data', () => {
     const d = q({ key: 'nyckel', data: cube });
 
     it('should find attribute dimension on dimension', () => {
-      const f = d.field('/qDimensionInfo/0/qAttrDimInfo/1');
+      const f = d.field('qDimensionInfo/0/qAttrDimInfo/1');
+      expect(f.id()).to.eql('nyckel/qDimensionInfo/0/qAttrDimInfo/1');
+      expect(f.key()).to.eql('qDimensionInfo/0/qAttrDimInfo/1');
       expect(f.title()).to.eql('attr dim title');
     });
 
     it('should find attribute expression on dimension', () => {
-      const f = d.field('/qDimensionInfo/0/qAttrExprInfo/0');
+      const f = d.field('qDimensionInfo/0/qAttrExprInfo/0');
       expect(f.title()).to.eql('attr expr title');
     });
 
     it('should find attribute dimension on measure', () => {
-      const f = d.field('/qMeasureInfo/2/qAttrDimInfo/2');
+      const f = d.field('qMeasureInfo/2/qAttrDimInfo/2');
       expect(f.title()).to.eql('m attr dim title');
     });
 
     it('should find attribute expression on measure', () => {
-      const f = d.field('/qMeasureInfo/2/qAttrExprInfo/1');
+      const f = d.field('qMeasureInfo/2/qAttrExprInfo/1');
       expect(f.title()).to.eql('m attr expr title');
     });
   });
@@ -124,7 +126,7 @@ describe('data', () => {
         const m = q({ key: 'nyckel', data: cube }).hierarchy({
           props: {
             dimOne: {
-              field: '/qDimensionInfo/0',
+              field: 'qDimensionInfo/0',
               value: d => d.qText
             }
           }
@@ -137,7 +139,7 @@ describe('data', () => {
         const m = q({ key: 'nyckel', data: cube }).hierarchy({
           props: {
             desc: {
-              field: '/qDimensionInfo/1',
+              field: 'qDimensionInfo/1',
               value: d => d.qText
             }
           }
@@ -164,7 +166,7 @@ describe('data', () => {
         const m = q({ key: 'nyckel', data: cube }).hierarchy({
           props: {
             desc: {
-              field: '/qMeasureInfo/0',
+              field: 'qMeasureInfo/0',
               value: d => (d ? d.qValue : d),
               reduce: values => values.join('---')
             },

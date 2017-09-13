@@ -9,7 +9,7 @@ function hierarchy(config = {}, dataset, cache) {
   if (!cube.qMode === 'K') {
     return null;
   }
-  return transformH(config, cube, cache);
+  return transformH(config, dataset, cache);
 }
 
 function extractData(cfg, dataset, cache) {
@@ -26,19 +26,25 @@ function createAttrFields(idx, d, {
   cache,
   cube,
   pages,
-  fieldExtractor
+  fieldExtractor,
+  key,
+  fieldKey
 }) {
   if (d.qAttrDimInfo) {
-    cache.attributeDimensionFields[idx] = d.qAttrDimInfo.map(attrDim => (attrDim ? field({
+    cache.attributeDimensionFields[idx] = d.qAttrDimInfo.map((attrDim, i) => (attrDim ? field({
       meta: attrDim,
+      id: `${key}/${fieldKey}/qAttrDimInfo/${i}`,
+      key: `${fieldKey}/qAttrDimInfo/${i}`,
       cube,
       pages,
       fieldExtractor
     }) : undefined));
   }
   if (d.qAttrExprInfo) {
-    cache.attributeExpressionFields[idx] = d.qAttrExprInfo.map(attrExpr => (attrExpr ? field({
+    cache.attributeExpressionFields[idx] = d.qAttrExprInfo.map((attrExpr, i) => (attrExpr ? field({
       meta: attrExpr,
+      id: `${key}/${fieldKey}/qAttrExprInfo/${i}`,
+      key: `${fieldKey}/qAttrExprInfo/${i}`,
       cube,
       pages,
       fieldExtractor
@@ -89,23 +95,29 @@ export default function q({
 
   const dimensions = cube.qDimensionInfo;
   dimensions.forEach((d, i) => {
+    const fieldKey = `qDimensionInfo/${i}`;
     cache.fields.push(field({
       meta: d,
+      id: `${key}/${fieldKey}`,
+      key: fieldKey,
       cube,
       pages,
       fieldExtractor
     }));
-    createAttrFields(i, d, { cache, cube, pages, fieldExtractor });
+    createAttrFields(i, d, { cache, cube, pages, fieldExtractor, key, fieldKey });
   });
 
   cube.qMeasureInfo.forEach((d, i) => {
+    const fieldKey = `qMeasureInfo/${i}`;
     cache.fields.push(field({
       meta: d,
+      id: `${key}/${fieldKey}`,
+      key: fieldKey,
       cube,
       pages,
       fieldExtractor
     }));
-    createAttrFields(dimensions.length + i, d, { cache, cube, pages, fieldExtractor });
+    createAttrFields(dimensions.length + i, d, { cache, cube, pages, fieldExtractor, key, fieldKey });
   });
 
   return dataset;

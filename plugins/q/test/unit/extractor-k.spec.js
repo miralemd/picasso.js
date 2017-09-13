@@ -50,9 +50,9 @@ describe('q-data-extractor-k', () => {
     };
 
     const fields = [
-      { title: () => 'a', value: d => d.qElemNo },
-      { title: () => 'b', value: d => d.qElemNo },
-      { title: () => 'c', value: d => d.qValue }
+      { title: () => 'a', value: d => d.qElemNo, key: () => 'qDimensionInfo/0' },
+      { title: () => 'b', value: d => d.qElemNo, key: () => 'qDimensionInfo/1' },
+      { title: () => 'c', value: d => d.qValue, key: () => 'qMeasureInfo/0' }
     ];
 
     const dataset = {
@@ -60,144 +60,146 @@ describe('q-data-extractor-k', () => {
       field: sinon.stub()
     };
 
-    dataset.field.withArgs('/qDimensionInfo/0').returns(fields[0]);
-    dataset.field.withArgs('/qDimensionInfo/1').returns(fields[1]);
-    dataset.field.withArgs('/qMeasureInfo/0').returns(fields[2]);
+    dataset.field.withArgs('qDimensionInfo/0').returns(fields[0]);
+    dataset.field.withArgs('qDimensionInfo/1').returns(fields[1]);
+    dataset.field.withArgs('qMeasureInfo/0').returns(fields[2]);
     const attrDimField = {
-      value: v => `-${v.qText}-`
+      title: () => '',
+      value: v => `-${v.qText}-`,
+      key: () => 'qDimensionInfo/0/qAttrDimInfo/1'
     };
-    dataset.field.withArgs('/qDimensionInfo/0/qAttrDimInfo/1').returns(attrDimField);
+    dataset.field.withArgs('firstDimSecondAttrDim').returns(attrDimField);
 
-    const attrExprField = {};
+    const attrExprField = {
+      title: () => '',
+      key: () => 'qDimensionInfo/1/qAttrExprInfo/1'
+    };
 
-    dataset.field.withArgs('/qDimensionInfo/1/qAttrExprInfo/2').returns(attrExprField);
+    dataset.field.withArgs('qDimensionInfo/1/qAttrExprInfo/1').returns(attrExprField);
 
     it('should return dim field values based on default field accessor', () => {
       const m = extract({
-        field: '/qDimensionInfo/0'
-      }, dataset, { fields });
+        field: 'qDimensionInfo/0'
+      }, dataset, {});
 
       expect(m).to.eql([
-        { value: 1, source: { field: '/qDimensionInfo/0' } },
-        { value: 3, source: { field: '/qDimensionInfo/0' } }
+        { value: 1, source: { field: 'qDimensionInfo/0' } },
+        { value: 3, source: { field: 'qDimensionInfo/0' } }
       ]);
     });
 
     it('should return measure field values based on default field accessor', () => {
       const m = extract({
-        field: '/qMeasureInfo/0'
-      }, dataset, { fields });
+        field: 'qMeasureInfo/0'
+      }, dataset, {});
 
       expect(m).to.eql([
-        { value: 45, source: { field: '/qMeasureInfo/0' } },
-        { value: 32, source: { field: '/qMeasureInfo/0' } },
-        { value: 13, source: { field: '/qMeasureInfo/0' } },
-        { value: 17, source: { field: '/qMeasureInfo/0' } }
+        { value: 45, source: { field: 'qMeasureInfo/0' } },
+        { value: 32, source: { field: 'qMeasureInfo/0' } },
+        { value: 13, source: { field: 'qMeasureInfo/0' } },
+        { value: 17, source: { field: 'qMeasureInfo/0' } }
       ]);
     });
 
     it('should return joined set when array of fields is used', () => {
       const m = extract([
-        { field: '/qDimensionInfo/0' },
-        { field: '/qDimensionInfo/0', value: v => v.qText }
-      ], dataset, { fields });
+        { field: 'qDimensionInfo/0' },
+        { field: 'qDimensionInfo/0', value: v => v.qText }
+      ], dataset, {});
 
       expect(m).to.eql([
-        { value: 1, source: { field: '/qDimensionInfo/0' } },
-        { value: 3, source: { field: '/qDimensionInfo/0' } },
-        { value: 'Alpha', source: { field: '/qDimensionInfo/0' } },
-        { value: 'Beta', source: { field: '/qDimensionInfo/0' } }
+        { value: 1, source: { field: 'qDimensionInfo/0' } },
+        { value: 3, source: { field: 'qDimensionInfo/0' } },
+        { value: 'Alpha', source: { field: 'qDimensionInfo/0' } },
+        { value: 'Beta', source: { field: 'qDimensionInfo/0' } }
       ]);
     });
 
     it('should return attr dim field values based on default field accessor', () => {
       const m = extract({
-        field: '/qDimensionInfo/0/qAttrDimInfo/1'
-      }, dataset, { fields, attributeDimensionFields: [[{}, attrDimField]] });
+        field: 'firstDimSecondAttrDim'
+      }, dataset, {});
 
       expect(m).to.eql([
-        { value: '-AlphaDimAttr-', source: { field: '/qDimensionInfo/0/qAttrDimInfo/1' } },
-        { value: '-BetaDimAttr-', source: { field: '/qDimensionInfo/0/qAttrDimInfo/1' } }
+        { value: '-AlphaDimAttr-', source: { field: 'qDimensionInfo/0/qAttrDimInfo/1' } },
+        { value: '-BetaDimAttr-', source: { field: 'qDimensionInfo/0/qAttrDimInfo/1' } }
       ]);
     });
 
     it('should return attr expr field values based on default field accessor', () => {
       const m = extract({
-        field: '/qDimensionInfo/0',
+        field: 'qDimensionInfo/0',
         props: {
           descs: {
-            field: '/qDimensionInfo/1/qAttrExprInfo/1', value: v => `-${v.qText}-`
+            field: 'qDimensionInfo/1/qAttrExprInfo/1', value: v => `-${v.qText}-`
           }
         }
-      }, dataset, {
-        fields,
-        attributeDimensionFields: [],
-        attributeExpressionFields: [[], [{}, attrExprField]] });
+      }, dataset, {});
 
       expect(m).to.eql([
         {
           value: 1,
-          source: { field: '/qDimensionInfo/0' },
-          descs: { value: '-exp-666-, -exp-a1-, -exp-a2-', source: { field: '/qDimensionInfo/1/qAttrExprInfo/1' } }
+          source: { field: 'qDimensionInfo/0' },
+          descs: { value: '-exp-666-, -exp-a1-, -exp-a2-', source: { field: 'qDimensionInfo/1/qAttrExprInfo/1' } }
         },
         {
           value: 3,
-          source: { field: '/qDimensionInfo/0' },
-          descs: { value: '-exp-667-, -exp-b1-, -exp-b2-', source: { field: '/qDimensionInfo/1/qAttrExprInfo/1' } }
+          source: { field: 'qDimensionInfo/0' },
+          descs: { value: '-exp-667-, -exp-b1-, -exp-b2-', source: { field: 'qDimensionInfo/1/qAttrExprInfo/1' } }
         }
       ]);
     });
 
     it('should return mapped properties from same field', () => {
       const m = extract({
-        field: '/qDimensionInfo/1',
+        field: 'qDimensionInfo/1',
         value: d => d.qElemNo,
         props: {
           label: d => d.qText
         }
-      }, dataset, { fields });
+      }, dataset, {});
 
       expect(m).to.eql([
         {
           value: -1,
-          source: { field: '/qDimensionInfo/1' },
-          label: { value: '$666', source: { field: '/qDimensionInfo/1' } }
+          source: { field: 'qDimensionInfo/1' },
+          label: { value: '$666', source: { field: 'qDimensionInfo/1' } }
         },
         {
           value: 0,
-          source: { field: '/qDimensionInfo/1' },
-          label: { value: 'a1', source: { field: '/qDimensionInfo/1' } }
+          source: { field: 'qDimensionInfo/1' },
+          label: { value: 'a1', source: { field: 'qDimensionInfo/1' } }
         },
         {
           value: 3,
-          source: { field: '/qDimensionInfo/1' },
-          label: { value: 'a2', source: { field: '/qDimensionInfo/1' } }
+          source: { field: 'qDimensionInfo/1' },
+          label: { value: 'a2', source: { field: 'qDimensionInfo/1' } }
         },
         {
           value: -1,
-          source: { field: '/qDimensionInfo/1' },
-          label: { value: '$667', source: { field: '/qDimensionInfo/1' } }
+          source: { field: 'qDimensionInfo/1' },
+          label: { value: '$667', source: { field: 'qDimensionInfo/1' } }
         },
         {
           value: 7,
-          source: { field: '/qDimensionInfo/1' },
-          label: { value: 'b1', source: { field: '/qDimensionInfo/1' } }
+          source: { field: 'qDimensionInfo/1' },
+          label: { value: 'b1', source: { field: 'qDimensionInfo/1' } }
         },
         {
           value: 9,
-          source: { field: '/qDimensionInfo/1' },
-          label: { value: 'b3', source: { field: '/qDimensionInfo/1' } }
+          source: { field: 'qDimensionInfo/1' },
+          label: { value: 'b3', source: { field: 'qDimensionInfo/1' } }
         }
       ]);
     });
 
     it('should return mapped properties to ancestor fields', () => {
       const m = extract({
-        field: '/qDimensionInfo/1',
+        field: 'qDimensionInfo/1',
         value: d => d.qElemNo,
         props: {
           parent: {
-            field: '/qDimensionInfo/0',
+            field: 'qDimensionInfo/0',
             value: d => d.qText
           }
         }
@@ -206,44 +208,44 @@ describe('q-data-extractor-k', () => {
       expect(m).to.eql([
         {
           value: -1,
-          source: { field: '/qDimensionInfo/1' },
-          parent: { value: 'Alpha', source: { field: '/qDimensionInfo/0' } }
+          source: { field: 'qDimensionInfo/1' },
+          parent: { value: 'Alpha', source: { field: 'qDimensionInfo/0' } }
         },
         {
           value: 0,
-          source: { field: '/qDimensionInfo/1' },
-          parent: { value: 'Alpha', source: { field: '/qDimensionInfo/0' } }
+          source: { field: 'qDimensionInfo/1' },
+          parent: { value: 'Alpha', source: { field: 'qDimensionInfo/0' } }
         },
         {
           value: 3,
-          source: { field: '/qDimensionInfo/1' },
-          parent: { value: 'Alpha', source: { field: '/qDimensionInfo/0' } }
+          source: { field: 'qDimensionInfo/1' },
+          parent: { value: 'Alpha', source: { field: 'qDimensionInfo/0' } }
         },
         {
           value: -1,
-          source: { field: '/qDimensionInfo/1' },
-          parent: { value: 'Beta', source: { field: '/qDimensionInfo/0' } }
+          source: { field: 'qDimensionInfo/1' },
+          parent: { value: 'Beta', source: { field: 'qDimensionInfo/0' } }
         },
         {
           value: 7,
-          source: { field: '/qDimensionInfo/1' },
-          parent: { value: 'Beta', source: { field: '/qDimensionInfo/0' } }
+          source: { field: 'qDimensionInfo/1' },
+          parent: { value: 'Beta', source: { field: 'qDimensionInfo/0' } }
         },
         {
           value: 9,
-          source: { field: '/qDimensionInfo/1' },
-          parent: { value: 'Beta', source: { field: '/qDimensionInfo/0' } }
+          source: { field: 'qDimensionInfo/1' },
+          parent: { value: 'Beta', source: { field: 'qDimensionInfo/0' } }
         }
       ]);
     });
 
     it('should return mapped properties to descendant fields', () => {
       const m = extract({
-        field: '/qDimensionInfo/0',
+        field: 'qDimensionInfo/0',
         value: d => d.qElemNo,
         props: {
           descs: {
-            field: '/qDimensionInfo/1',
+            field: 'qDimensionInfo/1',
             value: d => d.qText
           }
         }
@@ -251,20 +253,20 @@ describe('q-data-extractor-k', () => {
       expect(m).to.eql([
         {
           value: 1,
-          source: { field: '/qDimensionInfo/0' },
-          descs: { value: '$666, a1, a2', source: { field: '/qDimensionInfo/1' } }
+          source: { field: 'qDimensionInfo/0' },
+          descs: { value: '$666, a1, a2', source: { field: 'qDimensionInfo/1' } }
         },
         {
           value: 3,
-          source: { field: '/qDimensionInfo/0' },
-          descs: { value: '$667, b1, b3', source: { field: '/qDimensionInfo/1' } }
+          source: { field: 'qDimensionInfo/0' },
+          descs: { value: '$667, b1, b3', source: { field: 'qDimensionInfo/1' } }
         }
       ]);
     });
 
     it('should return primitive nodes', () => {
       const m = extract({
-        field: '/qDimensionInfo/1',
+        field: 'qDimensionInfo/1',
         value: 'foo',
         props: {
           num: 0,
@@ -274,7 +276,7 @@ describe('q-data-extractor-k', () => {
 
       const v = {
         value: 'foo',
-        source: { field: '/qDimensionInfo/1' },
+        source: { field: 'qDimensionInfo/1' },
         num: { value: 0 },
         bool: { value: false }
       };
@@ -329,10 +331,10 @@ describe('q-data-extractor-k', () => {
     };
 
     const fields = [
-      { title: () => 'a', value: d => d.qElemNo },
-      { title: () => 'b', value: d => d.qElemNo },
-      { title: () => 'c', value: d => d.qValue },
-      { title: () => 'd', value: d => d.qValue }
+      { title: () => 'a', value: d => d.qElemNo, key: () => 'qDimensionInfo/0' },
+      { title: () => 'b', value: d => d.qElemNo, key: () => 'qDimensionInfo/1' },
+      { title: () => 'c', value: d => d.qValue, key: () => 'qMeasureInfo/0' },
+      { title: () => 'd', value: d => d.qValue, key: () => 'qMeasureInfo/1' }
     ];
 
     const dataset = {
@@ -340,28 +342,28 @@ describe('q-data-extractor-k', () => {
       field: sinon.stub()
     };
 
-    dataset.field.withArgs('/qDimensionInfo/0').returns(fields[0]);
-    dataset.field.withArgs('/qDimensionInfo/1').returns(fields[1]);
-    dataset.field.withArgs('/qMeasureInfo/0').returns(fields[2]);
-    dataset.field.withArgs('/qMeasureInfo/1').returns(fields[3]);
+    dataset.field.withArgs('qDimensionInfo/0').returns(fields[0]);
+    dataset.field.withArgs('qDimensionInfo/1').returns(fields[1]);
+    dataset.field.withArgs('qMeasureInfo/0').returns(fields[2]);
+    dataset.field.withArgs('qMeasureInfo/1').returns(fields[3]);
 
     it('should return proper pseudo measure', () => {
       const m = extract({
-        field: '/qMeasureInfo/1'
+        field: 'qMeasureInfo/1'
       }, dataset, { fields });
 
       expect(m).to.eql([
-        { value: 0.34, source: { field: '/qMeasureInfo/1' } },
-        { value: 0.67, source: { field: '/qMeasureInfo/1' } }
+        { value: 0.34, source: { field: 'qMeasureInfo/1' } },
+        { value: 0.67, source: { field: 'qMeasureInfo/1' } }
       ]);
     });
 
     it('should return proper descendants of pseudo measure', () => {
       const m = extract({
-        field: '/qMeasureInfo/1',
+        field: 'qMeasureInfo/1',
         props: {
           descs: {
-            field: '/qDimensionInfo/1', value: v => v.qText
+            field: 'qDimensionInfo/1', value: v => v.qText
           }
         }
       }, dataset, { fields });
@@ -369,18 +371,18 @@ describe('q-data-extractor-k', () => {
       expect(m).to.eql([
         {
           value: 0.34,
-          source: { field: '/qMeasureInfo/1' },
+          source: { field: 'qMeasureInfo/1' },
           descs: {
             value: 'Margin-a1, Margin-a2',
-            source: { field: '/qDimensionInfo/1' }
+            source: { field: 'qDimensionInfo/1' }
           }
         },
         {
           value: 0.67,
-          source: { field: '/qMeasureInfo/1' },
+          source: { field: 'qMeasureInfo/1' },
           descs: {
             value: 'Margin-b1, Margin-b2',
-            source: { field: '/qDimensionInfo/1' }
+            source: { field: 'qDimensionInfo/1' }
           }
         }
       ]);

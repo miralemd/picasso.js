@@ -89,8 +89,9 @@ function getTreePath(field, { cache, cube }) {
   return s3.replace(/qData\/\*/, '');
 }
 
-export default function transformH(config, cube, cache) {
+export default function transformH(config, dataset, cache) {
   const rootPath = '/qStackedDataPages/*/qData';
+  const cube = dataset.raw();
 
   const root = picker(rootPath, cube);
   if (!root || !root[0]) {
@@ -102,7 +103,7 @@ export default function transformH(config, cube, cache) {
   const height = h.height;
   const propDefs = [];
   for (let i = 0; i <= height; i++) {
-    const { props, main } = getPropsInfo(config, cube, cache);
+    const { props, main } = getPropsInfo(config, dataset, cache);
     const propsArr = Object.keys(props);
     propDefs[i] = { propsArr, props, main };
     let currentField = null;

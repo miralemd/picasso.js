@@ -5,6 +5,8 @@ const elemNoFn = cube => (cube.qMode === 'S' ? (d => d.qElemNumber) : (d => d.qE
 
 export default function qField({
   meta,
+  id,
+  key,
   cube,
   localeInfo,
   fieldExtractor
@@ -17,6 +19,8 @@ export default function qField({
   const formatter = createFromMetaInfo(meta, localeInfo);
 
   const f = {
+    id: () => id,
+    key: () => key,
     title: () => meta.qFallbackTitle || meta.label,
     type: () => type,
     items: () => {

@@ -58,20 +58,14 @@ function getFieldAccessor(field, page, { cache }) {
 function datumExtract(propCfg, cell, {
   key
 }) {
-  // {
-  //   value: typeof main.value === 'function' ? main.value(mainCell) : typeof main.value !== 'undefined' ? main.value : mainCell,  // eslint-disable-line no-nested-ternary
-  //   source: {
-  //     field: cfg.field
-  //   }
-  // }
-
   const datum = {
     value: typeof propCfg.value === 'function' ? propCfg.value(cell) : typeof propCfg.value !== 'undefined' ? propCfg.value : cell  // eslint-disable-line no-nested-ternary
   };
-  if (propCfg.source) {
+
+  if (propCfg.field) {
     datum.source = {
       key,
-      field: propCfg.source
+      field: propCfg.field.key()
     };
   }
 
@@ -86,10 +80,8 @@ export default function extract(config, dataset, cache) {
       const cube = dataset.raw();
       const sourceKey = dataset.key();
       const f = typeof cfg.field === 'object' ? cfg.field : dataset.field(cfg.field);
-      if (!f) {
-        throw Error(`Field '${cfg.field}' not found`);
-      }
-      const { props, main } = getPropsInfo(cfg, cube, cache);
+      const { props, main } = getPropsInfo(cfg, dataset, cache);
+      // console.log(main);
       const propsArr = Object.keys(props);
 
       const track = !!cfg.trackBy;
@@ -111,16 +103,17 @@ export default function extract(config, dataset, cache) {
           // loop through all props that need to be mapped and
           // assign 'value' and 'source' to each property
           propsArr.forEach((prop) => {
+            // console.log(prop);
             const p = props[prop];
             let propCell = mainCell;
-            if (p.field) {
+            if (p.field && p.field !== f) {
               const propCellFn = getFieldAccessor(p.field, page, { cache });
               if (propCellFn === -1) {
                 return;
               }
               propCell = { qRow: rowIdx, ...propCellFn(row) };
             }
-            ret[prop] = datumExtract(p, propCell, { key: sourceKey });
+            ret[prop] = datumExtract(p, propCell, { key: sourceKey }, prop);
           });
 
           // collect items based on the trackBy value

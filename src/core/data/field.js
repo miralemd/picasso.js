@@ -4,6 +4,7 @@ import formatterFn from '../formatter';
 // TODO - decide whether usage of .call() is appropriate when invoking accessors, if yes then arrow functions are not allowed!
 
 const accessors = {
+  id: data => `${data.source}/${data.title}`,
   tags: data => data.tags,
   min: data => data.min,
   max: data => data.max,
@@ -20,6 +21,7 @@ const accessors = {
  * @return {field} Data field
  */
 export default function field(data, {
+  id = accessors.id,
   min = accessors.min,
   max = accessors.max,
   type = accessors.type,
@@ -34,6 +36,8 @@ export default function field(data, {
    * @typedef {object}
    */
   const f = {
+
+    id: () => id(data),
     /**
      * Returns the tags.
      * @return {Array<string>}
