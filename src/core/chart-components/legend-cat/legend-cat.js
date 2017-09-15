@@ -124,7 +124,7 @@ function createButtons({ HORIZONTAL, rect, buttonRect, buttonSymbol, min, max, p
  * @param  {object} chart - The chart object
  * @return {object} - returns labels, maxX and maxY for computing renderable area
  */
-function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect, chart, index }) {
+function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect, chart, index = 0 }) {
   let title;
   const domain = scale.domain();
 
@@ -204,7 +204,9 @@ function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect,
     maxX = Math.max(maxX, prevContainer.x + prevContainer.width);
     maxY = Math.max(maxY, prevContainer.y + prevContainer.height);
 
-    availableSlots = Math.min(availableSlots, (HORIZONTAL ? Math.floor((rect.width - maxX) / prevContainer.width) : Math.floor((rect.height - maxY) / prevContainer.height)) + (i - index));
+    if (rect) {
+      availableSlots = Math.min(availableSlots, (HORIZONTAL ? Math.floor((rect.width - maxX) / prevContainer.width) : Math.floor((rect.height - maxY) / prevContainer.height)) + (i - index));
+    }
 
     if (availableSlots < domain.length && !createScrollButtons) {
       createScrollButtons = true;
@@ -296,16 +298,17 @@ const categoricalLegend = {
     }
   },
   preferredSize() {
-    const scale = this.chart.scale(this.settings.scale);
-    const DOCK = this.settings.dock || 'center';
-    const DIRECTION = this.settings.direction || ((DOCK === 'top' || DOCK === 'bottom') ? 'horizontal' : 'vertical');
+    const context = this;
+    const scale = context.chart.scale(context.settings.scale);
+    const DOCK = context.settings.dock || 'center';
+    const DIRECTION = context.settings.direction || ((DOCK === 'top' || DOCK === 'bottom') ? 'horizontal' : 'vertical');
     const HORIZONTAL = (DIRECTION === 'horizontal');
 
     const {
       settings,
       renderer,
       chart
-    } = this;
+    } = context;
 
     const {
       maxX,
