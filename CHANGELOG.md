@@ -2,6 +2,8 @@
 
 ## **Unreleased** - *(YYYY-MM-DD)*
 
+## **0.28.1** - *(2017-09-15)*
+
 ### Fixed
 
 - PIC-200 legend-cat title show false bugfix
