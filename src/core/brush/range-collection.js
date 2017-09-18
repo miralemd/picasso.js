@@ -39,7 +39,11 @@ export default function rangeCollection() {
     if (i1 % 2 === 0) {
       args.push(max);
     }
+
+    const before = boundaries.join(',');
     boundaries.splice(...args);
+    const after = boundaries.join(',');
+    return before !== after;
   };
 
   fn.remove = (range) => {
@@ -56,21 +60,48 @@ export default function rangeCollection() {
     if (i1 % 2 === 1) {
       args.push(max);
     }
+    const before = boundaries.join(',');
     boundaries.splice(...args);
+    const after = boundaries.join(',');
+    return before !== after;
   };
 
   fn.set = (range) => {
+    const before = boundaries.join(',');
     boundaries = [];
     if (Array.isArray(range)) {
       range.forEach(fn.add);
     } else {
       fn.add(range);
     }
+    const after = boundaries.join(',');
+    return before !== after;
   };
 
-  fn.clear = () => (boundaries = []);
+  fn.clear = () => {
+    const before = boundaries.length > 0;
+    boundaries = [];
+    return before;
+  };
 
   fn.containsValue = value => contains(boundaries, value);
+
+  fn.containsRange = (range) => {
+    const min = range.min;
+    const max = range.max;
+
+    const i0 = index(boundaries, min, true);
+    const i1 = index(boundaries, max);
+
+    return i0 === i1 && i1 % 2 === 1;
+  };
+
+  fn.toggle = (range) => {
+    if (fn.containsRange(range)) {
+      return fn.remove(range);
+    }
+    return fn.add(range);
+  };
 
   fn.ranges = () => {
     const collection = [];
