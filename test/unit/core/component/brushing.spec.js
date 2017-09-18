@@ -98,6 +98,21 @@ describe('Brushing', () => {
       ]);
     });
 
+    it('should bin multiple collisions into a single brush call using node.data property', () => {
+      config.renderer.itemsAt.returns([
+        { node: { data: data[0] } },
+        { node: { data: data[1] } }
+      ]);
+
+      resolveTapEvent({ e: eventMock, t: trigger, config });
+
+      expect(brushContext.toggleValues.callCount).to.equal(1);
+      expect(brushContext.toggleValues.args[0][0]).to.deep.equal([
+        { key: data[0].self.source.field, value: data[0].self.value },
+        { key: data[1].self.source.field, value: data[1].self.value }
+      ]);
+    });
+
     it('should handle when there is no collision', () => {
       config.renderer.itemsAt.returns([]);
 
