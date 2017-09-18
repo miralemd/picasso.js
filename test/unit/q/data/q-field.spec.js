@@ -455,11 +455,11 @@ describe('QField', () => {
         const ff = qField(dd);
         const values = ff.values();
         expect(values).to.deep.equal([
-          { label: undefined, id: 0, value: 255, index: 0 },
-          { label: undefined, id: 0, value: 255, index: 1 },
-          { label: undefined, id: 0, value: 255, index: 2 },
-          { label: undefined, id: 0, value: 311, index: 3 },
-          { label: undefined, id: 0, value: 311, index: 4 }
+          { label: '', id: 0, value: 255, index: 0 },
+          { label: '', id: 0, value: 255, index: 1 },
+          { label: '', id: 0, value: 255, index: 2 },
+          { label: '', id: 0, value: 311, index: 3 },
+          { label: '', id: 0, value: 311, index: 4 }
         ]);
       });
 
@@ -550,7 +550,7 @@ describe('QField', () => {
       qArea: { qLeft: 7, qTop: 0, qWidth: 2, qHeight: 3 },
       qMatrix: [
         [{}, { qNum: 2, qText: 'två', qElemNumber: 1, qAttrDims: { qValues: [{ qText: 'a' }, { qText: 'tretton', qElemNo: 7 }] } }],
-        [{}, { qNum: 6, qText: 'sex', qElemNumber: 2, qAttrDims: { qValues: [{ qText: 'b' }, { qText: 'femton', qElemNo: -2 }] } }],
+        [{}, { qNum: 6, qText: 'sex', qElemNumber: 2, qAttrDims: { qValues: [{ qText: 'b' }, { qElemNo: -2 }] } }],
         [{}, { qNum: 3, qText: 'tre', qElemNumber: 3, qAttrDims: { qValues: [{ qText: 'c' }, { qText: 'tolv', qElemNo: 6 }] } }]
       ]
     };
@@ -571,7 +571,7 @@ describe('QField', () => {
 
       expect(ff.values()).to.eql([
         { value: undefined, label: 'tretton', id: 7, index: 0 },
-        { value: undefined, label: 'femton', id: -2, index: 1 },
+        { value: undefined, label: '-', id: -2, index: 1 },
         { value: undefined, label: 'tolv', id: 6, index: 2 }
       ]);
     });

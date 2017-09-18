@@ -9,7 +9,8 @@ const specialTextValues = {
       return meta.othersLabel;
     }
     return '';
-  }
+  },
+  '-2': () => '-'
 };
 
 function normalizeValues(path, data, meta, attrIdx, attrDimIdx, offset = 0) {
@@ -30,7 +31,7 @@ function normalizeValues(path, data, meta, attrIdx, attrDimIdx, offset = 0) {
     normalized[i] = {
       value: cell.qNum,
       index: typeof cell.qRow !== 'undefined' ? cell.qRow : offset + i,
-      label: elemNo in specialTextValues ? specialTextValues[elemNo](meta) : cell.qText,
+      label: elemNo in specialTextValues ? specialTextValues[elemNo](meta) : cell.qText || '',
       id: elemNo
     };
   }

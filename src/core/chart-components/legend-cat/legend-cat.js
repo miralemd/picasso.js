@@ -174,6 +174,7 @@ function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect,
   // Items
   for (let i = index; i < (Math.min(index + availableSlots, domain.length)); i++) {
     let cat = domain[i];
+    let text = scale.label ? scale.label(cat) : '';
 
     nextXitem += prevContainer.width || 0;
     nextYitem += prevContainer.height || 0;
@@ -204,7 +205,7 @@ function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect,
     labelItemDef.y = !HORIZONTAL ? nextYitem : 0;
     labelItemDef.maxWidth = rect ? Math.min(rect.width, labelItemDef.maxWidthPx) : labelItemDef.maxWidthPx;
     labelItemDef.color = scale(cat);
-    labelItemDef.labelText = labelItemDef.label || cat;
+    labelItemDef.labelText = labelItemDef.label || text || cat;
     labelItemDef.renderer = renderer;
     labelItemDef.align = ALIGN;
     labelItemDef.renderingArea = rect;

@@ -44,7 +44,7 @@ export function styler(obj, { context, data, style }) {
         });
       }
 
-      const nodeData = mappedData[nodes[i].dataIndex];
+      const nodeData = nodes[i].data || mappedData[nodes[i].dataIndex];
       const isActive = nodeData && brusher.containsMappedData(nodeData, dataProps);
       const activeIdx = activeNodes.indexOf(nodes[i]);
       let changed = false;
@@ -185,9 +185,9 @@ export function brushFromSceneNodes({
   const dataPoints = [];
   for (let i = 0; i < nodes.length; i++) {
     const node = nodes[i];
-    const dataAttrib = node.dataIndex;
-    if (dataAttrib !== null && data.length > 0 && data[+dataAttrib]) {
-      dataPoints.push(data[+dataAttrib]);
+    const nodeData = node.data || (data.length && data[+node.dataIndex] ? data[+node.dataIndex] : null);
+    if (nodeData) {
+      dataPoints.push(nodeData);
     }
   }
 
