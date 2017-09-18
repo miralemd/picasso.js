@@ -2,6 +2,8 @@
 
 ## **Unreleased** - *(YYYY-MM-DD)*
 
+## **0.29.0** - *(2017-09-18)*
+
 ### Added
 
 - PIC-202 - Track a scales' domain by a field's `qElemNumber` values:
