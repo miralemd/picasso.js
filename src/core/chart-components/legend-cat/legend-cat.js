@@ -128,6 +128,8 @@ function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect,
   let title;
   const domain = scale.domain();
 
+  const THRESHOLD = scale.type === 'threshold-color';
+
   if (settings.title.text) {
     title = settings.title.text;
   } else if (scale && scale.sources && scale.sources[0]) {
@@ -179,8 +181,19 @@ function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect,
     let data = {
       value: cat,
       index: i,
-      color: scale(cat)
+      color: scale(cat),
+      item: {
+        value: cat,
+        source: {
+          field: scale.sources[0]
+        }
+      }
     };
+
+    if (THRESHOLD) {
+      data.domain = scale.domain();
+      data.item.source.type = 'quant';
+    }
 
     let labelItemDef = resolveForDataObject(settings.item, data, i, domain);
     if (typeof settings.item.shape === 'object') {
@@ -191,7 +204,7 @@ function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect,
     labelItemDef.y = !HORIZONTAL ? nextYitem : 0;
     labelItemDef.maxWidth = rect ? Math.min(rect.width, labelItemDef.maxWidthPx) : labelItemDef.maxWidthPx;
     labelItemDef.color = scale(cat);
-    labelItemDef.labelText = cat;
+    labelItemDef.labelText = labelItemDef.label || cat;
     labelItemDef.renderer = renderer;
     labelItemDef.align = ALIGN;
     labelItemDef.renderingArea = rect;

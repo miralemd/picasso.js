@@ -14,6 +14,7 @@ export default function categoricalLegend(picasso) {
  * @property {string} [align='left'] - Alignment of items in the component, left or right
  * @property {string} [direction='vertical'] - Direction of rendering, 'horizontal' or 'vertical'.
  * @property {object} [item] - Items settings
+ * @property {function} [item.label=undefined] - Replace the default label with a custom one using a function
  * @property {string} [item.maxWidthPx=150] - Maximum width of each item in px
  * @property {string} [item.fontSize='12px'] - Font size of label items
  * @property {string} [item.fontFamily='Arial'] - Font family of label items

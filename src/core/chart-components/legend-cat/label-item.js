@@ -134,8 +134,8 @@ export function labelItem({
     y,
     width: containerWidth,
     height: innerHeight + margin.height,
-    dataIndex,
-    data
+    data,
+    dataIndex
   };
 
   container.collider = {
@@ -154,6 +154,7 @@ export function labelItem({
     size: innerHeight,
     fill: typeof shape === 'object' && shape.fill ? shape.fill : color,
     stroke: typeof shape === 'object' && shape.stroke ? shape.stroke : color,
+    data,
     dataIndex,
     ...shape
   };
@@ -169,6 +170,7 @@ export function labelItem({
     fill,
     fontSize: `${fontSizeMod}px`,
     fontFamily,
+    data,
     dataIndex
   };
 
