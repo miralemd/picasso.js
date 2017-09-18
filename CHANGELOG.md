@@ -2,6 +2,22 @@
 
 ## **Unreleased** - *(YYYY-MM-DD)*
 
+### Added
+
+- PIC-202 - Track a scales' domain by a field's `qElemNumber` values:
+
+  ```js
+  {
+    scales: {
+      color: {
+        source: '/qHyperCube/qDimensionInfo/0',
+        type: 'color'
+        trackBy: 'id' // default: 'label'
+      }
+    }
+  }
+  ```
+
 ## **0.28.1** - *(2017-09-15)*
 
 ### Fixed
