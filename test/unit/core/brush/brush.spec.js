@@ -193,45 +193,58 @@ describe('brush', () => {
     });
   });
 
-  describe('addRange', () => {
-    let v;
-    let rcc;
-    let bb;
-    beforeEach(() => {
-      v = {
-        add: sandbox.stub()
-      };
-      rcc = sandbox.stub().returns(v);
-      bb = brush({ rc: rcc, vc: noop });
-    });
+  function testRange(action) {
+    const fn = `${action}Range`;
+    describe(fn, () => {
+      let v;
+      let rcc;
+      let bb;
+      beforeEach(() => {
+        v = {};
+        v[action] = sandbox.stub();
+        rcc = sandbox.stub().returns(v);
+        bb = brush({ rc: rcc, vc: noop });
+        v[action].returns(true);
+      });
 
-    it('should call range.add() with { min: 3 max: 7 }', () => {
-      bb.addRange('speed', { min: 3, max: 7 });
-      expect(rcc.callCount).to.equal(1);
-      expect(v.add).to.have.been.calledWith({ min: 3, max: 7 });
-    });
+      it(`should call range.${action}() with { min: 3 max: 7 }`, () => {
+        bb[fn]('speed', { min: 3, max: 7 });
+        expect(rcc.callCount).to.equal(1);
+        expect(v[action]).to.have.been.calledWith({ min: 3, max: 7 });
+      });
 
-    it('should not create more than one instance per id', () => {
-      bb.addRange('speed', {});
-      bb.addRange('speed', {});
-      expect(rcc.callCount).to.equal(1);
-    });
+      it('should not create more than one instance per id', () => {
+        bb[fn]('speed', {});
+        bb[fn]('speed', {});
+        expect(rcc.callCount).to.equal(1);
+      });
 
-    it('should emit "start" event if not activated', () => {
-      const cb = sandbox.spy();
-      bb.on('start', cb);
-      bb.addRange('speed', {});
-      bb.addRange('speed', {});
-      expect(cb.callCount).to.equal(1);
-    });
+      it('should emit "start" event if not activated', () => {
+        const cb = sandbox.spy();
+        bb.on('start', cb);
+        bb[fn]('speed', {});
+        bb[fn]('speed', {});
+        expect(cb.callCount).to.equal(1);
+      });
 
-    it('should emit "update" event', () => {
-      const cb = sandbox.spy();
-      bb.on('update', cb);
-      bb.addRange('speed', {});
-      expect(cb.callCount).to.equal(1);
+      it('should emit "update" event', () => {
+        const cb = sandbox.spy();
+        bb.on('update', cb);
+        bb[fn]('speed', {});
+        expect(cb.callCount).to.equal(1);
+      });
+
+      it('should not emit "update" event when state does not change', () => {
+        const cb = sandbox.spy();
+        v[action].returns(false);
+        bb.on('update', cb);
+        bb[fn]('speed', {});
+        expect(cb.callCount).to.equal(0);
+      });
     });
-  });
+  }
+
+  ['add', 'remove', 'toggle', 'set'].forEach(testRange);
 
   describe('containsValue', () => {
     let v;
@@ -294,6 +307,38 @@ describe('brush', () => {
       v.containsValue.returns(false);
       expect(bb.containsRangeValue('speed', 'very fast')).to.equal(false);
       expect(v.containsValue).to.have.been.calledWith('very fast');
+    });
+  });
+
+  describe('containsRange', () => {
+    let v;
+    let rcc;
+    let bb;
+    beforeEach(() => {
+      v = {
+        add: sandbox.stub(),
+        containsRange: sandbox.stub()
+      };
+      rcc = sandbox.stub().returns(v);
+      bb = brush({ vc: noop, rc: rcc });
+    });
+
+    it('should return false when given id does not exist in the brush context', () => {
+      expect(bb.containsRange('speed')).to.equal(false);
+    });
+
+    it('should return true when given value exists', () => {
+      bb.addRange('speed');
+      v.containsRange.returns(true);
+      expect(bb.containsRange('speed', 'some range')).to.equal(true);
+      expect(v.containsRange).to.have.been.calledWith('some range');
+    });
+
+    it('should return false when given value does not exist', () => {
+      bb.addRange('speed');
+      v.containsRange.returns(false);
+      expect(bb.containsRange('speed', 'very fast')).to.equal(false);
+      expect(v.containsRange).to.have.been.calledWith('very fast');
     });
   });
 

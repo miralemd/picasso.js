@@ -42,6 +42,15 @@ describe('range-collection', () => {
         { min: 30, max: 50 }
       ]);
     });
+
+    it('should return true when collection changes', () => {
+      expect(r.add({ min: 5, max: 7 })).to.equal(true);
+    });
+
+    it('should return false when collection does not change', () => {
+      r.add({ min: 10, max: 20 });
+      expect(r.add({ min: 12, max: 14 })).to.equal(false);
+    });
   });
 
   describe('remove', () => {
@@ -65,6 +74,14 @@ describe('range-collection', () => {
         { min: -5, max: 18 }
       ]);
     });
+
+    it('should return true when collection changes', () => {
+      expect(r.remove({ min: 5, max: 7 })).to.equal(true);
+    });
+
+    it('should return false when collection does not change', () => {
+      expect(r.remove({ min: 50, max: 60 })).to.equal(false);
+    });
   });
 
   describe('clear', () => {
@@ -77,6 +94,15 @@ describe('range-collection', () => {
       expect(r.ranges()).to.eql([{ min: -2, max: 4 }]);
       r.clear();
       expect(r.ranges()).to.eql([]);
+    });
+
+    it('should return false when collection does not change', () => {
+      expect(r.clear()).to.equal(false);
+    });
+
+    it('should return true when collection changes', () => {
+      r.add({ min: -2, max: 4 });
+      expect(r.clear()).to.equal(true);
     });
   });
 
@@ -100,6 +126,49 @@ describe('range-collection', () => {
       expect(r.containsValue(20)).to.equal(true);
       expect(r.containsValue(50)).to.equal(true);
       expect(r.containsValue(55)).to.equal(true);
+    });
+  });
+
+  describe('containsRange', () => {
+    let r;
+    beforeEach(() => {
+      r = range();
+      r.add({ min: -10, max: 20 });
+      r.add({ min: 50, max: 60 });
+    });
+
+    it('should return true for range inside the collection', () => {
+      expect(r.containsRange({ min: 3, max: 7 })).to.equal(true);
+      expect(r.containsRange({ min: 10, max: 7 })).to.equal(true);
+      expect(r.containsRange({ min: 55, max: 60 })).to.equal(true);
+    });
+
+    it('should return false for range inside outside the collection', () => {
+      expect(r.containsRange({ min: -12, max: -5 })).to.equal(false);
+      expect(r.containsRange({ min: 15, max: 55 })).to.equal(false);
+    });
+  });
+
+  describe('toggle', () => {
+    let r;
+    beforeEach(() => {
+      r = range();
+      r.add({ min: -5, max: 10 });
+    });
+
+    it('should add to existing range', () => {
+      r.toggle({ min: 5, max: 14 });
+      expect(r.ranges()).to.eql([
+        { min: -5, max: 14 }
+      ]);
+    });
+
+    it('should remove from existing range', () => {
+      r.toggle({ min: -2, max: 6 });
+      expect(r.ranges()).to.eql([
+        { min: -5, max: -2 },
+        { min: 6, max: 10 }
+      ]);
     });
   });
 });

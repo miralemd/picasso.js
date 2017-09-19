@@ -198,6 +198,125 @@ brush.containsValue('countries', 'Sweden'); // true
 brush.toggleValue('countries', 'Sweden'); // remove 'Sweden'
 brush.containsValue('countries', 'Sweden'); // false
 ```
+#### <a name='brush.addRange' href='#brush.addRange'>#</a> **brush.addRange**(*string key, object range, number range.min, number range.max*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| key | string | An identifier that represents the data source of the range | No | No |
+| range | object | The range to add to this brush | No | No |
+| range.min | number | Min value of the range | No | No |
+| range.max | number | Max value of the range | No | No |
+
+Adds a numeric range to this brush context  
+#### Examples
+
+```js
+brush.addRange('Sales', { min: 20, max: 50 });
+```
+#### <a name='brush.addRanges' href='#brush.addRanges'>#</a> **brush.addRanges**(*Array.&lt;object&gt; items, string items[].key, object items[].range*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| items | Array.&lt;object&gt; | Items containing the ranges to remove | No | No |
+| items[].key | string | No | No | No |
+| items[].range | object | No | No | No |
+
+No description  
+#### <a name='brush.removeRange' href='#brush.removeRange'>#</a> **brush.removeRange**(*string key, object range, number range.min, number range.max*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| key | string | An identifier that represents the data source of the range | No | No |
+| range | object | The range to remove from this brush | No | No |
+| range.min | number | Min value of the range | No | No |
+| range.max | number | Max value of the range | No | No |
+
+Removes a numeric range from this brush context  
+#### <a name='brush.removeRanges' href='#brush.removeRanges'>#</a> **brush.removeRanges**(*Array.&lt;object&gt; items*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| items | Array.&lt;object&gt; | Items containing the ranges to remove | No | No |
+
+No description  
+#### <a name='brush.setRange' href='#brush.setRange'>#</a> **brush.setRange**(*string key, object range, number range.min, number range.max*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| key | string | An identifier that represents the data source of the range | No | No |
+| range | object | The range to set on this brush | No | No |
+| range.min | number | Min value of the range | No | No |
+| range.max | number | Max value of the range | No | No |
+
+Sets a numeric range to this brush context
+
+Overwrites any active ranges identified by &#x60;key&#x60;  
+#### <a name='brush.setRanges' href='#brush.setRanges'>#</a> **brush.setRanges**(*Array.&lt;object&gt; items*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| items | Array.&lt;object&gt; | Items containing the ranges to set | No | No |
+
+No description  
+#### <a name='brush.toggleRange' href='#brush.toggleRange'>#</a> **brush.toggleRange**(*string key, object range, number range.min, number range.max*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| key | string | An identifier that represents the data source of the range | No | No |
+| range | object | The range to toggle in this brush | No | No |
+| range.min | number | Min value of the range | No | No |
+| range.max | number | Max value of the range | No | No |
+
+Toggles a numeric range in this brush context
+
+Removes the range if it&#x27;s already contained within the given identifier,
+otherwise the given range is added to the brush.  
+#### <a name='brush.toggleRanges' href='#brush.toggleRanges'>#</a> **brush.toggleRanges**(*Array.&lt;object&gt; items*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| items | Array.&lt;object&gt; | Items containing the ranges to toggle | No | No |
+
+No description  
+#### <a name='brush.containsRangeValue' href='#brush.containsRangeValue'>#</a> **brush.containsRangeValue**(*string key, number value*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| key | string | An identifier that represents the data source of the value | No | No |
+| value | number | The value to check for | No | No |
+| Returns | boolean | No | ... | ... |
+
+Checks if a value is contained within a range in this brush context
+
+Returns true if the values exists for the provided key, returns false otherwise.  
+#### Examples
+
+```js
+brush.addRange('Sales', { min: 10, max: 50 });
+brush.containsRangeValue('Sales', 30); // true
+brush.containsRangeValue('Sales', 5); // false
+```
+#### <a name='brush.containsRange' href='#brush.containsRange'>#</a> **brush.containsRange**(*string key, object range, number range.min, number range.max*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| key | string | An identifier that represents the data source of the value | No | No |
+| range | object | The range to check for | No | No |
+| range.min | number | Min value of the range | No | No |
+| range.max | number | Max value of the range | No | No |
+| Returns | boolean | No | ... | ... |
+
+Checks if a range segment is contained within this brush context
+
+Returns true if the range segment exists for the provided key, returns false otherwise.  
+#### Examples
+
+```js
+brush.addRange('Sales', { min: 10, max: 50 });
+brush.containsRange('Sales', { min: 15, max: 20 }); // true - the range segment is fully contained within [10, 50]
+brush.containsRange('Sales', { min: 5, max: 20 }); // false - part of the range segment is outside [10, 50]
+brush.containsRange('Sales', { min: 30, max: 80 }); // false - part of the range segment is outside [10, 50]
+```
 #### <a name='brush.intercept' href='#brush.intercept'>#</a> **brush.intercept**(*string name, function ic*)
 
 |Name(s)|Type(s)|Description|Optional|Default value|

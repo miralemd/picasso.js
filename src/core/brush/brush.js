@@ -227,6 +227,25 @@ function toSnakeCase(s) {
   return s.replace(/([A-Z])/g, $1 => `-${$1.toLowerCase()}`);
 }
 
+function updateRange(items, action, {
+  ranges,
+  interceptors,
+  rc
+}) {
+  const inter = `${action}Ranges`;
+  const its = intercept(interceptors[inter], items);
+  let changed = false;
+  its.forEach((item) => {
+    const key = item.key;
+    if (!ranges[key]) {
+      ranges[key] = rc();
+    }
+    changed = ranges[key][action](item.range) || changed;
+  });
+
+  return changed;
+}
+
 export default function brush({
   vc = valueCollection,
   rc = rangeCollection
@@ -238,7 +257,11 @@ export default function brush({
     addValues: [],
     removeValues: [],
     toggleValues: [],
-    setValues: []
+    setValues: [],
+    addRanges: [],
+    setRanges: [],
+    removeRanges: [],
+    toggleRanges: []
   };
 
   /**
@@ -503,39 +526,192 @@ export default function brush({
     return values[key].contains(value);
   };
 
-  fn.addRange = (path, r) => {
-    if (!ranges[path]) {
-      ranges[path] = rc();
+  /**
+   * Adds a numeric range to this brush context
+   *
+   * @param {string} key - An identifier that represents the data source of the range
+   * @param {object} range - The range to add to this brush
+   * @param {number} range.min - Min value of the range
+   * @param {number} range.max - Max value of the range
+   * @example
+   * brush.addRange('Sales', { min: 20, max: 50 });
+   */
+  fn.addRange = (key, range) => {
+    fn.addRanges([{ key, range }]);
+  };
+
+  /**
+   * @see {brush.addRange}
+   * @param {object[]} items - Items containing the ranges to remove
+   * @param {string} items[].key
+   * @param {object} items[].range
+   */
+  fn.addRanges = (items) => {
+    const changed = updateRange(items, 'add', {
+      ranges,
+      rc,
+      interceptors
+    });
+
+    if (!changed) {
+      return;
     }
 
     if (!activated) {
       activated = true;
       fn.emit('start');
     }
-
-    ranges[path].add(r);
-    fn.emit('update', [], []); // TODO - do not emit update if state hasn't changed
+    fn.emit('update', [], []);
   };
 
-  fn.setRange = (path, r) => {
-    if (!ranges[path]) {
-      ranges[path] = rc();
+  /**
+   * Removes a numeric range from this brush context
+   *
+   * @param {string} key - An identifier that represents the data source of the range
+   * @param {object} range - The range to remove from this brush
+   * @param {number} range.min - Min value of the range
+   * @param {number} range.max - Max value of the range
+   */
+  fn.removeRange = (key, range) => {
+    fn.removeRanges([{ key, range }]);
+  };
+
+  /**
+   * @see {brush.removeRange}
+   * @param {object[]} items - Items containing the ranges to remove
+   */
+  fn.removeRanges = (items) => {
+    const changed = updateRange(items, 'remove', {
+      ranges,
+      rc,
+      interceptors
+    });
+
+    if (!changed) {
+      return;
     }
 
     if (!activated) {
       activated = true;
       fn.emit('start');
     }
-
-    ranges[path].set(r);
-    fn.emit('update', [], []); // TODO - do not emit update if state hasn't changed
+    fn.emit('update', [], []);
   };
 
-  fn.containsRangeValue = (path, value) => {
-    if (!ranges[path]) {
+  /**
+   * Sets a numeric range to this brush context
+   *
+   * Overwrites any active ranges identified by `key`
+   *
+   * @param {string} key - An identifier that represents the data source of the range
+   * @param {object} range - The range to set on this brush
+   * @param {number} range.min - Min value of the range
+   * @param {number} range.max - Max value of the range
+   */
+  fn.setRange = (key, range) => {
+    fn.setRanges([{ key, range }]);
+  };
+
+  /**
+   * @see {brush.setRange}
+   * @param {object[]} items - Items containing the ranges to set
+   */
+  fn.setRanges = (items) => {
+    const changed = updateRange(items, 'set', {
+      ranges,
+      rc,
+      interceptors
+    });
+
+    if (!changed) {
+      return;
+    }
+
+    if (!activated) {
+      activated = true;
+      fn.emit('start');
+    }
+    fn.emit('update', [], []);
+  };
+
+  /**
+   * Toggles a numeric range in this brush context
+   *
+   * Removes the range if it's already contained within the given identifier,
+   * otherwise the given range is added to the brush.
+   *
+   * @param {string} key - An identifier that represents the data source of the range
+   * @param {object} range - The range to toggle in this brush
+   * @param {number} range.min - Min value of the range
+   * @param {number} range.max - Max value of the range
+   */
+  fn.toggleRange = (key, range) => {
+    fn.toggleRanges([{ key, range }]);
+  };
+
+  /**
+   * @see {brush.toggleRange}
+   * @param {object[]} items - Items containing the ranges to toggle
+   */
+  fn.toggleRanges = (items) => {
+    const changed = updateRange(items, 'toggle', {
+      ranges,
+      rc,
+      interceptors
+    });
+
+    if (!changed) {
+      return;
+    }
+
+    if (!activated) {
+      activated = true;
+      fn.emit('start');
+    }
+    fn.emit('update', [], []);
+  };
+
+  /**
+   * Checks if a value is contained within a range in this brush context
+   *
+   * Returns true if the values exists for the provided key, returns false otherwise.
+   *
+   * @param  {string} key - An identifier that represents the data source of the value
+   * @param  {number} value - The value to check for
+   * @return {boolean}
+   * @example
+   * brush.addRange('Sales', { min: 10, max: 50 });
+   * brush.containsRangeValue('Sales', 30); // true
+   * brush.containsRangeValue('Sales', 5); // false
+   */
+  fn.containsRangeValue = (key, value) => {
+    if (!ranges[key]) {
       return false;
     }
-    return ranges[path].containsValue(value);
+    return ranges[key].containsValue(value);
+  };
+
+  /**
+   * Checks if a range segment is contained within this brush context
+   *
+   * Returns true if the range segment exists for the provided key, returns false otherwise.
+   *
+   * @param {string} key - An identifier that represents the data source of the value
+   * @param {object} range - The range to check for
+   * @param {number} range.min - Min value of the range
+   * @param {number} range.max - Max value of the range
+   * @return {boolean}
+   * @example
+   * brush.addRange('Sales', { min: 10, max: 50 });
+   * brush.containsRange('Sales', { min: 15, max: 20 }); // true - the range segment is fully contained within [10, 50]
+   * brush.containsRange('Sales', { min: 5, max: 20 }); // false - part of the range segment is outside [10, 50]
+   * brush.containsRange('Sales', { min: 30, max: 80 }); // false - part of the range segment is outside [10, 50]
+   */
+  fn.containsRange = (key, range) => {
+    if (!ranges[key]) {
+      return false;
+    }
+    return ranges[key].containsRange(range);
   };
 
   fn.containsMappedData = (d, props, mode) => {
