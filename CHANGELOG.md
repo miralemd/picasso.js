@@ -2,6 +2,8 @@
 
 ## **Unreleased** - *(YYYY-MM-DD)*
 
+## **0.30.0** - *(2017-09-19)*
+
 ### Added
 
 - PIC-203 - Selections in threshold legend
