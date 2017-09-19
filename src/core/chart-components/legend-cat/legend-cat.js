@@ -170,7 +170,6 @@ function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect,
 
   let availableSlots = Infinity;
   let createScrollButtons = false;
-
   // Items
   for (let i = index; i < (Math.min(index + availableSlots, domain.length)); i++) {
     let cat = domain[i];
@@ -182,18 +181,26 @@ function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect,
     let data = {
       value: cat,
       index: i,
-      color: scale(cat),
-      item: {
-        value: cat,
-        source: {
-          field: scale.sources[0]
-        }
-      }
+      color: scale(cat)
     };
 
     if (THRESHOLD) {
       data.domain = scale.domain();
-      data.item.source.type = 'quant';
+      data.item = {
+        value: [cat, domain[i + 1]],
+        source: {
+          field: scale.sources[0],
+          type: 'quant'
+        }
+      };
+    } else {
+      data.item = {
+        value: cat,
+        source: {
+          field: scale.sources[0],
+          type: 'qual'
+        }
+      };
     }
 
     let labelItemDef = resolveForDataObject(settings.item, data, i, domain);

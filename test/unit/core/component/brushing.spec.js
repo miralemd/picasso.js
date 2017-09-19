@@ -35,7 +35,8 @@ describe('Brushing', () => {
         setValues: sinon.spy(),
         toggleValues: sinon.spy(),
         addValues: sinon.spy(),
-        removeValues: sinon.spy()
+        removeValues: sinon.spy(),
+        toggleRanges: sinon.spy()
       };
 
       data = [
@@ -55,6 +56,12 @@ describe('Brushing', () => {
           self: {
             source: { field: 'bez' },
             value: 33
+          }
+        },
+        {
+          self: {
+            source: { field: 'bez', type: 'quant' },
+            value: [33, 50]
           }
         }
       ];
@@ -113,12 +120,25 @@ describe('Brushing', () => {
       ]);
     });
 
+    it('should call range brush when data value is an array', () => {
+      config.renderer.itemsAt.returns([
+        { node: { data: data[3] } }
+      ]);
+
+      resolveTapEvent({ e: eventMock, t: trigger, config });
+
+      expect(brushContext.toggleRanges.callCount).to.equal(1);
+      expect(brushContext.toggleRanges.args[0][0]).to.deep.equal([
+        { key: data[3].self.source.field, range: { min: data[3].self.value[0], max: data[3].self.value[1] } }
+      ]);
+    });
+
     it('should handle when there is no collision', () => {
       config.renderer.itemsAt.returns([]);
 
       resolveTapEvent({ e: eventMock, t: trigger, config });
 
-      expect(brushContext.toggleValues).to.have.been.calledWith([]);
+      expect(brushContext.toggleValues).to.not.have.been.calledWith([]);
     });
 
     it('should default to "self" if no data context is configured', () => {
