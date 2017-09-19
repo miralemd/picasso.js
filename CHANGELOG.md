@@ -2,6 +2,15 @@
 
 ## **Unreleased** - *(YYYY-MM-DD)*
 
+### Added
+
+- PIC-203 - Selections in threshold legend
+- PIC-204 - Range brush manipulation
+
+### Fixed
+
+- PIC-194 - Callback methods in component properties lose their context after `chart.update()`
+
 ## **0.29.0** - *(2017-09-18)*
 
 ### Added
