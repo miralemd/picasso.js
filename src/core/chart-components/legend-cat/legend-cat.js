@@ -129,11 +129,17 @@ function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect,
   const domain = scale.domain();
 
   const THRESHOLD = scale.type === 'threshold-color';
+  let sourceField;
+  let formatter;
+  if (scale && scale.sources && scale.sources[0]) {
+    sourceField = chart.field(scale.sources[0]).field;
+    formatter = sourceField.formatter();
+  }
 
   if (settings.title.text) {
     title = settings.title.text;
-  } else if (scale && scale.sources && scale.sources[0]) {
-    title = chart.field(scale.sources[0]).field.title();
+  } else if (sourceField) {
+    title = sourceField.title();
   }
 
   const titleMargin = resolveMargin(settings.title.margin);
@@ -203,7 +209,9 @@ function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect,
       };
     }
 
-    let labelItemDef = resolveForDataObject(settings.item, data, i, domain);
+    let labelItemDef = resolveForDataObject(settings.item, data, i, domain, {
+      formatter
+    });
     if (typeof settings.item.shape === 'object') {
       labelItemDef.shape = resolveForDataObject(settings.item.shape, data, i, domain); // TODO resolveForDataObject for probably handle deep structures...
     }
