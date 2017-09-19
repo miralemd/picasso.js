@@ -29,6 +29,7 @@ component: {
       stroke: 'foo', // Stroke of shape. Defaults to scale color if avaiable.. Optional.
       strokeWidth: 1, // Stroke width of shape.. Default: 1. Optional.
     },
+    show: true, // Set to 'false' to hide the current item. Default: true. Optional.
   },
   title: { // Title settings. Optional.
     show: true, // Show the title. Default: true. Optional.

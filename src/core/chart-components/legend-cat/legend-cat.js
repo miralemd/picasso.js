@@ -5,6 +5,7 @@ import createButton from './buttons';
 const defaultSettings = {
   align: 'left',
   item: {
+    show: true,
     fontSize: '12px',
     fontFamily: 'Arial',
     fill: '#595959',
@@ -212,6 +213,9 @@ function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect,
     let labelItemDef = resolveForDataObject(settings.item, data, i, domain, {
       formatter
     });
+    if (labelItemDef.show === false) {
+      continue;
+    }
     if (typeof settings.item.shape === 'object') {
       labelItemDef.shape = resolveForDataObject(settings.item.shape, data, i, domain); // TODO resolveForDataObject for probably handle deep structures...
     }

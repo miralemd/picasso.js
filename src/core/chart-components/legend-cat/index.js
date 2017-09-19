@@ -29,6 +29,7 @@ export default function categoricalLegend(picasso) {
  * @property {string} [item.shape.fill] Fill of shape. Defaults to scale color if avaiable.
  * @property {string} [item.shape.stroke] Stroke of shape. Defaults to scale color if avaiable.
  * @property {string} [item.shape.strokeWidth=1] Stroke width of shape.
+ * @property {function|boolean} [item.show=true] - Set to 'false' to hide the current item
  * @property {object} [title] - Title settings
  * @property {boolean} [title.show=true] - Show the title
  * @property {string} [title.maxWidthPx=200] - Maximum width of the title item
