@@ -56,41 +56,26 @@ export function resetGradients() {
   gradientHashMap = {};
 }
 
-/**
- * Process gradient items
- *
- * @param  {Array} items Items to create gradients (if applicable) for
- * @return {Array}       Modified items
- */
-export function processGradients(items) {
+export function onGradient(state) {
   let url = '';
   if (typeof window !== 'undefined') {
     url = window.location.href.split('#')[0];
   }
 
-  if (items && items.length) {
-    let item = null;
-    for (let i = 0, len = items.length; i < len; i++) {
-      item = items[i];
-      if (item.children) {
-        processGradients(item.children);
-      } else if (item.fill || item.stroke) {
-        if (item.fill && typeof item.fill === 'object' && item.fill.type === 'gradient') {
-          item.fill = checkGradient(item, 'fill', url);
-        }
-        if (item.stroke && typeof item.stroke === 'object' && item.stroke.type === 'gradient') {
-          item.stroke = checkGradient(item, 'stroke', url);
-        }
-      }
-    }
+  const item = state.node;
+  if (item.fill && typeof item.fill === 'object' && item.fill.type === 'gradient') {
+    item.fill = checkGradient(item, 'fill', url);
   }
 
-  if (gradients.length) {
-    return [{
-      type: 'defs',
-      children: gradients
-    }].concat(items);
+  if (item.stroke && typeof item.stroke === 'object' && item.stroke.type === 'gradient') {
+    item.stroke = checkGradient(item, 'stroke', url);
   }
+}
 
-  return items;
+export function createDefsNode() {
+  return {
+    type: 'defs',
+    children: gradients,
+    disabled: () => gradients.length === 0
+  };
 }

@@ -22,6 +22,41 @@ describe('Scene', () => {
     expect(stage.test).to.equal(true);
   });
 
+  describe('Disabled nodes', () => {
+    it('should resolve as a function', () => {
+      const spy = sinon.spy();
+      rect.disabled = spy;
+      stage = scene({ items: [rect] });
+      expect(spy).to.be.called.once;
+    });
+
+    it('should not parse node if disabled', () => {
+      rect.disabled = true;
+      const enabled = { type: 'circle' };
+      stage = scene({ items: [rect, enabled] });
+      expect(stage.children).to.be.of.length(1);
+      expect(stage.children[0].type).to.equal('circle');
+    });
+  });
+
+  describe('Events', () => {
+    it('should accept create events', () => {
+      let spy = sinon.spy();
+      stage = scene({
+        items: [rect, rect],
+        on: {
+          create: [spy]
+        }
+      });
+
+      expect(spy.callCount).to.equal(2); // should be evaluated for every item
+      const args = spy.args[0][0];
+      expect(args.siblings).to.be.of.length(2);
+      expect(args.index).to.be.equal(1);
+      expect(args.node).to.be.deep.equal(rect);
+    });
+  });
+
   describe('Transform', () => {
     it('should handle transform on a flat structure', () => {
       const r1 = rect;

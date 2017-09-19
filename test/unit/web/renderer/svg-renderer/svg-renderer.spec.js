@@ -77,7 +77,7 @@ describe('svg renderer', () => {
         type: 'container',
         children: items
       };
-      expect(scene.args[0][0]).to.deep.equal({ items: [sceneContainer] });
+      expect(scene.args[0][0].items).to.deep.equal([sceneContainer]);
       expect(treeRenderer.render).to.have.been.calledWith(s.children, svg.root());
     });
 
@@ -98,26 +98,26 @@ describe('svg renderer', () => {
     it('should scale from logical size to physical size', () => {
       const scaleRatio = { x: 2, y: 3 };
       const size = { x: 50, y: 100, width: 200, height: 400, scaleRatio };
-      const expectedInputShapes = {
-        items: [
-          {
-            type: 'container',
-            children: s,
-            transform: `scale(${scaleRatio.x}, ${scaleRatio.y})`
-          }
-        ]
-      };
+      const expectedInputShapes = [
+        {
+          type: 'container',
+          children: [s],
+          transform: `scale(${scaleRatio.x}, ${scaleRatio.y})`
+        }
+      ];
       scene.returns(s);
       svg.appendTo(element('div'));
       svg.size(size);
-      svg.render(s);
+      svg.render([s]);
 
+      const wrappedContainer = scene.args[0][0].items;
       const el = svg.element();
       expect(el.style.left).to.equal(`${size.x * scaleRatio.x}px`);
       expect(el.style.top).to.equal(`${size.y * scaleRatio.y}px`);
       expect(el.attributes.width).to.equal(size.width * scaleRatio.x);
       expect(el.attributes.height).to.equal(size.height * scaleRatio.y);
-      expect(scene.args[0][0]).to.deep.equal(expectedInputShapes);
+      expect(wrappedContainer[0].type).to.equal(expectedInputShapes[0].type);
+      expect(wrappedContainer[0].transform).to.deep.equal(expectedInputShapes[0].transform);
     });
   });
 

@@ -2,7 +2,11 @@ import { tree as treeFactory } from './svg-tree';
 import { svgNs } from './svg-nodes';
 import sceneFactory from '../../../core/scene-graph/scene';
 import { measureText } from '../text-metrics';
-import { processGradients, resetGradients } from './svg-gradient';
+import {
+  resetGradients,
+  onGradient,
+  createDefsNode
+} from './svg-gradient';
 import createRendererBox from '../renderer-box';
 
 export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sceneFactory) {
@@ -37,7 +41,7 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
     return el;
   };
 
-  svg.render = (items) => {
+  svg.render = (nodes) => {
     if (!el) {
       return false;
     }
@@ -53,18 +57,23 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
     }
 
     resetGradients();
-    items = processGradients(items);
+    nodes.push(createDefsNode());
 
     const sceneContainer = {
       type: 'container',
-      children: items
+      children: nodes
     };
 
     if (scaleX !== 1 || scaleY !== 1) {
       sceneContainer.transform = `scale(${scaleX}, ${scaleY})`;
     }
 
-    const newScene = sceneFn({ items: [sceneContainer] });
+    const newScene = sceneFn({
+      items: [sceneContainer],
+      on: {
+        create: [onGradient]
+      }
+    });
     const hasChangedScene = scene ? !newScene.equals(scene) : true;
 
     const doRender = hasChangedRect || hasChangedScene;

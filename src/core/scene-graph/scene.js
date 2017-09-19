@@ -15,31 +15,57 @@ const styleContext = contextFactory(
   ]
 );
 
-function traverse(items, parent, matrix) {
-  let s;
+function doEvent(state, listeners) {
+  if (!Array.isArray(listeners)) {
+    return;
+  }
+
+  for (let i = 0, len = listeners.length; i < len; i++) {
+    listeners[i](state);
+  }
+}
+
+function updateState(state, index, nodes) {
+  state.node = nodes[index];
+  state.index = index;
+}
+
+function traverse(items, parent, matrix, on) {
+  let disabled = false;
+  const state = {
+    siblings: items,
+    node: null,
+    index: 0
+  };
   for (let i = 0, len = items.length; i < len; i++) {
-    s = items[i];
+    updateState(state, i, items);
+    doEvent(state, on.create);
+
+    disabled = typeof state.node.disabled === 'function' ? state.node.disabled() : state.node.disabled;
+    if (disabled) {
+      continue;
+    }
 
     // Save the current style context to be able to inherit styles
-    s = styleContext.save(s);
+    state.node = styleContext.save(state.node);
 
-    const obj = create(s.type, s);
-    if (obj) {
-      if (s.transform) {
+    const displayNode = create(state.node.type, state.node);
+    if (displayNode) {
+      if (state.node.transform) {
         matrix.save();
-        resolveTransform(s.transform, matrix);
+        resolveTransform(state.node.transform, matrix);
       }
 
       if (!matrix.isIdentity()) {
-        obj.modelViewMatrix = matrix.clone();
+        displayNode.modelViewMatrix = matrix.clone();
       }
 
-      parent.addChild(obj);
-      if (s.children) {
-        traverse(s.children, obj, matrix);
+      parent.addChild(displayNode);
+      if (state.node.children) {
+        traverse(state.node.children, displayNode, matrix, on);
       }
 
-      if (s.transform) {
+      if (state.node.transform) {
         matrix.restore();
       }
     }
@@ -49,12 +75,17 @@ function traverse(items, parent, matrix) {
   }
 }
 
-export default function scene({ items, stage, dpi }) {
+export default function scene({
+  items,
+  stage,
+  dpi,
+  on = {}
+}) {
   if (!stage) {
     stage = create('stage', dpi);
   }
 
-  traverse(items, stage, new Matrix());
+  traverse(items, stage, new Matrix(), on);
 
   return stage;
 }
