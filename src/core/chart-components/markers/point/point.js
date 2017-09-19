@@ -1,7 +1,6 @@
 import extend from 'extend';
 // import shapeFactory from './shapes';
-import { resolveSettings } from '../../settings-setup';
-import { resolveForDataObject } from '../../../style';
+import { normalizeSettings, resolveForItem } from '../../property-resolver';
 import { notNumber } from '../../../utils/math';
 import { updateScaleSize } from '../../../scales';
 import shapeFactory from '../../../symbols';
@@ -9,7 +8,7 @@ import shapeFactory from '../../../symbols';
 const DEFAULT_DATA_SETTINGS = {
   shape: 'circle',
   label: '',
-  fill: '#999',
+  fill: '$fill',
   stroke: '#ccc',
   strokeWidth: 0,
   opacity: 1,
@@ -134,8 +133,8 @@ function getPointSizeLimits(x, y, width, height, limits) {
 }
 
 function calculateLocalSettings(stngs, chart) {
-  const local = resolveSettings(stngs, DEFAULT_DATA_SETTINGS, chart);
-  local.errorShape = resolveSettings(stngs.errorShape, DEFAULT_ERROR_SETTINGS.errorShape, chart);
+  const local = normalizeSettings(stngs, DEFAULT_DATA_SETTINGS, chart);
+  local.errorShape = normalizeSettings(stngs.errorShape, DEFAULT_ERROR_SETTINGS.errorShape, chart);
   return local;
 }
 
@@ -194,8 +193,8 @@ const pointMarkerComponent = {
     updateScaleSize(this.local, 'y', height);
     const limits = extend({}, SIZE_LIMITS, this.settings.settings.sizeLimits);
     const points = data.map((p, i, all) => {
-      const obj = resolveForDataObject(this.local, p, i, all);
-      obj.errorShape = resolveForDataObject(this.local.errorShape, p, i, all);
+      const obj = resolveForItem(p, this.local, all);
+      obj.errorShape = resolveForItem(p, this.local.errorShape, all);
       obj.dataIndex = i;
       obj.data = p;
       return obj;
