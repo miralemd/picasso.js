@@ -1,12 +1,11 @@
 import doodler from './doodler';
 import { transposer } from '../../../transposer/transposer';
-import { resolveForDataObject } from '../../../style';
-import resolveSettingsForPath from '../../settings-setup';
+import { normalizeSettings, resolveForItem } from '../../property-resolver';
 
 function resolveInitialStyle(settings, baseStyles, chart) {
   const ret = {};
   Object.keys(baseStyles).forEach((s) => {
-    ret[s] = resolveSettingsForPath(settings, baseStyles, chart, s);
+    ret[s] = normalizeSettings(settings[s], baseStyles[s], chart);
   });
   return ret;
 }
@@ -83,10 +82,11 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
       minDataPointDistance = minSpace;
     }
 
-    data.forEach((d, i) => {
+    data.forEach((d, i, all) => {
       const obj = {};
       Object.keys(resolvedStyle).forEach((part) => {
-        obj[part] = resolveForDataObject(resolvedStyle[part], d, i);
+        // obj[part] = resolveForDataObject(resolvedStyle[part], d, i);
+        obj[part] = resolveForItem(d, resolvedStyle[part], all);
       });
 
       const it = {
