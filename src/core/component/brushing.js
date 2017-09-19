@@ -150,28 +150,47 @@ function brushDataPoints({
   }
 
   const dataProps = trigger.data || ['self'];
-  const items = [];
 
-  let actionFn = 'toggleValues';
-  if (action === 'add') {
-    actionFn = 'addValues';
-  } else if (action === 'remove') {
-    actionFn = 'removeValues';
-  } else if (action === 'set') {
-    actionFn = 'setValues';
+  let rangeBrush = {
+    items: [],
+    actionFn: 'toggleRanges'
+  };
+  let valueBrush = {
+    items: [],
+    actionFn: 'toggleValues'
+  };
+
+  if (['add', 'remove', 'set', 'toggle'].indexOf(action) !== -1) {
+    rangeBrush.actionFn = `${action}Ranges`;
+    valueBrush.actionFn = `${action}Values`;
   }
 
   for (let i = 0; i < dataPoints.length; i++) {
     const dataPoint = dataPoints[i];
     dataProps.forEach((p) => {
       if (dataPoint[p]) {
-        items.push({ key: dataPoint[p].source.field, value: dataPoint[p].value });
+        if (Array.isArray(dataPoint[p].value)) {
+          rangeBrush.items.push({
+            key: dataPoint[p].source.field,
+            range: { min: dataPoint[p].value[0], max: dataPoint[p].value[1] }
+          });
+        } else {
+          valueBrush.items.push({
+            key: dataPoint[p].source.field,
+            value: dataPoint[p].value
+          });
+        }
       }
     });
   }
 
   trigger.contexts.forEach((c) => {
-    chart.brush(c)[actionFn](items);
+    if (rangeBrush.items.length) {
+      chart.brush(c)[rangeBrush.actionFn](rangeBrush.items);
+    }
+    if (valueBrush.items.length) {
+      chart.brush(c)[valueBrush.actionFn](valueBrush.items);
+    }
   });
 }
 

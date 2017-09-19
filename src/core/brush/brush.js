@@ -732,8 +732,8 @@ export default function brush({
 
       type = d[key].source.type === 'quant' ? 'range' : 'value';
       value = d[key].value;
-      if (type === 'range' && ranges[source] && ranges[source].containsValue(value)) {
-        status[i].bool = true;
+      if (type === 'range' && ranges[source]) {
+        status[i].bool = Array.isArray(value) ? ranges[source].containsRange({ min: value[0], max: value[1] }) : ranges[source].containsValue(value);
       } else if (type === 'value' && values[source] && values[source].contains(value)) {
         status[i].bool = true;
       }

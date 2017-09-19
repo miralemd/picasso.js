@@ -5,6 +5,7 @@ import createButton from './buttons';
 const defaultSettings = {
   align: 'left',
   item: {
+    show: true,
     fontSize: '12px',
     fontFamily: 'Arial',
     fill: '#595959',
@@ -129,11 +130,17 @@ function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect,
   const domain = scale.domain();
 
   const THRESHOLD = scale.type === 'threshold-color';
+  let sourceField;
+  let formatter;
+  if (scale && scale.sources && scale.sources[0]) {
+    sourceField = chart.field(scale.sources[0]).field;
+    formatter = sourceField.formatter();
+  }
 
   if (settings.title.text) {
     title = settings.title.text;
-  } else if (scale && scale.sources && scale.sources[0]) {
-    title = chart.field(scale.sources[0]).field.title();
+  } else if (sourceField) {
+    title = sourceField.title();
   }
 
   const titleMargin = resolveMargin(settings.title.margin);
@@ -170,7 +177,6 @@ function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect,
 
   let availableSlots = Infinity;
   let createScrollButtons = false;
-
   // Items
   for (let i = index; i < (Math.min(index + availableSlots, domain.length)); i++) {
     let cat = domain[i];
@@ -182,21 +188,34 @@ function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect,
     let data = {
       value: cat,
       index: i,
-      color: scale(cat),
-      item: {
-        value: cat,
-        source: {
-          field: scale.sources[0]
-        }
-      }
+      color: scale(cat)
     };
 
     if (THRESHOLD) {
       data.domain = scale.domain();
-      data.item.source.type = 'quant';
+      data.item = {
+        value: [cat, domain[i + 1]],
+        source: {
+          field: scale.sources[0],
+          type: 'quant'
+        }
+      };
+    } else {
+      data.item = {
+        value: cat,
+        source: {
+          field: scale.sources[0],
+          type: 'qual'
+        }
+      };
     }
 
-    let labelItemDef = resolveForDataObject(settings.item, data, i, domain);
+    let labelItemDef = resolveForDataObject(settings.item, data, i, domain, {
+      formatter
+    });
+    if (labelItemDef.show === false) {
+      continue;
+    }
     if (typeof settings.item.shape === 'object') {
       labelItemDef.shape = resolveForDataObject(settings.item.shape, data, i, domain); // TODO resolveForDataObject for probably handle deep structures...
     }

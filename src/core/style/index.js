@@ -149,7 +149,7 @@ export function resolveForDataValues(styles, dataValues, index) {
   return ret;
 }
 
-export function resolveForDataObject(props, dataObj, index, allData) {
+export function resolveForDataObject(props, dataObj, index, allData, context = {}) {
   const ret = {};
   Object.keys(props).forEach((s) => {
     const exists = typeof props[s] !== 'undefined';
@@ -159,7 +159,8 @@ export function resolveForDataObject(props, dataObj, index, allData) {
     const propData = exists && props[s].ref ? dataObj[props[s].ref] : dataObj[s];
     if (typeof props[s] === 'function') { // custom accessor function, not scale!
       const fnContext = {
-        data: dataObj
+        data: dataObj,
+        ...context
       };
       if (hasScale) {
         fnContext.scale = props[s].scale;
