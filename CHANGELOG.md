@@ -2,6 +2,8 @@
 
 ## **Unreleased** - *(YYYY-MM-DD)*
 
+## **0.30.1** - *(2017-09-20)*
+
 ### Changed
 
 - Brush value action is triggered even if there are no items currently being brushed
