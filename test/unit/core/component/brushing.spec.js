@@ -138,7 +138,7 @@ describe('Brushing', () => {
 
       resolveTapEvent({ e: eventMock, t: trigger, config });
 
-      expect(brushContext.toggleValues).to.not.have.been.calledWith([]);
+      expect(brushContext.toggleValues).to.have.been.calledWith([]);
     });
 
     it('should default to "self" if no data context is configured', () => {

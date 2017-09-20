@@ -187,9 +187,8 @@ function brushDataPoints({
   trigger.contexts.forEach((c) => {
     if (rangeBrush.items.length) {
       chart.brush(c)[rangeBrush.actionFn](rangeBrush.items);
-    }
-    if (valueBrush.items.length) {
-      chart.brush(c)[valueBrush.actionFn](valueBrush.items);
+    } else {
+      chart.brush(c)[valueBrush.actionFn](valueBrush.items); // call action even if there are items to potentially clear what is currently in the brush
     }
   });
 }
