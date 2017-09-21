@@ -172,7 +172,7 @@ describe('canvas renderer', () => {
     expect(r.element().style.height).to.equal('400px');
     expect(r.element().width).to.equal(200 * (1 / 2));
     expect(r.element().height).to.equal(400 * (1 / 2));
-    expect(scene.args[0][0]).to.deep.equal(expectedInput);
+    expect(scene.args[0][0].items).to.deep.equal(expectedInput.items);
   });
 
   it('should apply a scale ratio', () => {
@@ -203,7 +203,7 @@ describe('canvas renderer', () => {
     expect(el.style.top).to.equal(`${size.y * scaleRatio.y}px`);
     expect(el.width).to.equal(size.width * scaleRatio.x);
     expect(el.height).to.equal(size.height * scaleRatio.y);
-    expect(scene.args[0][0]).to.deep.equal(expectedInputShapes);
+    expect(scene.args[0][0].items).to.deep.equal(expectedInputShapes.items);
   });
 
   it('should account for screen dpi when applying scale ratio', () => {
@@ -238,6 +238,6 @@ describe('canvas renderer', () => {
     expect(el.style.top).to.equal(`${size.y * scaleRatio.y}px`);
     expect(el.width).to.equal(size.width * scaleRatio.x * dpiScale);
     expect(el.height).to.equal(size.height * scaleRatio.y * dpiScale);
-    expect(scene.args[0][0]).to.deep.equal(expectedInputShapes);
+    expect(scene.args[0][0].items).to.deep.equal(expectedInputShapes.items);
   });
 });

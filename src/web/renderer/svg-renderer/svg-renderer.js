@@ -8,6 +8,7 @@ import {
   createDefsNode
 } from './svg-gradient';
 import createRendererBox from '../renderer-box';
+import { onLineBreak } from '../text-manipulation';
 
 export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sceneFactory) {
   const tree = treeFn();
@@ -71,7 +72,10 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
     const newScene = sceneFn({
       items: [sceneContainer],
       on: {
-        create: [onGradient]
+        create: [
+          onGradient,
+          onLineBreak(measureText)
+        ]
       }
     });
     const hasChangedScene = scene ? !newScene.equals(scene) : true;

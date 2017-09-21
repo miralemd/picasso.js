@@ -3,6 +3,7 @@ import { registry } from '../../../core/utils/registry';
 import { measureText } from '../text-metrics';
 import createCanvasGradient from './canvas-gradient';
 import createRendererBox from '../renderer-box';
+import { onLineBreak } from '../text-manipulation';
 
 const reg = registry();
 
@@ -156,7 +157,13 @@ export function renderer(sceneFn = sceneFactory) {
       sceneContainer.transform = `scale(${dpiRatio * scaleX}, ${dpiRatio * scaleY})`;
     }
 
-    const newScene = sceneFn({ items: [sceneContainer], dpi: dpiRatio });
+    const newScene = sceneFn({
+      items: [sceneContainer],
+      dpi: dpiRatio,
+      on: {
+        create: [onLineBreak(measureText)]
+      }
+    });
     const hasChangedScene = scene ? !newScene.equals(scene) : true;
 
     const doRender = hasChangedRect || hasChangedScene;

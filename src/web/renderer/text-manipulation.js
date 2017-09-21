@@ -99,45 +99,72 @@ const WORDBREAK = {
   'break-all': breakAll
 };
 
-export function lineBreak(items, measureText) {
-  const getMeasureTextFn = node => (text => measureText({ text, fontSize: node.fontSize, fontFamily: node.fontFamily }));
+/**
+ * Apply wordBreak rules to text nodes.
+ * @param {function} measureText
+ * @returns {function} Event function to convert a text node into multiple nodes
+ */
+export function onLineBreak(measureText) {
+  function generateLineNodes(result, item, lineHeight) {
+    const container = { type: 'container', children: [] };
 
-  return items.map((item) => {
-    if (item.type === 'text') {
+    if (typeof item.id !== 'undefined') { // TODO also inherit data attribute and more?
+      container.id = item.id;
+    }
+
+    let currentY = 0;
+
+    result.lines.forEach((line, i) => {
+      const node = extend({}, item);
+      node.text = line;
+      node._lineBreak = true; // Flag node as processed to avoid duplicate linebreak run
+
+      if (result.reduced && i === result.lines.length - 1) {
+        node.maxWidth = measureText({ // Ellipse last line
+          text: line,
+          fontSize: item.fontSize,
+          fontFamily: item.fontFamily }).width - 1;
+      } else {
+        delete node.maxWidth;
+      }
+      node.dy = isNaN(node.dy) ? currentY : node.dy + currentY;
+      currentY += lineHeight;
+      container.children.push(node);
+    });
+
+    return container;
+  }
+
+  function shouldLineBreak(item) {
+    // If type text and not already broken into lines
+    return item.type === 'text' && !item._lineBreak;
+  }
+
+  function wrappedMeasureText(node) {
+    return text => measureText({
+      text,
+      fontSize: node.fontSize,
+      fontFamily: node.fontFamily
+    });
+  }
+
+  return (state) => {
+    const item = state.node;
+    if (shouldLineBreak(item)) {
       const wordBreakFn = WORDBREAK[item.wordBreak];
       if (!wordBreakFn) {
-        return item;
+        return;
       }
 
-      const lineHeight = measureText(item).height * (item.lineHeight || 1.2);
-      const container = {
-        type: 'container',
-        children: []
-      };
-      if (typeof item.id !== 'undefined') {
-        container.id = item.id;
+      const tm = measureText(item);
+      if (tm.width <= item.maxWidth) {
+        return;
       }
 
-      const result = wordBreakFn(item, getMeasureTextFn(item));
-      let dy = 0;
+      const lineHeight = tm.height * (item.lineHeight || 1.2);
+      const result = wordBreakFn(item, wrappedMeasureText(item));
 
-      result.lines.forEach((line, i) => {
-        const node = extend({}, item);
-        node.text = line;
-        if (result.reduced && i === result.lines.length - 1) {
-          node.maxWidth = measureText({ // Ellipse last line
-            text: line,
-            fontSize: item.fontSize,
-            fontFamily: item.fontFamily }).width - 1;
-        } else {
-          delete node.maxWidth;
-        }
-        node.dy = isNaN(node.dy) ? dy : node.dy + dy;
-        dy += lineHeight;
-        container.children.push(node);
-      });
-      return container;
+      state.node = generateLineNodes(result, item, lineHeight); // Convert node to container
     }
-    return item;
-  });
+  };
 }
