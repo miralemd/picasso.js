@@ -2,6 +2,17 @@
 
 ## **Unreleased** - *(YYYY-MM-DD)*
 
+### Added
+
+- PIC-206 - Add alias support for brush keys
+
+  ```js
+  brush.addKeyAlias('BadFieldName', 'Region');
+  brush.addValue('BadFieldName', 'Sweden'); // 'BadFieldName' will be stored as 'Region'
+  brush.containsValue('Region', 'Sweden'); // true
+  brush.containsValue('BadFieldName', 'Sweden'); // true
+  ```
+
 ## **0.30.1** - *(2017-09-20)*
 
 ### Changed

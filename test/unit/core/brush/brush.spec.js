@@ -25,6 +25,7 @@ describe('brush', () => {
 
   beforeEach(() => {
     b = brush({ vc: vcf, rc: rcf });
+    b.addKeyAlias('_aliased', 'region');
   });
 
   afterEach(() => {
@@ -80,8 +81,14 @@ describe('brush', () => {
       const cb = sandbox.spy();
       b.on('update', cb);
       vc.add.returns(true);
-      b.addValue('products', 'cars');
-      expect(cb).to.have.been.calledWith([{ id: 'products', values: ['cars'] }], []);
+      b.addValues([
+        { key: 'products', value: 'cars' },
+        { key: '_aliased', value: 'sweden' }
+      ]);
+      expect(cb).to.have.been.calledWith([
+        { id: 'products', values: ['cars'] },
+        { id: 'region', values: ['sweden'] }
+      ], []);
     });
   });
 
@@ -89,8 +96,10 @@ describe('brush', () => {
     it('should return all created brushes', () => {
       b.addValue('products');
       b.addRange('sales');
+      b.addRange('_aliased');
       expect(b.brushes()).to.eql([
         { type: 'range', id: 'sales', brush: rc },
+        { type: 'range', id: 'region', brush: rc },
         { type: 'value', id: 'products', brush: vc }
       ]);
     });
@@ -257,6 +266,7 @@ describe('brush', () => {
       };
       vcc = sandbox.stub().returns(v);
       bb = brush({ vc: vcc, rc: noop });
+      bb.addKeyAlias('_ali', 'ALI');
     });
 
     it('should return false when given id does not exist in the brush context', () => {
@@ -267,6 +277,14 @@ describe('brush', () => {
       bb.addValue('garage');
       v.contains.returns(true);
       expect(bb.containsValue('garage', 3)).to.equal(true);
+      expect(v.contains).to.have.been.calledWith(3);
+    });
+
+    it('should return true when given value exists from an aliased key', () => {
+      bb.addValue('_ali');
+      v.contains.returns(true);
+      expect(bb.containsValue('_ali', 3)).to.equal(true);
+      expect(bb.containsValue('ALI', 3)).to.equal(true);
       expect(v.contains).to.have.been.calledWith(3);
     });
 
@@ -289,6 +307,7 @@ describe('brush', () => {
       };
       rcc = sandbox.stub().returns(v);
       bb = brush({ vc: noop, rc: rcc });
+      bb.addKeyAlias('_range-ali', 'margin');
     });
 
     it('should return false when given id does not exist in the brush context', () => {
@@ -299,6 +318,14 @@ describe('brush', () => {
       bb.addRange('speed');
       v.containsValue.returns(true);
       expect(bb.containsRangeValue('speed', 'some range')).to.equal(true);
+      expect(v.containsValue).to.have.been.calledWith('some range');
+    });
+
+    it('should return true when given value exists for an aliased key', () => {
+      bb.addRange('_range-ali');
+      v.containsValue.returns(true);
+      expect(bb.containsRangeValue('_range-ali', 'some range')).to.equal(true);
+      expect(bb.containsRangeValue('margin', 'some range')).to.equal(true);
       expect(v.containsValue).to.have.been.calledWith('some range');
     });
 
@@ -321,6 +348,7 @@ describe('brush', () => {
       };
       rcc = sandbox.stub().returns(v);
       bb = brush({ vc: noop, rc: rcc });
+      bb.addKeyAlias('_range-ali', 'margin');
     });
 
     it('should return false when given id does not exist in the brush context', () => {
@@ -331,6 +359,14 @@ describe('brush', () => {
       bb.addRange('speed');
       v.containsRange.returns(true);
       expect(bb.containsRange('speed', 'some range')).to.equal(true);
+      expect(v.containsRange).to.have.been.calledWith('some range');
+    });
+
+    it('should return true when given value exists for an aliased key', () => {
+      bb.addRange('_range-ali');
+      v.containsRange.returns(true);
+      expect(bb.containsRange('_range-ali', 'some range')).to.equal(true);
+      expect(bb.containsRange('margin', 'some range')).to.equal(true);
       expect(v.containsRange).to.have.been.calledWith('some range');
     });
 
@@ -375,7 +411,8 @@ describe('brush', () => {
     beforeEach(() => {
       v = {
         add: sandbox.stub(),
-        containsValue: sandbox.stub()
+        containsValue: sandbox.stub(),
+        containsRange: sandbox.stub()
       };
       val = {
         add: sandbox.stub(),
@@ -386,6 +423,7 @@ describe('brush', () => {
       bb = brush({ vc: vcc, rc: rcc });
       d = {
         x: { value: 7, source: { field: 'sales', type: 'quant' } },
+        span: { value: [5, 10], source: { field: 'margin', type: 'quant' } },
         self: { value: 'Cars', source: { field: 'products' } }
       };
     });
@@ -395,6 +433,13 @@ describe('brush', () => {
       v.containsValue.returns(true);
       expect(bb.containsMappedData(d)).to.equal(true);
       expect(v.containsValue).to.have.been.calledWith(7);
+    });
+
+    it('should return true when data contains a brushed range value', () => {
+      bb.addRange('margin');
+      v.containsRange.returns(true);
+      expect(bb.containsMappedData(d)).to.equal(true);
+      expect(v.containsRange).to.have.been.calledWith({ min: 5, max: 10 });
     });
 
     it('should return false when data contains only a brushed range and mode=and', () => {
@@ -418,6 +463,17 @@ describe('brush', () => {
       val.contains.returns(true);
       expect(bb.containsMappedData(d)).to.equal(true);
       expect(val.contains).to.have.been.calledWith('Cars');
+    });
+
+    it('should return true when data contains a brushed value from an aliased key', () => {
+      const aliasedData = {
+        ali: { value: 'Bikes', source: { field: '_alias' } }
+      };
+      bb.addKeyAlias('_alias', 'products');
+      bb.addValue('products');
+      val.contains.returns(true);
+      expect(bb.containsMappedData(aliasedData)).to.equal(true);
+      expect(val.contains).to.have.been.calledWith('Bikes');
     });
 
     it('should return false when data has no source', () => {

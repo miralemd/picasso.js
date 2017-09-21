@@ -215,8 +215,22 @@ export function set({
   return [added, removed];
 }
 
-function intercept(handlers, items) {
-  return handlers && handlers.length ? handlers.reduce((value, interceptor) => interceptor(value), items) : items;
+
+function applyAliases(items, aliases) {
+  if (!Object.keys(aliases).length) {
+    return items;
+  }
+  const len = items.length;
+  const its = Array(len);
+  for (let i = 0; i < len; i++) {
+    its[i] = items[i].key in aliases ? { ...items[i], key: aliases[items[i].key] } : items[i];
+  }
+  return its;
+}
+
+function intercept(handlers, items, aliases) {
+  const its = applyAliases(items, aliases);
+  return handlers && handlers.length ? handlers.reduce((value, interceptor) => interceptor(value), its) : its;
 }
 
 function toCamelCase(s) {
@@ -230,10 +244,11 @@ function toSnakeCase(s) {
 function updateRange(items, action, {
   ranges,
   interceptors,
-  rc
+  rc,
+  aliases
 }) {
   const inter = `${action}Ranges`;
-  const its = intercept(interceptors[inter], items);
+  const its = intercept(interceptors[inter], items, aliases);
   let changed = false;
   its.forEach((item) => {
     const key = item.key;
@@ -253,6 +268,7 @@ export default function brush({
   let activated = false;
   let ranges = {};
   let values = {};
+  let aliases = {};
   const interceptors = {
     addValues: [],
     removeValues: [],
@@ -363,7 +379,7 @@ export default function brush({
    * @param {object[]} items Items to add
    */
   fn.addValues = (items) => {
-    const its = intercept(interceptors.addValues, items);
+    const its = intercept(interceptors.addValues, items, aliases);
     const added = add({
       vc,
       values,
@@ -385,7 +401,7 @@ export default function brush({
    * @param {object[]} items Items to set
    */
   fn.setValues = (items) => {
-    const its = intercept(interceptors.setValues, items);
+    const its = intercept(interceptors.setValues, items, aliases);
     const changed = set({
       items: its,
       vCollection: values,
@@ -421,7 +437,7 @@ export default function brush({
    * @param {object[]} items Items to remove
    */
   fn.removeValues = (items) => {
-    const its = intercept(interceptors.removeValues, items);
+    const its = intercept(interceptors.removeValues, items, aliases);
     const removed = remove({
       values,
       items: its
@@ -445,8 +461,8 @@ export default function brush({
    * @param {object[]} removeItems Items to remove
    */
   fn.addAndRemoveValues = (addItems, removeItems) => {
-    const addIts = intercept(interceptors.addValues, addItems);
-    const removeIts = intercept(interceptors.removeValues, removeItems);
+    const addIts = intercept(interceptors.addValues, addItems, aliases);
+    const removeIts = intercept(interceptors.removeValues, removeItems, aliases);
     const added = add({
       vc,
       values,
@@ -487,7 +503,7 @@ export default function brush({
    * @param {object[]} items Items to toggle
    */
   fn.toggleValues = (items) => {
-    const its = intercept(interceptors.toggleValues, items);
+    const its = intercept(interceptors.toggleValues, items, aliases);
     const toggled = toggle({
       items: its,
       values,
@@ -520,10 +536,11 @@ export default function brush({
    * brush.containsValue('countries', 'Sweden'); // false
    */
   fn.containsValue = (key, value) => {
-    if (!values[key]) {
+    let k = aliases[key] || key;
+    if (!values[k]) {
       return false;
     }
-    return values[key].contains(value);
+    return values[k].contains(value);
   };
 
   /**
@@ -550,7 +567,8 @@ export default function brush({
     const changed = updateRange(items, 'add', {
       ranges,
       rc,
-      interceptors
+      interceptors,
+      aliases
     });
 
     if (!changed) {
@@ -584,7 +602,8 @@ export default function brush({
     const changed = updateRange(items, 'remove', {
       ranges,
       rc,
-      interceptors
+      interceptors,
+      aliases
     });
 
     if (!changed) {
@@ -620,7 +639,8 @@ export default function brush({
     const changed = updateRange(items, 'set', {
       ranges,
       rc,
-      interceptors
+      interceptors,
+      aliases
     });
 
     if (!changed) {
@@ -657,7 +677,8 @@ export default function brush({
     const changed = updateRange(items, 'toggle', {
       ranges,
       rc,
-      interceptors
+      interceptors,
+      aliases
     });
 
     if (!changed) {
@@ -685,10 +706,11 @@ export default function brush({
    * brush.containsRangeValue('Sales', 5); // false
    */
   fn.containsRangeValue = (key, value) => {
-    if (!ranges[key]) {
+    let k = aliases[key] || key;
+    if (!ranges[k]) {
       return false;
     }
-    return ranges[key].containsValue(value);
+    return ranges[k].containsValue(value);
   };
 
   /**
@@ -708,10 +730,11 @@ export default function brush({
    * brush.containsRange('Sales', { min: 30, max: 80 }); // false - part of the range segment is outside [10, 50]
    */
   fn.containsRange = (key, range) => {
-    if (!ranges[key]) {
+    let k = aliases[key] || key;
+    if (!ranges[k]) {
       return false;
     }
-    return ranges[key].containsRange(range);
+    return ranges[k].containsRange(range);
   };
 
   fn.containsMappedData = (d, props, mode) => {
@@ -728,6 +751,10 @@ export default function brush({
       source = d[key].source && d[key].source.field;
       if (!source) {
         continue;
+      }
+
+      if (source in aliases) {
+        source = aliases[source];
       }
 
       type = d[key].source.type === 'quant' ? 'range' : 'value';
@@ -812,6 +839,35 @@ export default function brush({
       const interceptorHandlers = ic.handlers.slice();
       interceptorHandlers.forEach(handler => fn.removeInterceptor(ic.name, handler));
     });
+  };
+
+  /**
+   * Adds an alias to the given key
+   *
+   * @param {string} key - Value to be replaced
+   * @param {string} alias - Value to replace key with
+   * @example
+   * brush.addKeyAlias('BadFieldName', 'Region');
+   * brush.addValue('BadFieldName', 'Sweden'); // 'BadFieldName' will be stored as 'Region'
+   * brush.containsValue('Region', 'Sweden'); // true
+   * brush.containsValue('BadFieldName', 'Sweden'); // true
+   */
+  fn.addKeyAlias = (key, alias) => {
+    aliases[key] = alias;
+  };
+
+  /**
+   * Removes an alias
+   *
+   * This will only remove the key to alias mapping for new manipulations of the brush,
+   * no changes will be made to the current state of this brush.
+   *
+   * @param {string} key - Value to remove as alias
+   * @example
+   * brush.removeKeyAlias('BadFieldName');
+   */
+  fn.removeKeyAlias = (key) => {
+    delete aliases[key];
   };
 
   EventEmitter.mixin(fn);
