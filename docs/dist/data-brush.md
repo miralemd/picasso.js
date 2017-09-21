@@ -348,3 +348,34 @@ Removes an interceptor
 | name | string | Name of the event to remove interceptors for. If not provided, removes all interceptors. | Yes | No |
 
 Removes all interceptors  
+#### <a name='brush.addKeyAlias' href='#brush.addKeyAlias'>#</a> **brush.addKeyAlias**(*string key, string alias*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| key | string | Value to be replaced | No | No |
+| alias | string | Value to replace key with | No | No |
+
+Adds an alias to the given key  
+#### Examples
+
+```js
+brush.addKeyAlias('BadFieldName', 'Region');
+brush.addValue('BadFieldName', 'Sweden'); // 'BadFieldName' will be stored as 'Region'
+brush.containsValue('Region', 'Sweden'); // true
+brush.containsValue('BadFieldName', 'Sweden'); // true
+```
+#### <a name='brush.removeKeyAlias' href='#brush.removeKeyAlias'>#</a> **brush.removeKeyAlias**(*string key*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| key | string | Value to remove as alias | No | No |
+
+Removes an alias
+
+This will only remove the key to alias mapping for new manipulations of the brush,
+no changes will be made to the current state of this brush.  
+#### Examples
+
+```js
+brush.removeKeyAlias('BadFieldName');
+```
