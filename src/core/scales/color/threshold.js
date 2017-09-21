@@ -109,6 +109,7 @@ export default function scaleThresholdColor(settings = {}, fields) {
   }
 
   fn.range(range);
+  fn.range(settings.invert ? fn.range().reverse() : fn.range());
   fn.domain(domain);
 
   return fn;

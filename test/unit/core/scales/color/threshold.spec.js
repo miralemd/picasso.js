@@ -93,6 +93,15 @@ describe('Threshold', () => {
       ths = threshold(settings, fields);
       expect(ths.domain()).to.deep.equal([10, 20, 30, 40, 50, 60, 70, 80, 90]);
     });
+
+    it('should handle invert', () => {
+      settings.range = ['red', 'green'];
+      settings.domain = [2];
+      settings.invert = true;
+      ths = threshold(settings, fields);
+      expect(ths.domain()).to.deep.equal([2]);
+      expect(ths.range()).to.deep.equal(['green', 'red']);
+    });
   });
 
   describe('nice domain', () => {

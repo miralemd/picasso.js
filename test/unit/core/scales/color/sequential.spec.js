@@ -44,6 +44,12 @@ describe('Sequential', () => {
       expect(seq.range()).to.deep.equal(['rgb(180,221,212)', 'rgb(34, 83, 90)']);
     });
 
+    it('should invert scale', () => {
+      seq = sequential({ invert: true }, fields);
+      expect(seq.domain()).to.deep.equal([0, 100]);
+      expect(seq.range()).to.deep.equal(['rgb(34, 83, 90)', 'rgb(180,221,212)']);
+    });
+
     it('invalid max/min on fields', () => {
       fields[0].min = () => 'oops';
       fields[0].max = () => 'ooops';
