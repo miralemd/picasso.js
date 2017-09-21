@@ -2,6 +2,8 @@
 
 ## **Unreleased** - *(YYYY-MM-DD)*
 
+## **0.31.0** - *(2017-09-21)*
+
 ### Added
 
 - PIC-206 - Add alias support for brush keys
