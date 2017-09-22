@@ -18,6 +18,7 @@ import interaction from '../interaction';
 import mediatorFactory from '../mediator';
 import NarrowPhaseCollision from '../math/narrow-phase-collision';
 import loggerFn from '../utils/logger';
+import styleResolver from '../style/resolver';
 
 /**
  * @typedef Chart.Props
@@ -156,6 +157,11 @@ function chart(definition) {
   let dataset = [];
   const brushes = {};
   let stopBrushing = false;
+  let chartStyle;
+
+  const styler = {
+    resolve: s => styleResolver(s, chartStyle)
+  };
 
   const createComponent = (compSettings, container) => {
     const componentDefinition = component(compSettings.type);
@@ -163,6 +169,7 @@ function chart(definition) {
       settings: compSettings,
       chart: instance,
       mediator,
+      styler,
       container
     });
     return {
@@ -259,6 +266,7 @@ function chart(definition) {
     if (settings.logger) {
       logger.level(settings.logger.level);
     }
+    chartStyle = settings.style || {};
     currentScales = buildScales(scales, dataset);
     currentFormatters = buildFormatters(formatters, dataset);
     currentScrollApis = buildScroll(scroll, currentScrollApis);

@@ -3,7 +3,7 @@ import EventEmitter from '../utils/event-emitter';
 import { list as listMixins } from './component-mixins';
 import rendererFn from '../renderer/index';
 import {
-  styler,
+  styler as brushStyler,
   resolveTapEvent,
   resolveOverEvent,
   brushFromSceneNodes
@@ -13,7 +13,7 @@ const isReservedProperty = prop => [
   'on', 'preferredSize', 'created', 'beforeMount', 'mounted', 'resize',
   'beforeUpdate', 'updated', 'beforeRender', 'render', 'beforeDestroy',
   'destroyed', 'defaultSettings', 'data', 'settings', 'formatter',
-  'scale', 'chart', 'dockConfig', 'mediator'
+  'scale', 'chart', 'dockConfig', 'mediator', 'style'
 ].some(name => name === prop);
 
 function prepareContext(ctx, definition, opts) {
@@ -30,7 +30,8 @@ function prepareContext(ctx, definition, opts) {
     chart,
     dockConfig,
     mediator,
-    instance
+    instance,
+    style
   } = opts;
 
   // TODO add setters and log warnings / errors to console
@@ -48,6 +49,9 @@ function prepareContext(ctx, definition, opts) {
   });
   Object.defineProperty(ctx, 'mediator', {
     get: mediator
+  });
+  Object.defineProperty(ctx, 'style', {
+    get: style
   });
 
   Object.keys(definition).forEach((key) => {
@@ -125,6 +129,7 @@ function componentFactory(definition, options = {}) {
     chart,
     container,
     mediator,
+    styler,
     renderer // Used by tests
   } = options;
   const config = options.settings || {};
@@ -135,6 +140,7 @@ function componentFactory(definition, options = {}) {
   let formatter;
   let element;
   let size;
+  let style;
 
   const brushArgs = {
     nodes: [],
@@ -192,7 +198,7 @@ function componentFactory(definition, options = {}) {
     if (settings.brush) {
       (settings.brush.consume || []).forEach((b) => {
         if (b.context && b.style) {
-          brushStylers.push(styler(brushArgs, b));
+          brushStylers.push(brushStyler(brushArgs, b));
         }
       });
     }
@@ -256,6 +262,8 @@ function componentFactory(definition, options = {}) {
     } else if (typeof settings.scale === 'string') {
       formatter = chart.formatter({ source: scale.sources[0] });
     }
+
+    style = styler.resolve(settings.style || {});
   };
 
   fn.resize = (inner, outer) => {
@@ -328,9 +336,9 @@ function componentFactory(definition, options = {}) {
       addBrushTriggers();
     }
 
-    brushStylers.forEach((brushStyler) => {
-      if (brushStyler.isActive()) {
-        brushStyler.update();
+    brushStylers.forEach((bs) => {
+      if (bs.isActive()) {
+        bs.update();
       }
     });
 
@@ -357,7 +365,8 @@ function componentFactory(definition, options = {}) {
     chart: () => chart,
     dockConfig: () => dockConfig,
     mediator: () => mediator,
-    instance: () => instanceContext
+    instance: () => instanceContext,
+    style: () => style
   });
 
   prepareContext(instanceContext, config, {
@@ -368,7 +377,8 @@ function componentFactory(definition, options = {}) {
     renderer: () => rend,
     chart: () => chart,
     dockConfig: () => dockConfig,
-    mediator: () => mediator
+    mediator: () => mediator,
+    style: () => style
   });
 
   fn.getBrushedShapes = function getBrushedShapes(context, mode, props) {
@@ -449,8 +459,8 @@ function componentFactory(definition, options = {}) {
     });
     brushTriggers.tap = [];
     brushTriggers.over = [];
-    brushStylers.forEach((brushStyler) => {
-      brushStyler.cleanUp();
+    brushStylers.forEach((bs) => {
+      bs.cleanUp();
     });
     brushStylers.length = 0;
   };
