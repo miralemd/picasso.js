@@ -40,7 +40,10 @@ describe('reference lines', () => {
     const instance = componentFactory(refLineComponent, {
       settings: config,
       chart,
-      renderer
+      renderer,
+      styler: {
+        resolve: sinon.stub()
+      }
     });
     instance.beforeMount();
     instance.resize(inner);

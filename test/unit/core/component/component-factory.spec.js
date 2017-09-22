@@ -59,7 +59,10 @@ describe('Component', () => {
     const instance = componentFactory(definition, {
       settings: config,
       chart,
-      renderer
+      renderer,
+      styler: {
+        resolve: sinon.stub()
+      }
     });
     instance.beforeMount();
     instance.resize({});
