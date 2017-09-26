@@ -14,7 +14,6 @@ import brush from '../brush';
 import componentFactory from '../component/component-factory';
 import mediatorFactory from '../mediator';
 import NarrowPhaseCollision from '../math/narrow-phase-collision';
-import loggerFn from '../utils/logger';
 import styleResolver from '../style/resolver';
 
 /**
@@ -137,6 +136,7 @@ function chart(definition, context) {
   } = definition;
 
   const registries = context.registries;
+  const logger = context.logger;
 
   const chartMixins = mixins.list();
   const listeners = [];
@@ -240,8 +240,6 @@ function chart(definition, context) {
       element.insertBefore(el, nodes[i]);
     }
   };
-
-  const logger = loggerFn();
 
   const created = createCallback('created');
   const beforeMount = createCallback('beforeMount');

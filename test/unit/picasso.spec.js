@@ -47,6 +47,34 @@ describe('picasso.js', () => {
       expect(typeof firstParam.table).to.equal('function');
       expect(typeof firstParam.field).to.equal('function');
     });
+
+    it('should expose logger', () => {
+      const plugin = sinon.stub();
+      picasso.use(plugin);
+      const firstParam = plugin.args[0][0];
+
+      expect(typeof firstParam.logger.log).to.equal('function');
+    });
+  });
+
+  describe('config', () => {
+    it('should set default renderer', () => {
+      const pic = picasso({
+        renderer: {
+          prio: ['custom']
+        }
+      });
+      expect(pic.renderer.default()).to.equal('custom');
+    });
+
+    it('should set default log level', () => {
+      const pic = picasso({
+        logger: {
+          level: 3
+        }
+      });
+      expect(pic.logger.level()).to.equal(3);
+    });
   });
 
   describe('Chart lifecycle', () => {

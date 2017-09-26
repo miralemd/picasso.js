@@ -21,7 +21,7 @@ import formatterRegistry from './core/formatter';
 import interactionRegistry from './core/interaction';
 import scaleRegistry from './core/charts/scales';
 
-import logger from './core/utils/logger';
+import loggerFn from './core/utils/logger';
 import registry from './core/utils/registry';
 
 function usePlugin(plugin, options = {}, api) {
@@ -35,10 +35,9 @@ function usePlugin(plugin, options = {}, api) {
  * @returns {picasso}
  */
 function pic(config = {}, registries = {}) {
-  /**
-   * The registries provided to plugins
-   */
+  const logger = loggerFn(config.logger);
   const regis = {
+    // -- registries --
     component: registry(registries.component),
     data: registry(registries.data),
     formatter: registry(registries.formatter),
@@ -46,11 +45,17 @@ function pic(config = {}, registries = {}) {
     renderer: renderer(registries.renderer),
     scale: registry(registries.scale),
     symbol: registry(registries.symbol),
-    // temp
+    // -- misc --
+    logger,
+    // -- temp -- // reconsider the data api when universal data is in place
     dataset,
     table,
     field
   };
+
+  if (config.renderer && config.renderer.prio) {
+    regis.renderer.default(config.renderer.prio[0]);
+  }
 
   /**
    * picasso.js
@@ -65,12 +70,10 @@ function pic(config = {}, registries = {}) {
     }, regis);
   }
 
-  const logme = logger(config.logger);
-
   picassojs.use = (plugin, options = {}) => usePlugin(plugin, options, regis);
   picassojs.chart = definition => chart(definition, {
     registries: regis,
-    logger: logme
+    logger
   });
   picassojs.config = () => config;
 
@@ -83,10 +86,10 @@ function pic(config = {}, registries = {}) {
 
 const p = pic({
   renderer: {
-    prio: ['canvas', 'svg']
+    prio: ['svg', 'canvas']
   },
   logger: {
-    level: 2
+    level: 0
   }
 }, {
   component: componentRegistry,
@@ -100,8 +103,6 @@ const p = pic({
 components.forEach(p.use);
 renderers.forEach(p.use);
 scales.forEach(p.use);
-
-p.renderer.default('svg');
 
 export {
   p as default
