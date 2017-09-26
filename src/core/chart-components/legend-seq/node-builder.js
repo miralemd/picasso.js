@@ -155,8 +155,7 @@ export function createTickNodes(ctx, legendNode) {
       fill: settings.tick.fill,
       maxWidth: state.isVertical ? settings.tick.maxLengthPx : Math.min(settings.tick.maxLengthPx, state.legend.length() / 2),
       anchor,
-      width: tick.textMetrics.width,
-      height: tick.textMetrics.height
+      textBoundsFn: ctx.renderer.textBounds
     };
 
     return node;

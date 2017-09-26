@@ -1,10 +1,14 @@
 import stringTokenizer from '../../../../src/web/renderer/string-tokenizer';
 
-function toArray(tokens) {
+function toArray(iterator) {
   const ary = [];
-  while (!tokens.done()) {
-    ary.push(tokens.next());
+  let token = iterator.next();
+
+  while (!token.done) {
+    ary.push(token);
+    token = iterator.next();
   }
+
   return ary;
 }
 

@@ -3,6 +3,14 @@ import Text, { create as createText } from '../../../../../src/core/scene-graph/
 describe('Text', () => {
   let node;
   let def;
+  const mockedBounds = { x: 0, y: 0, width: 50, height: 100 };
+  const textBoundsMock = (args) => {
+    mockedBounds.x = args.x;
+    mockedBounds.x += args.dx || 0;
+    mockedBounds.y = args.y;
+    mockedBounds.y += args.dy || 0;
+    return mockedBounds;
+  };
 
   beforeEach(() => {
     def = {
@@ -50,15 +58,24 @@ describe('Text', () => {
       expect(node.boundingRect()).to.deep.equal({ x: 0, y: 0, width: 0, height: 0 });
     });
 
-    it('should return correct value without transformation', () => {
+    it('should use textBounds function if supplied', () => {
       def.x = 1;
       def.y = 2;
       def.dx = 3;
       def.dy = 4;
-      def.width = 50;
-      def.height = 60;
+      def.textBoundsFn = textBoundsMock;
       node = createText(def);
-      expect(node.boundingRect()).to.deep.equal({ x: 4, y: -39, width: 50, height: 60 });
+      expect(node.boundingRect()).to.deep.equal({ x: 4, y: 6, width: 50, height: 100 });
+    });
+
+    it('should use boundingRect attribute if supplied', () => {
+      def.x = 1;
+      def.y = 2;
+      def.dx = 3;
+      def.dy = 4;
+      def.boundingRect = { x: 1, y: 2, width: 3, height: 4 };
+      node = createText(def);
+      expect(node.boundingRect()).to.deep.equal(def.boundingRect);
     });
 
     it('should return correct value with a scale transforma', () => {
@@ -66,12 +83,11 @@ describe('Text', () => {
       def.y = 2;
       def.dx = 3;
       def.dy = 4;
-      def.width = 50;
-      def.height = 60;
+      def.textBoundsFn = textBoundsMock;
       def.transform = 'scale(2, 3)';
       node = createText(def);
       node.resolveLocalTransform();
-      expect(node.boundingRect(true)).to.deep.equal({ x: 8, y: -117, width: 100, height: 180 });
+      expect(node.boundingRect(true)).to.deep.equal({ x: 8, y: 18, width: 100, height: 300 });
     });
 
     it('should return correct value with a translate transform', () => {
@@ -79,12 +95,11 @@ describe('Text', () => {
       def.y = 2;
       def.dx = 3;
       def.dy = 4;
-      def.width = 50;
-      def.height = 60;
+      def.textBoundsFn = textBoundsMock;
       def.transform = 'translate(1, 2)';
       node = createText(def);
       node.resolveLocalTransform();
-      expect(node.boundingRect(true)).to.deep.equal({ x: 5, y: -37, width: 50, height: 60 });
+      expect(node.boundingRect(true)).to.deep.equal({ x: 5, y: 8, width: 50, height: 100 });
     });
 
     it('should return correct value with a rotate transformation', () => {
@@ -92,12 +107,16 @@ describe('Text', () => {
       def.y = 2;
       def.dx = 3;
       def.dy = 4;
-      def.width = 50;
-      def.height = 60;
+      def.textBoundsFn = textBoundsMock;
       def.transform = 'rotate(90)';
       node = createText(def);
       node.resolveLocalTransform();
-      expect(node.boundingRect(true)).to.deep.equal({ x: -21, y: 3.999999999999998, width: 60, height: 50 });
+
+      const rect = node.boundingRect(true);
+      expect(rect.x).to.equal(-106);
+      expect(rect.y).to.equal(4);
+      expect(rect.width).to.equal(100);
+      expect(rect.height).to.approximately(50, 0.1);
     });
 
     it('should return correct value with a negative vector direction', () => {
@@ -105,46 +124,9 @@ describe('Text', () => {
       def.y = -2;
       def.dx = -3;
       def.dy = -4;
-      def.width = 50;
-      def.height = 60;
+      def.textBoundsFn = textBoundsMock;
       node = createText(def);
-      expect(node.boundingRect()).to.deep.equal({ x: -4, y: -51, width: 50, height: 60 });
-    });
-
-    it('should return correct value with max values', () => {
-      def.x = -1;
-      def.y = -2;
-      def.dx = -3;
-      def.dy = -4;
-      def.width = 50;
-      def.maxWidth = 20;
-      def.height = 60;
-      node = createText(def);
-      expect(node.boundingRect()).to.deep.equal({ x: -4, y: -51, width: 20, height: 60 });
-    });
-
-    it('should return correct value with text-anchor middle', () => {
-      def.x = -1;
-      def.y = -2;
-      def.dx = -3;
-      def.dy = -4;
-      def.width = 50;
-      def.height = 60;
-      def.anchor = 'middle';
-      node = createText(def);
-      expect(node.boundingRect()).to.deep.equal({ x: -29, y: -51, width: 50, height: 60 });
-    });
-
-    it('should return correct value with text-anchor end', () => {
-      def.x = -1;
-      def.y = -2;
-      def.dx = -3;
-      def.dy = -4;
-      def.width = 50;
-      def.height = 60;
-      def.anchor = 'end';
-      node = createText(def);
-      expect(node.boundingRect()).to.deep.equal({ x: -54, y: -51, width: 50, height: 60 });
+      expect(node.boundingRect()).to.deep.equal({ x: -4, y: -6, width: 50, height: 100 });
     });
   });
 
@@ -159,37 +141,50 @@ describe('Text', () => {
       ]);
     });
 
-    it('should return correct value without transformation', () => {
+    it('should use textBounds function if supplied', () => {
       def.x = 1;
       def.y = 2;
       def.dx = 3;
       def.dy = 4;
-      def.width = 50;
-      def.height = 60;
+      def.textBoundsFn = textBoundsMock;
       node = createText(def);
       expect(node.bounds()).to.deep.equal([
-        { x: 4, y: -39 },
-        { x: 54, y: -39 },
-        { x: 54, y: 21 },
-        { x: 4, y: 21 }
+        { x: 4, y: 6 },
+        { x: 54, y: 6 },
+        { x: 54, y: 106 },
+        { x: 4, y: 106 }
       ]);
     });
 
-    it('should return correct value with a scale transforma', () => {
+    it('should use boundingRect attribute if supplied', () => {
       def.x = 1;
       def.y = 2;
       def.dx = 3;
       def.dy = 4;
-      def.width = 50;
-      def.height = 60;
+      def.boundingRect = { x: 4, y: 6, width: 50, height: 100 };
+      node = createText(def);
+      expect(node.bounds()).to.deep.equal([
+        { x: 4, y: 6 },
+        { x: 54, y: 6 },
+        { x: 54, y: 106 },
+        { x: 4, y: 106 }
+      ]);
+    });
+
+    it('should return correct value with a scale transform', () => {
+      def.x = 1;
+      def.y = 2;
+      def.dx = 3;
+      def.dy = 4;
+      def.boundingRect = { x: 4, y: 6, width: 50, height: 100 };
       def.transform = 'scale(2, 3)';
       node = createText(def);
       node.resolveLocalTransform();
       expect(node.bounds(true)).to.deep.equal([
-        { x: 8, y: -117 },
-        { x: 108, y: -117 },
-        { x: 108, y: 63 },
-        { x: 8, y: 63 }
+        { x: 8, y: 18 },
+        { x: 108, y: 18 },
+        { x: 108, y: 318 },
+        { x: 8, y: 318 }
       ]);
     });
 
@@ -198,16 +193,15 @@ describe('Text', () => {
       def.y = 2;
       def.dx = 3;
       def.dy = 4;
-      def.width = 50;
-      def.height = 60;
+      def.boundingRect = { x: 4, y: 6, width: 50, height: 100 };
       def.transform = 'translate(1, 2)';
       node = createText(def);
       node.resolveLocalTransform();
       expect(node.bounds(true)).to.deep.equal([
-        { x: 5, y: -37 },
-        { x: 55, y: -37 },
-        { x: 55, y: 23 },
-        { x: 5, y: 23 }
+        { x: 5, y: 8 },
+        { x: 55, y: 8 },
+        { x: 55, y: 108 },
+        { x: 5, y: 108 }
       ]);
     });
 
@@ -216,83 +210,15 @@ describe('Text', () => {
       def.y = 2;
       def.dx = 3;
       def.dy = 4;
-      def.width = 50;
-      def.height = 60;
+      def.boundingRect = { x: 4, y: 6, width: 50, height: 100 };
       def.transform = 'rotate(90)';
       node = createText(def);
       node.resolveLocalTransform();
       expect(node.bounds(true)).to.deep.equal([
-        { x: -21, y: 3.999999999999998 },
-        { x: 39, y: 3.999999999999998 },
-        { x: 39, y: 54 },
-        { x: -21, y: 54 }
-      ]);
-    });
-
-    it('should return correct value with a negative vector direction', () => {
-      def.x = -1;
-      def.y = -2;
-      def.dx = -3;
-      def.dy = -4;
-      def.width = 50;
-      def.height = 60;
-      node = createText(def);
-      expect(node.bounds()).to.deep.equal([
-        { x: -4, y: -51 },
-        { x: 46, y: -51 },
-        { x: 46, y: 9 },
-        { x: -4, y: 9 }
-      ]);
-    });
-
-    it('should return correct value with max values', () => {
-      def.x = -1;
-      def.y = -2;
-      def.dx = -3;
-      def.dy = -4;
-      def.width = 50;
-      def.maxWidth = 20;
-      def.height = 60;
-      node = createText(def);
-      expect(node.bounds()).to.deep.equal([
-        { x: -4, y: -51 },
-        { x: 16, y: -51 },
-        { x: 16, y: 9 },
-        { x: -4, y: 9 }
-      ]);
-    });
-
-    it('should return correct value with text-anchor middle', () => {
-      def.x = -1;
-      def.y = -2;
-      def.dx = -3;
-      def.dy = -4;
-      def.width = 50;
-      def.height = 60;
-      def.anchor = 'middle';
-      node = createText(def);
-      expect(node.bounds()).to.deep.equal([
-        { x: -29, y: -51 },
-        { x: 21, y: -51 },
-        { x: 21, y: 9 },
-        { x: -29, y: 9 }
-      ]);
-    });
-
-    it('should return correct value with text-anchor end', () => {
-      def.x = -1;
-      def.y = -2;
-      def.dx = -3;
-      def.dy = -4;
-      def.width = 50;
-      def.height = 60;
-      def.anchor = 'end';
-      node = createText(def);
-      expect(node.bounds()).to.deep.equal([
-        { x: -54, y: -51 },
-        { x: -4, y: -51 },
-        { x: -4, y: 9 },
-        { x: -54, y: 9 }
+        { x: -106, y: 4 },
+        { x: -6, y: 4 },
+        { x: -6, y: 54.00000000000001 },
+        { x: -106, y: 54.00000000000001 }
       ]);
     });
   });

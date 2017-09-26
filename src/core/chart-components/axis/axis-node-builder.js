@@ -159,7 +159,7 @@ export default function nodeBuilder(isDiscrete) {
     return discrete;
   }
 
-  function build({ settings, scale, innerRect, outerRect, measureText, ticks, state }) {
+  function build({ settings, scale, innerRect, outerRect, measureText, ticks, state, textBounds }) {
     const nodes = [];
     const major = majorTicks(ticks);
     const minor = minorTicks(ticks);
@@ -197,6 +197,7 @@ export default function nodeBuilder(isDiscrete) {
       buildOpts.layered = layered;
       buildOpts.angle = settings.labels.tiltAngle;
       buildOpts.paddingEnd = settings.paddingEnd;
+      buildOpts.textBounds = textBounds;
 
       let labelNodes = [];
       if (layered && (settings.align === 'top' || settings.align === 'bottom')) {

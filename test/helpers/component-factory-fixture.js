@@ -32,6 +32,12 @@ export default function componentFactoryFixture() {
         width: text.toString().length,
         height: 5
       }),
+      textBounds: ({ text, x, y }) => ({
+        x: x || 0,
+        y: y || 0,
+        width: text.toString().length,
+        height: 5
+      }),
       element: () => container
     };
 

@@ -33,7 +33,7 @@ export default function stringTokenizer({
   hyphenationIdentifiers = [hyphenationAllowed]
 } = {}) {
   const chunks = String(string).split(separator);
-  let index = reverse ? chunks.length - 1 : 0;
+  let index = reverse ? chunks.length : -1;
   const condition = reverse ? () => index >= 0 : () => index < chunks.length;
   const clamp = val => Math.max(0, Math.min(chunks.length - 1, val));
 
@@ -63,20 +63,22 @@ export default function stringTokenizer({
 
   return {
     next: (jump) => {
-      if (condition()) {
-        let i;
-        if (isNaN(jump)) {
-          i = reverse ? index-- : index++;
+      if (isNaN(jump)) {
+        if (reverse) {
+          index--;
         } else {
-          index = clamp(jump);
-          i = index;
+          index++;
         }
-        return peek(i);
+      } else {
+        index = clamp(jump);
+      }
+
+      if (condition()) {
+        return peek(index);
       }
       return { done: true };
     },
     peek,
-    done: () => !condition(),
     length: chunks.length
   };
 }

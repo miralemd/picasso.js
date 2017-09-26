@@ -29,8 +29,8 @@ export function ellipsText({ text, 'font-size': fontSize, 'font-family': fontFam
 
 export function breakAll(node, measureText) {
   const text = node.text;
-  const hyphenEnabled = node.hyphens === 'auto';
-  const hyphensChar = {
+  const hyphens = {
+    enabled: node.hyphens === 'auto',
     char: '-',
     metrics: measureText('-')
   };
@@ -47,29 +47,45 @@ export function breakAll(node, measureText) {
   let line = '';
   let reduced = true;
 
-  const newLine = () => {
+  function newLine() {
     lines.push(line);
     lineWidth = 0;
     line = '';
-  };
+  }
 
-  const appendToLine = (token) => {
+  function appendToLine(token) {
     lineWidth += token.width;
     line += token.value;
-  };
+  }
 
-  const insertHyphen = (token) => {
-    if (!hyphenEnabled || !token.hyphenation || token.width > maxWidth) {
-      return;
+  function insertHyphenAndJump(token) {
+    if (token.width > maxWidth) {
+      return token;
     }
-    const peek = iterator.peek(token.index - 1);
-    if (!peek.suppress) { // Suppressable char, remove it instead of inserting hyphen.
-      line += hyphensChar.char;
+
+    const startIndex = token.index;
+
+    for (let i = 1; i < 5; i++) {
+      const pairToken = iterator.peek(token.index - 1);
+      if (!token.hyphenation || !pairToken.hyphenation) {
+        return token;
+      }
+
+      if (lineWidth + hyphens.metrics.width <= maxWidth) {
+        line += hyphens.char;
+        return token;
+      }
+
+      token = iterator.next(startIndex - i);
+      line = line.slice(0, -1);
+      lineWidth -= token.width;
     }
-  };
+
+    return token;
+  }
 
   while (lines.length < maxLines) {
-    const token = iterator.next();
+    let token = iterator.next();
 
     if (token.done) {
       newLine();
@@ -83,7 +99,7 @@ export function breakAll(node, measureText) {
       if (token.suppress) { // Token is suppressable and can be ignored
         lineWidth += token.width;
       } else {
-        insertHyphen(token);
+        token = hyphens.enabled ? insertHyphenAndJump(token) : token;
         newLine();
         appendToLine(token);
       }
@@ -95,9 +111,14 @@ export function breakAll(node, measureText) {
   return { lines, reduced };
 }
 
-const WORDBREAK = {
-  'break-all': breakAll
-};
+export function resolveLineBreakAlgorithm(node) {
+  const WORDBREAK = {
+    'break-all': breakAll
+  };
+
+  return WORDBREAK[node.wordBreak];
+}
+
 
 /**
  * Apply wordBreak rules to text nodes.
@@ -151,7 +172,7 @@ export function onLineBreak(measureText) {
   return (state) => {
     const item = state.node;
     if (shouldLineBreak(item)) {
-      const wordBreakFn = WORDBREAK[item.wordBreak];
+      const wordBreakFn = resolveLineBreakAlgorithm(item);
       if (!wordBreakFn) {
         return;
       }

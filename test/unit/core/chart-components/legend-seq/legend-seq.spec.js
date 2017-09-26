@@ -74,8 +74,7 @@ describe('Legend Sequential', () => {
         fill: '#595959',
         maxWidth: 100,
         anchor: 'start',
-        width: 1,
-        height: 5
+        textBoundsFn: componentFixture.mocks().renderer.textBounds
       },
       {
         type: 'text',
@@ -89,8 +88,7 @@ describe('Legend Sequential', () => {
         fill: '#595959',
         maxWidth: 100,
         anchor: 'start',
-        width: 1,
-        height: 5
+        textBoundsFn: componentFixture.mocks().renderer.textBounds
       },
       {
         type: 'rect',

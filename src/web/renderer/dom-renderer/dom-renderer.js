@@ -91,5 +91,7 @@ export default function renderer(opts = {}) {
 
   dom.measureText = ({ text, fontSize, fontFamily }) => measureText({ text, fontSize, fontFamily });
 
+  dom.textBounds = () => ({ x: 0, y: 0, width: 0, height: 0 });
+
   return dom;
 }

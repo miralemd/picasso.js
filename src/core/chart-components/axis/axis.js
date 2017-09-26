@@ -212,6 +212,7 @@ const axisComponent = {
       innerRect: this.state.innerRect,
       outerRect: this.state.outerRect,
       measureText: this.renderer.measureText,
+      textBounds: this.renderer.textBounds,
       ticks: this.state.ticks,
       state
     }));

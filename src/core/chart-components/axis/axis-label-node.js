@@ -1,5 +1,4 @@
 import { rotate as rotateVector } from '../../math/vector';
-import { calcTextBounds } from '../../scene-graph/display-objects/text';
 
 function checkText(text) {
   return typeof text === 'string' || typeof text === 'number' ? text : '-';
@@ -190,7 +189,7 @@ function appendCollider(tick, struct, buildOpts) {
 }
 
 function appendBounds(struct, buildOpts) {
-  struct.boundingRect = calcTextBounds(struct, buildOpts.textRect.width, buildOpts.textRect.height);
+  struct.boundingRect = buildOpts.textBounds(struct);
 }
 
 export default function buildNode(tick, buildOpts) {

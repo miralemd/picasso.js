@@ -156,18 +156,18 @@ describe('Text Manipulation', () => {
         node.hyphens = 'auto';
         const chunks = breakAll(node, measureTextMock);
         expect(chunks).to.deep.equal({
-          lines: ['ASD-', 'FGH-', 'JKL-', 'ÖÄ'],
+          lines: ['AS-', 'DF-', 'GH-', 'JK-', 'LÖÄ'],
           reduced: false
         });
       });
 
-      it('should not inject hyphens if line-break occur at a suppressable character', () => {
-        node.text = 'ASD FGHJKLÖÄ'; // White-space is suppressable
+      it('should not inject hyphens if there isnt a pairwise match', () => {
+        node.text = 'AS DF次GH1JKLÖÄ'; // White-space, CJK char and number doesn't support hyphens
         node.maxWidth = 3;
         node.hyphens = 'auto';
         const chunks = breakAll(node, measureTextMock);
         expect(chunks).to.deep.equal({
-          lines: ['ASD', 'FGH-', 'JKL-', 'ÖÄ'],
+          lines: ['AS ', 'DF次', 'GH1', 'JK-', 'LÖÄ'],
           reduced: false
         });
       });

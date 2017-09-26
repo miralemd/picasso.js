@@ -1,7 +1,10 @@
 import { tree as treeFactory } from './svg-tree';
 import { svgNs } from './svg-nodes';
 import sceneFactory from '../../../core/scene-graph/scene';
-import { measureText } from '../text-metrics';
+import {
+  measureText,
+  textBounds
+} from '../text-metrics';
 import {
   resetGradients,
   onGradient,
@@ -163,6 +166,28 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
    * }); // returns { width: 20, height: 12 }
    */
   svg.measureText = ({ text, fontSize, fontFamily }) => measureText({ text, fontSize, fontFamily });
+
+  /**
+ * Calculates the bounding rectangle of a text node. Including any line breaks.
+ * @param {object} node
+ * @param {string} node.text - Text to measure
+ * @param {number} [node.x=0] - X-coordinate
+ * @param {number} [node.y=0] - Y-coordinate
+ * @param {number} [node.dx=0] - Delta x-coordinate
+ * @param {number} [node.dy=0] - Delta y-coordinate
+ * @param {string} [node.anchor='start'] - Text anchor
+ * @param {string} [node.fontSize] - Font size
+ * @param {string} [node.fontFamily] - Font family
+ * @param {string} [node['font-size']] - Font size
+ * @param {string} [node['font-family']] - Font family
+ * @param {string} [node.wordBreak] - Word-break option
+ * @param {number} [node.maxWidth] - Maximum allowed text width
+ * @param {number} [node.maxLines] - Maximum number of lines allowed
+ * @param {number} [node.lineHeight=1.2] - Line height
+ * @param {function} [measureFn] - Optional text measure function
+ * @return {object} The bounding rectangle
+ */
+  svg.textBounds = node => textBounds(node);
 
   return svg;
 }

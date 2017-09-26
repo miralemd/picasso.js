@@ -1,9 +1,11 @@
 import buildLabel from '../../../../../src/core/chart-components/axis/axis-label-node';
+import { textBounds } from '../../../../../src/web/renderer/text-metrics';
 
 describe('Axis Label Node', () => {
   const innerRect = { x: 0, y: 0, width: 0, height: 0 };
   const outerRect = { x: 0, y: 0, width: 0, height: 0 };
   const textRect = { width: 10, height: 10 };
+  const measureTextMock = ({ text }) => ({ width: text.length, height: 1 });
 
   beforeEach(() => {
     innerRect.width = 50;
@@ -30,7 +32,8 @@ describe('Axis Label Node', () => {
         outerRect,
         maxWidth: textRect.width,
         maxHeight: textRect.height,
-        textRect
+        textRect,
+        textBounds: node => textBounds(node, measureTextMock)
       };
       tick = { position: 0.5, label: '50%' };
       expected = {
@@ -433,10 +436,10 @@ describe('Axis Label Node', () => {
           expected = {
             type: 'polygon',
             vertices: [
-              { x: 20, y: 82.5 },
-              { x: 30, y: 82.5 },
-              { x: 30, y: 92.5 },
-              { x: 20, y: 92.5 }
+              { x: 23.5, y: 89.25 },
+              { x: 26.5, y: 89.25 },
+              { x: 26.5, y: 90.25 },
+              { x: 23.5, y: 90.25 }
             ]
           };
 
@@ -452,10 +455,10 @@ describe('Axis Label Node', () => {
           expected = {
             type: 'polygon',
             vertices: [
-              { x: 22.053721745056052, y: 88.23223304703363 },
-              { x: 29.124789556921527, y: 95.3033008588991 },
-              { x: 47.35702260395516, y: 92.5 },
-              { x: 47.35702260395516, y: 82.5 }
+              { x: 26.826692518065247, y: 89.82322330470336 },
+              { x: 27.533799299251797, y: 90.53033008588991 },
+              { x: 40.35702260395516, y: 90.25 },
+              { x: 40.35702260395516, y: 89.25 }
             ]
           };
 
@@ -471,10 +474,10 @@ describe('Axis Label Node', () => {
           expected = {
             type: 'polygon',
             vertices: [
-              { x: 20.875210443078473, y: 95.3033008588991 },
-              { x: 27.946278254943948, y: 88.23223304703363 },
-              { x: 2.6429773960448415, y: 82.5 },
-              { x: 2.6429773960448415, y: 92.5 }
+              { x: 22.466200700748203, y: 90.53033008588991 },
+              { x: 23.173307481934753, y: 89.82322330470336 },
+              { x: 9.642977396044841, y: 89.25 },
+              { x: 9.642977396044841, y: 90.25 }
             ]
           };
 
@@ -542,10 +545,10 @@ describe('Axis Label Node', () => {
           expected = {
             type: 'polygon',
             vertices: [
-              { x: 20, y: 12.5 },
-              { x: 30, y: 12.5 },
-              { x: 30, y: 22.5 },
-              { x: 20, y: 22.5 }
+              { x: 23.5, y: 19.25 },
+              { x: 26.5, y: 19.25 },
+              { x: 26.5, y: 20.25 },
+              { x: 23.5, y: 20.25 }
             ]
           };
 
@@ -561,10 +564,10 @@ describe('Axis Label Node', () => {
           expected = {
             type: 'polygon',
             vertices: [
-              { x: 30.303300858899107, y: 4.696699141100893 },
-              { x: 37.37436867076458, y: 11.767766952966369 },
-              { x: 8.535533905932738, y: 16.035533905932738 },
-              { x: 8.535533905932738, y: 6.035533905932738 }
+              { x: 28.712310601229376, y: 12.651650429449553 },
+              { x: 29.419417382415922, y: 13.358757210636101 },
+              { x: 15.535533905932738, y: 13.785533905932738 },
+              { x: 15.535533905932738, y: 12.785533905932738 }
             ]
           };
 
@@ -580,10 +583,10 @@ describe('Axis Label Node', () => {
           expected = {
             type: 'polygon',
             vertices: [
-              { x: 12.625631329235418, y: 11.767766952966369 },
-              { x: 19.696699141100893, y: 4.696699141100893 },
-              { x: 41.46446609406726, y: 6.035533905932738 },
-              { x: 41.46446609406726, y: 16.035533905932738 }
+              { x: 20.580582617584078, y: 13.358757210636101 },
+              { x: 21.287689398770624, y: 12.651650429449553 },
+              { x: 34.46446609406726, y: 12.785533905932738 },
+              { x: 34.46446609406726, y: 13.785533905932738 }
             ]
           };
 
