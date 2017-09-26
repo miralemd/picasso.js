@@ -1,6 +1,5 @@
 import { pie, arc } from 'd3-shape';
-import { resolveSettings } from '../../settings-setup';
-import { resolveForDataObject } from '../../../style';
+import { normalizeSettings, resolveForItem } from '../../property-resolver';
 
 const DEFAULT_DATA_SETTINGS = {
   shape: 'pie',
@@ -17,8 +16,7 @@ const DEFAULT_DATA_SETTINGS = {
 };
 
 /**
- * @typedef settings
- * @type {object}
+ * @typedef {object} settings
  * @property {number} [startAngle=0] - If angle is specified, sets the overall start angle of the pie to the specified function or number
  * @property {number} [endAngle=2*Math.PI] - If angle is specified, sets the overall end angle of the pie to the specified function or number
  * @property {number} [padAngle=0] - The pad angle here means the angular separation between each adjacent arc
@@ -35,10 +33,10 @@ const DEFAULT_DATA_SETTINGS = {
  */
 
 /**
- * @typedef pie
+ * @typedef {object} pie
  * @property {string} type - "pie"
  * @property {pie-data} data - Pie data
- * @property {pie-settings} settings - Pie settings
+ * @property {settings} settings - Pie settings
  * @example
  * {
  *   type: 'pie',
@@ -48,17 +46,19 @@ const DEFAULT_DATA_SETTINGS = {
  *     },
  *     groupBy: { source: '/qHyperCube/qDimensionInfo/0' }
  *   },
- *   startAngle: Math.PI / 2,
- *   endAngle: -Math.PI / 2,
- *   slice: {
- *     fill: 'green',
- *     stroke: 'red',
- *     strokeWidth: 2,
- *     innerRadius: 0.6,
- *     outerRadius 0.8,
- *     opacity: 0.8,
- *     offset: function(v) {
- *       return ix === 1 ? 0.3 : 0;
+ *   settings: {
+ *     startAngle: Math.PI / 2,
+ *     endAngle: -Math.PI / 2,
+ *     slice: {
+ *       fill: 'green',
+ *       stroke: 'red',
+ *       strokeWidth: 2,
+ *       innerRadius: 0.6,
+ *       outerRadius 0.8,
+ *       opacity: 0.8,
+ *       offset: function(v) {
+ *         return ix === 1 ? 0.3 : 0;
+ *       }
  *     }
  *   }
  * }
@@ -104,10 +104,12 @@ function createDisplayPies(arcData, { x, y, width, height }, slices) {
 const pieComponent = {
   require: ['chart'],
   defaultSettings: {
-    startAngle: 0,
-    endAngle: 2 * Math.PI,
-    padAngle: 0,
-    settings: {},
+    settings: {
+      startAngle: 0,
+      endAngle: 2 * Math.PI,
+      padAngle: 0,
+      slice: {}
+    },
     data: {}
   },
   created() {
@@ -116,7 +118,7 @@ const pieComponent = {
   },
   updateSettings(settings) {
     const chart = this.chart;
-    this.local = resolveSettings(settings.slice, DEFAULT_DATA_SETTINGS, chart);
+    this.local = normalizeSettings(settings.settings.slice, DEFAULT_DATA_SETTINGS, chart);
   },
   beforeUpdate(settings) {
     this.updateSettings(settings);
@@ -126,47 +128,20 @@ const pieComponent = {
   },
   render({ data }) {
     const arcValues = [];
-    const slices = data.map((s, i) => {
-      const obj = resolveForDataObject(this.local, s, i);
-      obj.dataIndex = i;
+    const stngs = this.settings.settings;
+    const slices = data.map((s, i, all) => {
+      const obj = resolveForItem(s, this.local, all);
+      obj.data = s;
       arcValues.push(s.arc.value);
       return obj;
     });
     const pieGen = pie();
-    pieGen.startAngle(this.settings.startAngle);
-    pieGen.endAngle(this.settings.endAngle);
-    pieGen.padAngle(this.settings.padAngle);
+    pieGen.startAngle(stngs.startAngle);
+    pieGen.endAngle(stngs.endAngle);
+    pieGen.padAngle(stngs.padAngle);
     const arcData = pieGen(arcValues);
     return createDisplayPies(arcData, this.rect, slices);
   }
 };
 
 export default pieComponent;
-
-/*
-{
-  type: 'pie',
-  data: {
-    mapTo: {
-      arc: {
-        source: 'meas'
-      }
-    },
-    groupBy: {
-      source: 'dim'
-    }
-  },
-  startAngle: Math.PI,
-  endAngle: Math.PI / 4,
-  slice: {
-    fill: 'red',
-    stroke: 'green',
-    offset: function(v) {
-      return this.data.arc.value > Math.PI / 6 ? 0.1 : 0;
-    },
-    radius: {
-      scale: 'r', ref: 'arc'
-    }
-  }
-}
-*/
