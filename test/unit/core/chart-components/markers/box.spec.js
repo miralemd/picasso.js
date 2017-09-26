@@ -1,6 +1,5 @@
 import componentFactoryFixture from '../../../../helpers/component-factory-fixture';
 import boxMarker from '../../../../../src/core/chart-components/markers/box/box';
-import { create } from '../../../../../src/core/charts/scales';
 
 describe('box marker', () => {
   let rendererOutput;
@@ -571,9 +570,12 @@ describe('box marker', () => {
 
     chart.dataset().map.returns(dataset);
 
-    const xScale = create({ type: 'band' });
-    xScale.domain([1, 2, 3, 4, 5]);
-    const yScale = create({ min: 0.2, max: 0.8 });
+    const xDomain = [1, 2, 3, 4, 5];
+    const xScale = v => xDomain.indexOf(v) * 0.2;
+    xScale.domain = () => xDomain;
+    xScale.bandwidth = () => 0.2;
+
+    const yScale = v => (v - 0.2) / 0.6;
 
     chart.scale.withArgs({ scale: 'x' }).returns(xScale);
     chart.scale.withArgs({ scale: 'y' }).returns(yScale);

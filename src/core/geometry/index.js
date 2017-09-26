@@ -2,7 +2,7 @@ import { create as rect } from './rect';
 import { create as circle } from './circle';
 import { create as line } from './line';
 import { create as polygon } from './polygon';
-import { registry } from '../utils/registry';
+import registry from '../utils/registry';
 
 const reg = registry();
 

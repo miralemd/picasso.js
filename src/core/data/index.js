@@ -1,16 +1,12 @@
-import { registry } from '../utils/registry';
+import registry from '../utils/registry';
 import dataset from './dataset';
 
-const reg = registry();
+const dataRegistry = registry();
 
-export default function data(type, obj) {
-  if (obj) {
-    reg.add(type, obj);
-  }
-  if (type) {
-    return reg.get(type);
-  }
-  return reg.get('default');
-}
+dataRegistry.default('default');
 
-data('default', dataset);
+dataRegistry('default', dataset);
+
+export {
+  dataRegistry as default
+};

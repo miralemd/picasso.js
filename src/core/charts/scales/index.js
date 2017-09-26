@@ -1,17 +1,21 @@
-import { registry } from '../../utils/registry';
+import registry from '../../utils/registry';
 import linear from '../../scales/linear';
 import band from '../../scales/band';
 import sequential from '../../scales/color/sequential';
 import threshold from '../../scales/color/threshold';
 import categorical from '../../scales/color/categorical';
 
-const reg = registry();
+const scaleRegistry = registry();
 
-reg.add('linear', linear);
-reg.add('band', band);
-reg.add('sequential-color', sequential);
-reg.add('threshold-color', threshold);
-reg.add('categorical-color', categorical);
+scaleRegistry('linear', linear);
+scaleRegistry('band', band);
+scaleRegistry('sequential-color', sequential);
+scaleRegistry('threshold-color', threshold);
+scaleRegistry('categorical-color', categorical);
+
+export {
+  scaleRegistry as default
+};
 
 function getTypeFromMeta(fields) {
   const types = fields.map(field => (field.type() === 'dimension' ? 'band' : 'linear'));
@@ -32,7 +36,7 @@ function deduceScaleTypeFromOptions(options, fields) {
   return 'linear';
 }
 
-export function create(options, dataset) {
+export function create(options, dataset, reg) {
   let sources = [];
   let fields = [];
   if (options.source) {
@@ -59,7 +63,7 @@ export function create(options, dataset) {
   return s;
 }
 
-export function getOrCreateScale(v, scales, dataset) {
+export function getOrCreateScale(v, scales, dataset, reg) {
   let s;
   if (typeof v === 'string' && scales[v]) { // return by name
     s = scales[v];
@@ -67,14 +71,14 @@ export function getOrCreateScale(v, scales, dataset) {
     s = scales[v.scale];
   }
 
-  return s || create(v, dataset);
+  return s || create(v, dataset, reg);
 }
 
-export default function builder(obj, dataset) {
+export function builder(obj, dataset, reg) {
   const scales = {};
   for (const s in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, s)) {
-      scales[s] = create(obj[s], dataset);
+      scales[s] = create(obj[s], dataset, reg);
     }
   }
   return scales;

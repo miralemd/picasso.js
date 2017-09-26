@@ -1,5 +1,5 @@
 import chart from './charts/chart';
-import renderer from './renderer';
+import rendererFactory from './renderer';
 import component from './component';
 import data from './data';
 import dataset from './data/dataset';
@@ -10,7 +10,8 @@ import interaction from './interaction';
 
 export {
   chart,
-  renderer,
+  rendererFactory,
+  rendererFactory as renderer,
   data,
   formatter,
   dataset,

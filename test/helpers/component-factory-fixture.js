@@ -8,6 +8,7 @@ export default function componentFactoryFixture() {
   let rendererOutput = [];
   let mediatorMock;
   let stylerMock;
+  let registriesMock;
   const sandbox = sinon.sandbox.create();
   const container = elementMock();
 
@@ -49,6 +50,10 @@ export default function componentFactoryFixture() {
       resolve: sandbox.stub()
     };
 
+    registriesMock = {
+
+    };
+
     return fn;
   };
 
@@ -63,7 +68,8 @@ export default function componentFactoryFixture() {
       chart: chartMock,
       renderer: rendererMock,
       mediator: mediatorMock,
-      styler: stylerMock
+      styler: stylerMock,
+      registries: registriesMock
     });
 
     return comp;

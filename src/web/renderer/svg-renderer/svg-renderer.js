@@ -191,3 +191,7 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
 
   return svg;
 }
+
+export function rendererComponent(picasso) {
+  picasso.renderer('svg', renderer);
+}

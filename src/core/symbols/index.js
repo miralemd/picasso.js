@@ -9,7 +9,7 @@ import star from './star';
 import nPolygon from './n-polygon';
 import cross from './cross';
 import bar from './bar';
-import { registry } from '../utils/registry';
+import registry from '../utils/registry';
 
 const reg = registry();
 

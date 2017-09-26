@@ -1,15 +1,12 @@
-import { registry } from '../utils/registry';
+import registry from '../utils/registry';
 
 import { numberFormat as d3NumberFormatter, timeFormat as d3TimeFormatter } from './d3';
 
-const reg = registry();
+const formatterRegistry = registry();
 
-export default function formatter(type, obj) {
-  if (obj) {
-    reg.add(type, obj);
-  }
-  return reg.get(type);
-}
+formatterRegistry('d3-number', d3NumberFormatter);
+formatterRegistry('d3-time', d3TimeFormatter);
 
-formatter('d3-number', d3NumberFormatter);
-formatter('d3-time', d3TimeFormatter);
+export {
+  formatterRegistry as default
+};

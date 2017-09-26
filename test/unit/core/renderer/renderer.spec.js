@@ -1,35 +1,34 @@
-import renderer from '../../../../src/core/renderer';
+import rendererRegistry from '../../../../src/core/renderer';
 
-describe('fooo', () => {
+describe('renderer', () => {
+  let renderer;
   beforeEach(() => {
+    renderer = rendererRegistry();
     renderer.register('foo', () => 'whatevz');
     renderer.register('bar', () => 'stapel');
-  });
-  afterEach(() => {
-    renderer.types().forEach(t => renderer.deregister(t));
   });
 
   it('should be a function', () => {
     expect(renderer).to.be.a('function');
   });
 
-  it('should throw error when type does not exist', () => {
+  it.skip('should throw error when type does not exist', () => { // TODO - decide how to handle non-existent types in registry.js
     const fn = () => { renderer('dummy'); };
     expect(fn).to.throw("Renderer of type 'dummy' does not exist");
   });
 
   it('should create a specific type', () => {
-    expect(renderer('bar')).to.equal('stapel');
+    expect(renderer('bar')()).to.equal('stapel');
   });
 
-  it('should prioritize in registered order', () => {
-    expect(renderer.prio()).to.deep.equal(['foo', 'bar']);
-    expect(renderer()).to.equal('whatevz');
+  it('should use default renderer when argument is ommitted', () => {
+    renderer.default('bar');
+    expect(renderer()()).to.equal('stapel');
   });
 
-  it('should change prio', () => {
-    renderer.prio(['bar', 'foo']);
-    expect(renderer.prio()).to.deep.equal(['bar', 'foo']);
-    expect(renderer()).to.equal('stapel');
+  it('should change default', () => {
+    renderer.prio(['bar', 'foo']); // prio is temporary due to backwards compatibility
+    expect(renderer.prio()).to.deep.equal(['bar']);
+    expect(renderer()()).to.equal('stapel');
   });
 });
