@@ -1,6 +1,5 @@
 import { pie, arc } from 'd3-shape';
-import { resolveSettings } from '../../settings-setup';
-import { resolveForDataObject } from '../../../style';
+import { normalizeSettings, resolveForItem } from '../../property-resolver';
 
 const DEFAULT_DATA_SETTINGS = {
   shape: 'pie',
@@ -116,7 +115,7 @@ const pieComponent = {
   },
   updateSettings(settings) {
     const chart = this.chart;
-    this.local = resolveSettings(settings.slice, DEFAULT_DATA_SETTINGS, chart);
+    this.local = normalizeSettings(settings.slice, DEFAULT_DATA_SETTINGS, chart);
   },
   beforeUpdate(settings) {
     this.updateSettings(settings);
@@ -126,9 +125,9 @@ const pieComponent = {
   },
   render({ data }) {
     const arcValues = [];
-    const slices = data.map((s, i) => {
-      const obj = resolveForDataObject(this.local, s, i);
-      obj.dataIndex = i;
+    const slices = data.map((s, i, all) => {
+      const obj = resolveForItem(s, this.local, all);
+      obj.data = s;
       arcValues.push(s.arc.value);
       return obj;
     });
