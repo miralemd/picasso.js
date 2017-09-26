@@ -1,77 +1,109 @@
 import {
   chart,
   renderer,
-  data,
-  formatter,
+  // temp
   dataset,
-  field,
   table,
-  component,
-  interaction
+  field
 } from './core';
+
 import './web';
 
-// import chartComponent from './core/charts';
-import boxMarkerComponent from './core/chart-components/markers/box';
-import pointMarkerComponent from './core/chart-components/markers/point';
-import pieComponent from './core/chart-components/markers/pie';
-import gridLineComponent from './core/chart-components/grid';
-import refLineComponent from './core/chart-components/ref-line';
-import axisComponent from './core/chart-components/axis';
-import textComponent from './core/chart-components/text';
-import scrollbarComponent from './core/chart-components/scrollbar';
-import brushRangeComponent from './web/components/brush-range';
-import rangeComponent from './core/chart-components/range';
-import brushLassoComponent from './core/chart-components/brush-lasso';
-import labelsComponent from './core/chart-components/labels';
-import categoricalLegend from './core/chart-components/legend-cat';
-import sequentialLegend from './core/chart-components/legend-seq';
+import {
+  components,
+  scales,
+  renderers
+} from './api';
 
-// Plugin API
-function use(plugin, options = {}) {
-  plugin({
-    chart,
-    renderer,
-    data,
-    dataset,
-    field,
-    table,
-    formatter,
-    component,
-    interaction
-  }, options);
+import componentRegistry from './core/component';
+import dataRegistry from './core/data';
+import formatterRegistry from './core/formatter';
+import interactionRegistry from './core/interaction';
+import scaleRegistry from './core/charts/scales';
+
+import loggerFn from './core/utils/logger';
+import registry from './core/utils/registry';
+
+function usePlugin(plugin, options = {}, api) {
+  plugin(api, options);
 }
 
-// Register components
-// use(chartComponent);
-use(textComponent);
-use(axisComponent);
-use(boxMarkerComponent);
-use(pointMarkerComponent);
-use(pieComponent);
-use(gridLineComponent);
-use(refLineComponent);
-use(scrollbarComponent);
-use(brushRangeComponent);
-use(rangeComponent);
-use(brushLassoComponent);
-use(labelsComponent);
-use(categoricalLegend);
-use(sequentialLegend);
-
 /**
- * The mother of all namespaces
- * @namespace picasso
+ * Create a custom configuration of picasso.js
+ *
+ * @param {object} cfg
+ * @returns {picasso}
  */
+function pic(config = {}, registries = {}) {
+  const logger = loggerFn(config.logger);
+  const regis = {
+    // -- registries --
+    component: registry(registries.component),
+    data: registry(registries.data),
+    formatter: registry(registries.formatter),
+    interaction: registry(registries.interaction),
+    renderer: renderer(registries.renderer),
+    scale: registry(registries.scale),
+    symbol: registry(registries.symbol),
+    // -- misc --
+    logger,
+    // -- temp -- // reconsider the data api when universal data is in place
+    dataset,
+    table,
+    field
+  };
+
+  if (config.renderer && config.renderer.prio) {
+    regis.renderer.default(config.renderer.prio[0]);
+  }
+
+  /**
+   * picasso.js
+   *
+   * @param {object} cfg
+   * @returns {picasso}
+   */
+  function picassojs(cfg) {
+    return pic({
+      ...config,
+      ...cfg
+    }, regis);
+  }
+
+  picassojs.use = (plugin, options = {}) => usePlugin(plugin, options, regis);
+  picassojs.chart = definition => chart(definition, {
+    registries: regis,
+    logger
+  });
+  picassojs.config = () => config;
+
+  Object.keys(regis).forEach((key) => {
+    picassojs[key] = regis[key];
+  });
+
+  return picassojs;
+}
+
+const p = pic({
+  renderer: {
+    prio: ['svg', 'canvas']
+  },
+  logger: {
+    level: 0
+  }
+}, {
+  component: componentRegistry,
+  data: dataRegistry,
+  formatter: formatterRegistry,
+  interaction: interactionRegistry,
+  renderer: renderer(),
+  scale: scaleRegistry
+});
+
+components.forEach(p.use);
+renderers.forEach(p.use);
+scales.forEach(p.use);
+
 export {
-  chart,
-  renderer,
-  data,
-  formatter,
-  dataset,
-  field,
-  table,
-  use,
-  component,
-  interaction
+  p as default
 };

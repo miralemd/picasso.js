@@ -13,6 +13,7 @@ describe('Chart', () => {
     let destroyed;
     let element;
     let definition;
+    let context;
 
     beforeEach(() => {
       created = sinon.spy();
@@ -45,10 +46,16 @@ describe('Chart', () => {
         beforeDestroy,
         destroyed
       };
+
+      context = {
+        registries: {
+          data: () => () => ({})
+        }
+      };
     });
 
     it('should call lifecycle methods when rendering', () => {
-      chart(definition);
+      chart(definition, context);
       // const expectedThis = {
       //   ...definition
       // };
@@ -62,12 +69,12 @@ describe('Chart', () => {
 
     it('should register event listeners when rendering', () => {
       expect(element.listeners.length).to.equal(0);
-      chart(definition);
+      chart(definition, context);
       expect(element.listeners.length).to.equal(4); // Click listener + 3 brush listeners
     });
 
     it('should call lifecycle methods when updating', () => {
-      const chartInstance = chart(definition);
+      const chartInstance = chart(definition, context);
       chartInstance.update();
       expect(created, 'created').to.have.been.called.once;
       expect(beforeRender, 'beforeRender').to.have.been.called.twice;
@@ -78,7 +85,7 @@ describe('Chart', () => {
     });
 
     it('should call lifecycle methods when destroying', () => {
-      const chartInstance = chart(definition);
+      const chartInstance = chart(definition, context);
       chartInstance.destroy();
       expect(created, 'created').to.have.been.called.once;
       expect(beforeRender, 'beforeRender').to.have.been.called.once;

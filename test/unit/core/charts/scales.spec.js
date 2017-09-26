@@ -1,49 +1,37 @@
 import { create } from '../../../../src/core/charts/scales';
 
 describe('scales', () => {
+  let reg;
+  let scaleFn;
+  beforeEach(() => {
+    reg = {
+      has: sinon.stub(),
+      get: sinon.stub()
+    };
+    scaleFn = () => ({
+      min: () => 0,
+      max: () => 1
+    });
+  });
   it('should not throw when source options is not provided', () => {
-    const fn = () => create({});
+    const fn = () => create({}, null, reg);
     expect(fn).to.not.throw();
   });
 
-  it('should create linear scale when type option is "linear"', () => {
-    const s = create({});
-    expect(s.type).to.equal('linear');
-    expect(s.min()).to.equal(0);
-    expect(s.max()).to.equal(1);
-    expect(s.sources).to.eql([]);
-  });
-
-  it('should create linear scale with specific min/max', () => {
+  it('should create a scale of a specific type', () => {
+    reg.has.withArgs('custom').returns(true);
+    reg.get.returns(scaleFn);
     const s = create({
-      min: 20,
-      max: 30
-    });
-    expect(s.type).to.equal('linear');
-    expect(s.min()).to.equal(20);
-    expect(s.max()).to.equal(30);
-  });
-
-  it('should create band scale when type option is "band"', () => {
-    const s = create({ type: 'band' });
-    expect(s.type).to.equal('band');
-    expect(s.sources).to.eql([]);
-  });
-
-  it('should create sequential color scale when type option is "sequential-color"', () => {
-    const s = create({ type: 'sequential-color' });
-    expect(s.type).to.equal('sequential-color');
-    expect(s.sources).to.eql([]);
-  });
-
-  it('should create categorical color scale when type option is "categorical-color"', () => {
-    const s = create({ type: 'categorical-color' });
-    expect(s.type).to.equal('categorical-color');
+      type: 'custom'
+    }, null, reg);
+    expect(s.type).to.equal('custom');
     expect(s.sources).to.eql([]);
   });
 
   it('should create linear scale when no better type fits', () => {
-    const s = create({});
+    reg.has.withArgs('linear').returns(true);
+    reg.get.returns(scaleFn);
+    const s = create({}, null, reg);
     expect(s.type).to.equal('linear');
     expect(s.min()).to.equal(0);
     expect(s.max()).to.equal(1);
@@ -51,6 +39,8 @@ describe('scales', () => {
   });
 
   it('should create linear scale when source fields are measures', () => {
+    reg.has.withArgs('linear').returns(true);
+    reg.get.returns(scaleFn);
     const dataset = {
       findField: sinon.stub()
     };
@@ -67,38 +57,13 @@ describe('scales', () => {
     } });
     const s = create({
       source: ['m1', 'm2']
-    }, dataset);
+    }, dataset, reg);
     expect(s.type).to.equal('linear');
   });
 
-  it('should exclude NaN values when calculating the combined min/max', () => {
-    const dataset = {
-      findField: sinon.stub()
-    };
-
-    dataset.findField.withArgs('m1').returns({ field: {
-      type: () => 'measure',
-      min: () => 'NaN',
-      max: () => 90
-    } });
-    dataset.findField.withArgs('m2').returns({ field: {
-      type: () => 'measure',
-      min: () => 13,
-      max: () => 70
-    } });
-    dataset.findField.withArgs('m3').returns({ field: {
-      type: () => 'measure',
-      min: () => -5,
-      max: () => 'NaN'
-    } });
-    const s = create({
-      source: ['m1', 'm2', 'm3']
-    }, dataset);
-    expect(s.min()).to.equal(-5);
-    expect(s.max()).to.equal(90);
-  });
-
   it('should create band scale when source fields are dimensions', () => {
+    reg.has.withArgs('band').returns(true);
+    reg.get.returns(scaleFn);
     const dataset = {
       findField: sinon.stub()
     };
@@ -111,7 +76,7 @@ describe('scales', () => {
     } });
     const s = create({
       source: ['d1']
-    }, dataset);
+    }, dataset, reg);
     expect(s.type).to.equal('band');
   });
 });

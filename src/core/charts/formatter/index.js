@@ -1,10 +1,8 @@
-import formatter from '../../formatter';
-
 function fieldFinder(query, field) {
   return field.title() === query;
 }
 
-export function create(options, dataset) {
+export function create(options, dataset, reg) {
   // TODO Have some magic to handle and merge formatters from multiple sources
 
   if (options.source) {
@@ -21,21 +19,21 @@ export function create(options, dataset) {
   } else {
     formatterName = options.type || 'd3-number';
   }
-  return formatter(formatterName)(options.format || '');
+  return reg(formatterName)(options.format || '');
       // .locale( options.locale || {} );
 }
 
-export default function builder(obj, dataset) {
+export default function builder(obj, dataset, reg) {
   const formatters = {};
   for (const f in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, f)) {
-      formatters[f] = create(obj[f], dataset);
+      formatters[f] = create(obj[f], dataset, reg);
     }
   }
   return formatters;
 }
 
-export function getOrCreateFormatter(v, formatters, dataset) {
+export function getOrCreateFormatter(v, formatters, dataset, reg) {
   let f;
   if (typeof v === 'string' && formatters[v]) { // return by name
     f = formatters[v];
@@ -45,5 +43,5 @@ export function getOrCreateFormatter(v, formatters, dataset) {
     f = formatters[v.type];
   }
 
-  return f || create(v, dataset);
+  return f || create(v, dataset, reg);
 }

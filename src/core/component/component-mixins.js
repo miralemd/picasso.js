@@ -1,4 +1,4 @@
-import { registry } from '../utils/registry';
+import registry from '../utils/registry';
 
 const typeMixins = registry();
 const mixins = [];

@@ -1,15 +1,8 @@
-import { registry } from '../utils/registry';
+import registry from '../utils/registry';
 import native from '../../web/interactions/native';
 
 const reg = registry();
 
-function interaction(name, definition) {
-  if (definition) {
-    reg.register(name, definition);
-  }
-  return reg.get(name);
-}
+reg('native', native);
 
-interaction('native', native);
-
-export default interaction;
+export default reg;

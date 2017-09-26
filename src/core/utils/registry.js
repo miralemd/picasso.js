@@ -1,85 +1,81 @@
-class Registry {
+export default function registryFactory(parentRegistry) {
+  let defaultValue;
+  const reg = {};
+  const parent = parentRegistry || {
+    get: () => undefined,
+    has: () => false,
+    default: () => undefined
+  };
+
+  defaultValue = parent.default();
+
   /**
-   * @private
+   * @param {string} key
+   * @param {any} value
+   * @throws {TypeError} Key must be a non-empty string
+   * @returns {boolean} False if the given key already exists, true otherwise
    * @example
-   * var r = new Registry();
-   * r.register( "marker", function( args ) {
-   *   return new markers[args.type]( args );
-   * } );
-   *
-   * r.build( {
-   *   marker: {
-   *     type: "point"
-   *   }
-   * } );
+   * var r = registry();
+   * r.add( "marker", function(args) {
+   *   return new markers[args.type](args);
+   * });
    *
    */
-  constructor(reg) {
-    this.registry = reg || {};
-  }
-
-  /**
-   * Register a factory function
-   * @deprecated - Use #add instead
-   * @param key
-   * @param fn
-   */
-  register(key, value) {
-    return this.add(key, value);
-  }
-
-  add(key, value) {
+  function add(key, value) {
     if (!key || typeof key !== 'string') {
-      throw new Error('Invalid key');
+      throw new TypeError('Invalid argument: key must be a non-empty string');
     }
-    if (key in this.registry) {
+    if (key in reg) {
       return false;
     }
-    this.registry[key] = value;
+    reg[key] = value;
     return true;
   }
 
-  get(key) {
-    return this.registry[key];
+  function get(key) {
+    return reg[key] || parent.get(key);
   }
 
-  getKeys() {
-    return Object.keys(this.registry);
+  function has(key) {
+    return !!reg[key] || parent.has(key);
   }
 
-  getValues() {
-    return Object.keys(this.registry).map(key => this.registry[key]);
-  }
-
-  has(key) {
-    return !!this.registry[key];
-  }
-
-  remove(key) {
-    const d = this.registry[key];
-    delete this.registry[key];
+  function remove(key) {
+    const d = reg[key];
+    delete reg[key];
     return d;
   }
 
-  /**
-   * Walk through obj properties and call factory function on registered properties
-   * @returns {*}
-   */
-  build(obj, options) {
-    const parts = {};
-
-    for (const key in obj) {
-      if (this.registry[key]) {
-        parts[key] = this.registry[key](obj[key], options);
-      }
-    }
-
-    return parts;
+  function getKeys() {
+    return Object.keys(reg);
   }
-}
 
-export function registry(reg) {
-  return new Registry(reg);
-}
+  function getValues() {
+    return Object.keys(reg).map(key => reg[key]);
+  }
 
-export default Registry;
+  function deflt(d) {
+    if (typeof d !== 'undefined') {
+      defaultValue = d;
+    }
+    return defaultValue;
+  }
+
+  function registry(key, value) {
+    if (typeof value !== 'undefined') {
+      return add(key, value);
+    }
+    return get(key || defaultValue);
+  }
+
+  registry.add = add;
+  registry.get = get;
+  registry.has = has;
+  registry.remove = remove;
+  registry.getKeys = getKeys;
+  registry.getValues = getValues;
+  registry.default = deflt;
+  registry.register = add; // deprecated
+
+  return registry;
+}

@@ -7,17 +7,13 @@ import {
   isValidTapEvent
 } from '../utils/event-type';
 import { getShapeType } from '../utils/shapes';
-import dataRegistry from '../data/index';
 import buildFormatters, { getOrCreateFormatter } from './formatter';
-import buildScales, { getOrCreateScale } from './scales';
+import { builder as buildScales, getOrCreateScale } from './scales';
 import buildScroll, { getOrCreateScrollApi } from './scroll-api';
 import brush from '../brush';
-import component from '../component';
 import componentFactory from '../component/component-factory';
-import interaction from '../interaction';
 import mediatorFactory from '../mediator';
 import NarrowPhaseCollision from '../math/narrow-phase-collision';
-import loggerFn from '../utils/logger';
 import styleResolver from '../style/resolver';
 
 /**
@@ -131,13 +127,16 @@ function addComponentDelta(shape, containerBounds, componentBounds) {
  * @param  {Chart.Props} settings - Settings
  * @return {Chart}
  */
-function chart(definition) {
+function chart(definition, context) {
   let {
     element,
     data = {},
     settings = {},
     on = {}
   } = definition;
+
+  const registries = context.registries;
+  const logger = context.logger;
 
   const chartMixins = mixins.list();
   const listeners = [];
@@ -164,12 +163,13 @@ function chart(definition) {
   };
 
   const createComponent = (compSettings, container) => {
-    const componentDefinition = component(compSettings.type);
+    const componentDefinition = registries.component(compSettings.type);
     const compInstance = componentFactory(componentDefinition, {
       settings: compSettings,
       chart: instance,
       mediator,
       styler,
+      registries,
       container
     });
     return {
@@ -241,8 +241,6 @@ function chart(definition) {
     }
   };
 
-  const logger = loggerFn();
-
   const created = createCallback('created');
   const beforeMount = createCallback('beforeMount');
   const mounted = createCallback('mounted');
@@ -259,7 +257,7 @@ function chart(definition) {
       scroll = {}
     } = _settings;
 
-    dataset = dataRegistry(_data.type)(_data.data);
+    dataset = registries.data(_data.type)(_data.data);
     if (!partialData) {
       Object.keys(brushes).forEach(b => brushes[b].clear());
     }
@@ -267,8 +265,8 @@ function chart(definition) {
       logger.level(settings.logger.level);
     }
     chartStyle = settings.style || {};
-    currentScales = buildScales(scales, dataset);
-    currentFormatters = buildFormatters(formatters, dataset);
+    currentScales = buildScales(scales, dataset, registries.scale);
+    currentFormatters = buildFormatters(formatters, dataset, registries.formatter);
     currentScrollApis = buildScroll(scroll, currentScrollApis);
   };
 
@@ -313,7 +311,7 @@ function chart(definition) {
       }
     });
     currentInteractions = interactions.map((intSettings) => {
-      const intDefinition = intSettings.key && current[intSettings.key] ? current[intSettings.key] : interaction(intSettings.type)(instance, mediator, element);
+      const intDefinition = intSettings.key && current[intSettings.key] ? current[intSettings.key] : registries.interaction(intSettings.type)(instance, mediator, element);
       intDefinition.set(intSettings);
       return intDefinition;
     });
@@ -752,7 +750,7 @@ function chart(definition) {
    * instance.scale({ source: '0/1', type: 'linear' }); // Create a new scale
    */
   instance.scale = function scale(v) {
-    return getOrCreateScale(v, currentScales, dataset);
+    return getOrCreateScale(v, currentScales, dataset, registries.scale);
   };
 
   /**
@@ -770,7 +768,7 @@ function chart(definition) {
    * }); // Create a new formatter
    */
   instance.formatter = function formatter(v) {
-    return getOrCreateFormatter(v, currentFormatters, dataset);
+    return getOrCreateFormatter(v, currentFormatters, dataset, registries.formatter);
   };
 
   /**

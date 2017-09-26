@@ -6,7 +6,7 @@ import { create as circle } from './circle';
 import { create as line } from './line';
 import { create as path } from './path';
 import { create as text } from './text';
-import { registry } from '../../utils/registry';
+import registry from '../../utils/registry';
 
 const reg = registry();
 

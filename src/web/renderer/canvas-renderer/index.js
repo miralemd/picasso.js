@@ -12,3 +12,7 @@ register('path', path);
 register('text', text);
 
 export default renderer;
+
+export function rendererComponent(picasso) {
+  picasso.renderer('canvas', renderer);
+}

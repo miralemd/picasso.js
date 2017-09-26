@@ -1,7 +1,6 @@
 import extend from 'extend';
 import EventEmitter from '../utils/event-emitter';
 import { list as listMixins } from './component-mixins';
-import rendererFn from '../renderer/index';
 import {
   styler as brushStyler,
   resolveTapEvent,
@@ -130,6 +129,7 @@ function componentFactory(definition, options = {}) {
     container,
     mediator,
     styler,
+    registries,
     renderer // Used by tests
   } = options;
   const config = options.settings || {};
@@ -220,7 +220,7 @@ function componentFactory(definition, options = {}) {
     get: () => data
   });
 
-  const rend = definition.renderer ? renderer || rendererFn(definition.renderer) : renderer || rendererFn();
+  const rend = definition.renderer ? renderer || registries.renderer(definition.renderer)() : renderer || registries.renderer()();
   brushArgs.renderer = rend;
 
   const dockConfig = {
