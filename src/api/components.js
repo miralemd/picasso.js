@@ -1,5 +1,6 @@
 import boxMarkerComponent from '../core/chart-components/markers/box';
 import pointMarkerComponent from '../core/chart-components/markers/point';
+import pieComponent from '../core/chart-components/markers/pie';
 import gridLineComponent from '../core/chart-components/grid';
 import refLineComponent from '../core/chart-components/ref-line';
 import axisComponent from '../core/chart-components/axis';
@@ -15,6 +16,7 @@ import sequentialLegend from '../core/chart-components/legend-seq';
 export default [
   boxMarkerComponent,
   pointMarkerComponent,
+  pieComponent,
   gridLineComponent,
   refLineComponent,
   axisComponent,

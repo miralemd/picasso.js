@@ -7,6 +7,8 @@ import {
   field
 } from './core';
 
+import './web';
+
 import {
   components,
   scales,
