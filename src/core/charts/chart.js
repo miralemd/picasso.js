@@ -268,7 +268,7 @@ function chart(definition, context) {
     }
     chartStyle = settings.style || {};
     currentScales = buildScales(scales, dataset, registries.scale);
-    currentFormatters = buildFormatters(formatters, dataset);
+    currentFormatters = buildFormatters(formatters, dataset, registries.formatter);
     currentScrollApis = buildScroll(scroll, currentScrollApis);
   };
 
