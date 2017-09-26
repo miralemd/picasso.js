@@ -1,10 +1,52 @@
-import * as picasso from '../../src/index';
+import picasso from '../../src/index';
 import createElement from '../mocks/element-mock';
 
 describe('picasso.js', () => {
-  it('should expose the correct top-level API', () => {
-    expect(typeof picasso.chart).to.equal('function');
-    expect(typeof picasso.renderer).to.equal('function');
+  const iface = [
+    'component',
+    'data',
+    'formatter',
+    'interaction',
+    'renderer',
+    'scale',
+    'symbol'
+  ];
+
+  describe('api', () => {
+    it('should expose the correct top-level API', () => {
+      expect(typeof picasso).to.equal('function');
+      expect(typeof picasso.use).to.equal('function');
+      expect(typeof picasso.chart).to.equal('function');
+
+      // registries
+      iface.forEach((key) => {
+        expect(typeof picasso[key]).to.equal('function');
+        expect(typeof picasso[key].add).to.equal('function');
+      });
+    });
+  });
+
+  describe('use', () => {
+    it('should expose registries to plugin API', () => {
+      const plugin = sinon.stub();
+      picasso.use(plugin);
+      const firstParam = plugin.args[0][0];
+
+      iface.forEach((key) => {
+        expect(typeof firstParam[key]).to.equal('function');
+        expect(typeof firstParam[key].add).to.equal('function');
+      });
+    });
+
+    it('should expose data api', () => {
+      const plugin = sinon.stub();
+      picasso.use(plugin);
+      const firstParam = plugin.args[0][0];
+
+      expect(typeof firstParam.dataset).to.equal('function');
+      expect(typeof firstParam.table).to.equal('function');
+      expect(typeof firstParam.field).to.equal('function');
+    });
   });
 
   describe('Chart lifecycle', () => {
