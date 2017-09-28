@@ -1,5 +1,4 @@
-import * as textManipulation from '../../../../../../src/web/renderer/text-manipulation';
-import { measureText } from '../../../../../../src/web/renderer/text-metrics';
+import * as textManipulation from '../../../../../../src/web/text-manipulation';
 import render from '../../../../../../src/web/renderer/canvas-renderer/shapes/text';
 
 describe('text', () => {
@@ -48,7 +47,7 @@ describe('text', () => {
       render(text, { g });
 
       expect(textManipulation.ellipsText.calledOnce).to.equal(true);
-      expect(textManipulation.ellipsText.alwaysCalledWithExactly(text, measureText)).to.equal(true);
+      expect(textManipulation.ellipsText.alwaysCalledWithExactly(text, textManipulation.measureText)).to.equal(true);
     });
 
     it('should fire fillText with correct arguments', () => {

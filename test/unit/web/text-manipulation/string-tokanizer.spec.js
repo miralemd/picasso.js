@@ -1,4 +1,4 @@
-import stringTokenizer from '../../../../src/web/renderer/string-tokenizer';
+import stringTokenizer from '../../../../src/web/text-manipulation/string-tokenizer';
 
 function toArray(iterator) {
   const ary = [];

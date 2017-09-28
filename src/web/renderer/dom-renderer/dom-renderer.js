@@ -1,5 +1,5 @@
 import { h, patch } from './vdom';
-import { measureText } from '../text-metrics';
+import { measureText } from '../../text-manipulation';
 import createRendererBox from '../renderer-box';
 
 export default function renderer(opts = {}) {

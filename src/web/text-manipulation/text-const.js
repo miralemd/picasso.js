@@ -1,0 +1,7 @@
+const DEFAULT_LINE_HEIGHT = 1.2;
+const HYPHENS_CHAR = '-';
+
+export {
+  DEFAULT_LINE_HEIGHT,
+  HYPHENS_CHAR
+};

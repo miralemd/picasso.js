@@ -1,5 +1,4 @@
-import { measureText } from '../../text-metrics';
-import { ellipsText } from '../../text-manipulation';
+import { ellipsText, measureText } from '../../../text-manipulation';
 import { detectTextDirection, flipTextAnchor } from '../../../../core/utils/rtl-util';
 
 function convertBaseline(baseline) {

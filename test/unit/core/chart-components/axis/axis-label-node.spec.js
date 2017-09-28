@@ -1,5 +1,5 @@
 import buildLabel from '../../../../../src/core/chart-components/axis/axis-label-node';
-import { textBounds } from '../../../../../src/web/renderer/text-metrics';
+import { textBounds } from '../../../../../src/web/text-manipulation';
 
 describe('Axis Label Node', () => {
   const innerRect = { x: 0, y: 0, width: 0, height: 0 };

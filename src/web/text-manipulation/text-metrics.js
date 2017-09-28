@@ -1,4 +1,5 @@
-import { resolveLineBreakAlgorithm } from './text-manipulation';
+import { resolveLineBreakAlgorithm } from './line-break-resolver';
+import { DEFAULT_LINE_HEIGHT } from './text-const';
 
 let heightMeasureCache = {},
   widthMeasureCache = {},
@@ -105,7 +106,8 @@ function calcTextBounds(attrs, measureFn = measureText) {
  * @param {string} [node['font-family']] - Font family
  * @param {string} [node.wordBreak] - Word-break option
  * @param {number} [node.maxWidth] - Maximum allowed text width
- * @param {number} [node.maxLines] - Maximum number of lines allowed
+ * @param {number} [node.maxHeight] - Maximum allowed text height. If both maxLines and maxHeight are set, the property that results in the fewest number of lines is used
+ * @param {number} [node.maxLines] - Maximum number of lines allowed.
  * @param {number} [node.lineHeight=1.2] - Line height
  * @param {function} [measureFn] - Optional text measure function
  * @return {object} The bounding rectangle
@@ -117,7 +119,7 @@ export function textBounds(node, measureFn = measureText) {
     const fontSize = node['font-size'] || node.fontSize;
     const fontFamily = node['font-family'] || node.fontFamily;
     const resolvedLineBreaks = lineBreakFn(node, text => measureFn({ text, fontFamily, fontSize }));
-    const lineHeight = node.lineHeight || 1.2;
+    const lineHeight = node.lineHeight || DEFAULT_LINE_HEIGHT;
     bounds.height = bounds.height * resolvedLineBreaks.lines.length * lineHeight;
 
     return bounds;

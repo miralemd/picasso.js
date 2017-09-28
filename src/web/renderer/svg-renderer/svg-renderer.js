@@ -3,15 +3,15 @@ import { svgNs } from './svg-nodes';
 import sceneFactory from '../../../core/scene-graph/scene';
 import {
   measureText,
-  textBounds
-} from '../text-metrics';
+  textBounds,
+  onLineBreak
+} from '../../text-manipulation';
 import {
   resetGradients,
   onGradient,
   createDefsNode
 } from './svg-gradient';
 import createRendererBox from '../renderer-box';
-import { onLineBreak } from '../text-manipulation';
 
 export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sceneFactory) {
   const tree = treeFn();
@@ -168,7 +168,7 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
   svg.measureText = ({ text, fontSize, fontFamily }) => measureText({ text, fontSize, fontFamily });
 
   /**
- * Calculates the bounding rectangle of a text node. Including any line breaks.
+ * Calculates the bounding rectangle of a text node. Including any potential line breaks.
  * @param {object} node
  * @param {string} node.text - Text to measure
  * @param {number} [node.x=0] - X-coordinate
@@ -182,9 +182,9 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
  * @param {string} [node['font-family']] - Font family
  * @param {string} [node.wordBreak] - Word-break option
  * @param {number} [node.maxWidth] - Maximum allowed text width
+ * @param {number} [node.maxHeight] - Maximum allowed text height. If both maxLines and maxHeight are set, the property that results in the fewest number of lines is used
  * @param {number} [node.maxLines] - Maximum number of lines allowed
  * @param {number} [node.lineHeight=1.2] - Line height
- * @param {function} [measureFn] - Optional text measure function
  * @return {object} The bounding rectangle
  */
   svg.textBounds = node => textBounds(node);

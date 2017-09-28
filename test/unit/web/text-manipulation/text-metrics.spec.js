@@ -1,4 +1,4 @@
-import { measureText, textBounds } from '../../../../src/web/renderer/text-metrics';
+import { measureText, textBounds } from '../../../../src/web/text-manipulation';
 
 describe('text-metrics', () => {
   describe('measureText', () => {
