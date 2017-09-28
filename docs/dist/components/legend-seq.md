@@ -105,6 +105,10 @@ settings: {
     maxLengthPx: 100, // Max length in pixels. Default: 100. Optional.
     padding: 5, // padding in pixels to the legend node. Default: 5. Optional.
     anchor: 'top', // Where to anchor the title in relation to the legend node, supported values are [top, left and right]. Default: 'top'. Optional.
+    wordBreak: 'break-all', // How overflowing title is handled, if it should insert line breaks at word boundries (normal) or character boundries (break-all). Default: 'break-all'. Optional.
+    hyphens: 'auto', // How words should be hyphenated when text wraps across multiple lines (only applicable with wordBreak). Default: 'auto'. Optional.
+    maxLines: 2, // Number of allowed lines if title contains line breaks (only applicable with wordBreak). Default: 2. Optional.
+    lineHeight: 1.2, // A multiplier defining the distance between lines (only applicable with wordBreak). Default: 1.2. Optional.
   },
 }
 ```

@@ -1,5 +1,6 @@
 import componentFactory from '../../src/core/component/component-factory';
 import elementMock from '../mocks/element-mock';
+import findNodes from './node-def-selector';
 
 export default function componentFactoryFixture() {
   let comp;
@@ -107,6 +108,8 @@ export default function componentFactoryFixture() {
   fn.sandbox = () => sandbox;
 
   fn.instance = () => comp;
+
+  fn.findNodes = s => findNodes(s, { children: rendererOutput });
 
   return fn();
 }

@@ -28,20 +28,21 @@ export function createTitleNode(ctx) {
   const state = ctx.state;
   const settings = ctx.stgns;
   const isTickLeft = state.ticks.anchor === 'left';
+  const isTickTop = state.ticks.anchor === 'top';
   let x = state.rect.x;
   let y = state.rect.y;
   let textAnchor = 'start';
 
   if (state.title.anchor === 'left') {
     x += state.title.requiredWidth() - settings.title.padding;
-    y += state.title.requiredHeight();
-    y += state.ticks.requiredHeight();
+    y += state.title.textMetrics.height;
+    y += isTickTop ? state.rect.height - state.title.textBounds.height : 0;
     textAnchor = 'end';
   } else if (state.title.anchor === 'right') {
     x += state.legend.length();
     x += settings.title.padding;
     y += state.title.textMetrics.height;
-    y += state.ticks.requiredHeight();
+    y += isTickTop ? state.rect.height - state.title.textBounds.height : 0;
   } else if (state.title.anchor === 'top') {
     x += isTickLeft ? state.rect.width : 0;
     y += state.title.textMetrics.height;
@@ -57,6 +58,10 @@ export function createTitleNode(ctx) {
     fontSize: settings.title.fontSize,
     fontFamily: settings.title.fontFamily,
     maxWidth: settings.title.maxLengthPx,
+    maxLines: settings.title.maxLines,
+    wordBreak: settings.title.wordBreak,
+    hyphens: settings.title.hyphens,
+    lineHeight: settings.title.lineHeight,
     anchor: textAnchor
   };
 
@@ -105,10 +110,6 @@ export function createLegendRectNode(ctx, stops) {
 export function createTickNodes(ctx, legendNode) {
   const state = ctx.state;
   const settings = ctx.stgns;
-  let x = 0;
-  let y = 0;
-  let dx = 0;
-  let dy = 0;
   let anchor = 'start';
   const rangeSelectorRect = {
     type: 'rect',
@@ -120,24 +121,32 @@ export function createTickNodes(ctx, legendNode) {
   };
 
   const nodes = state.ticks.values.map((tick) => {
-    dy = state.isVertical && tick.pos === 1 ? -(tick.textMetrics.height / 5) : tick.textMetrics.height;
+    let x = 0;
+    let y = 0;
+    let dx = 0;
+    let dy = 0;
+
+    if (state.isVertical) {
+      y = legendNode.y + (legendNode.height * tick.pos);
+      dy = tick.pos === 1 ? -(tick.textMetrics.height / 5) : tick.textMetrics.height;
+    } else {
+      x = legendNode.x + (legendNode.width * tick.pos);
+    }
 
     if (state.ticks.anchor === 'right') {
       x = legendNode.x + settings.size + settings.tick.padding;
-      y = legendNode.y + (legendNode.height * tick.pos);
 
       rangeSelectorRect.x = legendNode.x + legendNode.width;
     } else if (state.ticks.anchor === 'left') {
       x = legendNode.x - settings.tick.padding;
-      y = legendNode.y + (legendNode.height * tick.pos);
       anchor = 'end';
     } else if (state.ticks.anchor === 'top') {
-      x = legendNode.x + (legendNode.width * tick.pos);
-      y = state.rect.y;
+      y = legendNode.y - settings.tick.padding;
+      dy -= tick.textMetrics.height * 0.25;
       anchor = tick.pos === 0 ? 'start' : 'end';
     } else if (state.ticks.anchor === 'bottom') {
-      x = legendNode.x + (legendNode.width * tick.pos);
       y = legendNode.y + legendNode.height + settings.tick.padding;
+      dy = tick.textMetrics.height * 0.8;
       anchor = tick.pos === 0 ? 'start' : 'end';
 
       rangeSelectorRect.y = legendNode.y + legendNode.height;

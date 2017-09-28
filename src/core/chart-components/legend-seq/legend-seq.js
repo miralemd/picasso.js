@@ -94,6 +94,16 @@ function initState(ctx) {
     fontSize: titleStgns.fontSize,
     fontFamily: titleStgns.fontFamily
   });
+  const titleTextBounds = ctx.renderer.textBounds({
+    text: titleStgns.text,
+    fontSize: titleStgns.fontSize,
+    fontFamily: titleStgns.fontFamily,
+    maxLines: titleStgns.maxLines,
+    maxWidth: titleStgns.maxLengthPx,
+    wordBreak: titleStgns.wordBreak,
+    hyphens: titleStgns.hyphens,
+    lineHeight: titleStgns.lineHeight
+  });
 
   const fillScale = ctx.chart.scale(ctx.stgns.fill);
   const majorScale = ctx.chart.scale(ctx.stgns.major);
@@ -106,11 +116,12 @@ function initState(ctx) {
     title: {
       anchor: resolveTitleAnchor(ctx.settings),
       textMetrics: titleTextMetrics,
+      textBounds: titleTextBounds,
       requiredWidth: () => {
         if (!titleStgns.show) {
           return 0;
         }
-        let w = titleTextMetrics.width;
+        let w = titleTextBounds.width;
         let mw = titleStgns.maxLengthPx;
         if (!isVertical) {
           w += titleStgns.padding;
@@ -122,7 +133,7 @@ function initState(ctx) {
         if (!titleStgns.show) {
           return 0;
         }
-        let h = titleTextMetrics.height;
+        let h = titleTextBounds.height;
         if (isVertical) {
           h += titleStgns.padding;
         }
@@ -133,7 +144,8 @@ function initState(ctx) {
       values: tickValues,
       anchor: tickAnchor,
       length: Math.min(Math.max(...tickValues.map(t => t.textMetrics.width)), ctx.stgns.tick.maxLengthPx),
-      requiredHeight: () => (tickAnchor === 'top' ? Math.max(...state.ticks.values.map(t => t.textMetrics.height)) + ctx.stgns.tick.padding : 0)
+      requiredHeight: () => (tickAnchor === 'top' ? Math.max(...state.ticks.values.map(t => t.textMetrics.height)) + ctx.stgns.tick.padding : 0),
+      height: Math.max(...tickValues.map(t => t.textMetrics.height))
     },
     legend: {
       fillScale,
@@ -182,6 +194,10 @@ function initState(ctx) {
  * @property {number} [title.maxLengthPx=100] - Max length in pixels
  * @property {number} [title.padding=5] - padding in pixels to the legend node
  * @property {string} [title.anchor='top'] - Where to anchor the title in relation to the legend node, supported values are [top, left and right]
+ * @property {string} [title.wordBreak='break-all'] - How overflowing title is handled, if it should insert line breaks at word boundries (normal) or character boundries (break-all)
+ * @property {string} [title.hyphens='auto'] - How words should be hyphenated when text wraps across multiple lines (only applicable with wordBreak)
+ * @property {number} [title.maxLines=2] - Number of allowed lines if title contains line breaks (only applicable with wordBreak)
+ * @property {number} [title.lineHeight=1.2] - A multiplier defining the distance between lines (only applicable with wordBreak)
  */
 
 const legendDef = {
@@ -218,6 +234,10 @@ const legendDef = {
         fontFamily: 'Arial',
         maxLengthPx: 100,
         padding: 5,
+        maxLines: 2,
+        wordBreak: 'break-all',
+        lineHeight: 1.2,
+        hyphens: 'auto',
         anchor: null // Use default based on dock
       }
     }
@@ -253,7 +273,7 @@ const legendDef = {
     // Append or use title size
     if (this.stgns.title.show) {
       if (state.title.anchor === 'left' || state.title.anchor === 'right') {
-        prefSize = Math.max(state.title.textMetrics.height, prefSize);
+        prefSize = Math.max(state.title.textBounds.height + paddings, prefSize);
       } else {
         prefSize = Math.max(prefSize, state.title.requiredWidth() + paddings);
       }

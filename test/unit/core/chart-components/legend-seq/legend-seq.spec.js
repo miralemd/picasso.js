@@ -4,14 +4,18 @@ import sequentialScale from '../../../../../src/core/scales/color/sequential';
 import linearScale from '../../../../../src/core/scales/linear';
 
 describe('Legend Sequential', () => {
+  const ticksSelector = '[id="legend-seq-ticks"] text';
+  const tickFillBoundarySelector = '[id="legend-seq-ticks"] rect';
+  const titleSelector = '[text="testing"]';
   let componentFixture;
   let userDef;
-  let expectedOutput;
-  let expectedTitleNode;
-  let expectedTickNodes;
-  let expectedGradientNode;
   let container;
   let chartMock;
+
+  function render() {
+    componentFixture.simulateCreate(legendSeq, userDef);
+    componentFixture.simulateRender(container);
+  }
 
   beforeEach(() => {
     container = {
@@ -38,103 +42,46 @@ describe('Legend Sequential', () => {
     const linScale = linearScale();
     linScale.sources = [];
     chartMock.scale.withArgs('majorScale').returns(linScale);
-
-    expectedGradientNode = {
-      type: 'rect',
-      x: 5,
-      y: 15,
-      width: 15,
-      height: 35,
-      fill: {
-        type: 'gradient',
-        stops: [{
-          color: 'rgb(180, 221, 212)',
-          offset: 0,
-          type: 'stop'
-        },
-        {
-          color: 'rgb(34, 83, 90)',
-          offset: 1,
-          type: 'stop'
-        }],
-        degree: 90
-      }
-    };
-
-    expectedTickNodes = [
-      {
-        type: 'text',
-        x: 25,
-        y: 15,
-        dx: 0,
-        dy: 5,
-        text: 0,
-        fontSize: '12px',
-        fontFamily: 'Arial',
-        fill: '#595959',
-        maxWidth: 100,
-        anchor: 'start',
-        textBoundsFn: componentFixture.mocks().renderer.textBounds
-      },
-      {
-        type: 'text',
-        x: 25,
-        y: 50,
-        dx: 0,
-        dy: -1,
-        text: 1,
-        fontSize: '12px',
-        fontFamily: 'Arial',
-        fill: '#595959',
-        maxWidth: 100,
-        anchor: 'start',
-        textBoundsFn: componentFixture.mocks().renderer.textBounds
-      },
-      {
-        type: 'rect',
-        width: 0,
-        height: 35,
-        fill: 'transparent',
-        x: 20,
-        y: 15
-      }
-    ];
-
-    expectedTitleNode = {
-      type: 'text',
-      x: 5,
-      y: 10,
-      text: 'testing',
-      fill: '#595959',
-      fontSize: '12px',
-      fontFamily: 'Arial',
-      maxWidth: 100,
-      anchor: 'start'
-    };
-
-    expectedOutput = [
-      expectedTitleNode,
-      {
-        type: 'container',
-        id: 'legend-seq-target',
-        children: [
-          expectedGradientNode,
-          {
-            type: 'container',
-            id: 'legend-seq-ticks',
-            children: expectedTickNodes
-          }
-        ]
-      }
-    ];
   });
 
   it('defaults', () => {
-    componentFixture.simulateCreate(legendSeq, userDef);
-    componentFixture.simulateRender(container);
-    const output = componentFixture.getRenderOutput();
+    render();
 
-    expect(output).to.deep.equal(expectedOutput);
+    const ticks = componentFixture.findNodes(ticksSelector);
+    const title = componentFixture.findNodes(titleSelector)[0];
+    const gradientNode = componentFixture.findNodes('rect')[0];
+
+    expect(ticks[0]).to.include({
+      x: 25,
+      y: 15,
+      dx: 0,
+      dy: 5,
+      text: 0,
+      anchor: 'start'
+    });
+
+    expect(ticks[1]).to.include({
+      x: 25,
+      y: 50,
+      dx: 0,
+      dy: -1,
+      text: 1,
+      anchor: 'start'
+    });
+
+    expect(title).to.include({
+      x: 5,
+      y: 10,
+      anchor: 'start'
+    });
+
+    expect(gradientNode).to.include({
+      x: 5,
+      y: 15,
+      width: 15,
+      height: 35
+    });
+
     expect(componentFixture.simulateLayout(container)).to.equal(31);
   });
 
@@ -165,79 +112,103 @@ describe('Legend Sequential', () => {
 
     it('should anchor ticks to the right', () => {
       userDef.settings.tick = { anchor: 'right' };
-      componentFixture.simulateCreate(legendSeq, userDef);
-      componentFixture.simulateRender(container);
-      const output = componentFixture.getRenderOutput();
+      render();
+      const ticks = componentFixture.findNodes(ticksSelector);
+      expect(ticks[0]).to.include({
+        x: 25,
+        y: 15,
+        dx: 0,
+        dy: 5,
+        text: 0,
+        anchor: 'start'
+      });
 
-      expect(output).to.deep.equal(expectedOutput);
+      expect(ticks[1]).to.include({
+        x: 25,
+        y: 50,
+        dx: 0,
+        dy: -1,
+        text: 1,
+        anchor: 'start'
+      });
+
+      const fillBoundary = componentFixture.findNodes(tickFillBoundarySelector)[0];
+      expect(fillBoundary).to.include({
+        type: 'rect',
+        width: 0,
+        height: 35,
+        fill: 'transparent',
+        x: 20,
+        y: 15
+      });
+
       expect(componentFixture.simulateLayout(container)).to.equal(31);
     });
 
     it('should anchor ticks to the left', () => {
       userDef.settings.tick = { anchor: 'left' };
-      componentFixture.simulateCreate(legendSeq, userDef);
-      componentFixture.simulateRender(container);
-      const output = componentFixture.getRenderOutput();
+      render();
+      const ticks = componentFixture.findNodes(ticksSelector);
+      expect(ticks[0]).to.include({
+        x: 75,
+        y: 15,
+        dx: 0,
+        dy: 5,
+        text: 0,
+        anchor: 'end'
+      });
 
-      expectedTitleNode.anchor = 'end';
-      expectedTitleNode.x = 95;
+      expect(ticks[1]).to.include({
+        x: 75,
+        y: 50,
+        dx: 0,
+        dy: -1,
+        text: 1,
+        anchor: 'end'
+      });
 
-      expectedGradientNode.x = 80;
+      const fillBoundary = componentFixture.findNodes(tickFillBoundarySelector)[0];
+      expect(fillBoundary).to.include({
+        width: 0,
+        height: 35,
+        x: 80,
+        y: 15
+      });
 
-      expectedTickNodes[0].x = 75;
-      expectedTickNodes[0].anchor = 'end';
-
-      expectedTickNodes[1].x = 75;
-      expectedTickNodes[1].anchor = 'end';
-
-      expectedTickNodes[2].x = 80;
-
-      expect(output).to.deep.equal(expectedOutput);
       expect(componentFixture.simulateLayout(container)).to.equal(31);
     });
 
     it('should not render title node', () => {
       userDef.settings.title.show = false;
-      componentFixture.simulateCreate(legendSeq, userDef);
-      componentFixture.simulateRender(container);
-      const output = componentFixture.getRenderOutput();
+      render();
 
-      expectedOutput.splice(0, 1); // Delete title node
-
-      expectedGradientNode.x = 80;
-      expectedGradientNode.y = 5;
-      expectedGradientNode.height = 45;
-
-      expectedTickNodes[0].x = 75;
-      expectedTickNodes[0].y = 5;
-      expectedTickNodes[0].anchor = 'end';
-
-      expectedTickNodes[1].x = 75;
-      expectedTickNodes[1].anchor = 'end';
-
-      expectedTickNodes[2].x = 80;
-      expectedTickNodes[2].y = 5;
-      expectedTickNodes[2].height = 45;
-
-      expect(output).to.deep.equal(expectedOutput);
+      expect(componentFixture.findNodes(titleSelector)).to.be.empty;
       expect(componentFixture.simulateLayout(container)).to.equal(31);
     });
 
-    it('should support an inverted sequential scale', () => {
+    it('should support an inverted fill scale', () => {
       const scaleInstance = sequentialScale({ invert: true });
       scaleInstance.sources = [];
       chartMock.scale.withArgs('fillScale').returns(scaleInstance);
       userDef.settings.tick = { anchor: 'right' };
-      componentFixture.simulateCreate(legendSeq, userDef);
-      componentFixture.simulateRender(container);
-      const output = componentFixture.getRenderOutput();
+      render();
 
-      expectedGradientNode.fill.stops.reverse();
-      expectedGradientNode.fill.stops[0].offset = 0;
-      expectedGradientNode.fill.stops[1].offset = 1;
+      const gradientNode = componentFixture.findNodes('rect')[0];
 
-      expect(output).to.deep.equal(expectedOutput);
-      expect(componentFixture.simulateLayout(container)).to.equal(31);
+      expect(gradientNode.fill).to.deep.equal({
+        type: 'gradient',
+        stops: [{
+          color: 'rgb(34, 83, 90)',
+          offset: 0,
+          type: 'stop'
+        },
+        {
+          color: 'rgb(180, 221, 212)',
+          offset: 1,
+          type: 'stop'
+        }],
+        degree: 90
+      });
     });
   });
 
@@ -248,188 +219,148 @@ describe('Legend Sequential', () => {
 
     it('should anchor ticks on the top', () => {
       userDef.settings.tick = { anchor: 'top' };
-      componentFixture.simulateCreate(legendSeq, userDef);
-      componentFixture.simulateRender(container);
-      const output = componentFixture.getRenderOutput();
+      render();
+      const ticks = componentFixture.findNodes(ticksSelector);
 
-      expectedTitleNode.anchor = 'end';
-      expectedTitleNode.x = 34.5;
-      expectedTitleNode.y = 20;
+      expect(ticks[0]).to.include({
+        x: 39.5,
+        y: 75,
+        dx: 0,
+        dy: -1.25,
+        text: 0,
+        anchor: 'start'
+      });
 
-      expectedGradientNode.x = 39.5;
-      expectedGradientNode.y = 80;
-      expectedGradientNode.width = 33;
-      expectedGradientNode.height = 15;
-      expectedGradientNode.fill.degree = 180;
+      expect(ticks[1]).to.include({
+        x: 72.5,
+        y: 75,
+        dx: 0,
+        dy: -1.25,
+        text: 1,
+        anchor: 'end'
+      });
 
-      expectedTickNodes[0].x = 39.5;
-      expectedTickNodes[0].y = 5;
-      expectedTickNodes[0].text = 0;
-      expectedTickNodes[0].maxWidth = 16.5;
+      const fillBoundary = componentFixture.findNodes(tickFillBoundarySelector)[0];
+      expect(fillBoundary).to.include({
+        type: 'rect',
+        width: 33,
+        height: 0,
+        fill: 'transparent',
+        x: 39.5,
+        y: 80
+      });
 
-      expectedTickNodes[1].x = 72.5;
-      expectedTickNodes[1].y = 5;
-      expectedTickNodes[1].text = 1;
-      expectedTickNodes[1].maxWidth = 16.5;
-      expectedTickNodes[1].anchor = 'end';
-      expectedTickNodes[1].dy = 5;
-
-      expectedTickNodes[2].x = 39.5;
-      expectedTickNodes[2].y = 80;
-      expectedTickNodes[2].width = 33;
-      expectedTickNodes[2].height = 0;
-
-      expect(output).to.deep.equal(expectedOutput);
       expect(componentFixture.simulateLayout(container)).to.equal(35);
     });
 
     it('should anchor ticks on the bottom', () => {
       userDef.settings.tick = { anchor: 'bottom' };
-      componentFixture.simulateCreate(legendSeq, userDef);
-      componentFixture.simulateRender(container);
-      const output = componentFixture.getRenderOutput();
+      render();
+      const ticks = componentFixture.findNodes(ticksSelector);
 
-      expectedTitleNode.anchor = 'end';
-      expectedTitleNode.x = 34.5;
-      expectedTitleNode.y = 10;
+      expect(ticks[0]).to.include({
+        x: 39.5,
+        y: 25,
+        dx: 0,
+        dy: 4,
+        text: 0,
+        anchor: 'start'
+      });
 
-      expectedGradientNode.x = 39.5;
-      expectedGradientNode.y = 5;
-      expectedGradientNode.width = 33;
-      expectedGradientNode.height = 15;
-      expectedGradientNode.fill.degree = 180;
+      expect(ticks[1]).to.include({
+        x: 72.5,
+        y: 25,
+        dx: 0,
+        dy: 4,
+        text: 1,
+        anchor: 'end'
+      });
 
-      expectedTickNodes[0].x = 39.5;
-      expectedTickNodes[0].y = 25;
-      expectedTickNodes[0].text = 0;
-      expectedTickNodes[0].maxWidth = 16.5;
+      const fillBoundary = componentFixture.findNodes(tickFillBoundarySelector)[0];
+      expect(fillBoundary).to.include({
+        type: 'rect',
+        width: 33,
+        height: 0,
+        fill: 'transparent',
+        x: 39.5,
+        y: 20
+      });
 
-      expectedTickNodes[1].x = 72.5;
-      expectedTickNodes[1].y = 25;
-      expectedTickNodes[1].text = 1;
-      expectedTickNodes[1].maxWidth = 16.5;
-      expectedTickNodes[1].anchor = 'end';
-      expectedTickNodes[1].dy = 5;
-
-      expectedTickNodes[2].x = 39.5;
-      expectedTickNodes[2].y = 20;
-      expectedTickNodes[2].width = 33;
-      expectedTickNodes[2].height = 0;
-
-      expect(output).to.deep.equal(expectedOutput);
       expect(componentFixture.simulateLayout(container)).to.equal(35);
     });
 
     it('should anchor title to the right', () => {
       userDef.settings.title.anchor = 'right';
-      componentFixture.simulateCreate(legendSeq, userDef);
-      componentFixture.simulateRender(container);
-      const output = componentFixture.getRenderOutput();
+      render();
+      const ticks = componentFixture.findNodes(ticksSelector);
+      const title = componentFixture.findNodes(titleSelector)[0];
+      const gradientNode = componentFixture.findNodes('rect')[0];
 
-      expectedTitleNode.anchor = 'start';
-      expectedTitleNode.x = 65.5;
-      expectedTitleNode.y = 20;
+      expect(ticks[0]).to.include({
+        x: 27.5,
+        y: 75,
+        dx: 0,
+        dy: -1.25,
+        text: 0,
+        anchor: 'start'
+      });
 
-      expectedGradientNode.x = 27.5;
-      expectedGradientNode.y = 80;
-      expectedGradientNode.width = 33;
-      expectedGradientNode.height = 15;
-      expectedGradientNode.fill.degree = 180;
+      expect(ticks[1]).to.include({
+        x: 60.5,
+        y: 75,
+        dx: 0,
+        dy: -1.25,
+        text: 1,
+        anchor: 'end'
+      });
 
-      expectedTickNodes[0].x = 27.5;
-      expectedTickNodes[0].y = 5;
-      expectedTickNodes[0].text = 0;
-      expectedTickNodes[0].maxWidth = 16.5;
+      expect(title).to.include({
+        x: 65.5,
+        y: 95,
+        anchor: 'start'
+      });
 
-      expectedTickNodes[1].x = 60.5;
-      expectedTickNodes[1].y = 5;
-      expectedTickNodes[1].text = 1;
-      expectedTickNodes[1].maxWidth = 16.5;
-      expectedTickNodes[1].anchor = 'end';
-      expectedTickNodes[1].dy = 5;
+      expect(gradientNode).to.include({
+        x: 27.5,
+        y: 80,
+        width: 33,
+        height: 15
+      });
 
-      expectedTickNodes[2].x = 27.5;
-      expectedTickNodes[2].y = 80;
-      expectedTickNodes[2].width = 33;
-      expectedTickNodes[2].height = 0;
-
-      expect(output).to.deep.equal(expectedOutput);
       expect(componentFixture.simulateLayout(container)).to.equal(35);
     });
 
     it('should not render title', () => {
       userDef.settings.title.show = false;
-      componentFixture.simulateCreate(legendSeq, userDef);
-      componentFixture.simulateRender(container);
-      const output = componentFixture.getRenderOutput();
+      render();
 
-      expectedOutput.splice(0, 1); // Delete title node
-
-      expectedGradientNode.x = 27.5;
-      expectedGradientNode.y = 80;
-      expectedGradientNode.width = 45;
-      expectedGradientNode.height = 15;
-      expectedGradientNode.fill.degree = 180;
-
-      expectedTickNodes[0].x = 27.5;
-      expectedTickNodes[0].y = 5;
-      expectedTickNodes[0].text = 0;
-      expectedTickNodes[0].maxWidth = 22.5;
-
-      expectedTickNodes[1].x = 72.5;
-      expectedTickNodes[1].y = 5;
-      expectedTickNodes[1].text = 1;
-      expectedTickNodes[1].maxWidth = 22.5;
-      expectedTickNodes[1].anchor = 'end';
-      expectedTickNodes[1].dy = 5;
-
-      expectedTickNodes[2].x = 27.5;
-      expectedTickNodes[2].y = 80;
-      expectedTickNodes[2].width = 45;
-      expectedTickNodes[2].height = 0;
-
-      expect(output).to.deep.equal(expectedOutput);
+      expect(componentFixture.findNodes(titleSelector)).to.be.empty;
       expect(componentFixture.simulateLayout(container)).to.equal(35);
     });
 
-    it('should support an inverted sequential scale', () => {
+    it('should support an inverted fill scale', () => {
       const scaleInstance = sequentialScale({ invert: true });
       scaleInstance.sources = [];
       componentFixture.mocks().chart.scale.returns(scaleInstance);
       userDef.settings.tick = { anchor: 'top' };
-      componentFixture.simulateCreate(legendSeq, userDef);
-      componentFixture.simulateRender(container);
-      const output = componentFixture.getRenderOutput();
+      render();
 
-      expectedTitleNode.anchor = 'end';
-      expectedTitleNode.x = 34.5;
-      expectedTitleNode.y = 20;
+      const gradientNode = componentFixture.findNodes('rect')[0];
 
-      expectedGradientNode.x = 39.5;
-      expectedGradientNode.y = 80;
-      expectedGradientNode.width = 33;
-      expectedGradientNode.height = 15;
-      expectedGradientNode.fill.degree = 180;
-
-      expectedTickNodes[0].x = 39.5;
-      expectedTickNodes[0].y = 5;
-      expectedTickNodes[0].text = 0;
-      expectedTickNodes[0].maxWidth = 16.5;
-
-      expectedTickNodes[1].x = 72.5;
-      expectedTickNodes[1].y = 5;
-      expectedTickNodes[1].text = 1;
-      expectedTickNodes[1].maxWidth = 16.5;
-      expectedTickNodes[1].anchor = 'end';
-      expectedTickNodes[1].dy = 5;
-
-      expectedTickNodes[2].x = 39.5;
-      expectedTickNodes[2].y = 80;
-      expectedTickNodes[2].width = 33;
-      expectedTickNodes[2].height = 0;
-
-      expect(output).to.deep.equal(expectedOutput);
-      expect(componentFixture.simulateLayout(container)).to.equal(35);
+      expect(gradientNode.fill).to.deep.equal({
+        type: 'gradient',
+        stops: [{
+          color: 'rgb(180, 221, 212)',
+          offset: 0,
+          type: 'stop'
+        },
+        {
+          color: 'rgb(34, 83, 90)',
+          offset: 1,
+          type: 'stop'
+        }],
+        degree: 180
+      });
     });
   });
 });
