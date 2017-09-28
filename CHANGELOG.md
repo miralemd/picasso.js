@@ -2,6 +2,10 @@
 
 ## **Unreleased** - *(YYYY-MM-DD)*
 
+### Added
+
+- PIC-211 - Text node in SVG should use white-space pre to mimic canvas white space behavior
+
 ## **0.31.0** - *(2017-09-21)*
 
 ### Added

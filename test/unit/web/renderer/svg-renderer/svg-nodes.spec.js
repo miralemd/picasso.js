@@ -82,6 +82,19 @@ describe('svg-nodes', () => {
       expect(el.setAttribute.secondCall).to.have.been.calledWithExactly('fill', 'red');
     });
 
+    it('should always append whites-space attribute to text nodes', () => {
+      const el = {
+        setAttribute: sinon.spy()
+      };
+      const item = {
+        attrs: {
+          text: 'Hello'
+        }
+      };
+      maintainer(el, item);
+      expect(el.setAttribute.firstCall).to.have.been.calledWithExactly('style', 'white-space: pre');
+    });
+
     it('should ignore attributes id, type, children, and complex data objects', () => {
       const el = {
         setAttribute: sinon.spy()

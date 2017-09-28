@@ -24,6 +24,7 @@ const destroyer = (el) => {
 const maintainer = (element, item) => {
   for (const attr in item.attrs) {
     if (attr === 'text') {
+      element.setAttribute('style', 'white-space: pre');
       element.textContent = ellipsText(item.attrs, measureText);
       const dir = detectTextDirection(item.attrs.text);
       if (dir === 'rtl') {
