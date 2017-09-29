@@ -138,7 +138,7 @@ describe('Word Break', () => {
         node.hyphens = 'auto';
         const chunks = breakAll(node, measureTextMock);
         expect(chunks).to.deep.equal({
-          lines: ['AS-', 'DF-', 'GH-', 'JK-', 'LÖÄ'],
+          lines: ['AS‐', 'DF‐', 'GH‐', 'JK‐', 'LÖÄ'],
           reduced: false
         });
       });
@@ -149,7 +149,7 @@ describe('Word Break', () => {
         node.hyphens = 'auto';
         const chunks = breakAll(node, measureTextMock);
         expect(chunks).to.deep.equal({
-          lines: ['AS ', 'DF次', 'GH1', 'JK-', 'LÖÄ'],
+          lines: ['AS ', 'DF次', 'GH1', 'JK‐', 'LÖÄ'],
           reduced: false
         });
       });

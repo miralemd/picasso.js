@@ -1,5 +1,5 @@
 const DEFAULT_LINE_HEIGHT = 1.2;
-const HYPHENS_CHAR = '-';
+const HYPHENS_CHAR = '\u2010';
 
 export {
   DEFAULT_LINE_HEIGHT,
