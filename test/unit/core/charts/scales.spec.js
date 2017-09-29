@@ -1,12 +1,14 @@
 import { create } from '../../../../src/core/charts/scales';
 
 describe('scales', () => {
-  let reg;
+  let deps;
   let scaleFn;
   beforeEach(() => {
-    reg = {
-      has: sinon.stub(),
-      get: sinon.stub()
+    deps = {
+      scale: {
+        has: sinon.stub(),
+        get: sinon.stub()
+      }
     };
     scaleFn = () => ({
       min: () => 0,
@@ -14,24 +16,24 @@ describe('scales', () => {
     });
   });
   it('should not throw when source options is not provided', () => {
-    const fn = () => create({}, null, reg);
+    const fn = () => create({}, null, deps);
     expect(fn).to.not.throw();
   });
 
   it('should create a scale of a specific type', () => {
-    reg.has.withArgs('custom').returns(true);
-    reg.get.returns(scaleFn);
+    deps.scale.has.withArgs('custom').returns(true);
+    deps.scale.get.returns(scaleFn);
     const s = create({
       type: 'custom'
-    }, null, reg);
+    }, null, deps);
     expect(s.type).to.equal('custom');
     expect(s.sources).to.eql([]);
   });
 
   it('should create linear scale when no better type fits', () => {
-    reg.has.withArgs('linear').returns(true);
-    reg.get.returns(scaleFn);
-    const s = create({}, null, reg);
+    deps.scale.has.withArgs('linear').returns(true);
+    deps.scale.get.returns(scaleFn);
+    const s = create({}, null, deps);
     expect(s.type).to.equal('linear');
     expect(s.min()).to.equal(0);
     expect(s.max()).to.equal(1);
@@ -39,8 +41,8 @@ describe('scales', () => {
   });
 
   it('should create linear scale when source fields are measures', () => {
-    reg.has.withArgs('linear').returns(true);
-    reg.get.returns(scaleFn);
+    deps.scale.has.withArgs('linear').returns(true);
+    deps.scale.get.returns(scaleFn);
     const dataset = {
       findField: sinon.stub()
     };
@@ -57,13 +59,13 @@ describe('scales', () => {
     } });
     const s = create({
       source: ['m1', 'm2']
-    }, dataset, reg);
+    }, dataset, deps);
     expect(s.type).to.equal('linear');
   });
 
   it('should create band scale when source fields are dimensions', () => {
-    reg.has.withArgs('band').returns(true);
-    reg.get.returns(scaleFn);
+    deps.scale.has.withArgs('band').returns(true);
+    deps.scale.get.returns(scaleFn);
     const dataset = {
       findField: sinon.stub()
     };
@@ -76,7 +78,7 @@ describe('scales', () => {
     } });
     const s = create({
       source: ['d1']
-    }, dataset, reg);
+    }, dataset, deps);
     expect(s.type).to.equal('band');
   });
 });

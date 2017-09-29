@@ -2,8 +2,16 @@ import threshold from '../../../../../src/core/scales/color/threshold';
 
 describe('Threshold', () => {
   let ths;
+  let theme;
 
   const defaultColors = ['rgb(180,221,212)', 'rgb(34, 83, 90)'];
+
+  beforeEach(() => {
+    theme = {
+      palette: sinon.stub()
+    };
+    theme.palette.returns(defaultColors);
+  });
 
   describe('basics', () => {
     let min = 0;
@@ -18,7 +26,7 @@ describe('Threshold', () => {
     });
 
     it('default settings', () => {
-      ths = threshold();
+      ths = threshold({}, null, null, { theme });
       expect(ths.domain()).to.deep.equal([0.5]);
       expect(ths.range()).to.deep.equal(defaultColors);
     });
@@ -26,7 +34,7 @@ describe('Threshold', () => {
     it('max/min settings', () => {
       settings.min = 20;
       settings.max = 100;
-      ths = threshold(settings);
+      ths = threshold(settings, null, null, { theme });
       expect(ths.domain()).to.deep.equal([60]);
       expect(ths.range()).to.deep.equal(defaultColors);
     });
@@ -34,13 +42,13 @@ describe('Threshold', () => {
     it('invalid max/min settings', () => {
       settings.min = 'oops';
       settings.max = 'ooooops';
-      ths = threshold(settings);
+      ths = threshold(settings, null, null, { theme });
       expect(ths.domain()).to.deep.equal([NaN]);
       expect(ths.range()).to.deep.equal(defaultColors);
     });
 
     it('only fields', () => {
-      ths = threshold({}, fields);
+      ths = threshold({}, fields, null, { theme });
       expect(ths.domain()).to.deep.equal([50]);
       expect(ths.range()).to.deep.equal(defaultColors);
     });
@@ -48,7 +56,7 @@ describe('Threshold', () => {
     it('invalid max/min on fields', () => {
       fields[0].min = () => 'oops';
       fields[0].max = () => 'ooops';
-      ths = threshold({}, fields);
+      ths = threshold({}, fields, null, { theme });
       expect(ths.domain()).to.deep.equal([0.5]);
       expect(ths.range()).to.deep.equal(defaultColors);
     });
@@ -68,7 +76,7 @@ describe('Threshold', () => {
 
     it('should generate 1 break from 2 colors', () => {
       settings.range = ['red', 'green'];
-      ths = threshold(settings, fields);
+      ths = threshold(settings, fields, null, { theme });
       expect(ths.domain()).to.deep.equal([50]);
     });
 
@@ -76,21 +84,21 @@ describe('Threshold', () => {
       settings.range = ['red', 'green'];
       settings.domain = [];
       min = 80;
-      ths = threshold(settings, fields);
+      ths = threshold(settings, fields, null, { theme });
       expect(ths.domain()).to.deep.equal([90]);
     });
 
     it('should generate 2 breaks from 3 colors', () => {
       settings.range = ['red', 'green', 'blue'];
       max = 75;
-      ths = threshold(settings, fields);
+      ths = threshold(settings, fields, null, { theme });
       expect(ths.domain()).to.deep.equal([25, 50]);
     });
 
     it('should generate 9 breaks from 10 colors', () => {
       settings.range = ['red', 'green', 'blue', 'purple', 'yellow', 'magenta', 'pink', 'azure', 'black', 'white'];
       max = 100;
-      ths = threshold(settings, fields);
+      ths = threshold(settings, fields, null, { theme });
       expect(ths.domain()).to.deep.equal([10, 20, 30, 40, 50, 60, 70, 80, 90]);
     });
 
@@ -98,7 +106,7 @@ describe('Threshold', () => {
       settings.range = ['red', 'green'];
       settings.domain = [2];
       settings.invert = true;
-      ths = threshold(settings, fields);
+      ths = threshold(settings, fields, null, { theme });
       expect(ths.domain()).to.deep.equal([2]);
       expect(ths.range()).to.deep.equal(['green', 'red']);
     });
@@ -111,7 +119,7 @@ describe('Threshold', () => {
         min: -4,
         max: 7.2,
         range: []
-      });
+      }, null, null, { theme });
       expect(ths.domain()).to.deep.equal([0]);
     });
 
@@ -121,7 +129,7 @@ describe('Threshold', () => {
         min: 1.2,
         max: 7.2,
         range: ['a', 'b']
-      });
+      }, null, null, { theme });
       expect(ths.domain()).to.deep.equal([4]);
     });
 
@@ -131,7 +139,7 @@ describe('Threshold', () => {
         min: 1.2,
         max: 7.2,
         range: ['a', 'b', 'c']
-      });
+      }, null, null, { theme });
       expect(ths.domain()).to.deep.equal([4, 6]);
     });
 
@@ -141,7 +149,7 @@ describe('Threshold', () => {
         min: 1,
         max: 9,
         range: ['a', 'b', 'c']
-      });
+      }, null, null, { theme });
       expect(ths.domain()).to.deep.equal([5, 10]);
     });
 
@@ -151,7 +159,7 @@ describe('Threshold', () => {
         min: 13,
         max: 43,
         range: ['a', 'b', 'c', 'd']
-      });
+      }, null, null, { theme });
       expect(ths.domain()).to.deep.equal([20, 30, 40]);
     });
 
@@ -161,7 +169,7 @@ describe('Threshold', () => {
         min: -79,
         max: 167,
         range: ['a', 'b', 'c', 'd']
-      });
+      }, null, null, { theme });
       expect(ths.domain()).to.deep.equal([-100, 0, 100]);
     });
 
@@ -171,7 +179,7 @@ describe('Threshold', () => {
         min: 13,
         max: 43,
         range: ['a', 'b', 'c', 'd', 'e']
-      });
+      }, null, null, { theme });
       expect(ths.domain()).to.deep.equal([20, 25, 30, 35]);
     });
   });
@@ -194,21 +202,21 @@ describe('Threshold', () => {
         domain: [-10, 10],
         min: -1,
         max: 20
-      });
+      }, null, null, { theme });
       expect(ths.range()).to.deep.equal(['rgb(0, 0, 0)', 'rgb(128, 128, 128)', 'rgb(255, 255, 255)']);
     });
 
     it('should generate 3 colors from 2 breaks', () => {
       settings.range = ['black', 'white'];
       settings.domain = [25, 50];
-      ths = threshold(settings, fields);
+      ths = threshold(settings, fields, null, { theme });
       expect(ths.range()).to.deep.equal(['rgb(0, 0, 0)', 'rgb(128, 128, 128)', 'rgb(255, 255, 255)']);
     });
 
     it('should generate 6 colors from 5 breaks', () => {
       settings.range = ['black', 'rgb(240, 0, 0)'];
       settings.domain = [5, 15, 25, 35, 45];
-      ths = threshold(settings, fields);
+      ths = threshold(settings, fields, null, { theme });
       const result = [0, 30, 90, 150, 210, 240].map(v => `rgb(${v}, ${0}, ${0})`);
       expect(ths.range()).to.deep.equal(result);
     });
@@ -216,7 +224,7 @@ describe('Threshold', () => {
 
   describe('return values', () => {
     it('should be NaN when input is invalid', () => {
-      ths = threshold();
+      ths = threshold({}, null, null, { theme });
       expect(ths({})).to.eql(NaN);
     });
 
@@ -224,7 +232,7 @@ describe('Threshold', () => {
       ths = threshold({
         range: ['red', 'green'],
         domain: [10]
-      });
+      }, null, null, { theme });
       expect(ths(9)).to.equal('red');
       expect(ths(11)).to.equal('green');
     });
@@ -233,7 +241,7 @@ describe('Threshold', () => {
       ths = threshold({
         range: ['red', 'green', 'blue'],
         domain: [10, 20]
-      });
+      }, null, null, { theme });
       expect(ths(9)).to.equal('red');
       expect(ths(10)).to.equal('green');
       expect(ths(20)).to.equal('blue');

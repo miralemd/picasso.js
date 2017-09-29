@@ -11,6 +11,9 @@ function themeFn(style = {}, palettes = []) {
 
   const getPalette = (key, num) => {
     const palette = pals[key];
+    if (!palette) {
+      return [];
+    }
     const sizes = palette.sizes;
     // find the first color set containing at least 'num' colors
     for (let i = 0; i < sizes.length; i++) {

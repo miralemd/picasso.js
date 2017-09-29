@@ -11,6 +11,7 @@ describe('Legend Sequential', () => {
   let userDef;
   let container;
   let chartMock;
+  let theme;
 
   function render() {
     componentFixture.simulateCreate(legendSeq, userDef);
@@ -21,6 +22,10 @@ describe('Legend Sequential', () => {
     container = {
       inner: { x: 0, y: 0, width: 100, height: 100 },
       outer: { x: 0, y: 0, width: 100, height: 100 }
+    };
+
+    theme = {
+      palette: () => ['rgb(180,221,212)', 'rgb(34, 83, 90)']
     };
 
     componentFixture = componentFactoryFixture();
@@ -36,7 +41,7 @@ describe('Legend Sequential', () => {
 
     chartMock = componentFixture.mocks().chart;
 
-    const seqScale = sequentialScale();
+    const seqScale = sequentialScale({}, null, null, { theme });
     seqScale.sources = [];
     chartMock.scale.withArgs('fillScale').returns(seqScale);
     const linScale = linearScale();
@@ -187,7 +192,7 @@ describe('Legend Sequential', () => {
     });
 
     it('should support an inverted fill scale', () => {
-      const scaleInstance = sequentialScale({ invert: true });
+      const scaleInstance = sequentialScale({ invert: true }, null, null, { theme });
       scaleInstance.sources = [];
       chartMock.scale.withArgs('fillScale').returns(scaleInstance);
       userDef.settings.tick = { anchor: 'right' };

@@ -3,8 +3,6 @@ import extend from 'extend';
 import { minmax } from '../../utils/math';
 import linear from '../linear';
 
-const DEFAULT_COLORS = ['rgb(180,221,212)', 'rgb(34, 83, 90)'];
-
 function generateDomain(range, min, max) {
   const len = range.length;
   if (len === 2) {
@@ -38,7 +36,7 @@ function generateDomain(range, min, max) {
  * });
  */
 
-export default function scaleSequentialColor(settings = {}, fields) {
+export default function scaleSequentialColor(settings = {}, fields, dataset, { theme } = {}) {
   const s = linear(settings, fields).clamp(true).interpolate(interpolateRgb);
 
   /**
@@ -51,7 +49,10 @@ export default function scaleSequentialColor(settings = {}, fields) {
 
   extend(true, fn, s);
   const [min, max] = minmax(settings, fields);
-  fn.range(settings.range || DEFAULT_COLORS);
+  const num = settings.domain ? settings.domain.length : -1;
+  const DEFAULT_COLORS = theme ? theme.palette('sequential', num > 0 ? num : 2) : [];
+  const range = typeof settings.range === 'function' ? settings.range(dataset, { theme }) : settings.range || DEFAULT_COLORS;
+  fn.range(range);
   fn.range(settings.invert ? fn.range().reverse() : fn.range());
   fn.domain(settings.domain || generateDomain(fn.range(), min, max));
 
