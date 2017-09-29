@@ -41,8 +41,9 @@ describe('reference lines', () => {
       settings: config,
       chart,
       renderer,
-      styler: {
-        resolve: sinon.stub()
+      theme: {
+        style: sinon.stub(),
+        palette: sinon.stub()
       }
     });
     instance.beforeMount();

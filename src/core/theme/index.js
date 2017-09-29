@@ -1,6 +1,6 @@
 import styleResolver from '../style/resolver';
 
-function themeFn(style, palettes) {
+function themeFn(style = {}, palettes = []) {
   const pals = {};
   palettes.forEach((palette) => {
     pals[palette.key] = {

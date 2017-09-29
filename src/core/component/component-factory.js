@@ -128,8 +128,8 @@ function componentFactory(definition, options = {}) {
     chart,
     container,
     mediator,
-    styler,
     registries,
+    theme,
     renderer // Used by tests
   } = options;
   const config = options.settings || {};
@@ -263,7 +263,7 @@ function componentFactory(definition, options = {}) {
       formatter = chart.formatter({ source: scale.sources[0] });
     }
 
-    style = styler.resolve(settings.style || {});
+    style = theme.style(settings.style || {});
   };
 
   fn.resize = (inner, outer) => {

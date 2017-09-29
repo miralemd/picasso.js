@@ -60,8 +60,9 @@ describe('Component', () => {
       settings: config,
       chart,
       renderer,
-      styler: {
-        resolve: sinon.stub()
+      theme: {
+        palette: sinon.stub(),
+        style: sinon.stub()
       }
     });
     instance.beforeMount();
