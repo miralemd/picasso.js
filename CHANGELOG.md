@@ -4,7 +4,11 @@
 
 ### Added
 
+- PIC-208 - Style resolver - experimental API not yet exposed
+- PIC-209 - Configuration of a custom picasso namespace, see [picasso.md](./docs/dist/picasso.md)
+- PIC-210 - `pie` component, see [pic.md](./docs/dist/components/pie.md)
 - PIC-211 - Text node in SVG should use white-space pre to mimic canvas white space behavior
+- PIC-213 - Theme palette resolver - experimental API not yet exposed
 
 ## **0.31.0** - *(2017-09-21)*
 
