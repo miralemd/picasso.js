@@ -32,6 +32,14 @@ describe('Brushing', () => {
           source: { field: 'bez', key: 'table' },
           value: 33
         }
+      },
+      {
+        value: 9,
+        source: { field: 'c' },
+        self: {
+          source: { field: 'bez', key: 'table' },
+          value: [33, 56]
+        }
       }
     ];
 
@@ -115,8 +123,8 @@ describe('Brushing', () => {
 
       expect(brushContext.toggleValues.callCount).to.equal(1);
       expect(brushContext.toggleValues.args[0][0]).to.deep.equal([
-        { key: data[0].self.source.field, value: data[0].self.value },
-        { key: data[1].self.source.field, value: data[1].self.value }
+        { key: `${data[0].self.source.key}/${data[0].self.source.field}`, value: data[0].self.value },
+        { key: `${data[1].self.source.key}/${data[1].self.source.field}`, value: data[1].self.value }
       ]);
     });
 
@@ -129,7 +137,7 @@ describe('Brushing', () => {
 
       expect(brushContext.toggleRanges.callCount).to.equal(1);
       expect(brushContext.toggleRanges.args[0][0]).to.deep.equal([
-        { key: data[3].self.source.field, range: { min: data[3].self.value[0], max: data[3].self.value[1] } }
+        { key: `${data[3].self.source.key}/${data[3].self.source.field}`, range: { min: data[3].self.value[0], max: data[3].self.value[1] } }
       ]);
     });
 

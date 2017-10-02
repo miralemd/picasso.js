@@ -129,7 +129,7 @@ const pieComponent = {
   render({ data }) {
     const arcValues = [];
     const stngs = this.settings.settings;
-    const slices = data.map((s, i, all) => {
+    const slices = (data.items || []).map((s, i, all) => {
       const obj = resolveForItem(s, this.local, all);
       obj.data = s;
       arcValues.push(s.arc.value);

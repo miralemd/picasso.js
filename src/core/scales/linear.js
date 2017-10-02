@@ -337,8 +337,8 @@ export default function scaleLinear(settings, data) {
   };
 
   if (settings) {
-    const stgns = generateSettings(settings, data.fields);
-    const { mini, maxi } = getMinMax(stgns, data.fields);
+    const stgns = generateSettings(settings, data ? data.fields : []);
+    const { mini, maxi } = getMinMax(stgns, data ? data.fields : []);
 
     fn.domain([mini, maxi]);
     fn.range(stgns.invert ? [1, 0] : [0, 1]);

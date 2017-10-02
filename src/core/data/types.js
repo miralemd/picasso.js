@@ -1,4 +1,4 @@
-import { registry } from '../utils/registry';
+import registry from '../utils/registry';
 import dataset from './dataset';
 
 const reg = registry();

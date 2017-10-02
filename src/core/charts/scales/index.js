@@ -58,7 +58,7 @@ export function create(options, dataset, deps) {
 
   if (deps.scale.has(type)) {
     s = deps.scale.get(type);
-    s = s(options, data.fields, dataset, deps);
+    s = s(options, data, deps);
     s.type = type;
     s.sources = sources;
   }

@@ -41,7 +41,7 @@ describe('Legend Sequential', () => {
 
     chartMock = componentFixture.mocks().chart;
 
-    const seqScale = sequentialScale({}, null, null, { theme });
+    const seqScale = sequentialScale({}, null, { theme });
     seqScale.sources = [];
     chartMock.scale.withArgs('fillScale').returns(seqScale);
     const linScale = linearScale();
@@ -192,7 +192,7 @@ describe('Legend Sequential', () => {
     });
 
     it('should support an inverted fill scale', () => {
-      const scaleInstance = sequentialScale({ invert: true }, null, null, { theme });
+      const scaleInstance = sequentialScale({ invert: true }, null, { theme });
       scaleInstance.sources = [];
       chartMock.scale.withArgs('fillScale').returns(scaleInstance);
       userDef.settings.tick = { anchor: 'right' };

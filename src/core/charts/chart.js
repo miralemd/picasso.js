@@ -254,12 +254,12 @@ function chart(definition, context) {
       scroll = {}
     } = _settings;
 
-    dataset = datasources(_data, { logger });
+    dataset = datasources(_data, { logger, types: registries.data });
     if (!partialData) {
       Object.keys(brushes).forEach(b => brushes[b].clear());
     }
-    currentScales = buildScales(scales, dataset, { scale: registries.scale, theme });
-    currentFormatters = buildFormatters(formatters, dataset, { formatter: registries.formatter, theme });
+    currentScales = buildScales(scales, dataset, { scale: registries.scale, theme, logger });
+    currentFormatters = buildFormatters(formatters, dataset, { formatter: registries.formatter, theme, logger });
     currentScrollApis = buildScroll(scroll, currentScrollApis);
   };
 
@@ -747,7 +747,7 @@ function chart(definition, context) {
    * }); // Create a new formatter
    */
   instance.formatter = function formatter(v) {
-    return getOrCreateFormatter(v, currentFormatters, dataset, { formatter: registries.formatter, theme });
+    return getOrCreateFormatter(v, currentFormatters, dataset, { formatter: registries.formatter, theme, logger });
   };
 
   /**

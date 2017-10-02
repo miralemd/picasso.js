@@ -44,7 +44,6 @@ describe('picasso.js', () => {
       const firstParam = plugin.args[0][0];
 
       expect(typeof firstParam.dataset).to.equal('function');
-      expect(typeof firstParam.table).to.equal('function');
       expect(typeof firstParam.field).to.equal('function');
     });
 

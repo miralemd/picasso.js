@@ -26,7 +26,7 @@ describe('Threshold', () => {
     });
 
     it('default settings', () => {
-      ths = threshold({}, null, { theme });
+      ths = threshold({}, {}, { theme });
       expect(ths.domain()).to.deep.equal([0.5]);
       expect(ths.range()).to.deep.equal(defaultColors);
     });
@@ -34,7 +34,7 @@ describe('Threshold', () => {
     it('max/min settings', () => {
       settings.min = 20;
       settings.max = 100;
-      ths = threshold(settings, null, { theme });
+      ths = threshold(settings, {}, { theme });
       expect(ths.domain()).to.deep.equal([60]);
       expect(ths.range()).to.deep.equal(defaultColors);
     });
@@ -42,7 +42,7 @@ describe('Threshold', () => {
     it('invalid max/min settings', () => {
       settings.min = 'oops';
       settings.max = 'ooooops';
-      ths = threshold(settings, null, { theme });
+      ths = threshold(settings, {}, { theme });
       expect(ths.domain()).to.deep.equal([NaN]);
       expect(ths.range()).to.deep.equal(defaultColors);
     });
@@ -119,7 +119,7 @@ describe('Threshold', () => {
         min: -4,
         max: 7.2,
         range: []
-      }, null, { theme });
+      }, {}, { theme });
       expect(ths.domain()).to.deep.equal([0]);
     });
 
@@ -129,7 +129,7 @@ describe('Threshold', () => {
         min: 1.2,
         max: 7.2,
         range: ['a', 'b']
-      }, null, { theme });
+      }, {}, { theme });
       expect(ths.domain()).to.deep.equal([4]);
     });
 
@@ -139,7 +139,7 @@ describe('Threshold', () => {
         min: 1.2,
         max: 7.2,
         range: ['a', 'b', 'c']
-      }, null, { theme });
+      }, {}, { theme });
       expect(ths.domain()).to.deep.equal([4, 6]);
     });
 
@@ -149,7 +149,7 @@ describe('Threshold', () => {
         min: 1,
         max: 9,
         range: ['a', 'b', 'c']
-      }, null, { theme });
+      }, {}, { theme });
       expect(ths.domain()).to.deep.equal([5, 10]);
     });
 
@@ -159,7 +159,7 @@ describe('Threshold', () => {
         min: 13,
         max: 43,
         range: ['a', 'b', 'c', 'd']
-      }, null, { theme });
+      }, {}, { theme });
       expect(ths.domain()).to.deep.equal([20, 30, 40]);
     });
 
@@ -169,7 +169,7 @@ describe('Threshold', () => {
         min: -79,
         max: 167,
         range: ['a', 'b', 'c', 'd']
-      }, null, { theme });
+      }, {}, { theme });
       expect(ths.domain()).to.deep.equal([-100, 0, 100]);
     });
 
@@ -179,7 +179,7 @@ describe('Threshold', () => {
         min: 13,
         max: 43,
         range: ['a', 'b', 'c', 'd', 'e']
-      }, null, { theme });
+      }, {}, { theme });
       expect(ths.domain()).to.deep.equal([20, 25, 30, 35]);
     });
   });
@@ -202,7 +202,7 @@ describe('Threshold', () => {
         domain: [-10, 10],
         min: -1,
         max: 20
-      }, null, { theme });
+      }, {}, { theme });
       expect(ths.range()).to.deep.equal(['rgb(0, 0, 0)', 'rgb(128, 128, 128)', 'rgb(255, 255, 255)']);
     });
 
@@ -224,7 +224,7 @@ describe('Threshold', () => {
 
   describe('return values', () => {
     it('should be NaN when input is invalid', () => {
-      ths = threshold({}, null, null, { theme });
+      ths = threshold({}, {}, { theme });
       expect(ths({})).to.eql(NaN);
     });
 
@@ -232,7 +232,7 @@ describe('Threshold', () => {
       ths = threshold({
         range: ['red', 'green'],
         domain: [10]
-      }, null, null, { theme });
+      }, {}, { theme });
       expect(ths(9)).to.equal('red');
       expect(ths(11)).to.equal('green');
     });
@@ -241,7 +241,7 @@ describe('Threshold', () => {
       ths = threshold({
         range: ['red', 'green', 'blue'],
         domain: [10, 20]
-      }, null, null, { theme });
+      }, {}, { theme });
       expect(ths(9)).to.equal('red');
       expect(ths(10)).to.equal('green');
       expect(ths(20)).to.equal('blue');

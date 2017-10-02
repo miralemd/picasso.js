@@ -62,38 +62,8 @@ describe('scales', () => {
       data: {
         fields: ['m1', 'm2']
       }
-    }, datasetFn);
+    }, datasetFn, deps);
     expect(s.type).to.equal('linear');
-  });
-
-  it('should exclude NaN values when calculating the combined min/max', () => {
-    const dataset = {
-      field: sinon.stub()
-    };
-    const datasetFn = () => dataset;
-
-    dataset.field.withArgs('m1').returns({
-      type: () => 'measure',
-      min: () => 'NaN',
-      max: () => 90
-    });
-    dataset.field.withArgs('m2').returns({
-      type: () => 'measure',
-      min: () => 13,
-      max: () => 70
-    });
-    dataset.field.withArgs('m3').returns({
-      type: () => 'measure',
-      min: () => -5,
-      max: () => 'NaN'
-    });
-    const s = create({
-      data: {
-        fields: ['m1', 'm2', 'm3']
-      }
-    }, datasetFn);
-    expect(s.min()).to.equal(-5);
-    expect(s.max()).to.equal(90);
   });
 
   it('should create band scale when source fields are dimensions', () => {
@@ -114,7 +84,7 @@ describe('scales', () => {
       data: {
         fields: ['d1']
       }
-    }, datasetFn);
+    }, datasetFn, deps);
     expect(s.type).to.equal('band');
   });
 });

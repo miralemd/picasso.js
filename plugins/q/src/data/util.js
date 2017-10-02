@@ -53,11 +53,15 @@ export function findField(query, { cache }) {
   const allFields = cache.fields.slice();
   (cache.attributeDimensionFields || []).forEach(fields => allFields.push(...fields));
   (cache.attributeExpressionFields || []).forEach(fields => allFields.push(...fields));
-  for (let i = 0; i < allFields.length; i++) {
-    // console.log(allFields[i].key());
-    if (allFields[i].key() === query || allFields[i].title() === query) {
-      return allFields[i];
+  if (typeof query === 'string') {
+    for (let i = 0; i < allFields.length; i++) {
+      // console.log(allFields[i].key());
+      if (allFields[i].key() === query || allFields[i].title() === query) {
+        return allFields[i];
+      }
     }
+  } else if (query && allFields.indexOf(query) !== -1) { // assume 'query' is a field instance
+    return query;
   }
 
   throw Error(`Field not found: ${query}`);

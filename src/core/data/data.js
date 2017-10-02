@@ -1,4 +1,4 @@
-import types from './types';
+// import types from './types';
 
 /**
  * @ignore
@@ -6,7 +6,7 @@ import types from './types';
  * @param {any} { logger }
  * @returns {function}
  */
-export default function datasets(dataSources, { logger }) {
+export default function datasets(dataSources, { types, logger }) {
   const data = {};
 
   const sets = [];
