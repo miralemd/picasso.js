@@ -1,3 +1,5 @@
+import extend from 'extend';
+
 import {
   TARGET_SIZE,
   VERTICAL
@@ -52,13 +54,14 @@ function buildLine({ h, isVertical, value, pos, align, borderHit, state }) {
   }, [
     // line
     h('div', {
-      style: {
+      style: extend({
         backgroundColor: 'rgba(50, 50, 50, 0.8)',
         position: 'absolute',
         height: isVertical ? `${1}px` : '100%',
-        width: isVertical ? '100%' : `${1}px`,
-        ...alignStyle
-      }
+        width: isVertical ? '100%' : `${1}px`
+      },
+        alignStyle
+      )
     })
   ]);
 }
@@ -95,7 +98,7 @@ function buildBubble({ h, isVertical, label, otherValue, idx, pos, align, style,
         'data-other-value': otherValue,
         'data-idx': idx
       },
-      style: {
+      style: extend({
         position: 'relative',
         borderRadius: '6px',
         border: '1px solid #666',
@@ -109,9 +112,10 @@ function buildBubble({ h, isVertical, label, otherValue, idx, pos, align, style,
         minWidth: '50px',
         minHeight: '1em',
         pointerEvents: 'auto',
-        transform: isVertical ? 'translate(0,-50%)' : 'translate(-50%,0)',
-        ...style
-      }
+        transform: isVertical ? 'translate(0,-50%)' : 'translate(-50%,0)'
+      },
+        style
+      )
     }, [label])
   ]);
 }

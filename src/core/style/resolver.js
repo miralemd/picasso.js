@@ -1,8 +1,10 @@
+import extend from 'extend';
+
 const VARIABLE_RX = /^\$/;
 const EXTEND = '@extend';
 
 function res(style, references, path) {
-  const refs = { ...references, ...style };
+  const refs = extend({}, references, style);
   const s = {};
   let p = path.slice();
   Object.keys(style).forEach((key) => {
@@ -19,7 +21,7 @@ function res(style, references, path) {
       value = refs[value];
       if (typeof value === 'object') {
         if (value[EXTEND]) {
-          value = { ...refs[value[EXTEND]], ...value };
+          value = extend({}, refs[value[EXTEND]], value);
         }
         s[key] = res(value, refs, p);
       } else {

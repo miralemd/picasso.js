@@ -1,4 +1,6 @@
 
+import extend from 'extend';
+
 // Should consist of attributes that does not allow for null values
 const GLOBAL_DEFAULTS = {
   fontFamily: 'Arial',
@@ -158,10 +160,7 @@ export function resolveForDataObject(props, dataObj, index, allData, context = {
     const hasImplicitDataProp = s in dataObj;
     const propData = exists && props[s].ref ? dataObj[props[s].ref] : dataObj[s];
     if (typeof props[s] === 'function') { // custom accessor function, not scale!
-      const fnContext = {
-        data: dataObj,
-        ...context
-      };
+      const fnContext = extend({}, { data: dataObj }, context);
       if (hasScale) {
         fnContext.scale = props[s].scale;
       }

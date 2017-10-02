@@ -1,3 +1,5 @@
+import extend from 'extend';
+
 import {
   chart,
   renderer,
@@ -66,10 +68,7 @@ function pic(config = {}, registries = {}) {
    * @returns {picasso}
    */
   function picassojs(cfg) {
-    let cc = {
-      ...config,
-      ...cfg
-    };
+    let cc = extend({}, config, cfg);
     cc.palettes = config.palettes.concat(cfg.palettes);
     return pic(cc, regis);
   }

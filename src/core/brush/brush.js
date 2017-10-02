@@ -1,3 +1,5 @@
+import extend from 'extend';
+
 import EventEmitter from '../utils/event-emitter';
 
 import rangeCollection from './range-collection';
@@ -223,7 +225,7 @@ function applyAliases(items, aliases) {
   const len = items.length;
   const its = Array(len);
   for (let i = 0; i < len; i++) {
-    its[i] = items[i].key in aliases ? { ...items[i], key: aliases[items[i].key] } : items[i];
+    its[i] = items[i].key in aliases ? extend({}, items[i], { key: aliases[items[i].key] }) : items[i];
   }
   return its;
 }

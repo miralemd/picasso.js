@@ -1,3 +1,5 @@
+import extend from 'extend';
+
 import symbolFactory from '../../symbols';
 
 /**
@@ -147,7 +149,7 @@ export function labelItem({
   };
 
   const r = innerHeight / 2;
-  const symDef = {
+  const symDef = extend({}, {
     type: typeof shape === 'object' && shape.type ? shape.type : shape,
     x: (align === 'left' ? container.x + margin.left : (container.x + container.width) - innerHeight - margin.right) + r,
     y: container.y + margin.top + r,
@@ -155,9 +157,10 @@ export function labelItem({
     fill: typeof shape === 'object' && shape.fill ? shape.fill : color,
     stroke: typeof shape === 'object' && shape.stroke ? shape.stroke : color,
     data,
-    dataIndex,
-    ...shape
-  };
+    dataIndex
+  },
+    shape
+  );
   const symbol = symbolFactory(symDef);
 
   const label = {

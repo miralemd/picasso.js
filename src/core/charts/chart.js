@@ -141,10 +141,10 @@ function chart(definition, context) {
 
   const chartMixins = mixins.list();
   const listeners = [];
-  const instance = {
-    ...definition,
-    ...chartMixins.filter(mixinName => !isReservedProperty(mixinName))
-  };
+  const instance = extend({},
+    definition,
+    chartMixins.filter(mixinName => !isReservedProperty(mixinName))
+  );
   const mediator = mediatorFactory();
   let currentComponents = []; // Augmented components
   let visibleComponents = [];

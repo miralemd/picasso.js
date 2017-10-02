@@ -1,3 +1,5 @@
+import extend from 'extend';
+
 const GLOBAL_DEFAULTS = {
   fontFamily: 'Arial',
   fontSize: '13px',
@@ -26,13 +28,8 @@ function isPrimitive(x) {
  * @returns {any}
  */
 export function normalizeSettings(settings, defaults, chart) {
-  const composition = {
-    // ...defaults,
-    ...settings
-  };
-  const defs = {
-    ...defaults
-  };
+  const composition = extend({}, settings);
+  const defs = extend({}, defaults);
   Object.keys(composition).forEach((key) => {
     defs[key] = {};
     const v = composition[key];

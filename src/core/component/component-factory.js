@@ -155,7 +155,7 @@ function componentFactory(definition, options = {}) {
   const brushStylers = [];
   const componentMixins = listMixins(settings.type);
   const definitionContext = {};
-  const instanceContext = { ...config, ...componentMixins.filter(mixinName => !isReservedProperty(mixinName)) };
+  const instanceContext = extend({}, config, componentMixins.filter(mixinName => !isReservedProperty(mixinName)));
 
   // Create a callback that calls lifecycle functions in the definition and config (if they exist).
   function createCallback(method, defaultMethod = () => {}) {
