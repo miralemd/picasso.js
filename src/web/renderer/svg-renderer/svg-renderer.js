@@ -61,11 +61,10 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
     }
 
     resetGradients();
-    nodes.push(createDefsNode());
 
     const sceneContainer = {
       type: 'container',
-      children: nodes
+      children: Array.isArray(nodes) ? [...nodes, createDefsNode()] : nodes
     };
 
     if (scaleX !== 1 || scaleY !== 1) {

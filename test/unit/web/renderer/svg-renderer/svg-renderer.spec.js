@@ -75,9 +75,11 @@ describe('svg renderer', () => {
       svg.render(items);
       const sceneContainer = {
         type: 'container',
-        children: items
+        children: [...items, { type: 'defs', children: [] }]
       };
-      expect(scene.args[0][0].items).to.deep.equal([sceneContainer]);
+      const actual = scene.args[0][0].items;
+      delete actual[0].children[1].disabled;
+      expect(actual).to.deep.equal([sceneContainer]);
       expect(treeRenderer.render).to.have.been.calledWith(s.children, svg.root());
     });
 
@@ -118,6 +120,12 @@ describe('svg renderer', () => {
       expect(el.attributes.height).to.equal(size.height * scaleRatio.y);
       expect(wrappedContainer[0].type).to.equal(expectedInputShapes[0].type);
       expect(wrappedContainer[0].transform).to.deep.equal(expectedInputShapes[0].transform);
+    });
+
+    it('should handle call without arguments', () => {
+      scene.returns(s);
+      svg.appendTo(element('div'));
+      expect(svg.render).to.not.throw();
     });
   });
 
