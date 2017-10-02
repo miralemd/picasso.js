@@ -36,7 +36,7 @@ function deduceScaleTypeFromOptions(options, fields) {
   return 'linear';
 }
 
-export function create(options, dataset, reg) {
+export function create(options, dataset, deps) {
   let sources = [];
   let fields = [];
   if (options.source) {
@@ -54,16 +54,16 @@ export function create(options, dataset, reg) {
     }
   }
 
-  if (reg.has(type)) {
-    s = reg.get(type);
-    s = s(options, fields, dataset);
+  if (deps.scale.has(type)) {
+    s = deps.scale.get(type);
+    s = s(options, fields, dataset, deps);
     s.type = type;
     s.sources = sources;
   }
   return s;
 }
 
-export function getOrCreateScale(v, scales, dataset, reg) {
+export function getOrCreateScale(v, scales, dataset, deps) {
   let s;
   if (typeof v === 'string' && scales[v]) { // return by name
     s = scales[v];
@@ -71,14 +71,14 @@ export function getOrCreateScale(v, scales, dataset, reg) {
     s = scales[v.scale];
   }
 
-  return s || create(v, dataset, reg);
+  return s || create(v, dataset, deps);
 }
 
-export function builder(obj, dataset, reg) {
+export function builder(obj, dataset, deps) {
   const scales = {};
   for (const s in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, s)) {
-      scales[s] = create(obj[s], dataset, reg);
+      scales[s] = create(obj[s], dataset, deps);
     }
   }
   return scales;

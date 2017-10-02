@@ -24,6 +24,8 @@ import scaleRegistry from './core/charts/scales';
 import loggerFn from './core/utils/logger';
 import registry from './core/utils/registry';
 
+import { style, palettes } from './core/theme/pic';
+
 function usePlugin(plugin, options = {}, api) {
   plugin(api, options);
 }
@@ -64,16 +66,20 @@ function pic(config = {}, registries = {}) {
    * @returns {picasso}
    */
   function picassojs(cfg) {
-    return pic({
+    let cc = {
       ...config,
       ...cfg
-    }, regis);
+    };
+    cc.palettes = config.palettes.concat(cfg.palettes);
+    return pic(cc, regis);
   }
 
   picassojs.use = (plugin, options = {}) => usePlugin(plugin, options, regis);
   picassojs.chart = definition => chart(definition, {
     registries: regis,
-    logger
+    logger,
+    style: config.style,
+    palettes: config.palettes
   });
   picassojs.config = () => config;
 
@@ -90,7 +96,9 @@ const p = pic({
   },
   logger: {
     level: 0
-  }
+  },
+  style,
+  palettes
 }, {
   component: componentRegistry,
   data: dataRegistry,

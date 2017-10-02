@@ -2,7 +2,7 @@ function fieldFinder(query, field) {
   return field.title() === query;
 }
 
-export function create(options, dataset, reg) {
+export function create(options, dataset, deps) {
   // TODO Have some magic to handle and merge formatters from multiple sources
 
   if (options.source) {
@@ -19,21 +19,21 @@ export function create(options, dataset, reg) {
   } else {
     formatterName = options.type || 'd3-number';
   }
-  return reg(formatterName)(options.format || '');
+  return deps.formatter(formatterName)(options.format || '');
       // .locale( options.locale || {} );
 }
 
-export default function builder(obj, dataset, reg) {
+export default function builder(obj, dataset, deps) {
   const formatters = {};
   for (const f in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, f)) {
-      formatters[f] = create(obj[f], dataset, reg);
+      formatters[f] = create(obj[f], dataset, deps);
     }
   }
   return formatters;
 }
 
-export function getOrCreateFormatter(v, formatters, dataset, reg) {
+export function getOrCreateFormatter(v, formatters, dataset, deps) {
   let f;
   if (typeof v === 'string' && formatters[v]) { // return by name
     f = formatters[v];
@@ -43,5 +43,5 @@ export function getOrCreateFormatter(v, formatters, dataset, reg) {
     f = formatters[v.type];
   }
 
-  return f || create(v, dataset, reg);
+  return f || create(v, dataset, deps);
 }

@@ -2,8 +2,13 @@ import sequential from '../../../../../src/core/scales/color/sequential';
 
 describe('Sequential', () => {
   let seq;
+  let theme;
   beforeEach(() => {
     seq = sequential();
+    theme = {
+      palette: sinon.stub()
+    };
+    theme.palette.withArgs('sequential').returns(['rgb(180,221,212)', 'rgb(34, 83, 90)']);
   });
 
   describe('Basic colors', () => {
@@ -18,7 +23,7 @@ describe('Sequential', () => {
       settings = {};
     });
     it('default settings', () => {
-      seq = sequential();
+      seq = sequential({}, null, null, { theme });
       expect(seq.domain()).to.deep.equal([0, 1]);
       expect(seq.range()).to.deep.equal(['rgb(180,221,212)', 'rgb(34, 83, 90)']);
     });
@@ -26,7 +31,7 @@ describe('Sequential', () => {
     it('max/min settings', () => {
       settings.min = 20;
       settings.max = 100;
-      seq = sequential(settings);
+      seq = sequential(settings, null, null, { theme });
       expect(seq.domain()).to.deep.equal([20, 100]);
       expect(seq.range()).to.deep.equal(['rgb(180,221,212)', 'rgb(34, 83, 90)']);
     });
@@ -39,13 +44,13 @@ describe('Sequential', () => {
     });
 
     it('only fields', () => {
-      seq = sequential({}, fields);
+      seq = sequential({}, fields, null, { theme });
       expect(seq.domain()).to.deep.equal([0, 100]);
       expect(seq.range()).to.deep.equal(['rgb(180,221,212)', 'rgb(34, 83, 90)']);
     });
 
     it('should invert scale', () => {
-      seq = sequential({ invert: true }, fields);
+      seq = sequential({ invert: true }, fields, null, { theme });
       expect(seq.domain()).to.deep.equal([0, 100]);
       expect(seq.range()).to.deep.equal(['rgb(34, 83, 90)', 'rgb(180,221,212)']);
     });

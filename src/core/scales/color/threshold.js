@@ -2,7 +2,7 @@ import { scaleThreshold, scaleLinear } from 'd3-scale';
 import { notNumber, minmax } from '../../utils/math';
 import sequential from './sequential';
 
-const DEFAULT_COLORS = ['rgb(180,221,212)', 'rgb(34, 83, 90)'];
+// const DEFAULT_COLORS = ['rgb(180,221,212)', 'rgb(34, 83, 90)'];
 
 function generateDomain(range, min, max) {
   const len = range.length;
@@ -79,7 +79,7 @@ function generateNiceDomain(range, min, max) {
  * t.range(); // Generates from colors and domain: ['rgb(0,0,0)','rgb(85,85,85)','rgb(170,170,170)','rgb(255,255,255)']
  */
 
-export default function scaleThresholdColor(settings = {}, fields) {
+export default function scaleThresholdColor(settings = {}, fields, dataset, { theme } = {}) {
   const d3Scale = scaleThreshold();
 
   /**
@@ -97,6 +97,8 @@ export default function scaleThresholdColor(settings = {}, fields) {
   Object.keys(d3Scale).forEach(key => (fn[key] = d3Scale[key]));
 
   const [min, max] = minmax(settings, fields);
+  const num = settings.domain ? settings.domain.length : -1;
+  const DEFAULT_COLORS = theme.palette('sequential', num > 0 ? num : 2);
   let range = settings.range || DEFAULT_COLORS;
   let domain = settings.domain || (settings.nice ? generateNiceDomain(range, min, max) : [min + ((max - min) / 2)]);
 

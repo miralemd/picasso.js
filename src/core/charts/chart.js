@@ -14,7 +14,7 @@ import brush from '../brush';
 import componentFactory from '../component/component-factory';
 import mediatorFactory from '../mediator';
 import NarrowPhaseCollision from '../math/narrow-phase-collision';
-import styleResolver from '../style/resolver';
+import themeFn from '../theme';
 
 /**
  * @typedef Chart.Props
@@ -137,6 +137,7 @@ function chart(definition, context) {
 
   const registries = context.registries;
   const logger = context.logger;
+  const theme = themeFn(context.style, context.palettes);
 
   const chartMixins = mixins.list();
   const listeners = [];
@@ -156,11 +157,6 @@ function chart(definition, context) {
   let dataset = [];
   const brushes = {};
   let stopBrushing = false;
-  let chartStyle;
-
-  const styler = {
-    resolve: s => styleResolver(s, chartStyle)
-  };
 
   const createComponent = (compSettings, container) => {
     const componentDefinition = registries.component(compSettings.type);
@@ -168,8 +164,8 @@ function chart(definition, context) {
       settings: compSettings,
       chart: instance,
       mediator,
-      styler,
       registries,
+      theme,
       container
     });
     return {
@@ -264,9 +260,8 @@ function chart(definition, context) {
     if (settings.logger) {
       logger.level(settings.logger.level);
     }
-    chartStyle = settings.style || {};
-    currentScales = buildScales(scales, dataset, registries.scale);
-    currentFormatters = buildFormatters(formatters, dataset, registries.formatter);
+    currentScales = buildScales(scales, dataset, { scale: registries.scale, theme });
+    currentFormatters = buildFormatters(formatters, dataset, { formatter: registries.formatter, theme });
     currentScrollApis = buildScroll(scroll, currentScrollApis);
   };
 
@@ -750,7 +745,7 @@ function chart(definition, context) {
    * instance.scale({ source: '0/1', type: 'linear' }); // Create a new scale
    */
   instance.scale = function scale(v) {
-    return getOrCreateScale(v, currentScales, dataset, registries.scale);
+    return getOrCreateScale(v, currentScales, dataset, { scale: registries.scale, theme });
   };
 
   /**
@@ -768,7 +763,7 @@ function chart(definition, context) {
    * }); // Create a new formatter
    */
   instance.formatter = function formatter(v) {
-    return getOrCreateFormatter(v, currentFormatters, dataset, registries.formatter);
+    return getOrCreateFormatter(v, currentFormatters, dataset, { formatter: registries.formatter, theme });
   };
 
   /**
