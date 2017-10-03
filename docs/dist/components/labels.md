@@ -8,11 +8,11 @@ Since this component depends on other referenced component, it is important that
 
 ```js
 settings: {
-  sources: { // 
-    component: 'foo', // 
-    selector: 'foo', // 
-    strategy: , // 
-  },
+  sources: [{ // components to use as input to a labeling strategy
+    component: 'bar', // component key
+    selector: 'rect', // component shape selector
+    strategy: { /* strategy */ }, 
+  }],
 }
 ```
 
@@ -22,9 +22,18 @@ settings: {
 
 A strategy used primarily for labeling the rectangles in a bar chart, histogram, waterfall or similar.
 
+This strategy is based on the direction of a bar (`'up'`, `'down'`, `'right'`, `'left'`), which is used to find three possible positions for a label: `'inside'`, `'outside'`, `'opposite'`. Which position fits best for any given label depends on the measured size of the label, and the boundaries of the different positions.
+
+![Bar labeling strategy](../../assets/bar-labels.png)
+
+In the image above, the order of label placements is `['inside', 'outside', 'opposite'`], i.e the label is placed inside the bar if it fits, then outside and finally on the opposite side of the bar's direction. If the entire label doesn't fit in any of those places, it is placed inside the largest rectangle of the three.
+The label is then justified, aligned and ellipsed if necessary.
+
+#### Settings
+
 ```js
 settings: {
-  direction: 'up', // The direction in which the bars are growing: 'up', or 'down'. Default: 'up'. Optional.
+  direction: 'up', // The direction in which the bars are growing: 'up', 'down', 'right' or 'left'.. Default: 'up'. Optional.
   fontFamily: 'Arial', //  Default: 'Arial'. Optional.
   fontSize: 12, //  Default: 12. Optional.
   labels: { // 
@@ -39,7 +48,7 @@ settings: {
 }
 ```
 
-## Example
+#### Example
 
 ```js
 components: [
