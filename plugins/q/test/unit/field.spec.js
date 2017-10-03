@@ -47,7 +47,7 @@ describe('q-field', () => {
     });
 
     it('should identify when the field is a measure', () => {
-      const m = qField({ meta: {} });
+      const m = qField({ meta: {}, cube: {} });
       expect(m.type()).to.equal('measure');
     });
 

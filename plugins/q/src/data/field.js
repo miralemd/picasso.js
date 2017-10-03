@@ -2,6 +2,7 @@ import { createFromMetaInfo } from '../formatter';
 
 // const tagsFn = d => d.qTags;
 const elemNoFn = cube => (cube.qMode === 'S' ? (d => d.qElemNumber) : (d => d.qElemNo));
+const measureValue = cube => (cube.qMode === 'S' ? (d => d.qNum) : (d => d.qValue));
 
 export default function qField({
   meta,
@@ -14,7 +15,7 @@ export default function qField({
   let values;
 
   const type = ('qStateCounts' in meta || 'qSize' in meta) ? 'dimension' : 'measure';
-  const valueFn = type === 'dimension' ? elemNoFn(cube) : (d => d.qValue);
+  const valueFn = type === 'dimension' ? elemNoFn(cube) : measureValue(cube);
   const labelFn = d => d.qText;
   const formatter = createFromMetaInfo(meta, localeInfo);
 
@@ -33,7 +34,7 @@ export default function qField({
     max: () => meta.qMax,
     value: valueFn,
     label: labelFn,
-    formatter,
+    formatter: () => formatter,
     tags: () => meta.qTags
   };
 
