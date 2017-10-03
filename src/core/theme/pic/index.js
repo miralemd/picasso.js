@@ -22,7 +22,7 @@ const palettes = [
 /* eslint quote-props: 0 */
 const style = {
   // FONTS
-  '$font-family': 'Arial',
+  '$font-family': 'Georgia',
   '$font-size-m': '12px',
   '$line-height-m': '16px',
 
@@ -34,6 +34,12 @@ const style = {
     fill: '$primary',
     strokeWidth: 0,
     stroke: '#ccc'
+  },
+
+  '$label': {
+    fontSize: '$font-size-m',
+    fontFamily: '$font-family',
+    fill: '#333'
   }
 };
 
