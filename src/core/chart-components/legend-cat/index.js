@@ -42,7 +42,7 @@ export default function categoricalLegend(picasso) {
  * @property {number} [title.margin.right=5] - Right margin
  * @property {number} [title.margin.bottom=5] - Bottom margin
  * @property {number} [title.margin.left=5] - Left margin
- * @property {object} [buttons] - Title settings
+ * @property {object} [buttons] - Button settings
  * @property {boolean} [buttons.show=true] - Show the scroll/paging buttons (will still auto hide when not needed)
  * @property {object} [buttons.rect] - Settings for the rect of the buttons
  * @property {string} [buttons.rect.fill='transparent'] - Fill color

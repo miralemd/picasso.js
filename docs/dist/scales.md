@@ -315,11 +315,3 @@ No description
 | Returns | ordinal | No | ... | ... |
 
 An ordinal scale with the output range set to default colors, as defined by *scaleCategorical.range*  
-
-#### <a name='picasso.scaleCategorical.range' href='#picasso.scaleCategorical.range'>#</a> **picasso.scaleCategorical.range** *Array.&lt;string&gt;*
-
-Default range of colors 
-
-#### <a name='picasso.scaleCategorical.unknown' href='#picasso.scaleCategorical.unknown'>#</a> **picasso.scaleCategorical.unknown** *string*
-
-Default color for unknown values 

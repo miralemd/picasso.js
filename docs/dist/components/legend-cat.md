@@ -45,7 +45,7 @@ component: {
       left: 5, // Left margin. Default: 5. Optional.
     },
   },
-  buttons: { // Title settings. Optional.
+  buttons: { // Button settings. Optional.
     show: true, // Show the scroll/paging buttons (will still auto hide when not needed). Default: true. Optional.
     rect: { // Settings for the rect of the buttons. Optional.
       fill: 'transparent', // Fill color. Default: 'transparent'. Optional.
@@ -61,3 +61,21 @@ component: {
 }
 ```
 
+## Events
+
+The categorical color legend component handles two type of events by default, `tap` and `resetindex` (*DEPRECATED*).
+
+### `tap` event
+Requires an event with `center: { x: 0, y: 0 }`-object for evaluating button presses.
+
+### `resetindex` event *DEPRECATED*
+Will reset the paging index, but will *NOT* re-render the component, needs to be done by itself.
+To use this, make sure the component has a `key` (it needs that for the paging to work anyway), and use it like this:
+
+```js
+const instance = picasso.chart({ /* settings */ });
+
+window.pic.component('<key value of legend-cat>').emit('resetindex');
+```
+
+Please note that this event is *DEPRECATED* and will be removed in future releases.

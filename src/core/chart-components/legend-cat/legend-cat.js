@@ -328,6 +328,9 @@ const categoricalLegend = {
 
         this.renderer.render(renderLegend({ context: this, index: this.index }));
       }
+    },
+    resetindex() {
+      this.index = 0;
     }
   },
   preferredSize() {
@@ -357,7 +360,7 @@ const categoricalLegend = {
     this.rect = opts.size;
   },
   render() {
-    return renderLegend({ context: this });
+    return renderLegend({ context: this, index: this.index });
   }
 };
 
