@@ -1,4 +1,4 @@
-import stringTokenizer from '../../../../src/web/text-manipulation/string-tokenizer';
+import stringTokenizer, { MANDATORY, BREAK_ALLOWED, NO_BREAK } from '../../../../src/web/text-manipulation/string-tokenizer';
 
 function toArray(iterator) {
   const ary = [];
@@ -25,7 +25,7 @@ describe('String Tokenizer', () => {
       {
         index: 0,
         value: 'l',
-        breakOpportunity: 'breakAllowed',
+        breakOpportunity: BREAK_ALLOWED,
         suppress: false,
         hyphenation: true,
         width: 1,
@@ -35,7 +35,7 @@ describe('String Tokenizer', () => {
       {
         index: 1,
         value: 'e',
-        breakOpportunity: 'breakAllowed',
+        breakOpportunity: BREAK_ALLOWED,
         suppress: false,
         hyphenation: true,
         width: 1,
@@ -84,7 +84,7 @@ describe('String Tokenizer', () => {
         mandatoryBreakIdentifiers: [chunk => chunk === 'e', () => false]
       });
       const ary = toArray(tokens).map(t => t.breakOpportunity);
-      expect(ary).to.deep.equal(['breakAllowed', 'mandatory', 'breakAllowed']);
+      expect(ary).to.deep.equal([BREAK_ALLOWED, MANDATORY, BREAK_ALLOWED]);
     });
 
     it('should trigger noBreak opportunity if any noBreak identifier resolves to true', () => {
@@ -93,7 +93,7 @@ describe('String Tokenizer', () => {
         noBreakAllowedIdentifiers: [chunk => chunk === 'e', () => false]
       });
       const ary = toArray(tokens).map(t => t.breakOpportunity);
-      expect(ary).to.deep.equal(['breakAllowed', 'noBreak', 'breakAllowed']);
+      expect(ary).to.deep.equal([BREAK_ALLOWED, NO_BREAK, BREAK_ALLOWED]);
     });
 
     it('should not trigger noBreak opportunity if mandatory identifier resolves to true', () => {
@@ -103,7 +103,7 @@ describe('String Tokenizer', () => {
         noBreakAllowedIdentifiers: [() => true]
       });
       const ary = toArray(tokens).map(t => t.breakOpportunity);
-      expect(ary).to.deep.equal(['mandatory', 'mandatory', 'mandatory']);
+      expect(ary).to.deep.equal([MANDATORY, MANDATORY, MANDATORY]);
     });
 
     it('should trigger suppress flag if any suppress identifier resolves to true', () => {

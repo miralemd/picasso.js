@@ -87,7 +87,7 @@ describe('Line Break Resolver', () => {
       expect(state.node.children[2].dy).to.equal(23);
     });
 
-    it('should remove maxWidth attribute', () => {
+    it('should remove maxWidth attribute and append ellipis char on last line', () => {
       node.text = '123456789';
       node.wordBreak = 'break-all';
       node.x = 0;
@@ -96,7 +96,8 @@ describe('Line Break Resolver', () => {
       node.maxLines = 2;
       fn(state);
       expect(state.node.children[0].maxWidth).to.equal(undefined);
-      expect(state.node.children[1].maxWidth).to.equal(2); // Text width minus 1 for last line if reduced
+      expect(state.node.children[1].maxWidth).to.equal(3); // maxWidth on last line should remain
+      expect(state.node.children[1].text).to.equal('456…');
     });
 
     it('should not line-break node if text fits on a single line', () => {
@@ -106,6 +107,15 @@ describe('Line Break Resolver', () => {
       node.maxLines = 2;
       fn(state);
       expect(state.node).to.deep.equal(node);
+    });
+
+    it('should line-break node if text fits on a single line but contains line-break characters', () => {
+      node.text = '\n123456789';
+      node.wordBreak = 'break-all';
+      node.maxWidth = 100;
+      node.maxLines = 2;
+      fn(state);
+      expect(state.node.children.length).to.equal(2);
     });
   });
 });

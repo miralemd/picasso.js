@@ -1,25 +1,52 @@
-function includesLineBreak(c) {
-  return c.search(/\n+|\r+|\r\n/) !== -1;
+const LINEBREAK_REGEX = /\n+|\r+|\r\n/;
+const WHITESPACE_REGEX = /\s/;
+const HYPHEN_REGEX = /[a-zA-Z\u00C0-\u00F6\u00F8-\u00FF\u00AD]/;
+export const NO_BREAK = 0;
+export const MANDATORY = 1;
+export const BREAK_ALLOWED = 2;
+
+export function includesLineBreak(c) {
+  return c.search(LINEBREAK_REGEX) !== -1;
 }
 
 function includesWhiteSpace(c) {
-  return c.search(/\s/) !== -1;
+  return c.search(WHITESPACE_REGEX) !== -1;
 }
 
 function hyphenationAllowed(c) {
   /* Latin character set. Excluding numbers, sign and symbol characters, but including soft hyphen */
-  return c.search(/[a-zA-Z\u00C0-\u00F6\u00F8-\u00FF\u00AD]/) !== -1;
+  return c.search(HYPHEN_REGEX) !== -1;
 }
 
 function resolveBreakOpportunity(chunk, i, chunks, mandatory, noBreakAllowed) {
-  if (mandatory.some(check => check(chunk, i, chunks))) {
-    return 'mandatory';
+  if (mandatory.some(fn => fn(chunk, i, chunks))) {
+    return MANDATORY;
   }
-  if (noBreakAllowed.some(check => check(chunk, i, chunks))) {
-    return 'noBreak';
+  if (noBreakAllowed.some(fn => fn(chunk, i, chunks))) {
+    return NO_BREAK;
   }
 
-  return 'breakAllowed';
+  return BREAK_ALLOWED;
+}
+
+function cleanEmptyChunks(chunks) {
+  if (chunks[0] === '') {
+    chunks.shift();
+  }
+  if (chunks[chunks.length - 1] === '') {
+    chunks.pop();
+  }
+}
+
+function clamp(val, min, max) {
+  return Math.max(min, Math.min(max, val));
+}
+
+function condition(reverse, index, length) {
+  if (reverse) {
+    return index >= 0;
+  }
+  return index < length;
 }
 
 export default function stringTokenizer({
@@ -29,16 +56,16 @@ export default function stringTokenizer({
   measureText = text => ({ width: text.length, height: 1 }),
   mandatoryBreakIdentifiers = [includesLineBreak],
   noBreakAllowedIdentifiers = [],
-  suppressIdentifier = [includesWhiteSpace, includesLineBreak],
+  suppressIdentifier = [includesWhiteSpace, includesLineBreak, chunk => chunk === ''],
   hyphenationIdentifiers = [hyphenationAllowed]
 } = {}) {
   const chunks = String(string).split(separator);
-  let index = reverse ? chunks.length : -1;
-  const condition = reverse ? () => index >= 0 : () => index < chunks.length;
-  const clamp = val => Math.max(0, Math.min(chunks.length - 1, val));
+  cleanEmptyChunks(chunks);
+  const length = chunks.length;
+  let position = reverse ? length : -1; // Set init position 1 step before or after to make first next call go to first position
 
-  const peek = (target) => {
-    const i = clamp(target);
+  function peek(peekAt) {
+    const i = clamp(peekAt, 0, length - 1);
     const chunk = chunks[i];
     const textMeasure = measureText(chunk);
     const opportunity = resolveBreakOpportunity(
@@ -53,32 +80,34 @@ export default function stringTokenizer({
       index: i,
       value: chunk,
       breakOpportunity: opportunity,
-      suppress: suppressIdentifier.some(check => check(chunk, i, chunks)),
-      hyphenation: hyphenationIdentifiers.some(check => check(chunk, i, chunks)),
+      suppress: suppressIdentifier.some(fn => fn(chunk, i, chunks)),
+      hyphenation: hyphenationIdentifiers.some(fn => fn(chunk, i, chunks)),
       width: textMeasure.width,
       height: textMeasure.height,
       done: false
     };
-  };
+  }
+
+  function next(jumpToPosition) {
+    if (isNaN(jumpToPosition)) {
+      if (reverse) {
+        position--;
+      } else {
+        position++;
+      }
+    } else {
+      position = clamp(jumpToPosition, 0, length - 1);
+    }
+
+    if (condition(reverse, position, length)) {
+      return peek(position);
+    }
+    return { done: true };
+  }
 
   return {
-    next: (jump) => {
-      if (isNaN(jump)) {
-        if (reverse) {
-          index--;
-        } else {
-          index++;
-        }
-      } else {
-        index = clamp(jump);
-      }
-
-      if (condition()) {
-        return peek(index);
-      }
-      return { done: true };
-    },
+    next,
     peek,
-    length: chunks.length
+    length
   };
 }
