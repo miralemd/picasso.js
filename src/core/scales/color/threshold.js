@@ -79,7 +79,7 @@ function generateNiceDomain(range, min, max) {
  * t.range(); // Generates from colors and domain: ['rgb(0,0,0)','rgb(85,85,85)','rgb(170,170,170)','rgb(255,255,255)']
  */
 
-export default function scaleThresholdColor(settings = {}, { fields } = {}, { theme } = {}) {
+export default function scaleThresholdColor(settings = {}, data = {}, { theme } = {}) {
   const d3Scale = scaleThreshold();
 
   /**
@@ -96,6 +96,8 @@ export default function scaleThresholdColor(settings = {}, { fields } = {}, { th
 
   Object.keys(d3Scale).forEach(key => (fn[key] = d3Scale[key]));
 
+  const fields = data.fields;
+
   const [min, max] = minmax(settings, fields);
   const num = settings.domain ? settings.domain.length : -1;
   const DEFAULT_COLORS = theme.palette('sequential', num > 0 ? num : 2);
@@ -109,6 +111,8 @@ export default function scaleThresholdColor(settings = {}, { fields } = {}, { th
     // Generate additional colors
     range = generateRange(domain, range, min, max);
   }
+
+  fn.data = () => data;
 
   fn.range(range);
   fn.range(settings.invert ? fn.range().reverse() : fn.range());

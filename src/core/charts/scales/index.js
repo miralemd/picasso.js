@@ -43,7 +43,7 @@ export function create(options, dataset, deps) {
       });
     });
   }
-  let sources = [];
+
   let data = extractData(dataSourceConfig, dataset, deps);
   let type = options.type || deduceScaleTypeFromOptions(options, data.fields);
   let s;
@@ -60,7 +60,6 @@ export function create(options, dataset, deps) {
     s = deps.scale.get(type);
     s = s(options, data, deps);
     s.type = type;
-    s.sources = sources;
   }
   return s;
 }

@@ -27,7 +27,6 @@ describe('scales', () => {
       type: 'custom'
     }, null, deps);
     expect(s.type).to.equal('custom');
-    expect(s.sources).to.eql([]);
   });
 
   it('should create linear scale when no better type fits', () => {
@@ -37,7 +36,6 @@ describe('scales', () => {
     expect(s.type).to.equal('linear');
     expect(s.min()).to.equal(0);
     expect(s.max()).to.equal(1);
-    expect(s.sources).to.eql([]);
   });
 
   it('should create linear scale when source fields are measures', () => {

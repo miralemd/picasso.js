@@ -62,9 +62,12 @@ function initRect(ctx, size) {
 function getTicks(ctx, majorScale) {
   const values = majorScale.domain();
   let labels = values;
-  const labelFn = ctx.stgns.tick.label ||
-    ctx.chart.formatter({ source: majorScale.sources[0] }) ||
-    ctx.formatter;
+  let labelFn = ctx.stgns.tick.label;
+  if (!labelFn && ctx.formatter) {
+    labelFn = ctx.formatter;
+  } else if (!labelFn && majorScale.data().fields) {
+    labelFn = majorScale.data().fields[0].formatter();
+  }
   if (typeof labelFn === 'function') {
     labels = values.map(labelFn).map(String);
   }

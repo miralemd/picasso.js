@@ -49,6 +49,7 @@ export default function scaleBand(settings = {}, data = {}) {
   const valueFn = typeof settings.value === 'function' ? settings.value : d => d.value;
   const labelFn = typeof settings.label === 'function' ? settings.label : valueFn;
   const items = data.items || [];
+  const domainToDataMapping = {};
   let values = [];
   let labels = [];
   for (let i = 0; i < items.length; i++) {
@@ -62,6 +63,8 @@ export default function scaleBand(settings = {}, data = {}) {
   // I would like to define this outside of scaleBand but it cause the documentation to be in the wrong order
   function augmentScaleBand(band, settings) { // eslint-disable-line no-shadow
     band.data = () => data;
+
+    band.datum = domainValue => items[domainToDataMapping[domainValue]];
 
     /**
      * Get the first value of the domain
@@ -114,7 +117,6 @@ export default function scaleBand(settings = {}, data = {}) {
     }
 
     const newBand = band.copy();
-    newBand.sources = band.sources;
     newBand.type = band.type;
     augmentScaleBand(newBand, settings);
     const t = (sizeRelativeToStep * max) / size;

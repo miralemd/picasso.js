@@ -101,7 +101,6 @@ describe('Brush Range', () => {
     beforeEach(() => {
       const scale = bandScale();
       scale.type = 'band';
-      scale.sources = [];
       chartMock.scale = sandbox.stub().returns(scale);
     });
 
@@ -230,14 +229,13 @@ describe('Brush Range', () => {
     beforeEach(() => {
       const scale = linearScale();
       scale.type = 'linear';
-      scale.sources = [];
-      chartMock.scale = sandbox.stub().returns(scale);
-
-      chartMock.field = sandbox.stub().returns({
-        field: {
+      scale.data = () => ({
+        fields: [{
+          id: () => '',
           formatter: () => (v => v)
-        }
+        }]
       });
+      chartMock.scale = sandbox.stub().returns(scale);
     });
 
     describe('horizontal', () => {

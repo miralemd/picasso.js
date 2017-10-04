@@ -137,8 +137,6 @@ function createButtons({ HORIZONTAL, rect, buttonRectMinus, buttonRectPlus, butt
 function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect, index }) {
   let title;
   const domain = scale.domain();
-  const dataItems = scale.data().items;
-  // const domainLabels = scale.labels ? scale.labels() : null;
 
   const THRESHOLD = scale.type === 'threshold-color';
   let sourceField = (scale.data().fields || [])[0];
@@ -196,31 +194,18 @@ function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect,
     nextXitem += prevContainer.width || 0;
     nextYitem += prevContainer.height || 0;
 
-    const data = dataItems[i];
-
-    // let data = {
-    //   value: cat,
-    //   index: i,
-    //   color: scale(cat)
-    // };
+    let data = scale.datum ? scale.datum(cat) : {};
 
     if (THRESHOLD) {
-      data.domain = scale.domain();
-      data.item = {
+      data = {
         value: [cat, domain[i + 1]],
         source: {
-          field: scale.sources[0],
-          type: 'quant'
+          field: sourceField.id()
         }
       };
-    } else {
-      data.item = {
-        value: cat,
-        source: {
-          field: scale.sources[0],
-          type: 'qual'
-        }
-      };
+      if (!scale.label && formatter) {
+        text = formatter(cat);
+      }
     }
 
     let labelItemDef = resolveForDataObject(settings.item, data, i, domain, {

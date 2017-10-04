@@ -18,13 +18,11 @@ export default function ordinal(settings = {}, dataset) {
    * @return { number }
    */
   const fn = scaleOrdinal();
-  // let domainToDataMapping = {};
-  // let dataValues;
-  // let trackBy = settings.trackBy || 'label';
 
   const valueFn = typeof settings.value === 'function' ? settings.value : d => d.value;
   const labelFn = typeof settings.label === 'function' ? settings.label : valueFn;
   const items = dataset.items || [];
+  const domainToDataMapping = {};
   let values = [];
   let labels = [];
   for (let i = 0; i < items.length; i++) {
@@ -32,6 +30,7 @@ export default function ordinal(settings = {}, dataset) {
     if (values.indexOf(v) === -1) {
       values.push(v);
       labels.push(labelFn(items[i]));
+      domainToDataMapping[v] = i;
     }
   }
 
@@ -39,34 +38,12 @@ export default function ordinal(settings = {}, dataset) {
 
   fn.labels = () => labels;
 
-  // if (fields && fields[0]) {
-  //   dataValues = fields[0].values();
-  //   dataValues.forEach((v) => {
-  //     domainToDataMapping[v[trackBy]] = v;
-  //   });
-  // }
+  fn.label = (domainValue) => {
+    const idx = values.indexOf(domainValue);
+    return labels[idx];
+  };
 
-  // fn.data = function data(domainValue) {
-  //   if (domainValue in domainToDataMapping) {
-  //     let d = domainToDataMapping[domainValue];
-  //     return {
-  //       value: d[trackBy],
-  //       source: {
-  //         field: settings.source,
-  //         type: 'qual'
-  //       }
-  //     };
-  //   }
-  //   return {};
-  // };
-
-  // fn.label = function label(domainValue) {
-  //   if (domainValue in domainToDataMapping) {
-  //     let d = domainToDataMapping[domainValue];
-  //     return d.label;
-  //   }
-  //   return '';
-  // };
+  fn.datum = domainValue => items[domainToDataMapping[domainValue]];
 
   if (settings.range) {
     fn.range(settings.range);

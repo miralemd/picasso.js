@@ -49,7 +49,11 @@ describe('range component', () => {
     };
 
     scale = s => s / 100; // assume scale has domain [0, 100]
-    scale.sources = ['sales'];
+    scale.data = () => ({
+      fields: [{
+        id: () => 'sales'
+      }]
+    });
 
     chart.brush.returns(brush);
     chart.scale.returns(scale);
