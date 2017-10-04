@@ -10,6 +10,10 @@
 - PIC-211 - Text node in SVG should use white-space pre to mimic canvas white space behavior
 - PIC-213 - Theme palette resolver - experimental API not yet exposed
 
+### Fixed
+
+- BUGFIX: State on `legend-cat` component not preserved when using chart.update
+
 ## **0.31.0** - *(2017-09-21)*
 
 ### Added
