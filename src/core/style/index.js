@@ -155,7 +155,7 @@ function isPrimitive(v) {
   return typeof v !== 'object';
 }
 
-export function resolveForDataObject(props, dataObj, index, allData, context) {
+export function resolveForDataObject(props, dataObj, index, allData, contextProps) {
   const ret = {};
   Object.keys(props).forEach((s) => {
     const exists = typeof props[s] !== 'undefined';
@@ -164,7 +164,7 @@ export function resolveForDataObject(props, dataObj, index, allData, context) {
     // const hasImplicitDataProp = typeof props[s] === 'object' ? s in dataObj : false;
     const propData = exists && props[s].ref ? dataObj[props[s].ref] : dataObj;
     if (typeof props[s] === 'function') { // custom accessor function, not scale!
-      const fnContext = extend({}, { data: dataObj }, context);
+      const fnContext = extend({}, { data: dataObj }, contextProps);
       if (hasScale) {
         fnContext.scale = props[s].scale;
       }

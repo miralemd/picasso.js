@@ -260,8 +260,8 @@ function componentFactory(definition, options = {}) {
       formatter = chart.formatter(settings.formatter);
     } else if (typeof settings.formatter === 'object') {
       formatter = chart.formatter(settings.formatter);
-    } else if (typeof settings.scale === 'string') {
-      // formatter = chart.formatter({ source: scale.sources[0] });
+    } else if (scale) {
+      formatter = scale.data().fields[0].formatter();
     }
 
     style = theme.style(settings.style || {});

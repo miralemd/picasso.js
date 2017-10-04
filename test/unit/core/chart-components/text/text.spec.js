@@ -38,7 +38,7 @@ describe('Text component', () => {
     chart.scale.returns(scale);
 
     scale.data = () => ({
-      fields: [{ title: () => 'fakeTitle' }]
+      fields: [{ title: () => 'fakeTitle', formatter: () => undefined }]
     });
 
     config = {
@@ -563,7 +563,7 @@ describe('Text component', () => {
 
     it('join character', () => {
       scale.data = () => ({
-        fields: [{ title: () => 'fakeTitle1' }, { title: () => 'fakeTitle2' }]
+        fields: [{ title: () => 'fakeTitle1', formatter: () => undefined }, { title: () => 'fakeTitle2', formatter: () => undefined }]
       });
       config.dock = 'left';
       config.scale = 'x';
@@ -575,7 +575,7 @@ describe('Text component', () => {
 
     it('join as empty string', () => {
       scale.data = () => ({
-        fields: [{ title: () => 'fakeTitle1' }, { title: () => 'fakeTitle2' }]
+        fields: [{ title: () => 'fakeTitle1', formatter: () => undefined }, { title: () => 'fakeTitle2', formatter: () => undefined }]
       });
       config.dock = 'left';
       config.scale = 'x';
@@ -716,7 +716,7 @@ describe('Text component', () => {
 
     it('scale by reference with multiple sources', () => {
       scale.data = () => ({
-        fields: [{ title: () => 'fakeTitle1' }, { title: () => 'fakeTitle2' }]
+        fields: [{ title: () => 'fakeTitle1', formatter: () => undefined }, { title: () => 'fakeTitle2', formatter: () => undefined }]
       });
       config.dock = 'left';
       config.scale = 'x';

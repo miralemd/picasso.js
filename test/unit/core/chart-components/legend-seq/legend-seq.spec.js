@@ -42,10 +42,14 @@ describe('Legend Sequential', () => {
     chartMock = componentFixture.mocks().chart;
 
     const seqScale = sequentialScale({}, null, { theme });
-    seqScale.sources = [];
+    seqScale.data = () => ({
+      fields: [{ formatter: () => undefined }]
+    });
     chartMock.scale.withArgs('fillScale').returns(seqScale);
     const linScale = linearScale();
-    linScale.sources = [];
+    linScale.data = () => ({
+      fields: [{ formatter: () => undefined }]
+    });
     chartMock.scale.withArgs('majorScale').returns(linScale);
   });
 
