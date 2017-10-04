@@ -59,13 +59,13 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
 
     const bw = major && major.bandwidth ? major.bandwidth() : 0;
 
-    const majorRef = settings.major ? settings.major.ref || 'self' : 'self';
+    const majorRef = settings.major ? settings.major.ref || '' : '';
     const majorStartRef = typeof majorRef === 'object' ? settings.major.ref.start : null;
     const majorEndRef = typeof majorRef === 'object' ? settings.major.ref.end : null;
 
     // Calculate the minimum data point distance
     if (major && !major.bandwidth && typeof majorRef === 'string') {
-      const pointCoords = data.items.map(d => d[majorRef].value);
+      const pointCoords = data.items.map(d => (majorRef === '' ? d.value : d[majorRef].value));
 
       // Sort values
       pointCoords.sort((a, b) => a - b);
@@ -104,7 +104,8 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
       if (it.majorStart !== null) { // if a majorstart/end are defined, calculate the midpoint
         it.major = (it.majorStart + it.majorEnd) / 2;
       } else {
-        it.major = major && d[majorRef] ? major(d[majorRef].value) + (bw / 2) : 0.5;
+        let ref = majorRef === '' ? d : d[majorRef];
+        it.major = major && ref ? major(ref.value) + (bw / 2) : 0.5;
       }
 
       items.push(it);

@@ -65,7 +65,7 @@ describe('box marker', () => {
     };
 
     chart.dataset().extract.returns([{
-      self: { value: 0.5 },
+      value: 0.5,
       min: { value: 0.2 },
       start: { value: 0.4 },
       med: { value: 0.5 },
@@ -87,7 +87,8 @@ describe('box marker', () => {
       {
         type: 'container',
         data: {
-          self: { value: 0.5 },
+          value: 0.5,
+          // self: { value: 0.5 },
           min: { value: 0.2 },
           start: { value: 0.4 },
           med: { value: 0.5 },
@@ -100,7 +101,8 @@ describe('box marker', () => {
         children: [
           {
             data: {
-              self: { value: 0.5 },
+              value: 0.5,
+              // self: { value: 0.5 },
               min: { value: 0.2 },
               start: { value: 0.4 },
               med: { value: 0.5 },
@@ -125,7 +127,8 @@ describe('box marker', () => {
           },
           {
             data: {
-              self: { value: 0.5 },
+              value: 0.5,
+              // self: { value: 0.5 },
               min: { value: 0.2 },
               start: { value: 0.4 },
               med: { value: 0.5 },
@@ -146,7 +149,8 @@ describe('box marker', () => {
           },
           {
             data: {
-              self: { value: 0.5 },
+              value: 0.5,
+              // self: { value: 0.5 },
               min: { value: 0.2 },
               start: { value: 0.4 },
               med: { value: 0.5 },
@@ -167,7 +171,8 @@ describe('box marker', () => {
           },
           {
             data: {
-              self: { value: 0.5 },
+              value: 0.5,
+              // self: { value: 0.5 },
               min: { value: 0.2 },
               start: { value: 0.4 },
               med: { value: 0.5 },
@@ -190,7 +195,8 @@ describe('box marker', () => {
             cx: 75,
             cy: 40,
             data: {
-              self: { value: 0.5 },
+              value: 0.5,
+              // self: { value: 0.5 },
               min: { value: 0.2 },
               start: { value: 0.4 },
               med: { value: 0.5 },
@@ -216,7 +222,8 @@ describe('box marker', () => {
             cx: 75,
             cy: 160,
             data: {
-              self: { value: 0.5 },
+              value: 0.5,
+              // self: { value: 0.5 },
               min: { value: 0.2 },
               start: { value: 0.4 },
               med: { value: 0.5 },
@@ -248,7 +255,7 @@ describe('box marker', () => {
       shapeFn,
       data: { extract: {} },
       settings: {
-        major: { scale: 'x' },
+        major: { scale: 'x', ref: 'self' },
         minor: { scale: 'y' },
         box: {
           stroke: '#f00'
@@ -266,7 +273,7 @@ describe('box marker', () => {
     xScale.bandwidth = () => 0.5;
     const yScale = v => v;
     yScale.bandwidth = () => 0.5;
-    chart.scale.withArgs({ scale: 'x' }).returns(xScale);
+    chart.scale.withArgs({ scale: 'x', ref: 'self' }).returns(xScale);
     chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
     componentFixture.simulateCreate(boxMarker, config);
@@ -316,7 +323,7 @@ describe('box marker', () => {
       shapeFn,
       data: { extract: {} },
       settings: {
-        major: { scale: 'x' },
+        major: { scale: 'x', ref: 'self' },
         minor: { scale: 'y' },
         box: {
           stroke: '#f00'
@@ -334,7 +341,7 @@ describe('box marker', () => {
     xScale.bandwidth = () => 0.5;
     const yScale = v => v;
     yScale.bandwidth = () => 0.5;
-    chart.scale.withArgs({ scale: 'x' }).returns(xScale);
+    chart.scale.withArgs({ scale: 'x', ref: 'self' }).returns(xScale);
     chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
     componentFixture.simulateCreate(boxMarker, config);
@@ -384,7 +391,7 @@ describe('box marker', () => {
       shapeFn,
       data: { extract: {} },
       settings: {
-        major: { scale: 'x' },
+        major: { scale: 'x', ref: 'self' },
         minor: { scale: 'y' },
         box: {
           stroke: '#f00'
@@ -407,7 +414,7 @@ describe('box marker', () => {
     xScale.bandwidth = () => 0.5;
     const yScale = v => v;
     yScale.bandwidth = () => 0.5;
-    chart.scale.withArgs({ scale: 'x' }).returns(xScale);
+    chart.scale.withArgs({ scale: 'x', ref: 'self' }).returns(xScale);
     chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
     componentFixture.simulateCreate(boxMarker, config);
@@ -501,7 +508,7 @@ describe('box marker', () => {
       shapeFn,
       data: { extract: {} },
       settings: {
-        major: { scale: 'x' },
+        major: { scale: 'x', ref: 'self' },
         minor: { scale: 'y' },
         box: {
           stroke: '#f00'
@@ -563,7 +570,7 @@ describe('box marker', () => {
 
     const yScale = v => (v - 0.2) / 0.6;
 
-    chart.scale.withArgs({ scale: 'x' }).returns(xScale);
+    chart.scale.withArgs({ scale: 'x', ref: 'self' }).returns(xScale);
     chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
     componentFixture.simulateCreate(boxMarker, config);
