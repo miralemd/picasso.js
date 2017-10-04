@@ -745,7 +745,6 @@ export default function brush({
     let key;
     let item;
     let source;
-    let type;
     let value;
 
     for (let i = 0, num = keys.length; i < num; i++) {
@@ -771,11 +770,10 @@ export default function brush({
         source = aliases[source];
       }
 
-      type = item.source.type === 'quant' ? 'range' : 'value';
       value = item.value;
-      if (type === 'range' && ranges[source]) {
+      if (ranges[source]) {
         status[i].bool = Array.isArray(value) ? ranges[source].containsRange({ min: value[0], max: value[1] }) : ranges[source].containsValue(value);
-      } else if (type === 'value' && values[source] && values[source].contains(value)) {
+      } else if (values[source] && values[source].contains(value)) {
         status[i].bool = true;
       }
     }
