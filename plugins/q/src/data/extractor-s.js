@@ -1,3 +1,4 @@
+import extend from 'extend';
 import {
   getPropsInfo
 } from './util';
@@ -97,7 +98,7 @@ export default function extract(config, dataset, cache) {
         }
         page.qMatrix.forEach((row, i) => {
           const rowIdx = page.qArea.qTop + i;
-          const mainCell = { qRow: rowIdx, ...fn(row) };
+          const mainCell = extend({ qRow: rowIdx }, fn(row));
           const ret = datumExtract(main, mainCell, { key: sourceKey });
 
           // loop through all props that need to be mapped and
@@ -111,7 +112,7 @@ export default function extract(config, dataset, cache) {
               if (propCellFn === -1) {
                 return;
               }
-              propCell = { qRow: rowIdx, ...propCellFn(row) };
+              propCell = extend({ qRow: rowIdx }, propCellFn(row));
             }
             ret[prop] = datumExtract(p, propCell, { key: sourceKey }, prop);
           });

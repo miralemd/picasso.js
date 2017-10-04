@@ -23,8 +23,8 @@
   ],
   "main": "dist/picasso-q.js",
   "devDependencies": {
-    "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "d3-hierarchy": "^1.1.5",
+    "extend": "^3.0.0",
     "number-format.js": "^1.1.10"
   },
   "dependencies": {}
