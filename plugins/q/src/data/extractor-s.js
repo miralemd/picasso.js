@@ -1,7 +1,4 @@
 import extend from 'extend';
-import {
-  getPropsInfo
-} from './util';
 
 function getFieldAccessor(field, page, { cache }) {
   if (!field) {
@@ -73,7 +70,7 @@ function datumExtract(propCfg, cell, {
   return datum;
 }
 
-export default function extract(config, dataset, cache) {
+export default function extract(config, dataset, cache, { normalizeConfig }) {
   const cfgs = Array.isArray(config) ? config : [config];
   let dataItems = [];
   cfgs.forEach((cfg) => {
@@ -81,11 +78,11 @@ export default function extract(config, dataset, cache) {
       const cube = dataset.raw();
       const sourceKey = dataset.key();
       const f = typeof cfg.field === 'object' ? cfg.field : dataset.field(cfg.field);
-      const { props, main } = getPropsInfo(cfg, dataset, cache);
-      // console.log(main);
+      const { props, main } = normalizeConfig(cfg, dataset);
       const propsArr = Object.keys(props);
 
       const track = !!cfg.trackBy;
+      const trackType = typeof cfg.trackBy;
       const tracker = {};
       const trackedItems = [];
       const items = [];
@@ -104,7 +101,6 @@ export default function extract(config, dataset, cache) {
           // loop through all props that need to be mapped and
           // assign 'value' and 'source' to each property
           propsArr.forEach((prop) => {
-            // console.log(prop);
             const p = props[prop];
             let propCell = mainCell;
             if (p.field && p.field !== f) {
@@ -120,7 +116,7 @@ export default function extract(config, dataset, cache) {
           // collect items based on the trackBy value
           // items with the same trackBy value are placed in an array and reduced later
           if (track) {
-            trackId = mainCell[cfg.trackBy];
+            trackId = trackType === 'function' ? cfg.trackBy(mainCell) : mainCell[cfg.trackBy];
             let trackedItem = tracker[trackId];
             if (!trackedItem) {
               trackedItem = tracker[trackId] = {
@@ -139,7 +135,12 @@ export default function extract(config, dataset, cache) {
       // reduce if items have been grouped
       if (track) {
         dataItems.push(...trackedItems.map((t) => {
-          const ret = {};
+          let mainValues = t.items.map(item => item.value);
+          const mainReduce = main.reduce;
+          const ret = {
+            value: mainReduce ? mainReduce(mainValues) : mainValues,
+            source: t.items[0].source
+          };
           propsArr.forEach((prop) => {
             let values = t.items.map(item => item[prop].value);
             const reduce = props[prop].reduce;

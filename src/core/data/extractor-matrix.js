@@ -2,16 +2,34 @@ import {
   getPropsInfo
 } from './util';
 
-export default function extract(config, dataset, cache) {
+function datumExtract(propCfg, cell, {
+  key
+}) {
+  const datum = {
+    value: typeof propCfg.value === 'function' ? propCfg.value(cell) : typeof propCfg.value !== 'undefined' ? propCfg.value : cell  // eslint-disable-line no-nested-ternary
+  };
+
+  if (propCfg.field) {
+    datum.source = {
+      key,
+      field: propCfg.field.key()
+    };
+  }
+
+  return datum;
+}
+
+export default function extract(config, dataset) {
   const cfgs = Array.isArray(config) ? config : [config];
   let dataItems = [];
   cfgs.forEach((cfg) => {
     if (typeof cfg.field !== 'undefined') {
       const f = dataset.field(cfg.field);
+      const sourceKey = dataset.key();
       if (!f) {
         throw Error(`Field '${cfg.field}' not found`);
       }
-      const { props, main } = getPropsInfo(cfg, dataset, cache);
+      const { props, main } = getPropsInfo(cfg, dataset);
       const propsArr = Object.keys(props);
 
       const track = !!cfg.trackBy;
@@ -21,24 +39,15 @@ export default function extract(config, dataset, cache) {
       let trackId;
 
       const items = f.items().map((v, idx) => {
-        const ret = {
-          value: typeof main.value === 'function' ? main.value(v) : typeof main.value !== 'undefined' ? main.value : v,  // eslint-disable-line no-nested-ternary
-          source: {
-            field: cfg.field
-          }
-        };
+        const mainCell = v;
+        const ret = datumExtract(main, mainCell, { key: sourceKey });
 
         // loop through all props that need to be mapped and
         // assign 'value' and 'source' to each property
         propsArr.forEach((prop) => {
           const p = props[prop];
-          const value = p.field ? p.field.items()[idx] : v;
-          ret[prop] = {
-            value: typeof p.value === 'function' ? p.value(value) : typeof p.value !== 'undefined' ? p.value : value  // eslint-disable-line no-nested-ternary
-          };
-          if (typeof p.source !== 'undefined') {
-            ret[prop].source = { field: p.source };
-          }
+          let propCell = p.field ? p.field.items()[idx] : mainCell;
+          ret[prop] = datumExtract(p, propCell, { key: sourceKey });
         });
 
         // collect items based on the trackBy value
@@ -62,7 +71,12 @@ export default function extract(config, dataset, cache) {
       // reduce if items have been grouped
       if (track) {
         dataItems.push(...trackedItems.map((t) => {
-          const ret = {};
+          let mainValues = t.items.map(item => item.value);
+          const mainReduce = main.reduce;
+          const ret = {
+            value: mainReduce ? mainReduce(mainValues) : mainValues,
+            source: t.items[0].source
+          };
           propsArr.forEach((prop) => {
             let values = t.items.map(item => item[prop].value);
             const reduce = props[prop].reduce;

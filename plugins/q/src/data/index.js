@@ -12,12 +12,12 @@ function hierarchy(config = {}, dataset, cache) {
   return transformH(config, dataset, cache);
 }
 
-function extractData(cfg, dataset, cache) {
+function extractData(cfg, dataset, cache, deps) {
   const cube = dataset.raw();
   if (cube.qMode === 'K') {
-    return kExtractor(cfg, dataset, cache);
+    return kExtractor(cfg, dataset, cache, deps);
   } else if (cube.qMode === 'S') {
-    return SExtractor(cfg, dataset, cache);
+    return SExtractor(cfg, dataset, cache, deps);
   }
   return [];
 }
@@ -70,6 +70,10 @@ export default function q({
 
   const pages = cube.qMode === 'K' ? cube.qStackedDataPages : cube.qDataPages;
 
+  const deps = {
+    normalizeConfig: q.normalizeProperties
+  };
+
   const dataset = {
     key: () => key,
     raw: () => cube,
@@ -79,16 +83,16 @@ export default function q({
       pages
     }),
     fields: () => cache.fields.slice(),
-    extract: extractionConfig => extractData(extractionConfig, dataset, cache),
+    extract: extractionConfig => extractData(extractionConfig, dataset, cache, deps),
     hierarchy: hierarchyConfig => hierarchy(hierarchyConfig, dataset, cache)
   };
 
   let fieldExtractor;
 
   if (cube.qMode === 'K') {
-    fieldExtractor = f => kExtractor({ field: f }, dataset, cache);
+    fieldExtractor = f => kExtractor({ field: f }, dataset, cache, deps);
   } else if (cube.qMode === 'S') {
-    fieldExtractor = f => SExtractor({ field: f }, dataset, cache);
+    fieldExtractor = f => SExtractor({ field: f }, dataset, cache, deps);
   } else {
     fieldExtractor = () => []; // TODO - throw unsupported error?
   }

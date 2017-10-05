@@ -52,11 +52,11 @@ export const reducers = {
   }
 };
 
-function normalizeProperties(cfg, dataset, dataProperties) {
+function normalizeProperties(cfg, dataset, dataProperties, main) {
   const props = {};
+  const mainField = main.field || (typeof cfg.field !== 'undefined' ? dataset.field(cfg.field) : null);
   Object.keys(dataProperties).forEach((key) => {
     const pConfig = dataProperties[key];
-
     const prop = props[key] = {};
     if (['number', 'string', 'boolean'].indexOf(typeof pConfig) !== -1) {
       prop.type = 'primitive';
@@ -64,22 +64,16 @@ function normalizeProperties(cfg, dataset, dataProperties) {
     } else if (typeof pConfig === 'function') {
       prop.type = 'function';
       prop.value = pConfig;
-      prop.source = cfg.field;
+      prop.field = mainField;
     } else if (typeof pConfig === 'object') {
       if (pConfig.field) {
         prop.type = 'field';
         prop.field = dataset.field(pConfig.field);
-        if (!prop.field) {
-          throw Error(`Field '${pConfig.field}' not found`);
-        }
-        prop.source = pConfig.field;
+        // prop.source = pConfig.field;
         prop.value = prop.field.value;
-      } else {
-        prop.source = cfg.field;
-        const f = dataset.field(cfg.field);
-        if (f) {
-          prop.value = f.value;
-        }
+      } else if (mainField) {
+        prop.value = mainField.value;
+        prop.field = mainField;
       }
       if (typeof pConfig.value !== 'undefined') {
         prop.value = pConfig.value;
@@ -95,10 +89,37 @@ function normalizeProperties(cfg, dataset, dataProperties) {
   return props;
 }
 
-// normalize property mapping config
+/*
+example of configuration input
+cfg = {
+  field: 'State', // the 'top level' values are extracted from field state
+  value: d => d.qText, // the value of the output
+  props: { // additional data properties ammended to each item
+    a: 3, // constant value
+    b: d => d.qElemNumber, // function will receive the original field value
+    c: {
+      field: 'Country', // reference to another field
+      value: d => d.qText // extract the qText value from the referenced field
+    },
+    d: {
+      value: d => d.qRow //  extract qRow from field 'State'
+    }
+  }
+}
+
+// output
+[{
+  value: 'CA', source: { field: 'State' },
+  a: { value: 3 },
+  b: { value: 26, source: 'State' },
+  c: { value: 'USA', source: 'Country' },
+  d: { value: 131, source: 'State' }
+},
+...]
+*/
 export function getPropsInfo(cfg, dataset) {
-  const props = normalizeProperties(cfg, dataset, cfg.props || {});
-  const { main } = normalizeProperties(cfg, dataset, { main: { value: cfg.value } });
+  const { main } = normalizeProperties(cfg, dataset, { main: { value: cfg.value, reduce: cfg.reduce } }, {});
+  const props = normalizeProperties(cfg, dataset, cfg.props || {}, main);
   return { props, main };
 }
 

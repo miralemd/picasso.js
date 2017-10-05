@@ -5,6 +5,7 @@ import formatterFn from '../formatter';
 
 const accessors = {
   id: data => `${data.source}/${data.title}`,
+  key: data => data.title,
   tags: data => data.tags,
   min: data => data.min,
   max: data => data.max,
@@ -22,6 +23,7 @@ const accessors = {
  */
 export default function field(data, {
   id = accessors.id,
+  key = accessors.key,
   min = accessors.min,
   max = accessors.max,
   type = accessors.type,
@@ -37,7 +39,17 @@ export default function field(data, {
    */
   const f = {
 
+    /**
+     * Returns this field's id
+     * @returns {string}
+     */
     id: () => id(data),
+
+    /**
+     * Returns this field's key
+     * @returns {string}
+     */
+    key: () => key(data),
     /**
      * Returns the tags.
      * @return {Array<string>}

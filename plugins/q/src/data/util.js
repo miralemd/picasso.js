@@ -67,34 +67,6 @@ export function findField(query, { cache }) {
   throw Error(`Field not found: ${query}`);
 }
 
-/*
-example of configuration input
-cfg = {
-  field: 'State', // the 'top level' values are extracted from field state
-  value: d => d.qText, // the value of the output
-  props: { // additional data properties ammended to each item
-    a: 3, // constant value
-    b: d => d.qElemNumber, // function will receive the original field value
-    c: {
-      field: 'Country', // reference to another field
-      value: d => d.qText // extract the qText value from the referenced field
-    },
-    d: {
-      value: d => d.qRow //  extract qRow from field 'State'
-    }
-  }
-}
-
-// output
-[{
-  value: 'CA', source: { field: 'State' },
-  a: { value: 3 },
-  b: { value: 26, source: 'State' },
-  c: { value: 'USA', source: 'Country' },
-  d: { value: 131, source: 'State' }
-},
-...]
-*/
 function normalizeProperties(cfg, dataset, dataProperties, main) {
   const props = {};
   const mainField = main.field || cfg.field ? dataset.field(cfg.field) : null;
@@ -132,7 +104,7 @@ function normalizeProperties(cfg, dataset, dataProperties, main) {
 
 // normalize property mapping config
 export function getPropsInfo(cfg, dataset) {
-  const { main } = normalizeProperties(cfg, dataset, { main: { value: cfg.value } }, {});
+  const { main } = normalizeProperties(cfg, dataset, { main: { value: cfg.value, reduce: cfg.reduce } }, {});
   const props = normalizeProperties(cfg, dataset, cfg.props || {}, main);
   return { props, main };
 }
