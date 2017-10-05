@@ -33,7 +33,7 @@ const defaultSettings = {
     }
   },
   buttons: {
-    show: true,
+    show: false,
     rect: {
       fill: 'transparent',
       stroke: 'transparent',
@@ -42,6 +42,16 @@ const defaultSettings = {
     symbol: {
       fill: 'grey',
       stroke: 'grey',
+      strokeWidth: 2
+    },
+    'rect:disabled': {
+      fill: 'transparent',
+      stroke: 'transparent',
+      strokeWidth: 0
+    },
+    'symbol:disabled': {
+      fill: 'lightgrey',
+      stroke: 'lightgrey',
       strokeWidth: 2
     }
   }
@@ -59,7 +69,7 @@ const defaultSettings = {
  * @param {number} pagingValue - How much to page with every action
  * @return {object[]} - Nodes to render
  */
-function createButtons({ HORIZONTAL, rect, buttonRect, buttonSymbol, min, max, pagingValue }) {
+function createButtons({ HORIZONTAL, rect, buttonRectMinus, buttonRectPlus, buttonSymbolMinus, buttonSymbolPlus, min, max, pagingValue }) {
   const buttons = [];
   const dataPlus = { action: '+', min, max, value: pagingValue };
   const dataMinus = { action: '-', min, max, value: pagingValue };
@@ -72,8 +82,8 @@ function createButtons({ HORIZONTAL, rect, buttonRect, buttonSymbol, min, max, p
       height: rect.height * 0.75,
       data: dataMinus,
       direction: 'left',
-      rect: buttonRect,
-      symbol: buttonSymbol
+      rect: buttonRectMinus,
+      symbol: buttonSymbolMinus
     }));
 
     buttons.push(createButton({
@@ -83,8 +93,8 @@ function createButtons({ HORIZONTAL, rect, buttonRect, buttonSymbol, min, max, p
       height: rect.height * 0.75,
       data: dataPlus,
       direction: 'right',
-      rect: buttonRect,
-      symbol: buttonSymbol
+      rect: buttonRectPlus,
+      symbol: buttonSymbolPlus
     }));
   } else {
     buttons.push(createButton({
@@ -94,8 +104,8 @@ function createButtons({ HORIZONTAL, rect, buttonRect, buttonSymbol, min, max, p
       height: 15,
       data: dataMinus,
       direction: 'up',
-      rect: buttonRect,
-      symbol: buttonSymbol
+      rect: buttonRectMinus,
+      symbol: buttonSymbolMinus
     }));
 
     buttons.push(createButton({
@@ -105,8 +115,8 @@ function createButtons({ HORIZONTAL, rect, buttonRect, buttonSymbol, min, max, p
       height: 15,
       data: dataPlus,
       direction: 'down',
-      rect: buttonRect,
-      symbol: buttonSymbol
+      rect: buttonRectPlus,
+      symbol: buttonSymbolPlus
     }));
   }
 
@@ -247,17 +257,27 @@ function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect,
     }
   }
 
+  if (settings.buttons.show && !settings.key) {
+    chart.logger().warn('legend-cat requires a key for the index to be preserved when paging. Disable buttons or add a key to the item.');
+  }
+
   if (createScrollButtons && settings.buttons.show) {
     const buttonRect = resolveForDataObject(settings.buttons.rect, {}, 0, []);
     const buttonSymbol = resolveForDataObject(settings.buttons.symbol, {}, 0, []);
+    const buttonRectDisabled = resolveForDataObject(settings.buttons['rect:disabled'], {}, 0, []);
+    const buttonSymbolDisabled = resolveForDataObject(settings.buttons['symbol:disabled'], {}, 0, []);
+
+    const max = (domain.length - availableSlots);
 
     labels.push(...createButtons({
       HORIZONTAL,
       rect,
-      buttonRect,
-      buttonSymbol,
+      buttonRectMinus: index <= 0 ? buttonRectDisabled : buttonRect,
+      buttonRectPlus: index >= max ? buttonRectDisabled : buttonRect,
+      buttonSymbolMinus: index <= 0 ? buttonSymbolDisabled : buttonSymbol,
+      buttonSymbolPlus: index >= max ? buttonSymbolDisabled : buttonSymbol,
       min: 0,
-      max: (domain.length - availableSlots),
+      max,
       pagingValue: availableSlots
     }));
   }

@@ -47,9 +47,17 @@ export default function categoricalLegend(picasso) {
  * @property {object} [buttons.rect] - Settings for the rect of the buttons
  * @property {string} [buttons.rect.fill='transparent'] - Fill color
  * @property {string} [buttons.rect.stroke='grey'] - Stroke color
- * @property {number} [buttons.rect.strokeWidth=1] - Stroke width in pixels
+ * @property {number} [buttons.rect.strokeWidth=0] - Stroke width in pixels
  * @property {object} [buttons.symbol] - Settings for the symbol of the buttons
  * @property {string} [buttons.symbol.fill='grey'] - Symbol fill color
  * @property {string} [buttons.symbol.stroke='grey'] - Stroke color
  * @property {number} [buttons.symbol.strokeWidth=2] - Stroke width in pixels
+ * @property {object} [buttons.'rect:disabled'] - Settings for the disabled rect of the buttons
+ * @property {string} [buttons.'rect:disabled'.fill='transparent'] - Fill color
+ * @property {string} [buttons.'rect:disabled'.stroke='lightgrey'] - Stroke color
+ * @property {number} [buttons.'rect:disabled'.strokeWidth=0] - Stroke width in pixels
+ * @property {object} [buttons.'symbol:disabled'] - Settings for the disabled symbol of the buttons
+ * @property {string} [buttons.'symbol:disabled'.fill='lightgrey'] - Symbol fill color
+ * @property {string} [buttons.'symbol:disabled'.stroke='grey'] - Stroke color
+ * @property {number} [buttons.'symbol:disabled'.strokeWidth=2] - Stroke width in pixels
  */

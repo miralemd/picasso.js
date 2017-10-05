@@ -50,10 +50,20 @@ component: {
     rect: { // Settings for the rect of the buttons. Optional.
       fill: 'transparent', // Fill color. Default: 'transparent'. Optional.
       stroke: 'grey', // Stroke color. Default: 'grey'. Optional.
-      strokeWidth: 1, // Stroke width in pixels. Default: 1. Optional.
+      strokeWidth: 0, // Stroke width in pixels. Default: 0. Optional.
     },
     symbol: { // Settings for the symbol of the buttons. Optional.
       fill: 'grey', // Symbol fill color. Default: 'grey'. Optional.
+      stroke: 'grey', // Stroke color. Default: 'grey'. Optional.
+      strokeWidth: 2, // Stroke width in pixels. Default: 2. Optional.
+    },
+    'rect:disabled': { // Settings for the disabled rect of the buttons. Optional.
+      fill: 'transparent', // Fill color. Default: 'transparent'. Optional.
+      stroke: 'lightgrey', // Stroke color. Default: 'lightgrey'. Optional.
+      strokeWidth: 0, // Stroke width in pixels. Default: 0. Optional.
+    },
+    'symbol:disabled': { // Settings for the disabled symbol of the buttons. Optional.
+      fill: 'lightgrey', // Symbol fill color. Default: 'lightgrey'. Optional.
       stroke: 'grey', // Stroke color. Default: 'grey'. Optional.
       strokeWidth: 2, // Stroke width in pixels. Default: 2. Optional.
     },
