@@ -10,6 +10,19 @@
 - PIC-211 - Text node in SVG should use white-space pre to mimic canvas white space behavior
 - PIC-213 - Theme palette resolver - experimental API not yet exposed
 - Added `rect:disabled` and `symbol:disabled` to the buttons for styling disabled buttons (paging up/down not available)
+- PIC-199 Added support for multi-line text on title in `legend-seq`
+
+  ```js
+  {
+    type: 'legend-seq',
+    settings: {
+      title: { 
+        text: 'ALL YOUR BASES BELONG TO US',
+        wordBreak: 'break-word' // Or break-all, defaults to none
+      }
+    }
+  }
+  ```
 
 ### Fixed
 

@@ -194,7 +194,7 @@ function initState(ctx) {
  * @property {number} [title.maxLengthPx=100] - Max length in pixels
  * @property {number} [title.padding=5] - padding in pixels to the legend node
  * @property {string} [title.anchor='top'] - Where to anchor the title in relation to the legend node, supported values are [top, left and right]
- * @property {string} [title.wordBreak='break-all'] - How overflowing title is handled, if it should insert line breaks at word boundries (normal) or character boundries (break-all)
+ * @property {string} [title.wordBreak='none'] - How overflowing title is handled, if it should insert line breaks at word boundries (break-word) or character boundries (break-all)
  * @property {string} [title.hyphens='auto'] - How words should be hyphenated when text wraps across multiple lines (only applicable with wordBreak)
  * @property {number} [title.maxLines=2] - Number of allowed lines if title contains line breaks (only applicable with wordBreak)
  * @property {number} [title.lineHeight=1.2] - A multiplier defining the distance between lines (only applicable with wordBreak)
@@ -235,7 +235,7 @@ const legendDef = {
         maxLengthPx: 100,
         padding: 5,
         maxLines: 2,
-        wordBreak: 'break-all',
+        wordBreak: 'none',
         lineHeight: 1.2,
         hyphens: 'auto',
         anchor: null // Use default based on dock
