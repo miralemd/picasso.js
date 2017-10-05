@@ -1,6 +1,6 @@
 # Changelog
 
-## **Unreleased** - *(YYYY-MM-DD)*
+## **Unreleased** - *(YYYY-MM-DD)* [BREAKING]
 
 ### Added
 
@@ -9,10 +9,15 @@
 - PIC-210 - `pie` component, see [pic.md](./docs/dist/components/pie.md)
 - PIC-211 - Text node in SVG should use white-space pre to mimic canvas white space behavior
 - PIC-213 - Theme palette resolver - experimental API not yet exposed
+- Added `rect:disabled` and `symbol:disabled` to the buttons for styling disabled buttons (paging up/down not available)
 
 ### Fixed
 
-- BUGFIX: State on `legend-cat` component not preserved when using chart.update
+- State on `legend-cat` component not preserved when using chart.update
+
+### Breaking changes
+
+- `buttons.show` on `legend-cat` now defaults to `false` instead of `true`
 
 ## **0.31.0** - *(2017-09-21)*
 
