@@ -67,7 +67,7 @@ function normalizeProperties(cfg, dataset, dataProperties, main) {
       prop.value = pConfig;
       prop.field = mainField;
     } else if (typeof pConfig === 'object') {
-      if (pConfig.field) {
+      if (typeof pConfig.field !== 'undefined') {
         prop.type = 'field';
         prop.field = dataset.field(pConfig.field);
         prop.value = prop.field.value;
@@ -82,6 +82,8 @@ function normalizeProperties(cfg, dataset, dataProperties, main) {
         prop.reduce = pConfig.reduce;
       } else if (pConfig.reduce) {
         prop.reduce = reducers[pConfig.reduce];
+      } else if (prop.field && prop.field.reduce) {
+        prop.reduce = typeof prop.field.reduce === 'string' ? reducers[prop.field.reduce] : prop.field.reduce;
       }
     }
   });

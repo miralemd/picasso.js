@@ -17,6 +17,7 @@ export default function qField({
   const type = ('qStateCounts' in meta || 'qSize' in meta) ? 'dimension' : 'measure';
   const valueFn = type === 'dimension' ? elemNoFn(cube) : measureValue(cube);
   const labelFn = d => d.qText;
+  const reduce = type === 'dimension' ? 'first' : 'avg';
   const formatter = createFromMetaInfo(meta, localeInfo);
 
   const f = {
@@ -34,6 +35,7 @@ export default function qField({
     max: () => meta.qMax,
     value: valueFn,
     label: labelFn,
+    reduce,
     formatter: () => formatter,
     tags: () => meta.qTags
   };

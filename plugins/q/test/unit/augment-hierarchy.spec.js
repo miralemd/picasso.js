@@ -78,7 +78,8 @@ describe('augment-hierarchy', () => {
         props: {
           dimOne: {
             field: 'qDimensionInfo/0',
-            value: d => d.qText
+            value: d => d.qText,
+            reduce: values => values.join(', ')
           }
         }
       });
@@ -91,7 +92,8 @@ describe('augment-hierarchy', () => {
         props: {
           desc: {
             field: 'qDimensionInfo/1',
-            value: d => d.qText
+            value: d => d.qText,
+            reduce: values => values.join(', ')
           }
         }
       });
