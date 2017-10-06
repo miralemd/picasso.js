@@ -134,7 +134,7 @@ function createButtons({ HORIZONTAL, rect, buttonRectMinus, buttonRectPlus, butt
  * @param  {object} rect - Rendering area rect, X, Y, Width and Height
  * @return {object} - returns labels, maxX and maxY for computing renderable area
  */
-function processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect, index }) {
+function processLabelItems({ settings, chart, scale, HORIZONTAL, ALIGN, renderer, rect, index }) {
   let title;
   const domain = scale.domain();
 
@@ -299,7 +299,7 @@ function renderLegend({ context, index = 0 }) {
 
   const {
     labels
-  } = processLabelItems({ settings, scale, HORIZONTAL, ALIGN, renderer, rect, index });
+  } = processLabelItems({ settings, chart: context.chart, scale, HORIZONTAL, ALIGN, renderer, rect, index });
 
   return labels;
 }
@@ -355,7 +355,7 @@ const categoricalLegend = {
     const {
       maxX,
       maxY
-    } = processLabelItems({ settings, scale, HORIZONTAL, renderer });
+    } = processLabelItems({ settings, chart: context.chart, scale, HORIZONTAL, renderer });
 
     return DOCK === 'left' || DOCK === 'right' ? maxX : maxY;
   },
