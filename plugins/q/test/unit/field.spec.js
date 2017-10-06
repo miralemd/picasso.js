@@ -3,13 +3,13 @@
 import qField from '../../src/data/field';
 
 describe('q-field', () => {
-  function mField(mode, fe) {
-    return qField({
+  function struct(mode, fe) {
+    return {
       meta: {
         qMin: 1,
         qMax: 2,
         qTags: ['a', 'b'],
-        qFallbackTitle: 'measure',
+        qFallbackTitle: 'TITLE',
         qNumFormat: {
           qType: 'M'
         }
@@ -17,20 +17,22 @@ describe('q-field', () => {
       id: 'unique',
       cube: { qMode: mode || 'S' },
       fieldExtractor: fe
-    });
+    };
+  }
+  function mField(mode, fe) {
+    return qField(struct(mode, fe));
   }
 
   function dimField(mode, fe) {
-    return qField({
-      meta: {
-        qTags: ['a', 'b'],
-        qFallbackTitle: 'dimension',
-        qStateCounts: {}
-      },
-      id: 'unique',
-      cube: { qMode: mode || 'S' },
-      fieldExtractor: fe
-    });
+    let def = struct(mode, fe);
+    def.meta.qStateCounts = {};
+    return qField(def);
+  }
+
+  function attrDimField(mode, fe) {
+    let def = struct(mode, fe);
+    def.meta.qSize = {};
+    return qField(def);
   }
 
   describe('meta', () => {
@@ -56,7 +58,7 @@ describe('q-field', () => {
 
     it('should return title', () => {
       let f = mField();
-      expect(f.title()).to.equal('measure');
+      expect(f.title()).to.equal('TITLE');
     });
 
     it('should identify when the field is a dimension', () => {
@@ -65,7 +67,7 @@ describe('q-field', () => {
     });
 
     it('should identify an attribute dimension as a dimension', () => {
-      let f = dimField();
+      let f = attrDimField();
       expect(f.type()).to.equal('dimension');
     });
 
