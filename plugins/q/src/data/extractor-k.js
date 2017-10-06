@@ -136,7 +136,7 @@ export default function extract(config, dataset, cache, deps) {
                   value = value.map(fn);
                   fn = null;
                 }
-                value = value.join(', '); // TODO - enable reducers
+                value = p.reduce ? p.reduce(value) : value;
               } else {
                 value = p.attrAccessor ? p.attrAccessor(value) : value;
               }

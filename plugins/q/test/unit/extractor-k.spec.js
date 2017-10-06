@@ -57,9 +57,9 @@ describe('q-data-extractor-k', () => {
     };
 
     const fields = [
-      { title: () => 'a', value: d => d.qElemNo, key: () => 'qDimensionInfo/0' },
-      { title: () => 'b', value: d => d.qElemNo, key: () => 'qDimensionInfo/1' },
-      { title: () => 'c', value: d => d.qValue, key: () => 'qMeasureInfo/0' }
+      { title: () => 'a', value: d => d.qElemNo, key: () => 'qDimensionInfo/0', reduce: values => values.join(', ') },
+      { title: () => 'b', value: d => d.qElemNo, key: () => 'qDimensionInfo/1', reduce: values => values.join(', ') },
+      { title: () => 'c', value: d => d.qValue, key: () => 'qMeasureInfo/0', reduce: values => values.join(', ') }
     ];
 
     const dataset = {
@@ -73,13 +73,15 @@ describe('q-data-extractor-k', () => {
     const attrDimField = {
       title: () => '',
       value: v => `-${v.qText}-`,
-      key: () => 'qDimensionInfo/0/qAttrDimInfo/1'
+      key: () => 'qDimensionInfo/0/qAttrDimInfo/1',
+      reduce: values => values.join(', ')
     };
     dataset.field.withArgs('firstDimSecondAttrDim').returns(attrDimField);
 
     const attrExprField = {
       title: () => '',
-      key: () => 'qDimensionInfo/1/qAttrExprInfo/1'
+      key: () => 'qDimensionInfo/1/qAttrExprInfo/1',
+      reduce: values => values.join(', ')
     };
 
     dataset.field.withArgs('qDimensionInfo/1/qAttrExprInfo/1').returns(attrExprField);
@@ -339,7 +341,7 @@ describe('q-data-extractor-k', () => {
 
     const fields = [
       { title: () => 'a', value: d => d.qElemNo, key: () => 'qDimensionInfo/0' },
-      { title: () => 'b', value: d => d.qElemNo, key: () => 'qDimensionInfo/1' },
+      { title: () => 'b', value: d => d.qElemNo, key: () => 'qDimensionInfo/1', reduce: values => values.join(', ') },
       { title: () => 'c', value: d => d.qValue, key: () => 'qMeasureInfo/0' },
       { title: () => 'd', value: d => d.qValue, key: () => 'qMeasureInfo/1' }
     ];
