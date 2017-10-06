@@ -1,6 +1,13 @@
 import extract from '../../src/data/extractor-k';
 
+import {
+  getPropsInfo
+} from '../../../../src/core/data/util';
+
 describe('q-data-extractor-k', () => {
+  const deps = {
+    normalizeConfig: getPropsInfo
+  };
   describe('without pseudo', () => {
     const stackedPageWithoutPseudo = {
       qArea: {
@@ -80,7 +87,7 @@ describe('q-data-extractor-k', () => {
     it('should return dim field values based on default field accessor', () => {
       const m = extract({
         field: 'qDimensionInfo/0'
-      }, dataset, {});
+      }, dataset, {}, deps);
 
       expect(m).to.eql([
         { value: 1, source: { field: 'qDimensionInfo/0' } },
@@ -91,7 +98,7 @@ describe('q-data-extractor-k', () => {
     it('should return measure field values based on default field accessor', () => {
       const m = extract({
         field: 'qMeasureInfo/0'
-      }, dataset, {});
+      }, dataset, {}, deps);
 
       expect(m).to.eql([
         { value: 45, source: { field: 'qMeasureInfo/0' } },
@@ -105,7 +112,7 @@ describe('q-data-extractor-k', () => {
       const m = extract([
         { field: 'qDimensionInfo/0' },
         { field: 'qDimensionInfo/0', value: v => v.qText }
-      ], dataset, {});
+      ], dataset, {}, deps);
 
       expect(m).to.eql([
         { value: 1, source: { field: 'qDimensionInfo/0' } },
@@ -118,7 +125,7 @@ describe('q-data-extractor-k', () => {
     it('should return attr dim field values based on default field accessor', () => {
       const m = extract({
         field: 'firstDimSecondAttrDim'
-      }, dataset, {});
+      }, dataset, {}, deps);
 
       expect(m).to.eql([
         { value: '-AlphaDimAttr-', source: { field: 'qDimensionInfo/0/qAttrDimInfo/1' } },
@@ -134,7 +141,7 @@ describe('q-data-extractor-k', () => {
             field: 'qDimensionInfo/1/qAttrExprInfo/1', value: v => `-${v.qText}-`
           }
         }
-      }, dataset, {});
+      }, dataset, {}, deps);
 
       expect(m).to.eql([
         {
@@ -157,7 +164,7 @@ describe('q-data-extractor-k', () => {
         props: {
           label: d => d.qText
         }
-      }, dataset, {});
+      }, dataset, {}, deps);
 
       expect(m).to.eql([
         {
@@ -203,7 +210,7 @@ describe('q-data-extractor-k', () => {
             value: d => d.qText
           }
         }
-      }, dataset, { fields });
+      }, dataset, { fields }, deps);
 
       expect(m).to.eql([
         {
@@ -249,7 +256,7 @@ describe('q-data-extractor-k', () => {
             value: d => d.qText
           }
         }
-      }, dataset, { fields });
+      }, dataset, { fields }, deps);
       expect(m).to.eql([
         {
           value: 1,
@@ -272,7 +279,7 @@ describe('q-data-extractor-k', () => {
           num: 0,
           bool: false
         }
-      }, dataset, { fields });
+      }, dataset, { fields }, deps);
 
       const v = {
         value: 'foo',
@@ -350,7 +357,7 @@ describe('q-data-extractor-k', () => {
     it('should return proper pseudo measure', () => {
       const m = extract({
         field: 'qMeasureInfo/1'
-      }, dataset, { fields });
+      }, dataset, { fields }, deps);
 
       expect(m).to.eql([
         { value: 0.34, source: { field: 'qMeasureInfo/1' } },
@@ -366,7 +373,7 @@ describe('q-data-extractor-k', () => {
             field: 'qDimensionInfo/1', value: v => v.qText
           }
         }
-      }, dataset, { fields });
+      }, dataset, { fields }, deps);
 
       expect(m).to.eql([
         {

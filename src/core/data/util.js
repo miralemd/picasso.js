@@ -53,6 +53,7 @@ export const reducers = {
 };
 
 function normalizeProperties(cfg, dataset, dataProperties, main) {
+  // console.log('======', cfg, main, dataset);
   const props = {};
   const mainField = main.field || (typeof cfg.field !== 'undefined' ? dataset.field(cfg.field) : null);
   Object.keys(dataProperties).forEach((key) => {
@@ -69,7 +70,6 @@ function normalizeProperties(cfg, dataset, dataProperties, main) {
       if (pConfig.field) {
         prop.type = 'field';
         prop.field = dataset.field(pConfig.field);
-        // prop.source = pConfig.field;
         prop.value = prop.field.value;
       } else if (mainField) {
         prop.value = mainField.value;
@@ -118,6 +118,7 @@ cfg = {
 ...]
 */
 export function getPropsInfo(cfg, dataset) {
+  // console.log('222', cfg);
   const { main } = normalizeProperties(cfg, dataset, { main: { value: cfg.value, reduce: cfg.reduce } }, {});
   const props = normalizeProperties(cfg, dataset, cfg.props || {}, main);
   return { props, main };

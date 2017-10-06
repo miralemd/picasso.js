@@ -5,7 +5,6 @@ import {
 import picker from '../json-path-resolver';
 
 import {
-  getPropsInfo,
   treeAccessor
 } from './util';
 
@@ -78,14 +77,14 @@ function getFieldAccessor(sourceDepthObject, targetDepthObject, prop) {
   };
 }
 
-export default function extract(config, dataset, cache) {
+export default function extract(config, dataset, cache, deps) {
   const cfgs = Array.isArray(config) ? config : [config];
   let dataItems = [];
   cfgs.forEach((cfg) => {
     if (cfg.field) {
       const cube = dataset.raw();
       const f = typeof cfg.field === 'object' ? cfg.field : dataset.field(cfg.field);
-      const { props, main } = getPropsInfo(cfg, dataset);
+      const { props, main } = deps.normalizeConfig(cfg, dataset);
       const propsArr = Object.keys(props);
       const rootPath = '/qStackedDataPages/*/qData';
       if (!cache.tree) {
