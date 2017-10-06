@@ -33,7 +33,6 @@ export function styler(obj, { context, data, style }) {
     // TODO - render nodes only once, i.e. don't render for each brush, update nodes for all brushes and then render
     const nodes = reduceToLeafNodes(obj.nodes);
     const len = nodes.length;
-    const mappedData = obj.data;
     let globalChanged = false;
 
     for (let i = 0; i < len; i++) { // TODO - update only added and removed nodes
@@ -44,7 +43,7 @@ export function styler(obj, { context, data, style }) {
         });
       }
 
-      const nodeData = nodes[i].data || mappedData[nodes[i].dataIndex];
+      const nodeData = nodes[i].data;
       const isActive = nodeData && brusher.containsMappedData(nodeData, dataProps);
       const activeIdx = activeNodes.indexOf(nodes[i]);
       let changed = false;
@@ -139,7 +138,7 @@ export function styler(obj, { context, data, style }) {
   };
 }
 
-function brushDataPoints({
+export function brushDataPoints({
   dataPoints,
   action,
   chart,
@@ -149,7 +148,7 @@ function brushDataPoints({
     return;
   }
 
-  const dataProps = trigger.data || ['self'];
+  const dataProps = trigger.data || [''];
 
   let rangeBrush = {
     items: [],
@@ -167,18 +166,22 @@ function brushDataPoints({
 
   for (let i = 0; i < dataPoints.length; i++) {
     const dataPoint = dataPoints[i];
+    if (!dataPoint) {
+      continue;
+    }
     dataProps.forEach((p) => {
-      if (dataPoint[p]) {
-        if (Array.isArray(dataPoint[p].value)) {
-          rangeBrush.items.push({
-            key: dataPoint[p].source.field,
-            range: { min: dataPoint[p].value[0], max: dataPoint[p].value[1] }
-          });
+      let d = dataPoint && !p ? dataPoint : dataPoint[p];
+      if (d) {
+        let it = { key: d.source.field };
+        if (typeof d.source.key !== 'undefined') {
+          it.key = `${d.source.key}/${d.source.field}`;
+        }
+        if (Array.isArray(d.value)) {
+          it.range = { min: d.value[0], max: d.value[1] };
+          rangeBrush.items.push(it);
         } else {
-          valueBrush.items.push({
-            key: dataPoint[p].source.field,
-            value: dataPoint[p].value
-          });
+          it.value = d.value;
+          valueBrush.items.push(it);
         }
       }
     });
@@ -197,14 +200,13 @@ export function brushFromSceneNodes({
   nodes,
   action,
   chart,
-  data,
   trigger
 }) {
   const dataPoints = [];
   for (let i = 0; i < nodes.length; i++) {
     const node = nodes[i];
-    const nodeData = node.data || (data.length && data[+node.dataIndex] ? data[+node.dataIndex] : null);
-    if (nodeData) {
+    let nodeData = node.data;
+    if (nodeData !== null) {
       dataPoints.push(nodeData);
     }
   }

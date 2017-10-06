@@ -25,7 +25,9 @@ function ranges(state, brush) {
     return [];
   }
 
-  const sources = state.scale.sources;
+  const sourceData = state.scale.data();
+  const sourceFields = sourceData ? sourceData.fields || [] : [];
+  const sources = sourceFields.map(field => field.id());
   const rangeBrush = brush.brushes().filter(f => f.type === 'range' && sources.indexOf(f.id) !== -1)[0];
 
   if (!rangeBrush) {
@@ -52,25 +54,29 @@ function setRanges(state) {
       max: Math.max(state.start, state.current)
     });
   }
-  state.scale.sources.forEach((s) => {
-    if (state.fauxBrushInstance) {
-      let ordRS = ranges(state, state.fauxBrushInstance);
-      let oldValues = state.findValues(ordRS);
-      let values = state.findValues(rs);
 
-      let addedValues = values.filter(v => oldValues.indexOf(v) === -1);
-      let removedValues = oldValues.filter(v => values.indexOf(v) === -1);
+  const scaleData = state.scale.data();
+  if (scaleData && scaleData.fields) {
+    scaleData.fields.forEach((field) => {
+      if (state.fauxBrushInstance) {
+        let ordRS = ranges(state, state.fauxBrushInstance);
+        let oldValues = state.findValues(ordRS);
+        let values = state.findValues(rs);
 
-      let addItems = addedValues.map(v => ({ key: s, value: v }));
-      let removeItems = removedValues.map(v => ({ key: s, value: v }));
+        let addedValues = values.filter(v => oldValues.indexOf(v) === -1);
+        let removedValues = oldValues.filter(v => values.indexOf(v) === -1);
 
-      state.brushInstance.addAndRemoveValues(addItems, removeItems);
+        let addItems = addedValues.map(v => ({ key: field.id(), value: v }));
+        let removeItems = removedValues.map(v => ({ key: field.id(), value: v }));
 
-      state.fauxBrushInstance.setRange(s, rs);
-    } else {
-      state.brushInstance.setRange(s, rs);
-    }
-  });
+        state.brushInstance.addAndRemoveValues(addItems, removeItems);
+
+        state.fauxBrushInstance.setRange(field.id(), rs);
+      } else {
+        state.brushInstance.setRange(field.id(), rs);
+      }
+    });
+  }
 }
 
 function findClosest(value, scale) {
@@ -111,16 +117,7 @@ function findValues(rangesValues, scale) {
     values.push.apply(values, domain.slice(Math.min(startIdx, endIdx), Math.max(startIdx, endIdx) + 1)); /* eslint prefer-spread:0 */
   });
 
-  const dataValues = new Array(values.length);
-  const data = scale.data();
-  let d;
-  let idx;
-  for (let i = 0, len = values.length; i < len; i++) {
-    idx = domain.indexOf(values[i]);
-    d = data[idx];
-    dataValues[i] = d.id !== 'undefined' ? d.id.value : values[i];
-  }
-  return dataValues;
+  return values;
 }
 
 function resolveNodeBounds(targetNodes) {
@@ -221,7 +218,7 @@ const brushRangeComponent = {
 
     if (!{}.hasOwnProperty.call(scale, 'norm')) { // Non-linear scale if norm method is unavailable
       this.state.scale = linear();
-      this.state.scale.sources = scale.sources;
+      this.state.scale.data = scale.data;
       this.state.format = (v, r) => {
         if (!rangesOverlap(scale.range(), r)) {
           return '-';
@@ -234,7 +231,10 @@ const brushRangeComponent = {
       this.state.fauxBrushInstance = null;
       this.state.findValues = null;
       this.state.scale = scale;
-      this.state.format = this.chart.field(this.state.scale.sources[0]).field.formatter();
+      const scaleData = this.state.scale.data();
+      if (scaleData && scaleData.fields && scaleData.fields[0]) {
+        this.state.format = scaleData.fields[0].formatter();
+      }
     }
     return [];
   },

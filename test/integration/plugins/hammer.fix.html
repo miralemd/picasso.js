@@ -27,37 +27,30 @@
       element,
       data: {
         data: [
-          [
-            ['Product', 'Cost'],
-            ['Cars', 150000],
-            ['Trucks', 450000]
-          ]
+          ['Product', 'Cost'],
+          ['Cars', 150000],
+          ['Trucks', 450000]
         ]
       },
       settings: {
         scales: {
           d0: {
-            source: '/0/0'
+            data: { field: 0 }
           },
           m0: {
-            source: '/0/1',
+            data: { field: 1 },
             expand: 1 // Expand so that shapes dont end up at the boundaries
           }
         },
         components: [{
           type: 'point-marker',
           data: {
-            mapTo: {
-              x: {
-                source: '/0/0', reducer: 'first', type: 'qual'
-              },
-              y: {
-                source: '/0/1'
+            extract: {
+              field: 0,
+              props: {
+                x: { field: 0 },
+                y: { field: 1 }
               }
-            },
-            groupBy: {
-              source: '/0/0',
-              attribute: '$index'
             }
           },
           settings: {

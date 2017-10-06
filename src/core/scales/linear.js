@@ -98,7 +98,7 @@ function initNormScale(normScale, scale) {
  * @return { linear }
  */
 
-export default function scaleLinear(settings, fields) {
+export default function scaleLinear(settings, data) {
   const d3Scale = d3ScaleLinear();
   const normScale = { instance: null, invert: false };
   let tickCache;
@@ -115,9 +115,7 @@ export default function scaleLinear(settings, fields) {
     return d3Scale(v);
   }
 
-  fn.data = function data() {
-    return [];
-  };
+  fn.data = () => data;
 
   /**
    * {@link https://github.com/d3/d3-scale#continuous_invert }
@@ -300,7 +298,7 @@ export default function scaleLinear(settings, fields) {
   };
 
   fn.copy = function copy() {
-    const cop = scaleLinear(settings, fields);
+    const cop = scaleLinear(settings, data);
     cop.domain(fn.domain());
     cop.range(fn.range());
     cop.clamp(d3Scale.clamp());
@@ -339,8 +337,8 @@ export default function scaleLinear(settings, fields) {
   };
 
   if (settings) {
-    const stgns = generateSettings(settings, fields);
-    const { mini, maxi } = getMinMax(stgns, fields);
+    const stgns = generateSettings(settings, data ? data.fields : []);
+    const { mini, maxi } = getMinMax(stgns, data ? data.fields : []);
 
     fn.domain([mini, maxi]);
     fn.range(stgns.invert ? [1, 0] : [0, 1]);

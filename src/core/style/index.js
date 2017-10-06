@@ -151,16 +151,20 @@ export function resolveForDataValues(styles, dataValues, index) {
   return ret;
 }
 
-export function resolveForDataObject(props, dataObj, index, allData, context = {}) {
+function isPrimitive(v) {
+  return typeof v !== 'object';
+}
+
+export function resolveForDataObject(props, dataObj, index, allData, contextProps) {
   const ret = {};
   Object.keys(props).forEach((s) => {
     const exists = typeof props[s] !== 'undefined';
     const hasScale = exists && typeof props[s].scale === 'function';
     const hasExplicitDataProp = exists && !!props[s].ref;
-    const hasImplicitDataProp = s in dataObj;
-    const propData = exists && props[s].ref ? dataObj[props[s].ref] : dataObj[s];
+    // const hasImplicitDataProp = typeof props[s] === 'object' ? s in dataObj : false;
+    const propData = exists && props[s].ref ? dataObj[props[s].ref] : dataObj;
     if (typeof props[s] === 'function') { // custom accessor function, not scale!
-      const fnContext = extend({}, { data: dataObj }, context);
+      const fnContext = extend({}, { data: dataObj }, contextProps);
       if (hasScale) {
         fnContext.scale = props[s].scale;
       }
@@ -169,13 +173,13 @@ export function resolveForDataObject(props, dataObj, index, allData, context = {
       } else {
         ret[s] = props[s].call(fnContext, hasExplicitDataProp ? dataObj[props[s].ref] : undefined, index, allData);
       }
-    } else if (hasScale && (hasImplicitDataProp || hasExplicitDataProp)) {
-      ret[s] = props[s].scale(propData.value);
+    } else if (hasScale) { // } && (hasImplicitDataProp || hasExplicitDataProp)) {
+      ret[s] = props[s].scale(isPrimitive(propData) ? propData : propData.value);
       if (props[s].scale.bandwidth) {
         ret[s] += props[s].scale.bandwidth() / 2;
       }
     } else if (hasExplicitDataProp) {
-      ret[s] = propData.value;
+      ret[s] = propData;
     } else {
       ret[s] = props[s];
     }

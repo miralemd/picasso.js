@@ -1,108 +1,120 @@
-import tableFn from './table';
-import { mapData } from './data-mapper';
+import resolve from './json-path-resolver';
+import field from './field';
+import extract from './extractor-matrix';
 
-function tablesFn(data) {
-  return data.map((tableData, i) => tableFn(tableData, { id: `/${i}` }));
-}
+import { findField, getPropsInfo } from './util';
 
-export function findField(path, tables) {
-  const matches = tables.filter(t => path.indexOf(t.id()) === 0);
-  matches.sort((a, b) => path.replace(a.id(), '').length - path.replace(b.id(), '').length);
-  const table = matches[0];
-  let field;
-  if (table) {
-    const subpath = path.replace(table.id(), '');
-    field = table.findField(subpath);
+const filters = {
+  numeric: values => values.filter(v => typeof v === 'number' && !isNaN(v))
+};
+
+function createFields(matrix, { cache }) {
+  if (!matrix) {
+    return;
   }
-  return {
-    table,
-    field
-  };
+  const headers = matrix[0]; // assume headers are in first row TODO - add headers config
+
+  const content = matrix.slice(1);
+
+  headers.forEach((a, i) => {
+    const values = resolve(`//${i}`, content);
+    const numericValues = filters.numeric(values);
+    const isMeasure = numericValues.length > 0;
+    const type = isMeasure ? 'measure' : 'dimension';
+    const min = isMeasure ? Math.min(...numericValues) : NaN;
+    const max = isMeasure ? Math.max(...numericValues) : NaN;
+    // TODO Deal with tags
+
+    cache.fields.push(field({
+      title: headers[i],
+      values,
+      min,
+      max,
+      type,
+      value: v => v
+    }));
+  });
 }
 
 /**
  * Create a new dataset with default settings
- * @alias dataset
- * @memberof picasso.data
  * @ignore
  * @return {dataset}
  */
-export default function dataset(data, {
-  tables = tablesFn
+export default function ds({
+  key,
+  data
 } = {}) {
-  const cache = {};
-
-  /**
-   * @alias dataset
-   * @param {object} d The data
-   */
-  function ds() {
-    return ds;
-  }
-
-  /**
-   * Get all tables in this dataset
-   * @return {table[]} All tables found in this dataset
-   */
-  ds.tables = () => {
-    if (!cache.tables) {
-      cache.tables = tables(data);
-    }
-    return cache.tables;
+  const cache = {
+    fields: []
   };
 
   /**
-   * Find a table in this dataset
-   * @param  {string} query Table identifier
-   * @return {table}       A table
+   * @alias dataset
+   * @typedef {object}
    */
-  ds.table = query => ds.tables().filter(t => t.id() === query)[0];
+  const dataset = {
+    /**
+     * Get the key identifying this dataset
+     * @returns {string}
+     */
+    key: () => key,
 
-  ds.findField = query => findField(query, ds.tables());
+    /**
+     * Get the raw data
+     * @returns {any}
+     */
+    raw: () => data,
 
-  /**
-   * Map data from multiple sources into a specified structure
-   * @param  {data-map} mapper   An object specifing how to map the data
-   * @param  {data-repeater} repeater An object specifing which data to loop over when aggregating
-   * @return {object[]}          Mapped data
-   * @example
-   * ds.map({
-   *  x: { field: '/qHyperCube/qMeasureInfo/1', reducer: 'sum' }
-   *  y: { field: '/qHyperCube/qMeasureInfo/2', reducer: 'avg' },
-   *  me: { field: '/qHyperCube/qDimensionInfo/1', reducer: 'first', type: 'qual' },
-   *  parent: { field: '/qHyperCube/qDimensionInfo/0', reducer: 'first', type: 'qual' }
-   * }, {
-   *  field: '/qHyperCube/qDimensionInfo/1'
-   * });
-   * // output:
-   * // [
-   * //   {
-   * //     x: { value: 234, source: {...} },
-   * //     y: { value: 12, source: {...} },
-   * //     me: { value: 'Jan', source: {...} },
-   * //     parent: { value: '2012', source: {...} },
-   * //   },
-   * //   {
-   * //     x: { value: 212, source: {...} },
-   * //     y: { value: 5, source: {...} },
-   * //     me: { value: 'Feb', source: {...} },
-   * //     parent: { value: '2012', source: {...} },
-   * //   }
-   * // ]
-   */
-  ds.map = (mapper, repeater) => mapData(mapper, repeater, ds);
+    /**
+     * Find a field within this dataset
+     * @param {string} query - The field to find
+     * @returns {field}
+     */
+    field: query => findField(query, {
+      cache,
+      matrix: data
+    }),
 
-  return ds;
+    /**
+     * Get all fields within this dataset
+     * @returns {Array<field>}
+     */
+    fields: () => cache.fields.slice(),
+
+    /**
+     * Extract data items from this dataset
+     * @param {data-extract-config} config
+     * @returns {Array<datum-extract>}
+     */
+    extract: config => extract(config, dataset, cache),
+
+    /**
+     * @returns {null}
+     */
+    hierarchy: () => null
+  };
+
+  createFields(data, {
+    cache
+  });
+
+  return dataset;
 }
 
+ds.normalizeProperties = getPropsInfo;
+
 /**
- * @typedef data-map
- * @property {string} field Path to a field
- * @property {string} [reducer='sum'] Option to specify how to reduce values
+ * @typedef {object} data-extract-config
+ * @property {string} field - The field to extract data from
+ * @property {function} value - The field value accessor
+ * @property {object} props - Additional properties to add to the extracted item
  */
 
 /**
- * @typedef data-repeater
- * @property {string} field Path to a field
- * @property {string} [attribute] Attribute to use as identifier when collecting data
+ * @typedef {object} datum-extract
+ * @property {any} value - The extracted value
+ * @property {object} source - The data source of the extracted data
+ * @property {string} source.key - The data-source key
+ * @property {string} source.field - The source field
  */

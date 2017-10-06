@@ -27,7 +27,6 @@ describe('scales', () => {
       type: 'custom'
     }, null, deps);
     expect(s.type).to.equal('custom');
-    expect(s.sources).to.eql([]);
   });
 
   it('should create linear scale when no better type fits', () => {
@@ -37,29 +36,31 @@ describe('scales', () => {
     expect(s.type).to.equal('linear');
     expect(s.min()).to.equal(0);
     expect(s.max()).to.equal(1);
-    expect(s.sources).to.eql([]);
   });
 
   it('should create linear scale when source fields are measures', () => {
     deps.scale.has.withArgs('linear').returns(true);
     deps.scale.get.returns(scaleFn);
     const dataset = {
-      findField: sinon.stub()
+      field: sinon.stub()
     };
+    const datasetFn = () => dataset;
 
-    dataset.findField.withArgs('m1').returns({ field: {
+    dataset.field.withArgs('m1').returns({
       type: () => 'measure',
       min: () => 0,
       max: () => 1
-    } });
-    dataset.findField.withArgs('m2').returns({ field: {
+    });
+    dataset.field.withArgs('m2').returns({
       type: () => 'measure',
       min: () => 0,
       max: () => 1
-    } });
+    });
     const s = create({
-      source: ['m1', 'm2']
-    }, dataset, deps);
+      data: {
+        fields: ['m1', 'm2']
+      }
+    }, datasetFn, deps);
     expect(s.type).to.equal('linear');
   });
 
@@ -67,18 +68,21 @@ describe('scales', () => {
     deps.scale.has.withArgs('band').returns(true);
     deps.scale.get.returns(scaleFn);
     const dataset = {
-      findField: sinon.stub()
+      field: sinon.stub()
     };
+    const datasetFn = () => dataset;
 
-    dataset.findField.withArgs('d1').returns({ field: {
+    dataset.field.withArgs('d1').returns({
       type: () => 'dimension',
       values: () => [],
       min: () => 2015,
       max: () => 2017
-    } });
+    });
     const s = create({
-      source: ['d1']
-    }, dataset, deps);
+      data: {
+        fields: ['d1']
+      }
+    }, datasetFn, deps);
     expect(s.type).to.equal('band');
   });
 });

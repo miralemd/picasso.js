@@ -9,8 +9,8 @@ import ordinal from '../ordinal';
  * @param { dataset } [dataset]
  * @return { ordinal }
  */
-export default function scaleCategorical(settings = {}, fields, dataset, { theme } = {}) {
-  const s = ordinal(settings, fields, dataset);
+export default function scaleCategorical(settings = {}, dataset = {}, { theme } = {}) {
+  const s = ordinal(settings, dataset);
 
   let range;
   if (!settings.range) {

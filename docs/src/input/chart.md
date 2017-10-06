@@ -226,10 +226,10 @@ const chartInstance = picasso.chart({
   settings: {
     scales: {
       x: {
-        source: "/qHyperCube/qMeasureInfo/0"
+        data: { extract: { field: "/qHyperCube/qMeasureInfo/0" } }
       },
       y: {
-        source: "/qHyperCube/qDimensionInfo/0"
+        data: { extract: { field: "/qHyperCube/qDimensionInfo/0" } }
       }
     },
     components: [{

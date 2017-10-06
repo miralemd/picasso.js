@@ -3,6 +3,7 @@ import field from '../../../../src/core/data/field';
 describe('Field', () => {
   describe('defaults', () => {
     const dd = {
+      source: 'magic-table',
       min: 1,
       max: 2,
       tags: ['a', 'b'],
@@ -14,8 +15,8 @@ describe('Field', () => {
       f = field(dd);
     });
 
-    it('should return data', () => {
-      expect(f.data()).to.deep.equal(dd);
+    it('should return id', () => {
+      expect(f.id()).to.equal('magic-table/wohoo');
     });
 
     it('should return min value', () => {
@@ -35,7 +36,7 @@ describe('Field', () => {
     });
 
     it('should return values', () => {
-      expect(f.values()).to.deep.equal(['a', 'c', 'a']);
+      expect(f.items()).to.deep.equal(['a', 'c', 'a']);
     });
   });
 
@@ -75,7 +76,7 @@ describe('Field', () => {
     });
 
     it('should return values', () => {
-      expect(f.values()).to.deep.equal([1, 6, 6]);
+      expect(f.items()).to.deep.equal([1, 6, 6]);
     });
   });
 });

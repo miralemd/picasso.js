@@ -387,12 +387,12 @@
 
   var data = {
     type: "q",
-    data: qLayout
+    data: qLayout.qHyperCube
   };
   var settings = {
     scales: {
-      x: { source: "/qHyperCube/qMeasureInfo/0", expand: 0.1 },
-      y: { source: "/qHyperCube/qMeasureInfo/1", expand: 0.1 }
+      x: { data: { field: "qMeasureInfo/0" }, expand: 0.1 },
+      y: { data: { field: "qMeasureInfo/1" }, expand: 0.1 }
     },
     components: [{
       type: 'axis',
@@ -405,23 +405,27 @@
     }, {
       type: "point-marker",
       data: {
-        mapTo: {
-          x: { source: "/qHyperCube/qMeasureInfo/0" },
-          y: { source: "/qHyperCube/qMeasureInfo/1" },
-          size: { source: "/qHyperCube/qMeasureInfo/2" }
-        },
-        groupBy: { source: "/qHyperCube/qDimensionInfo/0" }
+        extract: {
+          field: 'qDimensionInfo/0',
+          props: {
+            x: { field: 'qMeasureInfo/0' },
+            y: { field: 'qMeasureInfo/1' },
+            size: { field: 'qMeasureInfo/2' }
+          }
+        }
       },
       settings: {
         x: { scale: 'x' }, // use values from first measure
         y: { scale: 'y' }, // use values from second measure
         size: {
-          scale: { source: "/qHyperCube/qMeasureInfo/2" }
+          scale: {
+            data: { field: "qMeasureInfo/2" }
+          }
         },
         fill: {
           ref: "size",
           scale: {
-            source: "/qHyperCube/qMeasureInfo/2",
+            data: { field: "qMeasureInfo/2" },
             type: "color"
           }
         }

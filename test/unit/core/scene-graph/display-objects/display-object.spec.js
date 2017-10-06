@@ -32,7 +32,6 @@ describe('Display Object', () => {
         maxWidth: '8',
         opacity: '9',
         transform: '10',
-        dataIndex: '11',
         data: {
           value: 11
         },
@@ -54,7 +53,6 @@ describe('Display Object', () => {
         transform: '10',
         id: '12'
       });
-      expect(_displayObject.dataIndex).to.equal('11');
       expect(_displayObject.data).to.deep.equal({
         value: 11
       });

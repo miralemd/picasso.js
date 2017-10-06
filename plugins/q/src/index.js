@@ -1,12 +1,9 @@
-import init, { qDataset } from './q';
-import { numberFormat as qNumberFormatter, timeFormat as qTimeFormatter } from './formatter';
+import data from './data/dataset';
 import qBrushHelper from './brush/q-brush';
 
 export default function initialize(picasso) {
-  init(picasso);
-  picasso.data('q', qDataset);
-  picasso.formatter('q-number', qNumberFormatter);
-  picasso.formatter('q-time', qTimeFormatter);
+  data.normalizeProperties = picasso.data('default').normalizeProperties;
+  picasso.data('q', data);
 }
 
 initialize.qBrushHelper = qBrushHelper;

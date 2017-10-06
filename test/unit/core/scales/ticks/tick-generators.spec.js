@@ -245,34 +245,34 @@ describe('Tick generators', () => {
     });
 
     it('should generate ticks by data', () => {
-      scale = band();
-      scale.domain(data);
+      scale = band({ value: d => d }, { items: data });
       scale.range([0, 1]);
-
       const ticks = scale.ticks();
       const expected = [
-        { position: 0 + (scale.bandwidth() / 2), label: 'd1' },
-        { position: (1 / 3) + (scale.bandwidth() / 2), label: 'd2' },
-        { position: (2 / 3) + (scale.bandwidth() / 2), label: 'd3' }
+        { position: 0 + (scale.bandwidth() / 2), label: 'd1', data: 'd1' },
+        { position: (1 / 3) + (scale.bandwidth() / 2), label: 'd2', data: 'd2' },
+        { position: (2 / 3) + (scale.bandwidth() / 2), label: 'd3', data: 'd3' }
       ];
       expect(ticks).to.deep.equal(expected);
     });
 
     it('should support duplicate labels by separating values and labels', () => {
-      scale = band({ trackBy: 'id' });
-      scale.data = () => ([
-        { self: { value: 'alpha' }, id: { value: 'd1' } },
-        { self: { value: 'alpha' }, id: { value: 'd2' } },
-        { self: { value: 'beta' }, id: { value: 'd3' } }
-      ]);
-      scale.domain(data);
+      scale = band({
+        value: item => item.id.value,
+        label: item => item.value
+      },
+        { items: [
+          { value: 'alpha', id: { value: 'd1' } },
+          { value: 'alpha', id: { value: 'd2' } },
+          { value: 'beta', id: { value: 'd3' } }
+        ] });
       scale.range([0, 1]);
 
       const ticks = scale.ticks();
       const expected = [
-        { position: 0 + (scale.bandwidth() / 2), label: 'alpha' },
-        { position: (1 / 3) + (scale.bandwidth() / 2), label: 'alpha' },
-        { position: (2 / 3) + (scale.bandwidth() / 2), label: 'beta' }
+        { position: 0 + (scale.bandwidth() / 2), label: 'alpha', data: { value: 'alpha', id: { value: 'd1' } } },
+        { position: (1 / 3) + (scale.bandwidth() / 2), label: 'alpha', data: { value: 'alpha', id: { value: 'd2' } } },
+        { position: (2 / 3) + (scale.bandwidth() / 2), label: 'beta', data: { value: 'beta', id: { value: 'd3' } } }
       ];
       expect(ticks).to.deep.equal(expected);
     });

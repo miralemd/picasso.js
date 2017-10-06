@@ -8,15 +8,17 @@ const LAYOUT_TO_PROP = [
   ['qAttrExprInfo', 'qAttributeExpressions']
 ];
 
+
+const DIM_RX = /\/qDimensionInfo(?:\/(\d+))?/;
+const M_RX = /\/qMeasureInfo\/(\d+)/;
+const ATTR_DIM_RX = /\/qAttrDimInfo\/(\d+)(?:\/(\d+))?/;
+const ATTR_EXPR_RX = /\/qAttrExprInfo\/(\d+)/;
+
 export function extractFieldFromId(id, layout) {
-  const DIM_RX = /\/qDimensionInfo(?:\/(\d+))?/;
-  const M_RX = /\/qMeasureInfo\/(\d+)/;
-  const ATTR_DIM_RX = /\/qAttrDimInfo\/(\d+)(?:\/(\d+))?/;
-  const ATTR_EXPR_RX = /\/qAttrExprInfo\/(\d+)/;
   let isDimension = false;
   let index = 0;
   let path = id;
-  const pathToHC = `${path.substr(0, path.indexOf('/qHyperCube') + 11)}`; // 14 = length of '/qHyperCubeDef'
+  const pathToHC = `${path.substr(0, path.indexOf('qHyperCube') + 10)}`; // 10 = length of 'qHyperCube'
 
   let shortenPath = true;
 
@@ -101,6 +103,10 @@ export function extractFieldFromId(id, layout) {
 
   if (shortenPath) {
     path = `${path.substr(0, path.indexOf('/qHyperCubeDef') + 14)}`; // 14 = length of '/qHyperCubeDef'
+  }
+
+  if (path && path[0] !== '/') {
+    path = `/${path}`;
   }
 
   return {

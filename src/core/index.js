@@ -4,7 +4,6 @@ import component from './component';
 import data from './data';
 import dataset from './data/dataset';
 import field from './data/field';
-import table from './data/table';
 import formatter from './formatter';
 import interaction from './interaction';
 
@@ -16,7 +15,6 @@ export {
   formatter,
   dataset,
   field,
-  table,
   component,
   interaction
 };

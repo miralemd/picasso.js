@@ -13,13 +13,19 @@
   },
   "scripts": {
     "build": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js --name picassoQ --environment BUILD:production",
-    "build:dev": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js --name picassoQ"
+    "build:dev": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js --name picassoQ",
+    "build:watch": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js --name picassoQ -w",
+    "test:unit": "node ../../node_modules/after-work.js/bin/aw-test-runner \"./test/unit/**/*.spec.js\"",
+    "test:unit:watch": "node ../../node_modules/after-work.js/bin/aw-test-runner \"./test/unit/**/*.spec.js\" -w",
+    "test:unit:coverage": "node ../../node_modules/after-work.js/bin/aw-test-coverage \"./test/unit/**/*.spec.js\" --dir test/unit/coverage"
   },
   "files": [
     "/dist"
   ],
   "main": "dist/picasso-q.js",
   "devDependencies": {
+    "d3-hierarchy": "^1.1.5",
+    "extend": "^3.0.0",
     "number-format.js": "^1.1.10"
   },
   "dependencies": {}

@@ -1,18 +1,15 @@
 import extend from 'extend';
 
-function parseTitle(text, join, table, scale) {
+function parseTitle(text, join, scale) {
   let title = '';
   if (typeof text === 'function') {
-    title = text(table);
+    title = text();
   } else if (typeof text === 'string') {
     title = text;
-  } else if (scale && scale.sources) {
-    if (Array.isArray(scale.sources)) {
-      const titles = scale.sources.map(s => table.findField(s).title());
-      title = titles.join(join);
-    } else {
-      title = table.findField(scale.sources).title();
-    }
+  } else if (scale) {
+    let data = scale.data();
+    const titles = (data.fields || []).map(field => field.title());
+    title = titles.join(join);
   }
 
   return title;
@@ -164,11 +161,9 @@ const textComponent = {
 
     this.definitionSettings = this.settings.settings;
 
-    this.dataset = this.chart.dataset();
-    const table = this.dataset.tables()[0];
     const text = this.settings.text;
     const join = this.definitionSettings.join;
-    this.title = parseTitle(text, join, table, this.scale);
+    this.title = parseTitle(text, join, this.scale);
   },
 
   preferredSize() {
@@ -206,10 +201,9 @@ const textComponent = {
       extend(this.settings, opts.settings);
       this.definitionSettings = opts.settings.settings;
     }
-    const table = this.dataset.tables()[0];
     const text = this.settings.text;
     const join = this.definitionSettings.join;
-    this.title = parseTitle(text, join, table, this.scale);
+    this.title = parseTitle(text, join, this.scale);
   }
 };
 

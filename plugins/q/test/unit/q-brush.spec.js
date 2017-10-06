@@ -1,4 +1,4 @@
-import qBrush, { extractFieldFromId } from '../../../plugins/q/src/brush/q-brush';
+import qBrush, { extractFieldFromId } from '../../src/brush/q-brush';
 
 describe('q-brush', () => {
   let brush;
@@ -18,7 +18,7 @@ describe('q-brush', () => {
   it('should reset made selections when brush is active but contain no values', () => {
     brush.isActive.returns(true);
     brush.brushes.returns([{
-      id: '/qHyperCube/qDimensionInfo/2',
+      id: 'qHyperCube/qDimensionInfo/2',
       type: 'value',
       brush: {
         values: () => []
@@ -32,7 +32,7 @@ describe('q-brush', () => {
   describe('selectHyperCubeValues', () => {
     beforeEach(() => {
       brush.brushes.returns([{
-        id: '/qHyperCube/qDimensionInfo/2',
+        id: 'qHyperCube/qDimensionInfo/2',
         type: 'value',
         brush: {
           values: () => [3, 2, 7]
@@ -131,7 +131,7 @@ describe('q-brush', () => {
   describe('selectHyperCubeCells', () => {
     beforeEach(() => {
       brush.brushes.returns([{
-        id: '/layers/0/qHyperCube/qDimensionInfo/2',
+        id: 'layers/0/qHyperCube/qDimensionInfo/2',
         type: 'value',
         brush: {
           values: () => [3, 2, 7]
@@ -221,7 +221,7 @@ describe('q-brush', () => {
     });
 
     it('should map attribute dimension column layout value to params (on measure)', () => {
-      let v = extractFieldFromId('/qHyperCube/qMeasureInfo/2/qAttrDimInfo/4/3');
+      let v = extractFieldFromId('qHyperCube/qMeasureInfo/2/qAttrDimInfo/4/3');
       expect(v).to.eql({
         path: '/qHyperCubeDef/qMeasures/2/qAttributeDimensions/4',
         index: 3,
