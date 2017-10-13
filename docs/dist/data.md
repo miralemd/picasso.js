@@ -8,6 +8,8 @@
 * <a href="#dataset.extract">dataset.extract</a>
 * <a href="#dataset.hierarchy">dataset.hierarchy</a>
 * <a href="#module.exports">module.exports</a>
+* <a href="#field.id">field.id</a>
+* <a href="#field.key">field.key</a>
 * <a href="#field.tags">field.tags</a>
 * <a href="#field.type">field.type</a>
 * <a href="#field.min">field.min</a>
@@ -84,9 +86,10 @@ data-extract-config: {
 ```js
 datum-extract: {
   value: , // The extracted value.
-  source: , // The data source of the extracted data.
-  key: 'foo', // The data-source key.
-  field: 'foo', // The source field.
+  source: { // The data source of the extracted data.
+    key: 'foo', // The data-source key.
+    field: 'foo', // The source field.
+  },
 }
 ```
 
@@ -103,6 +106,20 @@ Create a new field with default settings
 field: {
 }
 ```
+#### <a name='field.id' href='#field.id'>#</a> **field.id**()
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | string | No | ... | ... |
+
+Returns this field&#x27;s id  
+#### <a name='field.key' href='#field.key'>#</a> **field.key**()
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | string | No | ... | ... |
+
+Returns this field&#x27;s key  
 #### <a name='field.tags' href='#field.tags'>#</a> **field.tags**()
 
 |Name(s)|Type(s)|Description|Optional|Default value|
