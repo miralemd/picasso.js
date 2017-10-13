@@ -2,6 +2,11 @@
 
 ## **Unreleased** - *(YYYY-MM-DD)*
 
+### Fixed
+
+- Instancing a new picasso without arguments no longer throws undefined, i.e. `picasso({})` -> `picasso()`
+- `main` added in package.json, you can now do `import picasso from '@qlik/picasso';` instead of typing `dist/picasso.min.js`
+
 ## **0.33.0** - *(2017-10-13)* [BREAKING BREAKING BREAKING]
 ### Breaking
 
