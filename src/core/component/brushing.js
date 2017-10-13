@@ -1,5 +1,10 @@
 import { isTouchEvent } from '../utils/event-type';
 
+/**
+ * Flatten the array of nodes by removing any containers as they do not support styling, thus unable to brush them.
+ * @param {array} nodes
+ * @ignore
+ */
 export function reduceToLeafNodes(nodes = []) {
   return nodes.reduce((ary, node) => {
     if (Array.isArray(node.children)) {
@@ -33,9 +38,15 @@ export function styler(obj, { context, data, style }) {
     // TODO - render nodes only once, i.e. don't render for each brush, update nodes for all brushes and then render
     const nodes = reduceToLeafNodes(obj.nodes);
     const len = nodes.length;
+    let nodeData;
     let globalChanged = false;
 
     for (let i = 0; i < len; i++) { // TODO - update only added and removed nodes
+      nodeData = nodes[i].data;
+      if (!nodeData) {
+        continue;
+      }
+
       if (!nodes[i].__style) {
         nodes[i].__style = {};
         styleProps.forEach((s) => {
@@ -43,8 +54,7 @@ export function styler(obj, { context, data, style }) {
         });
       }
 
-      const nodeData = nodes[i].data;
-      const isActive = nodeData && brusher.containsMappedData(nodeData, dataProps);
+      const isActive = brusher.containsMappedData(nodeData, dataProps);
       const activeIdx = activeNodes.indexOf(nodes[i]);
       let changed = false;
       if (isActive && activeIdx === -1) { // activated

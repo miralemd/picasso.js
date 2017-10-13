@@ -31,7 +31,8 @@ function prepareContext(ctx, definition, opts) {
     dockConfig,
     mediator,
     instance,
-    style
+    style,
+    update
   } = opts;
 
   // TODO add setters and log warnings / errors to console
@@ -82,6 +83,10 @@ function prepareContext(ctx, definition, opts) {
     } else if (req === 'instance') {
       Object.defineProperty(ctx, 'instance', {
         get: instance
+      });
+    } else if (req === 'update' && update) {
+      Object.defineProperty(ctx, 'update', {
+        get: update
       });
     }
   });
@@ -244,7 +249,7 @@ function componentFactory(definition, options = {}) {
       updateDockConfig(dockConfig, settings);
     }
 
-    if (typeof settings.scale === 'string') {
+    if (settings.scale) {
       scale = chart.scale(settings.scale);
     }
 
@@ -356,6 +361,23 @@ function componentFactory(definition, options = {}) {
     element = null;
   };
 
+  /**
+   * Update active nodes. For now this can be used as a way update and apply brushing on nodes.
+   * Ex: if a component have changed the nodes since its initial render.
+   * @param {Nodes[]} nodes
+   * @deprecated
+   * @ignore
+   */
+  const updateNodes = (nodes) => {
+    brushArgs.nodes = nodes;
+    brushStylers.forEach((bs) => {
+      if (bs.isActive()) {
+        bs.update();
+      }
+    });
+    rend.render(nodes);
+  };
+
   // Set contexts, note that the definition and instance need different contexts (for example if they have different 'require' props)
   prepareContext(definitionContext, definition, {
     settings: () => settings,
@@ -367,7 +389,8 @@ function componentFactory(definition, options = {}) {
     dockConfig: () => dockConfig,
     mediator: () => mediator,
     instance: () => instanceContext,
-    style: () => style
+    style: () => style,
+    update: () => updateNodes
   });
 
   prepareContext(instanceContext, config, {

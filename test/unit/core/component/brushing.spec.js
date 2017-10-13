@@ -350,5 +350,28 @@ describe('Brushing', () => {
       expect(output[2].children[1].children[0].stroke).to.equal('activeStroke'); // Active because it's parent is affected
       expect(output[2].children[1].children[0].fill).to.equal('yellow');
     });
+
+    it('update should apply styling values only to shape nodes with data attribute', () => {
+      dummyComponent.nodes = [
+        {
+          type: 'circle',
+          fill: 'doNotUpdate',
+          stroke: 'doNotUpdate'
+        },
+        {
+          type: 'line',
+          fill: 'updateThis',
+          data: data[1]
+        }
+      ];
+      styler(dummyComponent, consume);
+      brusherStub.trigger('start');
+      brusherStub.trigger('update');
+
+      const output = dummyComponent.renderer.render.args[0][0];
+      expect(output[0].stroke).to.equal('doNotUpdate'); // No data attr
+      expect(output[0].fill).to.equal('doNotUpdate');
+      expect(output[1].fill).to.equal('inactiveFill'); // Inactive
+    });
   });
 });
