@@ -67,7 +67,7 @@ function pic(config = {}, registries = {}) {
    * @param {object} cfg
    * @returns {picasso}
    */
-  function picassojs(cfg) {
+  function picassojs(cfg = {}) {
     let cc = extend({ palettes: [] }, config, cfg);
     cc.palettes = config.palettes.concat(cfg.palettes || []);
     return pic(cc, regis);
