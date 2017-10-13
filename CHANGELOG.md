@@ -2,6 +2,10 @@
 
 ## **Unreleased** - *(YYYY-MM-DD)*
 
+## **0.33.0** - *(2017-10-13)* [BREAKING BREAKING BREAKING]
+### Breaking
+
+- Data configuration - see [pull/481](https://github.com/qlik-trial/picasso.js/pull/481)
 ## **0.32.0** - *(2017-10-05)* [BREAKING]
 
 ### Added
