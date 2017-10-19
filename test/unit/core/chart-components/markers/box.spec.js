@@ -77,7 +77,7 @@ describe('box marker', () => {
     xScale.bandwidth = () => 0.5;
     const yScale = v => v;
     yScale.bandwidth = () => 0.5;
-    chart.scale.withArgs({ scale: 'x' }).returns(xScale);
+    chart.scale.withArgs('x').returns(xScale);
     chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
     componentFixture.simulateCreate(boxMarker, config);
@@ -273,7 +273,7 @@ describe('box marker', () => {
     xScale.bandwidth = () => 0.5;
     const yScale = v => v;
     yScale.bandwidth = () => 0.5;
-    chart.scale.withArgs({ scale: 'x', ref: 'self' }).returns(xScale);
+    chart.scale.withArgs('x').returns(xScale);
     chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
     componentFixture.simulateCreate(boxMarker, config);
@@ -341,7 +341,7 @@ describe('box marker', () => {
     xScale.bandwidth = () => 0.5;
     const yScale = v => v;
     yScale.bandwidth = () => 0.5;
-    chart.scale.withArgs({ scale: 'x', ref: 'self' }).returns(xScale);
+    chart.scale.withArgs('x').returns(xScale);
     chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
     componentFixture.simulateCreate(boxMarker, config);
@@ -414,7 +414,7 @@ describe('box marker', () => {
     xScale.bandwidth = () => 0.5;
     const yScale = v => v;
     yScale.bandwidth = () => 0.5;
-    chart.scale.withArgs({ scale: 'x', ref: 'self' }).returns(xScale);
+    chart.scale.withArgs('x').returns(xScale);
     chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
     componentFixture.simulateCreate(boxMarker, config);
@@ -570,7 +570,7 @@ describe('box marker', () => {
 
     const yScale = v => (v - 0.2) / 0.6;
 
-    chart.scale.withArgs({ scale: 'x', ref: 'self' }).returns(xScale);
+    chart.scale.withArgs('x').returns(xScale);
     chart.scale.withArgs({ scale: 'y' }).returns(yScale);
 
     componentFixture.simulateCreate(boxMarker, config);

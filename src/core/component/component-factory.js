@@ -226,7 +226,8 @@ function componentFactory(definition, options = {}) {
     get: () => data
   });
 
-  const rend = definition.renderer ? renderer || registries.renderer(definition.renderer)() : renderer || registries.renderer()();
+  const rendString = settings.renderer || definition.renderer;
+  const rend = rendString ? renderer || registries.renderer(rendString)() : renderer || registries.renderer()();
   brushArgs.renderer = rend;
 
   const dockConfig = {
@@ -265,7 +266,7 @@ function componentFactory(definition, options = {}) {
       formatter = chart.formatter(settings.formatter);
     } else if (typeof settings.formatter === 'object') {
       formatter = chart.formatter(settings.formatter);
-    } else if (scale) {
+    } else if (scale && scale.data().fields) {
       formatter = scale.data().fields[0].formatter();
     }
 

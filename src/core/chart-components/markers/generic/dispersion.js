@@ -20,6 +20,7 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
   let doodle;
   let items;
   let resolvedStyle;
+  let majorNormalized;
 
   const fn = () => fn;
 
@@ -28,7 +29,8 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
     settings = stngs.settings;
 
     // Setup scales
-    major = settings.major ? chart.scale(settings.major) : null;
+    majorNormalized = normalizeSettings({ major: settings.major }, { major: 0.5 }, chart);
+    major = majorNormalized.major.scale;
     minor = settings.minor ? chart.scale(settings.minor) : null;
 
     // Set the default bandwidth
@@ -57,7 +59,7 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
       minor = minor.pxScale(minorLenght);
     }
 
-    const bw = major && major.bandwidth ? major.bandwidth() : 0;
+    // const bw = major && major.bandwidth ? major.bandwidth() : 0;
 
     const majorRef = settings.major ? settings.major.ref || '' : '';
     const majorStartRef = typeof majorRef === 'object' ? settings.major.ref.start : null;
@@ -85,7 +87,6 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
     data.items.forEach((d, i, all) => {
       const obj = {};
       Object.keys(resolvedStyle).forEach((part) => {
-        // obj[part] = resolveForDataObject(resolvedStyle[part], d, i);
         obj[part] = resolveForItem(d, resolvedStyle[part], all);
       });
 
@@ -104,8 +105,7 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
       if (it.majorStart !== null) { // if a majorstart/end are defined, calculate the midpoint
         it.major = (it.majorStart + it.majorEnd) / 2;
       } else {
-        let ref = majorRef === '' ? d : d[majorRef];
-        it.major = major && ref ? major(ref.value) + (bw / 2) : 0.5;
+        it.major = resolveForItem(d, majorNormalized, all).major;
       }
 
       items.push(it);

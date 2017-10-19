@@ -80,13 +80,14 @@ export function resolveForItem(item, normalized, dataContext) {
   const ret = {};
   const keys = Object.keys(normalized);
   const len = keys.length;
+  const fallbackData = item;
   for (let i = 0; i < len; i++) {
     const key = keys[i];
     const normalizedProp = normalized[key];
     const exists = typeof normalizedProp !== 'undefined';
-    const hasExplicitDataProp = exists && normalizedProp.ref;
+    const hasExplicitDataProp = exists && typeof normalizedProp.ref === 'string';
     const hasImplicitDataProp = exists && key in item;
-    const propData = hasExplicitDataProp ? item[normalizedProp.ref] : hasImplicitDataProp ? item[key] : null; // eslint-disable-line
+    const propData = hasExplicitDataProp ? item[normalizedProp.ref] : hasImplicitDataProp ? item[key] : fallbackData; // eslint-disable-line
     if (isPrimitive(normalizedProp)) {
       ret[key] = normalizedProp;
     } else if (exists && normalizedProp.fn) { // callback function
@@ -103,7 +104,7 @@ export function resolveForItem(item, normalized, dataContext) {
         idx,
         dataContext
       );
-    } else if (exists && normalizedProp.scale && (hasImplicitDataProp || hasExplicitDataProp)) {
+    } else if (exists && normalizedProp.scale && propData) {
       ret[key] = normalizedProp.scale(propData.value);
       if (normalizedProp.scale.bandwidth) {
         ret[key] += normalizedProp.scale.bandwidth() / 2;
