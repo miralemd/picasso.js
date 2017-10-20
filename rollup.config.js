@@ -22,7 +22,7 @@ const config = {
   dest: `dist/${fileName}.js`,
   moduleName: name,
   format: 'umd',
-  sourceMap: 'inline', // !isProduction,
+  sourceMap: !isProduction,
   plugins: [
     resolve({ jsnext: true, preferBuiltins: false }),
     babel({
