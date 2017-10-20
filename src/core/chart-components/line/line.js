@@ -13,33 +13,6 @@ import {
 } from 'd3-shape';
 import { normalizeSettings, resolveForItem } from '../property-resolver';
 
-const DEFAULT_LAYER_SETTINGS = {
-  curve: 'linear',
-  show: true
-};
-
-const DEFAULT_COORD_SETTINGS = {
-  major: 0.5,
-  minor: 0.5,
-  minor0: 0,
-  layerId: 0
-};
-
-const DEFAULT_LINE_SETTINGS = {
-  stroke: '#ccc',
-  strokeWidth: 2,
-  opacity: 1,
-  show: true
-};
-
-const DEFAULT_AREA_SETTINGS = {
-  fill: '#ccc',
-  stroke: 'none',
-  strokeWidth: 0,
-  opacity: 1,
-  show: true
-};
-
 const CURVES = {
   step: curveStep,
   stepAfter: curveStepAfter,
@@ -51,6 +24,75 @@ const CURVES = {
   monotonex: curveMonotoneX,
   monotoney: curveMonotoneY,
   natural: curveNatural
+};
+
+/**
+ * @typedef {object} components.line
+ * @experimental
+ */
+
+/**
+ * @typedef {object} components.line.settings
+ */
+
+const SETTINGS = {
+  /**
+   * Coordinates
+   * @memberof components.line.settings
+   */
+  coordinates: {
+    /**
+     * @type {number} */
+    minor: 0.5,
+    /**
+     * @type {number} */
+    major: 0.5,
+    /**
+     * @type {number} */
+    layerId: 0
+  },
+  /**
+   * @memberof components.line.settings
+   * @type {string} */
+  orientation: 'horizontal',
+  /**
+   * @memberof components.line.settings
+   * @type {object} */
+  layers: {
+    /**
+     * @type {string} */
+    curve: 'linear',
+    /**
+     * @type {boolean} */
+    show: true,
+    /**
+     * @type {object} */
+    line: {
+      /**
+       * @type {string} */
+      stroke: '#ccc',
+      /**
+       * @type {number} */
+      strokeWidth: 1,
+      /**
+       * @type {number} */
+      opacity: 1,
+      /**
+       * @type {boolean} */
+      show: true
+    },
+    area: {
+      /**
+       * @type {string} */
+      fill: '#ccc',
+      /**
+       * @type {number} */
+      opacity: 0.8,
+      /**
+       * @type {boolean} */
+      show: true
+    }
+  }
 };
 
 const lineMarkerComponent = {
@@ -67,13 +109,13 @@ const lineMarkerComponent = {
 
     // massage settings
     const orientation = this.stngs.orientation || 'horizontal';
-    const pointSettings = normalizeSettings(this.stngs.coordinates, DEFAULT_COORD_SETTINGS, this.chart);
-    const lineSettings = normalizeSettings(this.stngs.layers.line, DEFAULT_LINE_SETTINGS, this.chart);
-    const areaSettings = normalizeSettings(this.stngs.layers.area, DEFAULT_AREA_SETTINGS, this.chart);
+    const pointSettings = normalizeSettings(this.stngs.coordinates, SETTINGS.coordinates, this.chart);
+    const lineSettings = normalizeSettings(this.stngs.layers.line, SETTINGS.layers.line, this.chart);
+    const areaSettings = normalizeSettings(this.stngs.layers.area, SETTINGS.layers.area, this.chart);
     const layerSettings = normalizeSettings({
       curve: this.stngs.layers.curve,
       show: this.stngs.layers.show
-    }, DEFAULT_LAYER_SETTINGS, this.chart);
+    }, { curve: SETTINGS.layers.curve, show: SETTINGS.layers.show }, this.chart);
 
     const missingMinor0 = typeof this.stngs.coordinates.minor0 === 'undefined';
 
