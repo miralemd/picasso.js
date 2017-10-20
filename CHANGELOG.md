@@ -2,6 +2,10 @@
 
 ## **Unreleased** - *(YYYY-MM-DD)*
 
+### Added
+
+- `line` component *[experimental]*, see [line component](./docs/dist/components/line.md)
+
 ### Fixed
 
 - Instancing a new picasso without arguments no longer throws undefined, i.e. `picasso({})` -> `picasso()`
