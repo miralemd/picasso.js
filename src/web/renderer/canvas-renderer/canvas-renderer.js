@@ -87,7 +87,7 @@ function renderShapes(shapes, g, shapeToCanvasMap) {
     if (reg.has(shape.type)) {
       reg.get(shape.type)(shape.attrs, {
         g,
-        doFill: 'fill' in shape.attrs,
+        doFill: 'fill' in shape.attrs && shape.attrs.fill !== 'none',
         doStroke: 'stroke' in shape.attrs && shape.attrs['stroke-width'] !== 0
       });
     }
