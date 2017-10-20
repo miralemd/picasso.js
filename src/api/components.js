@@ -12,6 +12,7 @@ import brushLassoComponent from '../core/chart-components/brush-lasso';
 import labelsComponent from '../core/chart-components/labels';
 import categoricalLegend from '../core/chart-components/legend-cat';
 import sequentialLegend from '../core/chart-components/legend-seq';
+import lineComponent from '../core/chart-components/line';
 
 export default [
   boxMarkerComponent,
@@ -27,5 +28,6 @@ export default [
   brushLassoComponent,
   labelsComponent,
   categoricalLegend,
-  sequentialLegend
+  sequentialLegend,
+  lineComponent
 ];
