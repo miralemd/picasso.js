@@ -1,20 +1,20 @@
 import extract from './extractor';
 
-function create(config, d, opts) {
+function create(config, d, opts, extractor = extract) {
   const collections = {};
 
   (config || []).forEach((cfg) => {
     if (!cfg.key) {
       throw new Error('Data collection is missing "key" property');
     }
-    if ('collection' in cfg.data) {
+    if (typeof cfg.data === 'object' && 'collection' in cfg.data) {
       throw new Error('Data config for collections may not reference other collections');
     }
-    collections[cfg.key] = extract(cfg.data, d, opts);
+    collections[cfg.key] = extractor(cfg.data, d, opts);
   });
 
   const fn = (key) => {
-    if (collections[key]) {
+    if (key in collections) {
       return collections[key];
     }
     throw new Error(`Unknown data collection: ${key}`);

@@ -88,4 +88,15 @@ describe('extract data', () => {
       ]);
     });
   });
+
+  describe('from collection', () => {
+    it('should return a collection', () => {
+      let collection = sinon.stub().withArgs('nyckel').returns('my collection');
+      let d = extract({
+        collection: 'nyckel'
+      }, { collection });
+
+      expect(d).to.equal('my collection');
+    });
+  });
 });
