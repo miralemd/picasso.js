@@ -82,7 +82,7 @@ describe('scales', () => {
       data: {
         fields: ['d1']
       }
-    }, datasetFn, deps);
+    }, { dataset: datasetFn }, deps);
     expect(s.type).to.equal('band');
   });
 });

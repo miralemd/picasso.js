@@ -52,7 +52,7 @@ describe('extract data', () => {
       });
       let d = extract({
         field: 'dim'
-      }, dataset);
+      }, { dataset });
 
       expect(d.items).to.eql([
         { value: 3, source: { field: 'dim' } },
@@ -67,7 +67,7 @@ describe('extract data', () => {
       });
       let d = extract({
         extract: [{ field: 'dim' }]
-      }, dataset);
+      }, { dataset });
 
       expect(d.items).to.eql([1, 2]);
       expect(d.fields).to.eql([country]);
@@ -80,7 +80,7 @@ describe('extract data', () => {
       let d = extract({
         field: 'dim',
         value: x => x.v + 5
-      }, dataset);
+      }, { dataset });
 
       expect(d.items).to.eql([
         { value: 8, source: { field: 'dim' } },

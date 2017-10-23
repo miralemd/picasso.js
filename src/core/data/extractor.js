@@ -1,4 +1,4 @@
-export default function extract(dataConfig, dataset, opts = {}) {
+export default function extract(dataConfig, data = {}, opts = {}) {
   const extracted = {
     // items: [],
     // fields: [],
@@ -15,7 +15,10 @@ export default function extract(dataConfig, dataset, opts = {}) {
   if (Array.isArray(dataConfig)) { // if data is an array, assume it's manual data input -> normalize
     extracted.items = dataConfig.map(v => ({ value: v }));
   } else if (dataConfig) {
-    const source = dataset ? dataset(dataConfig.source) : null;
+    if ('collection' in dataConfig) {
+      return data.collection(dataConfig.collection);
+    }
+    const source = data.dataset ? data.dataset(dataConfig.source) : null;
     let valueFn = dataConfig.value || (d => d);
     // let labelFn = dataConfig.label || (d => d);
 
@@ -63,9 +66,7 @@ export default function extract(dataConfig, dataset, opts = {}) {
           extracted.items = f.items().map(v => ({ value: valueFn(v), source: { field: dataConfig.field } }));
           // TODO - add source: { key: dataConfig.source, field: dataConfig.field, data: v }
         }
-      } /* else if (dataConfig.pick) {
-        extracted.items = source.pick(dataConfig.pick);
-      } */
+      }
     }
 
     if (extracted.items && dataConfig.map) {
