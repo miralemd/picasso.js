@@ -4,6 +4,8 @@ function stack(data, config) {
   const stackIds = {};
   const stackFn = config.stackKey;
   const valueFn = config.value;
+  const startProp = config.startProp || 'start';
+  const endProp = config.endProp || 'end';
 
   for (let i = 0; i < data.items.length; i++) {
     let p = data.items[i];
@@ -12,8 +14,8 @@ function stack(data, config) {
 
     let value = valueFn(p);
     let stackTotal = value >= 0 ? stackIds[sid].positive : stackIds[sid].negative;
-    p.stackStart = { value: stackTotal };
-    p.stackEnd = { value: stackTotal + value };
+    p[startProp] = { value: stackTotal };
+    p[endProp] = { value: stackTotal + value };
 
     if (value === 'NaN') {
       continue;
