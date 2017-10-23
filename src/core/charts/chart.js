@@ -8,6 +8,7 @@ import {
 } from '../utils/event-type';
 import { getShapeType } from '../utils/shapes';
 import datasources from '../data/data';
+import dataCollections from '../data/collections';
 import buildFormatters, { getOrCreateFormatter } from './formatter';
 import { builder as buildScales, getOrCreateScale } from './scales';
 import buildScroll, { getOrCreateScrollApi } from './scroll-api';
@@ -156,6 +157,7 @@ function chart(definition, context) {
   let currentInteractions = [];
 
   let dataset = () => {};
+  let dataCollection = () => {};
   const brushes = {};
   let stopBrushing = false;
 
@@ -258,8 +260,9 @@ function chart(definition, context) {
     if (!partialData) {
       Object.keys(brushes).forEach(b => brushes[b].clear());
     }
-    currentScales = buildScales(scales, dataset, { scale: registries.scale, theme, logger });
-    currentFormatters = buildFormatters(formatters, dataset, { formatter: registries.formatter, theme, logger });
+    dataCollection = dataCollections(_settings.collections, { dataset }, { logger });
+    currentScales = buildScales(scales, { dataset, collection: dataCollection }, { scale: registries.scale, theme, logger });
+    currentFormatters = buildFormatters(formatters, { dataset, collection: dataCollection }, { formatter: registries.formatter, theme, logger });
     currentScrollApis = buildScroll(scroll, currentScrollApis);
   };
 
@@ -691,6 +694,8 @@ function chart(definition, context) {
    */
   instance.dataset = key => dataset(key);
 
+  instance.dataCollection = key => dataCollection(key);
+
   /**
    * Get the all registered scales
    * @returns {Object[]} Array of scales
@@ -729,7 +734,7 @@ function chart(definition, context) {
    * instance.scale({ source: '0/1', type: 'linear' }); // Create a new scale
    */
   instance.scale = function scale(v) {
-    return getOrCreateScale(v, currentScales, dataset, { scale: registries.scale, theme, logger });
+    return getOrCreateScale(v, currentScales, { dataset, collection: dataCollection }, { scale: registries.scale, theme, logger });
   };
 
   /**
@@ -747,7 +752,7 @@ function chart(definition, context) {
    * }); // Create a new formatter
    */
   instance.formatter = function formatter(v) {
-    return getOrCreateFormatter(v, currentFormatters, dataset, { formatter: registries.formatter, theme, logger });
+    return getOrCreateFormatter(v, currentFormatters, { dataset, collection: dataCollection }, { formatter: registries.formatter, theme, logger });
   };
 
   /**

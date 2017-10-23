@@ -30,7 +30,7 @@ function deduceScaleTypeFromOptions(options, fields) {
   return 'linear';
 }
 
-export function create(options, dataset, deps) {
+export function create(options, d, deps) {
   let dataSourceConfig = options.data;
   if (options.source) { // DEPRECATION
     deps.logger.warn('Deprecated: Scale data source configuration');
@@ -44,7 +44,7 @@ export function create(options, dataset, deps) {
     });
   }
 
-  let data = extractData(dataSourceConfig, dataset, deps);
+  let data = extractData(dataSourceConfig, d, deps);
   let type = options.type || deduceScaleTypeFromOptions(options, data.fields);
   let s;
 
@@ -64,7 +64,7 @@ export function create(options, dataset, deps) {
   return s;
 }
 
-export function getOrCreateScale(v, scales, dataset, deps) {
+export function getOrCreateScale(v, scales, d, deps) {
   let s;
   if (typeof v === 'string' && scales[v]) { // return by name
     s = scales[v];
@@ -72,14 +72,14 @@ export function getOrCreateScale(v, scales, dataset, deps) {
     s = scales[v.scale];
   }
 
-  return s || create(v, dataset, deps);
+  return s || create(v, d, deps);
 }
 
-export function builder(obj, dataset, deps) {
+export function builder(obj, d, deps) {
   const scales = {};
   for (const s in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, s)) {
-      scales[s] = create(obj[s], dataset, deps);
+      scales[s] = create(obj[s], d, deps);
     }
   }
   return scales;

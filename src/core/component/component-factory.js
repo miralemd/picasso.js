@@ -255,7 +255,7 @@ function componentFactory(definition, options = {}) {
     }
 
     if (settings.data) {
-      data = extractData(settings.data, chart.dataset, { logger: chart.logger() });
+      data = extractData(settings.data, { dataset: chart.dataset, collection: chart.dataCollection }, { logger: chart.logger() }, chart.dataCollection);
     } else if (scale) {
       data = scale.data();
     } else {
