@@ -5,6 +5,8 @@
 ### Added
 
 - `line` component *[experimental]*, see [line component](./docs/dist/components/line.md)
+- data collections, see [PR 497](https://github.com/qlik-trial/picasso.js/pull/497)
+- data stacking, see [PR 498](https://github.com/qlik-trial/picasso.js/pull/498)
 
 ### Fixed
 
