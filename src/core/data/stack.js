@@ -93,7 +93,7 @@ function stacked(data, config, ds) {
     min: Math.min(...values),
     max: Math.max(...values),
     type: 'measure',
-    formatter: stackedFields[0] ? stackedFields[0].formatter : data.fields[0].formatter
+    formatter: stackedFields[0] ? stackedFields[0].formatter : undefined
   });
   data.fields.push(field);
 }
