@@ -77,7 +77,7 @@ export default function extract(dataConfig, data = {}, opts = {}) {
   }
 
   if (dataConfig && dataConfig.stack) {
-    stack(extracted, dataConfig.stack);
+    stack(extracted, dataConfig.stack, data.dataset);
   }
   return extracted;
 }
