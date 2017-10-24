@@ -13,7 +13,7 @@ const accessors = {
   title: data => data.title,
   values: data => data.values,
   value: v => v,
-  formatter: () => formatterFn('d3-number')('')
+  formatter: data => ((data.formatter && data.formatter()) || formatterFn('d3-number')(''))
 };
 
 /**

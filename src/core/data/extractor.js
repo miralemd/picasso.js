@@ -1,3 +1,5 @@
+import stack from './stack';
+
 export default function extract(dataConfig, data = {}, opts = {}) {
   const extracted = {
     // items: [],
@@ -72,6 +74,10 @@ export default function extract(dataConfig, data = {}, opts = {}) {
     if (extracted.items && dataConfig.map) {
       extracted.items = extracted.items.map(dataConfig.map);
     }
+  }
+
+  if (dataConfig && dataConfig.stack) {
+    stack(extracted, dataConfig.stack, data.dataset);
   }
   return extracted;
 }
