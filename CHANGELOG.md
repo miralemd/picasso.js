@@ -4,6 +4,24 @@
 
 ### Added
 
+- PIC-215 Multi-line text support on categorical legend
+
+  ```js
+  // See API ref for full set of available settings
+  {
+    type: 'legend-cat',
+    settings: {
+      item: {
+        label: {
+          wordBreak: 'break-word' // Define word break rule for each item label
+        }
+      },
+      title: {
+        wordBreak: 'break-word' // Define word break rule for the legend title
+      }
+    }
+  }
+  ```
 - `line` component *[experimental]*, see [line component](./docs/dist/components/line.md)
 - data collections, see [PR 497](https://github.com/qlik-trial/picasso.js/pull/497)
 - data stacking, see [PR 498](https://github.com/qlik-trial/picasso.js/pull/498)
@@ -12,6 +30,22 @@
 
 - Instancing a new picasso without arguments no longer throws undefined, i.e. `picasso({})` -> `picasso()`
 - `main` added in package.json, you can now do `import picasso from '@qlik/picasso';` instead of typing `dist/picasso.min.js`
+
+### Breaking changes
+
+- Component specific settings for `legend-seq` have been move from root component definition to root.settings
+
+  ```js
+  // See API ref for full set of changes
+  {
+    type: 'legend-cat',
+    dock: 'left',
+    scale: 'colorScale',
+    settings: {
+      anchor: 'left' // Renamed to anchor instead of align
+    }
+  }
+  ```
 
 ## **0.33.0** - *(2017-10-13)* [BREAKING BREAKING BREAKING]
 ### Breaking

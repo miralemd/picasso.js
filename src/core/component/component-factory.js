@@ -113,7 +113,7 @@ function setUpEmitter(ctx, emitter, settings) {
     ctx.eventListeners.push({ event, listener });
     emitter.on(event, listener);
   });
-  ctx.emit = (name, event) => emitter.emit(name, event);
+  ctx.emit = (name, ...event) => emitter.emit(name, ...event);
 }
 
 // First render

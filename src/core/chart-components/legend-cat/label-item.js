@@ -1,16 +1,12 @@
 import extend from 'extend';
-
 import symbolFactory from '../../symbols';
 
-/**
- * Get the minimum viable number out of multiple ones
- *
- * @param {...number} numberList - Multiple numbers i.e. 12, 15, NaN, 22
- * @return {number} - Returns the smallest viable number, i.e. 12
- */
-export function getMinimumViableNumber(...numberList) {
-  numberList = numberList.filter(obj => typeof (obj) === 'number' && !isNaN(obj));
-  return Math.min(...numberList);
+function getWiggle(coord, innerSize, outerSize, m = 0) {
+  let wiggle = 0;
+  wiggle = outerSize - innerSize;
+  wiggle *= Math.min(1, Math.max(m, 0));
+
+  return wiggle;
 }
 
 /**
@@ -61,119 +57,99 @@ export function resolveMargin(margin) {
   };
 }
 
-/**
- * Create a label
- *
- * @param {number} x - X coordinate
- * @param {number} y - Y coordinate
- * @param {number} maxWidth - Maximum width of the label
- * @param {number} maxHeight - Maximum height of the label
- * @param {string} color - Color of the shape
- * @param {number} fontSize - Font size of the text
- * @param {string} fontFamily - Font family of the text
- * @param {string} labelText - The text to be used for the label
- * @param {Renderer} renderer - A renderer such as SVG, DOM, Canvas or Mock with measureText
- * @param {string} align - Alignment property, 'left' or 'right'.
- * @param {object} renderingArea - The area in an object to be rendered in.
- * @param {number} margin - Margin around the corners of the label
- * @param {object} shape - Shape properties
- * @return {Container} - Returns container with objects as children
- */
-
 export function labelItem({
   x,
   y,
-  maxWidth,
-  maxHeight,
+  fixedInnerWidth,
+  fixedInnerHeight,
   color,
-  fill,
-  fontSize,
-  fontFamily,
-  labelText,
-  renderer,
-  align,
-  renderingArea,
+  label,
+  labelBounds,
+  labelMeasure,
+  anchor = 'left',
+  renderingArea = { x: 0, y: 0, width: 0, height: 0 },
   margin,
-  symbolPadding,
+  symbolPadding = 0,
   shape,
-  data
+  shapeSize = 0,
+  maxShapeSize = shapeSize,
+  data,
+  justify = 0,
+  align = 0
 }) {
-  maxWidth = typeof maxWidth === 'undefined' ? NaN : maxWidth;
-  maxHeight = typeof maxHeight === 'undefined' ? NaN : maxHeight;
-  align = typeof align === 'undefined' ? 'left' : align;
-  fill = typeof fill === 'undefined' ? 'black' : fill;
-  renderingArea = typeof renderingArea === 'undefined' ? { x: 0, y: 0, width: 0, height: 0 } : renderingArea;
   margin = resolveMargin(margin);
-  symbolPadding = typeof symbolPadding === 'undefined' ? margin.right : symbolPadding;
+  const isAnchorLeft = anchor === 'left';
+  // Fallback, usersettings, base-definition
+  const labelDef = extend({}, label,
+    { // This should not contain any properties that may alter the size of the label node, ex. maxWidth
+      type: 'text',
+      data,
+      collider: { type: null }
+    });
 
-  const labelMeasures = renderer.measureText({
-    text: labelText,
-    fontFamily,
-    fontSize
-  });
-
-  const innerHeight = getMinimumViableNumber(maxHeight - margin.height, labelMeasures.height);
-
-  const fontSizeDiff = parseFloat(fontSize) / labelMeasures.height;
-  const fontSizeMod = innerHeight * fontSizeDiff;
-
-  const wantedWidth = labelMeasures.width + innerHeight + margin.width + symbolPadding;
-
-  if (renderingArea.width > 0) {
-    if (isNaN(maxWidth)) {
-      maxWidth = renderingArea.width - x;
-    } else {
-      maxWidth = Math.min(maxWidth, renderingArea.width - x);
-    }
-  }
-
-  const containerWidth = !isNaN(maxWidth) ? Math.min(maxWidth, wantedWidth) : wantedWidth;
+  const innerWidth = fixedInnerWidth || labelBounds.width + shapeSize + symbolPadding;
+  const innerHeight = fixedInnerHeight || Math.max(labelBounds.height, shapeSize);
+  const outerWidth = innerWidth + margin.left + margin.right;
+  const outerHeight = innerHeight + margin.top + margin.bottom;
 
   const container = {
     type: 'container',
-    x: align === 'left' ? x : renderingArea.width - x - containerWidth,
+    x: isAnchorLeft ? x : (renderingArea.width - x - outerWidth),
     y,
-    width: containerWidth,
-    height: innerHeight + margin.height,
-    data
+    width: outerWidth,
+    height: outerHeight,
+    innerWidth,
+    innerHeight,
+    data,
+    children: []
   };
 
   container.collider = {
     type: 'rect',
-    x: align === 'left' ? x : renderingArea.width - x - containerWidth,
-    y,
-    width: containerWidth,
-    height: innerHeight + margin.height
+    x: container.x,
+    y: container.y,
+    width: container.width,
+    height: container.height
   };
 
-  const r = innerHeight / 2;
-  const symDef = extend({}, {
-    type: typeof shape === 'object' && shape.type ? shape.type : shape,
-    x: (align === 'left' ? container.x + margin.left : (container.x + container.width) - innerHeight - margin.right) + r,
-    y: container.y + margin.top + r,
-    size: innerHeight,
-    fill: typeof shape === 'object' && shape.fill ? shape.fill : color,
-    stroke: typeof shape === 'object' && shape.stroke ? shape.stroke : color,
-    data
-  },
-    shape
-  );
-  const symbol = symbolFactory(symDef);
+  if (shape) {
+    const r = shapeSize / 2;
+    let symX = isAnchorLeft ? container.x + margin.left + r : (container.x + outerWidth) - margin.right - r;
+    let symY = container.y + r + margin.top;
+    const wiggleX = getWiggle(symX, shapeSize, maxShapeSize, isAnchorLeft ? align : 1 - align);
+    symX += isAnchorLeft ? wiggleX : -wiggleX;
+    symY += getWiggle(symY, shapeSize, innerHeight, justify);
 
-  const label = {
-    type: 'text',
-    anchor: align === 'left' ? 'start' : 'end',
-    x: align === 'left' ? symDef.x + r + symbolPadding : symDef.x - symbolPadding - r,
-    y: symDef.y + r + (-1),
-    maxWidth: (container.width - innerHeight - (margin.width + symbolPadding)) + 1,
-    text: labelText,
-    fill,
-    fontSize: `${fontSizeMod}px`,
-    fontFamily,
-    data
-  };
+    let def;
+    if (typeof shape !== 'object') {
+      def = { type: shape };
+    } else {
+      def = shape;
+    }
 
-  container.children = [symbol, label].filter(c => !!c);
+    const symDef = extend(
+      { // Default props
+        size: shapeSize,
+        fill: color,
+        stroke: color
+      },
+      def, // User defined
+      { // Base props, not overridable
+        x: symX,
+        y: symY,
+        data,
+        collider: { type: null }
+      }
+    );
+    const symbol = symbolFactory(symDef);
+    container.children.push(symbol);
+  }
+
+  labelDef.x = isAnchorLeft ? container.x + margin.left + maxShapeSize + symbolPadding : (container.x + outerWidth) - margin.right - maxShapeSize - symbolPadding;
+  labelDef.y = container.y + margin.top + labelMeasure.height;
+  labelDef.y += getWiggle(labelDef.y, labelBounds.height, innerHeight, justify);
+
+  container.children.push(labelDef);
 
   return container;
 }

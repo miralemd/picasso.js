@@ -6,7 +6,10 @@ export const MANDATORY = 1;
 export const BREAK_ALLOWED = 2;
 
 export function includesLineBreak(c) {
-  return c.search(LINEBREAK_REGEX) !== -1;
+  if (typeof c === 'string') {
+    return c.search(LINEBREAK_REGEX) !== -1;
+  }
+  return String(c).search(LINEBREAK_REGEX) !== -1;
 }
 
 function includesWhiteSpace(c) {

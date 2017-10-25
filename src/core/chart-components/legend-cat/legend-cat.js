@@ -1,247 +1,377 @@
+import extend from 'extend';
 import { resolveForDataObject } from '../../style';
 import { labelItem, resolveMargin } from './label-item';
 import createButton from './buttons';
 
-const defaultSettings = {
-  align: 'left',
-  item: {
-    show: true,
-    fontSize: '12px',
-    fontFamily: 'Arial',
-    fill: '#595959',
-    maxWidthPx: 150,
-    margin: {
-      top: 5,
-      right: 5,
-      bottom: 0
+const BUTTON_WIDTH = 20;
+const BUTTON_HEIGHT = 15;
+const BUTTON_PADDING = 8;
+const BUTTON_MARGIN = 4;
+
+const DEFAULT_SETTINGS = {
+  settings: {
+    direction: null,
+    anchor: 'left',
+    layout: {
+      mode: 'stack'
     },
-    shape: {
-      type: 'square',
-      strokeWidth: 0
-    }
-  },
-  title: {
-    show: true,
-    fontSize: '18px',
-    fontFamily: 'Arial',
-    fill: '#595959',
-    maxWidthPx: 200,
-    margin: {
-      top: 0,
-      right: 5,
-      bottom: 5
-    }
-  },
-  buttons: {
-    show: false,
-    rect: {
-      fill: 'transparent',
-      stroke: 'transparent',
-      strokeWidth: 0
+    item: {
+      show: true,
+      justify: 0.5,
+      align: 0.5,
+      symbolPadding: 8,
+      label: {
+        fontSize: '12px',
+        fontFamily: 'Arial',
+        fill: '#595959',
+        wordBreak: 'none',
+        hyphens: 'auto',
+        maxLines: 2,
+        maxWidth: 136,
+        lineHeight: 1.2
+      },
+      shape: {
+        type: 'square',
+        strokeWidth: 0,
+        size: 8
+      },
+      margin: {
+        top: 0,
+        bottom: 8,
+        left: 8,
+        right: 8
+      }
     },
-    symbol: {
-      fill: 'grey',
-      stroke: 'grey',
-      strokeWidth: 2
+    title: {
+      show: true,
+      fontSize: '16px',
+      fontFamily: 'Arial',
+      fill: '#595959',
+      wordBreak: 'none',
+      hyphens: 'auto',
+      maxLines: 2,
+      maxWidth: 156,
+      lineHeight: 1.25,
+      margin: {
+        top: 4,
+        bottom: 8,
+        left: 8,
+        right: 4
+      }
     },
-    'rect:disabled': {
-      fill: 'transparent',
-      stroke: 'transparent',
-      strokeWidth: 0
-    },
-    'symbol:disabled': {
-      fill: 'lightgrey',
-      stroke: 'lightgrey',
-      strokeWidth: 2
+    buttons: {
+      show: false,
+      rect: {
+        fill: 'transparent',
+        stroke: 'transparent',
+        strokeWidth: 0
+      },
+      symbol: {
+        fill: 'grey',
+        stroke: 'grey',
+        strokeWidth: 2
+      },
+      'rect:disabled': {
+        fill: 'transparent',
+        stroke: 'transparent',
+        strokeWidth: 0
+      },
+      'symbol:disabled': {
+        fill: 'lightgrey',
+        stroke: 'lightgrey',
+        strokeWidth: 2
+      }
     }
   }
 };
 
-/**
- * Create scrolling buttons
- *
- * @param {boolean} HORIZONTAL - If the rendering is horizontal, this is true
- * @param {object} rect - Rendering area
- * @param {object} buttonRect - The button rect styling
- * @param {object} buttonSymbol - Button line styling
- * @param {number} min - Minimum value (often 0, as arrays are 0-indexed)
- * @param {number} max - Maximum value, often the total length of values minus the available slots
- * @param {number} pagingValue - How much to page with every action
- * @return {object[]} - Nodes to render
- */
-function createButtons({ HORIZONTAL, rect, buttonRectMinus, buttonRectPlus, buttonSymbolMinus, buttonSymbolPlus, min, max, pagingValue }) {
+function createButtons({
+  HORIZONTAL,
+  rect,
+  state,
+  buttonRectMinus,
+  buttonRectPlus,
+  buttonSymbolMinus,
+  buttonSymbolPlus,
+  anchor
+}) {
   const buttons = [];
-  const dataPlus = { action: '+', min, max, value: pagingValue };
-  const dataMinus = { action: '-', min, max, value: pagingValue };
+  const dataPlus = { action: '+' };
+  const dataMinus = { action: '-' };
+  const width = BUTTON_WIDTH;
+  const height = BUTTON_HEIGHT;
+  const isLeft = anchor === 'left';
 
   if (HORIZONTAL) {
+    const middle = (state.maxOuterHeight || rect.height) / 2;
+    const x = isLeft ? rect.width - BUTTON_MARGIN - BUTTON_WIDTH : BUTTON_MARGIN;
     buttons.push(createButton({
-      x: rect.width - 45,
-      y: rect.height * 0.125,
-      width: 20,
-      height: rect.height * 0.75,
+      x,
+      y: middle + BUTTON_PADDING,
+      width,
+      height,
       data: dataMinus,
-      direction: 'left',
+      direction: isLeft ? 'left' : 'right',
       rect: buttonRectMinus,
       symbol: buttonSymbolMinus
     }));
 
     buttons.push(createButton({
-      x: rect.width - 25,
-      y: rect.height * 0.125,
-      width: 20,
-      height: rect.height * 0.75,
+      x,
+      y: middle - BUTTON_HEIGHT - BUTTON_PADDING,
+      width,
+      height,
       data: dataPlus,
-      direction: 'right',
+      direction: isLeft ? 'right' : 'left',
       rect: buttonRectPlus,
       symbol: buttonSymbolPlus
     }));
   } else {
+    const middle = (state.maxOuterWidth || rect.width) / 2;
+    const y = rect.height - BUTTON_MARGIN - BUTTON_HEIGHT;
     buttons.push(createButton({
-      x: rect.width * 0.5,
-      y: rect.height - 15,
-      width: rect.width * 0.25,
-      height: 15,
-      data: dataMinus,
-      direction: 'up',
-      rect: buttonRectMinus,
-      symbol: buttonSymbolMinus
+      x: isLeft ? middle + BUTTON_PADDING : rect.width - middle - BUTTON_PADDING - BUTTON_WIDTH,
+      y,
+      width,
+      height,
+      data: isLeft ? dataMinus : dataPlus,
+      direction: isLeft ? 'up' : 'down',
+      rect: isLeft ? buttonRectMinus : buttonRectPlus,
+      symbol: isLeft ? buttonSymbolMinus : buttonSymbolPlus
     }));
 
     buttons.push(createButton({
-      x: rect.width * 0.25,
-      y: rect.height - 15,
-      width: rect.width * 0.25,
-      height: 15,
-      data: dataPlus,
-      direction: 'down',
-      rect: buttonRectPlus,
-      symbol: buttonSymbolPlus
+      x: isLeft ? middle - BUTTON_PADDING - BUTTON_WIDTH : (rect.width - middle) + BUTTON_PADDING,
+      y,
+      width,
+      height,
+      data: isLeft ? dataPlus : dataMinus,
+      direction: isLeft ? 'down' : 'up',
+      rect: isLeft ? buttonRectPlus : buttonRectMinus,
+      symbol: isLeft ? buttonSymbolPlus : buttonSymbolMinus
     }));
   }
 
   return buttons;
 }
 
-/**
- * Process label items from scale & domain to calculate prefSize or render items
- *
- * @param  {object} settings - Settings from the component
- * @param  {Scale} scale - Scale from the component
- * @param  {boolean} HORIZONTAL - True if the labels are going to be rendered horizontally
- * @param  {string} ALIGN - Alignment of the labels, 'left' or 'right'
- * @param  {Renderer} renderer - Current SVG/Canvas renderer for measuring text
- * @param  {object} rect - Rendering area rect, X, Y, Width and Height
- * @return {object} - returns labels, maxX and maxY for computing renderable area
- */
-function processLabelItems({ settings, chart, scale, HORIZONTAL, ALIGN, renderer, rect, index }) {
+function resolveSizes(state, local) {
+  const defs = state.defs;
+  const titleDef = state.titleDef;
+  let maxOuterWidth = 0;
+  let maxOuterHeight = 0;
+  let maxInnerWidth = 0;
+  let maxInnerHeight = 0;
+  let maxShapeSize = 0;
+  let titleWidth = 0;
+  let titleHeight = 0;
+  let buttonWidth = 0;
+  let buttonHeight = 0;
+
+  if (titleDef.show) {
+    titleWidth = titleDef.margin.left + titleDef.margin.right + titleDef.labelBounds.width;
+    titleHeight = titleDef.margin.top + titleDef.margin.bottom + titleDef.labelBounds.height;
+    maxOuterWidth = titleWidth;
+    maxOuterHeight = titleHeight;
+  }
+
+  if (state.buttonDefs.show) {
+    buttonWidth = BUTTON_MARGIN + (BUTTON_PADDING * 2) + (2 * BUTTON_WIDTH);
+    buttonHeight = BUTTON_MARGIN + (BUTTON_PADDING * 2) + (2 * BUTTON_HEIGHT);
+    maxOuterWidth = local.isHorizontal ? maxOuterWidth : Math.max(maxOuterWidth, buttonWidth); // Presume width is not relevant if horizontal
+    maxOuterHeight = local.isHorizontal ? Math.max(maxOuterHeight, buttonHeight) : maxOuterHeight;
+  }
+
+  defs.forEach((def) => {
+    maxShapeSize = Math.max(maxShapeSize, def.shapeSize || 0);
+  });
+
+  for (let i = 0, len = defs.length; i < len; i++) {
+    const def = defs[i];
+    if (!def.show) {
+      continue;
+    }
+    const innerWidth = def.labelBounds.width + maxShapeSize + def.symbolPadding; // Use max size because text is adjusted to align along y-axis based on the largest shape size
+    const innerHeight = Math.max(def.labelBounds.height, maxShapeSize);
+    maxInnerWidth = Math.max(maxInnerWidth, innerWidth);
+    maxInnerHeight = Math.max(maxInnerHeight, innerHeight);
+    maxOuterWidth = Math.max(maxOuterWidth, def.margin.left + def.margin.right + innerWidth + (local.isHorizontal ? titleWidth + buttonWidth : 0));
+    maxOuterHeight = Math.max(maxOuterHeight, def.margin.top + def.margin.bottom + innerHeight + (local.isHorizontal ? 0 : titleHeight + buttonHeight));
+  }
+
+  return {
+    maxOuterWidth,
+    maxOuterHeight,
+    maxInnerWidth,
+    maxInnerHeight,
+    maxShapeSize
+  };
+}
+
+function resolveButtonDefs(settings) {
+  const buttonRect = resolveForDataObject(settings.buttons.rect, {}, 0, []);
+  const buttonSymbol = resolveForDataObject(settings.buttons.symbol, {}, 0, []);
+  const buttonRectDisabled = resolveForDataObject(settings.buttons['rect:disabled'], {}, 0, []);
+  const buttonSymbolDisabled = resolveForDataObject(settings.buttons['symbol:disabled'], {}, 0, []);
+  return {
+    show: settings.buttons.show,
+    buttonRect,
+    buttonSymbol,
+    buttonRectDisabled,
+    buttonSymbolDisabled
+  };
+}
+
+function resolveTitleDef({
+  settings,
+  local,
+  renderer
+}) {
   let title;
-  const domain = scale.domain();
-
-  const THRESHOLD = scale.type === 'threshold-color';
-  let sourceField = (scale.data().fields || [])[0];
-  let formatter;
-  if (sourceField) {
-    formatter = sourceField.formatter();
-  }
-
-  if (typeof settings.title.text !== 'undefined') {
+  if (settings.title.text) {
     title = settings.title.text;
-  } else if (scale) {
-    let field = (scale.data().fields || [])[0];
-    title = field ? field.title() : '';
+  } else {
+    title = local.sourceTitle;
   }
 
-  const titleMargin = resolveMargin(settings.title.margin);
-
-  const labels = [];
-  let prevContainer = {};
-  let nextXitem = 0;
-  let nextYitem = 0;
-  let maxX = 0;
-  let maxY = 0;
-
-  if (settings.title.show) {
-    // Title
-    prevContainer = labelItem({
-      x: HORIZONTAL ? nextXitem : 0,
-      y: !HORIZONTAL ? nextYitem : 0,
-      maxWidth: rect ? Math.min(rect.width, settings.title.maxWidthPx) : settings.title.maxWidthPx,
-      color: 'transparent',
-      fill: settings.title.fill,
+  const def = {
+    show: settings.title.show,
+    margin: resolveMargin(settings.title.margin),
+    label: {
+      text: title,
       fontSize: settings.title.fontSize,
       fontFamily: settings.title.fontFamily,
-      labelText: title,
-      renderer,
-      align: ALIGN,
-      renderingArea: rect,
-      margin: titleMargin,
-      symbolPadding: -parseFloat(settings.title.fontSize) // This is too hacky. FIXME
-    });
+      fill: settings.title.fill,
+      wordBreak: settings.title.wordBreak,
+      hyphens: settings.title.hyphens,
+      maxLines: settings.title.maxLines,
+      lineHeight: settings.title.lineHeight,
+      maxWidth: settings.title.maxWidth,
+      anchor: local.anchor === 'left' ? 'start' : 'end'
+    }
+  };
 
-    labels.push(prevContainer);
-    maxX = prevContainer.x + prevContainer.width;
-    maxY = prevContainer.y + prevContainer.height;
-  }
+  def.labelMeasure = renderer.measureText(def.label);
+  def.labelBounds = renderer.textBounds(def.label);
 
-  let availableSlots = Infinity;
-  let createScrollButtons = false;
-  // Items
-  for (let i = index; i < (Math.min(index + availableSlots, domain.length)); i++) {
+  return def;
+}
+
+function resolveLabelItemDefs({
+  scale,
+  settings,
+  renderer,
+  local
+}) {
+  const defs = [];
+  const DEFS_TO_RESOLVE = 1500;
+  const domain = scale.domain();
+  const dataset = scale.data();
+
+  for (let i = 0; i < (Math.min(DEFS_TO_RESOLVE, domain.length)); i++) {
     let cat = domain[i];
     let text = scale.label ? scale.label(cat) : '';
-
-    nextXitem += prevContainer.width || 0;
-    nextYitem += prevContainer.height || 0;
-
     let data = scale.datum ? scale.datum(cat) : {};
 
-    if (THRESHOLD) {
+    if (local.isThreshold) {
       data = {
         value: [cat, domain[i + 1]],
         source: {
-          field: sourceField.id()
+          field: local.sourceField.id()
         }
       };
-      if (!scale.label && formatter) {
-        text = formatter(cat);
+      if (!scale.label && local.formatter) {
+        text = local.formatter(cat);
       }
     }
 
-    let labelItemDef = resolveForDataObject(settings.item, data, i, domain, {
-      formatter
-    });
+    let labelItemDef = resolveForDataObject(settings.item, data, i, dataset, { formatter: local.formatter });
     if (labelItemDef.show === false) {
       continue;
     }
+
     if (typeof settings.item.shape === 'object') {
-      labelItemDef.shape = resolveForDataObject(settings.item.shape, data, i, domain); // TODO resolveForDataObject for probably handle deep structures...
+      labelItemDef.shape = resolveForDataObject(settings.item.shape, data, i, dataset);
+      labelItemDef.shapeSize = labelItemDef.shape.size;
     }
 
-    labelItemDef.x = HORIZONTAL ? nextXitem : 0;
-    labelItemDef.y = !HORIZONTAL ? nextYitem : 0;
-    labelItemDef.maxWidth = rect ? Math.min(rect.width, labelItemDef.maxWidthPx) : labelItemDef.maxWidthPx;
-    labelItemDef.color = scale(cat);
-    labelItemDef.labelText = labelItemDef.label || text || cat;
-    labelItemDef.renderer = renderer;
-    labelItemDef.align = ALIGN;
-    labelItemDef.renderingArea = rect;
     labelItemDef.margin = resolveMargin(labelItemDef.margin);
+
+    labelItemDef.label = extend({}, labelItemDef.label);
+    labelItemDef.label.anchor = local.anchor === 'left' ? 'start' : 'end';
+    labelItemDef.label.text = text || cat;
+
+    labelItemDef.labelMeasure = renderer.measureText(labelItemDef.label);
+    labelItemDef.shapeSize = labelItemDef.shapeSize || labelItemDef.labelMeasure.height; // Fallback to label height as the shape definition is not guaranteed to contain a size
+    labelItemDef.labelBounds = renderer.textBounds(labelItemDef.label);
+
+    labelItemDef.color = scale(cat);
     labelItemDef.data = data;
 
-    prevContainer = labelItem(labelItemDef);
+    defs.push(labelItemDef);
+  }
 
-    labels.push(prevContainer);
-    maxX = Math.max(maxX, prevContainer.x + prevContainer.width);
-    maxY = Math.max(maxY, prevContainer.y + prevContainer.height);
+  return defs;
+}
 
-    if (rect) {
-      availableSlots = Math.min(availableSlots, (HORIZONTAL ? Math.floor((rect.width - maxX) / prevContainer.width) : Math.floor((rect.height - maxY) / prevContainer.height)) + (i - index));
+function buildNodes({
+  settings,
+  chart,
+  rect,
+  local,
+  state
+}) {
+  const nodes = [];
+  let prevContainer = {};
+  let nextXitem = 0;
+  let nextYitem = 0;
+  let availableSpace = local.isHorizontal ? rect.width - BUTTON_WIDTH - BUTTON_MARGIN : rect.height - BUTTON_HEIGHT - BUTTON_MARGIN;
+
+  if (state.titleDef.show) {
+    prevContainer = labelItem(extend(state.titleDef, {
+      x: prevContainer.width || nextXitem,
+      y: prevContainer.height || nextYitem,
+      anchor: local.anchor,
+      renderingArea: rect
+    }));
+
+    nodes.push(prevContainer);
+    availableSpace -= local.isHorizontal ? prevContainer.width : prevContainer.height;
+  }
+
+  let createScrollButtons = false;
+  state.pageSize = 0;
+
+  // Items
+  for (let i = state.index; i < state.defs.length; i++) {
+    const labelItemDef = state.defs[i];
+    nextXitem += prevContainer.width || 0;
+    nextYitem += prevContainer.height || 0;
+
+    labelItemDef.x = local.isHorizontal ? nextXitem : 0;
+    labelItemDef.y = !local.isHorizontal ? nextYitem : 0;
+    if (!local.isStacked) {
+      labelItemDef.fixedInnerWidth = state.fixedInnerWidth;
+      labelItemDef.fixedInnerHeight = state.fixedInnerHeight;
     }
 
-    if (availableSlots < domain.length && !createScrollButtons) {
+    prevContainer = labelItem(extend(labelItemDef, {
+      anchor: local.anchor,
+      renderingArea: rect,
+      maxShapeSize: state.maxShapeSize
+    }));
+
+    availableSpace -= local.isHorizontal ? prevContainer.width : prevContainer.height;
+    if (availableSpace < 0) {
       createScrollButtons = true;
-      // availableSlots--;
+      break;
+    }
+
+    nodes.push(prevContainer);
+    state.pageSize++;
+
+    if (state.index + state.pageSize >= state.defs.length && state.pageSize < state.defs.length) { // If last item and have scrolled
+      createScrollButtons = true;
     }
   }
 
@@ -249,124 +379,171 @@ function processLabelItems({ settings, chart, scale, HORIZONTAL, ALIGN, renderer
     chart.logger().warn('legend-cat requires a key for the index to be preserved when paging. Disable buttons or add a key to the item.');
   }
 
+  state.pageMax = Math.max(0, state.defs.length - state.pageSize);
+  state.pageMin = 0;
+
   if (createScrollButtons && settings.buttons.show) {
-    const buttonRect = resolveForDataObject(settings.buttons.rect, {}, 0, []);
-    const buttonSymbol = resolveForDataObject(settings.buttons.symbol, {}, 0, []);
-    const buttonRectDisabled = resolveForDataObject(settings.buttons['rect:disabled'], {}, 0, []);
-    const buttonSymbolDisabled = resolveForDataObject(settings.buttons['symbol:disabled'], {}, 0, []);
-
-    const max = (domain.length - availableSlots);
-
-    labels.push(...createButtons({
-      HORIZONTAL,
+    nodes.push(...createButtons({
+      HORIZONTAL: local.isHorizontal,
       rect,
-      buttonRectMinus: index <= 0 ? buttonRectDisabled : buttonRect,
-      buttonRectPlus: index >= max ? buttonRectDisabled : buttonRect,
-      buttonSymbolMinus: index <= 0 ? buttonSymbolDisabled : buttonSymbol,
-      buttonSymbolPlus: index >= max ? buttonSymbolDisabled : buttonSymbol,
-      min: 0,
-      max,
-      pagingValue: availableSlots
+      state,
+      buttonRectMinus: state.index <= 0 ? state.buttonDefs.buttonRectDisabled : state.buttonDefs.buttonRect,
+      buttonRectPlus: state.index >= state.pageMax ? state.buttonDefs.buttonRectDisabled : state.buttonDefs.buttonRect,
+      buttonSymbolMinus: state.index <= 0 ? state.buttonDefs.buttonSymbolDisabled : state.buttonDefs.buttonSymbol,
+      buttonSymbolPlus: state.index >= state.pageMax ? state.buttonDefs.buttonSymbolDisabled : state.buttonDefs.buttonSymbol,
+      anchor: local.anchor
     }));
   }
 
-  return {
-    labels,
-    maxX,
-    maxY
-  };
+  return nodes;
 }
 
-/**
- * Render the legend
- *
- * @param  {object} context Context of categorical legend to render in, pass it usualy ass { context: this }
- * @param  {integer} [index=0] Current index
- * @return {object[]} Array of objects to be rendered
- */
-function renderLegend({ context, index = 0 }) {
-  const scale = context.chart.scale(context.settings.scale);
-  const DOCK = context.settings.dock || 'center';
-  const ALIGN = context.settings.align;
-  const DIRECTION = context.settings.direction || ((DOCK === 'top' || DOCK === 'bottom') ? 'horizontal' : 'vertical');
-  const HORIZONTAL = (DIRECTION === 'horizontal');
+function doScroll(context, scrollLength = 3) {
+  const state = context.state;
+  const len = isNaN(scrollLength) ? 3 : scrollLength;
+  state.index = Math.max(state.pageMin, Math.min(state.pageMax, state.index + len));
 
-  const {
-    settings,
-    renderer,
-    rect
-  } = context;
+  const nodes = buildNodes({
+    chart: context.chart,
+    settings: context.settings.settings,
+    scale: context.scale,
+    rect: context.rect,
+    local: context.local,
+    state: context.state
+  });
 
-  const {
-    labels
-  } = processLabelItems({ settings, chart: context.chart, scale, HORIZONTAL, ALIGN, renderer, rect, index });
-
-  return labels;
+  context.update(nodes);
 }
 
-/**
- * Categorical Color Legend Component
- * @type {Object}
- * @ignore
- */
 const categoricalLegend = {
-  require: ['chart', 'settings', 'renderer'],
-  defaultSettings,
+  require: ['chart', 'settings', 'renderer', 'update'],
+  defaultSettings: DEFAULT_SETTINGS,
   on: {
-    tap(e) {
-      const shapes = this.chart.shapesAt({
-        x: e.center.x - this.chart.element.getBoundingClientRect().left,
-        y: e.center.y - this.chart.element.getBoundingClientRect().top
-      }, {});
+    tap(e, scrollLength = 3) {
+      const boundingRect = this.renderer.element().getBoundingClientRect();
+      const collision = this.renderer.itemsAt({
+        x: e.center.x - boundingRect.left,
+        y: e.center.y - boundingRect.top
+      })[0];
 
-      if (shapes[0] && shapes[0].data && shapes[0].data.action) {
-        const action = shapes[0].data.action;
-        const min = shapes[0].data.min || 0;
-        const max = shapes[0].data.max || Infinity;
-        const value = shapes[0].data.value || 1;
+      const node = collision ? collision.node : {};
 
-        if (action === '+') {
-          this.index = (this.index || 0) + value;
-        } else {
-          this.index = (this.index || 0) - value;
-        }
+      if (node.data && node.data.action) {
+        const action = node.data.action;
+        const len = action === '+' ? scrollLength : -scrollLength;
 
-        this.index = Math.max(min, Math.min(max, this.index));
-
-        this.renderer.render(renderLegend({ context: this, index: this.index }));
+        doScroll(this, len);
       }
     },
+    scroll(scrollLength = 3) {
+      doScroll(this, scrollLength);
+    },
     resetindex() {
-      this.index = 0;
+      this.initState();
     }
   },
-  preferredSize() {
-    const context = this;
-    const scale = context.chart.scale(context.settings.scale);
-    const DOCK = context.settings.dock || 'center';
-    const DIRECTION = context.settings.direction || ((DOCK === 'top' || DOCK === 'bottom') ? 'horizontal' : 'vertical');
+  createLocal() {
+    const SETTINGS = this.settings.settings;
+    const DOCK = this.settings.dock || 'center';
+    const DIRECTION = SETTINGS.direction || ((DOCK === 'top' || DOCK === 'bottom') ? 'horizontal' : 'vertical');
     const HORIZONTAL = (DIRECTION === 'horizontal');
+    const ANCHOR = SETTINGS.anchor;
+    const THRESHOLD = this.scale.type === 'threshold-color';
+    const STACKED_LAYOUT = typeof SETTINGS.layout === 'object' && SETTINGS.layout.mode === 'stack';
+
+    let sourceField;
+    if (this.scale) {
+      sourceField = (this.scale.data().fields || [])[0];
+    }
+
+    this.local = {
+      direction: DIRECTION,
+      anchor: ANCHOR,
+      isHorizontal: HORIZONTAL,
+      isThreshold: THRESHOLD,
+      isStacked: STACKED_LAYOUT,
+      sourceTitle: sourceField ? sourceField.title() : '',
+      sourceField,
+      formatter: sourceField ? sourceField.formatter() : this.formatter
+    };
+  },
+  initState() {
+    this.state = {
+      index: 0,
+      pageSize: 0,
+      fixedInnerWidth: 0,
+      fixedInnerHeight: 0,
+      maxShapeSize: 0,
+      preferredSize: 0,
+      pageMax: Infinity,
+      pageMin: 0
+    };
+  },
+  preferredSize(opts) {
+    const context = this;
 
     const {
       settings,
-      renderer
-    } = this;
+      renderer,
+      local,
+      state,
+      scale
+    } = context;
+
+    state.defs = resolveLabelItemDefs({
+      scale,
+      settings: settings.settings,
+      renderer,
+      local
+    });
+    state.titleDef = resolveTitleDef({ settings: settings.settings, local, renderer });
+    state.buttonDefs = resolveButtonDefs(settings.settings);
 
     const {
-      maxX,
-      maxY
-    } = processLabelItems({ settings, chart: context.chart, scale, HORIZONTAL, renderer });
+      maxOuterWidth,
+      maxOuterHeight,
+      maxInnerWidth,
+      maxInnerHeight,
+      maxShapeSize
+    } = resolveSizes(state, local);
 
-    return DOCK === 'left' || DOCK === 'right' ? maxX : maxY;
+    this.state.fixedInnerWidth = maxInnerWidth;
+    this.state.fixedInnerHeight = maxInnerHeight;
+    this.state.maxOuterWidth = maxOuterWidth;
+    this.state.maxOuterHeight = maxOuterHeight;
+    this.state.maxShapeSize = maxShapeSize;
+
+    this.state.preferredSize = this.settings.dock === 'left' || this.settings.dock === 'right' ? maxOuterWidth : maxOuterHeight; // Store for later use to align buttons
+
+    if (this.local.isHorizontal && maxOuterWidth > opts.inner.width) {
+      return Math.max(opts.inner.width, opts.inner.height);
+    } else if (!this.local.isHorizontal && maxOuterHeight > opts.inner.height) {
+      return Math.max(opts.inner.width, opts.inner.height);
+    }
+
+    return this.state.preferredSize;
+  },
+  beforeUpdate() {
+    this.createLocal();
+    this.initState();
   },
   created() {
+    this.createLocal();
+    this.initState();
     this.rect = { x: 0, y: 0, width: 0, height: 0 };
   },
   beforeRender(opts) {
     this.rect = opts.size;
   },
   render() {
-    return renderLegend({ context: this, index: this.index });
+    return buildNodes({
+      chart: this.chart,
+      settings: this.settings.settings,
+      scale: this.scale,
+      rect: this.rect,
+      local: this.local,
+      state: this.state
+    });
   }
 };
 

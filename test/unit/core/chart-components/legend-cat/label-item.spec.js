@@ -1,32 +1,7 @@
-import { getMinimumViableNumber, labelItem, resolveMargin } from '../../../../../src/core/chart-components/legend-cat/label-item';
-
-function assertNodeProperties(node, expected) {
-  Object.keys(expected).forEach((key) => {
-    expect(node).to.have.property(key, expected[key]);
-  });
-}
-
-// let rendererOutput = [];
-
-let renderer = {
-  appendTo: () => {},
-  render: p => (p),
-  size: () => {},
-  measureText: ({ text, fontSize }) => ({ width: parseInt(text.length, 10), height: parseInt(fontSize.replace('px', ''), 10) })
-};
-
-describe('getMinimumViableNumber', () => {
-  it('should handle invalid numbers', () => {
-    expect(getMinimumViableNumber(NaN, NaN, NaN)).to.be.equal(Infinity);
-    expect(getMinimumViableNumber(-Infinity, NaN, NaN)).to.be.equal(-Infinity);
-  });
-
-  it('should return correct minimum viable number', () => {
-    expect(getMinimumViableNumber(NaN, 0.13)).to.be.equal(0.13);
-    expect(getMinimumViableNumber(200, 400)).to.be.equal(200);
-    expect(getMinimumViableNumber(308, -150, 8504, 605)).to.be.equal(-150);
-  });
-});
+import {
+  labelItem,
+  resolveMargin
+} from '../../../../../src/core/chart-components/legend-cat/label-item';
 
 describe('resolveMargin', () => {
   it('should handle invalid formats', () => {
@@ -129,248 +104,378 @@ describe('resolveMargin', () => {
 
 
 describe('labelItem', () => {
-  it('should handle basic left-aligned instructions', () => {
-    let innerHeight = 12;
-    let margin = 5;
+  let params;
 
-    let data = { bar: 1 };
-
-    let container = labelItem({
-      x: 5,
-      y: 10,
-      maxWidth: undefined,
-      maxHeight: undefined,
-      color: 'black',
-      fontSize: `${innerHeight}px`,
-      fontFamily: 'Arial',
-      labelText: 'Test',
-      renderer,
-      align: undefined,
-      renderingArea: { x: 0, y: 0, width: 200, height: 200 },
-      margin,
-      shape: { type: 'square' },
-      data
-    });
-
-    let expectedContainer = {
-      type: 'container',
-      x: 5,
-      y: 10,
-      width: 4 + innerHeight + (margin * 3), // Padding left, margin right, margin between items
-      height: innerHeight + (margin * 2),
-      data
-    };
-
-    let expectedSymbol = {
-      type: 'rect',
-      fill: 'black',
-      x: 10,
-      y: 15,
-      width: innerHeight,
-      height: innerHeight,
-      data
-    };
-
-    let expectedText = {
-      type: 'text',
-      anchor: 'start',
-      x: expectedSymbol.x + expectedSymbol.width + margin,
-      y: expectedSymbol.y + innerHeight + (-1),
-      maxWidth: (expectedContainer.width - expectedSymbol.width - (margin * 3)) + 1,
-      text: 'Test',
-      fill: 'black',
-      fontSize: `${innerHeight}px`,
-      fontFamily: 'Arial',
-      data
-    };
-
-    assertNodeProperties(container, expectedContainer);
-    expect(container.children[0]).to.deep.include(expectedSymbol);
-    expect(container.children[1]).to.deep.include(expectedText);
-  });
-
-  it('should handle basic right-aligned instructions', () => {
-    let innerHeight = 12;
-    let margin = 5;
-
-    let data = { foo: 1 };
-
-    let container = labelItem({
+  beforeEach(() => {
+    params = {
       x: 0,
       y: 0,
-      maxWidth: undefined,
-      maxHeight: undefined,
-      color: 'black',
-      fontSize: `${innerHeight}px`,
-      fontFamily: 'Arial',
-      labelText: 'Test',
-      renderer,
-      align: 'right',
-      renderingArea: {
-        x: 0,
-        y: 0,
-        width: 200,
-        height: 200
-      },
-      margin,
-      shape: { type: 'square' },
-      data
-    });
-
-    let expectedContainer = {
-      type: 'container',
-      x: 200 - 4 - innerHeight - (margin * 3),
-      y: 0,
-      width: 4 + innerHeight + (margin * 3), // Padding left, margin right, margin between items
-      height: innerHeight + (margin * 2)
+      anchor: 'left',
+      color: 'whaleblue',
+      label: { text: 'Halloj' },
+      labelBounds: { x: 0, y: 0, width: 3, height: 4 },
+      labelMeasure: { width: 6, height: 2 },
+      renderingArea: { x: 0, y: 0, width: 500, height: 1000 },
+      margin: { left: 1, right: 2, top: 3, bottom: 4 },
+      shape: 'square',
+      shapeSize: 8,
+      symbolPadding: 0,
+      data: 'datum',
+      align: 0,
+      justify: 0
     };
-
-    let expectedSymbol = {
-      type: 'rect',
-      fill: 'black',
-      x: 200 - innerHeight - margin,
-      y: 5,
-      width: innerHeight,
-      height: innerHeight,
-      data
-    };
-
-    let expectedText = {
-      type: 'text',
-      anchor: 'end',
-      x: expectedSymbol.x - margin,
-      y: expectedSymbol.y + innerHeight + (-1),
-      maxWidth: (expectedContainer.width - expectedSymbol.width - (margin * 3)) + 1,
-      text: 'Test',
-      fill: 'black',
-      fontSize: `${innerHeight}px`,
-      fontFamily: 'Arial',
-      data
-    };
-
-    assertNodeProperties(container, expectedContainer);
-    expect(container.children[0]).to.deep.include(expectedSymbol);
-    expect(container.children[1]).to.deep.include(expectedText);
   });
 
-  it('should set maxWidth to edge of rendering area', () => {
-    let innerHeight = 12;
-    let margin = 5;
+  describe('Properties', () => {
+    describe('Shape', () => {
+      it('should be able to override default properties', () => {
+        params.shape = {
+          type: 'square',
+          size: 12,
+          fill: 'myFill',
+          stroke: 'myStroke'
+        };
+        const container = labelItem(params);
+        const shapeNode = container.children[0];
+        expect(shapeNode).to.include({
+          type: 'rect',
+          width: 12,
+          height: 12,
+          fill: 'myFill',
+          stroke: 'myStroke'
+        });
+      });
 
-    let renderingArea = { x: 0, y: 0, width: 35, height: 200 };
+      it('should not be able to override base properties', () => {
+        params.shape = {
+          type: 'square',
+          x: 999,
+          y: 777,
+          data: 'Nope',
+          collider: 'Nope'
+        };
+        const container = labelItem(params);
+        const shapeNode = container.children[0];
+        expect(shapeNode).to.not.include({
+          x: 999,
+          y: 777,
+          data: 'Nope',
+          collider: 'Nope'
+        });
+      });
 
-    let data = { bar: 1 };
-
-    let container = labelItem({
-      x: 5,
-      y: 10,
-      maxWidth: undefined,
-      maxHeight: undefined,
-      color: 'black',
-      fontSize: `${innerHeight}px`,
-      fontFamily: 'Arial',
-      labelText: 'AbcdeAbcdeAbcdeAbcde', // 20 characters
-      renderer,
-      align: undefined,
-      renderingArea,
-      margin,
-      shape: { type: 'square' },
-      data
+      it('should ommit shape node if not appended', () => {
+        params.shape = undefined;
+        const container = labelItem(params);
+        expect(container.children.length).to.eql(1);
+        const node = container.children[0];
+        expect(node.type).to.eql('text');
+      });
     });
 
-    let expectedContainer = {
-      type: 'container',
-      x: 5,
-      y: 10,
-      width: renderingArea.width - margin, // Padding left, margin right, margin between items
-      height: innerHeight + (margin * 2)
-    };
+    describe('Symbolpadding', () => {
+      it('should adjust for symbolpadding when anchored left', () => {
+        params.anchor = 'left';
+        params.symbolPadding = 50;
+        const container = labelItem(params);
+        const labelNode = container.children[1];
+        expect(labelNode).to.include({
+          x: 59
+        });
+      });
 
-    let expectedSymbol = {
-      type: 'rect',
-      fill: 'black',
-      x: 10,
-      y: 15,
-      width: innerHeight,
-      height: innerHeight,
-      data
-    };
+      it('should adjust for symbolpadding when anchored right', () => {
+        params.anchor = 'right';
+        params.symbolPadding = 50;
+        const container = labelItem(params);
+        const labelNode = container.children[1];
+        expect(labelNode).to.include({
+          x: 440
+        });
+      });
+    });
 
-    let expectedText = {
-      type: 'text',
-      anchor: 'start',
-      x: expectedSymbol.x + expectedSymbol.width + margin,
-      y: expectedSymbol.y + innerHeight + (-1),
-      maxWidth: (expectedContainer.width - expectedSymbol.width - (margin * 3)) + 1,
-      text: 'AbcdeAbcdeAbcdeAbcde',
-      fill: 'black',
-      fontSize: `${innerHeight}px`,
-      fontFamily: 'Arial',
-      data
-    };
+    describe('Fixed Inner Size', () => {
+      it('should use fixedInnerWidth as innerWidth if appended', () => {
+        params.fixedInnerWidth = 150;
+        const container = labelItem(params);
+        expect(container).to.include({
+          width: 153,
+          innerWidth: 150
+        });
+      });
 
-    assertNodeProperties(container, expectedContainer);
-    expect(container.children[0]).to.deep.include(expectedSymbol);
-    expect(container.children[1]).to.deep.include(expectedText);
-  });
+      it('should use fixedInnerHeight as innerHeight if appended', () => {
+        params.fixedInnerHeight = 150;
+        const container = labelItem(params);
+        expect(container).to.include({
+          height: 157,
+          innerHeight: 150
+        });
+      });
+    });
 
-  describe('shapes', () => {
-    let innerHeight = 12;
-    let margin = 5;
-    let itemDef;
+    describe('Data', () => {
+      it('should bind data to nodes', () => {
+        const container = labelItem(params);
+        expect(container).to.include({
+          data: 'datum'
+        });
 
-    beforeEach(() => {
-      itemDef = {
-        x: 0,
-        y: 0,
-        color: 'black',
-        fontSize: `${innerHeight}px`,
-        fontFamily: 'Arial',
-        labelText: 'Test',
-        renderer,
-        renderingArea: {
+        const shapeNode = container.children[0];
+        expect(shapeNode).to.include({
+          data: 'datum'
+        });
+
+        const labelNode = container.children[1];
+        expect(labelNode).to.include({
+          data: 'datum'
+        });
+      });
+    });
+
+    describe('Anchor', () => {
+      it('left', () => {
+        params.anchor = 'left';
+        const container = labelItem(params);
+        expect(container).to.include({
           x: 0,
           y: 0,
-          width: 200,
-          height: 200
-        },
-        margin,
-        shape: {
-          type: 'circle'
-        }
-      };
+          width: 14,
+          height: 15,
+          innerWidth: 11,
+          innerHeight: 8
+        });
+
+        const shapeNode = container.children[0];
+        expect(shapeNode).to.include({
+          x: 1,
+          y: 3,
+          width: 8,
+          height: 8
+        });
+
+        const labelNode = container.children[1];
+        expect(labelNode).to.include({
+          x: 9,
+          y: 5
+        });
+      });
+
+      it('right', () => {
+        params.anchor = 'right';
+        const container = labelItem(params);
+        expect(container).to.include({
+          x: 486,
+          y: 0,
+          width: 14,
+          height: 15,
+          innerWidth: 11,
+          innerHeight: 8
+        });
+
+        const shapeNode = container.children[0];
+        expect(shapeNode).to.include({
+          x: 490,
+          y: 3,
+          width: 8,
+          height: 8
+        });
+
+        const labelNode = container.children[1];
+        expect(labelNode).to.include({
+          x: 490,
+          y: 5
+        });
+      });
     });
 
-    it('should fallback to color definition if fill is undefined', () => {
-      let container = labelItem(itemDef);
+    describe('Align/Justify', () => {
+      it('should align shape to maxShapeSize', () => {
+        params.maxShapeSize = 16;
+        params.align = 1;
+        const container = labelItem(params);
+        const shapeNode = container.children[0];
+        expect(shapeNode).to.include({
+          x: 9,
+          y: 3,
+          width: 8,
+          height: 8
+        });
+      });
 
-      let expectedSymbol = {
-        type: 'circle',
-        fill: 'black',
-        stroke: 'black',
-        cx: (innerHeight / 2) + margin,
-        cy: 5 + (innerHeight / 2),
-        r: innerHeight / 2
-      };
+      it('should justify shape if label is heigher', () => {
+        params.labelBounds.height = 16;
+        params.justify = 1;
+        const container = labelItem(params);
+        const shapeNode = container.children[0];
+        expect(shapeNode).to.include({
+          x: 1,
+          y: 11,
+          width: 8,
+          height: 8
+        });
+      });
 
-      assertNodeProperties(container.children[0], expectedSymbol);
+      it('should justify label if shape is heigher', () => {
+        params.labelBounds.height = 4;
+        params.shapeSize = 16;
+        params.justify = 1;
+        const container = labelItem(params);
+        const labelNode = container.children[1];
+        expect(labelNode).to.include({
+          x: 17,
+          y: 17
+        });
+      });
+
+      it('should justify shape and label if fixedInnerHeight is heigher', () => {
+        params.fixedInnerHeight = 16;
+        params.justify = 1;
+        const container = labelItem(params);
+        const shapeNode = container.children[0];
+        expect(shapeNode).to.include({
+          x: 1,
+          y: 11,
+          width: 8,
+          height: 8
+        });
+
+        const labelNode = container.children[1];
+        expect(labelNode).to.include({
+          x: 9,
+          y: 17
+        });
+      });
     });
 
-    it('should use defined properties', () => {
-      itemDef.shape.fill = 'red';
-      itemDef.shape.stroke = 'white';
-      let container = labelItem(itemDef);
+    describe('Margin', () => {
+      it('should adjust for left margin anchored left', () => {
+        params.margin.left = 50;
+        const container = labelItem(params);
+        expect(container).to.include({
+          x: 0,
+          width: 63,
+          innerWidth: 11
+        });
 
-      let expectedSymbol = {
-        type: 'circle',
-        fill: 'red',
-        stroke: 'white',
-        cx: (innerHeight / 2) + margin,
-        cy: 5 + (innerHeight / 2),
-        r: innerHeight / 2
-      };
+        const shapeNode = container.children[0];
+        expect(shapeNode).to.include({
+          x: 50
+        });
 
-      assertNodeProperties(container.children[0], expectedSymbol);
+        const labelNode = container.children[1];
+        expect(labelNode).to.include({
+          x: 58
+        });
+      });
+
+      it('should adjust for left margin anchored right', () => {
+        params.anchor = 'right';
+        params.margin.left = 50;
+        params.margin.right = 0;
+        const container = labelItem(params);
+        expect(container).to.include({
+          x: 439,
+          width: 61,
+          innerWidth: 11
+        });
+
+        const shapeNode = container.children[0];
+        expect(shapeNode).to.include({
+          x: 492
+        });
+
+        const labelNode = container.children[1];
+        expect(labelNode).to.include({
+          x: 492
+        });
+      });
+
+      it('should adjust for right margin when anchored left', () => {
+        params.margin.left = 0;
+        params.margin.right = 50;
+        const container = labelItem(params);
+        expect(container).to.include({
+          x: 0,
+          width: 61,
+          innerWidth: 11
+        });
+
+        const shapeNode = container.children[0];
+        expect(shapeNode).to.include({
+          x: 0
+        });
+
+        const labelNode = container.children[1];
+        expect(labelNode).to.include({
+          x: 8
+        });
+      });
+
+      it('should adjust for right margin when anchored right', () => {
+        params.anchor = 'right';
+        params.margin.left = 0;
+        params.margin.right = 50;
+        const container = labelItem(params);
+        expect(container).to.include({
+          x: 439,
+          width: 61,
+          innerWidth: 11
+        });
+
+        const shapeNode = container.children[0];
+        expect(shapeNode).to.include({
+          x: 442
+        });
+
+        const labelNode = container.children[1];
+        expect(labelNode).to.include({
+          x: 442
+        });
+      });
+
+      it('should adjust for top margin', () => {
+        params.margin.top = 50;
+        params.margin.bottom = 0;
+        const container = labelItem(params);
+        expect(container).to.include({
+          y: 0,
+          height: 58,
+          innerWidth: 11
+        });
+
+        const shapeNode = container.children[0];
+        expect(shapeNode).to.include({
+          y: 50
+        });
+
+        const labelNode = container.children[1];
+        expect(labelNode).to.include({
+          y: 52
+        });
+      });
+
+      it('should adjust for bottom margin', () => {
+        params.margin.top = 0;
+        params.margin.bottom = 50;
+        const container = labelItem(params);
+        expect(container).to.include({
+          y: 0,
+          height: 58,
+          innerWidth: 11
+        });
+
+        const shapeNode = container.children[0];
+        expect(shapeNode).to.include({
+          y: 0
+        });
+
+        const labelNode = container.children[1];
+        expect(labelNode).to.include({
+          y: 2
+        });
+      });
     });
   });
 });

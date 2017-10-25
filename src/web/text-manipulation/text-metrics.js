@@ -1,5 +1,9 @@
+import extend from 'extend';
 import { resolveLineBreakAlgorithm } from './line-break-resolver';
-import { DEFAULT_LINE_HEIGHT } from './text-const';
+import {
+  DEFAULT_LINE_HEIGHT,
+  ELLIPSIS_CHAR
+} from './text-const';
 
 let heightMeasureCache = {},
   widthMeasureCache = {},
@@ -115,10 +119,23 @@ function calcTextBounds(attrs, measureFn = measureText) {
 export function textBounds(node, measureFn = measureText) {
   const lineBreakFn = resolveLineBreakAlgorithm(node);
   if (lineBreakFn) {
-    const bounds = calcTextBounds(node, measureFn);
     const fontSize = node['font-size'] || node.fontSize;
     const fontFamily = node['font-family'] || node.fontFamily;
     const resolvedLineBreaks = lineBreakFn(node, text => measureFn({ text, fontFamily, fontSize }));
+    const nodeCopy = extend({}, node);
+    let maxWidth = 0;
+    let widestLine = '';
+    for (let i = 0, len = resolvedLineBreaks.lines.length; i < len; i++) {
+      let line = resolvedLineBreaks.lines[i];
+      line += i === len - 1 && resolvedLineBreaks.reduced ? ELLIPSIS_CHAR : '';
+      const width = measureTextWidth({ text: line, fontSize, fontFamily });
+      if (width >= maxWidth) {
+        maxWidth = width;
+        widestLine = line;
+      }
+    }
+    nodeCopy.text = widestLine;
+    const bounds = calcTextBounds(nodeCopy, measureFn);
     const lineHeight = node.lineHeight || DEFAULT_LINE_HEIGHT;
     bounds.height = bounds.height * resolvedLineBreaks.lines.length * lineHeight;
 
