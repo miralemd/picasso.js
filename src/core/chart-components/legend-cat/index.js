@@ -11,8 +11,6 @@ export default function categoricalLegend(picasso) {
  * @property {scale} type='legend-cat' - Required
  * @property {scale} scale='A_scale' - A scale. Required
  * @property {string} [dock='center'] - Docking of the component, top, right, bottom or left
- * @property {string} [anchor='left'] - Is used to align items in the component, left or right
- * @property {string} [direction='vertical'] - Direction of rendering, 'horizontal' or 'vertical'.
  * @property {object} [settings]
  * @property {string} [settings.anchor='left'] - Is used to align items in the component, left or right
  * @property {string} [settings.direction='vertical'] - Direction of rendering, 'horizontal' or 'vertical'.

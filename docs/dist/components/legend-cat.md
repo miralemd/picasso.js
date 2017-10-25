@@ -9,8 +9,6 @@ component: {
   type: 'legend-cat', // Required. Default: 'legend-cat'.
   scale: 'A_scale', // A scale. Required. Default: 'A_scale'.
   dock: 'center', // Docking of the component, top, right, bottom or left. Default: 'center'. Optional.
-  anchor: 'left', // Is used to align items in the component, left or right. Default: 'left'. Optional.
-  direction: 'vertical', // Direction of rendering, 'horizontal' or 'vertical'.. Default: 'vertical'. Optional.
   settings: { //  Optional.
     anchor: 'left', // Is used to align items in the component, left or right. Default: 'left'. Optional.
     direction: 'vertical', // Direction of rendering, 'horizontal' or 'vertical'.. Default: 'vertical'. Optional.

@@ -4,6 +4,7 @@
 
 ### Added
 
+- PIC-219 Change the size of legend arrows
 - PIC-215 Multi-line text support on categorical legend
 
   ```js

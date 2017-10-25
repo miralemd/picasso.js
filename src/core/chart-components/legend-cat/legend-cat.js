@@ -3,8 +3,8 @@ import { resolveForDataObject } from '../../style';
 import { labelItem, resolveMargin } from './label-item';
 import createButton from './buttons';
 
-const BUTTON_WIDTH = 20;
-const BUTTON_HEIGHT = 15;
+const BUTTON_WIDTH = 26;
+const BUTTON_HEIGHT = 18;
 const BUTTON_PADDING = 8;
 const BUTTON_MARGIN = 4;
 
@@ -69,7 +69,7 @@ const DEFAULT_SETTINGS = {
       symbol: {
         fill: 'grey',
         stroke: 'grey',
-        strokeWidth: 2
+        strokeWidth: 0
       },
       'rect:disabled': {
         fill: 'transparent',
@@ -79,7 +79,7 @@ const DEFAULT_SETTINGS = {
       'symbol:disabled': {
         fill: 'lightgrey',
         stroke: 'lightgrey',
-        strokeWidth: 2
+        strokeWidth: 0
       }
     }
   }
