@@ -2,6 +2,7 @@ import extend from 'extend';
 import EventEmitter from '../utils/event-emitter';
 import { list as listMixins } from './component-mixins';
 import extractData from '../data/extractor';
+import tween from './tween';
 import {
   styler as brushStyler,
   resolveTapEvent,
@@ -306,9 +307,12 @@ function componentFactory(definition, options = {}) {
     });
   };
 
+  let currentNodes;
+
   fn.render = () => {
     const nodes = brushArgs.nodes = render.call(definitionContext, ...getRenderArgs());
     rend.render(nodes);
+    currentNodes = nodes;
   };
 
   fn.hide = () => {
@@ -329,7 +333,11 @@ function componentFactory(definition, options = {}) {
     });
   };
 
+  let currentTween;
   fn.update = () => {
+    if (currentTween) {
+      currentTween.stop();
+    }
     const nodes = brushArgs.nodes = render.call(definitionContext, ...getRenderArgs());
 
     // Reset brush stylers and triggers
@@ -349,7 +357,13 @@ function componentFactory(definition, options = {}) {
       }
     });
 
-    rend.render(nodes);
+    if (currentNodes) {
+      currentTween = tween(currentNodes, nodes, { renderer: rend });
+      currentTween.start();
+    } else {
+      rend.render(nodes);
+    }
+    currentNodes = nodes;
   };
 
   fn.updated = updated;
