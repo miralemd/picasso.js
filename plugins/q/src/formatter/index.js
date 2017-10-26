@@ -25,6 +25,8 @@ export function createFromMetaInfo(meta, localeInfo) {
 
   if (isAuto) {
     pattern = `#${decimal}##A`;
+    type = 'U';
   }
+
   return numberFormat(pattern, thousand, decimal, type, localeInfo);
 }
