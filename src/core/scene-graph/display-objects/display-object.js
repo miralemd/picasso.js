@@ -1,3 +1,4 @@
+import extend from 'extend';
 import Node from '../node';
 import { create as geometry } from '../../geometry';
 import Matrix from '../../math/matrix';
@@ -20,13 +21,18 @@ class DisplayObject extends Node {
     this.node = v;
 
     const {
-      data
+      data,
+      desc
     } = v;
 
     assignMappedAttribute(this.attrs, v);
 
     if (typeof data !== 'undefined') {
       this.data = data;
+    }
+
+    if (typeof desc === 'object') {
+      this.desc = extend(true, {}, desc);
     }
   }
 

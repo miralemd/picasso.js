@@ -50,6 +50,7 @@ export class SceneObject {
     this._data = node.data;
     this._dpi = node.stage ? node.stage.dpi : 1;
     this._collider = () => colliderToShape(node, this._dpi);
+    this._desc = node.desc;
   }
 
   /**
@@ -139,6 +140,14 @@ export class SceneObject {
    */
   get collider() {
     return this._collider();
+  }
+
+  /**
+   * Get the node desc
+   * @return {object} - Node desc
+   */
+  get desc() {
+    return this._desc;
   }
 }
 

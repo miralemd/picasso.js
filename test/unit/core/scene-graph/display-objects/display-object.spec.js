@@ -35,7 +35,10 @@ describe('Display Object', () => {
         data: {
           value: 11
         },
-        id: '12'
+        id: '12',
+        desc: {
+          myProp: 1337
+        }
       };
 
       _displayObject.set(args);
@@ -56,7 +59,26 @@ describe('Display Object', () => {
       expect(_displayObject.data).to.deep.equal({
         value: 11
       });
+      expect(_displayObject.desc).to.deep.equal({
+        myProp: 1337
+      });
       expect(_displayObject.node).to.deep.equal(args);
+    });
+
+    it('desc attribute must be of type object', () => {
+      _displayObject.set({
+        desc: 'Hello'
+      });
+      expect(_displayObject.desc).to.be.undefined;
+
+      _displayObject.set({
+        desc: {
+          myProp: 'Hello'
+        }
+      });
+      expect(_displayObject.desc).to.deep.equal({
+        myProp: 'Hello'
+      });
     });
   });
 
