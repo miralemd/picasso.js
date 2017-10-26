@@ -1,7 +1,7 @@
 import { ELLIPSIS_CHAR } from './text-const';
 
 export function ellipsText({ text, 'font-size': fontSize, 'font-family': fontFamily, maxWidth }, measureText) { // eslint-disable-line import/prefer-default-export
-  text = typeof text === 'string' ? text : text.toString();
+  text = typeof text === 'string' ? text : `${text}`;
   if (maxWidth === undefined) {
     return text;
   }

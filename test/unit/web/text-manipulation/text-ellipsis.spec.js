@@ -50,5 +50,47 @@ describe('Text Manipulation', () => {
       ellipsText(textNode, measureTextMock);
       expect(textNode.text).to.equal('123456789');
     });
+
+    it('should handle undefined text', () => {
+      textNode.text = undefined;
+      textNode.maxWidth = Infinity;
+      const text = ellipsText(textNode, measureTextMock);
+      expect(text).to.equal('undefined');
+    });
+
+    it('should handle null text', () => {
+      textNode.text = null;
+      textNode.maxWidth = Infinity;
+      const text = ellipsText(textNode, measureTextMock);
+      expect(text).to.equal('null');
+    });
+
+    it('should handle object as text', () => {
+      textNode.text = { prop: 1 };
+      textNode.maxWidth = Infinity;
+      const text = ellipsText(textNode, measureTextMock);
+      expect(text).to.equal('[object Object]');
+    });
+
+    it('should handle function as text', () => {
+      textNode.text = function fn() {};
+      textNode.maxWidth = Infinity;
+      const text = ellipsText(textNode, measureTextMock);
+      expect(text).to.equal('function fn() {}');
+    });
+
+    it('should handle number as text', () => {
+      textNode.text = 123;
+      textNode.maxWidth = Infinity;
+      const text = ellipsText(textNode, measureTextMock);
+      expect(text).to.equal('123');
+    });
+
+    it('should handle boolean as text', () => {
+      textNode.text = true;
+      textNode.maxWidth = Infinity;
+      const text = ellipsText(textNode, measureTextMock);
+      expect(text).to.equal('true');
+    });
   });
 });
