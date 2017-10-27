@@ -2,6 +2,7 @@ import extend from 'extend';
 import { resolveForDataObject } from '../../style';
 import { labelItem, resolveMargin } from './label-item';
 import createButton from './buttons';
+import NarrowPhaseCollision from '../../math/narrow-phase-collision';
 
 const BUTTON_WIDTH = 26;
 const BUTTON_HEIGHT = 18;
@@ -96,8 +97,6 @@ function createButtons({
   anchor
 }) {
   const buttons = [];
-  const dataPlus = { action: '+' };
-  const dataMinus = { action: '-' };
   const width = BUTTON_WIDTH;
   const height = BUTTON_HEIGHT;
   const isLeft = anchor === 'left';
@@ -110,7 +109,7 @@ function createButtons({
       y: middle + BUTTON_PADDING,
       width,
       height,
-      data: dataMinus,
+      action: '-',
       direction: isLeft ? 'left' : 'right',
       rect: buttonRectMinus,
       symbol: buttonSymbolMinus
@@ -121,7 +120,7 @@ function createButtons({
       y: middle - BUTTON_HEIGHT - BUTTON_PADDING,
       width,
       height,
-      data: dataPlus,
+      action: '+',
       direction: isLeft ? 'right' : 'left',
       rect: buttonRectPlus,
       symbol: buttonSymbolPlus
@@ -134,7 +133,7 @@ function createButtons({
       y,
       width,
       height,
-      data: isLeft ? dataMinus : dataPlus,
+      action: isLeft ? '-' : '+',
       direction: isLeft ? 'up' : 'down',
       rect: isLeft ? buttonRectMinus : buttonRectPlus,
       symbol: isLeft ? buttonSymbolMinus : buttonSymbolPlus
@@ -145,7 +144,7 @@ function createButtons({
       y,
       width,
       height,
-      data: isLeft ? dataPlus : dataMinus,
+      action: isLeft ? '+' : '-',
       direction: isLeft ? 'down' : 'up',
       rect: isLeft ? buttonRectPlus : buttonRectMinus,
       symbol: isLeft ? buttonSymbolPlus : buttonSymbolMinus
@@ -421,18 +420,22 @@ const categoricalLegend = {
   on: {
     tap(e, scrollLength = 3) {
       const boundingRect = this.renderer.element().getBoundingClientRect();
-      const collision = this.renderer.itemsAt({
-        x: e.center.x - boundingRect.left,
-        y: e.center.y - boundingRect.top
-      })[0];
+      const buttons = this.renderer.findShapes('.scroll-button');
 
-      const node = collision ? collision.node : {};
+      for (let i = 0; i < buttons.length; i++) {
+        const node = buttons[i];
+        const hit = NarrowPhaseCollision.testRectPoint(node.bounds, {
+          x: e.center.x - boundingRect.left,
+          y: e.center.y - boundingRect.top
+        });
 
-      if (node.data && node.data.action) {
-        const action = node.data.action;
-        const len = action === '+' ? scrollLength : -scrollLength;
+        if (hit) {
+          const action = node.desc.action;
+          const len = action === '+' ? scrollLength : -scrollLength;
 
-        doScroll(this, len);
+          doScroll(this, len);
+          break;
+        }
       }
     },
     scroll(scrollLength = 3) {

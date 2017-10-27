@@ -19,7 +19,7 @@ function directionTriangle(x, y, r, d = 'bottom') {
   `;
 }
 
-export default function createButton({ x, y, width, height, direction, data, rect, symbol }) {
+export default function createButton({ x, y, width, height, direction, action, rect, symbol }) {
   const buttonRect = extend({
     type: 'rect',
     x,
@@ -51,7 +51,8 @@ export default function createButton({ x, y, width, height, direction, data, rec
 
   container.collider = extend({}, container, { type: 'rect' });
   container.children = [buttonRect, buttonSymbol];
-  container.data = data;
+  container.desc = { action };
+  container.tag = 'scroll-button';
 
   return container;
 }
