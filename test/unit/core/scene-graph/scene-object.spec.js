@@ -17,7 +17,8 @@ describe('Scene Object', () => {
       data: 11,
       desc: {
         myProp: 1337
-      }
+      },
+      tag: 'Hello world'
     };
 
     nodeMock.boundingRect = sinon.stub();
@@ -42,6 +43,10 @@ describe('Scene Object', () => {
     expect(sceneObject.desc).to.deep.equal({
       myProp: 1337
     });
+  });
+
+  it('should expose node tag', () => {
+    expect(sceneObject.tag).to.equal('Hello world');
   });
 
   it('should expose node bounds, after any transform', () => {

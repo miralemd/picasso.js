@@ -542,7 +542,7 @@ function chart(definition, context) {
 
   /**
    * Get all nodes matching the provided selector
-   * @param {string} selector CSS selector [type, attribute or universal]
+   * @param {string} selector CSS selector [type, attribute, universal, class]
    * @returns {Object[]} Array of objects containing matching nodes
    *
    * @example

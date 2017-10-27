@@ -112,6 +112,25 @@ describe('Node Selector', () => {
         ]);
       });
     });
+
+    describe('tag', () => {
+      it('should support tag selector', () => {
+        const token = tokenize('.test');
+        expect(token).to.deep.equal([
+          [{ type: 'tag', value: '.test' }]
+        ]);
+      });
+
+      it('should support combinations of tag selector', () => {
+        const token = tokenize('.test.myTag');
+        expect(token).to.deep.equal([
+          [
+            { type: 'tag', value: '.test' },
+            { type: 'tag', value: '.myTag' }
+          ]
+        ]);
+      });
+    });
   });
 
   describe('filter', () => {
@@ -184,6 +203,44 @@ describe('Node Selector', () => {
         expect(result).to.deep.equal([c1, c2, c3, t1, r1]);
       });
     });
+
+    describe('tag', () => {
+      it('should select all objects that contains tag', () => {
+        c1.tag = 'title myTag label';
+        c2.tag = 'testing';
+        t1.tag = 'myTag';
+        const result = filter(
+          { type: 'tag', value: '.myTag' },
+          [c1, c2, c3, t1, r1]
+        );
+        expect(result).to.deep.equal([c1, t1]);
+      });
+
+      it('should handle multiple whitespaces in tag', () => {
+        c1.tag = 'hello    myTag';
+        const result = filter(
+          { type: 'tag', value: '.myTag' },
+          [c1, c2, c3, t1, r1]
+        );
+        expect(result).to.deep.equal([c1]);
+      });
+
+      it('should be case-sensitive', () => {
+        c1.tag = 'myTag';
+        let result = filter(
+          { type: 'tag', value: '.mytag' },
+          [c1, c2, c3, t1, r1]
+        );
+        expect(result).to.deep.equal([]);
+
+        c1.tag = 'mytag';
+        result = filter(
+          { type: 'tag', value: '.myTag' },
+          [c1, c2, c3, t1, r1]
+        );
+        expect(result).to.deep.equal([]);
+      });
+    });
   });
 
   describe('find', () => {
@@ -243,6 +300,18 @@ describe('Node Selector', () => {
       const result = selector.find('Container *', con1);
 
       expect(result).to.deep.equal([c1, r1, con3, c2, c3]);
+    });
+
+    it('should find all objects that contains multiple tags', () => {
+      c1.tag = 'myTag label test';
+      c2.tag = 'myTag test';
+      c3.tag = 'myTag'; // Should not match as it only contains one of the tags
+
+      con1.addChildren([c1, c2, c3, r1, t1]);
+
+      const result = selector.find('.myTag.test', con1);
+
+      expect(result).to.deep.equal([c1, c2]);
     });
   });
 });

@@ -22,7 +22,8 @@ class DisplayObject extends Node {
 
     const {
       data,
-      desc
+      desc,
+      tag
     } = v;
 
     assignMappedAttribute(this.attrs, v);
@@ -33,6 +34,10 @@ class DisplayObject extends Node {
 
     if (typeof desc === 'object') {
       this.desc = extend(true, {}, desc);
+    }
+
+    if (typeof tag === 'string') {
+      this.tag = tag;
     }
   }
 

@@ -38,7 +38,8 @@ describe('Display Object', () => {
         id: '12',
         desc: {
           myProp: 1337
-        }
+        },
+        tag: 'Hello world'
       };
 
       _displayObject.set(args);
@@ -62,6 +63,7 @@ describe('Display Object', () => {
       expect(_displayObject.desc).to.deep.equal({
         myProp: 1337
       });
+      expect(_displayObject.tag).to.equal('Hello world');
       expect(_displayObject.node).to.deep.equal(args);
     });
 
@@ -79,6 +81,13 @@ describe('Display Object', () => {
       expect(_displayObject.desc).to.deep.equal({
         myProp: 'Hello'
       });
+    });
+
+    it('tag attribute must be of type string', () => {
+      _displayObject.set({
+        tag: 1231
+      });
+      expect(_displayObject.tag).to.be.undefined;
     });
   });
 
