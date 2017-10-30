@@ -2,6 +2,8 @@
 
 ## **Unreleased** - *(YYYY-MM-DD)*
 
+## **0.34.0** - *(2017-10-30)* [BREAKING]
+
 ### Added
 
 - PIC-219 Change the size of legend arrows
