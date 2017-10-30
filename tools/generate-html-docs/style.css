@@ -1,6 +1,5 @@
-@import url('https://fonts.googleapis.com/css?family=Noto+Sans:400,700');
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
 @import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
-@import url('https://fonts.googleapis.com/css?family=Yellowtail');
 
 html,
 body {
@@ -9,7 +8,7 @@ body {
   height: 100%;
 }
 body {
-  font-family: 'Noto Sans', sans-serif;
+  font-family: 'Source Sans Pro', sans-serif;
   font-size: 14px;
   color: #595959;
 }
@@ -25,7 +24,7 @@ input,
 textarea,
 select,
 button {
-  font-family: 'Noto Sans', sans-serif;
+  font-family: 'Source Sans Pro', sans-serif;
   font-size: 13px;
 }
 
@@ -33,9 +32,9 @@ a:link,
 a:active,
 a:hover,
 a:visited {
-  color: #468bb0;
+  color: rgb(91, 158, 134);
   text-decoration: none;
-}
+} 
 
 a:hover {
   text-decoration: underline;
@@ -65,7 +64,6 @@ img {
 
 .header-logo {
   display: flex;
-  font-family: 'Yellowtail', cursive;
 }
 
 .header-logo img {
@@ -90,7 +88,8 @@ img {
   position: -webkit-sticky;
   top: 10px;
   flex: 0 0 auto;
-  width: 150px;
+  width: 175px;
+  padding-right: 10px;
 }
 
 .sidebar-variant-bg {
@@ -112,7 +111,7 @@ img {
 
 .content {
   flex: 1 1 auto;
-  max-width: 800px;
+  max-width: 755px;
 }
 
 .footer {
