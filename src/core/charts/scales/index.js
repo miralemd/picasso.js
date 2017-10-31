@@ -10,6 +10,7 @@ const scaleRegistry = registry();
 
 scaleRegistry('linear', linear);
 scaleRegistry('band', band);
+scaleRegistry('h-band', band);
 scaleRegistry('sequential-color', sequential);
 scaleRegistry('threshold-color', threshold);
 scaleRegistry('categorical-color', categorical);
@@ -23,9 +24,13 @@ function getTypeFromMeta(fields) {
   return types.indexOf('linear') !== -1 ? 'linear' : 'band';
 }
 
-function deduceScaleTypeFromOptions(options, fields) {
-  if (fields && fields[0]) {
-    return getTypeFromMeta(fields);
+function deduceScaleTypeFromData(data) {
+  if (data.root) {
+    return 'h-band';
+  }
+
+  if (data.fields && data.fields[0]) {
+    return getTypeFromMeta(data.fields);
   }
   return 'linear';
 }
@@ -44,8 +49,8 @@ export function create(options, d, deps) {
     });
   }
 
-  let data = extractData(dataSourceConfig, d, deps);
-  let type = options.type || deduceScaleTypeFromOptions(options, data.fields);
+  const data = extractData(dataSourceConfig, d, deps);
+  let type = options.type || deduceScaleTypeFromData(data);
   let s;
 
   if (type === 'color') {

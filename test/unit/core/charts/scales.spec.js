@@ -64,6 +64,28 @@ describe('scales', () => {
     expect(s.type).to.equal('linear');
   });
 
+  it('should create sequential color scale when source fields are measures and type is color', () => {
+    deps.scale.has.withArgs('sequential-color').returns(true);
+    deps.scale.get.returns(scaleFn);
+    const dataset = {
+      field: sinon.stub()
+    };
+    const datasetFn = () => dataset;
+
+    dataset.field.withArgs('m1').returns({
+      type: () => 'measure',
+      min: () => 0,
+      max: () => 1
+    });
+    const s = create({
+      type: 'color',
+      data: {
+        fields: ['m1']
+      }
+    }, datasetFn, deps);
+    expect(s.type).to.equal('sequential-color');
+  });
+
   it('should create band scale when source fields are dimensions', () => {
     deps.scale.has.withArgs('band').returns(true);
     deps.scale.get.returns(scaleFn);
@@ -84,5 +106,42 @@ describe('scales', () => {
       }
     }, { dataset: datasetFn }, deps);
     expect(s.type).to.equal('band');
+  });
+
+  it('should create categorical-color scale when source fields are dimensions and type is color', () => {
+    deps.scale.has.withArgs('categorical-color').returns(true);
+    deps.scale.get.returns(scaleFn);
+    const dataset = {
+      field: sinon.stub()
+    };
+    const datasetFn = () => dataset;
+
+    dataset.field.withArgs('d1').returns({
+      type: () => 'dimension',
+      values: () => [],
+      min: () => 2015,
+      max: () => 2017
+    });
+    const s = create({
+      type: 'color',
+      data: {
+        fields: ['d1']
+      }
+    }, { dataset: datasetFn }, deps);
+    expect(s.type).to.equal('categorical-color');
+  });
+
+  it('should create h-band scale when data is hierarchical', () => {
+    deps.scale.has.withArgs('h-band').returns(true);
+    deps.scale.get.returns(scaleFn);
+    const dataset = {
+      hierarchy: sinon.stub().returns({})
+    };
+    const datasetFn = () => dataset;
+    const s = create({
+      data: { hierarchy: {} }
+    }, { dataset: datasetFn }, deps);
+
+    expect(s.type).to.equal('h-band');
   });
 });
