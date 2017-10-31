@@ -5,6 +5,16 @@ const LINE_HEIGHT = 1.4;
 const PADDING = 4;
 const DOUBLE_PADDING = PADDING * 2;
 
+function cbContext(node, chart) {
+  return {
+    node,
+    data: node.data,
+    scale: chart.scale,
+    formatter: chart.formatter,
+    dataset: chart.dataset
+  };
+}
+
 export function placeTextInRect(rect, text, opts) {
   const label = {
     type: 'text',
@@ -97,6 +107,7 @@ function getBarRect({ bar, view, direction, position }) {
 }
 
 function placeInVerticalBars({
+  chart,
   nodes,
   stngs,
   placementSettings,
@@ -110,7 +121,6 @@ function placeInVerticalBars({
   const textPlacementFn = fitsHorizontally ? placeTextInRect : placeVerticalTextInRect;
   let label;
   let node;
-  let d;
   let text;
   let justify;
   let bounds;
@@ -123,13 +133,15 @@ function placeInVerticalBars({
   let placement;
   let placements;
   let p;
+  let arg;
 
   for (let i = 0, len = nodes.length; i < len; i++) {
     bounds = null;
     node = nodes[i];
-    d = node.data;
+    // d = node.data;
+    arg = cbContext(node, chart);
     nodeTexts = texts[i];
-    direction = typeof stngs.direction === 'function' ? stngs.direction(d) : stngs.direction || 'up';
+    direction = typeof stngs.direction === 'function' ? stngs.direction(arg, i) : stngs.direction || 'up';
     for (let j = 0; j < nodeTexts.length; j++) {
       text = nodeTexts[j];
       if (!text) {
@@ -170,7 +182,7 @@ function placeInVerticalBars({
       if (bounds && placement) {
         justify = placement.justify;
         if (typeof placement.fill === 'function') {
-          fill = placement.fill({ node, data: d }, i);
+          fill = placement.fill(arg, i);
         } else {
           fill = placement.fill;
         }
@@ -218,6 +230,7 @@ function placeInVerticalBars({
 
 export function bars({
   settings,
+  chart,
   nodes,
   data,
   rect,
@@ -235,7 +248,6 @@ export function bars({
   const labelStruct = {};
   let fitsHorizontally = true;
   let node;
-  let d;
   let text;
   let bounds;
   let measured;
@@ -260,10 +272,10 @@ export function bars({
     if (!collisions.testRectRect(bounds, rect)) {
       continue;
     }
-    d = node.data;
+    let arg = cbContext(node, chart);
     for (let j = 0; j < labelSettings.length; j++) {
       lblStng = labelSettings[j];
-      text = typeof lblStng.label === 'function' ? lblStng.label(d) : '';
+      text = typeof lblStng.label === 'function' ? lblStng.label(arg, i) : '';
       if (!text) {
         continue; // eslint-ignore-line
       }
@@ -280,6 +292,7 @@ export function bars({
   }
 
   return placeInVerticalBars({
+    chart,
     nodes,
     texts,
     measurements,

@@ -59,7 +59,7 @@ components: [
         strategy: {
           type: 'bar', // the strategy type
           settings: {
-            direction: function(data) { // data argument is the data bound to the shape in the referenced component
+            direction: function({ data }) { // data argument is the data bound to the shape in the referenced component
               return data && data.end.value > data.start.value ? 'up' : 'down'
             },
             fontFamily: 'Helvetica',
@@ -67,7 +67,7 @@ components: [
             align: 0.5,
             justify: 1,
             labels: [{
-              label(data) {
+              label({ data }) {
                 return data ? data.end.label : '';
               },
               placements: [ // label placements in prio order, label will be placed in the first place it fits into
