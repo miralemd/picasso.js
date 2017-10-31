@@ -39,6 +39,7 @@ const labelsComponent = {
 
         labels.push(...bars({
           settings: source.strategy.settings,
+          chart: this.chart,
           nodes,
           rect: {
             x: 0,
