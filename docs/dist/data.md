@@ -10,6 +10,7 @@
 * <a href="#module.exports">module.exports</a>
 * <a href="#field.id">field.id</a>
 * <a href="#field.key">field.key</a>
+* <a href="#field.raw">field.raw</a>
 * <a href="#field.tags">field.tags</a>
 * <a href="#field.type">field.type</a>
 * <a href="#field.min">field.min</a>
@@ -120,6 +121,13 @@ Returns this field&#x27;s id
 | Returns | string | No | ... | ... |
 
 Returns this field&#x27;s key  
+#### <a name='field.raw' href='#field.raw'>#</a> **field.raw**()
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | any | No | ... | ... |
+
+Returns the input data  
 #### <a name='field.tags' href='#field.tags'>#</a> **field.tags**()
 
 |Name(s)|Type(s)|Description|Optional|Default value|
