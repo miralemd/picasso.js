@@ -24,6 +24,7 @@ export default function qField({
   const f = {
     id: () => id,
     key: () => key,
+    raw: () => meta,
     title: () => meta.qFallbackTitle || meta.label,
     type: () => type,
     items: () => {

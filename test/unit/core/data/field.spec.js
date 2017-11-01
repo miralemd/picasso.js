@@ -38,6 +38,10 @@ describe('Field', () => {
     it('should return values', () => {
       expect(f.items()).to.deep.equal(['a', 'c', 'a']);
     });
+
+    it('should return raw data', () => {
+      expect(f.raw()).to.deep.equal(dd);
+    });
   });
 
   describe('custom accessors', () => {

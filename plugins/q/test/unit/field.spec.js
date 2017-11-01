@@ -41,6 +41,13 @@ describe('q-field', () => {
       expect(f.id()).to.equal('unique');
     });
 
+    it('should return meta', () => {
+      let def = struct();
+      def.meta.qStateCounts = {};
+      const f = qField(def);
+      expect(f.raw()).to.equal(def.meta);
+    });
+
     it('should return min value', () => {
       let f = mField();
       expect(f.min()).to.equal(1);

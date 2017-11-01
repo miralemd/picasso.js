@@ -50,6 +50,12 @@ export default function field(data, {
      * @returns {string}
      */
     key: () => key(data),
+
+    /**
+     * Returns the input data
+     * @returns {any}
+     */
+    raw: () => data,
     /**
      * Returns the tags.
      * @return {Array<string>}
