@@ -2,6 +2,8 @@
 
 ## **Unreleased** - *(YYYY-MM-DD)* [BREAKING]
 
+## **0.35.0** - *(2017-11-01)* [BREAKING]
+
 ### Added
 
 - Raw data accessor on `field` instance ([#524](https://github.com/qlik-trial/picasso.js/issues/524))
