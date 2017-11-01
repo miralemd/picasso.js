@@ -10,15 +10,13 @@
 
 - PIC-222 - Error thrown when providing `source` in `formatters` configuration ([#527](https://github.com/qlik-trial/picasso.js/pull/527))
 - PIC-224 - Box placement ignores `maxPxStep` setting on major scale
+- #516 Box-marker doesn't handle when start or end value is null
+- PIC-223 Error in categorical legend on partial update
+- PIC-225 Warning for missing key is wrong
 
 ### Breaking
 
 - Argument to function callbacks in `labels` component have changed, see [#519](https://github.com/qlik-trial/picasso.js/pull/519) on how to migrate
-
-### Fixed
-
-- PIC-223 Error in categorical legend on partial update
-- PIC-225 Warning for missing key is wrong
 
 ## **0.34.0** - *(2017-10-30)* [BREAKING]
 

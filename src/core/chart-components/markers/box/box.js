@@ -100,9 +100,17 @@ const boxMarkerComponent = {
       bandwidth = Math.abs(span);
     }
 
-    let majorStartModified;
-    let majorEnd;
-    let boxWidth;
+    function getCommonStuff(width) {
+      const majorStartModified = Math.floor(majorStart * width);
+      const majorEnd = Math.floor((majorStart + (item.style.box.width * bandwidth)) * width);
+      const boxWidth = cap(item.style.box.minWidthPx, item.style.box.maxWidthPx, majorEnd - majorStartModified);
+
+      return {
+        majorStartModified,
+        majorEnd,
+        boxWidth
+      };
+    }
 
     // Draw the box
     if (item.style.box.show && !notNumber(item.start) && !notNumber(item.end)) {
@@ -111,18 +119,17 @@ const boxMarkerComponent = {
 
       shapes.push(blueprint.processItem({
         fn: ({ width, height }) => {
-          let highModified = cap(-100, height + 200, Math.floor(high * height));
-          let lowModified = cap(-100, height + 200, Math.floor(low * height));
+          const highModified = cap(-100, height + 200, Math.floor(high * height));
+          const lowModified = cap(-100, height + 200, Math.floor(low * height));
 
-          majorStartModified = Math.floor(majorStart * width);
-          majorEnd = Math.floor((majorStart + (item.style.box.width * bandwidth)) * width);
-          boxWidth = majorEnd - majorStartModified;
+          const {
+            majorStartModified,
+            boxWidth
+          } = getCommonStuff(width);
 
-          boxWidth = cap(item.style.box.minWidthPx, item.style.box.maxWidthPx, boxWidth);
-
-          let wantedHeight = highModified - lowModified;
-          let boxHeight = Math.max(item.style.box.minHeightPx, wantedHeight);
-          let yModifier = (boxHeight - wantedHeight) / 2;
+          const wantedHeight = highModified - lowModified;
+          const boxHeight = Math.max(item.style.box.minHeightPx, wantedHeight);
+          const yModifier = (boxHeight - wantedHeight) / 2;
 
           return extend(doodle.style({}, 'box', item.style), {
             type: 'rect',
@@ -140,13 +147,19 @@ const boxMarkerComponent = {
       // Draw the line min - start
       // shapes.push(blueprint.processItem(doodle.verticalLine(item.major, item.start, item.min, 'line', item.style, item.data)));
       shapes.push(blueprint.processItem({
-        fn: ({ height }) => extend(doodle.style({}, 'line', item.style), {
-          type: 'line',
-          y1: Math.floor(item.start * height),
-          x1: majorStartModified,
-          y2: Math.floor(item.min * height),
-          x2: majorStartModified
-        }),
+        fn: ({ width, height }) => {
+          const {
+            majorStartModified
+          } = getCommonStuff(width);
+
+          return extend(doodle.style({}, 'line', item.style), {
+            type: 'line',
+            y1: Math.floor(item.start * height),
+            x1: majorStartModified,
+            y2: Math.floor(item.min * height),
+            x2: majorStartModified
+          });
+        },
         crisp: true
       }));
     }
@@ -154,13 +167,19 @@ const boxMarkerComponent = {
       // Draw the line end - max (high)
       // shapes.push(blueprint.processItem(doodle.verticalLine(item.major, item.max, item.end, 'line', item.style, item.data)));
       shapes.push(blueprint.processItem({
-        fn: ({ height }) => extend(doodle.style({}, 'line', item.style), {
-          type: 'line',
-          y1: Math.floor(item.max * height),
-          x1: majorStartModified,
-          y2: Math.floor(item.end * height),
-          x2: majorStartModified
-        }),
+        fn: ({ width, height }) => {
+          const {
+            majorStartModified
+          } = getCommonStuff(width);
+
+          return extend(doodle.style({}, 'line', item.style), {
+            type: 'line',
+            y1: Math.floor(item.max * height),
+            x1: majorStartModified,
+            y2: Math.floor(item.end * height),
+            x2: majorStartModified
+          });
+        },
         crisp: true
       }));
     }
@@ -168,50 +187,75 @@ const boxMarkerComponent = {
     // Draw the median line
     if (item.style.median.show && !notNumber(item.med)) {
       shapes.push(blueprint.processItem({
-        fn: ({ height }) => extend(doodle.style({}, 'median', item.style), {
-          type: 'line',
-          y1: item.med * height,
-          x1: majorStartModified - Math.floor(boxWidth / 2),
-          y2: item.med * height,
-          x2: majorStartModified + Math.floor(boxWidth / 2)
-        }),
+        fn: ({ width, height }) => {
+          const {
+            majorStartModified,
+            boxWidth
+          } = getCommonStuff(width);
+
+          return extend(doodle.style({}, 'median', item.style), {
+            type: 'line',
+            y1: item.med * height,
+            x1: majorStartModified - Math.floor(boxWidth / 2),
+            y2: item.med * height,
+            x2: majorStartModified + Math.floor(boxWidth / 2)
+          });
+        },
         crisp: true
       }));
     }
 
     // Draw the whiskers
-    if (item.style.whisker.show && !notNumber(item.min) && !notNumber(item.max)) {
+    if (item.style.whisker.show) {
       // Low whisker
-      let whiskerWidth = boxWidth * item.style.whisker.width;
+      if (!notNumber(item.min)) {
+        shapes.push(blueprint.processItem({
+          fn: ({ width, height }) => {
+            const {
+              majorStartModified,
+              boxWidth
+            } = getCommonStuff(width);
+            const whiskerWidth = boxWidth * item.style.whisker.width;
 
-      shapes.push(blueprint.processItem({
-        fn: ({ height }) => extend(doodle.style({ type: 'line' }, 'whisker', item.style), {
-          y1: Math.floor(item.min * height),
-          x1: majorStartModified - Math.floor(whiskerWidth / 2),
-          y2: Math.floor(item.min * height),
-          x2: majorStartModified + Math.floor(whiskerWidth / 2),
-          cx: majorStartModified,
-          cy: Math.floor(item.min * height),
-          width: whiskerWidth,
-          r: whiskerWidth / 2
-        }),
-        crisp: true
-      }));
+            return extend(doodle.style({ type: 'line' }, 'whisker', item.style), {
+              y1: Math.floor(item.min * height),
+              x1: majorStartModified - Math.floor(whiskerWidth / 2),
+              y2: Math.floor(item.min * height),
+              x2: majorStartModified + Math.floor(whiskerWidth / 2),
+              cx: majorStartModified,
+              cy: Math.floor(item.min * height),
+              width: whiskerWidth,
+              r: whiskerWidth / 2
+            });
+          },
+          crisp: true
+        }));
+      }
 
-      // High whisker
-      shapes.push(blueprint.processItem({
-        fn: ({ height }) => extend(doodle.style({ type: 'line' }, 'whisker', item.style), {
-          y1: Math.floor(item.max * height),
-          x1: majorStartModified - Math.floor(whiskerWidth / 2),
-          y2: Math.floor(item.max * height),
-          x2: majorStartModified + Math.floor(whiskerWidth / 2),
-          cx: majorStartModified,
-          cy: Math.floor(item.max * height),
-          width: whiskerWidth,
-          r: whiskerWidth / 2
-        }),
-        crisp: true
-      }));
+      if (!notNumber(item.max)) {
+        // High whisker
+        shapes.push(blueprint.processItem({
+          fn: ({ width, height }) => {
+            const {
+              majorStartModified,
+              boxWidth
+            } = getCommonStuff(width);
+            const whiskerWidth = boxWidth * item.style.whisker.width;
+
+            return extend(doodle.style({ type: 'line' }, 'whisker', item.style), {
+              y1: Math.floor(item.max * height),
+              x1: majorStartModified - Math.floor(whiskerWidth / 2),
+              y2: Math.floor(item.max * height),
+              x2: majorStartModified + Math.floor(whiskerWidth / 2),
+              cx: majorStartModified,
+              cy: Math.floor(item.max * height),
+              width: whiskerWidth,
+              r: whiskerWidth / 2
+            });
+          },
+          crisp: true
+        }));
+      }
     }
 
     return shapes;
