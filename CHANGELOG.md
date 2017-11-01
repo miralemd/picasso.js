@@ -15,6 +15,11 @@
 
 - Argument to function callbacks in `labels` component have changed, see [#519](https://github.com/qlik-trial/picasso.js/pull/519) on how to migrate
 
+### Fixed
+
+- PIC-223 Error in categorical legend on partial update
+- PIC-225 Warning for missing key is wrong
+
 ## **0.34.0** - *(2017-10-30)* [BREAKING]
 
 ### Added

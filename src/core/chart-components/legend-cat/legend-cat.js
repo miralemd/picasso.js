@@ -374,7 +374,7 @@ function buildNodes({
     }
   }
 
-  if (settings.buttons.show && !settings.key) {
+  if (settings.buttons.show && !local.hasKey) {
     chart.logger().warn('legend-cat requires a key for the index to be preserved when paging. Disable buttons or add a key to the item.');
   }
 
@@ -442,7 +442,7 @@ const categoricalLegend = {
       doScroll(this, scrollLength);
     },
     resetindex() {
-      this.initState();
+      this.state.index = 0;
     }
   },
   createLocal() {
@@ -467,31 +467,23 @@ const categoricalLegend = {
       isStacked: STACKED_LAYOUT,
       sourceTitle: sourceField ? sourceField.title() : '',
       sourceField,
-      formatter: sourceField ? sourceField.formatter() : this.formatter
+      formatter: sourceField ? sourceField.formatter() : this.formatter,
+      hasKey: !!SETTINGS.key
     };
   },
   initState() {
     this.state = {
-      index: 0,
-      pageSize: 0,
-      fixedInnerWidth: 0,
-      fixedInnerHeight: 0,
-      maxShapeSize: 0,
-      preferredSize: 0,
-      pageMax: Infinity,
-      pageMin: 0
+      index: 0
     };
   },
-  preferredSize(opts) {
-    const context = this;
-
+  resolveNodeDefs() {
     const {
       settings,
       renderer,
       local,
       state,
       scale
-    } = context;
+    } = this;
 
     state.defs = resolveLabelItemDefs({
       scale,
@@ -515,12 +507,13 @@ const categoricalLegend = {
     this.state.maxOuterWidth = maxOuterWidth;
     this.state.maxOuterHeight = maxOuterHeight;
     this.state.maxShapeSize = maxShapeSize;
+  },
+  preferredSize(opts) {
+    this.state.preferredSize = this.settings.dock === 'left' || this.settings.dock === 'right' ? this.state.maxOuterWidth : this.state.maxOuterHeight; // Store for later use to align buttons
 
-    this.state.preferredSize = this.settings.dock === 'left' || this.settings.dock === 'right' ? maxOuterWidth : maxOuterHeight; // Store for later use to align buttons
-
-    if (this.local.isHorizontal && maxOuterWidth > opts.inner.width) {
+    if (this.local.isHorizontal && this.state.maxOuterWidth > opts.inner.width) {
       return Math.max(opts.inner.width, opts.inner.height);
-    } else if (!this.local.isHorizontal && maxOuterHeight > opts.inner.height) {
+    } else if (!this.local.isHorizontal && this.state.maxOuterHeight > opts.inner.height) {
       return Math.max(opts.inner.width, opts.inner.height);
     }
 
@@ -528,11 +521,12 @@ const categoricalLegend = {
   },
   beforeUpdate() {
     this.createLocal();
-    this.initState();
+    this.resolveNodeDefs();
   },
   created() {
     this.createLocal();
     this.initState();
+    this.resolveNodeDefs();
     this.rect = { x: 0, y: 0, width: 0, height: 0 };
   },
   beforeRender(opts) {
