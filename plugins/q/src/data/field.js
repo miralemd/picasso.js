@@ -10,12 +10,13 @@ export default function qField({
   key,
   cube,
   localeInfo,
-  fieldExtractor
+  fieldExtractor,
+  value
  } = {}) {
   let values;
 
   const type = ('qStateCounts' in meta || 'qSize' in meta) ? 'dimension' : 'measure';
-  const valueFn = type === 'dimension' ? elemNoFn(cube) : measureValue(cube);
+  const valueFn = value || (type === 'dimension' ? elemNoFn(cube) : measureValue(cube));
   const labelFn = d => d.qText;
   const reduce = type === 'dimension' ? 'first' : 'avg';
   const formatter = createFromMetaInfo(meta, localeInfo);

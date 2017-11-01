@@ -37,7 +37,8 @@ function createAttrFields(idx, d, {
       key: `${fieldKey}/qAttrDimInfo/${i}`,
       cube,
       pages,
-      fieldExtractor
+      fieldExtractor,
+      value: v => v.qElemNo
     }) : undefined));
   }
   if (d.qAttrExprInfo) {
