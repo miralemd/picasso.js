@@ -1,6 +1,19 @@
 # Changelog
 
-## **Unreleased** - *(YYYY-MM-DD)*
+## **Unreleased** - *(YYYY-MM-DD)* [BREAKING]
+
+### Added
+
+- Raw data accessor on `field` instance ([#524](https://github.com/qlik-trial/picasso.js/issues/524))
+
+### Fixed
+
+- PIC-222 - Error thrown when providing `source` in `formatters` configuration ([#527](https://github.com/qlik-trial/picasso.js/pull/527))
+- PIC-224 - Box placement ignores `maxPxStep` setting on major scale
+
+### Breaking
+
+- Argument to function callbacks in `labels` component have changed, see [#519](https://github.com/qlik-trial/picasso.js/pull/519) on how to migrate
 
 ## **0.34.0** - *(2017-10-30)* [BREAKING]
 
