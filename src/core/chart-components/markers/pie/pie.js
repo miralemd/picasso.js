@@ -127,6 +127,7 @@ const pieComponent = {
     this.rect = opts.size;
   },
   render({ data }) {
+    this.updateSettings(this.settings);
     const arcValues = [];
     const stngs = this.settings.settings;
     const slices = (data.items || []).map((s, i, all) => {
@@ -135,7 +136,7 @@ const pieComponent = {
       arcValues.push(s.arc.value);
       return obj;
     });
-    const pieGen = pie();
+    const pieGen = pie().sortValues(null);
     pieGen.startAngle(stngs.startAngle);
     pieGen.endAngle(stngs.endAngle);
     pieGen.padAngle(stngs.padAngle);
