@@ -1,39 +1,40 @@
-function fieldFinder(query, field) {
-  return field.title() === query;
-}
+import extractData from '../../data/extractor';
 
-export function create(options, dataset, deps) {
-  // TODO Have some magic to handle and merge formatters from multiple sources
-
-  if (options.source) {
-    const match = dataset.findField(options.source, fieldFinder);
-
-    if (match && typeof match.field !== 'undefined') {
-      return match.field.formatter();
+export function create(options, data, deps, extractor = extractData) {
+  if (options.data) {
+    const d = extractor(options.data, data, deps);
+    if (d && d.fields && d.fields[0]) {
+      // TODO Have some magic to handle and merge formatters from multiple sources
+      return d.fields[0].formatter();
     }
   }
 
-  let formatterName;
+  let formatterType;
   if (options.formatter) {
-    formatterName = `${options.formatter || 'd3'}-${options.type || 'number'}`;
+    formatterType = `${options.formatter}-${options.type || 'number'}`;
   } else {
-    formatterName = options.type || 'd3-number';
+    formatterType = options.type || 'd3-number';
   }
-  return deps.formatter(formatterName)(options.format || '');
-      // .locale( options.locale || {} );
+
+  if (deps.formatter.has(formatterType)) {
+    const f = deps.formatter.get(formatterType)(options.format || '');
+    return f;
+  }
+
+  throw new Error(`Formatter of type '${formatterType}' was not found`);
 }
 
-export default function builder(obj, dataset, deps) {
+export default function builder(obj, data, deps) {
   const formatters = {};
   for (const f in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, f)) {
-      formatters[f] = create(obj[f], dataset, deps);
+      formatters[f] = create(obj[f], data, deps);
     }
   }
   return formatters;
 }
 
-export function getOrCreateFormatter(v, formatters, dataset, deps) {
+export function getOrCreateFormatter(v, formatters, data, deps) {
   let f;
   if (typeof v === 'string' && formatters[v]) { // return by name
     f = formatters[v];
@@ -43,5 +44,5 @@ export function getOrCreateFormatter(v, formatters, dataset, deps) {
     f = formatters[v.type];
   }
 
-  return f || create(v, dataset, deps);
+  return f || create(v, data, deps);
 }
