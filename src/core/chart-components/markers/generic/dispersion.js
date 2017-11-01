@@ -1,6 +1,7 @@
 import doodler from './doodler';
 import { transposer } from '../../../transposer/transposer';
 import { normalizeSettings, resolveForItem } from '../../property-resolver';
+import { updateScaleSize } from '../../../scales';
 
 function resolveInitialStyle(settings, baseStyles, chart) {
   const ret = {};
@@ -47,19 +48,16 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
   fn.onData = (data, rect) => {
     items = [];
     resolvedStyle = resolveInitialStyle(settings, defaultStyles, chart);
+    const flipXY = settings.orientation === 'horizontal';
+    const majorLength = flipXY ? rect.height : rect.width;
+    const minorLength = flipXY ? rect.width : rect.height;
 
-    if (major && major.pxScale) {
-      const flipXY = settings.orientation === 'horizontal';
-      const majorLenght = flipXY ? rect.height : rect.width;
-      major = major.pxScale(majorLenght);
-    }
+    updateScaleSize(majorNormalized, 'major', majorLength);
+    major = majorNormalized.major.scale;
+
     if (minor && minor.pxScale) { // is this needed or is minor never a band scale
-      const flipXY = settings.orientation === 'horizontal';
-      const minorLenght = flipXY ? rect.width : rect.height;
-      minor = minor.pxScale(minorLenght);
+      minor = minor.pxScale(minorLength);
     }
-
-    // const bw = major && major.bandwidth ? major.bandwidth() : 0;
 
     const majorRef = settings.major ? settings.major.ref || '' : '';
     const majorStartRef = typeof majorRef === 'object' ? settings.major.ref.start : null;
