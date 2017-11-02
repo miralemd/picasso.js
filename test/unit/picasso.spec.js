@@ -74,6 +74,28 @@ describe('picasso.js', () => {
       });
       expect(pic.logger.level()).to.equal(3);
     });
+
+    it('should inherit style', () => {
+      const pic = picasso({
+        style: {
+          fill: 'red',
+          stroke: 'green'
+        }
+      })({
+        style: {
+          fill: 'cyan'
+        }
+      });
+      expect(pic.config().style.fill).to.equal('cyan');
+      expect(pic.config().style.stroke).to.equal('green');
+    });
+
+    it('should extend palettes', () => {
+      const pic = picasso({
+        palettes: ['fancy']
+      });
+      expect(pic.config().palettes[3]).to.equal('fancy');
+    });
   });
 
   describe('Chart lifecycle', () => {

@@ -68,8 +68,12 @@ function pic(config = {}, registries = {}) {
    * @returns {picasso}
    */
   function picassojs(cfg = {}) {
-    let cc = extend({ palettes: [] }, config, cfg);
-    cc.palettes = config.palettes.concat(cfg.palettes || []);
+    let cc = {
+      palettes: config.palettes.concat(cfg.palettes || []),
+      style: extend({}, config.style, cfg.style),
+      logger: cfg.logger || config.logger,
+      renderer: cfg.renderer || config.renderer
+    };
     return pic(cc, regis);
   }
 
