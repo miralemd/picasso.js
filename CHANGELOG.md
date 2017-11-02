@@ -2,6 +2,16 @@
 
 ## **Unreleased** - *(YYYY-MM-DD)* [BREAKING]
 
+### Added
+
+- Apply style configuration in `point-marker`
+
+### Fixed
+
+- PIC-226 - Can't extract data from multiple cubes
+- PIC-227 - `source.key` is missing when extracting data from K mode
+- PIC-228 - `trackBy` doesn't work in K mode
+
 ## **0.35.0** - *(2017-11-01)* [BREAKING]
 
 ### Added
