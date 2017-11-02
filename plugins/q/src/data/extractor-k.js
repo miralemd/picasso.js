@@ -77,12 +77,30 @@ function getFieldAccessor(sourceDepthObject, targetDepthObject, prop) {
   };
 }
 
+function datumExtract(propCfg, cell, {
+  key
+}) {
+  const datum = {
+    value: typeof propCfg.value === 'function' ? propCfg.value(cell) : typeof propCfg.value !== 'undefined' ? propCfg.value : cell  // eslint-disable-line no-nested-ternary
+  };
+
+  if (propCfg.field) {
+    datum.source = {
+      key,
+      field: propCfg.field.key()
+    };
+  }
+
+  return datum;
+}
+
 export default function extract(config, dataset, cache, deps) {
   const cfgs = Array.isArray(config) ? config : [config];
   let dataItems = [];
   cfgs.forEach((cfg) => {
     if (cfg.field) {
       const cube = dataset.raw();
+      const sourceKey = dataset.key();
       const f = typeof cfg.field === 'object' ? cfg.field : dataset.field(cfg.field);
       const { props, main } = deps.normalizeConfig(cfg, dataset);
       const propsArr = Object.keys(props);
@@ -110,12 +128,13 @@ export default function extract(config, dataset, cache, deps) {
       });
       const mapped = items.map((item) => {
         const itemData = attrFn ? attrFn(item.data) : item.data;
-        const ret = {
-          value: typeof main.value === 'function' ? main.value(itemData) : (typeof main.value !== 'undefined' ? main.value : itemData), // eslint-disable-line no-nested-ternary
-          source: {
-            field: main.field.key()
-          }
-        };
+        const ret = datumExtract(main, itemData, { key: sourceKey });
+        // const ret = {
+        //   value: typeof main.value === 'function' ? main.value(itemData) : (typeof main.value !== 'undefined' ? main.value : itemData), // eslint-disable-line no-nested-ternary
+        //   source: {
+        //     field: main.field.key()
+        //   }
+        // };
         propsArr.forEach((prop) => {
           const p = props[prop];
           let fn;
@@ -148,7 +167,7 @@ export default function extract(config, dataset, cache, deps) {
             value: fn ? fn(value) : value
           };
           if (p.field) {
-            ret[prop].source = { field: p.field.key() };
+            ret[prop].source = { field: p.field.key(), key: sourceKey };
           }
         });
         return ret;
