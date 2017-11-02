@@ -22,8 +22,6 @@ export default function extract(dataConfig, data = {}, opts = {}) {
     }
     const source = data.dataset ? data.dataset(dataConfig.source) : null;
     let valueFn = dataConfig.value || (d => d);
-    // let labelFn = dataConfig.label || (d => d);
-
     if (dataConfig.groupBy || dataConfig.mapTo) { // DEPRECATION
       logger.warn('Deprecated "data" configuration', dataConfig);
       extracted.items = [];
@@ -31,44 +29,56 @@ export default function extract(dataConfig, data = {}, opts = {}) {
       extracted.root = source.hierarchy ? source.hierarchy(dataConfig.hierarchy) : null;
     } else if (dataConfig.items) {
       extracted.items = dataConfig.items.map(v => ({ value: valueFn(v) }));
-    } else if (source) {
-      extracted.source = source;
-      if (dataConfig.extract) {
-        extracted.items = source.extract(dataConfig.extract);
-        const sourceFields = [];
-        (Array.isArray(dataConfig.extract) ? dataConfig.extract : [dataConfig.extract]).forEach((ex) => {
-          if (ex.field) {
-            sourceFields.push(source.field(ex.field));
-          }
-        });
-        if (sourceFields.length) {
-          extracted.fields = sourceFields;
+    } else if (dataConfig.extract) {
+      const extractionsConfigs = Array.isArray(dataConfig.extract) ? dataConfig.extract : [dataConfig.extract];
+      extracted.items = [];
+      const sourceFields = [];
+      extractionsConfigs.forEach((cfg) => {
+        const s = cfg.source ? data.dataset(cfg.source) : source;
+        if (!s) {
+          return;
         }
-      } else if (dataConfig.fields) {
-        dataConfig.fields.forEach((id) => {
-          const f = source.field(id);
-          if (f) {
-            if (!extracted.fields) {
-              extracted.fields = [];
-            }
-            extracted.fields.push(f);
-          }
-        });
-      } else if (typeof dataConfig.field !== 'undefined') {
-        const f = source.field(dataConfig.field);
+        extracted.items.push(...s.extract(cfg));
+        if (cfg.field) {
+          sourceFields.push(s.field(cfg.field));
+        }
+      });
+      if (sourceFields.length) {
+        extracted.fields = sourceFields;
+      }
+    } else if (typeof dataConfig.field !== 'undefined' && source) {
+      const f = source.field(dataConfig.field);
+      if (f) {
+        if (!extracted.fields) {
+          extracted.fields = [];
+        }
+        extracted.fields.push(f);
+        if (!('value' in dataConfig)) {
+          valueFn = f.value || (v => v);
+          extracted.value = valueFn;
+        }
+        extracted.items = f.items().map(v => ({ value: valueFn(v), source: { field: dataConfig.field } }));
+        // TODO - add source: { key: dataConfig.source, field: dataConfig.field, data: v }
+      }
+    } else if (dataConfig.fields) {
+      dataConfig.fields.forEach((obj) => {
+        const s = typeof obj === 'object' && obj.source ? data.dataset(obj.source) : source;
+        if (!s) {
+          return;
+        }
+        let f;
+        if (typeof obj === 'object' && typeof obj.field !== 'undefined') {
+          f = s.field(obj.field);
+        } else {
+          f = s.field(obj);
+        }
         if (f) {
           if (!extracted.fields) {
             extracted.fields = [];
           }
           extracted.fields.push(f);
-          if (!('value' in dataConfig)) {
-            valueFn = f.value || (v => v);
-            extracted.value = valueFn;
-          }
-          extracted.items = f.items().map(v => ({ value: valueFn(v), source: { field: dataConfig.field } }));
-          // TODO - add source: { key: dataConfig.source, field: dataConfig.field, data: v }
         }
-      }
+      });
     }
 
     if (extracted.items && dataConfig.map) {
