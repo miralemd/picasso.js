@@ -10,6 +10,14 @@ describe('extract data', () => {
     label: d => d.s
   };
 
+  const region = {
+    items: () => [
+      { v: 7 },
+      { v: 9 }
+    ],
+    value: d => d.v
+  };
+
   describe('from config as array', () => {
     it('should normalize values', () => {
       expect(extract(['A', 'B', 'C']).items).to.eql([
@@ -60,7 +68,7 @@ describe('extract data', () => {
       ]);
     });
 
-    it('should return the source fields', () => {
+    it('should return the source fields of the extracted data', () => {
       const dataset = () => ({
         field: () => country,
         extract: () => [1, 2]
@@ -71,6 +79,66 @@ describe('extract data', () => {
 
       expect(d.items).to.eql([1, 2]);
       expect(d.fields).to.eql([country]);
+    });
+
+    it('should return the source fields', () => {
+      const dataset = () => ({
+        field: () => country,
+        extract: () => [1, 2]
+      });
+      let d = extract({
+        fields: ['dim', 'dim']
+      }, { dataset });
+
+      expect(d.fields).to.eql([country, country]);
+    });
+
+    it('should return the source fields from multiple sources', () => {
+      const dOne = {
+        field: () => country
+      };
+      const dTwo = {
+        field: () => region
+      };
+      const datasetFn = sinon.stub();
+      datasetFn.withArgs('one').returns(dOne);
+      datasetFn.withArgs('two').returns(dTwo);
+
+      let d = extract({
+        fields: [{
+          source: 'one',
+          field: 'dim'
+        }, {
+          source: 'two',
+          field: 'foo'
+        }]
+      }, { dataset: datasetFn });
+      expect(d.fields.length).to.equal(2);
+    });
+
+    it('should extract from multiple data sources', () => {
+      const dOne = {
+        field: () => country,
+        extract: () => ['A', 'B']
+      };
+      const dTwo = {
+        field: () => region,
+        extract: () => ['K', 'L']
+      };
+      const datasetFn = sinon.stub();
+      datasetFn.withArgs('one').returns(dOne);
+      datasetFn.withArgs('two').returns(dTwo);
+
+      let d = extract({
+        extract: [{
+          source: 'one',
+          field: 'dim'
+        }, {
+          source: 'two',
+          field: 'foo'
+        }]
+      }, { dataset: datasetFn });
+      expect(d.items).to.eql(['A', 'B', 'K', 'L']);
     });
 
     it('should normalize field values using custom accessors', () => {
