@@ -5,6 +5,8 @@ import {
   easeElasticOut
 } from 'd3-ease';
 
+/* globals window */
+
 function nodeId(node, i) {
   if (node.data) {
     return node.data.value;
@@ -84,7 +86,9 @@ function tween({
       // console.log(stages);
       if (stages.length) {
         stages[0].started = Date.now();
-        ticker = setInterval(tweener.tick, 16);
+        if (typeof window !== 'undefined') {
+          ticker = window.requestAnimationFrame(tweener.tick);
+        }
       }
     },
     tick() {
@@ -110,9 +114,15 @@ function tween({
           tweener.stop();
         }
       }
+      if (ticker) {
+        ticker = window.requestAnimationFrame(tweener.tick);
+      }
     },
     stop() {
-      clearInterval(ticker);
+      if (ticker) {
+        window.cancelAnimationFrame(ticker);
+        ticker = false;
+      }
     }
   };
 
