@@ -1,6 +1,8 @@
 # Changelog
 
-## **Unreleased** - *(YYYY-MM-DD)* [BREAKING]
+## **Unreleased** - *(YYYY-MM-DD)*
+
+## **0.36.0** - *(2017-11-02)*
 
 ### Added
 
