@@ -14,9 +14,12 @@ function nodeId(node, i) {
   return i;
 }
 
-function tween(fromNodes, toNodes, {
+function tween({
+  old,
+  current
+}, {
   renderer
-}) {
+}, config) {
   let ticker;
   // let staticNodes = [];
   let toBeUpdated = [];
@@ -24,16 +27,17 @@ function tween(fromNodes, toNodes, {
   let exited = { nodes: [], ips: [] };
   let updated = { nodes: [], ips: [] };
   let stages = [];
+  const trackBy = config.trackBy || nodeId;
 
   const tweener = {
     start() {
       let ids = {};
-      fromNodes.forEach((node, i) => {
-        let id = nodeId(node, i);
+      old.forEach((node, i) => {
+        let id = trackBy(node, i);
         ids[id] = node;
       });
-      toNodes.forEach((node, i) => {
-        let id = nodeId(node, i);
+      current.forEach((node, i) => {
+        let id = trackBy(node, i);
         if (ids[id]) {
           updated.ips.push(interpolateObject(ids[id], node));
           updated.nodes.push(node);

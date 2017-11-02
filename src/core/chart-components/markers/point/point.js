@@ -171,6 +171,10 @@ const pointMarkerComponent = {
   defaultSettings: {
     settings: {},
     data: {},
+    animations: {
+      enabled: false,
+      trackBy: node => node.data.value
+    },
     style: {
       item: '$shape'
     }

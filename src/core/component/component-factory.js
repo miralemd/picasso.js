@@ -357,8 +357,11 @@ function componentFactory(definition, options = {}) {
       }
     });
 
-    if (currentNodes) {
-      currentTween = tween(currentNodes, nodes, { renderer: rend });
+    if (currentNodes && settings.animations && settings.animations.enabled) {
+      currentTween = tween({
+        old: currentNodes,
+        current: nodes
+      }, { renderer: rend }, settings.animations);
       currentTween.start();
     } else {
       rend.render(nodes);
