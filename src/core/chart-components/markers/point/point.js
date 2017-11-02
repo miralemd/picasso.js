@@ -132,8 +132,8 @@ function getPointSizeLimits(x, y, width, height, limits) {
   return { min, max, maxGlobal: limits.maxPx, minGlobal: limits.minPx };
 }
 
-function calculateLocalSettings(stngs, chart) {
-  const local = normalizeSettings(stngs, DEFAULT_DATA_SETTINGS, chart);
+function calculateLocalSettings(stngs, chart, style = {}) {
+  const local = normalizeSettings(stngs, extend({}, DEFAULT_DATA_SETTINGS, style.item), chart);
   local.errorShape = normalizeSettings(stngs.errorShape, DEFAULT_ERROR_SETTINGS.errorShape, chart);
   return local;
 }
@@ -170,7 +170,10 @@ const pointMarkerComponent = {
   require: ['chart'],
   defaultSettings: {
     settings: {},
-    data: {}
+    data: {},
+    style: {
+      item: '$shape'
+    }
   },
   created() {
     this.rect = { x: 0, y: 0, width: 0, height: 0 };
@@ -178,7 +181,7 @@ const pointMarkerComponent = {
   },
   updateSettings(settings) {
     const chart = this.chart;
-    this.local = calculateLocalSettings(settings.settings, chart);
+    this.local = calculateLocalSettings(settings.settings, chart, this.style);
   },
   beforeUpdate(opts) {
     this.updateSettings(opts.settings);
