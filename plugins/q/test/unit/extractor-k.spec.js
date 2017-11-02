@@ -292,6 +292,32 @@ describe('q-data-extractor-k', () => {
       };
       expect(m).to.eql([v, v, v, v, v, v]);
     });
+
+    it('should support track by', () => {
+      const m = extract({
+        field: 'qDimensionInfo/0',
+        value: d => d.qElemNo,
+        trackBy: () => -1,
+        reduce: values => values.join('--'),
+        props: {
+          descs: {
+            field: 'qDimensionInfo/1',
+            value: d => d.qText
+          },
+          m: {
+            field: 'qMeasureInfo/0'
+          }
+        }
+      }, dataset, { fields }, deps);
+      expect(m).to.eql([
+        {
+          value: '1--3',
+          source: { key: 'cube', field: 'qDimensionInfo/0' },
+          descs: { value: '$666, a1, a2, $667, b1, b3', source: { key: 'cube', field: 'qDimensionInfo/1' } },
+          m: { value: '45, 32, 13, 17', source: { key: 'cube', field: 'qMeasureInfo/0' } }
+        }
+      ]);
+    });
   });
 
   describe('with pseudo', () => {

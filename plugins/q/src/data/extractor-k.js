@@ -112,6 +112,12 @@ export default function extract(config, dataset, cache, deps) {
       const itemDepthObject = getFieldDepth(f, { cube, cache });
       const { nodeFn, attrFn } = getFieldAccessor({ fieldDepth: 0 }, itemDepthObject);
 
+      const track = !!cfg.trackBy;
+      const trackType = typeof cfg.trackBy;
+      const tracker = {};
+      const trackedItems = [];
+      let trackId;
+
       const items = nodeFn(cache.tree);
       propsArr.forEach((prop) => {
         const p = props[prop];
@@ -129,12 +135,6 @@ export default function extract(config, dataset, cache, deps) {
       const mapped = items.map((item) => {
         const itemData = attrFn ? attrFn(item.data) : item.data;
         const ret = datumExtract(main, itemData, { key: sourceKey });
-        // const ret = {
-        //   value: typeof main.value === 'function' ? main.value(itemData) : (typeof main.value !== 'undefined' ? main.value : itemData), // eslint-disable-line no-nested-ternary
-        //   source: {
-        //     field: main.field.key()
-        //   }
-        // };
         propsArr.forEach((prop) => {
           const p = props[prop];
           let fn;
@@ -170,9 +170,46 @@ export default function extract(config, dataset, cache, deps) {
             ret[prop].source = { field: p.field.key(), key: sourceKey };
           }
         });
+        // collect items based on the trackBy value
+          // items with the same trackBy value are placed in an array and reduced later
+        if (track) {
+          trackId = trackType === 'function' ? cfg.trackBy(itemData) : itemData[cfg.trackBy];
+          let trackedItem = tracker[trackId];
+          if (!trackedItem) {
+            trackedItem = tracker[trackId] = {
+              items: [],
+              id: trackId
+            };
+            trackedItems.push(trackedItem);
+          }
+          trackedItem.items.push(ret);
+        }
         return ret;
       });
-      dataItems.push(...mapped);
+      // reduce if items have been grouped
+      if (track) {
+        dataItems.push(...trackedItems.map((t) => {
+          let mainValues = t.items.map(item => item.value);
+          const mainReduce = main.reduce;
+          const ret = {
+            value: mainReduce ? mainReduce(mainValues) : mainValues,
+            source: t.items[0].source
+          };
+          propsArr.forEach((prop) => {
+            let values = t.items.map(item => item[prop].value);
+            const reduce = props[prop].reduce;
+            ret[prop] = {
+              value: reduce ? reduce(values) : values
+            };
+            if (t.items[0][prop].source) {
+              ret[prop].source = t.items[0][prop].source;
+            }
+          });
+          return ret;
+        }));
+      } else {
+        dataItems.push(...mapped);
+      }
     }
   });
   return dataItems;
