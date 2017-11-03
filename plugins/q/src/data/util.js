@@ -1,5 +1,8 @@
 function flattenTree(children, steps, prop, arrIndexAtTargetDepth) {
   const arr = [];
+  if (!children || !children.length) {
+    return arr;
+  }
   if (steps <= 0) {
     const nodes = arrIndexAtTargetDepth >= 0 ? [children[arrIndexAtTargetDepth]] : children;
     if (prop) {
