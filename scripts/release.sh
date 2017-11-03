@@ -8,9 +8,31 @@ if [ -n "$(git status --porcelain)" ]; then
 fi
 
 P_VERSION="$(cat package.json | grep version\": | sed 's/.*"\(.*\)\".*/\1/g')"
-VERSION=$1
+DATE=`date +%Y-%m-%d`
 
-if [[ -z $1 ]]; then
+# parse arguments
+while getopts ":v:b" opt; do
+  case ${opt} in
+    v ) # version
+      VERSION=$OPTARG
+      ;;
+    b ) # indicates breaking release
+      BREAKING="[BREAKING]"
+      ;;
+    \? ) echo "Usage: release.sh [-v <major.minor.patch>] [-b]"
+      ;;
+    : )
+      echo "Invalid option: -$OPTARG requires a valid version" 1>&2
+      exit 1
+      ;;
+  esac
+done
+
+## store changelog release template
+TEMPLATE="$(cat CHANGELOG.md | grep {{VERSION}})"
+
+## if version is not set, use version from package.json
+if [[ -z $VERSION ]]; then
   VERSION=$P_VERSION
 fi
 
@@ -39,6 +61,21 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     sed -i.tmp -e "s/^\(  \"version\": \).*/\1\"$VERSION\",/g" $dir/package.json
     rm $dir/package.json.tmp
   done;
+
+  ## update CHANGELOG.md
+  ## append [BREAKING] flag
+  if [[ -n $BREAKING ]]; then
+    sed -i.tmp "/{{VERSION}}/ s/$/ $BREAKING/" CHANGELOG.md
+  fi
+
+  ## replace template variables
+  sed -i.tmp "s/{{VERSION}}/$VERSION/" CHANGELOG.md
+  sed -i.tmp "s/{{DATE}}/$DATE/" CHANGELOG.md
+
+  ## append original template (for next release)
+  sed -i.tmp "s/# Changelog/&\\
+  \\
+  $TEMPLATE/" CHANGELOG.md
 
   ## build all
   echo "  Building ..."
