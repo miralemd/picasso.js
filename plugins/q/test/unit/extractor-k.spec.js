@@ -426,6 +426,89 @@ describe('q-data-extractor-k', () => {
     });
   });
 
+  describe('with weird data', () => {
+    // the following mock is a snapshot from engine
+    const pages = [{
+      qData: [
+        {
+          qElemNo: 0,
+          qValue: 0,
+          qType: 'R',
+          qMaxPos: 0,
+          qMinNeg: 0,
+          qUp: 0,
+          qDown: 0,
+          qRow: 0,
+          qSubNodes: [
+            {
+              qText: '-',
+              qElemNo: -2,
+              qValue: 'NaN',
+              qType: 'U',
+              qMaxPos: 'NaN',
+              qMinNeg: 0,
+              qUp: 0,
+              qDown: 0,
+              qRow: 0,
+              qSubNodes: [
+                {
+                  qText: '-',
+                  qElemNo: 0,
+                  qValue: 'NaN',
+                  qType: 'U',
+                  qMaxPos: 0,
+                  qMinNeg: 0,
+                  qUp: 0,
+                  qDown: 0,
+                  qRow: 0,
+                  qSubNodes: []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      qArea: {
+        qLeft: 0,
+        qTop: 0,
+        qWidth: 1,
+        qHeight: 1
+      }
+    }];
+
+    const cube = {
+      qMode: 'K',
+      qDimensionInfo: [{ qStateCounts: {} }, { qStateCounts: {} }],
+      qMeasureInfo: [{ qMin: 209146.92000000027, qMax: 209146.92000000027 }],
+      qStackedDataPages: [pages],
+      qEffectiveInterColumnSortOrder: [0, 1]
+    };
+
+    const fields = [
+      { title: () => '=aggr(...)', value: d => d.qElemNo, key: () => 'qDimensionInfo/0' },
+      { title: () => 'Product Group', value: d => d.qElemNo, key: () => 'qDimensionInfo/1' },
+      { title: () => '=aggr(....)', value: d => d.qValue, key: () => 'qMeasureInfo/0' }
+    ];
+
+    const dataset = {
+      key: () => 'cube',
+      raw: () => cube,
+      field: sinon.stub()
+    };
+
+    dataset.field.withArgs('qDimensionInfo/0').returns(fields[0]);
+    dataset.field.withArgs('qDimensionInfo/1').returns(fields[1]);
+    dataset.field.withArgs('qMeasureInfo/0').returns(fields[2]);
+
+    it('should return empty', () => {
+      const m = extract({
+        field: 'qDimensionInfo/0'
+      }, dataset, { fields }, deps);
+
+      expect(m).to.eql([]);
+    });
+  });
+
   // TESTs moved from q-field.spec.js - TODO - enable to ensure 'others' and 'offset' is handled
   // describe.skip('others', () => {
   //   const pageWithOtherNodes = {

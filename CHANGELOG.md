@@ -2,6 +2,10 @@
 
 ## **{{VERSION}}** - *({{DATE}})*
 
+### Fixed
+
+- PIC-230 - Error on empty stacked hypercube
+
 ## **0.36.0** - *(2017-11-02)*
 
 ### Added
