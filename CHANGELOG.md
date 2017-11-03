@@ -1,6 +1,6 @@
 # Changelog
 
-## **Unreleased** - *(YYYY-MM-DD)*
+## **{{VERSION}}** - *({{DATE}})*
 
 ## **0.36.0** - *(2017-11-02)*
 
