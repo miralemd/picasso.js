@@ -73,11 +73,88 @@ describe('style-resolver', () => {
     });
   });
 
-  it('should throw error when finding a cyclical reference', () => {
+  it('should extend in root node', () => {
+    const references = {
+      '$size--l': '24px',
+      '$label--m': {
+        fontFamily: 'Arial',
+        fontVariant: 'small-caps',
+        fontSize: '12px'
+      }
+    };
+    const input = { '@extend': '$label--m' };
+    const s = resolve(input, references);
+    expect(s).to.eql({
+      fontFamily: 'Arial',
+      fontSize: '12px',
+      fontVariant: 'small-caps'
+    });
+  });
+
+  it('should extend something extended', () => {
+    const references = {
+      '$base': {
+        strokeWidth: 3
+      },
+      '$size--l': '24px',
+      '$label--m': {
+        '@extend': '$base',
+        fontFamily: 'Arial',
+        fontVariant: 'small-caps',
+        fontSize: '12px'
+      },
+      '$label--big': {
+        '@extend': '$label--m',
+        fontSize: '$size--l'
+      }
+    };
+    const input = { label: '$label--big' };
+    const s = resolve(input, references);
+    expect(s).to.eql({
+      label: {
+        fontFamily: 'Arial',
+        fontSize: '24px',
+        fontVariant: 'small-caps',
+        strokeWidth: 3
+      }
+    });
+  });
+
+  it('should throw error when finding a cyclical reference to itself', () => {
     const references = {
       '$label--big': {
         fontFamily: 'Arial',
         fontSize: '$label--big'
+      }
+    };
+    const input = { label: '$label--big' };
+    const fn = () => resolve(input, references);
+    expect(fn).to.throw('Cyclical reference for "$label--big"');
+  });
+
+  it('should throw error when finding a cyclical reference to itself in something that it has extended', () => {
+    const references = {
+      '$base': {
+        fontSize: '$label--big'
+      },
+      '$label--big': {
+        '@extend': '$base',
+        fontFamily: 'Arial'
+      }
+    };
+    const input = { label: '$label--big' };
+    const fn = () => resolve(input, references);
+    expect(fn).to.throw('Cyclical reference for "$label--big"');
+  });
+
+  it('should throw error when finding a cyclical reference when extending itself', () => {
+    const references = {
+      '$base': {
+        '@extend': '$label--big'
+      },
+      '$label--big': {
+        '@extend': '$base',
+        fontFamily: 'Arial'
       }
     };
     const input = { label: '$label--big' };

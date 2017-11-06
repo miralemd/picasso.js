@@ -4,14 +4,26 @@ const VARIABLE_RX = /^\$/;
 const EXTEND = '@extend';
 
 function res(style, references, path) {
+  let computed = style;
   const refs = extend({}, references, style);
   const s = {};
   let p = path.slice();
-  Object.keys(style).forEach((key) => {
+
+  if (style[EXTEND]) {
+    const extendFrom = style[EXTEND];
+    if (path.indexOf(extendFrom) !== -1) {
+      throw new Error(`Cyclical reference for "${extendFrom}"`);
+    }
+    let pext = path.slice();
+    pext.push(extendFrom);
+    computed = extend({}, res(refs[extendFrom], references, path), style);
+  }
+
+  Object.keys(computed).forEach((key) => {
     if (key === EXTEND || VARIABLE_RX.test(key)) {
       return;
     }
-    s[key] = style[key];
+    s[key] = computed[key];
     let value = s[key];
     if (VARIABLE_RX.test(value) && value in refs) {
       if (path.indexOf(value) !== -1) {
@@ -20,9 +32,6 @@ function res(style, references, path) {
       p.push(value);
       value = refs[value];
       if (typeof value === 'object') {
-        if (value[EXTEND]) {
-          value = extend({}, refs[value[EXTEND]], value);
-        }
         s[key] = res(value, refs, p);
       } else {
         s[key] = value;
