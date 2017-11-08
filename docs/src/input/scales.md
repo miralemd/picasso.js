@@ -8,6 +8,10 @@
 
 {{>magic ctx='core.scales.band-js'}}
 
+## [*EXPERIMENTAL*] Hierachical Band scale
+
+{{>magic ctx='core.scales.h-band-js'}}
+
 ## Sequential color scale
 
 {{>magic ctx='core.scales.color.sequential-js'}}

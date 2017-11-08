@@ -1,6 +1,7 @@
 import registry from '../../utils/registry';
 import linear from '../../scales/linear';
 import band from '../../scales/band';
+import hBand from '../../scales/h-band';
 import sequential from '../../scales/color/sequential';
 import threshold from '../../scales/color/threshold';
 import categorical from '../../scales/color/categorical';
@@ -10,7 +11,7 @@ const scaleRegistry = registry();
 
 scaleRegistry('linear', linear);
 scaleRegistry('band', band);
-scaleRegistry('h-band', band);
+scaleRegistry('h-band', hBand);
 scaleRegistry('sequential-color', sequential);
 scaleRegistry('threshold-color', threshold);
 scaleRegistry('categorical-color', categorical);

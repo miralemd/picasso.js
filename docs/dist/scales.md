@@ -236,6 +236,65 @@ if required creates a new scale with a restricted range
 so that step size is at most maxPxStep
 otherwise it returns itself  
 
+## [*EXPERIMENTAL*] Hierachical Band scale
+
+```js
+settings: {
+  padding: 0, // Exposes {@link https://github.com/d3/d3-scale#band_padding}. Default: 0. Optional.
+  paddingOuter: 0, // Exposes {@link https://github.com/d3/d3-scale#band_paddingOuter}. Default: 0. Optional.
+  paddingInner: 0, // Exposes {@link https://github.com/d3/d3-scale#band_paddingInner}. Default: 0. Optional.
+  align: 0.5, // Exposes {@link https://github.com/d3/d3-scale#band_align}. Default: 0.5. Optional.
+  invert: false, // Invert the output range. Default: false. Optional.
+}
+```
+#### <a name='picasso.scaleHierarchicalBand' href='#picasso.scaleHierarchicalBand'>#</a> **picasso.scaleHierarchicalBand**(*Object settings, Array.&lt;fields&gt; [fields, ]dataset [dataset]*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| settings | Object | No | No | No |
+| fields | Array.&lt;fields&gt; | No | Yes | No |
+| dataset | dataset | With a root property that is an instance of D3.js Hierarchy | Yes | No |
+| Returns | h-band | No | ... | ... |
+
+Hierarchical band scale, that is an augmented band scale, that takes hierarchical data as input  
+#### <a name='h-band' href='#h-band'>#</a> **h-band**(*Array.&lt;Object&gt; value*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| value | Array.&lt;Object&gt; | Array where each value is a reference to a node, going from depth 1 to n. | No | No |
+| Returns | number | No | ... | ... |
+
+No description  
+#### <a name='h-band.data' href='#h-band.data'>#</a> **h-band.data**()
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | dataset | No | ... | ... |
+
+No description  
+#### <a name='h-band.datum' href='#h-band.datum'>#</a> **h-band.datum**(*Array.&lt;Object&gt; val*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| val | Array.&lt;Object&gt; | Array where each value is a reference to a node, going from depth 1 to n. | No | No |
+| Returns | Object | The datum | ... | ... |
+
+Return datum for a given node  
+#### <a name='h-band.labels' href='#h-band.labels'>#</a> **h-band.labels**()
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | Array.&lt;Object&gt; | Labels for each leaf node | ... | ... |
+
+No description  
+#### <a name='h-band.ticks' href='#h-band.ticks'>#</a> **h-band.ticks**()
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| Returns | Array.&lt;Object&gt; | Ticks for each leaf node | ... | ... |
+
+Generate discrete ticks  
+
 ## Sequential color scale
 
 #### <a name='picasso.scaleSequentialColor' href='#picasso.scaleSequentialColor'>#</a> **picasso.scaleSequentialColor**(*Object [settings, ]Array.&lt;number&gt; [settings.domain, ]Array.&lt;color&gt; [settings.range, ]Array.&lt;field&gt; [fields]*)
