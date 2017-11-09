@@ -165,10 +165,14 @@ export default function scaleHierarchicalBand(settings = {}, data = {}) {
     Object.keys(items).forEach((k) => {
       const item = items[k];
       if (item.node.depth === depth || (item.isLeaf && typeof depth === 'undefined')) {
+        const start = hBand(k);
+        const bandwidth = hBand.bandwidth(k);
         ticks.push({
-          position: hBand(k) + (hBand.bandwidth(k) / 2),
+          position: start + (bandwidth / 2),
           label: item.label,
-          data: item.node.data
+          data: item.node.data,
+          start,
+          end: start + bandwidth
         });
       }
     });

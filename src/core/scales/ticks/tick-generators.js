@@ -184,10 +184,16 @@ export function generateDiscreteTicks({ scale }) {
   const values = domain;
   const dataItems = scale.data().items;
   const labels = scale.labels ? scale.labels() : values;
+  const bandwidth = scale.bandwidth();
 
-  return values.map((d, i) => ({
-    position: scale(d) + (scale.bandwidth() / 2),
-    label: `${labels[i]}`,
-    data: dataItems ? dataItems[i] : undefined
-  }));
+  return values.map((d, i) => {
+    const start = scale(d);
+    return {
+      position: start + (bandwidth / 2),
+      label: `${labels[i]}`,
+      data: dataItems ? dataItems[i] : undefined,
+      start,
+      end: start + bandwidth
+    };
+  });
 }

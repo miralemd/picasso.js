@@ -146,13 +146,37 @@ describe('Hierarchical band scale', () => {
     it('should return ticks for each leaf node', () => {
       scale = hBand(settings, data);
       const ticks = scale.ticks();
-      expect(ticks).to.deep.equal([
-        { data: { value: 'A' }, label: 'A', position: 0.08333333333333333 },
-        { data: { value: 'B' }, label: 'B', position: 0.25 },
-        { data: { value: 'C' }, label: 'C', position: 0.41666666666666663 },
-        { data: { value: 'D' }, label: 'D', position: 0.75 },
-        { data: { value: 'E' }, label: 'E', position: 0.9166666666666666 }
-      ]);
+      expect(ticks).to.be.of.length(5);
+
+      expect(ticks[0].label).to.equal('A');
+      expect(ticks[0].data).to.deep.equal({ value: 'A' });
+      expect(ticks[0].start).to.approximately(0, 0.001);
+      expect(ticks[0].position).to.approximately(0.083, 0.001);
+      expect(ticks[0].end).to.approximately(0.166, 0.001);
+
+      expect(ticks[1].label).to.equal('B');
+      expect(ticks[1].data).to.deep.equal({ value: 'B' });
+      expect(ticks[1].start).to.approximately(0.166, 0.001);
+      expect(ticks[1].position).to.approximately(0.25, 0.001);
+      expect(ticks[1].end).to.approximately(0.333, 0.001);
+
+      expect(ticks[2].label).to.equal('C');
+      expect(ticks[2].data).to.deep.equal({ value: 'C' });
+      expect(ticks[2].start).to.approximately(0.333, 0.001);
+      expect(ticks[2].position).to.approximately(0.416, 0.001);
+      expect(ticks[2].end).to.approximately(0.5, 0.001);
+
+      expect(ticks[3].label).to.equal('D');
+      expect(ticks[3].data).to.deep.equal({ value: 'D' });
+      expect(ticks[3].start).to.approximately(0.666, 0.001);
+      expect(ticks[3].position).to.approximately(0.75, 0.001);
+      expect(ticks[3].end).to.approximately(0.833, 0.001);
+
+      expect(ticks[4].label).to.equal('E');
+      expect(ticks[4].data).to.deep.equal({ value: 'E' });
+      expect(ticks[4].start).to.approximately(0.833, 0.001);
+      expect(ticks[4].position).to.approximately(0.916, 0.001);
+      expect(ticks[4].end).to.approximately(0.999, 0.001);
     });
   });
 

@@ -249,9 +249,9 @@ describe('Tick generators', () => {
       scale.range([0, 1]);
       const ticks = scale.ticks();
       const expected = [
-        { position: 0 + (scale.bandwidth() / 2), label: 'd1', data: 'd1' },
-        { position: (1 / 3) + (scale.bandwidth() / 2), label: 'd2', data: 'd2' },
-        { position: (2 / 3) + (scale.bandwidth() / 2), label: 'd3', data: 'd3' }
+        { position: 0 + (scale.bandwidth() / 2), label: 'd1', data: 'd1', start: 0, end: 0 + scale.bandwidth() },
+        { position: (1 / 3) + (scale.bandwidth() / 2), label: 'd2', data: 'd2', start: (1 / 3), end: (1 / 3) + scale.bandwidth() },
+        { position: (2 / 3) + (scale.bandwidth() / 2), label: 'd3', data: 'd3', start: (2 / 3), end: (2 / 3) + scale.bandwidth() }
       ];
       expect(ticks).to.deep.equal(expected);
     });
@@ -269,12 +269,15 @@ describe('Tick generators', () => {
       scale.range([0, 1]);
 
       const ticks = scale.ticks();
-      const expected = [
-        { position: 0 + (scale.bandwidth() / 2), label: 'alpha', data: { value: 'alpha', id: { value: 'd1' } } },
-        { position: (1 / 3) + (scale.bandwidth() / 2), label: 'alpha', data: { value: 'alpha', id: { value: 'd2' } } },
-        { position: (2 / 3) + (scale.bandwidth() / 2), label: 'beta', data: { value: 'beta', id: { value: 'd3' } } }
-      ];
-      expect(ticks).to.deep.equal(expected);
+
+      expect(ticks[0].label).to.deep.equal('alpha');
+      expect(ticks[0].data).to.deep.equal({ value: 'alpha', id: { value: 'd1' } });
+
+      expect(ticks[1].label).to.deep.equal('alpha');
+      expect(ticks[1].data).to.deep.equal({ value: 'alpha', id: { value: 'd2' } });
+
+      expect(ticks[2].label).to.deep.equal('beta');
+      expect(ticks[2].data).to.deep.equal({ value: 'beta', id: { value: 'd3' } });
     });
   });
 });
