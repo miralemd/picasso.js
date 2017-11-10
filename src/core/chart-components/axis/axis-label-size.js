@@ -25,7 +25,6 @@ function isHorizontalLabelOverlapping({
   majorTicks,
   measureText,
   rect,
-  scale,
   state
 }) {
   /**
@@ -41,7 +40,8 @@ function isHorizontalLabelOverlapping({
     .map(measureText)
     .map(r => r.width);
   for (let i = 0; i < majorTicks.length; ++i) {
-    const d1 = m * size * scale.bandwidth();
+    const tick = majorTicks[i];
+    const d1 = m * size * Math.abs(tick.start - tick.end);
     const d2 = tickSize[i];
     if (d1 < d2) {
       return true;
@@ -54,7 +54,6 @@ function shouldAutoTilt({
   majorTicks,
   measure,
   rect,
-  scale,
   state,
   settings
 }) {
@@ -63,18 +62,22 @@ function shouldAutoTilt({
   const magicSizeRatioMultipler = 0.7; // So that if less the 70% of labels are visible, toggle on tilt
   const ellipsCharSize = measure('…').width; // include ellipsed char in calc as it's generally large then the char it replaces
   const size = rect.width;
-  const d1 = m * size * scale.bandwidth();
   let maxLabelWidth = 0;
+  let d1 = 0;
 
   if (!isNaN(glyphCount)) {
+    const minBandwidth = majorTicks.reduce((prev, curr) => Math.min(Math.abs(curr.start - curr.end), prev), Infinity);
+    d1 = m * size * minBandwidth;
     maxLabelWidth = measure('M').width * magicSizeRatioMultipler * glyphCount;
     if (maxLabelWidth + ellipsCharSize > d1) {
       return true;
     }
   } else {
     for (let i = 0; i < majorTicks.length; i++) {
-      const label = majorTicks[i].label;
+      const tick = majorTicks[i];
+      const label = tick.label;
       const width = measure(label).width * (label.length > 1 ? magicSizeRatioMultipler : 1);
+      d1 = m * size * Math.abs(tick.start - tick.end);
       if (width + ellipsCharSize > d1) {
         return true;
       }
@@ -108,7 +111,6 @@ function isTiltedLabelOverlapping({
 
 function isToLarge({
   rect,
-  scale,
   state,
   majorTicks,
   measure,
@@ -119,7 +121,6 @@ function isToLarge({
       majorTicks,
       measureText: measure,
       rect,
-      scale,
       state
     });
   }
@@ -185,14 +186,14 @@ export default function getSize({
     };
 
     if (isDiscrete && horizontal && settings.labels.mode === 'auto') {
-      if (shouldAutoTilt({ majorTicks, measure, rect, scale, state, settings })) {
+      if (shouldAutoTilt({ majorTicks, measure, rect, state, settings })) {
         state.labels.activeMode = 'tilted';
       } else {
         state.labels.activeMode = 'horizontal';
       }
     }
 
-    if (isDiscrete && state.labels.activeMode !== 'tilted' && isToLarge({ rect, scale, state, majorTicks, measure, horizontal })) {
+    if (isDiscrete && state.labels.activeMode !== 'tilted' && isToLarge({ rect, state, majorTicks, measure, horizontal })) {
       const toLargeSize = Math.max(rect.width, rect.height); // used to hide the axis
       return { size: toLargeSize, isToLarge: true };
     }

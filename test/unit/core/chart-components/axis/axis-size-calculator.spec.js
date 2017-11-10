@@ -25,7 +25,20 @@ describe('Axis size calculator', () => {
       }
     };
 
-    ticks = [{ label: 'AA', position: 0 }, { label: 'BB', position: 0.5 }, { label: 'CC', position: 1 }];
+    const bandwidth = (i, len) => 1 / len;
+    const start = (i, bw) => i * bw;
+    const pos = (s, bw) => s + (bw / 2);
+    const end = (s, bw) => s + bw;
+    ticks = ['AA', 'BB', 'CC'].map((label, i, ary) => {
+      const bw = bandwidth(i, ary.length);
+      const s = start(i, bw);
+      return {
+        label,
+        start: s,
+        position: pos(s, bw),
+        end: end(s, bw)
+      };
+    });
     scale = {};
     scale.ticks = sinon.stub().returns(ticks);
     scale.bandwidth = sinon.stub().returns(1 / ticks.length);
