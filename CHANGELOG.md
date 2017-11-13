@@ -1,6 +1,10 @@
 # Changelog
   
-  ## **{{VERSION}}** - *({{DATE}})*
+## **{{VERSION}}** - *({{DATE}})*
+
+### Fixed
+
+- PIC-231 - Labels not formatted accorind to field formatter
 
 ## **0.36.1** - *(2017-11-03)*
 
