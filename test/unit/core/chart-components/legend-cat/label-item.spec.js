@@ -119,10 +119,14 @@ describe('labelItem', () => {
       margin: { left: 1, right: 2, top: 3, bottom: 4 },
       shape: 'square',
       shapeSize: 8,
+      maxInnerWidth: 8,
+      maxInnerHeight: 8,
       symbolPadding: 0,
       data: 'datum',
       align: 0,
-      justify: 0
+      justify: 0,
+      isStacked: true,
+      isHorizontal: false
     };
   });
 
@@ -195,9 +199,11 @@ describe('labelItem', () => {
       });
     });
 
-    describe('Fixed Inner Size', () => {
-      it('should use fixedInnerWidth as innerWidth if appended', () => {
-        params.fixedInnerWidth = 150;
+    describe('Max Inner Size', () => {
+      it('should use maxInnerWidth as innerWidth if appended and is not stacked', () => {
+        params.maxInnerWidth = 150;
+        params.isStacked = false;
+        params.isHorizontal = false;
         const container = labelItem(params);
         expect(container).to.include({
           width: 153,
@@ -205,8 +211,10 @@ describe('labelItem', () => {
         });
       });
 
-      it('should use fixedInnerHeight as innerHeight if appended', () => {
-        params.fixedInnerHeight = 150;
+      it('should use maxInnerHeight as innerHeight if appended and is not stacked', () => {
+        params.maxInnerHeight = 150;
+        params.isStacked = false;
+        params.isHorizontal = false;
         const container = labelItem(params);
         expect(container).to.include({
           height: 157,
@@ -237,6 +245,8 @@ describe('labelItem', () => {
     describe('Anchor', () => {
       it('left', () => {
         params.anchor = 'left';
+        params.isStacked = true;
+        params.isHorizontal = false;
         const container = labelItem(params);
         expect(container).to.include({
           x: 0,
@@ -264,6 +274,8 @@ describe('labelItem', () => {
 
       it('right', () => {
         params.anchor = 'right';
+        params.isStacked = true;
+        params.isHorizontal = false;
         const container = labelItem(params);
         expect(container).to.include({
           x: 486,
@@ -291,6 +303,11 @@ describe('labelItem', () => {
     });
 
     describe('Align/Justify', () => {
+      beforeEach(() => {
+        params.isStacked = false;
+        params.isHorizontal = false;
+      });
+
       it('should align shape to maxShapeSize', () => {
         params.maxShapeSize = 16;
         params.align = 1;
@@ -304,20 +321,20 @@ describe('labelItem', () => {
         });
       });
 
-      it('should justify shape if label is heigher', () => {
+      it('should based on item properties, justify shape given label is higher', () => {
         params.labelBounds.height = 16;
         params.justify = 1;
         const container = labelItem(params);
         const shapeNode = container.children[0];
         expect(shapeNode).to.include({
           x: 1,
-          y: 11,
+          y: 3,
           width: 8,
           height: 8
         });
       });
 
-      it('should justify label if shape is heigher', () => {
+      it('should based on item properties, justify label given shape is higher', () => {
         params.labelBounds.height = 4;
         params.shapeSize = 16;
         params.justify = 1;
@@ -325,12 +342,12 @@ describe('labelItem', () => {
         const labelNode = container.children[1];
         expect(labelNode).to.include({
           x: 17,
-          y: 17
+          y: 9
         });
       });
 
-      it('should justify shape and label if fixedInnerHeight is heigher', () => {
-        params.fixedInnerHeight = 16;
+      it('should justify shape and label if maxInnerHeight is higher', () => {
+        params.maxInnerHeight = 16;
         params.justify = 1;
         const container = labelItem(params);
         const shapeNode = container.children[0];
