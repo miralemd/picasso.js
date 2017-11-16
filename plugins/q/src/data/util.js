@@ -22,7 +22,13 @@ function flattenTree(children, steps, prop, arrIndexAtTargetDepth) {
 
 export function treeAccessor(sourceDepth, targetDepth, prop, arrIndexAtTargetDepth) {
   if (sourceDepth === targetDepth) {
-    return d => d;
+    let fn;
+    if (prop) {
+      fn = Function('node', `return node.${prop};`); // eslint-disable-line no-new-func
+    } else {
+      fn = d => d;
+    }
+    return fn;
   }
   if (sourceDepth > targetDepth) { // traverse upwards
     const steps = Math.max(0, Math.min(100, sourceDepth - targetDepth));
