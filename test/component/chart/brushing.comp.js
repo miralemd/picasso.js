@@ -119,7 +119,8 @@ describe('Brushing', () => {
       discreteAxis = {
         type: 'axis',
         scale: 'd0',
-        brush
+        brush,
+        dock: 'top'
       };
 
       settings = {
