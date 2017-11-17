@@ -3,7 +3,7 @@ import collisions from '../../math/narrow-phase-collision';
 
 const LINE_HEIGHT = 1.4;
 const PADDING = 4;
-const DOUBLE_PADDING = PADDING * 2;
+// const DOUBLE_PADDING = PADDING * 2;
 
 function cbContext(node, chart) {
   return {
@@ -33,12 +33,12 @@ export function placeTextInRect(rect, text, opts) {
 
   const textMetrics = opts.textMetrics;
 
-  if (rect.width < opts.fontSize || rect.height < textMetrics.height * LINE_HEIGHT) {
+  if (rect.width < opts.fontSize || rect.height < textMetrics.height) {
     return false;
   }
 
   const wiggleWidth = Math.max(0, rect.width - textMetrics.width);
-  const wiggleHeight = Math.max(0, rect.height - (textMetrics.height * LINE_HEIGHT));
+  const wiggleHeight = Math.max(0, rect.height - (textMetrics.height * 1.4));
   label.x = rect.x + (opts.align * wiggleWidth);
   label.y = rect.y + textMetrics.height + (opts.justify * wiggleHeight);
 
@@ -81,44 +81,75 @@ export function placeVerticalTextInRect(rect, text, opts) {
   return label;
 }
 
-function getBarRect({ bar, view, direction, position }) {
+function limitBounds(bounds, view) {
+  const minY = Math.max(0, Math.min(bounds.y, view.height));
+  const maxY = Math.max(0, Math.min(bounds.y + bounds.height, view.height));
+  const minX = Math.max(0, Math.min(bounds.x, view.width));
+  const maxX = Math.max(0, Math.min(bounds.x + bounds.width, view.width));
+  bounds.x = minX;
+  bounds.width = maxX - minX;
+  bounds.y = minY;
+  bounds.height = maxY - minY;
+}
+
+function pad(bounds, padding) {
+  bounds.x += padding;
+  bounds.width -= (padding * 2);
+  bounds.y += padding;
+  bounds.height -= (padding * 2);
+}
+
+export function getBarRect({ bar, view, direction, position, padding = PADDING }) {
   const bounds = {};
+  extend(bounds, bar);
 
-  if (direction === 'up' || direction === 'down') {
-    bounds.x = bar.x;
-    bounds.width = bar.width;
-
+  if (!position || position === 'inside') {
+    // do nothing
+  } else if (direction === 'up' || direction === 'down') {
     const start = Math.max(0, Math.min(bar.y, view.height));
     const end = Math.max(0, Math.min(bar.y + bar.height, view.height));
 
     if ((position === 'outside' && direction === 'up') || (position === 'opposite' && direction === 'down')) {
-      bounds.y = PADDING;
-      bounds.height = start - DOUBLE_PADDING;
+      bounds.y = 0;
+      bounds.height = start;
     } else if ((position === 'outside' && direction === 'down') || (position === 'opposite' && direction === 'up')) {
-      bounds.y = end + PADDING;
-      bounds.height = Math.max(0, view.height - end - DOUBLE_PADDING);
-    } else {
-      bounds.height = end - start - DOUBLE_PADDING;
-      bounds.y = start + PADDING;
+      bounds.y = end;
+      bounds.height = view.height - end;
+    }
+  } else {
+    const start = Math.max(0, Math.min(bar.x, view.width));
+    const end = Math.max(0, Math.min(bar.x + bar.width, view.width));
+
+    if ((position === 'outside' && direction === 'left') || (position === 'opposite' && direction === 'right')) {
+      bounds.x = 0;
+      bounds.width = start;
+    } else if ((position === 'outside' && direction === 'right') || (position === 'opposite' && direction === 'left')) {
+      bounds.x = end;
+      bounds.width = view.width - end;
     }
   }
+
+  limitBounds(bounds, view);
+  pad(bounds, padding);
 
   return bounds;
 }
 
-function placeInVerticalBars({
+function placeInBars({
   chart,
   nodes,
-  stngs,
+  // stngs,
   placementSettings,
   labelSettings,
   measurements,
   texts,
+  directions,
   rect,
-  fitsHorizontally
+  fitsHorizontally,
+  collectiveOrientation
 }) {
   const labels = [];
-  const textPlacementFn = fitsHorizontally ? placeTextInRect : placeVerticalTextInRect;
+  const textPlacementFn = collectiveOrientation === 'h' || fitsHorizontally ? placeTextInRect : placeVerticalTextInRect;
   let label;
   let node;
   let text;
@@ -134,6 +165,7 @@ function placeInVerticalBars({
   let placements;
   let p;
   let arg;
+  let orientation;
 
   for (let i = 0, len = nodes.length; i < len; i++) {
     bounds = null;
@@ -141,7 +173,8 @@ function placeInVerticalBars({
     // d = node.data;
     arg = cbContext(node, chart);
     nodeTexts = texts[i];
-    direction = typeof stngs.direction === 'function' ? stngs.direction(arg, i) : stngs.direction || 'up';
+    direction = directions[i]; // typeof stngs.direction === 'function' ? stngs.direction(arg, i) : stngs.direction || 'up';
+    orientation = direction === 'left' || direction === 'right' ? 'h' : 'v';
     for (let j = 0; j < nodeTexts.length; j++) {
       text = nodeTexts[j];
       if (!text) {
@@ -165,15 +198,23 @@ function placeInVerticalBars({
         });
         boundaries.push(testBounds);
         largest = !p || testBounds.height > largest.height ? testBounds : largest;
-        if ((fitsHorizontally && testBounds.height > measured.height * LINE_HEIGHT) ||
-          (!fitsHorizontally && testBounds.height > measured.width)) {
+
+        if (orientation === 'v' && ((fitsHorizontally && testBounds.height > measured.height * LINE_HEIGHT) ||
+          (!fitsHorizontally && testBounds.height > measured.width))) {
+          bounds = testBounds;
+          break;
+        } else if (orientation === 'h' && (testBounds.height > measured.height) &&
+          (testBounds.width > measured.width)) {
           bounds = testBounds;
           break;
         }
       }
 
       // fallback strategy - place the text in the largest rectangle
-      if (!fitsHorizontally && !bounds && largest.height > lblStngs.fontSize * 2) {
+      if (orientation === 'v' && !fitsHorizontally && !bounds && largest.height > lblStngs.fontSize * 2) {
+        bounds = largest;
+        p = boundaries.indexOf(bounds);
+      } else if (orientation === 'h' && !bounds && largest.height > lblStngs.fontSize * 2) {
         bounds = largest;
         p = boundaries.indexOf(bounds);
       }
@@ -196,8 +237,8 @@ function placeInVerticalBars({
 
         label = textPlacementFn(bounds, text, {
           fill,
-          justify,
-          align: placement.align,
+          justify: orientation === 'h' ? placement.align : justify,
+          align: orientation === 'h' ? justify : placement.align,
           fontSize: lblStngs.fontSize,
           fontFamily: lblStngs.fontFamily,
           textMetrics: measured
@@ -246,12 +287,15 @@ export function bars({
   const measurements = [];
   const texts = [];
   const labelStruct = {};
+  const directions = [];
   let fitsHorizontally = true;
+  let hasHorizontalDirection = false;
   let node;
   let text;
   let bounds;
   let measured;
   let lblStng;
+  let direction;
 
   const labelSettings = settings.labels.map(labelSetting =>
     extend({}, defaults, settings, labelSetting)
@@ -279,6 +323,8 @@ export function bars({
       if (!text) {
         continue; // eslint-ignore-line
       }
+      direction = typeof settings.direction === 'function' ? settings.direction(arg, i) : settings.direction || 'up';
+      hasHorizontalDirection = hasHorizontalDirection || direction === 'left' || direction === 'right';
 
       labelStruct.fontFamily = lblStng.fontFamily;
       labelStruct.fontSize = `${lblStng.fontSize}px`;
@@ -287,20 +333,23 @@ export function bars({
       measured = renderer.measureText(labelStruct);
       measurements[i][j] = measured;
       texts[i][j] = text;
-      fitsHorizontally = fitsHorizontally && measured.width <= bounds.width;
+      directions[i] = direction;
+      fitsHorizontally = fitsHorizontally && measured.width <= (bounds.width - (PADDING * 2));
     }
   }
 
-  return placeInVerticalBars({
+  return placeInBars({
     chart,
     nodes,
     texts,
+    directions,
     measurements,
     stngs: settings,
     placementSettings,
     labelSettings,
     data,
     rect,
-    fitsHorizontally
+    fitsHorizontally,
+    collectiveOrientation: hasHorizontalDirection ? 'h' : 'v'
   });
 }
