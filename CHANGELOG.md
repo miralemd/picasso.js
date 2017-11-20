@@ -20,7 +20,7 @@
       }
     }
   ```
-- PIC-217 - [Labeling strategy](./docs/dist/chart-components/labels.md) for horizontal bars ([#562](https://github.com/qlik-trial/picasso.js/pull/562))
+- PIC-217 - [Labeling strategy](./docs/dist/components/labels.md) for horizontal bars ([#562](https://github.com/qlik-trial/picasso.js/pull/562))
 
 ### Fixed
 
