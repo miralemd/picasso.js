@@ -74,8 +74,8 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 
   ## append original template (for next release)
   sed -i.tmp "s/# Changelog/&\\
-  \\
-  $TEMPLATE/" CHANGELOG.md
+\\
+$TEMPLATE/" CHANGELOG.md
 
   ## build all
   echo "  Building ..."
