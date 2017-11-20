@@ -9,13 +9,17 @@ function keyGen(node, valueFn) {
     .toString();
 }
 
-function flattenTree(rootNode, valueFn, labelFn) {
+function flattenTree(rootNode, settings) {
+  const ticksDepth = typeof settings.ticks === 'object' ? settings.ticks.depth : null;
+  const valueFn = typeof settings.value === 'function' ? settings.value : d => d.value;
+  const labelFn = typeof settings.label === 'function' ? settings.label : valueFn;
   const values = [];
   const labels = [];
   const items = {};
+  const ticks = [];
   let expando = 0;
   if (!rootNode) {
-    return { values, labels, items };
+    return { values, labels, items, ticks };
   }
 
   rootNode.eachAfter((node) => {
@@ -24,25 +28,32 @@ function flattenTree(rootNode, valueFn, labelFn) {
       const leaves = node.leaves() || [node]; // If leaf node returns itself
       const value = valueFn(node.data);
       const label = labelFn(node.data);
+      const isBranch = Array.isArray(node.children);
 
-      items[key] = {
+      const item = {
+        key,
         count: leaves.length,
         value,
         label,
         leftEdge: keyGen(leaves[0], valueFn),
         rightEdge: keyGen(leaves[Math.max(leaves.length - 1, 0)], valueFn),
         node
+        // isTick: ticksDepth === null ? !isBranch : node.depth === ticksDepth
       };
 
-      if (Array.isArray(node.children)) {
+      if (isBranch) {
         values.push(`SPACER_${expando}_SPACER`);
-        items[key].isLeaf = false;
         expando++;
       } else {
-        items[key].isLeaf = true;
         values.push(key);
         labels.push(label);
       }
+
+      if ((ticksDepth === null && !isBranch) || node.depth === ticksDepth) {
+        ticks.push(item);
+      }
+
+      items[key] = item;
     }
   });
 
@@ -51,7 +62,7 @@ function flattenTree(rootNode, valueFn, labelFn) {
     values.splice(-spill);
   }
 
-  return { values, labels, items };
+  return { values, labels, items, ticks };
 }
 
 /**
@@ -76,9 +87,7 @@ function flattenTree(rootNode, valueFn, labelFn) {
 export default function scaleHierarchicalBand(settings = {}, data = {}) {
   let bandInstance = bandScale(settings);
 
-  const valueFn = typeof settings.value === 'function' ? settings.value : d => d.value;
-  const labelFn = typeof settings.label === 'function' ? settings.label : valueFn;
-  const { values, labels, items } = flattenTree(data.root, valueFn, labelFn);
+  const { values, labels, items, ticks } = flattenTree(data.root, settings);
 
   /**
    * @alias h-band
@@ -158,26 +167,18 @@ export default function scaleHierarchicalBand(settings = {}, data = {}) {
    * Generate discrete ticks
    * @return { Object[] } Ticks for each leaf node
    */
-  hBand.ticks = (input = {}) => {
-    const ticks = [];
-    const depth = input.depth;
-
-    Object.keys(items).forEach((k) => {
-      const item = items[k];
-      if (item.node.depth === depth || (item.isLeaf && typeof depth === 'undefined')) {
-        const start = hBand(k);
-        const bandwidth = hBand.bandwidth(k);
-        ticks.push({
-          position: start + (bandwidth / 2),
-          label: item.label,
-          data: item.node.data,
-          start,
-          end: start + bandwidth
-        });
-      }
+  hBand.ticks = () => { // eslint-disable-line arrow-body-style
+    return ticks.map((item) => {
+      const start = hBand(item.key);
+      const bandwidth = hBand.bandwidth(item.key);
+      return {
+        position: start + (bandwidth / 2),
+        label: item.label,
+        data: item.node.data,
+        start,
+        end: start + bandwidth
+      };
     });
-
-    return ticks;
   };
 
   // const stgns = generateSettings(settings || {}, data.root); // TODO look into supporting setting functions
