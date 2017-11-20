@@ -36,6 +36,8 @@ function res(style, references, path) {
       } else {
         s[key] = value;
       }
+    } else if (typeof value === 'object') {
+      s[key] = res(value, refs, p);
     }
   });
   return s;

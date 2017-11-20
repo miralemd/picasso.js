@@ -161,4 +161,22 @@ describe('style-resolver', () => {
     const fn = () => resolve(input, references);
     expect(fn).to.throw('Cyclical reference for "$label--big"');
   });
+
+  it('should resolve style recursively', () => {
+    const references = {
+      '$primary': 'red'
+    };
+    const input = {
+      label: {
+        fill: '$primary'
+      }
+    };
+    const s = resolve(input, references);
+
+    expect(s).to.eql({
+      label: {
+        fill: 'red'
+      }
+    });
+  });
 });
