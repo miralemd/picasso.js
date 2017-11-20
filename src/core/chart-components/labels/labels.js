@@ -2,6 +2,10 @@ import {
   bars
 } from './strategies';
 
+const strategies = {
+  bar: bars
+};
+
 /**
  * @typedef settings
  * @type {object}
@@ -11,10 +15,41 @@ import {
  * @property {label-strategy} sources.strategy
  */
 
+export function strategy({
+  chart,
+  source,
+  rect,
+  renderer,
+  style
+}, fn) {
+  const component = chart.component(source.component);
+  if (!component) {
+    return [];
+  }
+  const nodes = chart.findShapes(source.selector).filter(n => n.key === source.component);
+
+  return fn({
+    chart,
+    settings: source.strategy.settings,
+    nodes,
+    rect: {
+      x: 0,
+      y: 0,
+      width: rect.width,
+      height: rect.height
+    },
+    renderer,
+    style
+  });
+}
+
 const labelsComponent = {
   require: ['chart', 'renderer', 'settings'],
   defaultSettings: {
-    settings: {}
+    settings: {},
+    style: {
+      label: '$label'
+    }
   },
   created() {
     this.rect = { x: 0, y: 0, width: 0, height: 0 };
@@ -25,32 +60,16 @@ const labelsComponent = {
   render() {
     const stngs = this.settings.settings;
     const labels = [];
-    let nodes = [];
-    let comp;
-    let nodeData;
 
     (stngs.sources || []).forEach((source) => {
-      if (source.strategy && source.strategy.type === 'bar' && source.component) {
-        comp = this.chart.component(source.component);
-        if (comp) {
-          nodes = this.chart.findShapes(source.selector).filter(n => n.key === source.component);
-          nodeData = comp.data;
-        }
-
-        labels.push(...bars({
-          settings: source.strategy.settings,
+      if (source.strategy && strategies[source.strategy.type] && source.component) {
+        labels.push(...strategy({
           chart: this.chart,
-          nodes,
-          rect: {
-            x: 0,
-            y: 0,
-            width: this.rect.width,
-            height: this.rect.height
-          },
-          data: nodeData,
+          rect: this.rect,
           renderer: this.renderer,
-          context: this
-        }));
+          source,
+          style: this.style
+        }, strategies[source.strategy.type]));
       }
     });
 

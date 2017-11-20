@@ -34,6 +34,12 @@ const style = {
     fill: '$primary',
     strokeWidth: 0,
     stroke: '#ccc'
+  },
+
+  '$label': {
+    fontSize: '$font-size-m',
+    fontFamily: '$font-family',
+    fill: '#333'
   }
 };
 
