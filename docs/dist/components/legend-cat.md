@@ -14,6 +14,7 @@ component: {
     direction: 'vertical', // Direction of rendering, 'horizontal' or 'vertical'.. Default: 'vertical'. Optional.
     layout: { // Layout setting for the items. Optional.
       mode: 'stack', // Use `stack` to let each item only take as much space a required or else each item will take a fixed amount of space to give each item equal distance between each other. Default: 'stack'. Optional.
+      size: 1, // Only enabled non-stack mode. Is either row or column count, depending on the directional setting (i.e. vertical direction and size is column count). Default: 1. Optional.
     },
     item: { // Items settings. Optional.
       label: { // Label settings, the value is derived from the scale. Optional.

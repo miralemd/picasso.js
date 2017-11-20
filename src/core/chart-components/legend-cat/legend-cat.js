@@ -159,6 +159,8 @@ function resolveSizes(state, local) {
   const titleDef = state.titleDef;
   let maxOuterWidth = 0;
   let maxOuterHeight = 0;
+  let maxItemOuterWidth = 0;
+  let maxItemOuterHeight = 0;
   let maxInnerWidth = 0;
   let maxInnerHeight = 0;
   let maxShapeSize = 0;
@@ -192,15 +194,21 @@ function resolveSizes(state, local) {
     }
     const innerWidth = def.labelBounds.width + maxShapeSize + def.symbolPadding; // Use max size because text is adjusted to align along y-axis based on the largest shape size
     const innerHeight = Math.max(def.labelBounds.height, maxShapeSize);
+    const outerWidth = def.margin.left + def.margin.right + innerWidth;
+    const outerHeight = def.margin.top + def.margin.bottom + innerHeight;
     maxInnerWidth = Math.max(maxInnerWidth, innerWidth);
     maxInnerHeight = Math.max(maxInnerHeight, innerHeight);
-    maxOuterWidth = Math.max(maxOuterWidth, def.margin.left + def.margin.right + innerWidth + (local.isHorizontal ? titleWidth + buttonWidth : 0));
-    maxOuterHeight = Math.max(maxOuterHeight, def.margin.top + def.margin.bottom + innerHeight + (local.isHorizontal ? 0 : titleHeight + buttonHeight));
+    maxItemOuterWidth = Math.max(maxItemOuterWidth, outerWidth);
+    maxItemOuterHeight = Math.max(maxItemOuterHeight, outerHeight);
+    maxOuterWidth = Math.max(maxOuterWidth, outerWidth + (local.isHorizontal ? titleWidth + buttonWidth : 0));
+    maxOuterHeight = Math.max(maxOuterHeight, outerHeight + (local.isHorizontal ? 0 : titleHeight + buttonHeight));
   }
 
   return {
     maxOuterWidth,
     maxOuterHeight,
+    maxItemOuterWidth,
+    maxItemOuterHeight,
     maxInnerWidth,
     maxInnerHeight,
     maxShapeSize
@@ -322,6 +330,7 @@ function buildNodes({
 }) {
   const nodes = [];
   let prevContainer = {};
+  let titleContainer = {};
   let nextXitem = 0;
   let nextYitem = 0;
   let availableSpace = local.isHorizontal ? rect.width - BUTTON_WIDTH - BUTTON_MARGIN : rect.height - BUTTON_HEIGHT - BUTTON_MARGIN;
@@ -338,6 +347,8 @@ function buildNodes({
       maxInnerHeight: state.titleDef.labelBounds.height
     }));
 
+    titleContainer = prevContainer;
+
     nodes.push(prevContainer);
     availableSpace -= local.isHorizontal ? prevContainer.width : prevContainer.height;
   }
@@ -345,36 +356,66 @@ function buildNodes({
   let createScrollButtons = false;
   state.pageSize = 0;
 
-  // Items
-  for (let i = state.index; i < state.defs.length; i++) {
-    const labelItemDef = state.defs[i];
-    nextXitem += prevContainer.width || 0;
-    nextYitem += prevContainer.height || 0;
+  let dirX = 0;
+  let dirY = 0;
+  const initAvailableSpace = availableSpace;
+  for (let d = 0; d < local.size; d++) {
+    // Items
+    for (let i = state.index + state.pageSize; i < state.defs.length; i++) {
+      const labelItemDef = state.defs[i];
+      nextXitem += prevContainer.width || 0;
+      nextYitem += prevContainer.height || 0;
 
-    labelItemDef.x = local.isHorizontal ? nextXitem : 0;
-    labelItemDef.y = !local.isHorizontal ? nextYitem : 0;
-    labelItemDef.maxInnerWidth = state.maxInnerWidth;
-    labelItemDef.maxInnerHeight = state.maxInnerHeight;
+      labelItemDef.x = local.isHorizontal ? nextXitem : dirX;
+      labelItemDef.y = !local.isHorizontal ? nextYitem : dirY;
+      labelItemDef.maxInnerWidth = state.maxInnerWidth;
+      labelItemDef.maxInnerHeight = state.maxInnerHeight;
 
-    prevContainer = labelItem(extend(labelItemDef, {
-      anchor: local.anchor,
-      renderingArea: rect,
-      maxShapeSize: state.maxShapeSize,
-      isStacked: local.isStacked,
-      isHorizontal: local.isHorizontal
-    }));
+      prevContainer = labelItem(extend(labelItemDef, {
+        anchor: local.anchor,
+        renderingArea: rect,
+        maxShapeSize: state.maxShapeSize,
+        isStacked: local.isStacked,
+        isHorizontal: local.isHorizontal
+      }));
 
-    availableSpace -= local.isHorizontal ? prevContainer.width : prevContainer.height;
-    if (availableSpace < 0) {
+      availableSpace -= local.isHorizontal ? prevContainer.width : prevContainer.height;
+      if (availableSpace < 0) {
+        if (local.size <= 1) {
+          createScrollButtons = true;
+        }
+        break;
+      }
+
+      nodes.push(prevContainer);
+      state.pageSize++;
+    }
+
+    if (state.index + state.pageSize >= state.defs.length && state.pageSize < state.defs.length) { // If last item and have scrolled
       createScrollButtons = true;
       break;
     }
 
-    nodes.push(prevContainer);
-    state.pageSize++;
+    if (local.isHorizontal) {
+      dirY += state.maxItemOuterHeight;
+    } else {
+      dirX += state.maxItemOuterWidth;
+    }
 
-    if (state.index + state.pageSize >= state.defs.length && state.pageSize < state.defs.length) { // If last item and have scrolled
-      createScrollButtons = true;
+    availableSpace = initAvailableSpace;
+    prevContainer = titleContainer;
+    nextYitem = 0;
+    nextXitem = 0;
+
+    // Check if there are more items and if able to fit more in row/column
+    if (state.index + state.pageSize < state.defs.length) {
+      if (dirX + state.maxItemOuterWidth > rect.width) {
+        createScrollButtons = true;
+        break;
+      } else if (dirY + state.maxItemOuterHeight > rect.height) {
+        createScrollButtons = true;
+        break;
+      }
     }
   }
 
@@ -399,6 +440,26 @@ function buildNodes({
   }
 
   return nodes;
+}
+
+function estimateSize(local, state, rect) {
+  if (local.size <= 1) {
+    return 1;
+  }
+
+  if (local.isHorizontal) {
+    const requiredWidth = (state.maxItemOuterWidth * state.defs.length);
+    const availableWidth = rect.width;
+    const requiredRows = Math.min(local.size, Math.ceil(requiredWidth / availableWidth));
+
+    return requiredRows * state.maxItemOuterHeight;
+  }
+
+  const requiredHeight = (state.maxItemOuterHeight * state.defs.length);
+  const availableHeight = rect.height;
+  const requiredColumns = Math.min(local.size, Math.ceil(requiredHeight / availableHeight));
+
+  return requiredColumns * state.maxItemOuterWidth;
 }
 
 function doScroll(context, scrollLength = 3) {
@@ -456,7 +517,8 @@ const categoricalLegend = {
     const HORIZONTAL = (DIRECTION === 'horizontal');
     const ANCHOR = SETTINGS.anchor;
     const THRESHOLD = this.scale.type === 'threshold-color';
-    const STACKED_LAYOUT = typeof SETTINGS.layout === 'object' && SETTINGS.layout.mode === 'stack';
+    const LAYOUT = typeof SETTINGS.layout === 'object' ? SETTINGS.layout : {};
+    const STACKED_LAYOUT = LAYOUT.mode === 'stack';
 
     let sourceField;
     if (this.scale) {
@@ -472,7 +534,8 @@ const categoricalLegend = {
       sourceTitle: sourceField ? sourceField.title() : '',
       sourceField,
       formatter: sourceField ? sourceField.formatter() : this.formatter,
-      hasKey: !!SETTINGS.key
+      hasKey: !!this.settings.key,
+      size: STACKED_LAYOUT || isNaN(LAYOUT.size) ? 1 : Math.max(Math.round(LAYOUT.size), 1)
     };
   },
   initState() {
@@ -501,6 +564,8 @@ const categoricalLegend = {
     const {
       maxOuterWidth,
       maxOuterHeight,
+      maxItemOuterWidth,
+      maxItemOuterHeight,
       maxInnerWidth,
       maxInnerHeight,
       maxShapeSize
@@ -510,10 +575,16 @@ const categoricalLegend = {
     this.state.maxInnerHeight = maxInnerHeight;
     this.state.maxOuterWidth = maxOuterWidth;
     this.state.maxOuterHeight = maxOuterHeight;
+    this.state.maxItemOuterWidth = maxItemOuterWidth;
+    this.state.maxItemOuterHeight = maxItemOuterHeight;
     this.state.maxShapeSize = maxShapeSize;
   },
   preferredSize(opts) {
-    this.state.preferredSize = this.settings.dock === 'left' || this.settings.dock === 'right' ? this.state.maxOuterWidth : this.state.maxOuterHeight; // Store for later use to align buttons
+    if (this.settings.dock === 'left' || this.settings.dock === 'right') {
+      this.state.preferredSize = Math.max(this.state.maxOuterWidth, estimateSize(this.local, this.state, opts.inner));
+    } else {
+      this.state.preferredSize = Math.max(this.state.maxOuterHeight, estimateSize(this.local, this.state, opts.inner));
+    }
 
     if (this.local.isHorizontal && this.state.maxOuterWidth > opts.inner.width) {
       return Math.max(opts.inner.width, opts.inner.height);

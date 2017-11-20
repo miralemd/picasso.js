@@ -16,6 +16,7 @@ export default function categoricalLegend(picasso) {
  * @property {string} [settings.direction='vertical'] - Direction of rendering, 'horizontal' or 'vertical'.
  * @property {object} [settings.layout] - Layout setting for the items
  * @property {object} [settings.layout.mode='stack'] - Use `stack` to let each item only take as much space a required or else each item will take a fixed amount of space to give each item equal distance between each other
+ * @property {number} [settings.layout.size=1] - Only enabled non-stack mode. Is either row or column count, depending on the directional setting (i.e. vertical direction and size is column count)
  * @property {object} [settings.item] - Items settings
  * @property {object} [settings.item.label] - Label settings, the value is derived from the scale
  * @property {string} [settings.item.label.maxWidth=136] - Maximum width of each label in px

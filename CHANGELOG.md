@@ -2,6 +2,23 @@
   
 ## **{{VERSION}}** - *({{DATE}})*
 
+### Added
+
+- Experimental support for multiple columns/rows in categorical legend `legend-cat`
+
+  ```js
+    {
+      type: 'legend-cat',
+      settings: {
+        direction: 'vertical',
+        layout: {
+          mode: 'table', 
+          size: 2 // Only enabled in table mode. Is either row or column count, depending on the directional setting.
+        }
+      }
+    }
+  ```
+
 ### Fixed
 
 - PIC-231 - Labels not formatted according to field formatter

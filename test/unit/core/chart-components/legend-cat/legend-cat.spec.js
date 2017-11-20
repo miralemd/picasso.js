@@ -7,6 +7,7 @@ describe('Legend Categorical', () => {
   let userDef;
   let container;
   let chartMock;
+  let scale;
 
   beforeEach(() => {
     container = {
@@ -26,9 +27,13 @@ describe('Legend Categorical', () => {
     };
 
     chartMock = componentFixture.mocks().chart;
-    const s = catScale();
-    s.type = 'categorical';
-    chartMock.scale.withArgs('test').returns(s);
+    scale = catScale();
+    scale.domain(['Item1', 'Item2', 'Item3', 'Item4', 'Item5', 'Item6', 'Item7', 'Item8', 'Item9', 'Item10', 'Item11', 'Item12']);
+    scale.range([0, 1]);
+    sinon.stub(scale, 'label').returnsArg(0);
+    sinon.stub(scale, 'datum').returnsArg(0);
+    scale.type = 'categorical';
+    chartMock.scale.withArgs('test').returns(scale);
   });
 
   describe('preferredSize', () => {
@@ -38,10 +43,24 @@ describe('Legend Categorical', () => {
       expect(componentFixture.simulateLayout(container)).to.equal(17);
     });
 
+    it('should return correct vertical size based on layout size', () => {
+      userDef.dock = 'top';
+      userDef.settings.layout = { size: 2, mode: 'table' };
+      componentFixture.simulateCreate(legendCat, userDef);
+      expect(componentFixture.simulateLayout(container)).to.equal(32);
+    });
+
     it('should return correct horizontal size', () => {
       userDef.dock = 'left';
       componentFixture.simulateCreate(legendCat, userDef);
-      expect(componentFixture.simulateLayout(container)).to.equal(19);
+      expect(componentFixture.simulateLayout(container)).to.equal(38);
+    });
+
+    it('should return correct horizontal size based on layout size', () => {
+      userDef.dock = 'left';
+      userDef.settings.layout = { size: 2, mode: 'table' };
+      componentFixture.simulateCreate(legendCat, userDef);
+      expect(componentFixture.simulateLayout(container)).to.equal(38 * 2);
     });
 
     describe('should request to be hidden', () => {
@@ -60,6 +79,114 @@ describe('Legend Categorical', () => {
         userDef.dock = 'top';
         componentFixture.simulateCreate(legendCat, userDef);
         expect(componentFixture.simulateLayout(container)).to.equal(100); // Return cointainer height
+      });
+    });
+  });
+
+  describe('Direction', () => {
+    describe('Vertical', () => {
+      it('should render items in a single column table layout correctly', () => {
+        userDef.settings.direction = 'vertical';
+        userDef.dock = 'center';
+        userDef.settings.layout = { mode: 'table', size: 1 };
+        userDef.settings.title.show = false;
+        componentFixture.simulateCreate(legendCat, userDef);
+        componentFixture.simulateRender(container);
+
+        const rectNodes = componentFixture.findNodes('rect');
+        expect(rectNodes).to.be.of.length(4);
+        rectNodes.forEach((node, i) => {
+          expect(node).to.deep.include({ x: 8, y: 16 * i, width: 8, height: 8 });
+        });
+
+        const textNodes = componentFixture.findNodes('text');
+        expect(textNodes).to.be.of.length(4);
+        textNodes.forEach((node, i) => {
+          expect(node).to.deep.include({ x: 24, y: (16 * i) + 6.5 });
+        });
+      });
+
+      it('should render items in a multi column table layout correctly', () => {
+        userDef.settings.direction = 'vertical';
+        userDef.dock = 'center';
+        userDef.settings.layout = { mode: 'table', size: 2 };
+        userDef.settings.title.show = false;
+        componentFixture.simulateCreate(legendCat, userDef);
+        componentFixture.simulateRender(container);
+
+        const rectNodes = componentFixture.findNodes('rect');
+        expect(rectNodes).to.be.of.length(8);
+        rectNodes.slice(0, 4).forEach((node, i) => { // First column
+          expect(node).to.deep.include({ x: 8, y: 16 * i, width: 8, height: 8 });
+        });
+
+        rectNodes.slice(4).forEach((node, i) => { // Second column
+          expect(node).to.deep.include({ x: 46, y: 16 * i, width: 8, height: 8 });
+        });
+
+        const textNodes = componentFixture.findNodes('text');
+        expect(textNodes).to.be.of.length(8);
+        textNodes.slice(0, 4).forEach((node, i) => {
+          expect(node).to.deep.include({ x: 24, y: (16 * i) + 6.5 });
+        });
+
+        textNodes.slice(4).forEach((node, i) => {
+          expect(node).to.deep.include({ x: 62, y: (16 * i) + 6.5 });
+        });
+      });
+    });
+
+    describe('Horizontal', () => {
+      it('should render items in a single row table layout correctly', () => {
+        userDef.settings.direction = 'horizontal';
+        container.inner.width = 200;
+        userDef.dock = 'center';
+        userDef.settings.layout = { mode: 'table', size: 1 };
+        userDef.settings.title.show = false;
+        componentFixture.simulateCreate(legendCat, userDef);
+        componentFixture.simulateRender(container);
+
+        const rectNodes = componentFixture.findNodes('rect');
+        expect(rectNodes).to.be.of.length(4);
+        rectNodes.forEach((node, i) => {
+          expect(node).to.deep.include({ x: (38 * i) + 8, y: 0, width: 8, height: 8 });
+        });
+
+        const textNodes = componentFixture.findNodes('text');
+        expect(textNodes).to.be.of.length(4);
+        textNodes.forEach((node, i) => {
+          expect(node).to.deep.include({ x: (38 * i) + 24, y: 6.5 });
+        });
+      });
+
+      it('should render items in a multi row table layout correctly', () => {
+        userDef.settings.direction = 'horizontal';
+        container.inner.width = 200;
+        userDef.dock = 'center';
+        userDef.settings.layout = { mode: 'table', size: 2 };
+        userDef.settings.title.show = false;
+        componentFixture.simulateCreate(legendCat, userDef);
+        componentFixture.simulateRender(container);
+
+        const rectNodes = componentFixture.findNodes('rect');
+        expect(rectNodes).to.be.of.length(8);
+        rectNodes.slice(0, 4).forEach((node, i) => {
+          expect(node).to.deep.include({ x: (38 * i) + 8, y: 0, width: 8, height: 8 });
+        });
+
+        rectNodes.slice(4).forEach((node, i) => {
+          expect(node).to.deep.include({ x: (38 * i) + 8, y: 16, width: 8, height: 8 });
+        });
+
+        const textNodes = componentFixture.findNodes('text');
+        expect(textNodes).to.be.of.length(8);
+        textNodes.slice(0, 4).forEach((node, i) => {
+          expect(node).to.deep.include({ x: (38 * i) + 24, y: 6.5 });
+        });
+
+        textNodes.slice(4).forEach((node, i) => {
+          expect(node).to.deep.include({ x: (38 * i) + 24, y: 22.5 });
+        });
       });
     });
   });
