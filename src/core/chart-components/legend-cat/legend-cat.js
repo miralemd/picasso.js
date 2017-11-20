@@ -331,7 +331,11 @@ function buildNodes({
       x: prevContainer.width || nextXitem,
       y: prevContainer.height || nextYitem,
       anchor: local.anchor,
-      renderingArea: rect
+      renderingArea: rect,
+      isStacked: true,
+      isHorizontal: local.isHorizontal,
+      maxInnerWidth: state.titleDef.labelBounds.width,
+      maxInnerHeight: state.titleDef.labelBounds.height
     }));
 
     nodes.push(prevContainer);
@@ -349,15 +353,15 @@ function buildNodes({
 
     labelItemDef.x = local.isHorizontal ? nextXitem : 0;
     labelItemDef.y = !local.isHorizontal ? nextYitem : 0;
-    if (!local.isStacked) {
-      labelItemDef.fixedInnerWidth = state.fixedInnerWidth;
-      labelItemDef.fixedInnerHeight = state.fixedInnerHeight;
-    }
+    labelItemDef.maxInnerWidth = state.maxInnerWidth;
+    labelItemDef.maxInnerHeight = state.maxInnerHeight;
 
     prevContainer = labelItem(extend(labelItemDef, {
       anchor: local.anchor,
       renderingArea: rect,
-      maxShapeSize: state.maxShapeSize
+      maxShapeSize: state.maxShapeSize,
+      isStacked: local.isStacked,
+      isHorizontal: local.isHorizontal
     }));
 
     availableSpace -= local.isHorizontal ? prevContainer.width : prevContainer.height;
@@ -502,8 +506,8 @@ const categoricalLegend = {
       maxShapeSize
     } = resolveSizes(state, local);
 
-    this.state.fixedInnerWidth = maxInnerWidth;
-    this.state.fixedInnerHeight = maxInnerHeight;
+    this.state.maxInnerWidth = maxInnerWidth;
+    this.state.maxInnerHeight = maxInnerHeight;
     this.state.maxOuterWidth = maxOuterWidth;
     this.state.maxOuterHeight = maxOuterHeight;
     this.state.maxShapeSize = maxShapeSize;

@@ -313,6 +313,21 @@ function chart(definition, context) {
     });
   }
 
+  const componentsFromPoint = (p) => {
+    const br = element.getBoundingClientRect();
+    const x = 'clientX' in p ? p.clientX : p.x;
+    const y = 'clientY' in p ? p.clientY : p.y;
+    const tp = { x: x - br.left, y: y - br.top };
+    const ret = [];
+    visibleComponents.forEach((c) => {
+      const r = c.instance.getRect();
+      if (NarrowPhaseCollision.testRectPoint(r, tp)) {
+        ret.push(c);
+      }
+    });
+    return ret;
+  };
+
   // Browser only
   const mount = () => {
     element.innerHTML = '';
@@ -350,11 +365,11 @@ function chart(definition, context) {
         return;
       }
 
-      for (let i = visibleComponents.length - 1; i >= 0; i--) {
-        const comp = visibleComponents[i];
+      const comps = componentsFromPoint(e);
 
+      for (let i = comps.length - 1; i >= 0; i--) {
+        const comp = comps[i];
         comp.instance.onBrushTap(e);
-
         if (stopBrushing) {
           stopBrushing = false;
           break;
@@ -363,11 +378,10 @@ function chart(definition, context) {
     };
 
     const onBrushOver = (e) => {
-      for (let i = visibleComponents.length - 1; i >= 0; i--) {
-        const comp = visibleComponents[i];
-
+      const comps = componentsFromPoint(e);
+      for (let i = comps.length - 1; i >= 0; i--) {
+        const comp = comps[i];
         comp.instance.onBrushOver(e);
-
         if (stopBrushing) {
           stopBrushing = false;
           break;
@@ -563,18 +577,7 @@ function chart(definition, context) {
    * @param {Object} p - Point with x- and y-cooridnate. The coordinate is relative to the browser viewport.
    * @returns {Object[]} Array of component contexts
    */
-  instance.componentsFromPoint = (p) => {
-    const br = element.getBoundingClientRect();
-    const tp = { x: p.x - br.left, y: p.y - br.top };
-    const ret = [];
-    visibleComponents.forEach((c) => {
-      const r = c.instance.getRect();
-      if (NarrowPhaseCollision.testRectPoint(r, tp)) {
-        ret.push(c.instance.ctx);
-      }
-    });
-    return ret;
-  };
+  instance.componentsFromPoint = p => componentsFromPoint(p).map(comp => comp.instance.ctx);
 
   /**
    * Get all nodes colliding with a geometrical shape (circle, line, rectangle, point, polygon).

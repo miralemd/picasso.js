@@ -60,8 +60,8 @@ export function resolveMargin(margin) {
 export function labelItem({
   x,
   y,
-  fixedInnerWidth,
-  fixedInnerHeight,
+  maxInnerWidth = 0,
+  maxInnerHeight = 0,
   color,
   label,
   labelBounds,
@@ -75,7 +75,9 @@ export function labelItem({
   maxShapeSize = shapeSize,
   data,
   justify = 0,
-  align = 0
+  align = 0,
+  isStacked = false,
+  isHorizontal = true
 }) {
   margin = resolveMargin(margin);
   const isAnchorLeft = anchor === 'left';
@@ -85,10 +87,24 @@ export function labelItem({
       type: 'text',
       data,
       collider: { type: null }
-    });
+    }
+  );
 
-  const innerWidth = fixedInnerWidth || labelBounds.width + shapeSize + symbolPadding;
-  const innerHeight = fixedInnerHeight || Math.max(labelBounds.height, shapeSize);
+  let innerWidth = maxInnerWidth;
+  let innerHeight = maxInnerHeight;
+  let justifySize = maxInnerHeight;
+  let alignSize = maxShapeSize;
+
+  if (isStacked) {
+    innerWidth = labelBounds.width + shapeSize + symbolPadding;
+    innerHeight = Math.max(labelBounds.height, shapeSize);
+    if (isHorizontal) {
+      alignSize = shapeSize;
+    } else {
+      justifySize = Math.max(labelBounds.height, shapeSize);
+    }
+  }
+
   const outerWidth = innerWidth + margin.left + margin.right;
   const outerHeight = innerHeight + margin.top + margin.bottom;
 
@@ -106,19 +122,19 @@ export function labelItem({
 
   container.collider = {
     type: 'rect',
-    x: container.x,
-    y: container.y,
-    width: container.width,
-    height: container.height
+    x: isAnchorLeft || !isHorizontal ? x : container.x,
+    y,
+    width: isStacked && !isHorizontal ? maxInnerWidth + margin.left + margin.right : container.width,
+    height: isStacked && isHorizontal ? maxInnerHeight + margin.top + margin.bottom : container.height
   };
 
   if (shape) {
     const r = shapeSize / 2;
     let symX = isAnchorLeft ? container.x + margin.left + r : (container.x + outerWidth) - margin.right - r;
     let symY = container.y + r + margin.top;
-    const wiggleX = getWiggle(symX, shapeSize, maxShapeSize, isAnchorLeft ? align : 1 - align);
+    const wiggleX = getWiggle(symX, shapeSize, alignSize, isAnchorLeft ? align : 1 - align);
     symX += isAnchorLeft ? wiggleX : -wiggleX;
-    symY += getWiggle(symY, shapeSize, innerHeight, justify);
+    symY += getWiggle(symY, shapeSize, justifySize, justify);
 
     let def;
     if (typeof shape !== 'object') {
@@ -145,9 +161,9 @@ export function labelItem({
     container.children.push(symbol);
   }
 
-  labelDef.x = isAnchorLeft ? container.x + margin.left + maxShapeSize + symbolPadding : (container.x + outerWidth) - margin.right - maxShapeSize - symbolPadding;
+  labelDef.x = isAnchorLeft ? container.x + margin.left + alignSize + symbolPadding : (container.x + outerWidth) - margin.right - alignSize - symbolPadding;
   labelDef.y = container.y + margin.top + labelMeasure.height;
-  labelDef.y += getWiggle(labelDef.y, labelBounds.height, innerHeight, justify);
+  labelDef.y += getWiggle(labelDef.y, labelBounds.height, justifySize || innerHeight, justify);
 
   container.children.push(labelDef);
 

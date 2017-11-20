@@ -92,10 +92,10 @@ export function createLineWithLabel({ chart, blueprint, renderer, p, settings, i
       formatter = chart.formatter(p.formatter);
     } else if (typeof p.formatter === 'object') {
       formatter = chart.formatter(p.formatter);
+    } else if (typeof p.scale !== 'undefined' && p.scale.data) {
       // TODO - Add support for array as source into formatter
-    } else if (typeof p.scale !== 'undefined' && typeof p.scale.sources !== 'undefined') {
-      formatter = chart.formatter({ source: p.scale.sources[0] });
-      // TODO - Add support for array as source into formatter
+      const scaleData = p.scale.data() && p.scale.data().fields;
+      formatter = scaleData && scaleData[0] ? scaleData[0].formatter() : null;
     }
 
     if (formatter) {

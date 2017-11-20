@@ -1,6 +1,14 @@
 # Changelog
   
-  ## **{{VERSION}}** - *({{DATE}})*
+## **{{VERSION}}** - *({{DATE}})*
+
+### Fixed
+
+- PIC-231 - Labels not formatted according to field formatter
+
+### Changed
+
+- Brush events are now properly delegated ([#556](https://github.com/qlik-trial/picasso.js/issues/556))
 
 ## **0.36.1** - *(2017-11-03)*
 

@@ -43,22 +43,27 @@ function tickBuilder(ticks, buildOpts) {
   return ticks.map(tick => buildTick(tick, buildOpts));
 }
 
-function labelBuilder(ticks, buildOpts, measureText) {
+function tickBandwidth(scale, tick) {
+  return tick ? Math.abs(tick.end - tick.start) : scale.bandwidth();
+}
+
+function labelBuilder(ticks, buildOpts, tickFn) {
   return ticks.map((tick) => {
-    buildOpts.textRect = calcActualTextRect({ tick, measureText, style: buildOpts.style });
+    tickFn(tick);
     const label = buildLabel(tick, buildOpts);
     label.data = tick.data;
     return label;
   });
 }
 
-function layeredLabelBuilder(ticks, buildOpts, settings, measureText) {
+function layeredLabelBuilder(ticks, buildOpts, settings, tickFn) {
   const padding = buildOpts.padding;
-  const padding2 = labelsSpacing(settings) + buildOpts.maxHeight + settings.labels.margin;
+  const spacing = labelsSpacing(settings);
   return ticks.map((tick, i) => {
+    tickFn(tick);
+    const padding2 = spacing + buildOpts.maxHeight + settings.labels.margin;
     buildOpts.layer = i % 2;
     buildOpts.padding = i % 2 === 0 ? padding : padding2;
-    buildOpts.textRect = calcActualTextRect({ tick, measureText, style: buildOpts.style });
     const label = buildLabel(tick, buildOpts);
     label.data = tick.data;
     return label;
@@ -90,23 +95,25 @@ export function filterOverlappingLabels(labels, ticks) {
   }
 }
 
-function discreteCalcMaxTextRect({ measureText, settings, innerRect, scale, tilted, layered }) {
+function discreteCalcMaxTextRect({ measureText, settings, innerRect, scale, tilted, layered, tick }) {
   const h = measureText({
     text: 'M',
     fontSize: settings.labels.fontSize,
     fontFamily: settings.labels.fontFamily
   }).height;
 
+  const bandwidth = tickBandwidth(scale, tick);
+
   const textRect = { width: 0, height: h };
   if (settings.align === 'left' || settings.align === 'right') {
     textRect.width = innerRect.width - labelsSpacing(settings) - settings.paddingEnd;
   } else if (layered) {
-    textRect.width = (scale.bandwidth() * innerRect.width) * 2;
+    textRect.width = (bandwidth * innerRect.width) * 2;
   } else if (tilted) {
     const radians = Math.abs(settings.labels.tiltAngle) * (Math.PI / 180);
     textRect.width = (innerRect.height - labelsSpacing(settings) - settings.paddingEnd - (h * Math.cos(radians))) / Math.sin(radians);
   } else {
-    textRect.width = scale.bandwidth() * innerRect.width;
+    textRect.width = bandwidth * innerRect.width;
   }
 
   textRect.width = getClampedValue({ value: textRect.width, maxValue: settings.labels.maxLengthPx, minValue: settings.labels.minLengthPx });
@@ -152,9 +159,10 @@ export default function nodeBuilder(isDiscrete) {
 
   function discrete() {
     calcMaxTextRectFn = discreteCalcMaxTextRect;
-    getStepSizeFn = ({ innerRect, scale, settings }) => {
+    getStepSizeFn = ({ innerRect, scale, settings, tick }) => {
       const size = settings.align === 'top' || settings.align === 'bottom' ? innerRect.width : innerRect.height;
-      return size * scale.bandwidth();
+      const bandwidth = tickBandwidth(scale, tick);
+      return size * bandwidth;
     };
     return discrete;
   }
@@ -186,24 +194,27 @@ export default function nodeBuilder(isDiscrete) {
       majorTickNodes = tickBuilder(major, buildOpts);
     }
     if (settings.labels.show) {
-      const textRect = calcMaxTextRectFn({ measureText, settings, innerRect, ticks, scale, tilted, layered });
       const padding = labelsSpacing(settings);
-      buildOpts.stepSize = getStepSizeFn({ innerRect, scale, ticks, settings });
       buildOpts.style = settings.labels;
       buildOpts.padding = padding;
-      buildOpts.maxWidth = textRect.width;
-      buildOpts.maxHeight = textRect.height;
       buildOpts.tilted = tilted;
       buildOpts.layered = layered;
       buildOpts.angle = settings.labels.tiltAngle;
       buildOpts.paddingEnd = settings.paddingEnd;
       buildOpts.textBounds = textBounds;
+      const tickFn = (tick) => {
+        const maxSize = calcMaxTextRectFn({ measureText, settings, innerRect, ticks, scale, tilted, layered, tick });
+        buildOpts.maxWidth = maxSize.width;
+        buildOpts.maxHeight = maxSize.height;
+        buildOpts.textRect = calcActualTextRect({ tick, measureText, style: buildOpts.style });
+        buildOpts.stepSize = getStepSizeFn({ innerRect, scale, ticks, settings, tick });
+      };
 
       let labelNodes = [];
       if (layered && (settings.align === 'top' || settings.align === 'bottom')) {
-        labelNodes = layeredLabelBuilder(major, buildOpts, settings, measureText);
+        labelNodes = layeredLabelBuilder(major, buildOpts, settings, tickFn);
       } else {
-        labelNodes = labelBuilder(major, buildOpts, measureText);
+        labelNodes = labelBuilder(major, buildOpts, tickFn);
       }
 
       // Remove labels (and paired tick) that are overlapping
