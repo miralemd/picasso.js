@@ -18,10 +18,13 @@
       }
     }
   ```
+- PIC-217 - [Labeling strategy](./docs/dist/chart-components/labels.md) for horizontal bars ([#562](https://github.com/qlik-trial/picasso.js/pull/562))
 
 ### Fixed
 
-- PIC-231 - Labels not formatted according to field formatter
+- PIC-231 - Labels not formatted according to field formatter ([#552](https://github.com/qlik-trial/picasso.js/pull/552))
+- tree accessor does not return data ([#557](https://github.com/qlik-trial/picasso.js/pull/557))
+- weird align/justify in categorical legend ([#542](https://github.com/qlik-trial/picasso.js/issues/542))
 
 ### Changed
 
