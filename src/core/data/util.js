@@ -67,7 +67,9 @@ function normalizeProperties(cfg, dataset, dataProperties, main) {
       prop.value = pConfig;
       prop.field = mainField;
     } else if (typeof pConfig === 'object') {
-      if (typeof pConfig.field !== 'undefined') {
+      if (pConfig.fields) {
+        prop.fields = pConfig.fields.map(ff => normalizeProperties(cfg, dataset, { main: ff }, main).main);
+      } else if (typeof pConfig.field !== 'undefined') {
         prop.type = 'field';
         prop.field = dataset.field(pConfig.field);
         prop.value = prop.field.value;
