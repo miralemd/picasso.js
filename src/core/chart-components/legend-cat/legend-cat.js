@@ -133,10 +133,10 @@ function createButtons({
       y,
       width,
       height,
-      action: isLeft ? '-' : '+',
-      direction: isLeft ? 'up' : 'down',
-      rect: isLeft ? buttonRectMinus : buttonRectPlus,
-      symbol: isLeft ? buttonSymbolMinus : buttonSymbolPlus
+      action: '-',
+      direction: 'up',
+      rect: buttonRectMinus,
+      symbol: buttonSymbolMinus
     }));
 
     buttons.push(createButton({
@@ -144,10 +144,10 @@ function createButtons({
       y,
       width,
       height,
-      action: isLeft ? '+' : '-',
-      direction: isLeft ? 'down' : 'up',
-      rect: isLeft ? buttonRectPlus : buttonRectMinus,
-      symbol: isLeft ? buttonSymbolPlus : buttonSymbolMinus
+      action: '+',
+      direction: 'down',
+      rect: buttonRectPlus,
+      symbol: buttonSymbolPlus
     }));
   }
 
