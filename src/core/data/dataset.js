@@ -2,7 +2,12 @@ import resolve from './json-path-resolver';
 import field from './field';
 import extract from './extractor-matrix';
 
-import { findField, getPropsInfo } from './util';
+import {
+  findField,
+  getPropsInfo,
+  collect,
+  track
+} from './util';
 
 const filters = {
   numeric: values => values.filter(v => typeof v === 'number' && !isNaN(v))
@@ -102,7 +107,11 @@ export default function ds({
   return dataset;
 }
 
-ds.normalizeProperties = getPropsInfo;
+ds.util = {
+  normalizeConfig: getPropsInfo,
+  collect,
+  track
+};
 
 /**
  * @typedef {object} data-extract-config

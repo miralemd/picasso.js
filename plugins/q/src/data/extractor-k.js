@@ -94,7 +94,7 @@ function datumExtract(propCfg, cell, {
   return datum;
 }
 
-export default function extract(config, dataset, cache, deps) {
+export default function extract(config, dataset, cache, util) {
   const cfgs = Array.isArray(config) ? config : [config];
   let dataItems = [];
   cfgs.forEach((cfg) => {
@@ -102,7 +102,7 @@ export default function extract(config, dataset, cache, deps) {
       const cube = dataset.raw();
       const sourceKey = dataset.key();
       const f = typeof cfg.field === 'object' ? cfg.field : dataset.field(cfg.field);
-      const { props, main } = deps.normalizeConfig(cfg, dataset);
+      const { props, main } = util.normalizeConfig(cfg, dataset);
       const propsArr = Object.keys(props);
       const rootPath = '/qStackedDataPages/*/qData';
       if (!cache.tree) {
@@ -116,7 +116,6 @@ export default function extract(config, dataset, cache, deps) {
       const trackType = typeof cfg.trackBy;
       const tracker = {};
       const trackedItems = [];
-      let trackId;
 
       const items = nodeFn(cache.tree);
       propsArr.forEach((prop) => {
@@ -171,41 +170,25 @@ export default function extract(config, dataset, cache, deps) {
           }
         });
         // collect items based on the trackBy value
-          // items with the same trackBy value are placed in an array and reduced later
+        // items with the same trackBy value are placed in an array and reduced later
         if (track) {
-          trackId = trackType === 'function' ? cfg.trackBy(itemData) : itemData[cfg.trackBy];
-          let trackedItem = tracker[trackId];
-          if (!trackedItem) {
-            trackedItem = tracker[trackId] = {
-              items: [],
-              id: trackId
-            };
-            trackedItems.push(trackedItem);
-          }
-          trackedItem.items.push(ret);
+          util.track({
+            cfg,
+            itemData,
+            obj: ret,
+            target: trackedItems,
+            tracker,
+            trackType
+          });
         }
         return ret;
       });
       // reduce if items have been grouped
       if (track) {
-        dataItems.push(...trackedItems.map((t) => {
-          let mainValues = t.items.map(item => item.value);
-          const mainReduce = main.reduce;
-          const ret = {
-            value: mainReduce ? mainReduce(mainValues) : mainValues,
-            source: t.items[0].source
-          };
-          propsArr.forEach((prop) => {
-            let values = t.items.map(item => item[prop].value);
-            const reduce = props[prop].reduce;
-            ret[prop] = {
-              value: reduce ? reduce(values) : values
-            };
-            if (t.items[0][prop].source) {
-              ret[prop].source = t.items[0][prop].source;
-            }
-          });
-          return ret;
+        dataItems.push(...util.collect(trackedItems, {
+          main,
+          propsArr,
+          props
         }));
       } else {
         dataItems.push(...mapped);

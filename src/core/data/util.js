@@ -126,3 +126,65 @@ export function getPropsInfo(cfg, dataset) {
   return { props, main };
 }
 
+// collect items that have been grouped and reduce per group and property
+export function collect(trackedItems, {
+  main,
+  propsArr,
+  props
+}) {
+  let dataItems = [];
+  dataItems.push(...trackedItems.map((t) => {
+    let mainValues = t.items.map(item => item.value);
+    const mainReduce = main.reduce;
+    const ret = {
+      value: mainReduce ? mainReduce(mainValues) : mainValues,
+      source: t.items[0].source
+    };
+    propsArr.forEach((prop) => {
+      const p = props[prop];
+      let values = [];
+      if (p.fields) {
+        let propItems = t.items.map(item => item[prop]);
+        p.fields.forEach((pp, fidx) => {
+          let fieldValues = propItems.map(fieldItem => fieldItem[fidx].value);
+
+          // reduce values of the field
+          const reduce = pp.reduce;
+          values.push(reduce ? reduce(fieldValues) : fieldValues);
+        });
+      } else {
+        values = t.items.map(item => item[prop].value);
+      }
+      const reduce = props[prop].reduce;
+      ret[prop] = {
+        value: reduce ? reduce(values) : values
+      };
+      if (t.items[0][prop].source) {
+        ret[prop].source = t.items[0][prop].source;
+      }
+    });
+    return ret;
+  }));
+
+  return dataItems;
+}
+
+export function track({
+  cfg,
+  itemData,
+  obj,
+  target,
+  tracker,
+  trackType
+}) {
+  const trackId = trackType === 'function' ? cfg.trackBy(itemData) : itemData[cfg.trackBy];
+  let trackedItem = tracker[trackId];
+  if (!trackedItem) {
+    trackedItem = tracker[trackId] = {
+      items: [],
+      id: trackId
+    };
+    target.push(trackedItem);
+  }
+  trackedItem.items.push(obj);
+}

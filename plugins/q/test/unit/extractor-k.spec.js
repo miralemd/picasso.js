@@ -1,12 +1,16 @@
 import extract from '../../src/data/extractor-k';
 
 import {
-  getPropsInfo
+  getPropsInfo,
+  collect,
+  track
 } from '../../../../src/core/data/util';
 
 describe('q-data-extractor-k', () => {
   const deps = {
-    normalizeConfig: getPropsInfo
+    normalizeConfig: getPropsInfo,
+    collect,
+    track
   };
   describe('without pseudo', () => {
     const stackedPageWithoutPseudo = {

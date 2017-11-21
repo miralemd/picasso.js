@@ -70,7 +70,31 @@ function datumExtract(propCfg, cell, {
   return datum;
 }
 
-export default function extract(config, dataset, cache, { normalizeConfig }) {
+function cellToValue({
+  cache,
+  f,
+  mainCell,
+  p,
+  prop,
+  page,
+  rowIdx,
+  row,
+  sourceKey,
+  target,
+  targetProp
+}) {
+  let propCell = mainCell;
+  if (p.field && p.field !== f) {
+    const propCellFn = getFieldAccessor(p.field, page, { cache });
+    if (propCellFn === -1) {
+      return;
+    }
+    propCell = extend({ qRow: rowIdx }, propCellFn(row));
+  }
+  target[targetProp] = datumExtract(p, propCell, { key: sourceKey }, prop);
+}
+
+export default function extract(config, dataset, cache, util) {
   const cfgs = Array.isArray(config) ? config : [config];
   let dataItems = [];
   cfgs.forEach((cfg) => {
@@ -78,7 +102,7 @@ export default function extract(config, dataset, cache, { normalizeConfig }) {
       const cube = dataset.raw();
       const sourceKey = dataset.key();
       const f = typeof cfg.field === 'object' ? cfg.field : dataset.field(cfg.field);
-      const { props, main } = normalizeConfig(cfg, dataset);
+      const { props, main } = util.normalizeConfig(cfg, dataset);
       const propsArr = Object.keys(props);
 
       const track = !!cfg.trackBy;
@@ -86,7 +110,6 @@ export default function extract(config, dataset, cache, { normalizeConfig }) {
       const tracker = {};
       const trackedItems = [];
       const items = [];
-      let trackId;
 
       cube.qDataPages.forEach((page) => {
         const fn = getFieldAccessor(f, page, { cache });
@@ -102,30 +125,40 @@ export default function extract(config, dataset, cache, { normalizeConfig }) {
           // assign 'value' and 'source' to each property
           propsArr.forEach((prop) => {
             const p = props[prop];
-            let propCell = mainCell;
-            if (p.field && p.field !== f) {
-              const propCellFn = getFieldAccessor(p.field, page, { cache });
-              if (propCellFn === -1) {
-                return;
-              }
-              propCell = extend({ qRow: rowIdx }, propCellFn(row));
+            let arr = p.fields || [p];
+
+            if (p.fields) {
+              ret[prop] = [];
             }
-            ret[prop] = datumExtract(p, propCell, { key: sourceKey }, prop);
+            arr.forEach((pp, fidx) => {
+              cellToValue({
+                cache,
+                f,
+                mainCell,
+                p: pp,
+                prop,
+                props,
+                page,
+                rowIdx,
+                row,
+                sourceKey,
+                target: p.fields ? ret[prop] : ret,
+                targetProp: p.fields ? fidx : prop
+              });
+            });
           });
 
           // collect items based on the trackBy value
           // items with the same trackBy value are placed in an array and reduced later
           if (track) {
-            trackId = trackType === 'function' ? cfg.trackBy(mainCell) : mainCell[cfg.trackBy];
-            let trackedItem = tracker[trackId];
-            if (!trackedItem) {
-              trackedItem = tracker[trackId] = {
-                items: [],
-                id: trackId
-              };
-              trackedItems.push(trackedItem);
-            }
-            trackedItem.items.push(ret);
+            util.track({
+              cfg,
+              itemData: mainCell,
+              obj: ret,
+              target: trackedItems,
+              tracker,
+              trackType
+            });
           }
 
           items.push(ret);
@@ -134,24 +167,10 @@ export default function extract(config, dataset, cache, { normalizeConfig }) {
 
       // reduce if items have been grouped
       if (track) {
-        dataItems.push(...trackedItems.map((t) => {
-          let mainValues = t.items.map(item => item.value);
-          const mainReduce = main.reduce;
-          const ret = {
-            value: mainReduce ? mainReduce(mainValues) : mainValues,
-            source: t.items[0].source
-          };
-          propsArr.forEach((prop) => {
-            let values = t.items.map(item => item[prop].value);
-            const reduce = props[prop].reduce;
-            ret[prop] = {
-              value: reduce ? reduce(values) : values
-            };
-            if (t.items[0][prop].source) {
-              ret[prop].source = t.items[0][prop].source;
-            }
-          });
-          return ret;
+        dataItems.push(...util.collect(trackedItems, {
+          main,
+          propsArr,
+          props
         }));
       } else {
         dataItems.push(...items);

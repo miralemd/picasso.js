@@ -5,11 +5,14 @@ import {
 
 describe('augment-hierarchy', () => {
   before(() => {
-    q.normalizeProperties = getPropsInfo;
+    q.util = {
+      normalizeConfig: getPropsInfo
+    };
+    // q.normalizeProperties = getPropsInfo;
   });
 
   after(() => {
-    q.normalizeProperties = undefined;
+    q.util = undefined;
   });
 
   // describe('hierarchical data', () => {
