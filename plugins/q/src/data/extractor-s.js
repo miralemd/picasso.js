@@ -146,6 +146,12 @@ export default function extract(config, dataset, cache, util) {
                 targetProp: p.fields ? fidx : prop
               });
             });
+            if (!track && p.fields) {
+              const fieldValues = ret[prop].map(v => v.value);
+              ret[prop] = {
+                value: typeof p.reduce === 'function' ? p.reduce(fieldValues) : fieldValues
+              };
+            }
           });
 
           // collect items based on the trackBy value

@@ -385,7 +385,7 @@ describe('extractor-s', () => {
     ]);
   });
 
-  it('should return reduced values from multiple fields', () => {
+  it('should return reduced values from multiple fields when tracking', () => {
     const fs = [{
       title: () => 'reduceMe',
       key: () => 'reduuuced'
@@ -463,6 +463,92 @@ describe('extractor-s', () => {
         value: 'ett',
         source: { field: 'reduuuced', key: 'nyckel' },
         total: { value: [38, -40] }
+      }
+    ]);
+  });
+
+  it('should return reduced values from multiple fields without tracking', () => {
+    const fs = [{
+      title: () => 'reduceMe',
+      key: () => 'reduuuced'
+    }, {
+      title: () => 'minime',
+      key: () => 'measure1'
+    }, {
+      title: () => 'negative',
+      key: () => 'measure2'
+    }];
+    const c = {
+      qMode: 'S',
+      qDimensionInfo: [{ qStateCounts: {} }],
+      qMeasureInfo: [],
+      qDataPages: [{
+        qArea: { qLeft: 0, qTop: 5, qWidth: 3, qHeight: 3 },
+        qMatrix: [
+          [{ qNum: 3, qText: 'tre', qElemNumber: 1 }, { qNum: 34 }, { qNum: -20 }],
+          [{ qNum: 5, qText: 'fem', qElemNumber: 1 }, { qNum: 36 }, { qNum: -30 }],
+          [{ qNum: 1, qText: 'ett', qElemNumber: 3 }, { qNum: 38 }, { qNum: -40 }]
+        ]
+      }]
+    };
+    const ds = {
+      raw: () => c,
+      key: () => 'nyckel',
+      field: sinon.stub()
+    };
+
+    ds.field.withArgs('reduuuced').returns(fs[0]);
+    ds.field.withArgs('minime').returns(fs[1]);
+    ds.field.withArgs('negative').returns(fs[2]);
+    ds.field.throws({ message: 'Field not found' });
+
+    const mainField = ds.field('reduuuced');
+    const meField = ds.field('minime');
+    const negField = ds.field('negative');
+    deps.normalizeConfig.returns({
+      main: {
+        field: mainField,
+        value: v => v.qText,
+        reduce: values => values.map(v => v.qText).join(',')
+      },
+      props: {
+        total: {
+          fields: [
+            {
+              value: d => d.qNum,
+              field: meField,
+              source: { key: ds.key(), field: meField.key() },
+              reduce: values => Math.min(...values)
+            },
+            {
+              value: d => d.qNum,
+              field: negField,
+              source: { key: ds.key(), field: negField.key() },
+              reduce: values => Math.min(...values)
+            }
+          ],
+          reduce: values => values.join(':')
+        }
+      }
+    });
+    const m = extract({
+      field: 'reduuuced',
+    }, ds, { fields: fs }, deps);
+    expect(m).to.eql([
+      {
+        value: 'tre',
+        source: { field: 'reduuuced', key: 'nyckel' },
+        total: { value: '34:-20' }
+      },
+      {
+        value: 'fem',
+        source: { field: 'reduuuced', key: 'nyckel' },
+        total: { value: '36:-30' }
+      },
+      {
+        value: 'ett',
+        source: { field: 'reduuuced', key: 'nyckel' },
+        total: { value: '38:-40' }
       }
     ]);
   });
