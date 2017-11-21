@@ -112,10 +112,10 @@ export default function scaleHierarchicalBand(settings = {}, data = {}) {
    * @param { Object[] } [val] - Array where each value is a reference to a node, going from depth 1 to n. If omitted, bandwidth for the leaf nodes is return.
    * @return { number }
    */
-  const orgBandwidth = bandInstance.bandwidth;
+
   hBand.bandwidth = function bandwidth(val) {
     const item = items[String(val)];
-    const bw = orgBandwidth();
+    const bw = bandInstance.bandwidth();
     if (item && !item.isLeaf) {
       const left = hBand(item.leftEdge);
       const right = hBand(item.rightEdge);
@@ -129,11 +129,10 @@ export default function scaleHierarchicalBand(settings = {}, data = {}) {
    * @param { Object[] } [val] - Array where each value is a reference to a node, going from depth 1 to n. If omitted, step size for the leaf nodes is return.
    * @return { number }
    */
-  const orgStep = bandInstance.step;
   hBand.step = function step(val) {
     const item = items[String(val)];
     const leafCount = item ? item.count : 1;
-    let stepSize = orgStep();
+    let stepSize = bandInstance.step();
     stepSize *= leafCount;
     return stepSize;
   };
@@ -181,10 +180,8 @@ export default function scaleHierarchicalBand(settings = {}, data = {}) {
     });
   };
 
-  // const stgns = generateSettings(settings || {}, data.root); // TODO look into supporting setting functions
-
   const orgPxScale = bandInstance.pxScale;
-  hBand.pxScale = function pxScale(size) { // TODO support pxScaling
+  hBand.pxScale = function pxScale(size) {
     bandInstance = orgPxScale(size);
     return hBand;
   };

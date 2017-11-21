@@ -180,7 +180,55 @@ describe('Hierarchical band scale', () => {
     });
   });
 
-  describe.skip('pxScale', () => { // Not implemented yet
+  describe('pxScale', () => {
+    it('with start align should adjust correctly for leaf nodes', () => {
+      settings.maxPxStep = 10;
+      settings.padding = 0;
+      settings.align = 0;
+      scale = hBand(settings, data);
+      const pxScale = scale.pxScale(100);
 
+      expect(pxScale.step()).to.approximately(0.1, 0.000001);
+      expect(pxScale.bandwidth()).to.approximately(0.1, 0.000001);
+      expect(pxScale(['left', 'A'])).to.equals(0.0);
+      expect(pxScale(['right', 'D'])).to.approximately(0.4, 0.000001);
+    });
+
+    it('with start align should adjust correctly for branch nodes', () => {
+      settings.maxPxStep = 10;
+      settings.padding = 0;
+      settings.align = 0;
+      scale = hBand(settings, data);
+      const pxScale = scale.pxScale(100);
+
+      expect(pxScale.step(['left'])).to.approximately(0.1 * 3, 0.000001);
+      expect(pxScale.bandwidth(['left'])).to.approximately(0.1 * 3, 0.000001);
+      expect(pxScale(['left'])).to.equals(0.0);
+      expect(pxScale(['right'])).to.approximately(0.4, 0.000001);
+    });
+
+    it('with padding should adjust correctly for leaf nodes', () => {
+      settings.maxPxStep = 10;
+      settings.padding = 0.5;
+      scale = hBand(settings, data);
+      const pxScale = scale.pxScale(100);
+
+      expect(pxScale.step()).to.approximately(0.1, 0.000001);
+      expect(pxScale.bandwidth()).to.approximately(0.05, 0.000001);
+      expect(pxScale(['left', 'A'])).to.approximately(0.225, 0.000001);
+      expect(pxScale(['right', 'D'])).to.approximately(0.625, 0.000001);
+    });
+
+    it('with padding should adjust correctly for branch nodes', () => {
+      settings.maxPxStep = 10;
+      settings.padding = 0.5;
+      scale = hBand(settings, data);
+      const pxScale = scale.pxScale(100);
+
+      expect(pxScale.step(['left'])).to.approximately(0.1 * 3, 0.000001);
+      expect(pxScale.bandwidth(['left'])).to.approximately((0.1 * 3) - 0.05, 0.000001); // Leaf node step size * 3 leaf nodes - padding
+      expect(pxScale(['left'])).to.approximately(0.225, 0.000001);
+      expect(pxScale(['right'])).to.approximately(0.625, 0.000001);
+    });
   });
 });
