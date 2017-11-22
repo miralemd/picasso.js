@@ -445,7 +445,8 @@ describe('extractor-s', () => {
               reduce: values => Math.min(...values)
             }
           ],
-          reduce: values => values
+          value: values => values.join('::'),
+          reduce: values => values.join(', ')
         }
       }
     });
@@ -457,12 +458,12 @@ describe('extractor-s', () => {
       {
         value: 'tre,fem',
         source: { field: 'reduuuced', key: 'nyckel' },
-        total: { value: [34, -30] }
+        total: { value: '34::-20, 36::-30' }
       },
       {
         value: 'ett',
         source: { field: 'reduuuced', key: 'nyckel' },
-        total: { value: [38, -40] }
+        total: { value: '38::-40' }
       }
     ]);
   });
@@ -527,12 +528,12 @@ describe('extractor-s', () => {
               reduce: values => Math.min(...values)
             }
           ],
-          reduce: values => values.join(':')
+          value: values => values.join(':')
         }
       }
     });
     const m = extract({
-      field: 'reduuuced',
+      field: 'reduuuced'
     }, ds, { fields: fs }, deps);
     expect(m).to.eql([
       {

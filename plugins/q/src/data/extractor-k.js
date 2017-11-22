@@ -119,54 +119,73 @@ export default function extract(config, dataset, cache, util) {
 
       const items = nodeFn(cache.tree);
       propsArr.forEach((prop) => {
-        const p = props[prop];
-        if (p.field) {
-          if (p.field === f) {
-            p.isSame = true;
-          } else {
-            const depthObject = getFieldDepth(p.field, { cube, cache });
-            const accessors = getFieldAccessor(itemDepthObject, depthObject, 'data');
-            p.accessor = accessors.nodeFn;
-            p.attrAccessor = accessors.attrFn;
+        const pCfg = props[prop];
+        const arr = pCfg.fields ? pCfg.fields : [pCfg];
+        arr.forEach((p) => {
+          if (p.field) {
+            if (p.field === f) {
+              p.isSame = true;
+            } else {
+              const depthObject = getFieldDepth(p.field, { cube, cache });
+              const accessors = getFieldAccessor(itemDepthObject, depthObject, 'data');
+              p.accessor = accessors.nodeFn;
+              p.attrAccessor = accessors.attrFn;
+            }
           }
-        }
+        });
       });
       const mapped = items.map((item) => {
         const itemData = attrFn ? attrFn(item.data) : item.data;
         const ret = datumExtract(main, itemData, { key: sourceKey });
         propsArr.forEach((prop) => {
-          const p = props[prop];
-          let fn;
-          let value;
-          if (p.type === 'primitive') {
-            value = p.value;
-          } else {
-            if (typeof p.value === 'function') { // accessor function
-              fn = p.value;
-            }
-            if (p.accessor) {
-              value = p.accessor(item);
-              if (Array.isArray(value)) {
-                if (p.attrAccessor) {
-                  value = value.map(p.attrAccessor);
-                }
-                if (fn) {
-                  value = value.map(fn);
-                  fn = null;
-                }
-                value = p.reduce ? p.reduce(value) : value;
-              } else {
-                value = p.attrAccessor ? p.attrAccessor(value) : value;
-              }
-            } else {
-              value = itemData;
-            }
+          const pCfg = props[prop];
+          const arr = pCfg.fields || [pCfg];
+          let coll;
+          if (pCfg.fields) {
+            coll = [];
           }
-          ret[prop] = {
-            value: fn ? fn(value) : value
-          };
-          if (p.field) {
-            ret[prop].source = { field: p.field.key(), key: sourceKey };
+          arr.forEach((p) => {
+            let fn;
+            let value;
+            if (p.type === 'primitive') {
+              value = p.value;
+            } else {
+              if (typeof p.value === 'function') { // accessor function
+                fn = p.value;
+              }
+              if (p.accessor) {
+                value = p.accessor(item);
+                if (Array.isArray(value)) { // propably descendants
+                  if (p.attrAccessor) {
+                    value = value.map(p.attrAccessor);
+                  }
+                  if (fn) {
+                    value = value.map(fn);
+                    fn = null;
+                  }
+                  value = p.reduce ? p.reduce(value) : value;
+                } else {
+                  value = p.attrAccessor ? p.attrAccessor(value) : value;
+                }
+              } else {
+                value = itemData;
+              }
+            }
+            if (pCfg.fields) {
+              coll.push(fn ? fn(value) : value);
+            } else {
+              ret[prop] = {
+                value: fn ? fn(value) : value
+              };
+              if (p.field) {
+                ret[prop].source = { field: p.field.key(), key: sourceKey };
+              }
+            }
+          });
+          if (coll) {
+            ret[prop] = {
+              value: typeof pCfg.value === 'function' ? pCfg.value(coll) : coll
+            };
           }
         });
         // collect items based on the trackBy value

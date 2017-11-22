@@ -146,10 +146,16 @@ export default function extract(config, dataset, cache, util) {
                 targetProp: p.fields ? fidx : prop
               });
             });
-            if (!track && p.fields) {
+            // if (!track && p.fields) {
+            //   const fieldValues = ret[prop].map(v => v.value);
+            //   ret[prop] = {
+            //     value: typeof p.reduce === 'function' ? p.reduce(fieldValues) : fieldValues
+            //   };
+            // }
+            if (p.fields) {
               const fieldValues = ret[prop].map(v => v.value);
               ret[prop] = {
-                value: typeof p.reduce === 'function' ? p.reduce(fieldValues) : fieldValues
+                value: typeof p.value === 'function' ? p.value(fieldValues) : typeof p.value !== 'undefined' ? p.value : fieldValues  // eslint-disable-line no-nested-ternary
               };
             }
           });

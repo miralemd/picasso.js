@@ -143,9 +143,10 @@ export function collect(trackedItems, {
       source: t.items[0].source
     };
     propsArr.forEach((prop) => {
-      const p = props[prop];
       let values = [];
-      if (p.fields) {
+      /*
+      const p = props[prop];
+      if (p.fields && false) {
         let propItems = t.items.map(item => item[prop]);
         p.fields.forEach((pp, fidx) => {
           let fieldValues = propItems.map(fieldItem => fieldItem[fidx].value);
@@ -154,9 +155,9 @@ export function collect(trackedItems, {
           const reduce = pp.reduce;
           values.push(reduce ? reduce(fieldValues) : fieldValues);
         });
-      } else {
-        values = t.items.map(item => item[prop].value);
-      }
+      } else { */
+      values = t.items.map(item => item[prop].value);
+      // }
       const reduce = props[prop].reduce;
       ret[prop] = {
         value: reduce ? reduce(values) : values
