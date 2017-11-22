@@ -71,9 +71,7 @@ export default function q({
 
   const pages = cube.qMode === 'K' ? cube.qStackedDataPages : cube.qDataPages;
 
-  const deps = {
-    normalizeConfig: q.normalizeProperties
-  };
+  const deps = q.util;
 
   const dataset = {
     key: () => key,

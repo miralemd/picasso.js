@@ -119,27 +119,29 @@ export default function augment(config, dataset, cache, deps) {
     const currentItemsPath = currentField ? getTreePath(currentField, { cube, cache }) : rootPath;
 
     propsArr.forEach((prop) => {
-      const p = props[prop];
-
-      if (p.field) {
-        const fieldPath = getTreePath(p.field, { cube, cache });
-        if (fieldPath === currentItemsPath) {
-          p.isSame = true;
-        } else if (isRoot) {
-          p.isDescendant = true;
-          p.path = `${fieldPath}/data`;
-        } else {
-          const isDescendant = fieldPath.match(/\//g).length > currentItemsPath.match(/\//g).length;
-          let pathToNode = '';
-          if (isDescendant) {
-            pathToNode = `${fieldPath.replace(currentItemsPath, '').replace(/^\/\*/, '')}/data`;
+      const pCfg = props[prop];
+      const arr = pCfg.fields ? pCfg.fields : [pCfg];
+      arr.forEach((p) => {
+        if (p.field) {
+          const fieldPath = getTreePath(p.field, { cube, cache });
+          if (fieldPath === currentItemsPath) {
+            p.isSame = true;
+          } else if (isRoot) {
+            p.isDescendant = true;
+            p.path = `${fieldPath}/data`;
           } else {
-            pathToNode = Math.ceil((currentItemsPath.match(/\//g).length - fieldPath.match(/\//g).length) / 2);
+            const isDescendant = fieldPath.match(/\//g).length > currentItemsPath.match(/\//g).length;
+            let pathToNode = '';
+            if (isDescendant) {
+              pathToNode = `${fieldPath.replace(currentItemsPath, '').replace(/^\/\*/, '')}/data`;
+            } else {
+              pathToNode = Math.ceil((currentItemsPath.match(/\//g).length - fieldPath.match(/\//g).length) / 2);
+            }
+            p.isDescendant = isDescendant;
+            p.path = pathToNode;
           }
-          p.isDescendant = isDescendant;
-          p.path = pathToNode;
         }
-      }
+      });
     });
   }
 
@@ -155,39 +157,57 @@ export default function augment(config, dataset, cache, deps) {
       value: typeof main.value === 'function' ? main.value(currentOriginal) : currentOriginal
     };
     propsArr.forEach((prop) => {
-      const p = props[prop];
-      let fn = v => v;
-      let value;
-      if (p.type === 'primitive') {
-        value = p.value;
-      } else {
-        if (typeof p.value === 'function') {
-          fn = v => p.value(v);
-        }
-        if (!p.field) {
-          value = currentOriginal;
-        } else if (p.isSame) {
-          value = currentOriginal;
-        } else if (p.isDescendant) {
-          value = picker(p.path, node);
-          if (Array.isArray(value)) {
-            value = value.map(fn);
-            fn = p.reduce || (v => v.join(', '));
-          }
-        } else if (p.path) { // ancestor
-          const num = p.path || 0;
-          let it = node;
-          for (let i = 0; i < num; i++) {
-            it = it.parent;
-          }
-          value = it.data.value;
-        }
+      const pCfg = props[prop];
+      const arr = pCfg.fields ? pCfg.fields : [pCfg];
+      let coll;
+      if (pCfg.fields) {
+        coll = [];
       }
-      node.data[prop] = {
-        value: fn(value)
-      };
-      if (p.source) {
-        node.data[prop].source = { field: p.source };
+      arr.forEach((p) => {
+        let fn = v => v;
+        let value;
+        if (p.type === 'primitive') {
+          value = p.value;
+        } else {
+          if (typeof p.value === 'function') {
+            fn = (v, n) => p.value(v, n);
+          }
+          if (!p.field) {
+            value = currentOriginal;
+          } else if (p.isSame) {
+            value = currentOriginal;
+          } else if (p.isDescendant) {
+            value = picker(p.path, node);
+            if (Array.isArray(value)) {
+              value = value.map(fn);
+              fn = p.reduce || (v => v.join(', '));
+            }
+          } else if (p.path) { // ancestor
+            const num = p.path || 0;
+            let it = node;
+            for (let i = 0; i < num; i++) {
+              it = it.parent;
+            }
+            value = it.data.value;
+          }
+        }
+        if (pCfg.fields) {
+          coll.push(fn(value, node));
+        } else {
+          node.data[prop] = {
+            value: fn(value, node)
+          };
+          if (p.source) {
+            node.data[prop].source = { field: p.source };
+          }
+        }
+      });
+
+      // reduce row if multiple fields
+      if (coll) {
+        node.data[prop] = {
+          value: typeof pCfg.value === 'function' ? pCfg.value(coll, node) : coll
+        };
       }
     });
   });

@@ -67,7 +67,9 @@ function normalizeProperties(cfg, dataset, dataProperties, main) {
       prop.value = pConfig;
       prop.field = mainField;
     } else if (typeof pConfig === 'object') {
-      if (typeof pConfig.field !== 'undefined') {
+      if (pConfig.fields) {
+        prop.fields = pConfig.fields.map(ff => normalizeProperties(cfg, dataset, { main: ff }, main).main);
+      } else if (typeof pConfig.field !== 'undefined') {
         prop.type = 'field';
         prop.field = dataset.field(pConfig.field);
         prop.value = prop.field.value;
@@ -126,3 +128,66 @@ export function getPropsInfo(cfg, dataset) {
   return { props, main };
 }
 
+// collect items that have been grouped and reduce per group and property
+export function collect(trackedItems, {
+  main,
+  propsArr,
+  props
+}) {
+  let dataItems = [];
+  dataItems.push(...trackedItems.map((t) => {
+    let mainValues = t.items.map(item => item.value);
+    const mainReduce = main.reduce;
+    const ret = {
+      value: mainReduce ? mainReduce(mainValues) : mainValues,
+      source: t.items[0].source
+    };
+    propsArr.forEach((prop) => {
+      let values = [];
+      /*
+      const p = props[prop];
+      if (p.fields && false) {
+        let propItems = t.items.map(item => item[prop]);
+        p.fields.forEach((pp, fidx) => {
+          let fieldValues = propItems.map(fieldItem => fieldItem[fidx].value);
+
+          // reduce values of the field
+          const reduce = pp.reduce;
+          values.push(reduce ? reduce(fieldValues) : fieldValues);
+        });
+      } else { */
+      values = t.items.map(item => item[prop].value);
+      // }
+      const reduce = props[prop].reduce;
+      ret[prop] = {
+        value: reduce ? reduce(values) : values
+      };
+      if (t.items[0][prop].source) {
+        ret[prop].source = t.items[0][prop].source;
+      }
+    });
+    return ret;
+  }));
+
+  return dataItems;
+}
+
+export function track({
+  cfg,
+  itemData,
+  obj,
+  target,
+  tracker,
+  trackType
+}) {
+  const trackId = trackType === 'function' ? cfg.trackBy(itemData) : itemData[cfg.trackBy];
+  let trackedItem = tracker[trackId];
+  if (!trackedItem) {
+    trackedItem = tracker[trackId] = {
+      items: [],
+      id: trackId
+    };
+    target.push(trackedItem);
+  }
+  trackedItem.items.push(obj);
+}

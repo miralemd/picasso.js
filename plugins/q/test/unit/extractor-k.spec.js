@@ -1,12 +1,16 @@
 import extract from '../../src/data/extractor-k';
 
 import {
-  getPropsInfo
+  getPropsInfo,
+  collect,
+  track
 } from '../../../../src/core/data/util';
 
 describe('q-data-extractor-k', () => {
   const deps = {
-    normalizeConfig: getPropsInfo
+    normalizeConfig: getPropsInfo,
+    collect,
+    track
   };
   describe('without pseudo', () => {
     const stackedPageWithoutPseudo = {
@@ -315,6 +319,84 @@ describe('q-data-extractor-k', () => {
           source: { key: 'cube', field: 'qDimensionInfo/0' },
           descs: { value: '$666, a1, a2, $667, b1, b3', source: { key: 'cube', field: 'qDimensionInfo/1' } },
           m: { value: '45, 32, 13, 17', source: { key: 'cube', field: 'qMeasureInfo/0' } }
+        }
+      ]);
+    });
+
+    it('should support properties from multiple fields', () => {
+      const m = extract({
+        field: 'qDimensionInfo/1',
+        value: d => d.qElemNo,
+        props: {
+          id: {
+            fields: [
+              { field: 'qDimensionInfo/0', value: v => v.qText },
+              { value: v => v.qText }
+            ],
+            value: values => values.join(':')
+          }
+        }
+      }, dataset, { fields }, deps);
+
+      expect(m).to.eql([
+        {
+          value: -1,
+          source: { key: 'cube', field: 'qDimensionInfo/1' },
+          id: { value: 'Alpha:$666' }
+        },
+        {
+          value: 0,
+          source: { key: 'cube', field: 'qDimensionInfo/1' },
+          id: { value: 'Alpha:a1' }
+        },
+        {
+          value: 3,
+          source: { key: 'cube', field: 'qDimensionInfo/1' },
+          id: { value: 'Alpha:a2' }
+        },
+        {
+          value: -1,
+          source: { key: 'cube', field: 'qDimensionInfo/1' },
+          id: { value: 'Beta:$667' }
+        },
+        {
+          value: 7,
+          source: { key: 'cube', field: 'qDimensionInfo/1' },
+          id: { value: 'Beta:b1' }
+        },
+        {
+          value: 9,
+          source: { key: 'cube', field: 'qDimensionInfo/1' },
+          id: { value: 'Beta:b3' }
+        }
+      ]);
+    });
+
+    it('should support properties from multiple descendant fields', () => {
+      const m = extract({
+        field: 'qDimensionInfo/0',
+        value: d => d.qElemNo,
+        props: {
+          id: {
+            fields: [
+              { value: v => v.qText },
+              { field: 'qMeasureInfo/0', reduce: 'sum' }
+            ],
+            value: values => values.join(':')
+          }
+        }
+      }, dataset, { fields }, deps);
+
+      expect(m).to.eql([
+        {
+          value: 1,
+          source: { key: 'cube', field: 'qDimensionInfo/0' },
+          id: { value: 'Alpha:77' }
+        },
+        {
+          value: 3,
+          source: { key: 'cube', field: 'qDimensionInfo/0' },
+          id: { value: 'Beta:30' }
         }
       ]);
     });

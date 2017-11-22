@@ -5,11 +5,14 @@ import {
 
 describe('augment-hierarchy', () => {
   before(() => {
-    q.normalizeProperties = getPropsInfo;
+    q.util = {
+      normalizeConfig: getPropsInfo
+    };
+    // q.normalizeProperties = getPropsInfo;
   });
 
   after(() => {
-    q.normalizeProperties = undefined;
+    q.util = undefined;
   });
 
   // describe('hierarchical data', () => {
@@ -141,6 +144,34 @@ describe('augment-hierarchy', () => {
         32, // actual measure node
         13, // actual measure node
         17 // actual measure node
+      ]);
+    });
+
+    it('should add a data property for multiple fields', () => {
+      const m = q({ key: 'nyckel', data: cube }).hierarchy({
+        children: node => (node.qSubNodes ? node.qSubNodes.filter(n => n.qType !== 'T') : null),
+        props: {
+          id: {
+            fields: [
+              { field: 'qDimensionInfo/0', value: d => d.qText, reduce: values => values.join('--') },
+              { field: 'qDimensionInfo/1', value: d => d.qText, reduce: values => values.join('_') }
+            ],
+            value: (values, node) => values.slice(0, node.depth).join('>>')
+          }
+        }
+      });
+      expect(m.descendants().map(child => child.data.id.value)).to.eql([
+        '', // root
+        'Alpha',
+        'Beta',
+        'Alpha>>a1',
+        'Alpha>>a2',
+        'Beta>>b1',
+        'Beta>>b3',
+        'Alpha>>a1', // from measure node
+        'Alpha>>a2', // from measure node
+        'Beta>>b1', // from measure node
+        'Beta>>b3' // from measure node
       ]);
     });
   });

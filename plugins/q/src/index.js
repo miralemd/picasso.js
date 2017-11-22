@@ -2,7 +2,7 @@ import data from './data/dataset';
 import qBrushHelper from './brush/q-brush';
 
 export default function initialize(picasso) {
-  data.normalizeProperties = picasso.data('default').normalizeProperties;
+  data.util = picasso.data('default').util;
   picasso.data('q', data);
 }
 
