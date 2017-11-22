@@ -1,9 +1,10 @@
 import extend from 'extend';
 
-function getFieldAccessor(field, page, { cache }) {
+export function getFieldAccessor(field, page, deps) {
   if (!field) {
     return -1;
   }
+  const cache = deps.cache;
   let fieldIdx = cache.fields.indexOf(field);
   let attrIdx = -1;
   let attrDimIdx = -1;

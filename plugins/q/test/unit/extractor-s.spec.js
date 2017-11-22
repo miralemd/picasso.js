@@ -1,4 +1,4 @@
-import extract from '../../src/data/extractor-s';
+import extract, { getFieldAccessor } from '../../src/data/extractor-s';
 
 import {
   collect,
@@ -552,5 +552,61 @@ describe('extractor-s', () => {
         total: { value: '38:-40' }
       }
     ]);
+  });
+
+  describe('getFieldAccessor', () => {
+    const cache = {
+      fields: [{}, {}, {}],
+      attributeDimensionFields: [[{}], [{}, {}]],
+      attributeExpressionFields: [[], [], [{}, {}]]
+    };
+
+    it('should return -1 when field is falsy', () => {
+      const acc = getFieldAccessor(0);
+      expect(acc).to.equal(-1);
+    });
+
+    it('should return -1 if field is out of bounds', () => {
+      const f = cache.fields[1];
+      const acc = getFieldAccessor(f, {
+        qArea: { qLeft: 2 }
+      }, { cache });
+      expect(acc).to.equal(-1);
+    });
+
+    it('should return a field accessor for the second column', () => {
+      const f = cache.fields[2];
+      const row = ['a', 'b'];
+      const acc = getFieldAccessor(f, {
+        qArea: { qLeft: 1 }
+      }, { cache });
+      expect(acc(row)).to.equal('b');
+    });
+
+    it('should return a field accessor for an attribute dimension', () => {
+      const f = cache.attributeDimensionFields[1][1];
+      const row = ['a', {
+        qAttrDims: {
+          qValues: [{}, 'target']
+        }
+      }];
+      const acc = getFieldAccessor(f, {
+        qArea: { qLeft: 0 }
+      }, { cache });
+      expect(acc(row)).to.equal('target');
+    });
+
+    it('should return a field accessor for an attribute expression', () => {
+      const f = cache.attributeExpressionFields[2][1];
+      const row = ['a', {
+        qAttrExps: {
+          qValues: [{}, 'exp']
+        }
+      }];
+      const acc = getFieldAccessor(f, {
+        qArea: { qLeft: 1 }
+      }, { cache });
+      expect(acc(row)).to.equal('exp');
+    });
   });
 });
