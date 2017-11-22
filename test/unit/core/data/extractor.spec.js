@@ -155,6 +155,20 @@ describe('extract data', () => {
         { value: 9, source: { field: 'dim' } }
       ]);
     });
+
+    it('should amend extracted data with custom items', () => {
+      const dataset = () => ({
+        field: () => country,
+        extract: () => [1, 2]
+      });
+      let d = extract({
+        extract: [{ field: 'dim' }],
+        amend: [7, { value: 8, label: { value: 'etikett' } }]
+      }, { dataset });
+
+      expect(d.items).to.eql([1, 2, 7, { value: 8, label: { value: 'etikett' } }]);
+      expect(d.fields).to.eql([country]);
+    });
   });
 
   describe('from collection', () => {
