@@ -46,6 +46,9 @@ export default function extract(dataConfig, data = {}, opts = {}) {
       if (sourceFields.length) {
         extracted.fields = sourceFields;
       }
+      if (dataConfig.amend && Array.isArray(dataConfig.amend)) {
+        extracted.items.push(...dataConfig.amend);
+      }
     } else if (typeof dataConfig.field !== 'undefined' && source) {
       const f = source.field(dataConfig.field);
       if (f) {
