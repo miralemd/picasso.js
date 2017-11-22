@@ -1,40 +1,90 @@
 import polyfillPath2D from '../../../src/web/path2d-polyfill';
 
 function CanvasRenderingContext2D() {}
-CanvasRenderingContext2D.prototype = {
-  fill() {},
-  stroke() {},
-  beginPath() {},
-  moveTo() {},
-  lineTo() {},
-  arc() {},
-  closePath() {}
-};
-
 let window,
   ctx,
   cMock;
 
 describe('Canvas path', () => {
   beforeEach(() => {
+    CanvasRenderingContext2D.prototype = {
+      fill() {},
+      stroke() {},
+      beginPath() {},
+      moveTo() {},
+      lineTo() {},
+      arc() {},
+      closePath() {},
+      strokeStyle: null,
+      lineWidth: null
+    };
+
     window = {
       CanvasRenderingContext2D
     };
-    ctx = new window.CanvasRenderingContext2D();
-    cMock = sinon.mock(ctx);
-    polyfillPath2D(window);
-  });
-
-  afterEach(() => {
-    cMock.restore();
   });
 
   describe('Polyfill', () => {
+    it('should not add Path2D if window is undefined', () => {
+      window = undefined;
+      polyfillPath2D(window);
+      expect(window).to.be.undefined;
+    });
+
     it('should add Path2D constructor to window object', () => {
+      polyfillPath2D(window);
+      expect(new window.Path2D()).to.be.an.instanceOf(window.Path2D);
+    });
+
+    it('should add Path2D constructor to window object if Svg Path as argument is not supported', () => {
+      polyfillPath2D(window);
+      const orgPath = window.Path2D;
+
+      CanvasRenderingContext2D.prototype.getImageData = function getImageData() {
+        return { data: [123] };
+      };
+
+      window.document = {
+        createElement: () => ({
+          getContext: () => new CanvasRenderingContext2D()
+        })
+      };
+
+      polyfillPath2D(window);
+      expect(window.Path2D).to.not.equal(orgPath); // Expected Path2D to be replaced with a new instance based failure on supportsSvgPathArgument() call
+      expect(new window.Path2D()).to.be.an.instanceOf(window.Path2D);
+    });
+
+    it('should not add Path2D constructor to window object if Svg Path as argument is supported', () => {
+      polyfillPath2D(window);
+      const orgPath = window.Path2D;
+
+      CanvasRenderingContext2D.prototype.getImageData = function getImageData() {
+        return { data: [255] };
+      };
+
+      window.document = {
+        createElement: () => ({
+          getContext: () => new CanvasRenderingContext2D()
+        })
+      };
+
+      polyfillPath2D(window);
+      expect(window.Path2D).to.equal(orgPath);
       expect(new window.Path2D()).to.be.an.instanceOf(window.Path2D);
     });
   });
   describe('Render path', () => {
+    beforeEach(() => {
+      ctx = new window.CanvasRenderingContext2D();
+      cMock = sinon.mock(ctx);
+      polyfillPath2D(window);
+    });
+
+    afterEach(() => {
+      cMock.restore();
+    });
+
     it('should run moveTo and lineTo with correct coordinates', () => {
       cMock.expects('moveTo').once().withExactArgs(10, 10);
       cMock.expects('lineTo').once().withExactArgs(20, 20);

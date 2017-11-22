@@ -6,6 +6,7 @@
 
 - h-band scale doesn't properly calculate values when pixel scaling ([#563](https://github.com/qlik-trial/picasso.js/issues/563))
 - Legend-cat: Scroll buttons should swap places when anchor is set to `right` and in vertical mode ([#565](https://github.com/qlik-trial/picasso.js/issues/565))
+- Path doesn't work in Edge with canvas renderer ([#567](https://github.com/qlik-trial/picasso.js/issues/567))
 
 ## **0.37.0** - *(2017-11-20)*
 

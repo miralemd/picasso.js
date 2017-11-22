@@ -1,8 +1,22 @@
+/**
+ * Work around for https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8438884/
+ */
+function supportsSvgPathArgument(window) {
+  const canvas = window.document.createElement('canvas');
+  const g = canvas.getContext('2d');
+  const p = new window.Path2D('M0 0 L1 1');
+  g.strokeStyle = 'red';
+  g.lineWidth = 1;
+  g.stroke(p);
+  const imgData = g.getImageData(0, 0, 1, 1);
+  return imgData.data[0] === 255; // Check if pixel is red
+}
+
 function polyFillPath2D(window) {
   if (!window) {
     return;
   }
-  if (window.Path2D) {
+  if (window.Path2D && supportsSvgPathArgument(window)) {
     return;
   }
 
