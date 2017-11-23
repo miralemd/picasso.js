@@ -23,6 +23,7 @@
     "/dist"
   ],
   "main": "dist/picasso-q.js",
+  "module": "src/index.js",
   "devDependencies": {
     "d3-hierarchy": "^1.1.5",
     "extend": "^3.0.0",
