@@ -8,6 +8,16 @@
 - Legend-cat: Scroll buttons should swap places when anchor is set to `right` and in vertical mode ([#565](https://github.com/qlik-trial/picasso.js/issues/565))
 - Path doesn't work in Edge with canvas renderer ([#567](https://github.com/qlik-trial/picasso.js/issues/567))
 
+### Added
+
+- Find field by function
+
+  ```js
+  // find a field that has 'colorByAlternative' as id
+  const c = ds.field(f => f.raw().id === 'colorByAlternative');
+  c && console.log(c.key()); // 'qDimensionInfo/1/qAttrDimInfo/1
+  ```
+
 ## **0.37.0** - *(2017-11-20)*
 
 ### Added
