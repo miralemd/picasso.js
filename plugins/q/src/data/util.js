@@ -62,7 +62,14 @@ export function findField(query, { cache }) {
   const allFields = cache.fields.slice();
   (cache.attributeDimensionFields || []).forEach(fields => allFields.push(...fields));
   (cache.attributeExpressionFields || []).forEach(fields => allFields.push(...fields));
-  if (typeof query === 'string') {
+  if (typeof query === 'function') {
+    for (let i = 0; i < allFields.length; i++) {
+      if (query(allFields[i])) {
+        return allFields[i];
+      }
+    }
+    return false;
+  } else if (typeof query === 'string') {
     for (let i = 0; i < allFields.length; i++) {
       // console.log(allFields[i].key());
       if (allFields[i].key() === query || allFields[i].title() === query) {

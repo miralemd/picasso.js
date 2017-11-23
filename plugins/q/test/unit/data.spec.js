@@ -58,5 +58,35 @@ describe('magic', () => {
       const f = d.field('qMeasureInfo/2/qAttrExprInfo/1');
       expect(f.title()).to.eql('m attr expr title');
     });
+
+    it('should find a main field by number', () => {
+      const f = d.field(4);
+      expect(f.title()).to.eql('C');
+    });
+
+    it('should throw an error when field not found', () => {
+      const fn = () => d.field('nope');
+      expect(fn).to.throw('Field not found');
+    });
+
+    it('should return false when search by function misses', () => {
+      const f = d.field(ff => ff.title() === 'nope');
+      expect(f).to.equal(false);
+    });
+
+    it('should find field by function', () => {
+      const f = d.field(ff => ff.title() === 'm attr expr title');
+      expect(f).to.not.equal(false);
+      expect(f.title()).to.eql('m attr expr title');
+    });
+
+    it('should return field when given as a parameter', () => {
+      // find a field first
+      const f = d.field('B');
+
+      // search for the field using the instance
+      const ff = d.field(f);
+      expect(f).to.equal(ff);
+    });
   });
 });
