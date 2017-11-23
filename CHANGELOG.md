@@ -2,6 +2,8 @@
 
 ## **{{VERSION}}** - *({{DATE}})*
 
+## **0.38.0** - *(2017-11-23)*
+
 ### Fixed
 
 - h-band scale doesn't properly calculate values when pixel scaling ([#563](https://github.com/qlik-trial/picasso.js/issues/563))

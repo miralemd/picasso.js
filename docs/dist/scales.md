@@ -265,6 +265,22 @@ Hierarchical band scale, that is an augmented band scale, that takes hierarchica
 | Returns | number | No | ... | ... |
 
 No description  
+#### <a name='h-band.bandwidth' href='#h-band.bandwidth'>#</a> **h-band.bandwidth**(*Array.&lt;Object&gt; [val]*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| val | Array.&lt;Object&gt; | Array where each value is a reference to a node, going from depth 1 to n. If omitted, bandwidth for the leaf nodes is return. | Yes | No |
+| Returns | number | No | ... | ... |
+
+Wrapped {@link https://github.com/d3/d3-scale#band_bandwidth}  
+#### <a name='h-band.step' href='#h-band.step'>#</a> **h-band.step**(*Array.&lt;Object&gt; [val]*)
+
+|Name(s)|Type(s)|Description|Optional|Default value|
+|-------|-------|-----------|--------|-------------|
+| val | Array.&lt;Object&gt; | Array where each value is a reference to a node, going from depth 1 to n. If omitted, step size for the leaf nodes is return. | Yes | No |
+| Returns | number | No | ... | ... |
+
+Wrapped {@link https://github.com/d3/d3-scale#band_step}  
 #### <a name='h-band.data' href='#h-band.data'>#</a> **h-band.data**()
 
 |Name(s)|Type(s)|Description|Optional|Default value|
