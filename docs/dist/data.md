@@ -107,31 +107,66 @@ data: {
 
 > Notice that the data `source` for each value is stored in the output, this plays a key part in enabling _brushing_. [TODO - explain brushing in picasso]
 
+**Stacking**
 
+Extracted items can be stacked using a `stack` configuration:
 
-- data as array
-- data items
-- collections
-- fields,
-- hierarchy
-- extraction
-  - main field
-  - trackBy
-  - value
-  - props
-    - field
-    - reduce
-    - value
-  - amend
-- stack
+```js
+data: {
+  extract: [{
+    source: 'Products',
+    field: 'Product',
+    value: d => d.name,
+    props: {
+      year: { field: 'Year' }
+      num: { field: 'Sales' }
+    }
+  }],
+  stack: {
+    stackKey: d =>  d.year.value, // stack by year
+    value: d => d.num.value // stack using the num value for each product
+  }
+}
 
-## Types
-
-### `matrix`
-
-### `q`
-
-
+// output
+[
+  {
+    value: 'Boots', source: {}
+    year: { value: 2015, source: {} },
+    num: { value: 45, source: {} },
+    start: { value: 0, source: {} },
+    end: { value: 45, source: {} },
+  },
+  {
+    value: 'Sneakers', source: {}
+    year: { value: 2016, source: {} },
+    num: { value: 49, source: {} },
+    start: { value: 0, source: {} },
+    end: { value: 49, source: {} },
+  },
+  {
+    value: 'Sandals', source: {}
+    year: { value: 2017, source: {} },
+    num: { value: 42, source: {} },
+    start: { value: 0, source: {} },
+    end: { value: 42, source: {} },
+  },
+  {
+    value: 'White socks', source: {}
+    year: { value: 2016, source: {} },
+    num: { value: 14, source: {} },
+    start: { value: 49, source: {} },
+    end: { value: 63, source: {} },
+  },
+  {
+    value: 'Blue socks', source: {}
+    year: { value: 2015, source: {} },
+    num: { value: 15, source: {} },
+    start: { value: 42, source: {} },
+    end: { value: 67, source: {} },
+  }
+]
+```
 
 ## API reference
 
