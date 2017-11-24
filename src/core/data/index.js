@@ -3,9 +3,11 @@ import dataset from './dataset';
 
 const dataRegistry = registry();
 
-dataRegistry.default('default');
+dataRegistry.default('matrix');
 
-dataRegistry('default', dataset);
+dataRegistry('matrix', dataset);
+
+dataRegistry('default', dataset); // deprecated
 
 export {
   dataRegistry as default
