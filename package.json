@@ -40,6 +40,7 @@
     "/plugins/hammer/dist"
   ],
   "main": "dist/picasso.min.js",
+  "module": "src/index.js",
   "devDependencies": {
     "after-work.js": "^1.0.0",
     "babel-plugin-external-helpers": "^6.22.0",
