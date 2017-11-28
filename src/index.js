@@ -1,4 +1,5 @@
 import extend from 'extend';
+import about from './about';
 
 import {
   chart,
@@ -89,6 +90,8 @@ function pic(config = {}, registries = {}) {
   Object.keys(regis).forEach((key) => {
     picassojs[key] = regis[key];
   });
+
+  picassojs.version = about.version;
 
   return picassojs;
 }

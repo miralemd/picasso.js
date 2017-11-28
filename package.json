@@ -32,7 +32,11 @@
     "test:component:coverage": "aw-test-coverage \"./test/component/**/*.comp.js\"  --dir test/component/coverage",
     "test:integration:local": "node node_modules/protractor/bin/webdriver-manager update --standalone false && aw-webdriver-test-runner ./test/config/aw-config.js --specs \"./test/integration/**/*.int.js\" --aw-artifacts-path ./test/integration/artifacts",
     "test:integration:remote": "aw-webdriver-test-runner ./test/config/aw-config-remote.js --specs \"test/integration/**/*.int.js\" --aw-artifacts-path ./test/integration/artifacts",
-    "fixture:server": "aw-web-server -c ./test/config/aw-webserver-config.json"
+    "fixture:server": "aw-web-server -c ./test/config/aw-webserver-config.json",
+    "bump:major": "npm --no-git-tag-version version major",
+    "bump:minor": "npm --no-git-tag-version version minor",
+    "bump:patch": "npm --no-git-tag-version version patch",
+    "version": "node scripts/version.js"
   },
   "files": [
     "/dist",
