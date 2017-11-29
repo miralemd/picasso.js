@@ -5,7 +5,7 @@
   "license": "ISC",
   "private": true,
   "publishConfig": {
-    "registry": "https://qliktech.artifactoryonline.com/qliktech/api/npm/npm-local/"
+    "registry": "https://qliktech.jfrog.io/qliktech/api/npm/npm-local/"
   },
   "repository": {
     "type": "git",
