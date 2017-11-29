@@ -6,6 +6,11 @@
 
 - PIC-237 - Brush action 'tap' does not work on touch devices
 
+### Added
+
+- Exposed `version` on `picasso` namespace
+- Exposed `module` in `package.json` in order to allow module bundlers to consume picasso as en es6+ module
+
 ## **0.38.0** - *(2017-11-23)*
 
 ### Fixed
