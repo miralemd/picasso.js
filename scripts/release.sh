@@ -62,6 +62,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     rm $dir/package.json.tmp
   done;
 
+  ## generate about.js
+  npm -s run version
+
   ## update CHANGELOG.md
   ## append [BREAKING] flag
   if [[ -n $BREAKING ]]; then
