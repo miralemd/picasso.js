@@ -2,6 +2,8 @@
 
 ## **{{VERSION}}** - *({{DATE}})*
 
+## **0.39.0** - *(2017-11-29)*
+
 ### Fixed
 
 - PIC-237 - Brush action 'tap' does not work on touch devices
