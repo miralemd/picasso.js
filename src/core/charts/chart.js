@@ -355,6 +355,7 @@ function chart(definition, context) {
         eventInfo.multiTouch = false;
       }
       eventInfo.time = Date.now();
+      eventInfo.comps = componentsFromPoint(eventInfo);
     };
 
     const onBrushTap = (e) => {
@@ -365,7 +366,7 @@ function chart(definition, context) {
         return;
       }
 
-      const comps = componentsFromPoint(e);
+      const comps = eventInfo.comps || componentsFromPoint(e);
 
       for (let i = comps.length - 1; i >= 0; i--) {
         const comp = comps[i];
