@@ -9,7 +9,21 @@ function assertNodeProperties(node, expected) {
 
 describe('createButton', () => {
   it('should handle basic formats', () => {
-    const result = createButton({ x: 10, y: 12, width: 100, height: 120, direction: 'up', data: {}, rect: {}, line: {} });
+    const result = createButton({
+      x: 10,
+      y: 12,
+      width: 100,
+      height: 120,
+      direction: 'up',
+      action: 'up',
+      rect: {},
+      symbol: {
+        fill: 'red',
+        stroke: 'blue',
+        strokeWidth: 1,
+        size: 0.5
+      }
+    });
 
     const expectedContainer = {
       type: 'container',
@@ -18,11 +32,19 @@ describe('createButton', () => {
       width: 100,
       height: 120
     };
-
+    const expectedSymbol = {
+      type: 'path',
+      fill: 'red',
+      d: 'M35 97 L60 47 L85 97 L35 97 Z',
+      stroke: 'blue',
+      strokeWidth: 1
+    };
+    const expectedRect = extend({}, expectedContainer, { type: 'rect' });
     const expectedCollider = extend({}, expectedContainer, { type: 'rect' });
 
     assertNodeProperties(result, expectedContainer);
     assertNodeProperties(result.collider, expectedCollider);
-    expect(result.children).to.have.a.lengthOf(2);
+    assertNodeProperties(result.children[0], expectedRect);
+    expect(result.children[1]).to.deep.equal(expectedSymbol);
   });
 });

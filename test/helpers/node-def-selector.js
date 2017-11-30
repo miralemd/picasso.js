@@ -3,7 +3,8 @@
 const SELECTOR_MAPS = {
   type: /^\w[\w-]+/,
   attr: /^\[\w(?:[\w\._-]+)?(?:[!]?=['\"][\w\s*#_-]*['\"])?\]/,
-  universal: /^(\*)/
+  universal: /^(\*)/,
+  tag: /^\.(\w+)/
 };
 
 const FILTERS = {
@@ -39,7 +40,17 @@ const FILTERS = {
     });
   },
 
-  universal: objects => objects
+  universal: objects => objects,
+
+  tag: (c, objects) => { // eslint-disable-line arrow-body-style
+    return objects.filter((o) => {
+      const tag = o.node.tag;
+      if (tag) {
+        return tag.indexOf(c.replace('.', '')) !== -1;
+      }
+      return false;
+    });
+  }
 };
 
 /**
@@ -67,6 +78,8 @@ export function filter(token, objects) {
       return FILTERS[token.type](token.attribute, token.operator, token.attributeValue, objects);
     case 'universal':
       return FILTERS[token.type](objects);
+    case 'tag':
+      return FILTERS[token.type](token.value, objects);
     default:
       return [];
   }

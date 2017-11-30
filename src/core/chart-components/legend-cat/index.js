@@ -55,6 +55,10 @@ export default function categoricalLegend(picasso) {
  * @property {number} [settings.title.margin.left=5] - Left margin
  * @property {object} [settings.buttons] - Button settings
  * @property {boolean} [settings.buttons.show=true] - Show the scroll/paging buttons (will still auto hide when not needed)
+ * @property {number} [settings.buttons.buttonSpacing=8] - The margin between the two buttons
+ * @property {number} [settings.buttons.spacing=0] - The margin between the start or end of the legend and the buttons, depending if the button are position to the left, right or bottom
+ * @property {number} [settings.buttons.width=32] - The width of the buttons
+ * @property {number} [settings.buttons.height=24] - The height of the buttons
  * @property {object} [settings.buttons.rect] - Settings for the rect of the buttons
  * @property {string} [settings.buttons.rect.fill='transparent'] - Fill color
  * @property {string} [settings.buttons.rect.stroke='grey'] - Stroke color

@@ -4,11 +4,6 @@ import { labelItem, resolveMargin } from './label-item';
 import createButton from './buttons';
 import NarrowPhaseCollision from '../../math/narrow-phase-collision';
 
-const BUTTON_WIDTH = 26;
-const BUTTON_HEIGHT = 18;
-const BUTTON_PADDING = 8;
-const BUTTON_MARGIN = 4;
-
 const DEFAULT_SETTINGS = {
   settings: {
     direction: null,
@@ -62,6 +57,10 @@ const DEFAULT_SETTINGS = {
     },
     buttons: {
       show: false,
+      buttonSpacing: 8,
+      spacing: 0,
+      width: 32,
+      height: 24,
       rect: {
         fill: 'transparent',
         stroke: 'transparent',
@@ -70,7 +69,8 @@ const DEFAULT_SETTINGS = {
       symbol: {
         fill: 'grey',
         stroke: 'grey',
-        strokeWidth: 0
+        strokeWidth: 0,
+        size: 0.5
       },
       'rect:disabled': {
         fill: 'transparent',
@@ -80,7 +80,8 @@ const DEFAULT_SETTINGS = {
       'symbol:disabled': {
         fill: 'lightgrey',
         stroke: 'lightgrey',
-        strokeWidth: 0
+        strokeWidth: 0,
+        size: 0.5
       }
     }
   }
@@ -97,16 +98,17 @@ function createButtons({
   anchor
 }) {
   const buttons = [];
-  const width = BUTTON_WIDTH;
-  const height = BUTTON_HEIGHT;
+  const width = state.buttonDefs.width;
+  const height = state.buttonDefs.height;
+  const buttonSpacing = state.buttonDefs.buttonSpacing / 2;
   const isLeft = anchor === 'left';
 
   if (HORIZONTAL) {
     const middle = (state.maxOuterHeight || rect.height) / 2;
-    const x = isLeft ? rect.width - BUTTON_MARGIN - BUTTON_WIDTH : BUTTON_MARGIN;
+    const x = isLeft ? rect.width - state.buttonDefs.spacing - width : state.buttonDefs.spacing;
     buttons.push(createButton({
       x,
-      y: middle + BUTTON_PADDING,
+      y: middle + buttonSpacing,
       width,
       height,
       action: '-',
@@ -117,7 +119,7 @@ function createButtons({
 
     buttons.push(createButton({
       x,
-      y: middle - BUTTON_HEIGHT - BUTTON_PADDING,
+      y: middle - height - buttonSpacing,
       width,
       height,
       action: '+',
@@ -127,9 +129,9 @@ function createButtons({
     }));
   } else {
     const middle = (state.maxOuterWidth || rect.width) / 2;
-    const y = rect.height - BUTTON_MARGIN - BUTTON_HEIGHT;
+    const y = rect.height - state.buttonDefs.spacing - height;
     buttons.push(createButton({
-      x: isLeft ? middle + BUTTON_PADDING : rect.width - middle - BUTTON_PADDING - BUTTON_WIDTH,
+      x: isLeft ? middle + buttonSpacing : rect.width - middle - buttonSpacing - width,
       y,
       width,
       height,
@@ -140,7 +142,7 @@ function createButtons({
     }));
 
     buttons.push(createButton({
-      x: isLeft ? middle - BUTTON_PADDING - BUTTON_WIDTH : (rect.width - middle) + BUTTON_PADDING,
+      x: isLeft ? middle - buttonSpacing - width : (rect.width - middle) + buttonSpacing,
       y,
       width,
       height,
@@ -177,8 +179,8 @@ function resolveSizes(state, local) {
   }
 
   if (state.buttonDefs.show) {
-    buttonWidth = BUTTON_MARGIN + (BUTTON_PADDING * 2) + (2 * BUTTON_WIDTH);
-    buttonHeight = BUTTON_MARGIN + (BUTTON_PADDING * 2) + (2 * BUTTON_HEIGHT);
+    buttonWidth = (local.isHorizontal ? state.buttonDefs.spacing : 0) + state.buttonDefs.buttonSpacing + (2 * state.buttonDefs.width);
+    buttonHeight = (local.isHorizontal ? 0 : state.buttonDefs.spacing) + state.buttonDefs.buttonSpacing + (2 * state.buttonDefs.height);
     maxOuterWidth = local.isHorizontal ? maxOuterWidth : Math.max(maxOuterWidth, buttonWidth); // Presume width is not relevant if horizontal
     maxOuterHeight = local.isHorizontal ? Math.max(maxOuterHeight, buttonHeight) : maxOuterHeight;
   }
@@ -220,13 +222,13 @@ function resolveButtonDefs(settings) {
   const buttonSymbol = resolveForDataObject(settings.buttons.symbol, {}, 0, []);
   const buttonRectDisabled = resolveForDataObject(settings.buttons['rect:disabled'], {}, 0, []);
   const buttonSymbolDisabled = resolveForDataObject(settings.buttons['symbol:disabled'], {}, 0, []);
-  return {
-    show: settings.buttons.show,
-    buttonRect,
-    buttonSymbol,
-    buttonRectDisabled,
-    buttonSymbolDisabled
-  };
+
+  return extend({}, settings.buttons, {
+    rect: buttonRect,
+    symbol: buttonSymbol,
+    'rect:disabled': buttonRectDisabled,
+    'symbol:disabled': buttonSymbolDisabled
+  });
 }
 
 function resolveTitleDef({
@@ -333,7 +335,7 @@ function buildNodes({
   let titleContainer = {};
   let nextXitem = 0;
   let nextYitem = 0;
-  let availableSpace = local.isHorizontal ? rect.width - BUTTON_WIDTH - BUTTON_MARGIN : rect.height - BUTTON_HEIGHT - BUTTON_MARGIN;
+  let availableSpace = local.isHorizontal ? rect.width - state.buttonDefs.width - state.buttonDefs.spacing : rect.height - state.buttonDefs.height - state.buttonDefs.spacing;
 
   if (state.titleDef.show) {
     prevContainer = labelItem(extend(state.titleDef, {
@@ -431,10 +433,10 @@ function buildNodes({
       HORIZONTAL: local.isHorizontal,
       rect,
       state,
-      buttonRectMinus: state.index <= 0 ? state.buttonDefs.buttonRectDisabled : state.buttonDefs.buttonRect,
-      buttonRectPlus: state.index >= state.pageMax ? state.buttonDefs.buttonRectDisabled : state.buttonDefs.buttonRect,
-      buttonSymbolMinus: state.index <= 0 ? state.buttonDefs.buttonSymbolDisabled : state.buttonDefs.buttonSymbol,
-      buttonSymbolPlus: state.index >= state.pageMax ? state.buttonDefs.buttonSymbolDisabled : state.buttonDefs.buttonSymbol,
+      buttonRectMinus: state.index <= 0 ? state.buttonDefs['rect:disabled'] : state.buttonDefs.rect,
+      buttonRectPlus: state.index >= state.pageMax ? state.buttonDefs['rect:disabled'] : state.buttonDefs.rect,
+      buttonSymbolMinus: state.index <= 0 ? state.buttonDefs['symbol:disabled'] : state.buttonDefs.symbol,
+      buttonSymbolPlus: state.index >= state.pageMax ? state.buttonDefs['symbol:disabled'] : state.buttonDefs.symbol,
       anchor: local.anchor
     }));
   }

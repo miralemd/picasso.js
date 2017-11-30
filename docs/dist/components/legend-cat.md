@@ -60,6 +60,10 @@ component: {
     },
     buttons: { // Button settings. Optional.
       show: true, // Show the scroll/paging buttons (will still auto hide when not needed). Default: true. Optional.
+      buttonSpacing: 8, // The margin between the two buttons. Default: 8. Optional.
+      spacing: 0, // The margin between the start or end of the legend and the buttons, depending if the button are position to the left, right or bottom. Default: 0. Optional.
+      width: 32, // The width of the buttons. Default: 32. Optional.
+      height: 24, // The height of the buttons. Default: 24. Optional.
       rect: { // Settings for the rect of the buttons. Optional.
         fill: 'transparent', // Fill color. Default: 'transparent'. Optional.
         stroke: 'grey', // Stroke color. Default: 'grey'. Optional.

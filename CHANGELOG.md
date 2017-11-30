@@ -2,6 +2,10 @@
 
 ## **{{VERSION}}** - *({{DATE}})*
 
+### Fixed
+
+- PIC-239 Legend arrows hit area to small
+
 ## **0.39.0** - *(2017-11-29)*
 
 ### Fixed

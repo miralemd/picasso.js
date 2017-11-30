@@ -43,6 +43,13 @@ describe('Legend Categorical', () => {
       expect(componentFixture.simulateLayout(container)).to.equal(17);
     });
 
+    it('should return correct vertical size and button enabled', () => {
+      userDef.dock = 'top';
+      userDef.settings.buttons = { show: true };
+      componentFixture.simulateCreate(legendCat, userDef);
+      expect(componentFixture.simulateLayout(container)).to.equal(100);
+    });
+
     it('should return correct vertical size based on layout size', () => {
       userDef.dock = 'top';
       userDef.settings.layout = { size: 2, mode: 'table' };
@@ -54,6 +61,13 @@ describe('Legend Categorical', () => {
       userDef.dock = 'left';
       componentFixture.simulateCreate(legendCat, userDef);
       expect(componentFixture.simulateLayout(container)).to.equal(38);
+    });
+
+    it('should return correct horizontal size and buttons enabled', () => {
+      userDef.dock = 'left';
+      userDef.settings.buttons = { show: true };
+      componentFixture.simulateCreate(legendCat, userDef);
+      expect(componentFixture.simulateLayout(container)).to.equal(72);
     });
 
     it('should return correct horizontal size based on layout size', () => {
@@ -104,6 +118,24 @@ describe('Legend Categorical', () => {
         textNodes.forEach((node, i) => {
           expect(node).to.deep.include({ x: 24, y: (16 * i) + 6.5 });
         });
+      });
+
+      it('should render buttons in a single column table layout correctly', () => {
+        userDef.settings.direction = 'vertical';
+        userDef.dock = 'center';
+        userDef.key = 'key';
+        userDef.settings.layout = { mode: 'table', size: 1 };
+        userDef.settings.title.show = false;
+        userDef.settings.buttons = { show: true };
+        componentFixture.simulateCreate(legendCat, userDef);
+        componentFixture.simulateRender(container);
+
+        const buttons = componentFixture.findNodes('.scroll-button');
+
+        expect(buttons[0]).to.deep.include({ x: 40, y: 76, width: 32, height: 24 });
+        expect(buttons[0].children).to.be.of.length(2);
+        expect(buttons[1]).to.deep.include({ x: 0, y: 76, width: 32, height: 24 });
+        expect(buttons[1].children).to.be.of.length(2);
       });
 
       it('should render items in a multi column table layout correctly', () => {
@@ -157,6 +189,25 @@ describe('Legend Categorical', () => {
         textNodes.forEach((node, i) => {
           expect(node).to.deep.include({ x: (38 * i) + 24, y: 6.5 });
         });
+      });
+
+      it('should render buttons in a single row table layout correctly', () => {
+        userDef.settings.direction = 'horizontal';
+        container.inner.width = 200;
+        userDef.dock = 'center';
+        userDef.key = 'key';
+        userDef.settings.layout = { mode: 'table', size: 1 };
+        userDef.settings.title.show = false;
+        userDef.settings.buttons = { show: true };
+        componentFixture.simulateCreate(legendCat, userDef);
+        componentFixture.simulateRender(container);
+
+        const buttons = componentFixture.findNodes('.scroll-button');
+
+        expect(buttons[0]).to.deep.include({ x: 168, y: 24 + 8, width: 32, height: 24 });
+        expect(buttons[0].children).to.be.of.length(2);
+        expect(buttons[1]).to.deep.include({ x: 168, y: 0, width: 32, height: 24 });
+        expect(buttons[1].children).to.be.of.length(2);
       });
 
       it('should render items in a multi row table layout correctly', () => {
