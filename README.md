@@ -50,5 +50,5 @@ $ npm run test:coverage
 ## Usage
 
 * See [examples](examples/).
-* Use the [Documentation](http://rd-picasso.rdlund.qliktech.com/picasso/master/docs/dist/) as a reference, you can also [view them on github](docs/dist/).
-* Try out live examples on [Picasso Sandbox](http://rd-picasso.rdlund.qliktech.com).
+* Use the [Documentation](http://rd-picasso.rdlund.qliktech.com/docs/) as a reference, you can also [view them on github](docs/dist/).
+* Try out live examples on [Picasso Sandbox](http://rd-picasso.rdlund.qliktech.com/sandbox).
