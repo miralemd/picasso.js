@@ -466,7 +466,7 @@ function estimateSize(local, state, rect) {
 
 function doScroll(context, scrollLength = 3) {
   const state = context.state;
-  const len = isNaN(scrollLength) ? 3 : scrollLength;
+  const len = isNaN(scrollLength) ? 3 : Math.round(scrollLength);
   state.index = Math.max(state.pageMin, Math.min(state.pageMax, state.index + len));
 
   const nodes = buildNodes({

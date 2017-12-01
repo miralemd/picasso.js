@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- Legend-cat: Doesn't handle floating point number as scrollLength input to tap/scroll events ([#588](https://github.com/qlik-trial/picasso.js/issues/588))
 - Triangle symbol is generated incorrectly for left/right direction ([#586](https://github.com/qlik-trial/picasso.js/issues/586))
 
 ## **0.39.1** - *(2017-11-30)*
