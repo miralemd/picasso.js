@@ -5,8 +5,8 @@ import { toRadians } from '../utils/math';
 const DIRECTION_TO_ANGLE = {
   up: 0,
   down: 180,
-  left: -90,
-  right: 90
+  left: 90,
+  right: -90
 };
 
 /**

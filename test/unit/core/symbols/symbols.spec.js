@@ -514,7 +514,7 @@ describe('Symbols', () => {
           strokeWidth: 2,
           opacity: 0.5,
           strokeDasharray: '10 10',
-          d: 'M-22 -16.999999999999996 L42 14.999999999999998 L-21.999999999999996 47 L-22 -16.999999999999996 Z',
+          d: 'M42 47 L-22 14.999999999999998 L42 -16.999999999999996 L42 47 Z',
           collider: expectedCollider
         });
       });
@@ -530,7 +530,7 @@ describe('Symbols', () => {
           strokeWidth: 2,
           opacity: 0.5,
           strokeDasharray: '10 10',
-          d: 'M42 47 L-22 14.999999999999998 L42 -16.999999999999996 L42 47 Z',
+          d: 'M-22 -16.999999999999996 L42 14.999999999999998 L-21.999999999999996 47 L-22 -16.999999999999996 Z',
           collider: expectedCollider
         });
       });
