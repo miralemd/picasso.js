@@ -8,7 +8,7 @@ import shapeFactory from '../../../symbols';
 const DEFAULT_DATA_SETTINGS = {
   shape: 'circle',
   label: '',
-  fill: '$fill',
+  fill: '#333',
   stroke: '#ccc',
   strokeWidth: 0,
   opacity: 1,

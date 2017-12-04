@@ -5,9 +5,8 @@ const EXTEND = '@extend';
 
 function res(style, references, path) {
   let computed = style;
-  const refs = extend({}, references, style);
+  const refs = extend(true, {}, references, style);
   const s = {};
-  let p = path.slice();
 
   if (style[EXTEND]) {
     const extendFrom = style[EXTEND];
@@ -16,10 +15,11 @@ function res(style, references, path) {
     }
     let pext = path.slice();
     pext.push(extendFrom);
-    computed = extend({}, res(refs[extendFrom], references, path), style);
+    computed = extend(true, {}, res(refs[extendFrom], references, pext), style);
   }
 
   Object.keys(computed).forEach((key) => {
+    let p = path.slice();
     if (key === EXTEND || VARIABLE_RX.test(key)) {
       return;
     }

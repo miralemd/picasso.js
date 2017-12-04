@@ -179,4 +179,33 @@ describe('style-resolver', () => {
       }
     });
   });
+
+  it('should resolve style extend recursively with multiple input values', () => {
+    const references = {
+      '$grey': 'lightgrey',
+      '$primary': {
+        stroke: '$grey',
+        strokeWidth: 1
+      }
+    };
+    const input = {
+      item: '$primary',
+      label: {
+        '@extend': '$primary',
+        stroke: 'blue'
+      }
+    };
+    const s = resolve(input, references);
+
+    expect(s).to.eql({
+      item: {
+        stroke: 'lightgrey',
+        strokeWidth: 1
+      },
+      label: {
+        stroke: 'blue',
+        strokeWidth: 1
+      }
+    });
+  });
 });

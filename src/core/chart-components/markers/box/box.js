@@ -42,7 +42,16 @@ const boxMarkerComponent = {
   require: ['chart'],
   defaultSettings: {
     settings: {},
-    data: {}
+    data: {},
+    style: {
+      box: '$shape',
+      line: '$shadow-line',
+      whisker: '$shadow-line',
+      median: {
+        '@extend': '$shadow-line',
+        stroke: '$primary-overlay'
+      }
+    }
   },
   created() {
     this.rect = { x: 0, y: 0, width: 0, height: 0 };
@@ -50,7 +59,7 @@ const boxMarkerComponent = {
     this.updateSettings(this.settings);
   },
   updateSettings(settings) {
-    this.dispersion.updateSettings(settings);
+    this.dispersion.updateSettings(settings, this.style);
 
     // Default to vertical
     if (this.settings.settings.orientation === undefined) {
@@ -131,7 +140,7 @@ const boxMarkerComponent = {
           const boxHeight = Math.max(item.style.box.minHeightPx, wantedHeight);
           const yModifier = (boxHeight - wantedHeight) / 2;
 
-          return extend(doodle.style({}, 'box', item.style), {
+          return extend(true, doodle.style({}, 'box', item.style), {
             type: 'rect',
             x: majorStartModified - Math.floor(boxWidth / 2),
             y: lowModified - yModifier,

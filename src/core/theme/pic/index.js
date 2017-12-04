@@ -28,18 +28,29 @@ const style = {
 
   // COLORS
   '$primary': 'steelblue',
+  '$primary-overlay': 'white',
+
+  '$grey-light': '#bdbdbd',
+  '$grey': '#757575',
+  '$grey-dark': '#424242',
+  '$black': '#212121',
 
   // MIXINS
   '$shape': {
     fill: '$primary',
     strokeWidth: 0,
-    stroke: '#ccc'
+    stroke: '$grey-light'
+  },
+
+  '$shadow-line': {
+    strokeWidth: 1,
+    stroke: '$grey'
   },
 
   '$label': {
     fontSize: '$font-size-m',
     fontFamily: '$font-family',
-    fill: '#333'
+    fill: '$grey-dark'
   }
 };
 

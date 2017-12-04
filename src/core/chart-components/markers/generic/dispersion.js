@@ -1,3 +1,4 @@
+import extend from 'extend';
 import doodler from './doodler';
 import { transposer } from '../../../transposer/transposer';
 import { normalizeSettings, resolveForItem } from '../../property-resolver';
@@ -12,6 +13,7 @@ function resolveInitialStyle(settings, baseStyles, chart) {
 }
 
 export default function dispersion(chart, defaultStyles = {}, initialSettings = {}) {
+  let baseStyles = defaultStyles;
   let settings = initialSettings;
   let major;
   let minor;
@@ -25,9 +27,10 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
 
   const fn = () => fn;
 
-  fn.updateSettings = (stngs) => {
+  fn.updateSettings = (stngs, style) => {
     // Setup settings and data
     settings = stngs.settings;
+    baseStyles = extend(true, {}, defaultStyles, style);
 
     // Setup scales
     majorNormalized = normalizeSettings({ major: settings.major }, { major: 0.5 }, chart);
@@ -47,7 +50,7 @@ export default function dispersion(chart, defaultStyles = {}, initialSettings = 
 
   fn.onData = (data, rect) => {
     items = [];
-    resolvedStyle = resolveInitialStyle(settings, defaultStyles, chart);
+    resolvedStyle = resolveInitialStyle(settings, baseStyles, chart);
     const flipXY = settings.orientation === 'horizontal';
     const majorLength = flipXY ? rect.height : rect.width;
     const minorLength = flipXY ? rect.width : rect.height;
