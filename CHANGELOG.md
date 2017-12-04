@@ -2,6 +2,8 @@
 
 ## **{{VERSION}}** - *({{DATE}})*
 
+## **0.39.2** - *(2017-12-04)*
+
 ### Fixed
 
 - Legend-cat: Doesn't handle floating point number as scrollLength input to tap/scroll events ([#588](https://github.com/qlik-trial/picasso.js/issues/588))
