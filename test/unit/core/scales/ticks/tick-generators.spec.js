@@ -27,12 +27,13 @@ describe('Tick generators', () => {
         settings.ticks.count = 2;
         input.formatter = formatter('d3-number')('-1.0%');
         const ticks = scale.ticks(input);
-        const expected = [
-          { position: 0, label: '0%', isMinor: false, value: 0 },
-          { position: 0.5, label: '50%', isMinor: false, value: 0.5 },
-          { position: 1, label: '100%', isMinor: false, value: 1 }
-        ];
-        expect(ticks).to.deep.equal(expected);
+        [
+          { label: '0%' },
+          { label: '50%' },
+          { label: '100%' }
+        ].forEach((e, i) => {
+          expect(ticks[i].label).to.equal(e.label);
+        });
       });
     });
 
@@ -40,25 +41,61 @@ describe('Tick generators', () => {
       it('should generate ticks by values', () => {
         settings.ticks.values = [0.1, 0.3];
         const ticks = scale.ticks(input);
-        expect(ticks[0].position).to.equal(0.1);
-        expect(ticks[1].position).to.equal(0.3);
+        [
+          { position: 0.1, start: 0.1, end: 0.1 },
+          { position: 0.3, start: 0.3, end: 0.3 }
+        ].forEach((e, i) => {
+          expect(ticks[i].position).to.equal(e.position);
+          expect(ticks[i].start).to.equal(e.start);
+          expect(ticks[i].end).to.equal(e.end);
+        });
+      });
+
+      it('should generate ticks from objects', () => {
+        settings.ticks.values = [
+          { value: 0.1, start: 0, end: 0.2 },
+          0.3
+        ];
+        const ticks = scale.ticks(input);
+        [
+          { position: 0.1, start: 0, end: 0.2 },
+          { position: 0.3, start: 0.3, end: 0.3 }
+        ].forEach((e, i) => {
+          expect(ticks[i].position).to.equal(e.position);
+          expect(ticks[i].start).to.equal(e.start);
+          expect(ticks[i].end).to.equal(e.end);
+        });
+      });
+
+      it('should require value prop on object', () => {
+        settings.ticks.values = [
+          { value: 0.1, start: 0, end: 0.2 },
+          { start: 0.3, end: 0.5 }
+        ];
+        const ticks = scale.ticks(input);
+        [
+          { position: 0.1, start: 0, end: 0.2 }
+        ].forEach((e, i) => {
+          expect(ticks[i].position).to.equal(e.position);
+          expect(ticks[i].start).to.equal(e.start);
+          expect(ticks[i].end).to.equal(e.end);
+        });
       });
 
       it('should filter out NaN values', () => {
         settings.ticks.values = [0.1, NaN, '12', 'asd', false, 0.3];
         const ticks = scale.ticks(input);
-        expect(ticks[0].position).to.equal(0.1);
-        expect(ticks[1].position).to.equal(0.3);
+        [0.1, 0.3].forEach((e, i) => {
+          expect(ticks[i].value).to.equal(e);
+        });
       });
 
-      it('should only generate ticks by values that are witin the domain', () => {
+      it('should only generate ticks by values that are within the domain', () => {
         settings.ticks.values = [-100, -0.1, 0.1, 0.3, 1.1, 123, 2130];
         const ticks = scale.ticks(input);
-        const expected = [
-          { position: 0.1, label: '0.1', isMinor: false, value: 0.1 },
-          { position: 0.3, label: '0.3', isMinor: false, value: 0.3 }
-        ];
-        expect(ticks).to.deep.equal(expected);
+        [0.1, 0.3].forEach((e, i) => {
+          expect(ticks[i].value).to.equal(e);
+        });
       });
 
       it('should only generate unique ticks by values', () => {
@@ -76,9 +113,14 @@ describe('Tick generators', () => {
 
     describe('by count', () => {
       it('should generate ticks by count', () => {
-        settings.ticks.count = 10;
+        settings.ticks.count = 3;
         const ticks = scale.ticks(input);
-        expect(ticks.length).to.deep.equal(11);
+        expect(ticks.length).to.deep.equal(3);
+        [0, 0.5, 1].forEach((e, i) => {
+          expect(ticks[i].position).to.equal(e);
+          expect(ticks[i].start).to.equal(e);
+          expect(ticks[i].end).to.equal(e);
+        });
       });
 
       it('should generate ticks by count with minor ticks', () => {
@@ -93,7 +135,11 @@ describe('Tick generators', () => {
     describe('by distance', () => {
       it('should generate ticks by distance', () => {
         const ticks = scale.ticks(input);
-        expect(ticks.length).to.equal(3);
+        [0, 0.5, 1].forEach((e, i) => {
+          expect(ticks[i].position).to.equal(e);
+          expect(ticks[i].start).to.equal(e);
+          expect(ticks[i].end).to.equal(e);
+        });
       });
 
       it('should generate tight ticks by distance', () => {
@@ -101,7 +147,11 @@ describe('Tick generators', () => {
         const ticks = scale.ticks(input);
         expect(ticks[0].position).to.equal(scale.range()[0]);
         expect(ticks[ticks.length - 1].position).to.equal(scale.range()[1]);
-        expect(ticks).to.be.of.length(3);
+        [0, 0.5, 1].forEach((e, i) => {
+          expect(ticks[i].position).to.equal(e);
+          expect(ticks[i].start).to.equal(e);
+          expect(ticks[i].end).to.equal(e);
+        });
       });
 
       it('should generate tight ticks by a custom distance', () => {
@@ -129,20 +179,24 @@ describe('Tick generators', () => {
       it('should be able to force ticks at bounds', () => {
         settings.ticks.tight = false;
         settings.ticks.forceBounds = true;
-        scale.domain([-99842.82122359527, 99888.12805374675]);
+        scale.domain([-99, 99]);
         const ticks = scale.ticks(input);
         const majorTicks = ticks.filter(t => !t.isMinor);
         expect(majorTicks[0]).to.deep.equal({
           position: 0,
-          label: '-99842.8212236',
+          start: 0,
+          end: 0,
+          label: '-99',
           isMinor: false,
-          value: -99842.82122359527
+          value: -99
         });
         expect(majorTicks[majorTicks.length - 1]).to.deep.equal({
           position: 1,
-          label: '99888.1280537',
+          start: 1,
+          end: 1,
+          label: '99',
           isMinor: false,
-          value: 99888.12805374675
+          value: 99
         });
       });
 
@@ -157,6 +211,8 @@ describe('Tick generators', () => {
         const majorTicks = ticks.filter(t => !t.isMinor);
 
         expect(majorTicks[0]).to.deep.equal({
+          start: 0,
+          end: 0,
           position: 0,
           label: '-50',
           isMinor: false,
@@ -164,6 +220,8 @@ describe('Tick generators', () => {
         });
         expect(majorTicks[majorTicks.length - 1]).to.deep.equal({
           position: 1,
+          start: 1,
+          end: 1,
           label: '450',
           isMinor: false,
           value: 450

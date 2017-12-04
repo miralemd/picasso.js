@@ -2,6 +2,22 @@
 
 ## Linear scale
 
+### Example - Custom ticks with start, end and label
+
+To have a tick representing a range, it is possible to define a set of custom ticks with a value (the tick) and its start and end values.
+
+  ```js
+  scale: {
+    domain: [0, 10],
+    ticks: {
+      values: [
+        { value: 3, start: 2, end: 4, label: '3kr' },
+        { value: 6, start: 5, end: 7, label: '6kr' }
+      ]
+    }
+  }
+  ```
+
 ```js
 settings: {
   expand: 3.14, // Expand the output range. Optional.
@@ -11,6 +27,8 @@ settings: {
     tight: false, //  Default: false. Optional.
     forceBounds: false, //  Default: false. Optional.
     distance: 100, // Approximate distance between each tick. Default: 100. Optional.
+    values: [3, 7], // If set, ticks are no longer generated but instead equal to this set. Optional.
+    count: 3.14, //  Optional.
   },
   minorTicks: { //  Optional.
     count: 3, //  Default: 3. Optional.

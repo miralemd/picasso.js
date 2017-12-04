@@ -2,6 +2,21 @@
 
 ## **{{VERSION}}** - *({{DATE}})*
 
+### Added
+
+- Linear scale: allow custom ticks with start, end and label ([#576](https://github.com/qlik-trial/picasso.js/issues/576))
+
+  ```js
+  scale: {
+    ticks: {
+      values: [
+        { value: 3, start: 2, end: 4, label: '3kr' },
+        { value: 6, start: 5, end: 7, label: '6kr' }
+      ]
+    }
+  }
+  ```
+
 ## **0.39.2** - *(2017-12-04)*
 
 ### Fixed
@@ -25,6 +40,7 @@
 
 - Exposed `version` on `picasso` namespace
 - Exposed `module` in `package.json` in order to allow module bundlers to consume picasso as en es6+ module
+
 
 ## **0.38.0** - *(2017-11-23)*
 

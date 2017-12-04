@@ -4,6 +4,14 @@ function applyFormat(formatter) {
   return typeof formatter === 'undefined' ? t => t : t => formatter(t);
 }
 
+function clamp(val) {
+  return Math.max(0, Math.min(1, val));
+}
+
+function isObject(obj) {
+  return typeof obj === 'object';
+}
+
 function minorTicksGenerator(count, start, end) {
   const r = Math.abs(start - end);
   const interval = r / (count + 1);
@@ -62,12 +70,17 @@ export function looseDistanceBasedGenerator({ distance, scale, minorCount = 0, u
 
   const ticksFormatted = ticks.map(applyFormat(formatter));
 
-  return ticks.map((tick, i) => ({
-    position: scale(tick),
-    label: ticksFormatted[i],
-    value: tick,
-    isMinor: majorTicks.indexOf(tick) === -1
-  }));
+  return ticks.map((tick, i) => {
+    const position = scale(tick);
+    return {
+      position,
+      start: position,
+      end: position,
+      label: ticksFormatted[i],
+      value: tick,
+      isMinor: majorTicks.indexOf(tick) === -1
+    };
+  });
 }
 
 /**
@@ -92,35 +105,54 @@ export function tightDistanceBasedGenerator({ distance, scale, minorCount = 0, u
 
   const ticksFormatted = ticks.map(applyFormat(formatter));
 
-  return ticks.map((tick, i) => ({
-    position: scale(tick),
-    label: ticksFormatted[i],
-    value: tick,
-    isMinor: majorTicks.indexOf(tick) === -1
-  }));
+  return ticks.map((tick, i) => {
+    const position = scale(tick);
+    return {
+      position,
+      start: position,
+      end: position,
+      label: ticksFormatted[i],
+      value: tick,
+      isMinor: majorTicks.indexOf(tick) === -1
+    };
+  });
 }
 
 function ticksByCount({ count, minorCount, scale, formatter }) {
   return scale
     .ticks(((count - 1) * minorCount) + count)
-    .map((tick, i) => ({
-      position: scale(tick),
-      label: formatter(tick),
-      isMinor: i % (minorCount + 1) !== 0,
-      value: tick
-    }));
+    .map((tick, i) => {
+      const position = scale(tick);
+      return {
+        position,
+        start: position,
+        end: position,
+        label: formatter(tick),
+        isMinor: i % (minorCount + 1) !== 0,
+        value: tick
+      };
+    });
 }
 
-function ticksByValue({ values, scale, formatter }) {
+function ticksByValue({ values, scale, formatter = v => v }) {
   return values
-    .sort((a, b) => a - b)
-    .filter((v, i, ary) => v <= scale.max() && v >= scale.min() && ary.indexOf(v) === i)
-    .map(tick => ({
-      position: scale(tick),
-      label: formatter(tick),
-      isMinor: false,
-      value: tick
-    }));
+    .sort((a, b) => (isObject(a) ? a.value : a) - (isObject(b) ? b.value : b))
+    .filter((v, i, ary) => {
+      const val = isObject(v) ? v.value : v;
+      return val <= scale.max() && val >= scale.min() && ary.indexOf(v) === i;
+    })
+    .map((v) => {
+      const value = isObject(v) ? v.value : v;
+      const position = scale(value);
+      return {
+        position,
+        value,
+        label: isObject(v) && typeof v.label !== 'undefined' ? v.label : formatter(value),
+        isMinor: false,
+        start: isObject(v) && !isNaN(v.start) ? clamp(scale(v.start)) : position, // TODOHandle end < start?
+        end: isObject(v) && !isNaN(v.end) ? clamp(scale(v.end)) : position // TODO Handle start > end?
+      };
+    });
 }
 
 function forceTicksAtBounds(ticks, scale, formatter) {
@@ -130,6 +162,8 @@ function forceTicksAtBounds(ticks, scale, formatter) {
   if (ticksP.indexOf(range[0]) === -1) {
     ticks.splice(0, 0, {
       position: range[0],
+      start: range[0],
+      end: range[0],
       label: formatter(scale.start()),
       isMinor: false,
       value: scale.start()
@@ -142,6 +176,8 @@ function forceTicksAtBounds(ticks, scale, formatter) {
   if (ticksP.indexOf(range[1]) === -1) {
     ticks.push({
       position: range[1],
+      start: range[1],
+      end: range[1],
       label: formatter(scale.end()),
       isMinor: false,
       value: scale.end()
@@ -156,7 +192,7 @@ export function generateContinuousTicks({ settings, scale, distance, formatter }
   const minorCount = settings.minorTicks && !notNumber(settings.minorTicks.count) ? Math.min(100, settings.minorTicks.count) : 0;
 
   if (Array.isArray(settings.ticks.values)) {
-    const values = settings.ticks.values.filter(v => !notNumber(v));
+    const values = settings.ticks.values.filter(v => (typeof v === 'object' ? !notNumber(v.value) : !notNumber(v)));
     ticks = ticksByValue({ values, scale: scale.copy(), formatter });
   } else if (!notNumber(settings.ticks.count)) {
     const count = Math.min(1000, settings.ticks.count);

@@ -15,7 +15,9 @@ const AVAILABLE_SETTINGS = ['min', 'max', 'expand', 'include', 'invert'];
  * @property {object} [ticks]
  * @property {boolean} [ticks.tight = false]
  * @property {boolean} [ticks.forceBounds = false]
- * @property {number} [ticks.distance = 100] Approximate distance between each tick
+ * @property {number} [ticks.distance = 100]  - Approximate distance between each tick
+ * @property {number[]|object[]} [ticks.values] - If set, ticks are no longer generated but instead equal to this set
+ * @property {number} [ticks.count]
  * @property {object} [minorTicks]
  * @property {number} [minorTicks.count = 3]
  */
