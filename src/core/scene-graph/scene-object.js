@@ -39,9 +39,10 @@ function colliderToShape(node, dpi) {
   return null;
 }
 
-export class SceneObject {
+class SceneObject {
   /**
    * Read-only object representing a node on the scene.
+   * @private
    */
   constructor(node) {
     this._bounds = node.boundingRect ? (withTransform = true) => node.boundingRect(withTransform) : () => ({ x: 0, y: 0, width: 0, height: 0 });
@@ -160,6 +161,11 @@ export class SceneObject {
   }
 }
 
-export default function create(...a) {
+function create(...a) {
   return new SceneObject(...a);
 }
+
+export {
+  create as default,
+  SceneObject
+};

@@ -4,6 +4,7 @@
  * Hash an object
  * Modified version of Java's HashCode function
  * Source: {@link http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/}
+ * @ignore
  *
  * @param  {Object} item Item to hash
  * @return {String}      Unique hash id

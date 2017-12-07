@@ -2,7 +2,7 @@ import { degreesToPoints } from '../../../core/utils/math';
 
 /**
  * Get or create a gradient
- *
+ * @ignore
  * @param  {Object} g        Canvas 2d context
  * @param  {Object} shape    Current shape (for width/height properties)
  * @param  {Object} gradient The gradient properties

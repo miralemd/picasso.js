@@ -5,14 +5,17 @@ A component that renders active `brush` ranges.
 ## Component settings
 
 ```js
-settings: {
-  brush: 'foo', // Name of brush instance.
-  scale: 'foo', // Name of a scale.
-  direction: 'horizontal', // Direction of the brush. Default: 'horizontal'. Optional.
-  fill: '#ccc', // Fill color. Default: '#ccc'. Optional.
-  opacity: 1, // Layer opacity. Default: 1. Optional.
+{
+  settings: { 
+    brush: /* string */, // Name of brush instance
+    scale: /* string */, // Name of a scale
+    direction: 'horizontal', // Direction of the brush // Optional
+    fill: '#ccc', // Fill color // Optional
+    opacity: 1, // Layer opacity // Optional
+  },
 }
 ```
+
 
 The component can be docked to the same area as another component by referencing the `key` value:
 

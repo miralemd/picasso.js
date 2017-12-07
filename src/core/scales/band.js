@@ -40,6 +40,7 @@ export default function scaleBand(settings = {}, data = {}) {
   /**
    * An augmented {@link https://github.com/d3/d3-scale#_band|d3 band scale}
    * @alias band
+   * @private
    * @kind function
    * @param { Object } value
    * @return { number }

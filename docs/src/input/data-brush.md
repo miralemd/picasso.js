@@ -55,4 +55,4 @@ brush.addValues([
 
 ## API reference
 
-{{>magic ctx='core.brush.brush-js'}}
+{{>magic ctx='definitions.brush' parent='brush'}}

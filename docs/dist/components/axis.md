@@ -90,38 +90,43 @@ Under the hood - `maxGlyphCount` is a multipler on the size of the character `M`
 
 
 ```js
-settings: {
-  labels: { // Labels settings. Optional.
-    show: true, //  Default: true. Optional.
-    mode: 'auto', // Control how labels arrange themself. Availabe modes are auto, horizontal, layered and tilted. Only horizontal is supported on a continuous axis. Default: 'auto'. Optional.
-    tiltAngle: 40, // Angle in degrees, capped between -90 and 90. Default: 40. Optional.
-    maxEdgeBleed: Infinity, //  Default: Infinity. Optional.
-    fontFamily: 'Arial', //  Default: 'Arial'. Optional.
-    fontSize: '12px', //  Default: '12px'. Optional.
-    fill: '#595959', //  Default: '#595959'. Optional.
-    margin: 3.14, // Space between tick and label. Default to 6 (discrete) or 4 (continuous). Optional.
-    maxLengthPx: 150, // Max length of labels in pixels. Default: 150. Optional.
-    minLengthPx: 0, // Min length of labels in pixels. Labels will always at least require this much space. Default: 0. Optional.
-    maxGlyphCount: , // Is used to measure the largest possible size a label. Default: . Optional.
-  },
-  line: { //  Optional.
-    show: true, //  Default: true. Optional.
-    strokeWidth: 1, //  Default: 1. Optional.
-    stroke: '#cccccc', //  Default: '#cccccc'. Optional.
-  },
-  ticks: { //  Optional.
-    show: true, //  Default: true. Optional.
-    margin: 0, //  Default: 0. Optional.
-    tickSize: 3.14, // Default to 4 (discrete) or 8 (continuous). Optional.
-    stroke: '#cccccc', //  Default: '#cccccc'. Optional.
-    strokeWidth: 1, //  Default: 1. Optional.
-  },
-  minorTicks: { // Only on a continuous axis. Optional.
-    show: true, //  Default: true. Optional.
-    margin: 0, //  Default: 0. Optional.
-    tickSize: 3, //  Default: 3. Optional.
-    stroke: '#e6e6e6', //  Default: '#e6e6e6'. Optional.
-    strokeWidth: 1, //  Default: 1. Optional.
+{
+  settings: { 
+    labels: {  // Optional
+      // Labels settings
+      show: true, // Optional
+      mode: 'auto', // Control how labels arrange themself. Availabe modes are auto, horizontal, layered and tilted. Only horizontal is supported on a continuous axis // Optional
+      tiltAngle: 40, // Angle in degrees, capped between -90 and 90 // Optional
+      maxEdgeBleed: 'Infinity', // Optional
+      fontFamily: 'Arial', // Optional
+      fontSize: '12px', // Optional
+      fill: '#595959', // Optional
+      margin: /* number */, // Space between tick and label. Default to 6 (discrete) or 4 (continuous) // Optional
+      maxLengthPx: 150, // Max length of labels in pixels // Optional
+      minLengthPx: 0, // Min length of labels in pixels. Labels will always at least require this much space // Optional
+      maxGlyphCount: null, // Is used to measure the largest possible size a label // Optional
+    },
+    line: {  // Optional
+      show: true, // Optional
+      strokeWidth: 1, // Optional
+      stroke: '#cccccc', // Optional
+    },
+    ticks: {  // Optional
+      show: true, // Optional
+      margin: 0, // Optional
+      tickSize: /* number */, // Default to 4 (discrete) or 8 (continuous) // Optional
+      stroke: '#cccccc', // Optional
+      strokeWidth: 1, // Optional
+    },
+    minorTicks: {  // Optional
+      // Only on a continuous axis
+      show: true, // Optional
+      margin: 0, // Optional
+      tickSize: 3, // Optional
+      stroke: '#e6e6e6', // Optional
+      strokeWidth: 1, // Optional
+    },
   },
 }
 ```
+

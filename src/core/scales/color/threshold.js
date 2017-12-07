@@ -58,7 +58,7 @@ function generateNiceDomain(range, min, max) {
 
 /**
  * @alias scaleThresholdColor
- * @memberof picasso
+ * @private
  * @param { object } [settings] Settings for this scale. If both domain and range are specified, they have to fulfill domain.length === range.length + 1,  otherwise they will be overriden.
  * @param { number[] } [settings.domain] Values defining the thresholds.
  * @param { color[] } [settings.range] CSS color values of the output range.
@@ -84,6 +84,7 @@ export default function scaleThresholdColor(settings = {}, data = {}, { theme } 
 
   /**
    * @alias thresholdColor
+   * @private
    * @param { object } v Object literal containing a 'value' property.
    * @return { string } A CSS color from the scale's range.
    */

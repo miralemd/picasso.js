@@ -89,4 +89,4 @@ Under the hood - `maxGlyphCount` is a multipler on the size of the character `M`
 
 {{postprocess 'index'}}
 
-{{>magic ctx='core.chart-components.axis.axis-js'}}
+{{> struct entries.component--axis}}

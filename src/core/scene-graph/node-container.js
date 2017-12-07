@@ -44,6 +44,7 @@ class NodeContainer extends Node {
 
   /**
    * Removes given child node from this node.
+   * @private
    * @param {Node} c
    * @returns {Node} This object, for chaining purposes.
    */

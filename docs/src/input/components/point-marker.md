@@ -2,9 +2,9 @@
 
 A component that renders points in a designated area.
 
-## Component settings
+## Component configuration
 
-{{>magic ctx='core.chart-components.markers.point.point-js.settings'}}
+{{> struct definitions.component--point-marker}}
 
 ## Dynamics of the settings properties
 

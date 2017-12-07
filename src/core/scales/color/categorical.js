@@ -3,7 +3,7 @@ import ordinal from '../ordinal';
  /**
  * An ordinal scale with the output range set to default colors, as defined by *scaleCategorical.range*
  * @alias scaleCategorical
- * @memberof picasso
+ * @private
  * @param { Object } settings
  * @param { field[] } [fields]
  * @param { dataset } [dataset]

@@ -10,6 +10,7 @@ export default function registryFactory(parentRegistry) {
   defaultValue = parent.default();
 
   /**
+   * @private
    * @param {string} key
    * @param {any} value
    * @throws {TypeError} Key must be a non-empty string

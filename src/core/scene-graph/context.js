@@ -2,6 +2,7 @@ import extend from 'extend';
 
 /**
  * Creates a context. Input an array of strings that should be inherited by the context.
+ * @private
  *
  * @param  {Array}  [whitelist=[]]  An array of whitelisted string keys to inherit
  * @return {Function}               A context function
@@ -11,6 +12,7 @@ export default function contextFactory(whitelist = []) {
 
   /**
    * Returns the current context as an object. The object is mutable.
+   * @private
    *
    * @return {Object}   Current context
    */

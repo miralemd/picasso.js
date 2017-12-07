@@ -9,6 +9,7 @@ const numericFilter = v => typeof v === 'number' && !isNaN(v);
  * Provided min/max setting takes presedence over all other inputs. If not provided, the respective values are calculated
  * from the given arr input, where each item in the array is expected to have a min/max accessor.
  *
+ * @private
  * @param {object} [settings]
  * @param {number} [settings.min] The minimum value. Defaults to 0 if not provided.
  * @param {number} [settings.max] The maximum value. Defaults to 1 if not provided.
@@ -56,6 +57,7 @@ export function notNumber(value) {
 /**
  * Get x1, y1, x2, y2 point from angle
  * Source: {@link https://codepen.io/NV/pen/jcnmK}
+ * @private
  *
  * @param  {Number} angle Radians
  * @return {Object}       Point with x1, y2, x2, y2.
@@ -77,6 +79,7 @@ export function angleToPoints(angle) {
 
 /**
  * Turns degrees into radians
+ * @private
  *
  * @param  {Number} degrees Degrees
  * @return {Number}         Radians
@@ -87,6 +90,7 @@ export function toRadians(d) {
 
 /**
  * Get x1, y1, x2, y2 point from degree
+ * @private
  *
  * @param  {Number} d Degree
  * @return {Object}   Point with x1, y2, x2, y2.

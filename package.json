@@ -12,6 +12,8 @@
     "url": "ssh://git@github.com:qlik-trial/picasso.js.git"
   },
   "scripts": {
+    "api": "jsdoc src/ -r -d ./api/spec.json -t ../../mmdk/api-spec/packages/jsdoc2spec -p ./package.json",
+    "docit": "jsdoc -t ./docs/node_modules/jsdoc-json -r src/core/data -d ./api/docs.json",
     "build": "rollup -c --environment BUILD:production",
     "build:dev": "rollup -c",
     "build:watch": "rollup -c -w",

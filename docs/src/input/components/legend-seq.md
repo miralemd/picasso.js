@@ -72,4 +72,4 @@ chartSettings = {
 
 {{postprocess 'index'}}
 
-{{>magic ctx='core.chart-components.legend-seq.legend-seq-js'}}
+{{>struct entries.component--legend-seq}}

@@ -1,31 +1,8 @@
 import extend from 'extend';
-// import shapeFactory from './shapes';
 import { normalizeSettings, resolveForItem } from '../../property-resolver';
 import { notNumber } from '../../../utils/math';
 import { updateScaleSize } from '../../../scales';
 import shapeFactory from '../../../symbols';
-
-const DEFAULT_DATA_SETTINGS = {
-  shape: 'circle',
-  label: '',
-  fill: '#333',
-  stroke: '#ccc',
-  strokeWidth: 0,
-  opacity: 1,
-  x: 0.5,
-  y: 0.5,
-  size: 1,
-  strokeDasharray: ''
-};
-
-const SIZE_LIMITS = {
-  maxPx: 10000,
-  minPx: 1,
-  maxRelExtent: 0.1,
-  minRelExtent: 0.01,
-  maxRelDiscrete: 1,
-  minRelDiscrete: 0.1
-};
 
 const DEFAULT_ERROR_SETTINGS = {
   errorShape: {
@@ -38,76 +15,63 @@ const DEFAULT_ERROR_SETTINGS = {
   }
 };
 
-/**
- * @typedef settings
- * @type {object}
- * @property {marker-point-number} [x=0.5] - x coordinate
- * @property {marker-point-number} [y=0.5] - y coordinate
- * @property {marker-point-string} [fill="#999"] - fill color
- * @property {marker-point-string} [stroke="#ccc"] - stroke color
- * @property {marker-point-number} [strokeWidth=0] - stroke width
- * @property {marker-point-number} [size=1] - size of shape
- * @property {marker-point-number} [opacity=1] - opacity of shape
- * @property {marker-point-string} [shape="circle"] - type of shape
- * @property {object} [sizeLimits]
- * @property {number} [sizeLimits.maxPx=10000] - maximum size in pixels
- * @property {number} [sizeLimits.minPx=1] - minimum size in pixels
- * @property {number} [sizeLimits.maxRelExtent=0.1] - maximum size relative linear scale extent
- * @property {number} [sizeLimits.minRelExtent=0.01] - minimum size relative linear scale extent
- * @property {number} [sizeLimits.maxRelDiscrete=1] - maximum size relative discrete scale banwidth
- * @property {number} [sizeLimits.minRelDiscrete=0.1] - minimum size relative discrete scale bandwidth
- */
-
-/**
- * @typedef marker-point
- * @property {string} type - "point"
- * @property {marker-point-data} data - Point data mapping.
- * @property {settings} settings - Marker settings
- */
-
-/**
- * @typedef {(string|marker-point-data-accessor|marker-point-setting)} marker-point-string
- */
+ /**
+  * @typedef {object}
+  * @alias component--point-marker.settings
+  */
+const DEFAULT_DATA_SETTINGS = {
+  /** Type of shape
+   * @type {datum-string=} */
+  shape: 'circle',
+  label: '',
+  /** Fill color
+   * @type {datum-string=} */
+  fill: '#333',
+  /** Stroke color
+   * @type {datum-string=} */
+  stroke: '#ccc',
+  /** Stroke width
+   * @type {datum-number=} */
+  strokeWidth: 0,
+  /** Opacity of shape
+   * @type {datum-number=} */
+  opacity: 1,
+  /** Normalized x coordinate
+   * @type {datum-number=} */
+  x: 0.5,
+  /** Normalized y coordinate
+   * @type {datum-number=} */
+  y: 0.5,
+  /** Normalized size of shape
+   * @type {datum-number=} */
+  size: 1,
+  strokeDasharray: ''
+};
 
  /**
-  * @typedef {(number|marker-point-data-accessor|marker-point-setting)} marker-point-number
+  * @typedef {object}
+  * @alias component--point-marker.settings.sizeLimits
   */
-
- /**
-  * @callback marker-point-data-accessor
-  * @param {object} datum - The datum object
-  * @param {number|string} datum.value - Value of datum
-  * @param {integer} index - Index of datum in the data
-  * @this {marker-point-data-accessor-context}
-  */
-
- /**
-  * typedef marker-point-data-accessor-context
-  * @property {object} data - The mapped data
-  * @property {object} scale - The referenced scale
-  */
-
-/**
- * The specified definition will provide the point marker with data.
- *
- * @typedef marker-point-data
- * @property {object} mapTo - Object containing the definition of how to map data
- * @property {string} mapTo.source - Data field
- * @property {object} groupBy - The data source to group data
- * @property {string} groupBy.source - Reference to a data source
- */
-
- /**
-  * The data to use for encoding a property of the point.
-  *
-  * The specified source will provide the point marker with data.
-  * @typedef marker-point-setting
-  * @property {string} ref - A reference to a property in the mapped data.
-  * @property {object|string} scale - Object containing the definition of a scale. If a string is provided it is assumed to be a reference to an already existing scale.
-  * @property {string} scale.source - Data source
-  * @property {string} scale.type - Scale type
-  * @property {marker-point-data-accessor} [fn] - Data accessor. Custom data accessor which will be called for each datum. The return value is used for the specified property.
-  */
+const SIZE_LIMITS = {
+  /** Maximum size of shape, in pixels
+   * @type {number=} */
+  maxPx: 10000,
+  /** Minimum size of shape, in pixels
+   * @type {number=} */
+  minPx: 1,
+  /** Maximum size relative linear scale extent
+   * @type {number=} */
+  maxRelExtent: 0.1,
+  /** Minimum size relative linear scale extent
+   * @type {number=} */
+  minRelExtent: 0.01,
+  /** Maximum size relative discrete scale banwidth
+   * @type {number=} */
+  maxRelDiscrete: 1,
+  /** Minimum size relative discrete scale banwidth
+   * @type {number=} */
+  minRelDiscrete: 0.1
+};
 
 function getPxSpaceFromScale(s, space) {
   if (s && typeof s.bandwidth === 'function') { // some kind of ordinal scale

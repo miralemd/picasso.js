@@ -1,6 +1,7 @@
 /**
  * A list of supported attributes in lower camelCase notation mapped to corresponding kebab-case notation.
  * The kebab-case notations are a sub-set of SVG attributes (https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute).
+ * @ignore
  */
 const mappedAttributes = {
   fill: 'fill',
@@ -22,6 +23,8 @@ const mappedAttributes = {
 /**
  * Takes a target object and assign each supported attribute from a source object to that target.
  * Each supported attributes is converted to a mapped kebab-case notation.
+ * @ignore
+ *
  * @param {object} target - Target object on which to assign mapped attribute values
  * @param {object} source - Source object
  */

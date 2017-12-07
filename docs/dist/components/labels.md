@@ -32,21 +32,70 @@ The label is then justified, aligned and ellipsed if necessary.
 #### Settings
 
 ```js
-settings: {
-  direction: 'up', // The direction in which the bars are growing: 'up', 'down', 'right' or 'left'.. Default: 'up'. Optional.
-  fontFamily: 'Arial', //  Default: 'Arial'. Optional.
-  fontSize: 12, //  Default: 12. Optional.
-  labels: { // 
-    label: 'foo', // The text value.
-    placements: { // 
-      position,: 'foo', // 
-      justify: 0, // Placement of the label along the direction of the bar. Default: 0. Optional.
-      align: 0.5, // Placement of the label along the perpendicular direction of the bar. Default: 0.5. Optional.
-      fill: '#333', // Color of the label. Default: '#333'. Optional.
-    },
+{
+  type: 'labels', // Optional
+  settings: { 
+    sources: [ 
+      { 
+        component: /* string */,
+        selector: /* string */,
+        strategy: /* component--labels~label-strategy */,
+      },
+    ],
   },
 }
 ```
+
+**Definitions**
+
+```js
+label-strategy: { 
+  settings: { 
+    direction: 'up',  // Optional
+    fontFamily: 'Arial', // Optional
+    fontSize: 12, // Optional
+    labels: [ 
+      { 
+        label: /* string | function */, 
+        placements: [ 
+          { 
+            position: /* string */, // 'inside' | 'outside' | 'opposite'
+            justify: 0, // Placement of the label along the direction of the bar // Optional
+            align: 0.5, // Placement of the label along the perpendicular direction of the bar // Optional
+            fill: '#333', // Color of the label // Optional
+          },
+        ],
+      },
+    ],
+  },
+},
+```
+
+##### bar strategy
+
+```js
+{
+  settings: { 
+    direction: 'up',  // Optional
+    fontFamily: 'Arial', // Optional
+    fontSize: 12, // Optional
+    labels: [ 
+      { 
+        label: /* string | function */, 
+        placements: [ 
+          { 
+            position: /* string */, // 'inside' | 'outside' | 'opposite'
+            justify: 0, // Placement of the label along the direction of the bar // Optional
+            align: 0.5, // Placement of the label along the perpendicular direction of the bar // Optional
+            fill: '#333', // Color of the label // Optional
+          },
+        ],
+      },
+    ],
+  },
+}
+```
+
 
 #### Example
 

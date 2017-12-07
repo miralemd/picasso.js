@@ -1,1 +1,6 @@
-({{#if this}}*{{#each this}}{{ type.names.[0] }} {{#if optional}}[{{/if}}{{ name }}{{#unless @last}}, {{/unless}}{{#if optional}}]{{/if}}{{/each}}*{{/if}})
+({{~#each this~}}
+  {{~#if optional}}[{{/if~}}
+  {{name}}{{#typedef this}} *:{{this}}*{{/typedef}}
+  {{~#unless @last}}, {{/unless~}}
+  {{~#if optional}}]{{/if~}}
+{{~/each~}})

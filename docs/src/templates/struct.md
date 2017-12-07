@@ -1,12 +1,19 @@
-{{#if skip}}
-{{else}}
-{{#if _nested}}
-{{{name}}}: { // {{#if description}}{{{description}}}.{{/if}}{{#ifDefined defaultvalue}} Default: {{{defaultvalue}}}.{{/ifDefined}}{{#if optional}} Optional.{{/if}}
-{{#each _nested}}
-  {{>struct this}}
-{{/each}}
-},
-{{else}}
-{{name}}: {{>sample this}}, // {{#if description}}{{{description}}}.{{/if}}{{#ifDefined defaultvalue}} Default: {{{defaultvalue}}}.{{/ifDefined}}{{#if optional}} Optional.{{/if}}
+{{#if title}}## {{ title }}
 {{/if}}
+```js
+{{#if name}}{{name}}: {{/if}}{
+{{#each entries}}
+  {{>substruct this name=@key}}
+{{/each}}
+}
+```
+
+{{#if definitions}}
+**Definitions**
+
+{{#each definitions}}
+```js
+{{>substruct this name=@key}}
+```
+{{/each}}
 {{/if}}

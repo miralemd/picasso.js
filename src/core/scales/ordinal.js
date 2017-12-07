@@ -4,7 +4,7 @@ import {
 
  /**
  * @alias scaleOrdinal
- * @memberof picasso
+ * @private
  * @param { Object } settings
  * @param { field[] } [fields]
  * @param { dataset } dataset
@@ -13,6 +13,7 @@ import {
 export default function ordinal(settings = {}, dataset) {
   /**
    * An augmented {@link https://github.com/d3/d3-scale#_ordinal|d3 ordinal scale}
+   * @private
    * @alias ordinal
    * @param { Object }
    * @return { number }

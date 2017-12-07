@@ -66,7 +66,8 @@ function flattenTree(rootNode, settings) {
 }
 
 /**
- * @typedef settings
+ * @typedef {object} scale-hBand.settings
+ * @private
  * @property {number} [padding=0] - Exposes {@link https://github.com/d3/d3-scale#band_padding}
  * @property {boolean} [paddingOuter=0] - Exposes {@link https://github.com/d3/d3-scale#band_paddingOuter}
  * @property {number[]} [paddingInner=0] - Exposes {@link https://github.com/d3/d3-scale#band_paddingInner}
@@ -77,7 +78,7 @@ function flattenTree(rootNode, settings) {
  /**
   * Hierarchical band scale, that is an augmented band scale, that takes hierarchical data as input
  * @alias scaleHierarchicalBand
- * @memberof picasso
+ * @private
  * @param { Object } settings
  * @param { fields[] } [fields]
  * @param { dataset } [dataset] - With a root property that is an instance of D3.js Hierarchy
@@ -91,6 +92,7 @@ export default function scaleHierarchicalBand(settings = {}, data = {}) {
 
   /**
    * @alias h-band
+   * @private
    * @kind function
    * @param { Object[] } value - Array where each value is a reference to a node, going from depth 1 to n.
    * @return { number }

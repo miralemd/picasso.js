@@ -19,31 +19,7 @@ import NarrowPhaseCollision from '../math/narrow-phase-collision';
 import themeFn from '../theme';
 
 /**
- * @typedef Chart.Props
- * @property {Chart.DataProps} data - Chart data
- * @property {Chart.SettingsProps} settings - Chart settings
- * @property {HTMLElement} element - Element to mount the chart into
- * @property {Function} mounted - Lifecycle function called when the chart instance has been mounted into an element.
- * @property {Function} updated - Lifecycle function called when the chart instance has been updated.
- * @property {Object} on - Event listeners
- */
-
-/**
- * @typedef Chart.SettingsProps
- * @property {Chart.ScaleProps} scales
- * @property {component-settings[]} components
- * @property {dock-layout-settings} [dockLayout]
- */
-
-/**
- * @typedef Chart.ScaleProps
- * @property {string} source - The data source used as input when creating the scale
- * @property {string} [type] - The type of scale to create
- * @property {boolean} invert - Whether to invert the scale's output
- */
-
-/**
- * @typedef component-settings
+ * @typedef {object} component-settings
  * @description Will also include component specific settings depending on type
  *              ex: [marker-point-settings](./markers.md#marker-point-settings),
  *                  [marker-box-settings](./markers.md#marker-box-settings),
@@ -69,7 +45,7 @@ import themeFn from '../theme';
  */
 
 /**
- * @typedef dock-layout-settings
+ * @typedef {object} dock-layout-settings
  * @property {object} [size] Phyiscal size. Default to size of the container
  * @property {number} [size.width]
  * @property {number} [size.height]
@@ -122,17 +98,25 @@ function addComponentDelta(shape, containerBounds, componentBounds) {
   return deltaShape;
 }
 
-/**
- * The chart creator
- * @memberof picasso
- * @alias chart
- * @param  {Chart.Props} settings - Settings
- * @return {Chart}
- */
-function chart(definition, context) {
+function chartFn(definition, context) {
+  /**
+   * @typedef {object} chart-definition
+   */
   let {
+    /**
+     * @type {HTMLElement}
+     * @memberof chart-definition
+     */
     element,
+    /**
+     * @type {Array<data-source>}
+     * @memberof chart-definition
+     */
     data = [],
+    /**
+     * @type {chart-settings}
+     * @memberof chart-definition
+     */
     settings = {},
     on = {}
   } = definition;
@@ -143,6 +127,10 @@ function chart(definition, context) {
 
   const chartMixins = mixins.list();
   const listeners = [];
+  /**
+   * @alias chart
+   * @type {object}
+   */
   const instance = extend({},
     definition,
     chartMixins.filter(mixinName => !isReservedProperty(mixinName))
@@ -416,7 +404,7 @@ function chart(definition, context) {
 
   /**
    * Update the chart with new settings and / or data
-   * @param {Object} [chart] - Chart definition
+   * @param {chart-definition} [chart] - Chart definition
    */
   instance.update = (newProps = {}) => {
     const { partialData } = newProps;
@@ -541,11 +529,11 @@ function chart(definition, context) {
 
   /**
    * Get all shapes associated with the provided context
-   * @param {String} context The brush context
-   * @param {String} mode Property comparasion mode.
-   * @param {Array} props Which specific data properties to compare
-   * @param {String} key Which component to get shapes from. Default gives shapes from all components.
-   * @return {Object[]} Array of objects containing shape and parent element
+   * @param {string} context The brush context
+   * @param {string} mode Property comparasion mode.
+   * @param {Array<string>} props Which specific data properties to compare
+   * @param {string} key Which component to get shapes from. Default gives shapes from all components.
+   * @return {Array<object>} Array of objects containing shape and parent element
    */
   instance.getAffectedShapes = (ctx, mode = 'and', props, key) => {
     const shapes = [];
@@ -558,7 +546,7 @@ function chart(definition, context) {
   /**
    * Get all nodes matching the provided selector
    * @param {string} selector CSS selector [type, attribute, universal, class]
-   * @returns {Object[]} Array of objects containing matching nodes
+   * @returns {Array<object>} Array of objects containing matching nodes
    *
    * @example
    * chart.findShapes('Circle') // [<CircleNode>, <CircleNode>]
@@ -575,8 +563,8 @@ function chart(definition, context) {
 
   /**
    * Get components overlapping a point.
-   * @param {Object} p - Point with x- and y-cooridnate. The coordinate is relative to the browser viewport.
-   * @returns {Object[]} Array of component contexts
+   * @param {object} p - Point with x- and y-cooridnate. The coordinate is relative to the browser viewport.
+   * @returns {Array<component-context>} Array of component contexts
    */
   instance.componentsFromPoint = p => componentsFromPoint(p).map(comp => comp.instance.ctx);
 
@@ -585,13 +573,13 @@ function chart(definition, context) {
    *
    * The input shape is identified based on the geometrical attributes in the following order: circle => line => rectangle => point => polygon.
    * Note that not all nodes on a scene have collision detection enabled.
-   * @param {Object} shape - A geometrical shape. Coordinates are relative to the top-left corner of the chart instance container.
-   * @param {Object} opts - Options
-   * @param {Object[]} [opts.components] - Array of components to include in the lookup. If no components are specified, all components will be included.
+   * @param {object} shape - A geometrical shape. Coordinates are relative to the top-left corner of the chart instance container.
+   * @param {object} opts - Options
+   * @param {object[]} [opts.components] - Array of components to include in the lookup. If no components are specified, all components will be included.
    * @param {string} [opts.components.component.key] - Component key
    * @param {string} [opts.components.component.propagation] - if set to `stop`, will start lookup on top visible shape and propagate downwards until a shape is found.
    * @param {string} [opts.propagation] - if set to `stop`, will start lookup on top visible component and propagate downwards until a component has at least a match.
-   * @returns {Object[]} Array of objects containing colliding nodes
+   * @returns {Array<object>} Array of objects containing colliding nodes
    *
    * @example
    * chart.shapesAt(
@@ -645,11 +633,11 @@ function chart(definition, context) {
   /**
    * Brush data by providing a collection of data bound shapes.
    * @param {Array[]} shapes - An array of data bound shapes.
-   * @param {Object} config - Options
-   * @param {Object[]} opts.components - Array of components to include in the lookup.
+   * @param {object} config - Options
+   * @param {Array<object>} opts.components - Array of components to include in the lookup.
    * @param {string} [opts.components.component.key] - Component key
-   * @param {string[]} [opts.components.component.contexts] - Name of the brushing contexts to affect
-   * @param {string[]} [opts.components.component.data] - The mapped data properties to add to the brush
+   * @param {Array<string>} [opts.components.component.contexts] - Name of the brushing contexts to affect
+   * @param {Array<string>} [opts.components.component.data] - The mapped data properties to add to the brush
    * @param {string} [opts.components.component.action] - Type of action to respond with
    *
    * @example
@@ -685,7 +673,7 @@ function chart(definition, context) {
 
   /**
    * @param {string} name - Name of scroll api
-   * @returns {scroll-api}
+   * @returns {scroll}
    */
   instance.scroll = function scroll(name = 'default') {
     return getOrCreateScrollApi(name, currentScrollApis);
@@ -702,7 +690,7 @@ function chart(definition, context) {
 
   /**
    * Get the all registered scales
-   * @returns {Object[]} Array of scales
+   * @returns {Array<scale>} Array of scales
    */
   instance.scales = function scales() {
     return currentScales;
@@ -710,7 +698,7 @@ function chart(definition, context) {
 
   /**
    * Get the all registered formatters
-   * @returns {Object[]} Array of formatters
+   * @returns {Array<formatter>} Array of formatters
    */
   instance.formatters = function formatters() {
     return currentFormatters;
@@ -719,7 +707,7 @@ function chart(definition, context) {
   /**
    * Get or create brush context for this chart
    * @param {string} name - Name of the brush context. If no match is found, a new brush context is created and returned.
-   * @returns {data-brush}
+   * @returns {brush}
    */
   instance.brush = function brushFn(name = 'default') {
     if (!brushes[name]) {
@@ -730,8 +718,8 @@ function chart(definition, context) {
 
   /**
    * Get or create a scale for this chart
-   * @param {string|Object} v - Scale reference or scale options
-   * @returns {Object} A scale
+   * @param {string|object} v - Scale reference or scale options
+   * @returns {scale}
    * @example
    * instance.scale('nameOfMyScale'); // Fetch an existing scale by name
    * instance.scale({ scale: 'nameOfMyScale' }); // Fetch an existing scale by name
@@ -743,8 +731,8 @@ function chart(definition, context) {
 
   /**
    * Get or create a formatter for this chart
-   * @param {string|Object} v - Formatter reference or formatter options
-   * @returns {Object} A formatter
+   * @param {string|object} v - Formatter reference or formatter options
+   * @returns {formatter}
    * @example
    * instance.formatter('nameOfMyFormatter'); // Fetch an existing formatter by name
    * instance.formatter({ formatter: 'nameOfMyFormatter' }); // Fetch an existing formatter by name
@@ -760,7 +748,7 @@ function chart(definition, context) {
   };
 
   /**
-   * @param {boolean} [val] - Toggle brushing on or off. If value is ommited, a toggle action is applied to the current state.
+   * @param {boolean} [val] - Toggle brushing on or off. If value is omitted, a toggle action is applied to the current state.
    */
   instance.toggleBrushing = function toggleBrushing(val) {
     if (typeof val !== 'undefined') {
@@ -773,7 +761,7 @@ function chart(definition, context) {
   /**
    * Get a component context
    * @param {string} key - Component key
-   * @returns {Object} Component context
+   * @returns {component-context} Component context
    */
   instance.component = (key) => {
     const idx = findComponentIndexByKey(key);
@@ -787,19 +775,23 @@ function chart(definition, context) {
 
   /**
    * Get the all interactions instances
-   * @returns {Object} All interactions and properties to toggle them on or off
+   * @name chart.interactions
+   * @type {object}
    * @example
-   * instance.interactions.instances; // Array of all interaction instances
-   * instance.interactions.on(); // Toggle on all interactions instances
-   * instance.interactions.off(); // Toggle off all interactions instances
+   * chart.interactions.instances; // Array of all interaction instances
+   * chart.interactions.on(); // Toggle on all interactions instances
+   * chart.interactions.off(); // Toggle off all interactions instances
    */
   Object.defineProperty(instance, 'interactions', {
     get() {
-      return {
+      return /** @lends chart.interactions */ {
+        /** @type Array<interaction> */
         instances: currentInteractions,
+        /** Enable all interaction instances */
         on() {
           currentInteractions.forEach(i => i.on());
         },
+        /** Disable all interaction instances */
         off() {
           currentInteractions.forEach(i => i.off());
         }
@@ -819,6 +811,6 @@ function chart(definition, context) {
   return instance;
 }
 
-chart.mixin = mixins.add; // Expose mixin registering function
+chartFn.mixin = mixins.add; // Expose mixin registering function
 
-export default chart;
+export default chartFn;

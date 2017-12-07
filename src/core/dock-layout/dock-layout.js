@@ -272,6 +272,7 @@ function checkShowSettings(components, hiddenComponents, settings, logicalContai
 /**
  * @typedef dockLayout
  * @type {object}
+ * @private
  * @property {object} [size] - Physical size
  * @property {number} [size.width] - Width in pixels
  * @property {number} [size.height]- Height in pixels

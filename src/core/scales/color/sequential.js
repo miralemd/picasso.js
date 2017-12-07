@@ -22,7 +22,7 @@ function generateDomain(range, min, max) {
 
 /**
  * @alias scaleSequentialColor
- * @memberof picasso
+ * @private
  * @param { Object } [settings] Settings for this scale. If both range and domain are specified, they have to fulfill range.length === domain.length, otherwise they will be overriden.
  * @param { number[] } [settings.domain] Numeric values indicating stop limits between start and end values.
  * @param { color[] } [settings.range] CSS color values indicating stop colors between start and end values.
@@ -41,6 +41,7 @@ export default function scaleSequentialColor(settings = {}, data = {}, { theme }
 
   /**
    * @alias sequentialColor
+   * @private
    * @kind function
    * @param { Object } v Object containing a 'value' property
    * @return { string } The blended color

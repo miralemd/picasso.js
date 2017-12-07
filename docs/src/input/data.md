@@ -174,8 +174,8 @@ data: {
 
 ### Dataset
 
-{{>magic ctx='core.data.dataset-js'}}
+{{>magic ctx='definitions.dataset' parent='dataset'}}
 
 ### Field
 
-{{>magic ctx='core.data.field-js'}}
+{{>magic ctx='definitions.field' parent='field'}}

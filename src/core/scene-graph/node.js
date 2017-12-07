@@ -32,8 +32,10 @@ class Node {
 
   /**
    * Checks whether this node is a branch.
+   *
+   * True if this node has children, false otherwise.
    * @readonly
-   * @type {Boolean} True if this node has children, false otherwise.
+   * @type {Boolean}
    */
   get isBranch() {
     return this._children && this._children.length;

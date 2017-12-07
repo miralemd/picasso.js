@@ -26,6 +26,7 @@ function themeFn(style = {}, palettes = []) {
 
   /**
    * Theme API
+   * @private
    * @experimental
    */
   const theme = {

@@ -3,11 +3,7 @@ import about from './about';
 
 import {
   chart,
-  renderer,
-  // temp
-  dataset,
-  // table,
-  field
+  renderer
 } from './core';
 
 import './web';
@@ -33,29 +29,53 @@ function usePlugin(plugin, options = {}, api) {
   plugin(api, options);
 }
 
-/**
- * Create a custom configuration of picasso.js
- *
- * @param {object} cfg
- * @returns {picasso}
- */
 function pic(config = {}, registries = {}) {
   const logger = loggerFn(config.logger);
-  const regis = {
+  const regis = /** @lends picassojs */ {
     // -- registries --
+    /**
+     * Component registry
+     * @type {registry}
+     */
     component: registry(registries.component),
+    /**
+     * Data registry
+     * @type {registry}
+     */
     data: registry(registries.data),
+    /**
+     * Formatter registry
+     * @type {registry}
+     */
     formatter: registry(registries.formatter),
+    /**
+     * Interaction registry
+     * @type {registry}
+     */
     interaction: registry(registries.interaction),
+    /**
+     * Renderer registry
+     * @type {registry}
+     */
     renderer: renderer(registries.renderer),
+    /**
+     * Scale registry
+     * @type {registry}
+     */
     scale: registry(registries.scale),
+    /**
+     * Symbol registry
+     * @type {registry}
+     * @private
+     */
     symbol: registry(registries.symbol),
     // -- misc --
-    logger,
-    // -- temp -- // reconsider the data api when universal data is in place
-    dataset,
-    // table,
-    field
+    /**
+     * log some some stuff
+     * @type {logger}
+     * @private
+     */
+    logger
   };
 
   if (config.renderer && config.renderer.prio) {
@@ -63,10 +83,17 @@ function pic(config = {}, registries = {}) {
   }
 
   /**
-   * picasso.js
-   *
+   * picasso.js entry point
+   * @stability 1
+   * @alias picassojs
    * @param {object} cfg
-   * @returns {picasso}
+   * @param {object} cfg.renderer
+   * @param {Array<string>} cfg.renderer.prio
+   * @param {object} cfg.logger
+   * @param {number} cfg.logger.level
+   * @param {object} cfg.style
+   * @param {Array<object>} cfg.palettes
+   * @returns {picassojs}
    */
   function picassojs(cfg = {}) {
     let cc = {
@@ -78,7 +105,16 @@ function pic(config = {}, registries = {}) {
     return pic(cc, regis);
   }
 
+  /**
+   * @param {fnPlug} plugin
+   * @param {object} options
+   */
   picassojs.use = (plugin, options = {}) => usePlugin(plugin, options, regis);
+
+  /**
+   * @param {chart-definition} definition
+   * @returns {chart}
+   */
   picassojs.chart = definition => chart(definition, {
     registries: regis,
     logger,

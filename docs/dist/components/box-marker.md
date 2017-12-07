@@ -6,11 +6,11 @@
 
 ```js
 data: {
-  min: 3.14, // min. Optional.
-  max: 3.14, // max. Optional.
-  start: 3.14, // start. Optional.
-  end: 3.14, // end. Optional.
-  med: 3.14, // med. Optional.
+  min: /* number */, // min // Optional
+  max: /* number */, // max // Optional
+  start: /* number */, // start // Optional
+  end: /* number */, // end // Optional
+  med: /* number */, // med // Optional
 }
 ```
 
@@ -19,45 +19,43 @@ data: {
 
 ```js
 settings: {
-  major: { // 
-    scale: 'foo', // The scale to use along the major axis.
-    ref: { // Reference to the data property along the major axis. Default: 'self'. Optional.
-      start: 'foo', // Reference to the data property of the start value along the major axis.
-      end: 'foo', // Reference to the data property of the end value along the major axis.
-    },
+  major: { 
+    scale: /* string */, // The scale to use along the major axis
+    ref: 'self',  // Optional
   },
-  minor: { // 
-    scale: 'foo', // The scale to use along the minor axis.
+  minor: { 
+    scale: /* string */, // The scale to use along the minor axis
   },
-  orientation: 'vertical', //  Default: 'vertical'. Optional.
-  box: { //  Optional.
-    show: true, //  Default: true. Optional.
-    fill: '#fff', //  Default: '#fff'. Optional.
-    stroke: '#000', //  Default: '#000'. Optional.
-    strokeWidth: 1, //  Default: 1. Optional.
-    width: 1, //  Default: 1. Optional.
-    maxWidthPx: 100, //  Default: 100. Optional.
-    minWidthPx: 1, //  Default: 1. Optional.
-    minHeightPx: 1, //  Default: 1. Optional.
+  orientation: 'vertical', // Optional
+  box: {  // Optional
+    show: true, // Optional
+    fill: '#fff', // Optional
+    stroke: '#000', // Optional
+    strokeWidth: 1, // Optional
+    width: 1, // Optional
+    maxWidthPx: 100, // Optional
+    minWidthPx: 1, // Optional
+    minHeightPx: 1, // Optional
   },
-  line: { //  Optional.
-    show: true, //  Default: true. Optional.
+  line: {  // Optional
+    show: true, // Optional
   },
-  stroke: '#000', //  Default: '#000'. Optional.
-  strokeWidth: 1, //  Default: 1. Optional.
-  whisker: { //  Optional.
-    show: true, //  Default: true. Optional.
-    stroke: '#000', //  Default: '#000'. Optional.
-    strokeWidth: 1, //  Default: 1. Optional.
-    width: 1, //  Default: 1. Optional.
+  stroke: '#000', // Optional
+  strokeWidth: 1, // Optional
+  whisker: {  // Optional
+    show: true, // Optional
+    stroke: '#000', // Optional
+    strokeWidth: 1, // Optional
+    width: 1, // Optional
   },
-  median: { //  Optional.
-    show: true, //  Default: true. Optional.
-    stroke: '#000', //  Default: '#000'. Optional.
-    strokeWidth: 1, //  Default: 1. Optional.
+  median: {  // Optional
+    show: true, // Optional
+    stroke: '#000', // Optional
+    strokeWidth: 1, // Optional
   },
 }
 ```
+
 
 ## Example
 

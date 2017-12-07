@@ -38,15 +38,6 @@ describe('picasso.js', () => {
       });
     });
 
-    it('should expose data api', () => {
-      const plugin = sinon.stub();
-      picasso.use(plugin);
-      const firstParam = plugin.args[0][0];
-
-      expect(typeof firstParam.dataset).to.equal('function');
-      expect(typeof firstParam.field).to.equal('function');
-    });
-
     it('should expose logger', () => {
       const plugin = sinon.stub();
       picasso.use(plugin);

@@ -5,9 +5,8 @@ export default function categoricalLegend(picasso) {
 }
 
 /**
- * @typedef component
+ * @typedef {object} component--legend-cat
  * @experimental
- * @type {object}
  * @property {scale} type='legend-cat' - Required
  * @property {scale} scale='A_scale' - A scale. Required
  * @property {string} [dock='center'] - Docking of the component, top, right, bottom or left

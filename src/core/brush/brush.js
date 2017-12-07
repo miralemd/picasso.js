@@ -283,16 +283,17 @@ export default function brush({
   };
 
   /**
-   * The brush context
+   * A brush context
    * @alias brush
+   * @definition
    */
-  function fn() {}
+  const fn = {};
 
   /**
    * Starts this brush context
    *
    * Starts this brush context and emits a 'start' event if it is not already started.
-   * @emits start
+   * @emits brush#start
    */
   fn.start = () => {
     if (!activated) {
@@ -305,7 +306,7 @@ export default function brush({
    * Ends this brush context
    *
    * Ends this brush context and emits an 'end' event if it is not already ended.
-   * @emits start
+   * @emits brush#start
    */
   fn.end = () => {
     if (!activated) {
@@ -367,8 +368,8 @@ export default function brush({
    *
    * @param {string} key  An identifier that represents the data source of the value
    * @param {string|number} value The value to add
-   * @emits start
-   * @emits update
+   * @emits brush#start
+   * @emits brush#update
    * @example
    * brush.addValue('countries', 'Sweden');
    * brush.addValue('/qHyperCube/qDimensionInfo/0', 3);
@@ -886,3 +887,23 @@ export default function brush({
 
   return fn;
 }
+
+/**
+ * Triggered when this brush is activated
+ * @event brush#start
+ * @type {string}
+ */
+
+/**
+ * Triggered when this brush is updated
+ * @event brush#update
+ * @type {string}
+ * @param {Array<object>} added - The added items
+ * @param {Array<object>} removed - The removed items
+ */
+
+/**
+ * Triggered when this brush is deactivated
+ * @event brush#end
+ * @type {string}
+ */

@@ -17,32 +17,27 @@
 }
 ```
 
-## API reference - Table of contents
-
-
+## Configuration
 
 ```js
-text-component: {
-  type: 'foo', // "text".
-  text: 'foo', // 
-  settings: , // Text settings.
-}
-```
-```js
-settings: {
-  settings: { // Labels settings. Optional.
-    paddingStart: 5, //  Default: 5. Optional.
-    paddingEnd: 5, //  Default: 5. Optional.
-    paddingLeft: 0, //  Default: 0. Optional.
-    paddingRight: 0, //  Default: 0. Optional.
-    anchor: 'center', // Where to v- or h-align the text. Supports `left`, `right`, `top`, `bottom` and `center`. Default: 'center'. Optional.
-    join: ', ', // String to add when joining titles from multiple sources. Default: ', '. Optional.
-    maxLengthPx: 3.14, // Limit the text length to this value in pixels. Optional.
-    style: { // Style properties for the text. Optional.
-      fontSize: 'foo', //  Optional.
-      fontFamily: 'foo', //  Optional.
-      fill: 'foo', //  Optional.
+{
+  type: 'text', // Optional
+  text: /* string | function */, 
+  settings: { 
+    paddingStart: 5, // Optional
+    paddingEnd: 5, // Optional
+    paddingLeft: 0, // Optional
+    paddingRight: 0, // Optional
+    anchor: 'center', // Where to v- or h-align the text. Supports `left`, `right`, `top`, `bottom` and `center` // Optional
+    join: ', ', // String to add when joining titles from multiple sources // Optional
+    maxLengthPx: /* number */, // Limit the text length to this value in pixels // Optional
+    style: {  // Optional
+      // Style properties for the text
+      fontSize: /* string */, // Optional
+      fontFamily: /* string */, // Optional
+      fill: /* string */, // Optional
     },
   },
 }
 ```
+

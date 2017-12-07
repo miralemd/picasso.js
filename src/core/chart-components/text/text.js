@@ -94,11 +94,10 @@ function generateTitle({
 }
 
 /**
- * @typedef text-component
- * @type {object}
- * @property {string} type - "text"
+ * @typedef {object} component--text
+ * @property {string} [type='text']
  * @property {string|function} text
- * @property {settings} settings - Text settings
+ * @property {component-text.settings} settings - Text settings
  * @example
  * {
  *  type: 'text',
@@ -114,20 +113,18 @@ function generateTitle({
  */
 
 /**
- * @typedef settings
- * @type {object}
- * @property {object} [settings] Labels settings
- * @property {number} [settings.paddingStart=5]
- * @property {number} [settings.paddingEnd=5]
- * @property {number} [settings.paddingLeft=0]
- * @property {number} [settings.paddingRight=0]
- * @property {string} [settings.anchor='center'] - Where to v- or h-align the text. Supports `left`, `right`, `top`, `bottom` and `center`
- * @property {string} [settings.join=', '] - String to add when joining titles from multiple sources
- * @property {number} [settings.maxLengthPx] - Limit the text length to this value in pixels
- * @property {object} [settings.style] - Style properties for the text
- * @property {string} [settings.style.fontSize]
- * @property {string} [settings.style.fontFamily]
- * @property {string} [settings.style.fill]
+ * @typedef {object} component--text.settings
+ * @property {number} [paddingStart=5]
+ * @property {number} [paddingEnd=5]
+ * @property {number} [paddingLeft=0]
+ * @property {number} [paddingRight=0]
+ * @property {string} [anchor='center'] - Where to v- or h-align the text. Supports `left`, `right`, `top`, `bottom` and `center`
+ * @property {string} [join=', '] - String to add when joining titles from multiple sources
+ * @property {number} [maxLengthPx] - Limit the text length to this value in pixels
+ * @property {object} [style] - Style properties for the text
+ * @property {string} [style.fontSize]
+ * @property {string} [style.fontFamily]
+ * @property {string} [style.fill]
  */
 const textComponent = {
   require: ['renderer', 'chart'],

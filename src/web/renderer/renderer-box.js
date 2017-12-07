@@ -1,5 +1,6 @@
 /**
    * Create the renderer box
+   * @ignore
    * @param {object} [opts]
    * @param {number} [opts.x] - x-coordinate
    * @param {number} [opts.y] - y-coordinate

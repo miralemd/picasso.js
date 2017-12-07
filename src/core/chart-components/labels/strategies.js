@@ -316,18 +316,22 @@ export function precalculate({
 }
 
 /**
- * @typedef settings
- * @type {object}
+ * @typedef {object} component--labels~label-strategy
+ *
+ */
+
+/**
+ * @typedef {object} component--labels~label-strategy.settings
  * @property {string|function} [direction='up'] - The direction in which the bars are growing: 'up', 'down', 'right' or 'left'.
  * @property {string} [fontFamily='Arial']
  * @property {number} [fontSize=12]
- * @property {object} labels
- * @property {string|function} labels.label - The text value
- * @property {object} labels.placements
- * @property {string} labels.placements.position,
- * @property {number} [labels.placements.justify=0] - Placement of the label along the direction of the bar
- * @property {number} [labels.placements.align=0.5] - Placement of the label along the perpendicular direction of the bar
- * @property {string} [labels.placements.fill='#333'] - Color of the label
+ * @property {Array<object>} labels
+ * @property {string|function} labels[].label - The text value
+ * @property {Array<object>} labels[].placements
+ * @property {string} labels[].placements[].position - 'inside' | 'outside' | 'opposite'
+ * @property {number} [labels[].placements[].justify=0] - Placement of the label along the direction of the bar
+ * @property {number} [labels[].placements[].align=0.5] - Placement of the label along the perpendicular direction of the bar
+ * @property {string} [labels[].placements[].fill='#333'] - Color of the label
  */
 
 export function bars({

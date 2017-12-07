@@ -1,7 +1,10 @@
-/* global document */
+/**
+ * @typedef {object} component--scrollbar
+ *
+ */
 
 /**
- * @typedef scrollbar-settings
+ * @typedef {object} component--scrollbar.settings
  * @property {boolean} [backgroundColor = '#eee']
  * @property {boolean} [thumbColor = '#ccc']
  * @property {boolean} [width = 16]

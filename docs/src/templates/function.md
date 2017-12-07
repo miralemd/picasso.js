@@ -1,14 +1,16 @@
-#### {{anchor longname}} {{ parent }}{{#if parent}}.{{/if}}**{{ longname }}**{{>params params}}
-{{#ifCond params '||' returns }}
+{{anchor parent name}}{{#if parent}}*{{ parent }}*.{{/if}}**{{ name }}**{{>params params}}{{#typedef returns}} *:{{this}}*{{/typedef}}
+
+{{#ifCond params.length '||' returns }}
 |Name(s)|Type(s)|Description|Optional|Default value|
 |-------|-------|-----------|--------|-------------|
 {{#each params}}
-| {{ name }} | {{ type.names.[0] }} | {{no description }} | {{>bool optional}} | {{no defaultvalue}} |
+| {{ name }} | {{#typedef this}} *{{this}}* {{/typedef}} | {{no description}} | {{>bool optional}} | {{no defaultValue}} |
 {{/each}}
-{{#each returns}}
-| Returns | {{ type.names.[0] }} | {{no description }} | ... | ... |
-{{/each}}
+{{#if returns}}
+| Returns | {{#typedef returns}} *{{this}}* {{/typedef}} | {{no returns.description}} | ... | ... |
+{{/if}}
 {{/ifCond}}
 
-{{nocust description 'No description'}}  
+{{nocust description 'No description'}}
+
 {{>examples examples}}

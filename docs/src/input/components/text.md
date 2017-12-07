@@ -17,8 +17,6 @@
 }
 ```
 
-## API reference - Table of contents
+## Configuration
 
-{{postprocess 'index'}}
-
-{{>magic ctx='core.chart-components.text.text-js'}}
+{{>struct entries.component--text}}

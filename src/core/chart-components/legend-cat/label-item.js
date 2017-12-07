@@ -11,6 +11,7 @@ function getWiggle(coord, innerSize, outerSize, m = 0) {
 
 /**
  * Resolve margin object, number or string
+ * @private
  *
  * @param  {number|object|string} margin - Multiple formats
  * @return {object} - Returns margin object with correct top, right, bottom, left and width/height

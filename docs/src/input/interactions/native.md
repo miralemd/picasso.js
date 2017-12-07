@@ -4,8 +4,6 @@ A interaction component that binds browser's native events.
 
 ## Native interaction settings
 
-{{>magic ctx='web.interactions.native.index-js.settings'}}
-
 ```js
 interactions: [
   {

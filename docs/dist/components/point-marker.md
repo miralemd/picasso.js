@@ -2,28 +2,32 @@
 
 A component that renders points in a designated area.
 
-## Component settings
+## Component configuration
 
 ```js
-settings: {
-  x: 0.5, // x coordinate. Default: 0.5. Optional.
-  y: 0.5, // y coordinate. Default: 0.5. Optional.
-  fill: "#999", // fill color. Default: "#999". Optional.
-  stroke: "#ccc", // stroke color. Default: "#ccc". Optional.
-  strokeWidth: 0, // stroke width. Default: 0. Optional.
-  size: 1, // size of shape. Default: 1. Optional.
-  opacity: 1, // opacity of shape. Default: 1. Optional.
-  shape: "circle", // type of shape. Default: "circle". Optional.
-  sizeLimits: { //  Optional.
-    maxPx: 10000, // maximum size in pixels. Default: 10000. Optional.
-    minPx: 1, // minimum size in pixels. Default: 1. Optional.
-    maxRelExtent: 0.1, // maximum size relative linear scale extent. Default: 0.1. Optional.
-    minRelExtent: 0.01, // minimum size relative linear scale extent. Default: 0.01. Optional.
-    maxRelDiscrete: 1, // maximum size relative discrete scale banwidth. Default: 1. Optional.
-    minRelDiscrete: 0.1, // minimum size relative discrete scale bandwidth. Default: 0.1. Optional.
+{
+  type: 'point-marker',
+  settings: { 
+    shape: 'circle', // Type of shape // Optional
+    fill: '#333', // Fill color // Optional
+    stroke: '#ccc', // Stroke color // Optional
+    strokeWidth: 0, // Stroke width // Optional
+    opacity: 1, // Opacity of shape // Optional
+    x: 0.5, // Normalized x coordinate // Optional
+    y: 0.5, // Normalized y coordinate // Optional
+    size: 1, // Normalized size of shape // Optional
+    sizeLimits: { 
+      maxPx: 10000, // Maximum size of shape, in pixels // Optional
+      minPx: 1, // Minimum size of shape, in pixels // Optional
+      maxRelExtent: 0.1, // Maximum size relative linear scale extent // Optional
+      minRelExtent: 0.01, // Minimum size relative linear scale extent // Optional
+      maxRelDiscrete: 1, // Maximum size relative discrete scale banwidth // Optional
+      minRelDiscrete: 0.1, // Minimum size relative discrete scale banwidth // Optional
+    },
   },
 }
 ```
+
 
 ## Dynamics of the settings properties
 

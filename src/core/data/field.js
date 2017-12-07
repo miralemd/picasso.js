@@ -35,7 +35,7 @@ export default function field(data, {
 } = {}) {
   /**
    * @alias field
-   * @typedef {object}
+   * @definition
    */
   const f = {
 
@@ -82,7 +82,7 @@ export default function field(data, {
 
     /**
      * Returns this field's title.
-     * @return {string} [description]
+     * @return {string}
      */
     title: () => title(data),
 

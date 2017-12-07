@@ -4,14 +4,9 @@
 
 A component that renders pie slices in a designated area.
 
-### Data definition
-
-{{>magic ctx='core.chart-components.markers.pie.pie-js.data'}}
-
-
 ### Settings
 
-{{>magic ctx='core.chart-components.markers.pie.pie-js.settings'}}
+{{>struct entries.component--pie}}
 
 ## Example
 

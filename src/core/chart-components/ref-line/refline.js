@@ -20,9 +20,8 @@ function filterUndefinedValue(line) {
 }
 
 /**
- * @typedef component
+ * @typedef {object} component--ref-line
  * @experimental
- * @type {object}
  * @property {refline-generic-style} [style=refline-generic-style] - x coordinate
  * @property {object} lines - X & Y Lines
  * @property {reflines-x[]} [lines.x=refline-line[]] - lines along X
@@ -30,14 +29,14 @@ function filterUndefinedValue(line) {
  */
 
 /**
- * @typedef refline-generic-style
- * @property {refline-oob-style} [oob=refline-oob-style] - Style for out of bounds object (oob)
+ * @typedef {object} component--ref-line.style
+ * @property {refline-oob-style} [oob=component--ref-line.style.oob] - Style for out of bounds object (oob)
  * @property {refline-line} [line=refline-line] - Generic style for lines
  * @property {refline-line-label} [label=refline-line-label] - Generic style for labels
  */
 
 /**
- * @typedef refline-oob-style
+ * @typedef {object} component--ref-line.style.oob
  * @property {boolean} [show=true] - Show out of bounds items
  * @property {string} [type=undefined] - EXPERIMENTAL:  Set this to 'arc' for an experimental out of bounds shape (only works with SVG)
  * @property {number} [width=10] - Width of the out of bounds object
@@ -53,7 +52,7 @@ function filterUndefinedValue(line) {
  */
 
 /**
- * @typedef refline-generic-text
+ * @typedef {object} component--ref-line.generic-text
  * @property {string} [text=''] - Text (if applicable)
  * @property {string} [fontSize='12px'] - Font size (if applicable)
  * @property {string} [fontFamily='Arial'] - Font family
@@ -64,7 +63,7 @@ function filterUndefinedValue(line) {
  */
 
 /**
- * @typedef refline-line
+ * @typedef {object} component--ref-line.line
  * @property {number} value - The value of the reference line. If a scale is specified, it is applied.
  * @property {Scale} [scale=undefined] - Scale to use (if undefined will use normalized value 0-1)
  * @property {refline-generic-object} [line=refline-generic-object] - The style of the line
@@ -72,7 +71,7 @@ function filterUndefinedValue(line) {
  */
 
 /**
- * @typedef refline-line-label
+ * @typedef {object} component--ref-line.line-label
  * @property {number} padding=5 - Padding inside the label
  * @property {string} [text=''] - Text
  * @property {string} [fontSize='12px'] - Font size
@@ -93,7 +92,7 @@ function filterUndefinedValue(line) {
  */
 
 /**
- * @typedef refline-line-label-background
+ * @typedef {object} component--ref-line.line-label-background
  * @property {string} [fill='#fff'] - Fill color
  * @property {string} [stroke='transparent'] - Stroke
  * @property {number} [strokeWidth=0] - Stroke width
@@ -101,7 +100,7 @@ function filterUndefinedValue(line) {
  */
 
 /**
- * @typedef refline-generic-object
+ * @typedef {object} component--ref-line.generic-object
  * @property {string} [fill='#fff'] - Fill color
  * @property {string} [stroke='transparent'] - Stroke
  * @property {number} [strokeWidth=0] - Stroke width

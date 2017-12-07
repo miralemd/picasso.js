@@ -19,6 +19,7 @@ export default function formatter(pattern) { // eslint-disable-line import/prefe
    *
    * @param  {Date} value   The number to be formatted
    * @return {String}         [description]
+   * @private
    */
   function format(value) {
     return d3format(value);

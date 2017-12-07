@@ -1,5 +1,6 @@
 /**
  * Initilize a new dock configuration
+ * @private
  * @param {object} [settings] - Settings object
  * @returns {object} A dock configuration instance
  * @example
@@ -12,7 +13,7 @@
  *  show: true
  * });
  */
-export default function dockConfig(settings = {}) {
+function dockConfig(settings = {}) {
   let {
     dock = '',
     displayOrder = 0,
@@ -22,6 +23,9 @@ export default function dockConfig(settings = {}) {
     show = true
   } = settings;
 
+  /**
+   * @private
+   */
   const fn = function fn() {};
 
   /**
@@ -137,3 +141,7 @@ export default function dockConfig(settings = {}) {
 
   return fn;
 }
+
+export {
+  dockConfig as default
+};

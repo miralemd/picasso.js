@@ -27,18 +27,12 @@ const CURVES = {
 };
 
 /**
- * @typedef {object} components.line
- * @experimental
+ * @typedef {object}
+ * @alias component--line.settings
  */
-
-/**
- * @typedef {object} components.line.settings
- */
-
 const SETTINGS = {
   /**
-   * Coordinates
-   * @memberof components.line.settings
+   * @typedef {object}
    */
   coordinates: {
     /**
@@ -52,12 +46,10 @@ const SETTINGS = {
     layerId: 0
   },
   /**
-   * @memberof components.line.settings
    * @type {string} */
   orientation: 'horizontal',
   /**
-   * @memberof components.line.settings
-   * @type {object} */
+   * @typedef {object} */
   layers: {
     /**
      * @type {string} */
@@ -66,7 +58,7 @@ const SETTINGS = {
      * @type {boolean} */
     show: true,
     /**
-     * @type {object} */
+     * @typedef {object} */
     line: {
       /**
        * @type {string} */
@@ -81,6 +73,8 @@ const SETTINGS = {
        * @type {boolean} */
       show: true
     },
+    /**
+     * @typedef {object} */
     area: {
       /**
        * @type {string} */

@@ -5,89 +5,96 @@ A component that renders a static categorical color legend
 ## Component settings
 
 ```js
-component: {
-  type: 'legend-cat', // Required. Default: 'legend-cat'.
-  scale: 'A_scale', // A scale. Required. Default: 'A_scale'.
-  dock: 'center', // Docking of the component, top, right, bottom or left. Default: 'center'. Optional.
-  settings: { //  Optional.
-    anchor: 'left', // Is used to align items in the component, left or right. Default: 'left'. Optional.
-    direction: 'vertical', // Direction of rendering, 'horizontal' or 'vertical'.. Default: 'vertical'. Optional.
-    layout: { // Layout setting for the items. Optional.
-      mode: 'stack', // Use `stack` to let each item only take as much space a required or else each item will take a fixed amount of space to give each item equal distance between each other. Default: 'stack'. Optional.
-      size: 1, // Only enabled non-stack mode. Is either row or column count, depending on the directional setting (i.e. vertical direction and size is column count). Default: 1. Optional.
+{
+  type: 'legend-cat', // Required
+  scale: 'A_scale', // A scale. Required
+  dock: 'center', // Docking of the component, top, right, bottom or left // Optional
+  settings: {  // Optional
+    anchor: 'left', // Is used to align items in the component, left or right // Optional
+    direction: 'vertical', // Direction of rendering, 'horizontal' or 'vertical'. // Optional
+    layout: {  // Optional
+      // Layout setting for the items
+      mode: 'stack', // Use `stack` to let each item only take as much space a required or else each item will take a fixed amount of space to give each item equal distance between each other // Optional
+      size: 1, // Only enabled non-stack mode. Is either row or column count, depending on the directional setting (i.e. vertical direction and size is column count) // Optional
     },
-    item: { // Items settings. Optional.
-      label: { // Label settings, the value is derived from the scale. Optional.
-        maxWidth: 136, // Maximum width of each label in px. Default: 136. Optional.
-        fontSize: '12px', // Font size of label items. Default: '12px'. Optional.
-        fontFamily: 'Arial', // Font family of label items. Default: 'Arial'. Optional.
-        fill: '#595959', // Font color of label items. Default: '#595959'. Optional.
-        breakWord: 'none', // Word break rule, how to apply line break if label text overflow it's maxWidth prop. Either `break-word` or `break-all`. Default: 'none'. Optional.
-        maxLines: 2, // Max number of lines allowed if label is broken into multiple lines (only applicable with wordBreak). Default: 2. Optional.
-        hyphens: 'auto', // How words should be hyphenated when text wraps across multiple lines (only applicable with wordBreak). Default: 'auto'. Optional.
-        lineHeight: 1.2, // A multiplier defining the distance between lines (only applicable with wordBreak). Default: 1.2. Optional.
+    item: {  // Optional
+      // Items settings
+      label: {  // Optional
+        // Label settings, the value is derived from the scale
+        maxWidth: 136, // Maximum width of each label in px // Optional
+        fontSize: '12px', // Font size of label items // Optional
+        fontFamily: 'Arial', // Font family of label items // Optional
+        fill: '#595959', // Font color of label items // Optional
+        breakWord: 'none', // Word break rule, how to apply line break if label text overflow it's maxWidth prop. Either `break-word` or `break-all` // Optional
+        maxLines: 2, // Max number of lines allowed if label is broken into multiple lines (only applicable with wordBreak) // Optional
+        hyphens: 'auto', // How words should be hyphenated when text wraps across multiple lines (only applicable with wordBreak) // Optional
+        lineHeight: 1.2, // A multiplier defining the distance between lines (only applicable with wordBreak) // Optional
       },
-      margin: { // Margin settings. Optional.
-        top: 0, // Top margin. Default: 0. Optional.
-        right: 5, // Right margin. Default: 5. Optional.
-        bottom: 5, // Bottom margin. Default: 5. Optional.
-        left: 5, // Left margin. Default: 5. Optional.
+      margin: {  // Optional
+        // Margin settings
+        top: 0, // Top margin // Optional
+        right: 5, // Right margin // Optional
+        bottom: 5, // Bottom margin // Optional
+        left: 5, // Left margin // Optional
       },
-      shape: { // Shape definition or shape type. Each shape may have their own unique properties that can also be set as part of the shape object.. Optional.
-        type: 'square', // Shape type. Default: 'square'. Optional.
-        fill: 'foo', // Fill of shape. Defaults to scale color if avaiable.. Optional.
-        stroke: 'foo', // Stroke of shape. Defaults to scale color if avaiable.. Optional.
-        strokeWidth: 1, // Stroke width of shape.. Default: 1. Optional.
-      },
-      show: true, // Set to 'false' to hide the current item. Default: true. Optional.
+      shape: /* object | string */,  // Optional
+      show: true,  // Optional
     },
-    title: { // Title settings. Optional.
-      maxWidth: 156, // Maximum width of each label in px. Default: 156. Optional.
-      fontSize: '12px', // Font size of label items. Default: '12px'. Optional.
-      fontFamily: 'Arial', // Font family of label items. Default: 'Arial'. Optional.
-      fill: '#595959', // Font color of label items. Default: '#595959'. Optional.
-      breakWord: 'none', // Word break rule, how to apply line break if label text overflow it's maxWidth prop. Either `break-word` or `break-all`. Default: 'none'. Optional.
-      maxLines: 2, // Max number of lines allowed if label is broken into multiple lines (only applicable with wordBreak). Default: 2. Optional.
-      hyphens: 'auto', // How words should be hyphenated when text wraps across multiple lines (only applicable with wordBreak). Default: 'auto'. Optional.
-      lineHeight: 1.2, // A multiplier defining the distance between lines (only applicable with wordBreak). Default: 1.2. Optional.
-      text: 'foo', // Override title text. Defaults to the title of the data field. Optional.
-      margin: { // Margin settings. Optional.
-        top: 0, // Top margin. Default: 0. Optional.
-        right: 5, // Right margin. Default: 5. Optional.
-        bottom: 5, // Bottom margin. Default: 5. Optional.
-        left: 5, // Left margin. Default: 5. Optional.
+    title: {  // Optional
+      // Title settings
+      maxWidth: 156, // Maximum width of each label in px // Optional
+      fontSize: '12px', // Font size of label items // Optional
+      fontFamily: 'Arial', // Font family of label items // Optional
+      fill: '#595959', // Font color of label items // Optional
+      breakWord: 'none', // Word break rule, how to apply line break if label text overflow it's maxWidth prop. Either `break-word` or `break-all` // Optional
+      maxLines: 2, // Max number of lines allowed if label is broken into multiple lines (only applicable with wordBreak) // Optional
+      hyphens: 'auto', // How words should be hyphenated when text wraps across multiple lines (only applicable with wordBreak) // Optional
+      lineHeight: 1.2, // A multiplier defining the distance between lines (only applicable with wordBreak) // Optional
+      text: /* string */, // Override title text. Defaults to the title of the data field // Optional
+      margin: {  // Optional
+        // Margin settings
+        top: 0, // Top margin // Optional
+        right: 5, // Right margin // Optional
+        bottom: 5, // Bottom margin // Optional
+        left: 5, // Left margin // Optional
       },
     },
-    buttons: { // Button settings. Optional.
-      show: true, // Show the scroll/paging buttons (will still auto hide when not needed). Default: true. Optional.
-      buttonSpacing: 8, // The margin between the two buttons. Default: 8. Optional.
-      spacing: 0, // The margin between the start or end of the legend and the buttons, depending if the button are position to the left, right or bottom. Default: 0. Optional.
-      width: 32, // The width of the buttons. Default: 32. Optional.
-      height: 24, // The height of the buttons. Default: 24. Optional.
-      rect: { // Settings for the rect of the buttons. Optional.
-        fill: 'transparent', // Fill color. Default: 'transparent'. Optional.
-        stroke: 'grey', // Stroke color. Default: 'grey'. Optional.
-        strokeWidth: 0, // Stroke width in pixels. Default: 0. Optional.
+    buttons: {  // Optional
+      // Button settings
+      show: true, // Show the scroll/paging buttons (will still auto hide when not needed) // Optional
+      buttonSpacing: 8, // The margin between the two buttons // Optional
+      spacing: 0, // The margin between the start or end of the legend and the buttons, depending if the button are position to the left, right or bottom // Optional
+      width: 32, // The width of the buttons // Optional
+      height: 24, // The height of the buttons // Optional
+      rect: {  // Optional
+        // Settings for the rect of the buttons
+        fill: 'transparent', // Fill color // Optional
+        stroke: 'grey', // Stroke color // Optional
+        strokeWidth: 0, // Stroke width in pixels // Optional
       },
-      symbol: { // Settings for the symbol of the buttons. Optional.
-        fill: 'grey', // Symbol fill color. Default: 'grey'. Optional.
-        stroke: 'grey', // Stroke color. Default: 'grey'. Optional.
-        strokeWidth: 2, // Stroke width in pixels. Default: 2. Optional.
+      symbol: {  // Optional
+        // Settings for the symbol of the buttons
+        fill: 'grey', // Symbol fill color // Optional
+        stroke: 'grey', // Stroke color // Optional
+        strokeWidth: 2, // Stroke width in pixels // Optional
       },
-      'rect:disabled': { // Settings for the disabled rect of the buttons. Optional.
-        fill: 'transparent', // Fill color. Default: 'transparent'. Optional.
-        stroke: 'lightgrey', // Stroke color. Default: 'lightgrey'. Optional.
-        strokeWidth: 0, // Stroke width in pixels. Default: 0. Optional.
+      &#x27;rect:disabled&#x27;: {  // Optional
+        // Settings for the disabled rect of the buttons
+        fill: 'transparent', // Fill color // Optional
+        stroke: 'lightgrey', // Stroke color // Optional
+        strokeWidth: 0, // Stroke width in pixels // Optional
       },
-      'symbol:disabled': { // Settings for the disabled symbol of the buttons. Optional.
-        fill: 'lightgrey', // Symbol fill color. Default: 'lightgrey'. Optional.
-        stroke: 'grey', // Stroke color. Default: 'grey'. Optional.
-        strokeWidth: 2, // Stroke width in pixels. Default: 2. Optional.
+      &#x27;symbol:disabled&#x27;: {  // Optional
+        // Settings for the disabled symbol of the buttons
+        fill: 'lightgrey', // Symbol fill color // Optional
+        stroke: 'grey', // Stroke color // Optional
+        strokeWidth: 2, // Stroke width in pixels // Optional
       },
     },
   },
 }
 ```
+
 
 ## Events
 

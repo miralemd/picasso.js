@@ -1,5 +1,6 @@
 /**
  * Create a crispifier
+ * @ignore
  *
  * @param  {Object} [crispMap] Optional crispmap if you need custom crisping.
  * @return {Function}          crispItem function
@@ -16,10 +17,7 @@
  * crispify.multiple(myArrayOfItems);
  */
 export function crispifierFactory(crispMap) {
-  /**
-   * Define the crispMap
-   */
-
+  // Define the crispMap
   if (crispMap === undefined) {
     crispMap = {};
 
@@ -38,9 +36,7 @@ export function crispifierFactory(crispMap) {
     };
   }
 
-  /**
-   * Re-map the crispmap
-   */
+  // Re-map the crispmap
   Object.keys(crispMap).forEach((type) => {
     const self = crispMap[type];
 
@@ -63,7 +59,7 @@ export function crispifierFactory(crispMap) {
 
   /**
    * Crispify a single item
-   *
+   * @ignore
    * @param  {Object} item  Item with renderer variables such as X, Y, and type.
    * @return {Undefined}    Returns nothing, modifies the original item instead
    */
@@ -90,6 +86,7 @@ export function crispifierFactory(crispMap) {
 
   /**
    * Crispify multiple items
+   * @ignore
    *
    * @param  {Array} items  Array of objects to crispify
    * @return {Undefined}    Returns nothing, modifies the original item instead

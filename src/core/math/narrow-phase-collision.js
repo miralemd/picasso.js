@@ -29,7 +29,10 @@ function toFewEdges(polygon) {
   return polygon.edges.length <= 2;
 }
 
-export default class NarrowPhaseCollision {
+/**
+ * @private
+ */
+class NarrowPhaseCollision {
   /**
    * Test if a Circle contains a point. If so, returns true and false otherwise.
    * Circle muse have a radius greater then 0.
@@ -485,3 +488,8 @@ export default class NarrowPhaseCollision {
     return isPointOnLine(p1, p2, point);
   }
 }
+
+
+export {
+  NarrowPhaseCollision as default
+};

@@ -54,6 +54,7 @@ export function resolveLineBreakAlgorithm(node) {
 
 /**
  * Apply wordBreak rules to text nodes.
+ * @ignore
  * @param {function} measureText
  * @returns {function} Event function to convert a text node into multiple nodes
  */

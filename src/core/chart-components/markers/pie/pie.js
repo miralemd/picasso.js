@@ -16,7 +16,7 @@ const DEFAULT_DATA_SETTINGS = {
 };
 
 /**
- * @typedef {object} settings
+ * @typedef {object} component--pie.settings
  * @property {number} [startAngle=0] - If angle is specified, sets the overall start angle of the pie to the specified function or number
  * @property {number} [endAngle=2*Math.PI] - If angle is specified, sets the overall end angle of the pie to the specified function or number
  * @property {number} [padAngle=0] - The pad angle here means the angular separation between each adjacent arc
@@ -33,18 +33,17 @@ const DEFAULT_DATA_SETTINGS = {
  */
 
 /**
- * @typedef {object} pie
- * @property {string} type - "pie"
- * @property {pie-data} data - Pie data
- * @property {settings} settings - Pie settings
+ * @typedef {object} component--pie
+ * @property {string} [type='pie']
+ * @property {component--pie.settings} settings - Pie settings
  * @example
  * {
  *   type: 'pie',
  *   data: {
- *     mapTo: {
- *       arc: { source: '/qHyperCube/qMeasureInfo/0' }
- *     },
- *     groupBy: { source: '/qHyperCube/qDimensionInfo/0' }
+ *     field: 'Region',
+ *     props: {
+ *       arc: { field: 'Population' }
+ *     }
  *   },
  *   settings: {
  *     startAngle: Math.PI / 2,
@@ -62,12 +61,6 @@ const DEFAULT_DATA_SETTINGS = {
  *     }
  *   }
  * }
- */
-
-/**
- * @typedef data
- * @type {object}
- * @property {number} arc - value that represents the size of the arc
  */
 
 function offsetSlice(centroid, offset, outerRadius, innerRadius) {

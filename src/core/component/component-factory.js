@@ -525,12 +525,14 @@ function componentFactory(definition, options = {}) {
 
   /**
    * Expose definition on instance
+   * @private
    * @experimental
    */
   fn.def = definitionContext;
 
   /**
    * Expose instanceCtx on "instance"
+   * @private
    * @experimental
    */
   fn.ctx = instanceContext;

@@ -1,5 +1,6 @@
 /**
  * Work around for https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8438884/
+ * @ignore
  */
 function supportsSvgPathArgument(window) {
   const canvas = window.document.createElement('canvas');
@@ -23,12 +24,14 @@ function polyFillPath2D(window) {
   /**
    * expected argument lengths
    * @type {Object}
+   * @ignore
    */
   let argLength = { a: 7, c: 6, h: 1, l: 2, m: 2, q: 4, s: 4, t: 2, v: 1, z: 0 };
 
   /**
    * segment pattern
    * @type {RegExp}
+   * @ignore
    */
   let segmentPattern = /([astvzqmhlc])([^astvzqmhlc]*)/ig;
 
@@ -43,6 +46,7 @@ function polyFillPath2D(window) {
    * parse an svg path data string. Generates an Array
    * of commands where each command is an Array of the
    * form `[command, arg1, arg2, ...]`
+   * @ignore
    *
    * @param {String} path
    * @return {Array}
@@ -75,6 +79,7 @@ function polyFillPath2D(window) {
   /**
    * Crates a Path2D polyfill object
    * @constructor
+   * @ignore
    * @param {String} path
    */
   function Path2D(path) {

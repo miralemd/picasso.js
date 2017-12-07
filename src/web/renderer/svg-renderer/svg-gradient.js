@@ -6,7 +6,7 @@ let gradientHashMap = {};
 
 /**
  * If this attr (fill or stroke) has a gradient, apply it.
- *
+ * @ignore
  * @param  {Object} item Item with item[attr]
  * @param  {String} attr The attribute to search for gradient (fill or stroke)
  * @param  {String} url  URL for handling base href
@@ -50,6 +50,7 @@ function checkGradient(item = {}, attr = 'fill', url = '') {
 
 /**
  * Reset the gradients between rendering
+ * @ignore
  */
 export function resetGradients() {
   gradients = [];

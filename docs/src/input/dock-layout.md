@@ -57,6 +57,6 @@ dockLayout: {
 }
 ```
 
-## API reference - Table of contents
+## Configuration
 
-{{>magic ctx='core.dock-layout.dock-layout-js'}}
+{{>struct entries.dock-layout-settings}}

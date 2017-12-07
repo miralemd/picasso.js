@@ -4,7 +4,7 @@ A component that renders active `brush` ranges.
 
 ## Component settings
 
-{{>magic ctx='core.chart-components.range.range-js'}}
+{{>struct entries.component--range}}
 
 The component can be docked to the same area as another component by referencing the `key` value:
 

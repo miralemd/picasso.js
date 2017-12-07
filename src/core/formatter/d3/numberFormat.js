@@ -6,6 +6,7 @@ export default function formatter(pattern, thousand, decimal) {
 
   /**
    * Format a value according to the specified pattern created at construct
+   * @private
    *
    * @param  {Number} value   The number to be formatted
    * @return {String}         [description]
@@ -29,6 +30,7 @@ export default function formatter(pattern, thousand, decimal) {
 
   /**
    * Resets the formatter using format.locale
+   * @ignore
    */
   function reset() {
     format.locale({

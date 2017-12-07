@@ -5,11 +5,9 @@ const handlebars = require('handlebars'); // eslint-disable-line import/no-unres
 require('handlebars-helpers')({ handlebars }); // eslint-disable-line import/no-unresolved
 const fs = require('fs');
 const path = require('path');
-
+const spec = require('./spec.json');
 
 const glob = require('glob'); // eslint-disable-line import/no-unresolved
-
-const resolve = require('./json-path-resolver').resolve;
 
 function log(msg) {
   console.log(msg);// eslint-disable-line no-console
@@ -17,18 +15,10 @@ function log(msg) {
 
 log('Generating docs...');
 
-const JSDOC_INPUT = 'src/docs.json';
 const MD_TEMPLATES_FOLDER = 'src/templates/';
 const MD_INPUT_FOLDER = 'src/input/';
 const MD_OUTPUT_FOLDER = 'dist/';
 const POSTPROCESS_ROOT = 'src/';
-const CODE_FOLDER = '../src/';
-
-const toPostProcess = [];
-
-function fixPath(str) {
-  return path.relative(CODE_FOLDER, str);
-}
 
 function domkdir(curpath, skipFile) {
   let tryPath = curpath;
@@ -46,83 +36,6 @@ function domkdir(curpath, skipFile) {
     fs.mkdirSync(dirs[i]);
   }
 }
-
-function traverseTypdef(def) {
-  let nested = {};
-  if (!def.properties) {
-    return;
-  }
-  def.properties.forEach((prop) => {
-    if (prop.type.names[0] === 'object') { // might have nested props
-      nested[prop.name] = prop;
-      prop._nested = [];
-    }
-    if (/\./gi.test(prop.name)) {
-      let names = prop.name.split('.');
-      let pp = {
-        name: names[names.length - 1],
-        description: prop.description,
-        type: prop.type,
-        defaultvalue: prop.defaultvalue,
-        optional: prop.optional
-      };
-
-      let container = nested[names[0]];
-      if (names.length === 2) {
-        nested[names[0]]._nested.push(pp);
-      } else {
-        for (let n = 0; n < names.length - 1; n++) {
-          if (!container._nested) {
-            container._nested = [];
-          }
-          let foo = container._nested.filter(f => f.name === names[n + 1])[0];
-          if (foo) {
-            container = foo;
-          }
-        }
-        container._nested.push(pp);
-      }
-      prop.skip = true;
-    }
-  });
-}
-
-function getJSDOCData(inputFile) {
-  const data = JSON.parse(fs.readFileSync(inputFile)).docs;
-
-  const output = {};
-
-  data.forEach((i) => {
-    let filePath = (i && i.meta && fixPath(i.meta.path)) || '';
-
-    if (filePath) {
-      filePath = path.join(filePath, i.meta.filename, i.longname);
-      filePath = filePath.replace(/\./gi, '-');
-
-      if (filePath.indexOf('~') !== -1) {
-        filePath = filePath.replace(/~/gi, path.sep);
-      }
-      if (filePath.indexOf('#') !== -1) {
-        filePath = filePath.replace(/#/gi, path.sep);
-      }
-
-      resolve(filePath, output, i);
-
-      let parentFilePath = path.dirname(filePath);
-
-      const parent = resolve(parentFilePath, output);
-      parent.children = parent.children || [];
-      parent.children.push(path.basename(filePath));
-    }
-    if (i.kind === 'typedef') {
-      traverseTypdef(i);
-    }
-  });
-
-  return output;
-}
-
-const jsdoc = getJSDOCData(JSDOC_INPUT);
 
 /**
  * TEMPLATES
@@ -149,16 +62,15 @@ function postProcessTemplate(item) {
   return `#%#%#%#%# DOCS-GEN-POSTPROCESS: ${item} #%#%#%#%#`;
 }
 
-handlebars.registerHelper('postprocess', (item) => {
-  toPostProcess.push(item);
+handlebars.registerHelper('postprocess', function (item) { // eslint-disable-line
+  this._post.push(item);
 
   return postProcessTemplate(item);
 });
 
 function doPostProcess(content, jsdocdata) {
-  toPostProcess.forEach((item) => {
+  jsdocdata._post.forEach((item) => {
     const itemTemplate = handlebars.compile(fs.readFileSync(path.resolve(`${POSTPROCESS_ROOT}${item}.md`)).toString());
-
     content = content.replace(postProcessTemplate(item), itemTemplate(jsdocdata));
   });
   return content;
@@ -178,8 +90,9 @@ function compileMarkdownFiles(jsdocdata) {
 
       domkdir(path.join(MD_OUTPUT_FOLDER, relativePath), true);
 
-      jsdocdata.registry = [];
-      jsdocdata.title = title;
+      jsdocdata._registry = [];
+      jsdocdata._post = [];
+      jsdocdata._title = title;
 
       log(`Processing file ${relativePath}`);
 
@@ -223,17 +136,68 @@ handlebars.registerHelper('ifDefined', function ifDefined(value, options) {
   return typeof value !== 'undefined' ? options.fn(this) : options.inverse(this);
 });
 
-handlebars.registerHelper('anchor', (name) => {
+handlebars.registerHelper('anchor', (...args) => {
+  const names = args.slice(0, args.length - 1);
+  let name = names.join('.');
   name = encodeURIComponent(name);
-  jsdoc.registry = jsdoc.registry || [];
-  jsdoc.registry.push(name);
+  spec._registry = spec._registry || [];
+  spec._registry.push(name);
   return new handlebars.SafeString(
-    `<a name='${name}' href='#${name}'>#</a>`
+    `<a name='${name}' href='#${name}'># </a>`
   );
 });
 
 handlebars.registerHelper('no', v => v || 'No');
 handlebars.registerHelper('nocust', (v, fb) => v || (fb || 'No'));
+
+handlebars.registerHelper('med', (node, options) => {
+  const context = node;
+  if (context && options.hash) {
+    return options.fn(Object.assign(context, options.hash));
+  }
+  return options.fn(context);
+});
+
+handlebars.registerHelper('typedef', (node, options) => {
+  if (!node) {
+    return '';
+  }
+  let t = '';
+  if (node.kind === 'union' && node.union) {
+    t = node.union.map(tt => tt.type).join(' | ');
+    t = options.fn(t).replace(' | ', ' &#124; ');
+    // console.log(t, new handlebars.SafeString(t));
+  } else if (node.kind === 'array' && node.items) {
+    let subtype = node.items.kind || node.items.type;
+    // t = `Array&lt;${subtype}&gt;`;
+    t = `Array<${subtype}>`;
+    t = options.fn(t);
+  } else {
+    t = node.kind ? node.kind : node.type;
+    t = options.fn(t);
+  }
+  return new handlebars.SafeString(t);
+});
+
+handlebars.registerHelper('sample', (node) => {
+  if (!node) {
+    return '';
+  }
+  const defaultType = typeof node.defaultValue;
+  let s = '';
+  if (defaultType === 'undefined') {
+    if (node.kind === 'union' && node.union) {
+      s = `/* ${node.union.map(tt => tt.type).join(' | ')} */`;
+    } else {
+      s = `/* ${node.kind || node.type} */`;
+    }
+  } else if (defaultType === 'string' && node.defaultValue[0] !== "'") { // add quotes
+    s = `'${node.defaultValue}'`;
+  } else {
+    s = node.defaultValue;
+  }
+  return new handlebars.SafeString(s);
+});
 
 handlebars.registerHelper('helperMissing', (context) => {
   log(`Template defines {{ ${context.name} }}, but not provided in context`);
@@ -242,6 +206,4 @@ handlebars.registerHelper('helperMissing', (context) => {
 
 rimraf.sync(`${MD_OUTPUT_FOLDER}*`);
 
-fs.writeFileSync('src/jsdoc-restruct.json', JSON.stringify(jsdoc));
-
-registerTemplates(() => { compileMarkdownFiles(jsdoc); });
+registerTemplates(() => { compileMarkdownFiles(spec); });

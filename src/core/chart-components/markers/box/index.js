@@ -5,8 +5,7 @@ export default function boxMarker(picasso) {
 }
 
 /**
- * @typedef settings
- * @type {object}
+ * @typedef {object} component--box-marker.settings
  * @property {object} major
  * @property {string} major.scale - The scale to use along the major axis
  * @property {string|object} [major.ref='self'] - Reference to the data property along the major axis
@@ -40,10 +39,10 @@ export default function boxMarker(picasso) {
  */
 
 /**
- * @typedef box-marker
- * @property {string} type - "box"
- * @property {marker-box-data} data - Box data
- * @property {marker-box-settings} settings - Box marker settings
+ * @typedef {object} component--box-marker
+ * @property {string} type - "box-marker"
+ * @property {component--box-marker.data} data - Box data
+ * @property {component--box-marker.settings} settings - Box marker settings
  * @example
  * {
  *   type: "box",
@@ -75,8 +74,7 @@ export default function boxMarker(picasso) {
  */
 
 /**
- * @typedef data
- * @type {object}
+ * @typedef {object} component--box-marker.data
  * @property {number} [min] - min
  * @property {number} [max] - max
  * @property {number} [start] - start

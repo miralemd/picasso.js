@@ -36,10 +36,6 @@ describe('brush', () => {
     it('should be a factory function', () => {
       expect(brush).to.be.a('function');
     });
-
-    it('should return a function', () => {
-      expect(b).to.be.a('function');
-    });
   });
 
   describe('events', () => {

@@ -43,7 +43,6 @@ function createFields(matrix, { cache }) {
 
 /**
  * Create a new dataset with default settings
- * @ignore
  * @return {dataset}
  */
 export default function ds({
@@ -56,7 +55,7 @@ export default function ds({
 
   /**
    * @alias dataset
-   * @typedef {object}
+   * @definition
    */
   const dataset = {
     /**
@@ -114,13 +113,20 @@ ds.util = {
 };
 
 /**
+ * @inner
  * @typedef {object} data-extract-config
  * @property {string} field - The field to extract data from
- * @property {function} value - The field value accessor
+ * @property {data-extract-config~valueFn} value - The field value accessor
  * @property {object} props - Additional properties to add to the extracted item
  */
 
 /**
+ * @callback data-extract-config~valueFn
+ * @param {any} cell The field cell
+ */
+
+/**
+ * @inner
  * @typedef {object} datum-extract
  * @property {any} value - The extracted value
  * @property {object} source - The data source of the extracted data

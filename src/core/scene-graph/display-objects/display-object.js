@@ -112,6 +112,7 @@ class DisplayObject extends Node {
 
   /**
    * Returns the value of attribute a.
+   * @private
    * @param a
    * @returns {*} The value of attribute a.
    */

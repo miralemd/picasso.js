@@ -1,6 +1,7 @@
 
 /**
  * Manages event handlers for native events
+ * @private
  */
 export default function native(chart, mediator, element) {
   let instance = { chart, mediator, element };
@@ -55,19 +56,20 @@ export default function native(chart, mediator, element) {
   return {
     /**
      * Getter for the key.
+     * @private
      */
     get key() {
       return itKey;
     },
     /**
      * Updates this with new settings
-     * @typedef settings
-     * @type {object}
-     * @property {string} [type] - The interaction type. Is 'native' for this component
-     * @property {boolean|function} [enable=true] - Should the interactions defined here be enabled or not.
+     * @private
+     * @param {object} newSettings
+     * @param {string} [newSettings.type] - The interaction type. Is 'native' for this component
+     * @param {boolean|function} [newSettings.enable=true] - Should the interactions defined here be enabled or not.
      * This is only run when adding event handlers. In effect at startup, update or during on/off.
      * It does not run during every event loop.
-     * @property {array} [gestures] - The keys in this object is the names of native events
+     * @param {array} [newSettings.gestures] - The keys in this object is the names of native events
      * that should be added to the chart element and they should all point to function which
      * will be the corresponding event handler.
      */
@@ -80,6 +82,7 @@ export default function native(chart, mediator, element) {
     },
     /**
      * Turns off interactions
+     * @private
      */
     off() {
       isOn = false;
@@ -87,6 +90,7 @@ export default function native(chart, mediator, element) {
     },
     /**
      * Turns off interactions
+     * @private
      */
     on() {
       isOn = true;
@@ -96,6 +100,7 @@ export default function native(chart, mediator, element) {
     },
     /**
      * Destroys and unbinds all event handlers
+     * @private
      */
     destroy() {
       removeAddedEvents();

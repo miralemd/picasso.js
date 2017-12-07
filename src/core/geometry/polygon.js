@@ -23,7 +23,7 @@ function removeDuplicates(vertices) {
   }
 }
 
-export default class GeoPolygon {
+class GeoPolygon {
   /**
    * Construct a new GeoPolygon instance
    * @param {Object} input An object with a vertices property
@@ -143,6 +143,11 @@ export default class GeoPolygon {
 * @param {number} input.vertices[].y y-coordinate of vertice
 * @private
 */
-export function create(...a) {
+function create(...a) {
   return new GeoPolygon(...a);
 }
+
+export {
+  create,
+  GeoPolygon as default
+};

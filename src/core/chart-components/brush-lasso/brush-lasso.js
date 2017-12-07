@@ -178,8 +178,11 @@ function resetState() {
 }
 
 /**
- * @typedef settings
- * @type {object}
+ * @typedef {object} component--brush-lasso
+ */
+
+/**
+ * @typedef {object} component--brush-lasso.settings
  * @property {object} [lasso] - Lasso style settings
  * @property {string} [lasso.fill='transparent']
  * @property {string} [lasso.stroke='black']

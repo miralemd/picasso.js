@@ -1,4 +1,4 @@
-{{#if this}}#### Examples
+{{#if this}}
 
 {{#each this}}
 ```js

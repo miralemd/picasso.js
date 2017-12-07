@@ -32,7 +32,7 @@ export default function datasets(dataSources, { types, logger }) {
 
   /**
    * Returns the `dataset` which has `key` as identifier
-   *
+   * @ignore
    * @param {string} key - The dataset identifier
    * @returns {dataset}
    */
@@ -46,8 +46,9 @@ export default function datasets(dataSources, { types, logger }) {
 }
 
 /**
+ * @definition
  * @typedef {object} data-source
- * @property {string} key
- * @property {string} type
+ * @property {string} key - Unique identifier for this data source
+ * @property {string} type - The dataset type
  * @property {any} data
  */

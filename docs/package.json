@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "docs": "jsdoc -t jsdoc-json -r ../src -d ./src/docs.json -c ../jsdoc.config.json && node gen"
+    "docs": "jsdoc -t jsdoc2spec -r ../src -d ./spec.json -p ../package.json && node gen"
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +14,7 @@
     "handlebars-helpers": "0.7.5",
     "jsdoc": "3.4.3",
     "jsdoc-json": "^2.0.0",
+    "jsdoc2spec": "^0.1.1",
     "rimraf": "^2.5.4",
     "striptags": "2.1.1"
   }

@@ -31,7 +31,11 @@ The label is then justified, aligned and ellipsed if necessary.
 
 #### Settings
 
-{{>magic ctx='core.chart-components.labels.strategies-js.settings'}}
+{{>struct entries.component--labels}}
+
+##### bar strategy
+
+{{>struct entries.component--labels.definitions.label-strategy}}
 
 #### Example
 

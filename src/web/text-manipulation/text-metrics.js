@@ -35,6 +35,7 @@ function measureTextHeight({ fontSize, fontFamily }) {
 }
 
 /**
+ * @private
  * @param {object} opts
  * @param {string} opts.text - Text to measure
  * @param {string} opts.fontSize - Font size with a unit definition, ex. 'px' or 'em'
@@ -56,6 +57,7 @@ export function measureText({ text, fontSize, fontFamily }) { // eslint-disable-
 /**
  * Calculates the bounding rectangle of a text node.
  * The bounding rectangle is a approximate of the "em square" seen here (http://www.w3resource.com/html5-canvas/html5-canvas-text.php)
+ * @ignore
  * @param {object} attrs - Text node definition
  * @param {number} [attrs.x] - X-coordinate
  * @param {number} [attrs.y] - Y-coordinate
@@ -97,6 +99,7 @@ function calcTextBounds(attrs, measureFn = measureText) {
 
 /**
  * Calculates the bounding rectangle of a text node. Including any line breaks.
+ * @ignore
  * @param {object} node
  * @param {string} node.text - Text to measure
  * @param {number} [node.x=0] - X-coordinate

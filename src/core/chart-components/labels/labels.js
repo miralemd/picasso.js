@@ -7,12 +7,16 @@ const strategies = {
 };
 
 /**
- * @typedef settings
- * @type {object}
- * @property {object} sources
- * @property {string} sources.component
- * @property {string} sources.selector
- * @property {label-strategy} sources.strategy
+ * @typedef {object} component--labels
+ * @property {string} [type='labels']
+ */
+
+/**
+ * @typedef {object} component--labels.settings
+ * @property {Array<object>} sources
+ * @property {string} sources[].component
+ * @property {string} sources[].selector
+ * @property {component--labels~label-strategy} sources[].strategy
  */
 
 export function strategy({

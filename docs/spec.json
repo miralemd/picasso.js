@@ -1,0 +1,3743 @@
+{
+  "spec": {
+    "version": "0.1.0"
+  },
+  "info": {},
+  "entries": {
+    "component--axis": {
+      "kind": "struct",
+      "entries": {
+        "settings": {
+          "kind": "struct",
+          "entries": {
+            "labels": {
+              "description": "Labels settings",
+              "optional": true,
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "show": {
+                  "optional": true,
+                  "defaultValue": true,
+                  "type": "boolean"
+                },
+                "mode": {
+                  "description": "Control how labels arrange themself. Availabe modes are auto, horizontal, layered and tilted. Only horizontal is supported on a continuous axis",
+                  "optional": true,
+                  "defaultValue": "'auto'",
+                  "type": "string"
+                },
+                "tiltAngle": {
+                  "description": "Angle in degrees, capped between -90 and 90",
+                  "optional": true,
+                  "defaultValue": 40,
+                  "type": "number"
+                },
+                "maxEdgeBleed": {
+                  "optional": true,
+                  "defaultValue": "Infinity",
+                  "type": "number"
+                },
+                "fontFamily": {
+                  "optional": true,
+                  "defaultValue": "'Arial'",
+                  "type": "string"
+                },
+                "fontSize": {
+                  "optional": true,
+                  "defaultValue": "'12px'",
+                  "type": "string"
+                },
+                "fill": {
+                  "optional": true,
+                  "defaultValue": "'#595959'",
+                  "type": "string"
+                },
+                "margin": {
+                  "description": "Space between tick and label. Default to 6 (discrete) or 4 (continuous)",
+                  "optional": true,
+                  "type": "number"
+                },
+                "maxLengthPx": {
+                  "description": "Max length of labels in pixels",
+                  "optional": true,
+                  "defaultValue": 150,
+                  "type": "number"
+                },
+                "minLengthPx": {
+                  "description": "Min length of labels in pixels. Labels will always at least require this much space",
+                  "optional": true,
+                  "defaultValue": 0,
+                  "type": "number"
+                },
+                "maxGlyphCount": {
+                  "description": "Is used to measure the largest possible size a label",
+                  "optional": true,
+                  "defaultValue": null,
+                  "type": "number"
+                }
+              }
+            },
+            "line": {
+              "optional": true,
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "show": {
+                  "optional": true,
+                  "defaultValue": true,
+                  "type": "boolean"
+                },
+                "strokeWidth": {
+                  "optional": true,
+                  "defaultValue": 1,
+                  "type": "number"
+                },
+                "stroke": {
+                  "optional": true,
+                  "defaultValue": "'#cccccc'",
+                  "type": "string"
+                }
+              }
+            },
+            "ticks": {
+              "optional": true,
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "show": {
+                  "optional": true,
+                  "defaultValue": true,
+                  "type": "boolean"
+                },
+                "margin": {
+                  "optional": true,
+                  "defaultValue": 0,
+                  "type": "number"
+                },
+                "tickSize": {
+                  "description": "Default to 4 (discrete) or 8 (continuous)",
+                  "optional": true,
+                  "type": "number"
+                },
+                "stroke": {
+                  "optional": true,
+                  "defaultValue": "'#cccccc'",
+                  "type": "string"
+                },
+                "strokeWidth": {
+                  "optional": true,
+                  "defaultValue": 1,
+                  "type": "number"
+                }
+              }
+            },
+            "minorTicks": {
+              "description": "Only on a continuous axis",
+              "optional": true,
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "show": {
+                  "optional": true,
+                  "defaultValue": true,
+                  "type": "boolean"
+                },
+                "margin": {
+                  "optional": true,
+                  "defaultValue": 0,
+                  "type": "number"
+                },
+                "tickSize": {
+                  "optional": true,
+                  "defaultValue": 3,
+                  "type": "number"
+                },
+                "stroke": {
+                  "optional": true,
+                  "defaultValue": "'#e6e6e6'",
+                  "type": "string"
+                },
+                "strokeWidth": {
+                  "optional": true,
+                  "defaultValue": 1,
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "component--brush-lasso": {
+      "kind": "struct",
+      "entries": {
+        "settings": {
+          "kind": "struct",
+          "entries": {
+            "lasso": {
+              "description": "Lasso style settings",
+              "optional": true,
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "fill": {
+                  "optional": true,
+                  "defaultValue": "'transparent'",
+                  "type": "string"
+                },
+                "stroke": {
+                  "optional": true,
+                  "defaultValue": "'black'",
+                  "type": "string"
+                },
+                "strokeWidth": {
+                  "optional": true,
+                  "defaultValue": 2,
+                  "type": "number"
+                },
+                "opacity": {
+                  "optional": true,
+                  "defaultValue": 0.7,
+                  "type": "number"
+                },
+                "strokeDasharray": {
+                  "optional": true,
+                  "type": "number"
+                }
+              }
+            },
+            "snapIndicator": {
+              "description": "Snap indicator settings",
+              "optional": true,
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "threshold": {
+                  "description": "The distance in pixel to show the snap indicator, if less then threshold the indicator is dispalyed",
+                  "optional": true,
+                  "defaultValue": 75,
+                  "type": "number"
+                },
+                "strokeDasharray": {
+                  "optional": true,
+                  "defaultValue": "'5, 5'",
+                  "type": "string"
+                },
+                "stroke": {
+                  "optional": true,
+                  "defaultValue": "'black'",
+                  "type": "string"
+                },
+                "strokeWidth": {
+                  "optional": true,
+                  "defaultValue": 2,
+                  "type": "number"
+                },
+                "opacity": {
+                  "optional": true,
+                  "defaultValue": 0.5,
+                  "type": "number"
+                }
+              }
+            },
+            "startPoint": {
+              "description": "Start point style settings",
+              "optional": true,
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "r": {
+                  "description": "Circle radius",
+                  "optional": true,
+                  "defaultValue": 10,
+                  "type": "number"
+                },
+                "stroke": {
+                  "optional": true,
+                  "defaultValue": "'green'",
+                  "type": "string"
+                },
+                "strokeWidth": {
+                  "optional": true,
+                  "defaultValue": 1,
+                  "type": "number"
+                },
+                "opacity": {
+                  "optional": true,
+                  "defaultValue": 1,
+                  "type": "number"
+                }
+              }
+            },
+            "brush": {
+              "optional": true,
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "components": {
+                  "description": "Array of components to brush on.",
+                  "kind": "array",
+                  "items": {
+                    "type": "object"
+                  },
+                  "entries": {
+                    "component": {
+                      "kind": "struct",
+                      "entries": {
+                        "key": {
+                          "description": "Component key",
+                          "optional": true,
+                          "type": "string"
+                        },
+                        "contexts": {
+                          "description": "Name of the brushing contexts to affect",
+                          "optional": true,
+                          "defaultValue": "['brushLasso']",
+                          "kind": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "data": {
+                          "description": "The mapped data properties to add to the brush",
+                          "optional": true,
+                          "defaultValue": "['']",
+                          "kind": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "action": {
+                          "description": "Type of action to respond with",
+                          "optional": true,
+                          "defaultValue": "'add'",
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "component--labels": {
+      "kind": "struct",
+      "entries": {
+        "type": {
+          "optional": true,
+          "defaultValue": "'labels'",
+          "type": "string"
+        },
+        "settings": {
+          "kind": "struct",
+          "entries": {
+            "sources": {
+              "kind": "array",
+              "items": {
+                "entries": {
+                  "component": {
+                    "type": "string"
+                  },
+                  "selector": {
+                    "type": "string"
+                  },
+                  "strategy": {
+                    "type": "component--labels~label-strategy"
+                  }
+                },
+                "kind": "struct"
+              }
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object",
+      "definitions": {
+        "label-strategy": {
+          "kind": "struct",
+          "entries": {
+            "settings": {
+              "kind": "struct",
+              "entries": {
+                "direction": {
+                  "description": "The direction in which the bars are growing: 'up', 'down', 'right' or 'left'.",
+                  "optional": true,
+                  "defaultValue": "'up'",
+                  "kind": "union",
+                  "union": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "function"
+                    }
+                  ]
+                },
+                "fontFamily": {
+                  "optional": true,
+                  "defaultValue": "'Arial'",
+                  "type": "string"
+                },
+                "fontSize": {
+                  "optional": true,
+                  "defaultValue": 12,
+                  "type": "number"
+                },
+                "labels": {
+                  "kind": "array",
+                  "items": {
+                    "entries": {
+                      "label": {
+                        "description": "The text value",
+                        "kind": "union",
+                        "union": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "function"
+                          }
+                        ]
+                      },
+                      "placements": {
+                        "kind": "array",
+                        "items": {
+                          "entries": {
+                            "position": {
+                              "description": "'inside' | 'outside' | 'opposite'",
+                              "type": "string"
+                            },
+                            "justify": {
+                              "description": "Placement of the label along the direction of the bar",
+                              "optional": true,
+                              "defaultValue": 0,
+                              "type": "number"
+                            },
+                            "align": {
+                              "description": "Placement of the label along the perpendicular direction of the bar",
+                              "optional": true,
+                              "defaultValue": 0.5,
+                              "type": "number"
+                            },
+                            "fill": {
+                              "description": "Color of the label",
+                              "optional": true,
+                              "defaultValue": "'#333'",
+                              "type": "string"
+                            }
+                          },
+                          "kind": "struct"
+                        }
+                      }
+                    },
+                    "kind": "struct"
+                  }
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        }
+      }
+    },
+    "component--legend-cat": {
+      "kind": "struct",
+      "entries": {
+        "type": {
+          "description": "Required",
+          "defaultValue": "'legend-cat'",
+          "type": "scale"
+        },
+        "scale": {
+          "description": "A scale. Required",
+          "defaultValue": "'A_scale'",
+          "type": "scale"
+        },
+        "dock": {
+          "description": "Docking of the component, top, right, bottom or left",
+          "optional": true,
+          "defaultValue": "'center'",
+          "type": "string"
+        },
+        "settings": {
+          "optional": true,
+          "type": "object",
+          "kind": "struct",
+          "entries": {
+            "anchor": {
+              "description": "Is used to align items in the component, left or right",
+              "optional": true,
+              "defaultValue": "'left'",
+              "type": "string"
+            },
+            "direction": {
+              "description": "Direction of rendering, 'horizontal' or 'vertical'.",
+              "optional": true,
+              "defaultValue": "'vertical'",
+              "type": "string"
+            },
+            "layout": {
+              "description": "Layout setting for the items",
+              "optional": true,
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "mode": {
+                  "description": "Use `stack` to let each item only take as much space a required or else each item will take a fixed amount of space to give each item equal distance between each other",
+                  "optional": true,
+                  "defaultValue": "'stack'",
+                  "type": "object"
+                },
+                "size": {
+                  "description": "Only enabled non-stack mode. Is either row or column count, depending on the directional setting (i.e. vertical direction and size is column count)",
+                  "optional": true,
+                  "defaultValue": 1,
+                  "type": "number"
+                }
+              }
+            },
+            "item": {
+              "description": "Items settings",
+              "optional": true,
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "label": {
+                  "description": "Label settings, the value is derived from the scale",
+                  "optional": true,
+                  "type": "object",
+                  "kind": "struct",
+                  "entries": {
+                    "maxWidth": {
+                      "description": "Maximum width of each label in px",
+                      "optional": true,
+                      "defaultValue": 136,
+                      "type": "string"
+                    },
+                    "fontSize": {
+                      "description": "Font size of label items",
+                      "optional": true,
+                      "defaultValue": "'12px'",
+                      "type": "string"
+                    },
+                    "fontFamily": {
+                      "description": "Font family of label items",
+                      "optional": true,
+                      "defaultValue": "'Arial'",
+                      "type": "string"
+                    },
+                    "fill": {
+                      "description": "Font color of label items",
+                      "optional": true,
+                      "defaultValue": "'#595959'",
+                      "type": "string"
+                    },
+                    "breakWord": {
+                      "description": "Word break rule, how to apply line break if label text overflow it's maxWidth prop. Either `break-word` or `break-all`",
+                      "optional": true,
+                      "defaultValue": "'none'",
+                      "type": "string"
+                    },
+                    "maxLines": {
+                      "description": "Max number of lines allowed if label is broken into multiple lines (only applicable with wordBreak)",
+                      "optional": true,
+                      "defaultValue": 2,
+                      "type": "number"
+                    },
+                    "hyphens": {
+                      "description": "How words should be hyphenated when text wraps across multiple lines (only applicable with wordBreak)",
+                      "optional": true,
+                      "defaultValue": "'auto'",
+                      "type": "string"
+                    },
+                    "lineHeight": {
+                      "description": "A multiplier defining the distance between lines (only applicable with wordBreak)",
+                      "optional": true,
+                      "defaultValue": 1.2,
+                      "type": "number"
+                    }
+                  }
+                },
+                "margin": {
+                  "description": "Margin settings",
+                  "optional": true,
+                  "type": "object",
+                  "kind": "struct",
+                  "entries": {
+                    "top": {
+                      "description": "Top margin",
+                      "optional": true,
+                      "defaultValue": 0,
+                      "type": "number"
+                    },
+                    "right": {
+                      "description": "Right margin",
+                      "optional": true,
+                      "defaultValue": 5,
+                      "type": "number"
+                    },
+                    "bottom": {
+                      "description": "Bottom margin",
+                      "optional": true,
+                      "defaultValue": 5,
+                      "type": "number"
+                    },
+                    "left": {
+                      "description": "Left margin",
+                      "optional": true,
+                      "defaultValue": 5,
+                      "type": "number"
+                    }
+                  }
+                },
+                "shape": {
+                  "description": "Shape definition or shape type. Each shape may have their own unique properties that can also be set as part of the shape object.",
+                  "optional": true,
+                  "kind": "union",
+                  "union": [
+                    {
+                      "type": "object"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ],
+                  "entries": {
+                    "type": {
+                      "description": "Shape type",
+                      "optional": true,
+                      "defaultValue": "'square'",
+                      "type": "string"
+                    },
+                    "fill": {
+                      "description": "Fill of shape. Defaults to scale color if avaiable.",
+                      "optional": true,
+                      "type": "string"
+                    },
+                    "stroke": {
+                      "description": "Stroke of shape. Defaults to scale color if avaiable.",
+                      "optional": true,
+                      "type": "string"
+                    },
+                    "strokeWidth": {
+                      "description": "Stroke width of shape.",
+                      "optional": true,
+                      "defaultValue": 1,
+                      "type": "string"
+                    }
+                  }
+                },
+                "show": {
+                  "description": "Set to 'false' to hide the current item",
+                  "optional": true,
+                  "defaultValue": true,
+                  "kind": "union",
+                  "union": [
+                    {
+                      "type": "function"
+                    },
+                    {
+                      "type": "boolean"
+                    }
+                  ]
+                }
+              }
+            },
+            "title": {
+              "description": "Title settings",
+              "optional": true,
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "maxWidth": {
+                  "description": "Maximum width of each label in px",
+                  "optional": true,
+                  "defaultValue": 156,
+                  "type": "string"
+                },
+                "fontSize": {
+                  "description": "Font size of label items",
+                  "optional": true,
+                  "defaultValue": "'12px'",
+                  "type": "string"
+                },
+                "fontFamily": {
+                  "description": "Font family of label items",
+                  "optional": true,
+                  "defaultValue": "'Arial'",
+                  "type": "string"
+                },
+                "fill": {
+                  "description": "Font color of label items",
+                  "optional": true,
+                  "defaultValue": "'#595959'",
+                  "type": "string"
+                },
+                "breakWord": {
+                  "description": "Word break rule, how to apply line break if label text overflow it's maxWidth prop. Either `break-word` or `break-all`",
+                  "optional": true,
+                  "defaultValue": "'none'",
+                  "type": "string"
+                },
+                "maxLines": {
+                  "description": "Max number of lines allowed if label is broken into multiple lines (only applicable with wordBreak)",
+                  "optional": true,
+                  "defaultValue": 2,
+                  "type": "number"
+                },
+                "hyphens": {
+                  "description": "How words should be hyphenated when text wraps across multiple lines (only applicable with wordBreak)",
+                  "optional": true,
+                  "defaultValue": "'auto'",
+                  "type": "string"
+                },
+                "lineHeight": {
+                  "description": "A multiplier defining the distance between lines (only applicable with wordBreak)",
+                  "optional": true,
+                  "defaultValue": 1.2,
+                  "type": "number"
+                },
+                "text": {
+                  "description": "Override title text. Defaults to the title of the data field",
+                  "optional": true,
+                  "type": "string"
+                },
+                "margin": {
+                  "description": "Margin settings",
+                  "optional": true,
+                  "type": "object",
+                  "kind": "struct",
+                  "entries": {
+                    "top": {
+                      "description": "Top margin",
+                      "optional": true,
+                      "defaultValue": 0,
+                      "type": "number"
+                    },
+                    "right": {
+                      "description": "Right margin",
+                      "optional": true,
+                      "defaultValue": 5,
+                      "type": "number"
+                    },
+                    "bottom": {
+                      "description": "Bottom margin",
+                      "optional": true,
+                      "defaultValue": 5,
+                      "type": "number"
+                    },
+                    "left": {
+                      "description": "Left margin",
+                      "optional": true,
+                      "defaultValue": 5,
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "buttons": {
+              "description": "Button settings",
+              "optional": true,
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "show": {
+                  "description": "Show the scroll/paging buttons (will still auto hide when not needed)",
+                  "optional": true,
+                  "defaultValue": true,
+                  "type": "boolean"
+                },
+                "buttonSpacing": {
+                  "description": "The margin between the two buttons",
+                  "optional": true,
+                  "defaultValue": 8,
+                  "type": "number"
+                },
+                "spacing": {
+                  "description": "The margin between the start or end of the legend and the buttons, depending if the button are position to the left, right or bottom",
+                  "optional": true,
+                  "defaultValue": 0,
+                  "type": "number"
+                },
+                "width": {
+                  "description": "The width of the buttons",
+                  "optional": true,
+                  "defaultValue": 32,
+                  "type": "number"
+                },
+                "height": {
+                  "description": "The height of the buttons",
+                  "optional": true,
+                  "defaultValue": 24,
+                  "type": "number"
+                },
+                "rect": {
+                  "description": "Settings for the rect of the buttons",
+                  "optional": true,
+                  "type": "object",
+                  "kind": "struct",
+                  "entries": {
+                    "fill": {
+                      "description": "Fill color",
+                      "optional": true,
+                      "defaultValue": "'transparent'",
+                      "type": "string"
+                    },
+                    "stroke": {
+                      "description": "Stroke color",
+                      "optional": true,
+                      "defaultValue": "'grey'",
+                      "type": "string"
+                    },
+                    "strokeWidth": {
+                      "description": "Stroke width in pixels",
+                      "optional": true,
+                      "defaultValue": 0,
+                      "type": "number"
+                    }
+                  }
+                },
+                "symbol": {
+                  "description": "Settings for the symbol of the buttons",
+                  "optional": true,
+                  "type": "object",
+                  "kind": "struct",
+                  "entries": {
+                    "fill": {
+                      "description": "Symbol fill color",
+                      "optional": true,
+                      "defaultValue": "'grey'",
+                      "type": "string"
+                    },
+                    "stroke": {
+                      "description": "Stroke color",
+                      "optional": true,
+                      "defaultValue": "'grey'",
+                      "type": "string"
+                    },
+                    "strokeWidth": {
+                      "description": "Stroke width in pixels",
+                      "optional": true,
+                      "defaultValue": 2,
+                      "type": "number"
+                    }
+                  }
+                },
+                "'rect:disabled'": {
+                  "description": "Settings for the disabled rect of the buttons",
+                  "optional": true,
+                  "type": "object",
+                  "kind": "struct",
+                  "entries": {
+                    "fill": {
+                      "description": "Fill color",
+                      "optional": true,
+                      "defaultValue": "'transparent'",
+                      "type": "string"
+                    },
+                    "stroke": {
+                      "description": "Stroke color",
+                      "optional": true,
+                      "defaultValue": "'lightgrey'",
+                      "type": "string"
+                    },
+                    "strokeWidth": {
+                      "description": "Stroke width in pixels",
+                      "optional": true,
+                      "defaultValue": 0,
+                      "type": "number"
+                    }
+                  }
+                },
+                "'symbol:disabled'": {
+                  "description": "Settings for the disabled symbol of the buttons",
+                  "optional": true,
+                  "type": "object",
+                  "kind": "struct",
+                  "entries": {
+                    "fill": {
+                      "description": "Symbol fill color",
+                      "optional": true,
+                      "defaultValue": "'lightgrey'",
+                      "type": "string"
+                    },
+                    "stroke": {
+                      "description": "Stroke color",
+                      "optional": true,
+                      "defaultValue": "'grey'",
+                      "type": "string"
+                    },
+                    "strokeWidth": {
+                      "description": "Stroke width in pixels",
+                      "optional": true,
+                      "defaultValue": 2,
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "type": "object"
+    },
+    "component--legend-seq": {
+      "kind": "struct",
+      "entries": {
+        "settings": {
+          "kind": "struct",
+          "entries": {
+            "fill": {
+              "description": "Reference to definition of sequential color scale",
+              "kind": "union",
+              "union": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "object"
+                }
+              ]
+            },
+            "major": {
+              "description": "Reference to definition of linear scale",
+              "kind": "union",
+              "union": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "object"
+                }
+              ]
+            },
+            "size": {
+              "description": "Size in pixels of the legend, if vertical is the width and height otherwise",
+              "optional": true,
+              "defaultValue": 15,
+              "type": "number"
+            },
+            "length": {
+              "description": "A value in the range 0-1 indicating the length of the legend node",
+              "optional": true,
+              "defaultValue": 1,
+              "type": "number"
+            },
+            "maxLengthPx": {
+              "description": "Max length in pixels",
+              "optional": true,
+              "defaultValue": 250,
+              "type": "number"
+            },
+            "align": {
+              "description": "A value in the range 0-1 indicating horizontal alignment of the legend's content. 0 aligns to the left, 1 to the right.",
+              "optional": true,
+              "defaultValue": 0.5,
+              "type": "number"
+            },
+            "justify": {
+              "description": "A value in the range 0-1 indicating vertical alignment of the legend's content. 0 aligns to the top, 1 to the bottom.",
+              "optional": true,
+              "defaultValue": 0,
+              "type": "number"
+            },
+            "padding": {
+              "optional": true,
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "left": {
+                  "optional": true,
+                  "defaultValue": 5,
+                  "type": "number"
+                },
+                "right": {
+                  "optional": true,
+                  "defaultValue": 5,
+                  "type": "number"
+                },
+                "top": {
+                  "optional": true,
+                  "defaultValue": 5,
+                  "type": "number"
+                },
+                "bottom": {
+                  "optional": true,
+                  "defaultValue": 5,
+                  "type": "number"
+                }
+              }
+            },
+            "tick": {
+              "optional": true,
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "label": {
+                  "description": "Function applied to all tick values, returned values are used as labels",
+                  "optional": true,
+                  "type": "function"
+                },
+                "fill": {
+                  "optional": true,
+                  "defaultValue": "'#595959'",
+                  "type": "string"
+                },
+                "fontSize": {
+                  "optional": true,
+                  "defaultValue": "'12px'",
+                  "type": "string"
+                },
+                "fontFamily": {
+                  "optional": true,
+                  "defaultValue": "'Arial'",
+                  "type": "string"
+                },
+                "maxLengthPx": {
+                  "description": "Max length in pixels",
+                  "optional": true,
+                  "defaultValue": 150,
+                  "type": "number"
+                },
+                "anchor": {
+                  "description": "Where to anchor the tick in relation to the legend node, supported values are [top, bottom, left and right]",
+                  "optional": true,
+                  "defaultValue": "'right'",
+                  "type": "string"
+                },
+                "padding": {
+                  "description": "padding in pixels to the legend node",
+                  "optional": true,
+                  "defaultValue": 5,
+                  "type": "number"
+                }
+              }
+            },
+            "title": {
+              "description": "Title settings",
+              "optional": true,
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "show": {
+                  "description": "Toggle title on/off",
+                  "optional": true,
+                  "defaultValue": true,
+                  "type": "boolean"
+                },
+                "text": {
+                  "description": "The value of the title",
+                  "optional": true,
+                  "defaultValue": "''",
+                  "type": "string"
+                },
+                "fill": {
+                  "optional": true,
+                  "defaultValue": "'#595959'",
+                  "type": "string"
+                },
+                "fontSize": {
+                  "optional": true,
+                  "defaultValue": "'12px'",
+                  "type": "string"
+                },
+                "fontFamily": {
+                  "optional": true,
+                  "defaultValue": "'Arial'",
+                  "type": "string"
+                },
+                "maxLengthPx": {
+                  "description": "Max length in pixels",
+                  "optional": true,
+                  "defaultValue": 100,
+                  "type": "number"
+                },
+                "padding": {
+                  "description": "padding in pixels to the legend node",
+                  "optional": true,
+                  "defaultValue": 5,
+                  "type": "number"
+                },
+                "anchor": {
+                  "description": "Where to anchor the title in relation to the legend node, supported values are [top, left and right]",
+                  "optional": true,
+                  "defaultValue": "'top'",
+                  "type": "string"
+                },
+                "wordBreak": {
+                  "description": "How overflowing title is handled, if it should insert line breaks at word boundries (break-word) or character boundries (break-all)",
+                  "optional": true,
+                  "defaultValue": "'none'",
+                  "type": "string"
+                },
+                "hyphens": {
+                  "description": "How words should be hyphenated when text wraps across multiple lines (only applicable with wordBreak)",
+                  "optional": true,
+                  "defaultValue": "'auto'",
+                  "type": "string"
+                },
+                "maxLines": {
+                  "description": "Number of allowed lines if title contains line breaks (only applicable with wordBreak)",
+                  "optional": true,
+                  "defaultValue": 2,
+                  "type": "number"
+                },
+                "lineHeight": {
+                  "description": "A multiplier defining the distance between lines (only applicable with wordBreak)",
+                  "optional": true,
+                  "defaultValue": 1.2,
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "component--box-marker": {
+      "kind": "struct",
+      "entries": {
+        "type": {
+          "description": "\"box-marker\"",
+          "type": "string"
+        },
+        "data": {
+          "kind": "struct",
+          "entries": {
+            "min": {
+              "description": "min",
+              "optional": true,
+              "type": "number"
+            },
+            "max": {
+              "description": "max",
+              "optional": true,
+              "type": "number"
+            },
+            "start": {
+              "description": "start",
+              "optional": true,
+              "type": "number"
+            },
+            "end": {
+              "description": "end",
+              "optional": true,
+              "type": "number"
+            },
+            "med": {
+              "description": "med",
+              "optional": true,
+              "type": "number"
+            }
+          },
+          "type": "object"
+        },
+        "settings": {
+          "kind": "struct",
+          "entries": {
+            "major": {
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "scale": {
+                  "description": "The scale to use along the major axis",
+                  "type": "string"
+                },
+                "ref": {
+                  "description": "Reference to the data property along the major axis",
+                  "optional": true,
+                  "defaultValue": "'self'",
+                  "kind": "union",
+                  "union": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "object"
+                    }
+                  ],
+                  "entries": {
+                    "start": {
+                      "description": "Reference to the data property of the start value along the major axis",
+                      "type": "string"
+                    },
+                    "end": {
+                      "description": "Reference to the data property of the end value along the major axis",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "minor": {
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "scale": {
+                  "description": "The scale to use along the minor axis",
+                  "type": "string"
+                }
+              }
+            },
+            "orientation": {
+              "optional": true,
+              "defaultValue": "'vertical'",
+              "type": "string"
+            },
+            "box": {
+              "optional": true,
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "show": {
+                  "optional": true,
+                  "defaultValue": true,
+                  "type": "boolean"
+                },
+                "fill": {
+                  "optional": true,
+                  "defaultValue": "'#fff'",
+                  "type": "string"
+                },
+                "stroke": {
+                  "optional": true,
+                  "defaultValue": "'#000'",
+                  "type": "string"
+                },
+                "strokeWidth": {
+                  "optional": true,
+                  "defaultValue": 1,
+                  "type": "number"
+                },
+                "width": {
+                  "optional": true,
+                  "defaultValue": 1,
+                  "type": "number"
+                },
+                "maxWidthPx": {
+                  "optional": true,
+                  "defaultValue": 100,
+                  "type": "number"
+                },
+                "minWidthPx": {
+                  "optional": true,
+                  "defaultValue": 1,
+                  "type": "number"
+                },
+                "minHeightPx": {
+                  "optional": true,
+                  "defaultValue": 1,
+                  "type": "number"
+                }
+              }
+            },
+            "line": {
+              "optional": true,
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "show": {
+                  "optional": true,
+                  "defaultValue": true,
+                  "type": "boolean"
+                }
+              }
+            },
+            "stroke": {
+              "optional": true,
+              "defaultValue": "'#000'",
+              "type": "string"
+            },
+            "strokeWidth": {
+              "optional": true,
+              "defaultValue": 1,
+              "type": "number"
+            },
+            "whisker": {
+              "optional": true,
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "show": {
+                  "optional": true,
+                  "defaultValue": true,
+                  "type": "boolean"
+                },
+                "stroke": {
+                  "optional": true,
+                  "defaultValue": "'#000'",
+                  "type": "string"
+                },
+                "strokeWidth": {
+                  "optional": true,
+                  "defaultValue": 1,
+                  "type": "number"
+                },
+                "width": {
+                  "optional": true,
+                  "defaultValue": 1,
+                  "type": "number"
+                }
+              }
+            },
+            "median": {
+              "optional": true,
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "show": {
+                  "optional": true,
+                  "defaultValue": true,
+                  "type": "number"
+                },
+                "stroke": {
+                  "optional": true,
+                  "defaultValue": "'#000'",
+                  "type": "number"
+                },
+                "strokeWidth": {
+                  "optional": true,
+                  "defaultValue": 1,
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object",
+      "examples": [
+        "{\n  type: \"box\",\n  data: {\n   mapTo: {\n     min: { source: \"/qHyperCube/qMeasureInfo/0\" },\n     start: { source: \"/qHyperCube/qMeasureInfo/1\" },\n     med: { source: \"/qHyperCube/qMeasureInfo/2\" },\n     end: { source: \"/qHyperCube/qMeasureInfo/3\" },\n     max: { source: \"/qHyperCube/qMeasureInfo/4\" },\n   },\n   groupBy: {\n     source: \"/qHyperCube/qDimensionInfo/0\"\n   }\n },\n settings: {\n   major: {\n     scale: { source: \"/qHyperCube/qDimensionInfo/0\" }\n   },\n   minor: {\n     scale: { source: [\"/qHyperCube/qMeasureInfo/0\",\n              \"/qHyperCube/qMeasureInfo/1\",\n              \"/qHyperCube/qMeasureInfo/2\",\n              \"/qHyperCube/qMeasureInfo/3\",\n              \"/qHyperCube/qMeasureInfo/4\"] }\n   }\n }\n}"
+      ]
+    },
+    "component--pie": {
+      "kind": "struct",
+      "entries": {
+        "type": {
+          "optional": true,
+          "defaultValue": "'pie'",
+          "type": "string"
+        },
+        "settings": {
+          "kind": "struct",
+          "entries": {
+            "startAngle": {
+              "description": "If angle is specified, sets the overall start angle of the pie to the specified function or number",
+              "optional": true,
+              "defaultValue": 0,
+              "type": "number"
+            },
+            "endAngle": {
+              "description": "If angle is specified, sets the overall end angle of the pie to the specified function or number",
+              "optional": true,
+              "defaultValue": "2*Math.PI",
+              "type": "number"
+            },
+            "padAngle": {
+              "description": "The pad angle here means the angular separation between each adjacent arc",
+              "optional": true,
+              "defaultValue": 0,
+              "type": "number"
+            },
+            "slice": {
+              "optional": true,
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "show": {
+                  "optional": true,
+                  "defaultValue": true,
+                  "type": "boolean"
+                },
+                "fill": {
+                  "optional": true,
+                  "defaultValue": "'#fff'",
+                  "type": "string"
+                },
+                "stroke": {
+                  "optional": true,
+                  "defaultValue": "'#000'",
+                  "type": "string"
+                },
+                "strokeWidth": {
+                  "optional": true,
+                  "defaultValue": 1,
+                  "type": "number"
+                },
+                "opacity": {
+                  "optional": true,
+                  "defaultValue": 1,
+                  "type": "number"
+                },
+                "innerRadius": {
+                  "description": "The inner radius of the pie slice",
+                  "optional": true,
+                  "defaultValue": 0,
+                  "type": "number"
+                },
+                "outerRadius": {
+                  "description": "The outer radius of the pie slice",
+                  "optional": true,
+                  "defaultValue": 1,
+                  "type": "number"
+                },
+                "cornerRadius": {
+                  "description": "The corner radius of the pie slices corners in pixels",
+                  "optional": true,
+                  "defaultValue": 0,
+                  "type": "number"
+                },
+                "offset": {
+                  "description": "The relative radial offset of the slice",
+                  "optional": true,
+                  "defaultValue": 0,
+                  "kind": "union",
+                  "union": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "function"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object",
+      "examples": [
+        "{\n  type: 'pie',\n  data: {\n    field: 'Region',\n    props: {\n      arc: { field: 'Population' }\n    }\n  },\n  settings: {\n    startAngle: Math.PI / 2,\n    endAngle: -Math.PI / 2,\n    slice: {\n      fill: 'green',\n      stroke: 'red',\n      strokeWidth: 2,\n      innerRadius: 0.6,\n      outerRadius 0.8,\n      opacity: 0.8,\n      offset: function(v) {\n        return ix === 1 ? 0.3 : 0;\n      }\n    }\n  }\n}"
+      ]
+    },
+    "datum-config": {
+      "kind": "struct",
+      "entries": {
+        "scale": {
+          "optional": true,
+          "type": "string"
+        },
+        "fn": {
+          "type": "datum-accessor"
+        },
+        "ref": {
+          "description": "A reference to a datum-extract property",
+          "type": "string"
+        }
+      },
+      "type": "object",
+      "definitions": {
+        "datum-accessor": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "d",
+              "type": "datum-extract"
+            }
+          ]
+        }
+      }
+    },
+    "datum-string": {
+      "kind": "union",
+      "union": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "datum-config"
+        },
+        {
+          "type": "datum-accessor"
+        }
+      ]
+    },
+    "datum-number": {
+      "kind": "union",
+      "union": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "datum-config"
+        },
+        {
+          "type": "datum-accessor"
+        }
+      ]
+    },
+    "component--range": {
+      "kind": "struct",
+      "entries": {
+        "settings": {
+          "kind": "struct",
+          "entries": {
+            "brush": {
+              "description": "Name of brush instance",
+              "type": "string"
+            },
+            "scale": {
+              "description": "Name of a scale",
+              "type": "string"
+            },
+            "direction": {
+              "description": "Direction of the brush",
+              "optional": true,
+              "defaultValue": "'horizontal'",
+              "type": "string"
+            },
+            "fill": {
+              "description": "Fill color",
+              "optional": true,
+              "defaultValue": "'#ccc'",
+              "type": "string"
+            },
+            "opacity": {
+              "description": "Layer opacity",
+              "optional": true,
+              "defaultValue": 1,
+              "type": "number"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "component--ref-line": {
+      "kind": "struct",
+      "entries": {
+        "style": {
+          "kind": "struct",
+          "entries": {
+            "oob": {
+              "kind": "struct",
+              "entries": {
+                "show": {
+                  "description": "Show out of bounds items",
+                  "optional": true,
+                  "defaultValue": true,
+                  "type": "boolean"
+                },
+                "type": {
+                  "description": "EXPERIMENTAL:  Set this to 'arc' for an experimental out of bounds shape (only works with SVG)",
+                  "optional": true,
+                  "type": "string"
+                },
+                "width": {
+                  "description": "Width of the out of bounds object",
+                  "optional": true,
+                  "defaultValue": 10,
+                  "type": "number"
+                },
+                "fill": {
+                  "description": "Fill color of the OOB object",
+                  "optional": true,
+                  "defaultValue": "'#1A1A1A'",
+                  "type": "string"
+                },
+                "stroke": {
+                  "description": "Stroke of the OOB object",
+                  "optional": true,
+                  "defaultValue": "'transparent'",
+                  "type": "string"
+                },
+                "strokeWidth": {
+                  "description": "Stroke width of the OOB object",
+                  "optional": true,
+                  "defaultValue": 0,
+                  "type": "number"
+                },
+                "opacity": {
+                  "description": "Opacity of the OOB object",
+                  "optional": true,
+                  "defaultValue": 1,
+                  "type": "number"
+                },
+                "text": {
+                  "description": "Text configuration for out of bounds",
+                  "optional": true,
+                  "defaultValue": "refline-generic-text",
+                  "type": "refline-generic-text"
+                },
+                "triangle": {
+                  "description": "The triangle in OOB",
+                  "optional": true,
+                  "defaultValue": "refline-generic-object",
+                  "type": "refline-generic-object"
+                },
+                "padding": {
+                  "description": "Padding on X",
+                  "optional": true,
+                  "type": "object",
+                  "kind": "struct",
+                  "entries": {
+                    "x": {
+                      "description": "Padding on X",
+                      "optional": true,
+                      "defaultValue": 28,
+                      "type": "number"
+                    },
+                    "y": {
+                      "description": "Padding on X",
+                      "optional": true,
+                      "defaultValue": 5,
+                      "type": "number"
+                    }
+                  }
+                }
+              },
+              "type": "object"
+            },
+            "line": {
+              "description": "Generic style for lines",
+              "optional": true,
+              "defaultValue": "refline-line",
+              "type": "refline-line"
+            },
+            "label": {
+              "description": "Generic style for labels",
+              "optional": true,
+              "defaultValue": "refline-line-label",
+              "type": "refline-line-label"
+            }
+          },
+          "type": "object"
+        },
+        "lines": {
+          "description": "X & Y Lines",
+          "type": "object",
+          "kind": "struct",
+          "entries": {
+            "x": {
+              "description": "lines along X",
+              "optional": true,
+              "defaultValue": "refline-line[]",
+              "kind": "array",
+              "items": {
+                "type": "reflines-x"
+              }
+            },
+            "y": {
+              "description": "lines along Y",
+              "optional": true,
+              "defaultValue": "refline-line[]",
+              "kind": "array",
+              "items": {
+                "type": "reflines-y"
+              }
+            }
+          }
+        },
+        "generic-text": {
+          "kind": "struct",
+          "entries": {
+            "text": {
+              "description": "Text (if applicable)",
+              "optional": true,
+              "defaultValue": "''",
+              "type": "string"
+            },
+            "fontSize": {
+              "description": "Font size (if applicable)",
+              "optional": true,
+              "defaultValue": "'12px'",
+              "type": "string"
+            },
+            "fontFamily": {
+              "description": "Font family",
+              "optional": true,
+              "defaultValue": "'Arial'",
+              "type": "string"
+            },
+            "fill": {
+              "description": "Fill color",
+              "optional": true,
+              "defaultValue": "'#fff'",
+              "type": "string"
+            },
+            "stroke": {
+              "description": "Stroke",
+              "optional": true,
+              "defaultValue": "'transparent'",
+              "type": "string"
+            },
+            "strokeWidth": {
+              "description": "Stroke width",
+              "optional": true,
+              "defaultValue": 0,
+              "type": "number"
+            },
+            "opacity": {
+              "description": "Opacity",
+              "optional": true,
+              "defaultValue": 1,
+              "type": "number"
+            }
+          },
+          "type": "object"
+        },
+        "line": {
+          "kind": "struct",
+          "entries": {
+            "value": {
+              "description": "The value of the reference line. If a scale is specified, it is applied.",
+              "type": "number"
+            },
+            "scale": {
+              "description": "Scale to use (if undefined will use normalized value 0-1)",
+              "optional": true,
+              "type": "Scale"
+            },
+            "line": {
+              "description": "The style of the line",
+              "optional": true,
+              "defaultValue": "refline-generic-object",
+              "type": "refline-generic-object"
+            },
+            "label": {
+              "description": "The label style of the line",
+              "optional": true,
+              "defaultValue": "refline-line-label",
+              "type": "refline-line-label"
+            }
+          },
+          "type": "object"
+        },
+        "line-label": {
+          "kind": "struct",
+          "entries": {
+            "padding": {
+              "description": "Padding inside the label",
+              "defaultValue": 5,
+              "type": "number"
+            },
+            "text": {
+              "description": "Text",
+              "optional": true,
+              "defaultValue": "''",
+              "type": "string"
+            },
+            "fontSize": {
+              "description": "Font size",
+              "optional": true,
+              "defaultValue": "'12px'",
+              "type": "string"
+            },
+            "fontFamily": {
+              "description": "Font family",
+              "optional": true,
+              "defaultValue": "'Arial'",
+              "type": "string"
+            },
+            "stroke": {
+              "description": "Stroke",
+              "optional": true,
+              "defaultValue": "'transparent'",
+              "type": "string"
+            },
+            "strokeWidth": {
+              "description": "Stroke width",
+              "optional": true,
+              "defaultValue": 0,
+              "type": "number"
+            },
+            "opacity": {
+              "description": "Opacity",
+              "optional": true,
+              "defaultValue": 1,
+              "type": "number"
+            },
+            "align": {
+              "description": "Alignment property left to right (0 = left, 1 = right). Also supports string ('left', 'center', 'middle', 'right')",
+              "optional": true,
+              "defaultValue": 0,
+              "kind": "union",
+              "union": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "vAlign": {
+              "description": "Alignment property top to bottom (0 = top, 1 = bottom). Also supports string ('top', 'center', 'middle', 'bottom')",
+              "optional": true,
+              "defaultValue": 0,
+              "kind": "union",
+              "union": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "maxWidth": {
+              "description": "The maximum relative width to the width of the rendering area (see maxWidthPx below aswell)",
+              "optional": true,
+              "defaultValue": 1,
+              "type": "number"
+            },
+            "maxWidthPx": {
+              "description": "The maximum width in pixels.",
+              "optional": true,
+              "defaultValue": 9999,
+              "type": "number"
+            },
+            "background": {
+              "description": "The background style (rect behind text)",
+              "optional": true,
+              "defaultValue": "refline-line-label-background",
+              "type": "refline-line-label-background"
+            }
+          },
+          "type": "object"
+        },
+        "line-label-background": {
+          "kind": "struct",
+          "entries": {
+            "fill": {
+              "description": "Fill color",
+              "optional": true,
+              "defaultValue": "'#fff'",
+              "type": "string"
+            },
+            "stroke": {
+              "description": "Stroke",
+              "optional": true,
+              "defaultValue": "'transparent'",
+              "type": "string"
+            },
+            "strokeWidth": {
+              "description": "Stroke width",
+              "optional": true,
+              "defaultValue": 0,
+              "type": "number"
+            },
+            "opacity": {
+              "description": "Opacity",
+              "optional": true,
+              "defaultValue": 0.5,
+              "type": "number"
+            }
+          },
+          "type": "object"
+        },
+        "generic-object": {
+          "kind": "struct",
+          "entries": {
+            "fill": {
+              "description": "Fill color",
+              "optional": true,
+              "defaultValue": "'#fff'",
+              "type": "string"
+            },
+            "stroke": {
+              "description": "Stroke",
+              "optional": true,
+              "defaultValue": "'transparent'",
+              "type": "string"
+            },
+            "strokeWidth": {
+              "description": "Stroke width",
+              "optional": true,
+              "defaultValue": 0,
+              "type": "number"
+            },
+            "opacity": {
+              "description": "Opacity",
+              "optional": true,
+              "defaultValue": 1,
+              "type": "number"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "component--scrollbar": {
+      "kind": "struct",
+      "entries": {
+        "settings": {
+          "kind": "struct",
+          "entries": {
+            "backgroundColor": {
+              "optional": true,
+              "defaultValue": "'#eee'",
+              "type": "boolean"
+            },
+            "thumbColor": {
+              "optional": true,
+              "defaultValue": "'#ccc'",
+              "type": "boolean"
+            },
+            "width": {
+              "optional": true,
+              "defaultValue": 16,
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "component--text": {
+      "kind": "struct",
+      "entries": {
+        "type": {
+          "optional": true,
+          "defaultValue": "'text'",
+          "type": "string"
+        },
+        "text": {
+          "kind": "union",
+          "union": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "function"
+            }
+          ]
+        },
+        "settings": {
+          "kind": "struct",
+          "entries": {
+            "paddingStart": {
+              "optional": true,
+              "defaultValue": 5,
+              "type": "number"
+            },
+            "paddingEnd": {
+              "optional": true,
+              "defaultValue": 5,
+              "type": "number"
+            },
+            "paddingLeft": {
+              "optional": true,
+              "defaultValue": 0,
+              "type": "number"
+            },
+            "paddingRight": {
+              "optional": true,
+              "defaultValue": 0,
+              "type": "number"
+            },
+            "anchor": {
+              "description": "Where to v- or h-align the text. Supports `left`, `right`, `top`, `bottom` and `center`",
+              "optional": true,
+              "defaultValue": "'center'",
+              "type": "string"
+            },
+            "join": {
+              "description": "String to add when joining titles from multiple sources",
+              "optional": true,
+              "defaultValue": "', '",
+              "type": "string"
+            },
+            "maxLengthPx": {
+              "description": "Limit the text length to this value in pixels",
+              "optional": true,
+              "type": "number"
+            },
+            "style": {
+              "description": "Style properties for the text",
+              "optional": true,
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "fontSize": {
+                  "optional": true,
+                  "type": "string"
+                },
+                "fontFamily": {
+                  "optional": true,
+                  "type": "string"
+                },
+                "fill": {
+                  "optional": true,
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object",
+      "examples": [
+        "{\n type: 'text',\n text: 'my title',\n dock: 'left',\n settings: {\n   anchor: 'left',\n   style: {\n     fill: 'red'\n   }\n }\n}"
+      ]
+    },
+    "component-settings": {
+      "description": "Will also include component specific settings depending on type\n             ex: [marker-point-settings](./markers.md#marker-point-settings),\n                 [marker-box-settings](./markers.md#marker-box-settings),\n                 [axis-settings](./axis.md#axis-settings),",
+      "kind": "struct",
+      "entries": {
+        "type": {
+          "description": "Component type (ex: axis, point-marker, ...)",
+          "type": "string"
+        },
+        "preferredSize": {
+          "description": "Function returing preferred size",
+          "optional": true,
+          "type": "function"
+        },
+        "created": {
+          "optional": true,
+          "type": "function"
+        },
+        "beforeMount": {
+          "optional": true,
+          "type": "function"
+        },
+        "mounted": {
+          "optional": true,
+          "type": "function"
+        },
+        "beforeUpdate": {
+          "optional": true,
+          "type": "function"
+        },
+        "updated": {
+          "optional": true,
+          "type": "function"
+        },
+        "beforeRender": {
+          "optional": true,
+          "type": "function"
+        },
+        "beforeDestroy": {
+          "optional": true,
+          "type": "function"
+        },
+        "destroyed": {
+          "optional": true,
+          "type": "function"
+        },
+        "brush": {
+          "description": "see [brushing](./brushing.md)",
+          "optional": true,
+          "type": "brush-setting"
+        },
+        "displayOrder": {
+          "optional": true,
+          "defaultValue": 0,
+          "type": "number"
+        },
+        "prioOrder": {
+          "optional": true,
+          "defaultValue": 0,
+          "type": "number"
+        },
+        "show": {
+          "description": "If the component should be rendered",
+          "optional": true,
+          "defaultValue": true,
+          "type": "boolean"
+        },
+        "minimumLayoutMode": {
+          "description": "Refer to layout sizes defined by layoutModes in dockLayout",
+          "optional": true,
+          "kind": "union",
+          "union": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "Object"
+            }
+          ]
+        },
+        "dock": {
+          "description": "left, right, top or bottom",
+          "optional": true,
+          "type": "string"
+        },
+        "scale": {
+          "description": "Named scale. Will be provided to the component if it ask for it.",
+          "optional": true,
+          "type": "string"
+        },
+        "formatter": {
+          "description": "Named formatter. Fallback to create formatter from scale. Will be provided to the component if it ask for it.",
+          "optional": true,
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "dock-layout-settings": {
+      "kind": "struct",
+      "entries": {
+        "size": {
+          "description": "Phyiscal size. Default to size of the container",
+          "optional": true,
+          "type": "object",
+          "kind": "struct",
+          "entries": {
+            "width": {
+              "optional": true,
+              "type": "number"
+            },
+            "height": {
+              "optional": true,
+              "type": "number"
+            }
+          }
+        },
+        "logicalSize": {
+          "description": "Logical size represent the size given to the dock layout to work with.",
+          "optional": true,
+          "type": "object",
+          "kind": "struct",
+          "entries": {
+            "width": {
+              "optional": true,
+              "type": "number"
+            },
+            "height": {
+              "optional": true,
+              "type": "number"
+            },
+            "preserveAspectRatio": {
+              "optional": true,
+              "defaultValue": false,
+              "type": "boolean"
+            }
+          }
+        },
+        "layoutModes": {
+          "description": "Dictionary with named sizes",
+          "optional": true,
+          "defaultValue": "{}",
+          "type": "Object<string, {width: number, height: number}>"
+        }
+      },
+      "type": "object"
+    },
+    "chart-definition": {
+      "kind": "struct",
+      "entries": {
+        "element": {
+          "type": "HTMLElement"
+        },
+        "data": {
+          "kind": "array",
+          "items": {
+            "type": "data-source"
+          }
+        },
+        "settings": {
+          "type": "chart-settings"
+        }
+      },
+      "type": "object"
+    },
+    "chart": {
+      "kind": "object",
+      "entries": {
+        "update": {
+          "description": "Update the chart with new settings and / or data",
+          "kind": "function",
+          "params": [
+            {
+              "name": "chart",
+              "description": "Chart definition",
+              "optional": true,
+              "type": "chart-definition"
+            }
+          ]
+        },
+        "destroy": {
+          "description": "Destroy the chart instance.",
+          "kind": "function",
+          "params": []
+        },
+        "getAffectedShapes": {
+          "description": "Get all shapes associated with the provided context",
+          "kind": "function",
+          "params": [
+            {
+              "name": "context",
+              "description": "The brush context",
+              "type": "string"
+            },
+            {
+              "name": "mode",
+              "description": "Property comparasion mode.",
+              "type": "string"
+            },
+            {
+              "name": "props",
+              "description": "Which specific data properties to compare",
+              "kind": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "key",
+              "description": "Which component to get shapes from. Default gives shapes from all components.",
+              "type": "string"
+            }
+          ],
+          "returns": {
+            "description": "Array of objects containing shape and parent element",
+            "kind": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "findShapes": {
+          "description": "Get all nodes matching the provided selector",
+          "kind": "function",
+          "params": [
+            {
+              "name": "selector",
+              "description": "CSS selector [type, attribute, universal, class]",
+              "type": "string"
+            }
+          ],
+          "returns": {
+            "description": "Array of objects containing matching nodes",
+            "kind": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "examples": [
+            "chart.findShapes('Circle') // [<CircleNode>, <CircleNode>]\nchart.findShapes('Circle[fill=\"red\"][stroke!=\"black\"]') // [CircleNode, CircleNode]\nchart.findShapes('Container Rect') // [Rect, Rect]"
+          ]
+        },
+        "componentsFromPoint": {
+          "description": "Get components overlapping a point.",
+          "kind": "function",
+          "params": [
+            {
+              "name": "p",
+              "description": "Point with x- and y-cooridnate. The coordinate is relative to the browser viewport.",
+              "type": "object"
+            }
+          ],
+          "returns": {
+            "description": "Array of component contexts",
+            "kind": "array",
+            "items": {
+              "type": "component-context"
+            }
+          }
+        },
+        "shapesAt": {
+          "description": "Get all nodes colliding with a geometrical shape (circle, line, rectangle, point, polygon).\n\nThe input shape is identified based on the geometrical attributes in the following order: circle => line => rectangle => point => polygon.\nNote that not all nodes on a scene have collision detection enabled.",
+          "kind": "function",
+          "params": [
+            {
+              "name": "shape",
+              "description": "A geometrical shape. Coordinates are relative to the top-left corner of the chart instance container.",
+              "type": "object"
+            },
+            {
+              "name": "opts",
+              "description": "Options",
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "components": {
+                  "description": "Array of components to include in the lookup. If no components are specified, all components will be included.",
+                  "optional": true,
+                  "kind": "array",
+                  "items": {
+                    "type": "object"
+                  },
+                  "entries": {
+                    "component": {
+                      "kind": "struct",
+                      "entries": {
+                        "key": {
+                          "description": "Component key",
+                          "optional": true,
+                          "type": "string"
+                        },
+                        "propagation": {
+                          "description": "if set to `stop`, will start lookup on top visible shape and propagate downwards until a shape is found.",
+                          "optional": true,
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "propagation": {
+                  "description": "if set to `stop`, will start lookup on top visible component and propagate downwards until a component has at least a match.",
+                  "optional": true,
+                  "type": "string"
+                }
+              }
+            }
+          ],
+          "returns": {
+            "description": "Array of objects containing colliding nodes",
+            "kind": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "examples": [
+            "chart.shapesAt(\n {\n   x: 0,\n   y: 0,\n   width: 100,\n   height: 100\n },\n {\n   components: [\n     { key: 'key1', propagation: 'stop' },\n     { key: 'key2' }\n   ],\n   propagation: 'stop'\n }\n);"
+          ]
+        },
+        "brushFromShapes": {
+          "description": "Brush data by providing a collection of data bound shapes.",
+          "kind": "function",
+          "params": [
+            {
+              "name": "shapes",
+              "description": "An array of data bound shapes.",
+              "kind": "array",
+              "items": {
+                "type": "Array"
+              }
+            },
+            {
+              "name": "config",
+              "description": "Options",
+              "type": "object"
+            }
+          ],
+          "examples": [
+            "const shapes = chartInstance.shapesAt(...);\nconst config = {\n components:[\n   {\n     key: 'key1',\n     contexts: ['myContext'],\n     data: [''],\n     action: 'add'\n   }\n ]\n};\nchartInstance.brushFromShapes(shapes, config);"
+          ]
+        },
+        "scroll": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "name",
+              "description": "Name of scroll api",
+              "type": "string"
+            }
+          ],
+          "returns": {
+            "type": "scroll"
+          }
+        },
+        "dataset": {
+          "description": "Get",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "Get the dataset identified by `key`",
+              "type": "string"
+            }
+          ],
+          "returns": {
+            "type": "dataset"
+          }
+        },
+        "scales": {
+          "description": "Get the all registered scales",
+          "kind": "function",
+          "params": [],
+          "returns": {
+            "description": "Array of scales",
+            "kind": "array",
+            "items": {
+              "type": "scale"
+            }
+          }
+        },
+        "formatters": {
+          "description": "Get the all registered formatters",
+          "kind": "function",
+          "params": [],
+          "returns": {
+            "description": "Array of formatters",
+            "kind": "array",
+            "items": {
+              "type": "formatter"
+            }
+          }
+        },
+        "brush": {
+          "description": "Get or create brush context for this chart",
+          "kind": "function",
+          "params": [
+            {
+              "name": "name",
+              "description": "Name of the brush context. If no match is found, a new brush context is created and returned.",
+              "type": "string"
+            }
+          ],
+          "returns": {
+            "type": "brush"
+          }
+        },
+        "scale": {
+          "description": "Get or create a scale for this chart",
+          "kind": "function",
+          "params": [
+            {
+              "name": "v",
+              "description": "Scale reference or scale options",
+              "kind": "union",
+              "union": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "object"
+                }
+              ]
+            }
+          ],
+          "returns": {
+            "type": "scale"
+          },
+          "examples": [
+            "instance.scale('nameOfMyScale'); // Fetch an existing scale by name\ninstance.scale({ scale: 'nameOfMyScale' }); // Fetch an existing scale by name\ninstance.scale({ source: '0/1', type: 'linear' }); // Create a new scale"
+          ]
+        },
+        "formatter": {
+          "description": "Get or create a formatter for this chart",
+          "kind": "function",
+          "params": [
+            {
+              "name": "v",
+              "description": "Formatter reference or formatter options",
+              "kind": "union",
+              "union": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "object"
+                }
+              ]
+            }
+          ],
+          "returns": {
+            "type": "formatter"
+          },
+          "examples": [
+            "instance.formatter('nameOfMyFormatter'); // Fetch an existing formatter by name\ninstance.formatter({ formatter: 'nameOfMyFormatter' }); // Fetch an existing formatter by name\ninstance.formatter({ type: 'q' }); // Fetch an existing formatter by type\ninstance.formatter({\n formatter: 'd3',\n type: 'number',\n format: '1.0.%'\n}); // Create a new formatter"
+          ]
+        },
+        "toggleBrushing": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "val",
+              "description": "Toggle brushing on or off. If value is omitted, a toggle action is applied to the current state.",
+              "optional": true,
+              "type": "boolean"
+            }
+          ]
+        },
+        "component": {
+          "description": "Get a component context",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "Component key",
+              "type": "string"
+            }
+          ],
+          "returns": {
+            "description": "Component context",
+            "type": "component-context"
+          }
+        },
+        "interactions": {
+          "description": "Get the all interactions instances",
+          "kind": "object",
+          "entries": {
+            "instances": {
+              "kind": "array",
+              "items": {
+                "type": "interaction"
+              }
+            },
+            "on": {
+              "description": "Enable all interaction instances",
+              "kind": "function",
+              "params": []
+            },
+            "off": {
+              "description": "Disable all interaction instances",
+              "kind": "function",
+              "params": []
+            }
+          },
+          "examples": [
+            "chart.interactions.instances; // Array of all interaction instances\nchart.interactions.on(); // Toggle on all interactions instances\nchart.interactions.off(); // Toggle off all interactions instances"
+          ]
+        }
+      }
+    },
+    "scale--linear": {
+      "kind": "struct",
+      "entries": {
+        "expand": {
+          "description": "Expand the output range",
+          "optional": true,
+          "type": "number"
+        },
+        "invert": {
+          "description": "Invert the output range",
+          "optional": true,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "include": {
+          "description": "Include specified numbers in the output range",
+          "optional": true,
+          "kind": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "ticks": {
+          "optional": true,
+          "type": "object",
+          "kind": "struct",
+          "entries": {
+            "tight": {
+              "optional": true,
+              "defaultValue": false,
+              "type": "boolean"
+            },
+            "forceBounds": {
+              "optional": true,
+              "defaultValue": false,
+              "type": "boolean"
+            },
+            "distance": {
+              "description": "Approximate distance between each tick",
+              "optional": true,
+              "defaultValue": 100,
+              "type": "number"
+            },
+            "values": {
+              "description": "If set, ticks are no longer generated but instead equal to this set",
+              "optional": true,
+              "kind": "union",
+              "union": [
+                {
+                  "type": "Array<number>"
+                },
+                {
+                  "type": "Array<object>"
+                }
+              ]
+            },
+            "count": {
+              "optional": true,
+              "type": "number"
+            }
+          }
+        },
+        "minorTicks": {
+          "optional": true,
+          "type": "object",
+          "kind": "struct",
+          "entries": {
+            "count": {
+              "optional": true,
+              "defaultValue": 3,
+              "type": "number"
+            }
+          }
+        }
+      },
+      "type": "object"
+    },
+    "scroll": {
+      "description": "The scroll api",
+      "kind": "object",
+      "entries": {
+        "move": {
+          "description": "Move the current scroll",
+          "kind": "function",
+          "params": [
+            {
+              "name": "value",
+              "type": "number"
+            }
+          ],
+          "emits": [
+            {
+              "type": "event:update"
+            }
+          ]
+        },
+        "moveTo": {
+          "description": "Change the current scroll to a specific value",
+          "kind": "function",
+          "params": [
+            {
+              "name": "value",
+              "type": "number"
+            }
+          ],
+          "emits": [
+            {
+              "type": "event:update"
+            }
+          ]
+        },
+        "update": {
+          "description": "Update scroll settings",
+          "kind": "function",
+          "params": [],
+          "emits": [
+            {
+              "type": "event:update"
+            }
+          ]
+        },
+        "getState": {
+          "description": "Get the current scroll state",
+          "kind": "function",
+          "params": [],
+          "returns": {
+            "description": "with min, max, start & viewSize",
+            "type": "object"
+          }
+        }
+      }
+    },
+    "pic~regis.component": {
+      "description": "Component registry",
+      "type": "registry"
+    },
+    "pic~regis.data": {
+      "description": "Data registry",
+      "type": "registry"
+    },
+    "pic~regis.formatter": {
+      "description": "Formatter registry",
+      "type": "registry"
+    },
+    "pic~regis.interaction": {
+      "description": "Interaction registry",
+      "type": "registry"
+    },
+    "pic~regis.renderer": {
+      "description": "Renderer registry",
+      "type": "registry"
+    },
+    "pic~regis.scale": {
+      "description": "Scale registry",
+      "type": "registry"
+    },
+    "picassojs": {
+      "description": "picasso.js entry point",
+      "stability": 1,
+      "kind": "function",
+      "params": [
+        {
+          "name": "cfg",
+          "type": "object",
+          "kind": "struct",
+          "entries": {
+            "renderer": {
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "prio": {
+                  "kind": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "logger": {
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "level": {
+                  "type": "number"
+                }
+              }
+            },
+            "style": {
+              "type": "object"
+            },
+            "palettes": {
+              "kind": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ],
+      "returns": {
+        "type": "picassojs"
+      },
+      "entries": {
+        "use": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "plugin",
+              "type": "fnPlug"
+            },
+            {
+              "name": "options",
+              "type": "object"
+            }
+          ]
+        },
+        "chart": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "definition",
+              "type": "chart-definition"
+            }
+          ],
+          "returns": {
+            "type": "chart"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "brush": {
+      "description": "A brush context",
+      "kind": "object",
+      "entries": {
+        "start": {
+          "description": "Starts this brush context\n\nStarts this brush context and emits a 'start' event if it is not already started.",
+          "kind": "function",
+          "params": [],
+          "emits": [
+            {
+              "type": "brush#event:start"
+            }
+          ]
+        },
+        "end": {
+          "description": "Ends this brush context\n\nEnds this brush context and emits an 'end' event if it is not already ended.",
+          "kind": "function",
+          "params": [],
+          "emits": [
+            {
+              "type": "brush#event:start"
+            }
+          ]
+        },
+        "isActive": {
+          "description": "Checks if this brush is activated\n\nReturns true if started, false otherwise",
+          "kind": "function",
+          "params": [],
+          "returns": {
+            "type": "boolean"
+          }
+        },
+        "clear": {
+          "description": "Clears this brush context",
+          "kind": "function",
+          "params": []
+        },
+        "brushes": {
+          "description": "Returns all brushes within this context",
+          "kind": "function",
+          "params": [],
+          "returns": {
+            "type": "object"
+          }
+        },
+        "addValue": {
+          "description": "Adds a primitive value to this brush context\n\nIf this brush context is not started, a 'start' event is emitted.\nIf the state of the brush changes, ie. if the added value does not already exist, an 'update' event is emitted.",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "An identifier that represents the data source of the value",
+              "type": "string"
+            },
+            {
+              "name": "value",
+              "description": "The value to add",
+              "kind": "union",
+              "union": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            }
+          ],
+          "emits": [
+            {
+              "type": "brush#event:start"
+            },
+            {
+              "type": "brush#event:update"
+            }
+          ],
+          "examples": [
+            "brush.addValue('countries', 'Sweden');\nbrush.addValue('/qHyperCube/qDimensionInfo/0', 3);"
+          ]
+        },
+        "addValues": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "items",
+              "description": "Items to add",
+              "kind": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          ]
+        },
+        "setValues": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "items",
+              "description": "Items to set",
+              "kind": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          ]
+        },
+        "removeValue": {
+          "description": "Removes a primitive values from this brush context\n\nIf the state of the brush changes, ie. if the removed value does exist, an 'update' event is emitted.",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "An identifier that represents the data source of the value",
+              "type": "string"
+            },
+            {
+              "name": "value",
+              "description": "The value to remove",
+              "kind": "union",
+              "union": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            }
+          ],
+          "examples": [
+            "brush.removeValue('countries', 'Sweden');"
+          ]
+        },
+        "removeValues": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "items",
+              "description": "Items to remove",
+              "kind": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          ]
+        },
+        "addAndRemoveValues": {
+          "description": "Add and remove values in a single operation\nalmost the same as calling addValues and removeValues but only triggers one 'update' event\n\nIf the state of the brush changes, an 'update' event is emitted.",
+          "kind": "function",
+          "params": [
+            {
+              "name": "addItems",
+              "description": "Items to add",
+              "kind": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            {
+              "name": "removeItems",
+              "description": "Items to remove",
+              "kind": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          ]
+        },
+        "toggleValue": {
+          "description": "Toggles a primitive value in this brush context\n\nIf the given value exist in this brush context, it will be removed. If it does not exist it will be added.",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "An identifier that represents the data source of the value",
+              "type": "string"
+            },
+            {
+              "name": "value",
+              "description": "The value to toggle",
+              "kind": "union",
+              "union": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            }
+          ],
+          "examples": [
+            "brush.toggleValue('countries', 'Sweden');"
+          ]
+        },
+        "toggleValues": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "items",
+              "description": "Items to toggle",
+              "kind": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          ]
+        },
+        "containsValue": {
+          "description": "Checks if a certain value exists in this brush context\n\nReturns true if the values exists for the provided key, returns false otherwise.",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "An identifier that represents the data source of the value",
+              "type": "string"
+            },
+            {
+              "name": "value",
+              "description": "The value to check for",
+              "kind": "union",
+              "union": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            }
+          ],
+          "returns": {
+            "type": "boolean"
+          },
+          "examples": [
+            "brush.addValue('countries', 'Sweden');\nbrush.containsValue('countries', 'Sweden'); // true\nbrush.toggleValue('countries', 'Sweden'); // remove 'Sweden'\nbrush.containsValue('countries', 'Sweden'); // false"
+          ]
+        },
+        "addRange": {
+          "description": "Adds a numeric range to this brush context",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "An identifier that represents the data source of the range",
+              "type": "string"
+            },
+            {
+              "name": "range",
+              "description": "The range to add to this brush",
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "min": {
+                  "description": "Min value of the range",
+                  "type": "number"
+                },
+                "max": {
+                  "description": "Max value of the range",
+                  "type": "number"
+                }
+              }
+            }
+          ],
+          "examples": [
+            "brush.addRange('Sales', { min: 20, max: 50 });"
+          ]
+        },
+        "addRanges": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "items",
+              "description": "Items containing the ranges to remove",
+              "kind": "array",
+              "items": {
+                "entries": {
+                  "key": {
+                    "type": "string"
+                  },
+                  "range": {
+                    "type": "object"
+                  }
+                },
+                "kind": "struct"
+              }
+            }
+          ]
+        },
+        "removeRange": {
+          "description": "Removes a numeric range from this brush context",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "An identifier that represents the data source of the range",
+              "type": "string"
+            },
+            {
+              "name": "range",
+              "description": "The range to remove from this brush",
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "min": {
+                  "description": "Min value of the range",
+                  "type": "number"
+                },
+                "max": {
+                  "description": "Max value of the range",
+                  "type": "number"
+                }
+              }
+            }
+          ]
+        },
+        "removeRanges": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "items",
+              "description": "Items containing the ranges to remove",
+              "kind": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          ]
+        },
+        "setRange": {
+          "description": "Sets a numeric range to this brush context\n\nOverwrites any active ranges identified by `key`",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "An identifier that represents the data source of the range",
+              "type": "string"
+            },
+            {
+              "name": "range",
+              "description": "The range to set on this brush",
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "min": {
+                  "description": "Min value of the range",
+                  "type": "number"
+                },
+                "max": {
+                  "description": "Max value of the range",
+                  "type": "number"
+                }
+              }
+            }
+          ]
+        },
+        "setRanges": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "items",
+              "description": "Items containing the ranges to set",
+              "kind": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          ]
+        },
+        "toggleRange": {
+          "description": "Toggles a numeric range in this brush context\n\nRemoves the range if it's already contained within the given identifier,\notherwise the given range is added to the brush.",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "An identifier that represents the data source of the range",
+              "type": "string"
+            },
+            {
+              "name": "range",
+              "description": "The range to toggle in this brush",
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "min": {
+                  "description": "Min value of the range",
+                  "type": "number"
+                },
+                "max": {
+                  "description": "Max value of the range",
+                  "type": "number"
+                }
+              }
+            }
+          ]
+        },
+        "toggleRanges": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "items",
+              "description": "Items containing the ranges to toggle",
+              "kind": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          ]
+        },
+        "containsRangeValue": {
+          "description": "Checks if a value is contained within a range in this brush context\n\nReturns true if the values exists for the provided key, returns false otherwise.",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "An identifier that represents the data source of the value",
+              "type": "string"
+            },
+            {
+              "name": "value",
+              "description": "The value to check for",
+              "type": "number"
+            }
+          ],
+          "returns": {
+            "type": "boolean"
+          },
+          "examples": [
+            "brush.addRange('Sales', { min: 10, max: 50 });\nbrush.containsRangeValue('Sales', 30); // true\nbrush.containsRangeValue('Sales', 5); // false"
+          ]
+        },
+        "containsRange": {
+          "description": "Checks if a range segment is contained within this brush context\n\nReturns true if the range segment exists for the provided key, returns false otherwise.",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "An identifier that represents the data source of the value",
+              "type": "string"
+            },
+            {
+              "name": "range",
+              "description": "The range to check for",
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "min": {
+                  "description": "Min value of the range",
+                  "type": "number"
+                },
+                "max": {
+                  "description": "Max value of the range",
+                  "type": "number"
+                }
+              }
+            }
+          ],
+          "returns": {
+            "type": "boolean"
+          },
+          "examples": [
+            "brush.addRange('Sales', { min: 10, max: 50 });\nbrush.containsRange('Sales', { min: 15, max: 20 }); // true - the range segment is fully contained within [10, 50]\nbrush.containsRange('Sales', { min: 5, max: 20 }); // false - part of the range segment is outside [10, 50]\nbrush.containsRange('Sales', { min: 30, max: 80 }); // false - part of the range segment is outside [10, 50]"
+          ]
+        },
+        "intercept": {
+          "description": "Adds an event interceptor",
+          "kind": "function",
+          "params": [
+            {
+              "name": "name",
+              "description": "Name of the event to intercept",
+              "type": "string"
+            },
+            {
+              "name": "ic",
+              "description": "Handler to call before event is triggered",
+              "type": "function"
+            }
+          ],
+          "examples": [
+            "brush.intercept('add-values', items => {\n console.log('about to add the following items', items);\n return items;\n});"
+          ]
+        },
+        "removeInterceptor": {
+          "description": "Removes an interceptor",
+          "kind": "function",
+          "params": [
+            {
+              "name": "name",
+              "description": "Name of the event to intercept",
+              "type": "string"
+            },
+            {
+              "name": "ic",
+              "description": "Handler to remove",
+              "type": "function"
+            }
+          ]
+        },
+        "removeAllInterceptors": {
+          "description": "Removes all interceptors",
+          "kind": "function",
+          "params": [
+            {
+              "name": "name",
+              "description": "Name of the event to remove interceptors for. If not provided, removes all interceptors.",
+              "optional": true,
+              "type": "string"
+            }
+          ]
+        },
+        "addKeyAlias": {
+          "description": "Adds an alias to the given key",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "Value to be replaced",
+              "type": "string"
+            },
+            {
+              "name": "alias",
+              "description": "Value to replace key with",
+              "type": "string"
+            }
+          ],
+          "examples": [
+            "brush.addKeyAlias('BadFieldName', 'Region');\nbrush.addValue('BadFieldName', 'Sweden'); // 'BadFieldName' will be stored as 'Region'\nbrush.containsValue('Region', 'Sweden'); // true\nbrush.containsValue('BadFieldName', 'Sweden'); // true"
+          ]
+        },
+        "removeKeyAlias": {
+          "description": "Removes an alias\n\nThis will only remove the key to alias mapping for new manipulations of the brush,\nno changes will be made to the current state of this brush.",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "Value to remove as alias",
+              "type": "string"
+            }
+          ],
+          "examples": [
+            "brush.removeKeyAlias('BadFieldName');"
+          ]
+        }
+      },
+      "events": {
+        "start": {
+          "description": "Triggered when this brush is activated",
+          "kind": "event",
+          "params": []
+        },
+        "update": {
+          "description": "Triggered when this brush is updated",
+          "kind": "event",
+          "params": [
+            {
+              "name": "added",
+              "description": "The added items",
+              "kind": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            {
+              "name": "removed",
+              "description": "The removed items",
+              "kind": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          ]
+        },
+        "end": {
+          "description": "Triggered when this brush is deactivated",
+          "kind": "event",
+          "params": []
+        }
+      }
+    },
+    "component--line": {
+      "kind": "struct",
+      "entries": {
+        "type": {
+          "defaultValue": "line",
+          "type": "string"
+        },
+        "settings": {
+          "kind": "struct",
+          "entries": {
+            "coordinates": {
+              "kind": "struct",
+              "entries": {
+                "minor": {
+                  "defaultValue": 0.5,
+                  "type": "number"
+                },
+                "major": {
+                  "defaultValue": 0.5,
+                  "type": "number"
+                },
+                "layerId": {
+                  "defaultValue": 0,
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            "orientation": {
+              "defaultValue": "horizontal",
+              "type": "string"
+            },
+            "layers": {
+              "kind": "struct",
+              "entries": {
+                "curve": {
+                  "defaultValue": "linear",
+                  "type": "string"
+                },
+                "show": {
+                  "defaultValue": true,
+                  "type": "boolean"
+                },
+                "line": {
+                  "kind": "struct",
+                  "entries": {
+                    "stroke": {
+                      "defaultValue": "#ccc",
+                      "type": "string"
+                    },
+                    "strokeWidth": {
+                      "defaultValue": 1,
+                      "type": "number"
+                    },
+                    "opacity": {
+                      "defaultValue": 1,
+                      "type": "number"
+                    },
+                    "show": {
+                      "defaultValue": true,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                },
+                "area": {
+                  "kind": "struct",
+                  "entries": {
+                    "fill": {
+                      "defaultValue": "#ccc",
+                      "type": "string"
+                    },
+                    "opacity": {
+                      "defaultValue": 0.8,
+                      "type": "number"
+                    },
+                    "show": {
+                      "defaultValue": true,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "component--point-marker": {
+      "kind": "struct",
+      "entries": {
+        "type": {
+          "defaultValue": "point-marker",
+          "type": "string"
+        },
+        "settings": {
+          "kind": "struct",
+          "entries": {
+            "shape": {
+              "description": "Type of shape",
+              "optional": true,
+              "defaultValue": "circle",
+              "type": "datum-string"
+            },
+            "fill": {
+              "description": "Fill color",
+              "optional": true,
+              "defaultValue": "#333",
+              "type": "datum-string"
+            },
+            "stroke": {
+              "description": "Stroke color",
+              "optional": true,
+              "defaultValue": "#ccc",
+              "type": "datum-string"
+            },
+            "strokeWidth": {
+              "description": "Stroke width",
+              "optional": true,
+              "defaultValue": 0,
+              "type": "datum-number"
+            },
+            "opacity": {
+              "description": "Opacity of shape",
+              "optional": true,
+              "defaultValue": 1,
+              "type": "datum-number"
+            },
+            "x": {
+              "description": "Normalized x coordinate",
+              "optional": true,
+              "defaultValue": 0.5,
+              "type": "datum-number"
+            },
+            "y": {
+              "description": "Normalized y coordinate",
+              "optional": true,
+              "defaultValue": 0.5,
+              "type": "datum-number"
+            },
+            "size": {
+              "description": "Normalized size of shape",
+              "optional": true,
+              "defaultValue": 1,
+              "type": "datum-number"
+            },
+            "sizeLimits": {
+              "kind": "struct",
+              "entries": {
+                "maxPx": {
+                  "description": "Maximum size of shape, in pixels",
+                  "optional": true,
+                  "defaultValue": 10000,
+                  "type": "number"
+                },
+                "minPx": {
+                  "description": "Minimum size of shape, in pixels",
+                  "optional": true,
+                  "defaultValue": 1,
+                  "type": "number"
+                },
+                "maxRelExtent": {
+                  "description": "Maximum size relative linear scale extent",
+                  "optional": true,
+                  "defaultValue": 0.1,
+                  "type": "number"
+                },
+                "minRelExtent": {
+                  "description": "Minimum size relative linear scale extent",
+                  "optional": true,
+                  "defaultValue": 0.01,
+                  "type": "number"
+                },
+                "maxRelDiscrete": {
+                  "description": "Maximum size relative discrete scale banwidth",
+                  "optional": true,
+                  "defaultValue": 1,
+                  "type": "number"
+                },
+                "minRelDiscrete": {
+                  "description": "Minimum size relative discrete scale banwidth",
+                  "optional": true,
+                  "defaultValue": 0.1,
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "data-source": {
+      "kind": "struct",
+      "entries": {
+        "key": {
+          "description": "Unique identifier for this data source",
+          "type": "string"
+        },
+        "type": {
+          "description": "The dataset type",
+          "type": "string"
+        },
+        "data": {
+          "type": "any"
+        }
+      },
+      "type": "object"
+    },
+    "dataset": {
+      "kind": "object",
+      "entries": {
+        "key": {
+          "description": "Get the key identifying this dataset",
+          "kind": "function",
+          "params": [],
+          "returns": {
+            "type": "string"
+          }
+        },
+        "raw": {
+          "description": "Get the raw data",
+          "kind": "function",
+          "params": [],
+          "returns": {
+            "type": "any"
+          }
+        },
+        "field": {
+          "description": "Find a field within this dataset",
+          "kind": "function",
+          "params": [
+            {
+              "name": "query",
+              "description": "The field to find",
+              "type": "string"
+            }
+          ],
+          "returns": {
+            "type": "field"
+          }
+        },
+        "fields": {
+          "description": "Get all fields within this dataset",
+          "kind": "function",
+          "params": [],
+          "returns": {
+            "kind": "array",
+            "items": {
+              "type": "field"
+            }
+          }
+        },
+        "extract": {
+          "description": "Extract data items from this dataset",
+          "kind": "function",
+          "params": [
+            {
+              "name": "config",
+              "type": "data-extract-config"
+            }
+          ],
+          "returns": {
+            "kind": "array",
+            "items": {
+              "type": "datum-extract"
+            }
+          }
+        },
+        "hierarchy": {
+          "kind": "function",
+          "params": [],
+          "returns": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    "data-extract-config": {
+      "kind": "struct",
+      "entries": {
+        "field": {
+          "description": "The field to extract data from",
+          "type": "string"
+        },
+        "value": {
+          "description": "The field value accessor",
+          "type": "data-extract-config~valueFn"
+        },
+        "props": {
+          "description": "Additional properties to add to the extracted item",
+          "type": "object"
+        }
+      },
+      "type": "object",
+      "definitions": {
+        "valueFn": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "cell",
+              "description": "The field cell",
+              "type": "any"
+            }
+          ]
+        }
+      }
+    },
+    "datum-extract": {
+      "kind": "struct",
+      "entries": {
+        "value": {
+          "description": "The extracted value",
+          "type": "any"
+        },
+        "source": {
+          "description": "The data source of the extracted data",
+          "type": "object",
+          "kind": "struct",
+          "entries": {
+            "key": {
+              "description": "The data-source key",
+              "type": "string"
+            },
+            "field": {
+              "description": "The source field",
+              "type": "string"
+            }
+          }
+        }
+      },
+      "type": "object"
+    },
+    "field": {
+      "kind": "object",
+      "entries": {
+        "id": {
+          "description": "Returns this field's id",
+          "kind": "function",
+          "params": [],
+          "returns": {
+            "type": "string"
+          }
+        },
+        "key": {
+          "description": "Returns this field's key",
+          "kind": "function",
+          "params": [],
+          "returns": {
+            "type": "string"
+          }
+        },
+        "raw": {
+          "description": "Returns the input data",
+          "kind": "function",
+          "params": [],
+          "returns": {
+            "type": "any"
+          }
+        },
+        "tags": {
+          "description": "Returns the tags.",
+          "kind": "function",
+          "params": [],
+          "returns": {
+            "kind": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "type": {
+          "description": "Returns this field's type: 'dimension' or 'measure'.",
+          "kind": "function",
+          "params": [],
+          "returns": {
+            "type": "string"
+          }
+        },
+        "min": {
+          "description": "Returns the min value of this field.",
+          "kind": "function",
+          "params": [],
+          "returns": {
+            "type": "number"
+          }
+        },
+        "max": {
+          "description": "Returns the max value of this field.",
+          "kind": "function",
+          "params": [],
+          "returns": {
+            "type": "number"
+          }
+        },
+        "title": {
+          "description": "Returns this field's title.",
+          "kind": "function",
+          "params": [],
+          "returns": {
+            "type": "string"
+          }
+        },
+        "items": {
+          "description": "Returns the values of this field.",
+          "kind": "function",
+          "params": [],
+          "returns": {
+            "kind": "array",
+            "items": {
+              "type": "datum-extract"
+            }
+          }
+        },
+        "formatter": {
+          "description": "Returns a formatter adapted to the content of this field.",
+          "kind": "function",
+          "params": []
+        }
+      }
+    }
+  }
+}

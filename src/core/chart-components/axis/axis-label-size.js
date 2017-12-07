@@ -27,7 +27,7 @@ function isHorizontalLabelOverlapping({
   rect,
   state
 }) {
-  /**
+  /*
    * Currently isn't any good way of doing a accurate measurement on size available (bandWidth * width) for labels.
    * It's a lifecycle limitation as components docked either left or right can affect the width available after the calculation is done.
    * <number of components docked left/right> * <width of components> => Less accurate ===> Can result in only ellips char rendered as labels.

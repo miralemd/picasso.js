@@ -6,7 +6,7 @@ const LOG_LEVEL = {
   DEBUG: 4
 };
 
-const logger = ({
+const loggerFn = ({
   level = LOG_LEVEL.OFF,
   pipe = console
 } = {}) => {
@@ -26,35 +26,41 @@ const logger = ({
     (LOG_FN[lev] || LOG_FN[LOG_LEVEL.DEBUG])(...args);
   };
 
-  return {
+  /**
+   * @typedef {object} logger
+   * @private
+   */
+
+  return /** @lends logger */ {
     /**
      * Log a message
      * @param {number} lev - The log level
-     * @param {...*} args
+     * @param {...any} args
+     * @kind function
      */
     log,
 
     /**
      * Log an error message
-     * @param {...*} args
+     * @param {...any} args
      */
     error: (...args) => log(LOG_LEVEL.ERROR, ...args),
 
     /**
      * Log a warning message
-     * @param {...*} args
+     * @param {...any} args
      */
     warn: (...args) => log(LOG_LEVEL.WARN, ...args),
 
     /**
      * Log an info message
-     * @param {...*} args
+     * @param {...any} args
      */
     info: (...args) => log(LOG_LEVEL.INFO, ...args),
 
     /**
      * Log a debug message
-     * @param {...*} args
+     * @param {...any} args
      */
     debug: (...args) => log(LOG_LEVEL.DEBUG, ...args),
 
@@ -74,5 +80,5 @@ const logger = ({
 };
 
 export {
-  logger as default
+  loggerFn as default
 };

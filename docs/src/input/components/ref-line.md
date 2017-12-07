@@ -4,5 +4,5 @@ A component that renders reference line(s) according to configuration
 
 ## Component settings
 
-{{>magic ctx='core.chart-components.ref-line.refline-js'}}
+{{>struct entries.component--ref-line}}
 

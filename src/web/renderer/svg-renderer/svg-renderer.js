@@ -125,6 +125,7 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
 
   /**
    * Set or Get the size definition of the renderer container
+   * @private
    * @param {object} [opts] - Size definition
    * @param {number} [opts.x] - x-coordinate
    * @param {number} [opts.y] - y-coordinate
@@ -152,6 +153,7 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
   };
 
   /**
+   * @private
    * @param {object} opts
    * @param {string} opts.text - Text to measure
    * @param {string} opts.fontSize - Font size with a unit definition, ex. 'px' or 'em'
@@ -166,8 +168,9 @@ export default function renderer(treeFn = treeFactory, ns = svgNs, sceneFn = sce
    */
   svg.measureText = ({ text, fontSize, fontFamily }) => measureText({ text, fontSize, fontFamily });
 
-  /**
+/**
  * Calculates the bounding rectangle of a text node. Including any potential line breaks.
+ * @private
  * @param {object} node
  * @param {string} node.text - Text to measure
  * @param {number} [node.x=0] - X-coordinate

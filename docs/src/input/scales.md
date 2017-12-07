@@ -18,7 +18,9 @@ To have a tick representing a range, it is possible to define a set of custom ti
   }
   ```
 
-{{>magic ctx='core.scales.linear-js'}}
+### Settings
+
+{{>struct entries.scale--linear}}
 
 ## Band scale
 

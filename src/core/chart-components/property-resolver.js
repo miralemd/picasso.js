@@ -18,6 +18,28 @@ function isPrimitive(x) {
 }
 
 /**
+ * @callback datum-accessor
+ * @param {datum-extract} d
+ * @definition
+ * @memberof datum-config
+ */
+
+/**
+ * @typedef {object} datum-config
+ * @property {string} [scale]
+ * @property {datum-accessor} fn
+ * @property {string} ref - A reference to a datum-extract property
+ */
+
+/**
+ * @typedef {string|datum-config|datum-accessor} datum-string
+ */
+
+/**
+ * @typedef {number|datum-config|datum-accessor} datum-number
+ */
+
+/**
  * Normalizes property settings
  *
  * @ignore

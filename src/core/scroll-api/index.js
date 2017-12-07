@@ -9,11 +9,9 @@ export default function scrollApi() {
 
   /**
    * The scroll api
-   * @function
-   * @alias scrollApi
+   * @alias scroll
    */
   const s = {
-
     /**
      * Move the current scroll
      * @param {number} value

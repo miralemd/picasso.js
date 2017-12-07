@@ -73,42 +73,46 @@ chartSettings = {
 
 
 ```js
-settings: {
-  fill: 'foo', // Reference to definition of sequential color scale.
-  major: 'foo', // Reference to definition of linear scale.
-  size: 15, // Size in pixels of the legend, if vertical is the width and height otherwise. Default: 15. Optional.
-  length: 1, // A value in the range 0-1 indicating the length of the legend node. Default: 1. Optional.
-  maxLengthPx: 250, // Max length in pixels. Default: 250. Optional.
-  align: 0.5, // A value in the range 0-1 indicating horizontal alignment of the legend's content. 0 aligns to the left, 1 to the right.. Default: 0.5. Optional.
-  justify: 0, // A value in the range 0-1 indicating vertical alignment of the legend's content. 0 aligns to the top, 1 to the bottom.. Default: 0. Optional.
-  padding: { //  Optional.
-    left: 5, //  Default: 5. Optional.
-    right: 5, //  Default: 5. Optional.
-    top: 5, //  Default: 5. Optional.
-    bottom: 5, //  Default: 5. Optional.
-  },
-  tick: { //  Optional.
-    label: () => {}, // Function applied to all tick values, returned values are used as labels. Optional.
-    fill: '#595959', //  Default: '#595959'. Optional.
-    fontSize: '12px', //  Default: '12px'. Optional.
-    fontFamily: 'Arial', //  Default: 'Arial'. Optional.
-    maxLengthPx: 150, // Max length in pixels. Default: 150. Optional.
-    anchor: 'right', // Where to anchor the tick in relation to the legend node, supported values are [top, bottom, left and right]. Default: 'right'. Optional.
-    padding: 5, // padding in pixels to the legend node. Default: 5. Optional.
-  },
-  title: { // Title settings. Optional.
-    show: true, // Toggle title on/off. Default: true. Optional.
-    text: '', // The value of the title. Default: ''. Optional.
-    fill: '#595959', //  Default: '#595959'. Optional.
-    fontSize: '12px', //  Default: '12px'. Optional.
-    fontFamily: 'Arial', //  Default: 'Arial'. Optional.
-    maxLengthPx: 100, // Max length in pixels. Default: 100. Optional.
-    padding: 5, // padding in pixels to the legend node. Default: 5. Optional.
-    anchor: 'top', // Where to anchor the title in relation to the legend node, supported values are [top, left and right]. Default: 'top'. Optional.
-    wordBreak: 'none', // How overflowing title is handled, if it should insert line breaks at word boundries (break-word) or character boundries (break-all). Default: 'none'. Optional.
-    hyphens: 'auto', // How words should be hyphenated when text wraps across multiple lines (only applicable with wordBreak). Default: 'auto'. Optional.
-    maxLines: 2, // Number of allowed lines if title contains line breaks (only applicable with wordBreak). Default: 2. Optional.
-    lineHeight: 1.2, // A multiplier defining the distance between lines (only applicable with wordBreak). Default: 1.2. Optional.
+{
+  settings: { 
+    fill: /* string | object */, 
+    major: /* string | object */, 
+    size: 15, // Size in pixels of the legend, if vertical is the width and height otherwise // Optional
+    length: 1, // A value in the range 0-1 indicating the length of the legend node // Optional
+    maxLengthPx: 250, // Max length in pixels // Optional
+    align: 0.5, // A value in the range 0-1 indicating horizontal alignment of the legend's content. 0 aligns to the left, 1 to the right. // Optional
+    justify: 0, // A value in the range 0-1 indicating vertical alignment of the legend's content. 0 aligns to the top, 1 to the bottom. // Optional
+    padding: {  // Optional
+      left: 5, // Optional
+      right: 5, // Optional
+      top: 5, // Optional
+      bottom: 5, // Optional
+    },
+    tick: {  // Optional
+      label: /* function */, // Function applied to all tick values, returned values are used as labels // Optional
+      fill: '#595959', // Optional
+      fontSize: '12px', // Optional
+      fontFamily: 'Arial', // Optional
+      maxLengthPx: 150, // Max length in pixels // Optional
+      anchor: 'right', // Where to anchor the tick in relation to the legend node, supported values are [top, bottom, left and right] // Optional
+      padding: 5, // padding in pixels to the legend node // Optional
+    },
+    title: {  // Optional
+      // Title settings
+      show: true, // Toggle title on/off // Optional
+      text: '', // The value of the title // Optional
+      fill: '#595959', // Optional
+      fontSize: '12px', // Optional
+      fontFamily: 'Arial', // Optional
+      maxLengthPx: 100, // Max length in pixels // Optional
+      padding: 5, // padding in pixels to the legend node // Optional
+      anchor: 'top', // Where to anchor the title in relation to the legend node, supported values are [top, left and right] // Optional
+      wordBreak: 'none', // How overflowing title is handled, if it should insert line breaks at word boundries (break-word) or character boundries (break-all) // Optional
+      hyphens: 'auto', // How words should be hyphenated when text wraps across multiple lines (only applicable with wordBreak) // Optional
+      maxLines: 2, // Number of allowed lines if title contains line breaks (only applicable with wordBreak) // Optional
+      lineHeight: 1.2, // A multiplier defining the distance between lines (only applicable with wordBreak) // Optional
+    },
   },
 }
 ```
+

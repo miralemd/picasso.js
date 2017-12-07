@@ -9,8 +9,12 @@ import crispify from '../../transposer/crispifier';
 import { scaleWithSize } from '../../scales';
 
 /**
- * @typedef settings
- * @type {object}
+ * @typedef {object} component--axis
+ *
+ */
+
+/**
+ * @typedef {object} component--axis.settings
  * @property {object} [labels] - Labels settings
  * @property {boolean} [labels.show=true]
  * @property {string} [labels.mode='auto'] - Control how labels arrange themself. Availabe modes are auto, horizontal, layered and tilted. Only horizontal is supported on a continuous axis
