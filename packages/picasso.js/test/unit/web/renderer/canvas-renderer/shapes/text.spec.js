@@ -79,33 +79,13 @@ describe('text', () => {
       });
     });
 
-    describe('textBaseline', () => {
-      const cases = [
-        { value: 'top', expected: 'top' },
-        { value: 'hanging', expected: 'hanging' },
-        { value: 'middle', expected: 'middle' },
-        { value: 'alphabetic', expected: 'alphabetic' },
-        { value: 'ideographic', expected: 'ideographic' },
-        { value: 'bottom', expected: 'bottom' },
-        { value: 'auto', expected: 'auto' },
-        { value: 'use-script', expected: 'use-script' },
-        { value: 'no-change', expected: 'no-change' },
-        { value: 'reset-size', expected: 'reset-size' },
-        { value: 'mathematical', expected: 'mathematical' },
-        { value: 'central', expected: 'middle' },
-        { value: 'text-after-edge', expected: 'bottom' },
-        { value: 'text-before-edge', expected: 'top' },
-        { value: 'inherit', expected: 'inherit' }
-      ];
+    describe('baseline', () => {
+      it('should transform dominant-baseline into a dy value', () => {
+        text['dominant-baseline'] = 'ideographic';
+        text['font-size'] = '10px';
+        render(text, { g });
 
-      cases.forEach((fixture) => {
-        it(`should be set correctly when dominant-baseline is ${fixture.value}`, () => {
-          text['dominant-baseline'] = fixture.value;
-
-          render(text, { g });
-
-          expect(g.textBaseline).to.equal(fixture.expected);
-        });
+        expect(g.fillText.args[0][2]).to.equal((2 + 4) - 2); // Validate y params
       });
     });
   });

@@ -1,4 +1,5 @@
 import { ellipsText, measureText } from '../../text-manipulation';
+import baselineHeuristic from '../../text-manipulation/baseline-heuristic';
 import { detectTextDirection, flipTextAnchor } from '../../../core/utils/rtl-util';
 
 const svgNs = 'http://www.w3.org/2000/svg';
@@ -31,6 +32,15 @@ const maintainer = (element, item) => {
         element.setAttribute('dir', 'rtl');
         element.setAttribute('text-anchor', flipTextAnchor(element.getAttribute('text-anchor'), dir));
       }
+    } else if (item.type === 'text' && (attr === 'dy' || attr === 'dominant-baseline')) {
+      const dy = +element.getAttribute(attr) || 0;
+      let val = 0;
+      if (attr === 'dominant-baseline') {
+        val = baselineHeuristic(item.attrs);
+      } else {
+        val = item.attrs[attr];
+      }
+      element.setAttribute('dy', val + dy);
     } else {
       element.setAttribute(attr, item.attrs[attr]);
     }

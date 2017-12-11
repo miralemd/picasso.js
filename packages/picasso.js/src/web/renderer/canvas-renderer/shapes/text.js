@@ -1,17 +1,6 @@
 import { ellipsText, measureText } from '../../../text-manipulation';
+import baselineHeuristic from '../../../text-manipulation/baseline-heuristic';
 import { detectTextDirection, flipTextAnchor } from '../../../../core/utils/rtl-util';
-
-function convertBaseline(baseline) {
-  if (baseline === 'central') {
-    return 'middle';
-  } else if (baseline === 'text-before-edge') {
-    return 'top';
-  } else if (baseline === 'text-after-edge') {
-    return 'bottom';
-  }
-
-  return baseline;
-}
 
 export default function render(t, { g }) {
   const text = ellipsText(t, measureText);
@@ -20,6 +9,8 @@ export default function render(t, { g }) {
   g.canvas.dir = detectTextDirection(t.text);
   const textAlign = t['text-anchor'] === 'middle' ? 'center' : t['text-anchor'];
   g.textAlign = flipTextAnchor(textAlign, g.canvas.dir);
-  g.textBaseline = convertBaseline(t['dominant-baseline']);
-  g.fillText(text, t.x + t.dx, t.y + t.dy);
+
+  const bdy = baselineHeuristic(t);
+
+  g.fillText(text, t.x + t.dx, t.y + t.dy + bdy);
 }

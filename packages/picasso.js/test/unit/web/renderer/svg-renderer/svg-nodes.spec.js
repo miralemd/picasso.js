@@ -138,5 +138,38 @@ describe('svg-nodes', () => {
       expect(el.setAttribute.getCall(1)).to.have.been.calledWith('data-label', 'etikett');
       expect(el.setAttribute.getCall(2)).to.have.been.calledWith('data-really', true);
     });
+
+    it('should always append dy attribute on text item', () => {
+      const el = {
+        setAttribute: sinon.spy(),
+        getAttribute: () => 5
+      };
+      const item = {
+        type: 'text',
+        attrs: {
+          dy: 10
+        }
+      };
+      maintainer(el, item);
+
+      expect(el.setAttribute.args[0]).to.deep.equal(['dy', 15]);
+    });
+
+    it('should transform dominant-baseline into dy attribute on text item', () => {
+      const el = {
+        setAttribute: sinon.spy(),
+        getAttribute: () => 5
+      };
+      const item = {
+        type: 'text',
+        attrs: {
+          'dominant-baseline': 'ideographic',
+          'font-size': '10px'
+        }
+      };
+      maintainer(el, item);
+
+      expect(el.setAttribute.args[0]).to.deep.equal(['dy', 3]);
+    });
   });
 });

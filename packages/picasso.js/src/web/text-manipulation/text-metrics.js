@@ -1,5 +1,6 @@
 import extend from 'extend';
 import { resolveLineBreakAlgorithm } from './line-break-resolver';
+import baselineHeuristic from './baseline-heuristic';
 import {
   DEFAULT_LINE_HEIGHT,
   ELLIPSIS_CHAR
@@ -75,11 +76,11 @@ function calcTextBounds(attrs, measureFn = measureText) {
   const x = attrs.x || 0;
   const y = attrs.y || 0;
   const dx = attrs.dx || 0;
-  const dy = attrs.dy || 0;
+  const dy = (attrs.dy || 0) + baselineHeuristic(attrs);
 
   const boundingRect = {
     x: 0,
-    y: (y + dy) - (textMeasure.height * 0.75), // Magic number for ideographic baseline
+    y: (y + dy) - (textMeasure.height * 0.75), // Magic number for alphabetical baseline
     width: calWidth,
     height: textMeasure.height
   };
@@ -131,7 +132,7 @@ export function textBounds(node, measureFn = measureText) {
     for (let i = 0, len = resolvedLineBreaks.lines.length; i < len; i++) {
       let line = resolvedLineBreaks.lines[i];
       line += i === len - 1 && resolvedLineBreaks.reduced ? ELLIPSIS_CHAR : '';
-      const width = measureTextWidth({ text: line, fontSize, fontFamily });
+      const width = measureFn({ text: line, fontSize, fontFamily }).width;
       if (width >= maxWidth) {
         maxWidth = width;
         widestLine = line;

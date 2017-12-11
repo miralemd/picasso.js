@@ -203,6 +203,14 @@ describe('text-metrics', () => {
           bounds = textBounds(node, textMeasureMock);
           expect(bounds).to.deep.equal({ x: 1, y: -0.25, width: 8, height: 3 });
         });
+
+        it('with baseline', () => {
+          node['font-size'] = 10;
+          node['font-family'] = 3;
+          node['dominant-baseline'] = 'ideographic';
+          bounds = textBounds(node, textMeasureMock);
+          expect(bounds).to.deep.equal({ x: 1, y: -2.25, width: 40, height: 3 });
+        });
       });
 
       describe('wordBreak', () => {

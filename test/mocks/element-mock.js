@@ -30,6 +30,9 @@ function element(name, rect = { x: 0, y: 0, width: 100, height: 100 }) {
     setAttribute(attr, value) {
       this.attributes[attr] = value;
     },
+    getAttribute(attr) {
+      return this.attributes[attr];
+    },
     appendChild(el) {
       this.children.push(el);
       el.parentNode = this;
