@@ -3,7 +3,7 @@ import extract, { getFieldAccessor } from '../../src/data/extractor-s';
 import {
   collect,
   track
-} from '../../../../src/core/data/util';
+} from '../../../../packages/picasso.js/src/core/data/util';
 
 describe('extractor-s', () => {
   const page = {

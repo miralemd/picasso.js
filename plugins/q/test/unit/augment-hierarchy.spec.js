@@ -1,7 +1,7 @@
 import q from '../../src/data/dataset';
 import {
   getPropsInfo
-} from '../../../../src/core/data/util';
+} from '../../../../packages/picasso.js/src/core/data/util';
 
 describe('augment-hierarchy', () => {
   before(() => {

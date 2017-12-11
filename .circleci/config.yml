@@ -13,6 +13,8 @@ jobs:
       - restore_cache:
           key: v1-cache-{{ checksum "package-lock.json" }}
       - restore_cache:
+          key: v1-cache-picasso.js-{{ checksum "packages/picasso.js/package-lock.json" }}
+      - restore_cache:
           key: v1-cache-hammer-{{ checksum "plugins/hammer/package-lock.json" }}
       - restore_cache:
           key: v1-cache-q-{{ checksum "plugins/q/package-lock.json" }}
@@ -29,6 +31,10 @@ jobs:
           key: v1-cache-{{ checksum "package-lock.json" }}
           paths:
             - ./node_modules
+      - save_cache:
+          key: v1-cache-picasso.js-{{ checksum "packages/picasso.js/package-lock.json" }}
+          paths:
+            - ./packages/picasso.js/node_modules
       - save_cache:
           key: v1-cache-hammer-{{ checksum "plugins/hammer/package-lock.json" }}
           paths:
@@ -47,8 +53,11 @@ jobs:
           name: Lint
           command: npm run lint
       - run:
-          name: Test
-          command: npm run test:coverage
+          name: Unit test
+          command: npm run test:unit:coverage
+      - run:
+          name: Component test
+          command: npm run test:component:coverage
       - run:
           name: Integration test
           command: npm run test:integration:local
@@ -60,13 +69,19 @@ jobs:
       - store_artifacts:
           path: package.json
       - store_artifacts:
-          path: dist
+          path: packages/picasso.js/dist
+      - store_artifacts:
+          path: plugins/q/dist
+      - store_artifacts:
+          path: plugins/hammer/dist
       - store_artifacts:
           path: docs/dist
       - store_artifacts:
+          path: docs/spec.json
+      - store_artifacts:
           path: test/unit/coverage
       - store_artifacts:
-          path: test/component/coverage
+          path: packages/picasso.js/test/component/coverage
       - store_artifacts:
-          path: test/integration/coverage
+          path: packages/picasso.js/test/integration/artifacts
 

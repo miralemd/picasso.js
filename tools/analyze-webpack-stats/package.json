@@ -1,8 +1,0 @@
-{
-  "scripts": {
-    "electrify": "electrify"
-  },
-  "dependencies": {
-    "electrode-electrify": "^2.4.1"
-  }
-}

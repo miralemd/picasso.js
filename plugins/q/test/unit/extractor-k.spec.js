@@ -4,7 +4,7 @@ import {
   getPropsInfo,
   collect,
   track
-} from '../../../../src/core/data/util';
+} from '../../../../packages/picasso.js/src/core/data/util';
 
 describe('q-data-extractor-k', () => {
   const deps = {

@@ -17,6 +17,27 @@
   }
   ```
 
+### BREAKING
+
+- This project is now a proper multi-package repository, the following packages are published on each release:
+  - `@qlik/picasso`
+  - `@qlik/picasso-plugin-q`
+  - `@qlik/picasso-plugin-hammer`
+
+    **Migration**
+
+    The plugins were previously included as part of the main `@qlik/picasso` package, but are now independent packages:
+
+    ```js
+    // old
+    import picassoHammer from '@qlik/picasso/plugins/hammer';
+    import picassoQ from '@qlik/picasso/plugins/q';
+
+    // new
+    import picassoHammer from '@qlik/picasso-plugin-hammer';
+    import picassoQ from '@qlik/picasso-plugin-q';
+    ```
+
 ## **0.39.2** - *(2017-12-04)*
 
 ### Fixed

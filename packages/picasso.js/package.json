@@ -1,0 +1,56 @@
+{
+  "name": "@qlik/picasso",
+  "version": "0.39.2",
+  "description": "A charting library streamlined for building visualizations for the Qlik Sense Analytics platform.",
+  "license": "ISC",
+  "private": true,
+  "publishConfig": {
+    "registry": "https://qliktech.jfrog.io/qliktech/api/npm/npm-local/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com:qlik-trial/picasso.js.git"
+  },
+  "scripts": {
+    "build": "node ../../node_modules/.bin/rollup -c ../../rollup.config.js --environment BUILD:production",
+    "build:dev": "node ../../node_modules/.bin/rollup -c ../../rollup.config.js",
+    "build:watch": "node ../../node_modules/.bin/rollup -c ../../rollup.config.js -w",
+    "docs": "cd docs && npm run docs",
+    "lint": "node ../../node_modules/.bin/eslint src test",
+    "lint:fix": "npm run lint -- --fix",
+    "lint:recommended": "npm run lint -- --config .eslintrc-recommended.json",
+    "test": "npm run test:unit",
+    "test:coverage": "npm run test:unit:coverage && npm run test:component:coverage",
+    "test:unit": "node ../../node_modules/.bin/aw-test-runner \"./test/unit/**/*.spec.js\"",
+    "test:unit:debug": "node ../../node_modules/.bin/aw-test-runner \"./test/unit/**/*.spec.js\" --debug",
+    "test:unit:watch": "node ../../node_modules/.bin/aw-test-runner \"./test/unit/**/*.spec.js\" -w",
+    "test:unit:coverage": "node ../../node_modules/.bin/aw-test-coverage \"./test/unit/**/*.spec.js\" --dir test/unit/coverage",
+    "test:component": "node ../../node_modules/.bin/aw-test-runner \"./test/component/**/*.comp.js\"",
+    "test:component:coverage": "node ../../node_modules/.bin/aw-test-coverage \"./test/component/**/*.comp.js\"  --dir test/component/coverage",
+    "test:integration:local": "node ../../node_modules/protractor/bin/webdriver-manager update --standalone false && node ../../node_modules/.bin/aw-webdriver-test-runner ../../test/config/aw-config.js --specs \"./test/integration/**/*.int.js\" --aw-artifacts-path ./test/integration/artifacts",
+    "test:integration:remote": "node ../../node_modules/.bin/aw-webdriver-test-runner ./test/config/aw-config-remote.js --specs \"test/integration/**/*.int.js\" --aw-artifacts-path ../../test/integration/artifacts",
+    "fixture:server": "node ../../node_modules/.bin/aw-web-server -c ../../test/config/aw-webserver-config.json",
+    "preversion": "npm run lint && npm run test",
+    "version": "node scripts/version.js && npm install && npm run build"
+  },
+  "files": [
+    "/dist"
+  ],
+  "main": "dist/picasso.min.js",
+  "module": "src/index.js",
+  "devDependencies": {
+    "d3-ease": "^1.0.3",
+    "d3-format": "^1.0.2",
+    "d3-hierarchy": "^1.1.5",
+    "d3-interpolate": "^1.1.5",
+    "d3-scale": "^1.0.0",
+    "d3-shape": "^1.0.6",
+    "d3-time-format": "^2.0.2",
+    "extend": "^3.0.0",
+    "hammerjs": "^2.0.8",
+    "jsdoc": "^3.4.0",
+    "node-event-emitter": "0.0.1",
+    "rimraf": "^2.5.2",
+    "snabbdom": "^0.5.4"
+  }
+}

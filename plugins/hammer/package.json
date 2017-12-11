@@ -1,5 +1,5 @@
 {
-  "name": "@qlik/picasso-hammer",
+  "name": "@qlik/picasso-plugin-hammer",
   "version": "0.39.2",
   "description": "Hammer JS interaction mixin for Picasso",
   "license": "ISC",
@@ -14,12 +14,14 @@
   "scripts": {
     "build": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js --name picassoHammer --environment BUILD:production",
     "build:dev": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js --name picassoHammer",
-    "test": "node ../../node_modules/after-work.js/bin/aw-test-runner \"./test/**/*.spec.js\""
+    "lint": "node ../../node_modules/.bin/eslint src test",
+    "test": "node ../../node_modules/after-work.js/bin/aw-test-runner \"./test/**/*.spec.js\"",
+    "preversion": "npm run lint && npm run test",
+    "version": "npm install && npm run build"
   },
   "files": [
     "/dist"
   ],
-  "main": "dist/picasso-hammer.js",
-  "module": "src/index.js",
-  "dependencies": {}
+  "main": "dist/picasso-hammer.min.js",
+  "module": "src/index.js"
 }

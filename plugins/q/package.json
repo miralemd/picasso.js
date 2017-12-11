@@ -1,5 +1,5 @@
 {
-  "name": "@qlik/picasso-q",
+  "name": "@qlik/picasso-plugin-q",
   "version": "0.39.2",
   "description": "Q module for Picasso",
   "license": "ISC",
@@ -15,19 +15,23 @@
     "build": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js --name picassoQ --environment BUILD:production",
     "build:dev": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js --name picassoQ",
     "build:watch": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js --name picassoQ -w",
+    "lint": "node ../../node_modules/.bin/eslint src test",
+    "test": "npm run test:unit",
     "test:unit": "node ../../node_modules/after-work.js/bin/aw-test-runner \"./test/unit/**/*.spec.js\"",
     "test:unit:watch": "node ../../node_modules/after-work.js/bin/aw-test-runner \"./test/unit/**/*.spec.js\" -w",
-    "test:unit:coverage": "node ../../node_modules/after-work.js/bin/aw-test-coverage \"./test/unit/**/*.spec.js\" --dir test/unit/coverage"
+    "test:coverage": "node ../../node_modules/after-work.js/bin/aw-test-coverage \"./test/unit/**/*.spec.js\" --dir test/unit/coverage",
+    "preversion": "npm run lint && npm run test",
+    "version": "npm install && npm run build"
   },
   "files": [
     "/dist"
   ],
-  "main": "dist/picasso-q.js",
+  "main": "dist/picasso-q.min.js",
   "module": "src/index.js",
   "devDependencies": {
     "d3-hierarchy": "^1.1.5",
+    "d3-scale": "^1.0.7",
     "extend": "^3.0.0",
     "number-format.js": "^1.1.10"
-  },
-  "dependencies": {}
+  }
 }

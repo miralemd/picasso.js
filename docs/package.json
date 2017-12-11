@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "docs": "jsdoc -t jsdoc2spec -r ../src -d ./spec.json -p ../package.json && node gen"
+    "docs": "jsdoc -t jsdoc2spec -r ../packages/picasso.js/src -d ./spec.json -p ../packages/picasso.js/package.json && node gen"
   },
   "author": "",
   "license": "ISC",

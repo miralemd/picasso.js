@@ -9,7 +9,8 @@ var repoConfig = {
         server: {
           baseDir: "./",
           routes: {
-            "/fixtures": "test/integration"
+            "/fixtures": "test/integration",
+            "/plugins": "../../plugins"
           }
         }
       });

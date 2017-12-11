@@ -35,39 +35,37 @@ Submit your feature by creating a Pull Request, following the [GIT guidelines](#
 
 ### Project structure
 
+This is a multi-package repository which uses [lerna](https://github.com/lerna/lerna) for package task management and publishing.
+
 - `docs/`: contains documentation templates
 - `examples/`: contains simple examples of usage
-- `plugins/`: contains plugins
+- `plugins/`: contains plugin packages
+- `packages/picasso.js`: contains the main `picasso.js` package
 - `scripts/`: contains build scripts
-- `src/`: contains the core code
-- `test/`: contains test files
+- `test/`: contains test configs
 
 ### Building
 
-1. Install dependencies:
+To install and build all packages run:
 
-    ```sh
-    $ npm install
-    ```
+```sh
+$ npm install
+$ npm run bootstrap
+$ npm run build
+```
 
-2. Run the build script:
+This will generate UMD packages for
 
-    ```sh
-    $ ./scripts/build-all.sh
-    ```
-
-    This will generate UMD packages for
-    
-    - the main build under `/dist`
-    - each plugin under `/plugins/*/dist`
+- the main package under `/packages/picasso.js/dist`
+- each plugin under `/plugins/*/dist`
 
 ### Development worklow
 
-- `npm run build` generates a UMD bundle into `dist/`
+- `npm run build` generates UMD bundles for all packages
 - `npm run docs` generates documentation in markdown
-- `npm run test` runs all tests
-- `npm run test:coverage` generates test coverage
 - `npm run lint` checks code style
+- `npm run test` runs all tests
+- `npm run test:unit:coverage` generates unit test coverage
 
 ## <a name="git"></a> Git Guidelines
 
