@@ -17,6 +17,8 @@
   }
   ```
 
+- Filter data on extraction [#598](https://github.com/qlik-trial/picasso.js/pull/598)
+
 ### BREAKING
 
 - This project is now a proper multi-package repository, the following packages are published on each release:

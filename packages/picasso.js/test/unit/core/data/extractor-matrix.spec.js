@@ -101,6 +101,17 @@ describe('straight mapping', () => {
     ]);
   });
 
+  it('should filter values on main field', () => {
+    const m = extract({
+      field: 0,
+      filter: v => v !== 'IT'
+    }, dataset);
+    expect(m).to.eql([
+      { value: 'SE', source: { field: 'fkey', key: 'nyckel' } },
+      { value: 'SE', source: { field: 'fkey', key: 'nyckel' } }
+    ]);
+  });
+
   it('should return collected values', () => {
     const m = extract({
       field: 0,

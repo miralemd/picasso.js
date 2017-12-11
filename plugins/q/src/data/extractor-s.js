@@ -121,6 +121,10 @@ export default function extract(config, dataset, cache, util) {
           const rowIdx = page.qArea.qTop + i;
           const mainCell = extend({ qRow: rowIdx }, fn(row));
           const ret = datumExtract(main, mainCell, { key: sourceKey });
+          const exclude = main.filter && !main.filter(mainCell);
+          if (exclude) {
+            return;
+          }
 
           // loop through all props that need to be mapped and
           // assign 'value' and 'source' to each property

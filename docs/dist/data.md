@@ -107,6 +107,20 @@ data: {
 
 > Notice that the data `source` for each value is stored in the output, this plays a key part in enabling _brushing_. [TODO - explain brushing in picasso]
 
+**Filtering**
+
+A `filter` function can be used to exclude certain values in the data source:
+
+```js
+data: {
+  extract: [{
+    source: 'Products',
+    field: 'Product',
+    filter: d => d.name !== 'Sandals' // exclude 'Sandals'
+  }]
+}
+```
+
 **Stacking**
 
 Extracted items can be stacked using a `stack` configuration:

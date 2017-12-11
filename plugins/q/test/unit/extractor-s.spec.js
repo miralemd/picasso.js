@@ -554,6 +554,30 @@ describe('extractor-s', () => {
     ]);
   });
 
+
+  it('should return filtered main values', () => {
+    deps.normalizeConfig.returns({
+      main: {
+        field: dataset.field('Dim2'),
+        filter: v => v.qNum !== 7
+      },
+      props: {}
+    });
+    const m = extract({
+      field: 'Dim2'
+    }, dataset, { fields }, deps);
+    expect(m).to.eql([
+      {
+        value: { qNum: 3, qText: 'tre', qElemNumber: 1, qRow: 5 },
+        source: { field: 'qDimensionInfo/1', key: 'hyper' }
+      },
+      {
+        value: { qNum: 1, qText: 'ett', qElemNumber: 3, qRow: 7 },
+        source: { field: 'qDimensionInfo/1', key: 'hyper' }
+      }
+    ]);
+  });
+
   describe('getFieldAccessor', () => {
     const cache = {
       fields: [{}, {}, {}],

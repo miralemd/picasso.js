@@ -400,6 +400,33 @@ describe('q-data-extractor-k', () => {
         }
       ]);
     });
+
+    it('should filter main field', () => {
+      const m = extract({
+        field: 'qDimensionInfo/1',
+        value: d => d.qElemNo,
+        filter: d => d.qElemNo !== -1
+      }, dataset, { fields }, deps);
+
+      expect(m).to.eql([
+        {
+          value: 0,
+          source: { key: 'cube', field: 'qDimensionInfo/1' }
+        },
+        {
+          value: 3,
+          source: { key: 'cube', field: 'qDimensionInfo/1' }
+        },
+        {
+          value: 7,
+          source: { key: 'cube', field: 'qDimensionInfo/1' }
+        },
+        {
+          value: 9,
+          source: { key: 'cube', field: 'qDimensionInfo/1' }
+        }
+      ]);
+    });
   });
 
   describe('with pseudo', () => {

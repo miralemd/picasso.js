@@ -3605,10 +3605,27 @@
         },
         "value": {
           "description": "The field value accessor",
+          "optional": true,
           "type": "data-extract-config~valueFn"
+        },
+        "trackBy": {
+          "description": "Track by value accessor",
+          "optional": true,
+          "type": "data-extract-config~trackByFn"
+        },
+        "reduce": {
+          "description": "Reducer function",
+          "optional": true,
+          "type": "data-extract-config~reduceFn"
+        },
+        "filter": {
+          "description": "Filter function",
+          "optional": true,
+          "type": "data-extract-config~filterFn"
         },
         "props": {
           "description": "Additional properties to add to the extracted item",
+          "optional": true,
           "type": "object"
         }
       },
@@ -3622,7 +3639,49 @@
               "description": "The field cell",
               "type": "any"
             }
-          ]
+          ],
+          "returns": {
+            "type": "any"
+          }
+        },
+        "filterFn": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "cell",
+              "description": "The field cell",
+              "type": "any"
+            }
+          ],
+          "returns": {
+            "type": "boolean"
+          }
+        },
+        "trackByFn": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "cell",
+              "description": "The field cell",
+              "type": "any"
+            }
+          ],
+          "returns": {
+            "type": "any"
+          }
+        },
+        "reduceFn": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "cell",
+              "description": "The field cell",
+              "type": "any"
+            }
+          ],
+          "returns": {
+            "type": "any"
+          }
         }
       }
     },

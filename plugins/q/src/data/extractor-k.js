@@ -134,8 +134,14 @@ export default function extract(config, dataset, cache, util) {
           }
         });
       });
-      const mapped = items.map((item) => {
+      const mapped = [];
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
         const itemData = attrFn ? attrFn(item.data) : item.data;
+        const exclude = main.filter && !main.filter(itemData);
+        if (exclude) {
+          continue;
+        }
         const ret = datumExtract(main, itemData, { key: sourceKey });
         propsArr.forEach((prop) => {
           const pCfg = props[prop];
@@ -200,8 +206,8 @@ export default function extract(config, dataset, cache, util) {
             trackType
           });
         }
-        return ret;
-      });
+        mapped.push(ret);
+      }
       // reduce if items have been grouped
       if (track) {
         dataItems.push(...util.collect(trackedItems, {

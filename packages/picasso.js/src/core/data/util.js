@@ -77,6 +77,10 @@ function normalizeProperties(cfg, dataset, dataProperties, main) {
         prop.value = mainField.value;
         prop.field = mainField;
       }
+
+      if (typeof pConfig.filter === 'function') {
+        prop.filter = pConfig.filter;
+      }
       if (typeof pConfig.value !== 'undefined') {
         prop.value = pConfig.value;
       }
@@ -123,7 +127,7 @@ cfg = {
 */
 export function getPropsInfo(cfg, dataset) {
   // console.log('222', cfg);
-  const { main } = normalizeProperties(cfg, dataset, { main: { value: cfg.value, reduce: cfg.reduce } }, {});
+  const { main } = normalizeProperties(cfg, dataset, { main: { value: cfg.value, reduce: cfg.reduce, filter: cfg.filter } }, {});
   const props = normalizeProperties(cfg, dataset, cfg.props || {}, main);
   return { props, main };
 }

@@ -116,13 +116,35 @@ ds.util = {
  * @inner
  * @typedef {object} data-extract-config
  * @property {string} field - The field to extract data from
- * @property {data-extract-config~valueFn} value - The field value accessor
- * @property {object} props - Additional properties to add to the extracted item
+ * @property {data-extract-config~valueFn} [value] - The field value accessor
+ * @property {data-extract-config~trackByFn} [trackBy] - Track by value accessor
+ * @property {data-extract-config~reduceFn} [reduce] - Reducer function
+ * @property {data-extract-config~filterFn} [filter] - Filter function
+ * @property {object} [props] - Additional properties to add to the extracted item
  */
 
 /**
  * @callback data-extract-config~valueFn
  * @param {any} cell The field cell
+ * @returns {any}
+ */
+
+/**
+ * @callback data-extract-config~filterFn
+ * @param {any} cell The field cell
+ * @returns {boolean}
+ */
+
+/**
+ * @callback data-extract-config~trackByFn
+ * @param {any} cell The field cell
+ * @returns {any}
+ */
+
+/**
+ * @callback data-extract-config~reduceFn
+ * @param {any} cell The field cell
+ * @returns {any}
  */
 
 /**

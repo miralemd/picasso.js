@@ -39,8 +39,14 @@ export default function extract(config, dataset) {
       const tracker = {};
       const trackedItems = [];
 
-      const items = f.items().map((v, idx) => {
-        const mainCell = v;
+      const items = f.items();
+      const mapped = [];
+      for (let idx = 0; idx < items.length; idx++) {
+        const mainCell = items[idx];
+        const exclude = main.filter && !main.filter(mainCell);
+        if (exclude) {
+          continue;
+        }
         const ret = datumExtract(main, mainCell, { key: sourceKey });
 
         // loop through all props that need to be mapped and
@@ -64,8 +70,8 @@ export default function extract(config, dataset) {
           });
         }
 
-        return ret;
-      });
+        mapped.push(ret);
+      }
 
       // reduce if items have been grouped
       if (track) {
@@ -75,7 +81,7 @@ export default function extract(config, dataset) {
           props
         }));
       } else {
-        dataItems.push(...items);
+        dataItems.push(...mapped);
       }
     }
   });

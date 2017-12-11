@@ -113,7 +113,19 @@ describe('data-util', () => {
         field: 'f'
       }, ds);
 
-      expect(p.main.reduce).to.be.a.function;
+      expect(p.main.reduce).to.be.a('function');
+    });
+
+    it('should accept a filter function', () => {
+      ds.field.withArgs('f').returns({
+        key: () => 'country'
+      });
+      const p = getPropsInfo({
+        field: 'f',
+        filter: () => {}
+      }, ds);
+
+      expect(p.main.filter).to.be.a('function');
     });
 
     it('should accept primitives and functions', () => {
