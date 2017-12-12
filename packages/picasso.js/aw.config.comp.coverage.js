@@ -6,6 +6,7 @@ module.exports = {
     reportDir: 'test/component/coverage'
   },
   mocha: {
-    reporter: 'min'
+    reporter: 'min',
+    useColors: true
   }
 };
