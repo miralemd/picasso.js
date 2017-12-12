@@ -14,7 +14,7 @@
     "build:dev": "lerna run build:dev",
     "bump": "lerna publish --skip-npm --skip-git",
     "lint": "lerna run lint",
-    "test": "lerna run test --ignore=test-utils",
+    "test": "lerna run test --ignore=test-utils --ignore=exec-closest",
     "test:component:coverage": "aw -c aw.config.comp.coverage.js",
     "test:integration:local": "lerna run test:integration:local",
     "test:unit:coverage": "aw -c aw.config.unit.coverage.js",

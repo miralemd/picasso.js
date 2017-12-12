@@ -12,12 +12,12 @@
     "url": "ssh://git@github.com:qlik-trial/picasso.js.git"
   },
   "scripts": {
-    "build": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js --name picassoQ --environment BUILD:production",
-    "build:dev": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js --name picassoQ",
-    "build:watch": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js --name picassoQ -w",
-    "lint": "node ../../node_modules/eslint/bin/eslint src test",
+    "build": "exec-closest rollup -c ../../rollup.config.js --name picassoQ --environment BUILD:production",
+    "build:dev": "exec-closest rollup -c ../../rollup.config.js --name picassoQ",
+    "build:watch": "exec-closest rollup -c ../../rollup.config.js --name picassoQ -w",
+    "lint": "exec-closest eslint src test",
     "test": "npm run test:unit",
-    "test:unit": "node ../../node_modules/after-work.js/src/cli.js -c aw.config.js",
+    "test:unit": "exec-closest aw -c aw.config.js",
     "test:unit:watch": "npm run test:unit -- -w",
     "test:unit:coverage": "npm run test:unit -- --coverage"
   },
@@ -30,6 +30,7 @@
     "d3-hierarchy": "^1.1.5",
     "d3-scale": "^1.0.7",
     "extend": "^3.0.0",
-    "number-format.js": "^1.1.10"
+    "number-format.js": "^1.1.10",
+    "exec-closest": "*"
   }
 }

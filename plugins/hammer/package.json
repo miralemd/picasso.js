@@ -12,10 +12,10 @@
     "url": "ssh://git@github.com:qlik-trial/picasso.js.git"
   },
   "scripts": {
-    "build": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js --name picassoHammer --environment BUILD:production",
-    "build:dev": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js --name picassoHammer",
-    "lint": "node ../../node_modules/eslint/bin/eslint src test",
-    "test": "node ../../node_modules/after-work.js/src/cli.js -c aw.config.js"
+    "build": "exec-closest rollup -c ../../rollup.config.js --name picassoHammer --environment BUILD:production",
+    "build:dev": "exec-closest rollup -c ../../rollup.config.js --name picassoHammer",
+    "lint": "exec-closest eslint src test",
+    "test": "exec-closest aw -c aw.config.js"
   },
   "files": [
     "/dist"
@@ -23,6 +23,7 @@
   "main": "dist/picasso-hammer.min.js",
   "module": "src/index.js",
   "devDependencies": {
-    "test-utils": "0.39.2"
+    "test-utils": "0.39.2",
+    "exec-closest": "*"
   }
 }

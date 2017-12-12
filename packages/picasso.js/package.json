@@ -12,23 +12,23 @@
     "url": "ssh://git@github.com:qlik-trial/picasso.js.git"
   },
   "scripts": {
-    "build": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js --environment BUILD:production",
-    "build:dev": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js",
-    "build:watch": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js -w",
+    "build": "exec-closest rollup -c ../../rollup.config.js --environment BUILD:production",
+    "build:dev": "exec-closest rollup -c ../../rollup.config.js",
+    "build:watch": "exec-closest rollup -c ../../rollup.config.js -w",
     "docs": "cd docs && npm run docs",
-    "lint": "node ../../node_modules/eslint/bin/eslint src test",
+    "lint": "exec-closest eslint src test",
     "lint:fix": "npm run lint -- --fix",
     "lint:recommended": "npm run lint -- --config .eslintrc-recommended.json",
     "test": "npm run test:unit",
     "test:coverage": "npm run test:unit:coverage && npm run test:component:coverage",
-    "test:unit": "node ../../node_modules/after-work.js/src/cli.js -c aw.config.unit.js",
+    "test:unit": "exec-closest aw -c aw.config.unit.js",
     "test:unit:watch": "npm run test:unit -- -w",
-    "test:unit:coverage": "../../node_modules/after-work.js/src/cli.js -c  aw.config.unit.coverage.js",
-    "test:component": "node ../../node_modules/after-work.js/src/cli.js -c aw.config.comp.js",
-    "test:component:coverage": "../../node_modules/after-work.js/src/cli.js -c aw.config.comp.coverage.js",
-    "test:integration:local": "node ../../node_modules/protractor/bin/webdriver-manager update && node ../../node_modules/after-work.js/src/cli.js protractor -c aw.config.js --require babel-register --require babel-helpers",
-    "test:integration:remote": "node ../../node_modules/after-work.js/src/cli.js protractor -c aw.config.remote.js --require babel-register --require babel-helpers",
-    "fixture:server": "node ../../node_modules/after-work.js/src/cli.js serve -c aw.webserver.config.js",
+    "test:unit:coverage": "exec-closest aw -c  aw.config.unit.coverage.js",
+    "test:component": "exec-closest aw -c aw.config.comp.js",
+    "test:component:coverage": "exec-closest aw -c aw.config.comp.coverage.js",
+    "test:integration:local": "exec-closest webdriver-manager update && exec-closest aw protractor -c aw.config.js --require babel-register --require babel-helpers",
+    "test:integration:remote": "exec-closest aw protractor -c aw.config.remote.js --require babel-register --require babel-helpers",
+    "fixture:server": "exec-closest aw serve -c aw.webserver.config.js",
     "version": "node scripts/version.js"
   },
   "files": [
@@ -50,6 +50,7 @@
     "node-event-emitter": "0.0.1",
     "rimraf": "^2.5.2",
     "snabbdom": "^0.5.4",
-    "test-utils": "0.39.2"
+    "test-utils": "0.39.2",
+    "exec-closest": "*"
   }
 }
