@@ -2,6 +2,8 @@
 
 ## **{{VERSION}}** - *({{DATE}})*
 
+## **0.40.0** - *(2017-12-12)* [BREAKING]
+
 ### Added
 
 - Linear scale: allow custom ticks with start, end and label ([#576](https://github.com/qlik-trial/picasso.js/issues/576))

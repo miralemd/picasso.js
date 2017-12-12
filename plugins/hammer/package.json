@@ -1,6 +1,6 @@
 {
   "name": "@qlik/picasso-plugin-hammer",
-  "version": "0.39.2",
+  "version": "0.40.0",
   "description": "Hammer JS interaction mixin for Picasso",
   "license": "ISC",
   "private": false,
@@ -23,7 +23,7 @@
   "main": "dist/picasso-hammer.min.js",
   "module": "src/index.js",
   "devDependencies": {
-    "test-utils": "0.39.2",
-    "exec-closest": "*"
+    "exec-closest": "*",
+    "test-utils": "*"
   }
 }
