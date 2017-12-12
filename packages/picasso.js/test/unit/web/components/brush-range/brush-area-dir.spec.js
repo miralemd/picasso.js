@@ -1,7 +1,7 @@
+import elementMock from 'test-utils/mocks/element-mock';
+import vDomMock from 'test-utils/mocks/vDom-mock';
 import componentFactoryFixture from '../../../../helpers/component-factory-fixture';
 import brushAreaDir from '../../../../../src/web/components/brush-range/brush-area-dir';
-import elementMock from '../../../../../../../test/mocks/element-mock';
-import vDomMock from '../../../../../../../test/mocks/vDom-mock';
 
 describe('Brush Area Directional', () => {
   let componentFixture;
@@ -57,8 +57,8 @@ describe('Brush Area Directional', () => {
         const edgeLeft = rendererOutput[0];
 
         // Work-around to deal with deep equal on objects with functions
-        expect(edgeLeft.data.on.mouseover).to.be.a.function;
-        expect(edgeLeft.data.on.mouseout).to.be.a.function;
+        expect(edgeLeft.data.on.mouseover).to.be.a('function');
+        expect(edgeLeft.data.on.mouseout).to.be.a('function');
         delete edgeLeft.data.on.mouseover;
         delete edgeLeft.data.on.mouseout;
 
@@ -101,8 +101,8 @@ describe('Brush Area Directional', () => {
         const edgeRight = rendererOutput[1];
 
         // Work-around to deal with deep equal on objects with functions
-        expect(edgeRight.data.on.mouseover).to.be.a.function;
-        expect(edgeRight.data.on.mouseout).to.be.a.function;
+        expect(edgeRight.data.on.mouseover).to.be.a('function');
+        expect(edgeRight.data.on.mouseout).to.be.a('function');
         delete edgeRight.data.on.mouseover;
         delete edgeRight.data.on.mouseout;
 
@@ -249,8 +249,8 @@ describe('Brush Area Directional', () => {
         const edgeTop = rendererOutput[0];
 
         // Work-around to deal with deep equal on objects with functions
-        expect(edgeTop.data.on.mouseover).to.be.a.function;
-        expect(edgeTop.data.on.mouseout).to.be.a.function;
+        expect(edgeTop.data.on.mouseover).to.be.a('function');
+        expect(edgeTop.data.on.mouseout).to.be.a('function');
         delete edgeTop.data.on.mouseover;
         delete edgeTop.data.on.mouseout;
 
@@ -293,8 +293,8 @@ describe('Brush Area Directional', () => {
         const edgeBottom = rendererOutput[1];
 
         // Work-around to deal with deep equal on objects with functions
-        expect(edgeBottom.data.on.mouseover).to.be.a.function;
-        expect(edgeBottom.data.on.mouseout).to.be.a.function;
+        expect(edgeBottom.data.on.mouseover).to.be.a('function');
+        expect(edgeBottom.data.on.mouseout).to.be.a('function');
         delete edgeBottom.data.on.mouseover;
         delete edgeBottom.data.on.mouseout;
 

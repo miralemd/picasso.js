@@ -13,8 +13,7 @@ describe('renderer', () => {
   });
 
   it.skip('should throw error when type does not exist', () => { // TODO - decide how to handle non-existent types in registry.js
-    const fn = () => { renderer('dummy'); };
-    expect(fn).to.throw("Renderer of type 'dummy' does not exist");
+    expect(renderer.bind(renderer, 'dummy')).to.throw("Renderer of type 'dummy' does not exist");
   });
 
   it('should create a specific type', () => {

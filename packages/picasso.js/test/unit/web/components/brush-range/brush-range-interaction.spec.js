@@ -71,7 +71,7 @@ describe('BrushRange Interaction', () => {
         ranges: () => [],
         targetSize
       });
-      expect(state.started, 'started should be true').to.equals.true;
+      expect(state.started, 'started should be true').to.be.true;
     });
 
     describe('should set state.active', () => {
@@ -275,7 +275,7 @@ describe('BrushRange Interaction', () => {
     it('should set started to false', () => {
       state.started = true;
       end(state, () => []);
-      expect(state.started, 'started should be false').to.equals.false;
+      expect(state.started, 'started should be false').to.be.false;
     });
   });
 });

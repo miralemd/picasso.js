@@ -1,5 +1,5 @@
+import elementMock from 'test-utils/mocks/element-mock';
 import componentFactory from '../../src/core/component/component-factory';
-import elementMock from '../../../../test/mocks/element-mock';
 import findNodes from './node-def-selector';
 
 export default function componentFactoryFixture() {

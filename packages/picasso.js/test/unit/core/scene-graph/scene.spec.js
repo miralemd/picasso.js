@@ -27,7 +27,7 @@ describe('Scene', () => {
       const spy = sinon.spy();
       rect.disabled = spy;
       stage = scene({ items: [rect] });
-      expect(spy).to.be.called.once;
+      expect(spy).to.have.been.calledOnce;
     });
 
     it('should not parse node if disabled', () => {

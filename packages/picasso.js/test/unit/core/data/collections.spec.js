@@ -23,7 +23,7 @@ describe('data collections', () => {
     it('should return a function', () => {
       let extractor = sinon.stub();
       let fn = collections([{ key: 'a', data: 'foo' }], 'dd', 'opts', extractor);
-      expect(fn).to.be.a.function;
+      expect(fn).to.be.a('function');
     });
 
     it('should fetch the correct collection', () => {

@@ -299,7 +299,7 @@ describe('Axis Label Node', () => {
         buildOpts.stepSize = 0;
         const label = buildLabel(tick, buildOpts);
 
-        expect(label.collider).to.be.an.object;
+        expect(label.collider).to.be.an('object');
       });
 
       describe('align left', () => {

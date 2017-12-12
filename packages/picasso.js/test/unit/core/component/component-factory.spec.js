@@ -92,12 +92,12 @@ describe('Component', () => {
 
     createAndRenderComponent();
 
-    expect(created).to.have.been.called.once;
-    expect(resize).to.have.been.called.once;
-    expect(beforeRender).to.have.been.called.once;
-    expect(render).to.have.been.called.once;
-    expect(resize).to.have.been.called.once;
-    expect(mounted).to.have.been.called.once;
+    expect(created).to.have.been.calledOnce;
+    expect(resize).to.have.been.calledOnce;
+    expect(beforeRender).to.have.been.calledOnce;
+    expect(render).to.have.been.calledOnce;
+    expect(resize).to.have.been.calledOnce;
+    expect(mounted).to.have.been.calledOnce;
   });
 
   it('should call lifecycle methods with correct context when updating', () => {
@@ -109,11 +109,11 @@ describe('Component', () => {
     instance.render();
     instance.updated();
 
-    expect(mounted).to.have.been.called.once;
-    expect(beforeRender).to.have.been.called.twice;
-    expect(beforeUpdate).to.have.been.called.twice;
-    expect(updated).to.have.been.called.once;
-    expect(render).to.have.been.called.twice;
+    expect(mounted).to.have.been.calledOnce;
+    expect(beforeRender).to.have.been.calledTwice;
+    expect(beforeUpdate).to.have.been.calledOnce;
+    expect(updated).to.have.been.calledOnce;
+    expect(render).to.have.been.calledTwice;
   });
 
   /*

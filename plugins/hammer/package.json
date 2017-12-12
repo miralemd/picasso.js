@@ -14,8 +14,8 @@
   "scripts": {
     "build": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js --name picassoHammer --environment BUILD:production",
     "build:dev": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js --name picassoHammer",
-    "lint": "node ../../node_modules/.bin/eslint src test",
-    "test": "node ../../node_modules/after-work.js/bin/aw-test-runner \"./test/**/*.spec.js\"",
+    "lint": "node ../../node_modules/eslint/bin/eslint src test",
+    "test": "node ../../node_modules/after-work.js/src/cli.js -c aw.config.js",
     "preversion": "npm run lint && npm run test",
     "version": "npm install && npm run build"
   },
@@ -23,5 +23,8 @@
     "/dist"
   ],
   "main": "dist/picasso-hammer.min.js",
-  "module": "src/index.js"
+  "module": "src/index.js",
+  "devDependencies": {
+    "test-utils": "0.39.2"
+  }
 }

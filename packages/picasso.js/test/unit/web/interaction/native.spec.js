@@ -1,5 +1,5 @@
+import createElement from 'test-utils/mocks/element-mock';
 import native from '../../../../src/web/interactions/native';
-import createElement from '../../../../../../test/mocks/element-mock';
 
 describe('native interaction mixin', () => {
   let element;

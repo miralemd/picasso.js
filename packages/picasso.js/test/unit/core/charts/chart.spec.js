@@ -1,5 +1,5 @@
+import elementMock from 'test-utils/mocks/element-mock';
 import chart from '../../../../src/core/charts/chart';
-import elementMock from '../../../../../../test/mocks/element-mock';
 
 describe('Chart', () => {
   describe('lifecycle methods', () => {
@@ -59,11 +59,11 @@ describe('Chart', () => {
       // const expectedThis = {
       //   ...definition
       // };
-      expect(created, 'created').to.have.been.called.once;
+      expect(created, 'created').to.have.been.calledOnce;
       // expect(created.thisValues[0], 'created context').to.deep.equal(expectedThis);
-      expect(beforeRender, 'beforeRender').to.have.been.called.once;
-      expect(beforeMount, 'beforeMount').to.have.been.called.once;
-      expect(mounted, 'mounted').to.have.been.called.once;
+      expect(beforeRender, 'beforeRender').to.have.been.calledOnce;
+      expect(beforeMount, 'beforeMount').to.have.been.calledOnce;
+      expect(mounted, 'mounted').to.have.been.calledOnce;
       expect(updated, 'updated').to.not.have.been.called;
     });
 
@@ -76,23 +76,23 @@ describe('Chart', () => {
     it('should call lifecycle methods when updating', () => {
       const chartInstance = chart(definition, context);
       chartInstance.update();
-      expect(created, 'created').to.have.been.called.once;
-      expect(beforeRender, 'beforeRender').to.have.been.called.twice;
-      expect(beforeUpdate, 'beforeUpdate').to.have.been.called.twice;
-      expect(beforeMount, 'beforeMount').to.have.been.called.once;
-      expect(mounted, 'mounted').to.have.been.called.once;
-      expect(updated, 'updated').to.have.been.called.once;
+      expect(created, 'created').to.have.been.calledOnce;
+      expect(beforeRender, 'beforeRender').to.have.been.calledOnce;
+      expect(beforeUpdate, 'beforeUpdate').to.have.been.calledOnce;
+      expect(beforeMount, 'beforeMount').to.have.been.calledOnce;
+      expect(mounted, 'mounted').to.have.been.calledOnce;
+      expect(updated, 'updated').to.have.been.calledOnce;
     });
 
     it('should call lifecycle methods when destroying', () => {
       const chartInstance = chart(definition, context);
       chartInstance.destroy();
-      expect(created, 'created').to.have.been.called.once;
-      expect(beforeRender, 'beforeRender').to.have.been.called.once;
-      expect(beforeMount, 'beforeMount').to.have.been.called.once;
-      expect(mounted, 'mounted').to.have.been.called.once;
-      expect(beforeDestroy, 'beforeDestroy').to.have.been.called.once;
-      expect(destroyed, 'destroyed').to.have.been.called.once;
+      expect(created, 'created').to.have.been.calledOnce;
+      expect(beforeRender, 'beforeRender').to.have.been.calledOnce;
+      expect(beforeMount, 'beforeMount').to.have.been.calledOnce;
+      expect(mounted, 'mounted').to.have.been.calledOnce;
+      expect(beforeDestroy, 'beforeDestroy').to.have.been.calledOnce;
+      expect(destroyed, 'destroyed').to.have.been.calledOnce;
       expect(element.listeners.length).to.equal(0);
     });
   });

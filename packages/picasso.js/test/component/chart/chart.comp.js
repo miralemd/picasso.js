@@ -1,5 +1,7 @@
-import { chart } from '../../../src';
-import createElement from '../../../../../test/mocks/element-mock';
+import createElement from 'test-utils/mocks/element-mock';
+import p from '../../../src';
+
+const { chart } = p;
 
 describe('Chart', () => {
   let element;

@@ -13,7 +13,7 @@
   },
   "scripts": {
     "build": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js --environment BUILD:production",
-    "build:dev": "node ../../node_modules//rollup/bin/rollup -c ../../rollup.config.js",
+    "build:dev": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js",
     "build:watch": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js -w",
     "docs": "cd docs && npm run docs",
     "lint": "node ../../node_modules/eslint/bin/eslint src test",
@@ -21,15 +21,14 @@
     "lint:recommended": "npm run lint -- --config .eslintrc-recommended.json",
     "test": "npm run test:unit",
     "test:coverage": "npm run test:unit:coverage && npm run test:component:coverage",
-    "test:unit": "node ../../node_modules/after-work.js/bin/aw-test-runner \"./test/unit/**/*.spec.js\"",
-    "test:unit:debug": "node ../../node_modules/after-work.js/bin/aw-test-runner \"./test/unit/**/*.spec.js\" --debug",
-    "test:unit:watch": "node ../../node_modules/after-work.js/bin/aw-test-runner \"./test/unit/**/*.spec.js\" -w",
-    "test:unit:coverage": "node ../../node_modules/after-work.js/bin/aw-test-coverage \"./test/unit/**/*.spec.js\" --dir test/unit/coverage",
-    "test:component": "node ../../node_modules/after-work.js/bin/aw-test-runner \"./test/component/**/*.comp.js\"",
-    "test:component:coverage": "node ../../node_modules/after-work.js/bin/aw-test-coverage \"./test/component/**/*.comp.js\"  --dir test/component/coverage",
-    "test:integration:local": "node ../../node_modules/protractor/bin/webdriver-manager update --standalone false && node ../../node_modules/after-work.js/bin/aw-webdriver-test-runner ../../test/config/aw-config.js --specs \"./test/integration/**/*.int.js\" --aw-artifacts-path ./test/integration/artifacts",
-    "test:integration:remote": "node ../../node_modules/after-work.js/bin/aw-webdriver-test-runner ./test/config/aw-config-remote.js --specs \"test/integration/**/*.int.js\" --aw-artifacts-path ../../test/integration/artifacts",
-    "fixture:server": "node ../../node_modules/after-work.js/bin/aw-web-server -c ../../test/config/aw-webserver-config.json",
+    "test:unit": "node ../../node_modules/after-work.js/src/cli.js -c aw.config.unit.js",
+    "test:unit:watch": "npm run test:unit -- -w",
+    "test:unit:coverage": "../../node_modules/after-work.js/src/cli.js -c  aw.config.unit.coverage.js",
+    "test:component": "node ../../node_modules/after-work.js/src/cli.js -c aw.config.comp.js",
+    "test:component:coverage": "../../node_modules/after-work.js/src/cli.js -c aw.config.comp.coverage.js",
+    "test:integration:local": "node ../../node_modules/protractor/bin/webdriver-manager update && node ../../node_modules/after-work.js/src/cli.js protractor -c aw.config.js --require babel-register --require babel-helpers",
+    "test:integration:remote": "node ../../node_modules/after-work.js/src/cli.js protractor -c aw.config.remote.js --require babel-register --require babel-helpers",
+    "fixture:server": "node ../../node_modules/after-work.js/src/cli.js serve -c aw.webserver.config.js",
     "preversion": "npm run lint && npm run test",
     "version": "node scripts/version.js && npm install && npm run build"
   },
@@ -51,6 +50,7 @@
     "jsdoc": "^3.4.0",
     "node-event-emitter": "0.0.1",
     "rimraf": "^2.5.2",
-    "snabbdom": "^0.5.4"
+    "snabbdom": "^0.5.4",
+    "test-utils": "0.39.2"
   }
 }

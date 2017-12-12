@@ -54,7 +54,7 @@ describe('data-util', () => {
       expect(p.main.value).to.equal(valueFn);
       expect(p.main.reduce).to.equal(reduceFn);
       expect(p.props.x.value).to.equal('val');
-      expect(p.props.x.reduce).to.be.a.function;
+      expect(p.props.x.reduce).to.be.a('function');
     });
 
     it('should support fields array', () => {

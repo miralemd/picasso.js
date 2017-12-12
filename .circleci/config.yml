@@ -79,9 +79,7 @@ jobs:
       - store_artifacts:
           path: docs/spec.json
       - store_artifacts:
-          path: test/unit/coverage
-      - store_artifacts:
-          path: packages/picasso.js/test/component/coverage
+          path: coverage
       - store_artifacts:
           path: packages/picasso.js/test/integration/artifacts
 

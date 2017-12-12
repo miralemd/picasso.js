@@ -1,5 +1,5 @@
 {
   "extends":  [
-    "../../../test/.eslintrc.json"
+    "../../../packages/test-utils/.eslintrc.json"
   ]
 }

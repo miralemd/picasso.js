@@ -1,7 +1,7 @@
+import elementMock from 'test-utils/mocks/element-mock';
+import vDomMock from 'test-utils/mocks/vDom-mock';
 import componentFactoryFixture from '../../../../helpers/component-factory-fixture';
 import brushRange from '../../../../../src/web/components/brush-range/brush-range';
-import elementMock from '../../../../../../../test/mocks/element-mock';
-import vDomMock from '../../../../../../../test/mocks/vDom-mock';
 import linearScale from '../../../../../src/core/scales/linear';
 import bandScale from '../../../../../src/core/scales/band';
 import brushFactory from '../../../../../src/core/brush';
@@ -117,8 +117,8 @@ describe('Brush Range', () => {
         const edgeLeft = rendererOutput[0];
 
         // Work-around to deal with deep equal on objects with functions
-        expect(edgeLeft.data.on.mouseover).to.be.a.function;
-        expect(edgeLeft.data.on.mouseout).to.be.a.function;
+        expect(edgeLeft.data.on.mouseover).to.be.a('function');
+        expect(edgeLeft.data.on.mouseout).to.be.a('function');
         delete edgeLeft.data.on.mouseover;
         delete edgeLeft.data.on.mouseout;
 
@@ -151,8 +151,8 @@ describe('Brush Range', () => {
         const edgeRight = rendererOutput[1];
 
         // Work-around to deal with deep equal on objects with functions
-        expect(edgeRight.data.on.mouseover).to.be.a.function;
-        expect(edgeRight.data.on.mouseout).to.be.a.function;
+        expect(edgeRight.data.on.mouseover).to.be.a('function');
+        expect(edgeRight.data.on.mouseout).to.be.a('function');
         delete edgeRight.data.on.mouseover;
         delete edgeRight.data.on.mouseout;
 
@@ -251,8 +251,8 @@ describe('Brush Range', () => {
         const edgeLeft = rendererOutput[0];
 
         // Work-around to deal with deep equal on objects with functions
-        expect(edgeLeft.data.on.mouseover).to.be.a.function;
-        expect(edgeLeft.data.on.mouseout).to.be.a.function;
+        expect(edgeLeft.data.on.mouseover).to.be.a('function');
+        expect(edgeLeft.data.on.mouseout).to.be.a('function');
         delete edgeLeft.data.on.mouseover;
         delete edgeLeft.data.on.mouseout;
 
@@ -285,8 +285,8 @@ describe('Brush Range', () => {
         const edgeRight = rendererOutput[1];
 
         // Work-around to deal with deep equal on objects with functions
-        expect(edgeRight.data.on.mouseover).to.be.a.function;
-        expect(edgeRight.data.on.mouseout).to.be.a.function;
+        expect(edgeRight.data.on.mouseover).to.be.a('function');
+        expect(edgeRight.data.on.mouseout).to.be.a('function');
         delete edgeRight.data.on.mouseover;
         delete edgeRight.data.on.mouseout;
 
@@ -378,8 +378,8 @@ describe('Brush Range', () => {
         const edgeTop = rendererOutput[0];
 
         // Work-around to deal with deep equal on objects with functions
-        expect(edgeTop.data.on.mouseover).to.be.a.function;
-        expect(edgeTop.data.on.mouseout).to.be.a.function;
+        expect(edgeTop.data.on.mouseover).to.be.a('function');
+        expect(edgeTop.data.on.mouseout).to.be.a('function');
         delete edgeTop.data.on.mouseover;
         delete edgeTop.data.on.mouseout;
 
@@ -415,8 +415,8 @@ describe('Brush Range', () => {
         const edgeBottom = rendererOutput[1];
 
         // Work-around to deal with deep equal on objects with functions
-        expect(edgeBottom.data.on.mouseover).to.be.a.function;
-        expect(edgeBottom.data.on.mouseout).to.be.a.function;
+        expect(edgeBottom.data.on.mouseover).to.be.a('function');
+        expect(edgeBottom.data.on.mouseout).to.be.a('function');
         delete edgeBottom.data.on.mouseover;
         delete edgeBottom.data.on.mouseout;
 

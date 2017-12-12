@@ -150,18 +150,18 @@ describe('brush-lasso', () => {
       instance.def.start({ center: { x: 0, y: 0 } }); // needed to init state
       instance.def.move({ center: { x: 10, y: 10 } });
 
-      expect(spy).to.have.been.called.once;
-      expect(shapesAtStub).to.have.been.called.once;
-      expect(brushFromShapesStub).to.have.been.called.once;
+      expect(spy).to.have.been.calledOnce;
+      expect(shapesAtStub).to.have.been.calledOnce;
+      expect(brushFromShapesStub).to.have.been.calledOnce;
     });
 
     it('should call render on "end"', () => {
       instance.def.start({ center: { x: 0, y: 0 } }); // needed to init state
       instance.def.end({ center: { x: 10, y: 10 } });
 
-      expect(spy).to.have.been.called.once;
-      expect(shapesAtStub).to.have.been.called.once;
-      expect(brushFromShapesStub).to.have.been.called.once;
+      expect(spy).to.have.been.calledOnce;
+      expect(shapesAtStub).to.have.been.calledOnce;
+      expect(brushFromShapesStub).to.have.been.calledOnce;
     });
 
     it('should not call render on "move" if lasso has not been initiated', () => {

@@ -2,7 +2,7 @@ import interaction from '../../../../src/core/interaction';
 
 describe('interaction plugin api', () => {
   it('should return the native interaction', () => {
-    expect(interaction('native')).to.be.a.function;
+    expect(interaction('native')).to.be.a('function');
   });
 
   it('should register new interaction', () => {

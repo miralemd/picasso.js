@@ -19,7 +19,7 @@ describe('text', () => {
         canvas: {}
       };
 
-      sandbox.stub(textManipulation, 'ellipsText', () => '...');
+      sandbox.stub(textManipulation, 'ellipsText').callsFake(() => '...');
 
       text = {
         x: 1,

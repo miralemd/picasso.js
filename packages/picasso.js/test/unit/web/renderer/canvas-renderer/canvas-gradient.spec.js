@@ -1,5 +1,5 @@
+import canvascontext from 'test-utils/mocks/canvas-context';
 import createCanvasGradient from '../../../../../src/web/renderer/canvas-renderer/canvas-gradient';
-import canvascontext from '../../../../../../../test/mocks/canvas-context';
 
 describe('canvas-gradient', () => {
   let shape;
@@ -93,10 +93,10 @@ describe('canvas-gradient', () => {
 
         shape.fill = createCanvasGradient(canvascontext(), shape, shape.fill);
 
-        expect(shape.fill.args[0]).to.be.a.number;
-        expect(shape.fill.args[1]).to.be.a.number;
-        expect(shape.fill.args[2]).to.be.a.number;
-        expect(shape.fill.args[3]).to.be.a.number;
+        expect(shape.fill.args[0]).to.be.a('number');
+        expect(shape.fill.args[1]).to.be.a('number');
+        expect(shape.fill.args[2]).to.be.a('number');
+        expect(shape.fill.args[3]).to.be.a('number');
       });
     });
   });
@@ -141,10 +141,10 @@ describe('canvas-gradient', () => {
 
         shape.fill = createCanvasGradient(canvascontext(), shape, shape.fill);
 
-        expect(shape.fill.args[0]).to.be.a.number;
-        expect(shape.fill.args[1]).to.be.a.number;
-        expect(shape.fill.args[2]).to.be.a.number;
-        expect(shape.fill.args[3]).to.be.a.number;
+        expect(shape.fill.args[0]).to.be.a('number');
+        expect(shape.fill.args[1]).to.be.a('number');
+        expect(shape.fill.args[2]).to.be.a('number');
+        expect(shape.fill.args[3]).to.be.a('number');
       });
     });
   });

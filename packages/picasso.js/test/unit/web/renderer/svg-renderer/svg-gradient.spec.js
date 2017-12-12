@@ -78,7 +78,7 @@ describe('svg-gradient', () => {
       const defs = createDefsNode();
 
       expect(defs.type).to.be.equal('defs');
-      expect(defs.children).to.be.an.array;
+      expect(defs.children).to.be.an('array');
       expect(defs.children).to.have.length(1);
 
       expect(gradients[0].type).to.be.equal('rect');
@@ -97,7 +97,7 @@ describe('svg-gradient', () => {
       const defs = createDefsNode();
 
       expect(defs.type).to.be.equal('defs');
-      expect(defs.children).to.be.an.array;
+      expect(defs.children).to.be.an('array');
       expect(defs.children).to.have.length(2);
 
       expect(gradients[0].type).to.be.equal('rect');
