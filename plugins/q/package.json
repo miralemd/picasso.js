@@ -3,7 +3,7 @@
   "version": "0.39.2",
   "description": "Q module for Picasso",
   "license": "ISC",
-  "private": true,
+  "private": false,
   "publishConfig": {
     "registry": "https://qliktech.jfrog.io/qliktech/api/npm/npm-local/"
   },
@@ -19,9 +19,7 @@
     "test": "npm run test:unit",
     "test:unit": "node ../../node_modules/after-work.js/src/cli.js -c aw.config.js",
     "test:unit:watch": "npm run test:unit -- -w",
-    "test:unit:coverage": "npm run test:unit -- --coverage",
-    "preversion": "npm run lint && npm run test",
-    "version": "npm install && npm run build"
+    "test:unit:coverage": "npm run test:unit -- --coverage"
   },
   "files": [
     "/dist"

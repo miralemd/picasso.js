@@ -3,7 +3,7 @@
   "version": "0.39.2",
   "description": "Hammer JS interaction mixin for Picasso",
   "license": "ISC",
-  "private": true,
+  "private": false,
   "publishConfig": {
     "registry": "https://qliktech.jfrog.io/qliktech/api/npm/npm-local/"
   },
@@ -15,9 +15,7 @@
     "build": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js --name picassoHammer --environment BUILD:production",
     "build:dev": "node ../../node_modules/rollup/bin/rollup -c ../../rollup.config.js --name picassoHammer",
     "lint": "node ../../node_modules/eslint/bin/eslint src test",
-    "test": "node ../../node_modules/after-work.js/src/cli.js -c aw.config.js",
-    "preversion": "npm run lint && npm run test",
-    "version": "npm install && npm run build"
+    "test": "node ../../node_modules/after-work.js/src/cli.js -c aw.config.js"
   },
   "files": [
     "/dist"

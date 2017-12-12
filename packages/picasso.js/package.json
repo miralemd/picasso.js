@@ -3,7 +3,7 @@
   "version": "0.39.2",
   "description": "A charting library streamlined for building visualizations for the Qlik Sense Analytics platform.",
   "license": "ISC",
-  "private": true,
+  "private": false,
   "publishConfig": {
     "registry": "https://qliktech.jfrog.io/qliktech/api/npm/npm-local/"
   },
@@ -29,8 +29,7 @@
     "test:integration:local": "node ../../node_modules/protractor/bin/webdriver-manager update && node ../../node_modules/after-work.js/src/cli.js protractor -c aw.config.js --require babel-register --require babel-helpers",
     "test:integration:remote": "node ../../node_modules/after-work.js/src/cli.js protractor -c aw.config.remote.js --require babel-register --require babel-helpers",
     "fixture:server": "node ../../node_modules/after-work.js/src/cli.js serve -c aw.webserver.config.js",
-    "preversion": "npm run lint && npm run test",
-    "version": "node scripts/version.js && npm install && npm run build"
+    "version": "node scripts/version.js"
   },
   "files": [
     "/dist"
