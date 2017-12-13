@@ -12,6 +12,7 @@
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
     "build:dev": "lerna run build:dev",
+    "build:watch": "lerna run build:watch --stream --concurrency 99",
     "bump": "lerna publish --skip-npm --skip-git --ignore=exec-closest --ignore=test-utils",
     "lint": "lerna run lint",
     "test": "lerna run test --ignore=test-utils --ignore=exec-closest",

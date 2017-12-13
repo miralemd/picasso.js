@@ -14,6 +14,7 @@
   "scripts": {
     "build": "exec-closest rollup -c ../../rollup.config.js --name picassoHammer --environment BUILD:production",
     "build:dev": "exec-closest rollup -c ../../rollup.config.js --name picassoHammer",
+    "build:watch": "exec-closest rollup -c ../../rollup.config.js --name picassoHammer -w",
     "lint": "exec-closest eslint src test",
     "test": "exec-closest aw -c aw.config.js"
   },
