@@ -2,6 +2,21 @@
 
 ## **{{VERSION}}** - *({{DATE}})*
 
+### Added
+
+- Axis: add support to align label along main axis ([#572](https://github.com/qlik-trial/picasso.js/issues/572))
+
+  ```js
+  {
+    type: 'axis',
+    settings: {
+      labels: {
+        align: 0.5
+      }
+    }
+  }
+  ```
+
 ## **0.40.0** - *(2017-12-12)* [BREAKING]
 
 ### Added

@@ -26,7 +26,8 @@ import { scaleWithSize } from '../../scales';
  * @property {number} [labels.margin] - Space between tick and label. Default to 6 (discrete) or 4 (continuous)
  * @property {number} [labels.maxLengthPx=150] - Max length of labels in pixels
  * @property {number} [labels.minLengthPx=0] - Min length of labels in pixels. Labels will always at least require this much space
- * @property {number} [labels.maxGlyphCount=NaN] - Is used to measure the largest possible size a label
+ * @property {number} [labels.maxGlyphCount=NaN] - When only a sub-set of data is available, ex. when paging. This property can be used to let the axis estimate how much space the labels will consume, allowing it to give a consistent space estimate over the entire dataset when paging.
+ * @property {number} [labels.align=0.5] - Align act as a slider for the text bounding rect over the item bandwidth, given that the item have a bandwidth. Except when labels are tilted, then the align is a pure align that shifts the position of the label anchoring point.
  * @property {object} [line]
  * @property {boolean} [line.show=true]
  * @property {number} [line.strokeWidth=1]

@@ -104,7 +104,8 @@ Under the hood - `maxGlyphCount` is a multipler on the size of the character `M`
       margin: /* number */, // Space between tick and label. Default to 6 (discrete) or 4 (continuous) // Optional
       maxLengthPx: 150, // Max length of labels in pixels // Optional
       minLengthPx: 0, // Min length of labels in pixels. Labels will always at least require this much space // Optional
-      maxGlyphCount: null, // Is used to measure the largest possible size a label // Optional
+      maxGlyphCount: null, // When only a sub-set of data is available, ex. when paging. This property can be used to let the axis estimate how much space the labels will consume, allowing it to give a consistent space estimate over the entire dataset when paging. // Optional
+      align: 0.5, // Align act as a slider for the text bounding rect over the item bandwidth, given that the item have a bandwidth. Except when labels are tilted, then the align is a pure align that shifts the position of the label anchoring point. // Optional
     },
     line: {  // Optional
       show: true, // Optional

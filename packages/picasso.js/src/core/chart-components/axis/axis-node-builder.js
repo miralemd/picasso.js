@@ -145,25 +145,24 @@ function continuousCalcMaxTextRect({ measureText, settings, innerRect, ticks, ti
   return textRect;
 }
 
+function getStepSizeFn({ innerRect, scale, settings, tick }) {
+  const size = settings.align === 'top' || settings.align === 'bottom' ? innerRect.width : innerRect.height;
+  const bandwidth = tickBandwidth(scale, tick);
+  return size * bandwidth;
+}
+
 export default function nodeBuilder(isDiscrete) {
   let calcMaxTextRectFn;
-  let getStepSizeFn;
   let filterLabels = false;
 
   function continuous() {
     calcMaxTextRectFn = continuousCalcMaxTextRect;
-    getStepSizeFn = () => null;
     filterLabels = true;
     return continuous;
   }
 
   function discrete() {
     calcMaxTextRectFn = discreteCalcMaxTextRect;
-    getStepSizeFn = ({ innerRect, scale, settings, tick }) => {
-      const size = settings.align === 'top' || settings.align === 'bottom' ? innerRect.width : innerRect.height;
-      const bandwidth = tickBandwidth(scale, tick);
-      return size * bandwidth;
-    };
     return discrete;
   }
 

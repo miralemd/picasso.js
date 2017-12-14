@@ -1,6 +1,16 @@
 import buildLabel from '../../../../../src/core/chart-components/axis/axis-label-node';
 import { textBounds } from '../../../../../src/web/text-manipulation';
 
+function createTick(start, end) {
+  const position = start + ((end - start) / 2);
+  return {
+    start,
+    end,
+    position,
+    label: '50%'
+  };
+}
+
 describe('Axis Label Node', () => {
   const innerRect = { x: 0, y: 0, width: 0, height: 0 };
   const outerRect = { x: 0, y: 0, width: 0, height: 0 };
@@ -33,9 +43,10 @@ describe('Axis Label Node', () => {
         maxWidth: textRect.width,
         maxHeight: textRect.height,
         textRect,
-        textBounds: node => textBounds(node, measureTextMock)
+        textBounds: node => textBounds(node, measureTextMock),
+        stepSize: 0
       };
-      tick = { position: 0.5, label: '50%' };
+      tick = createTick(0.5, 0.5);
       expected = {
         type: 'text',
         text: '50%',
@@ -50,12 +61,102 @@ describe('Axis Label Node', () => {
       };
     });
 
+    describe('Style align', () => {
+      it('align start with vertical orientation', () => {
+        buildOpts.align = 'right';
+        buildOpts.style.align = 0;
+        buildOpts.stepSize = 0.2 * innerRect.height; // 20px
+        tick = createTick(0.2, 0.4);
+        expected.x = 10;
+        expected.y = 20;
+        expected.anchor = 'start';
+        expected.baseline = 'text-before-edge';
+
+        expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
+      });
+
+      it('align middle with vertical orientation', () => {
+        buildOpts.align = 'right';
+        buildOpts.style.align = 0.5;
+        buildOpts.stepSize = 0.2 * innerRect.height; // 20px
+        tick = createTick(0.2, 0.4);
+        expected.x = 10;
+        expected.y = 25;
+        expected.anchor = 'start';
+        expected.baseline = 'text-before-edge';
+
+        expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
+      });
+
+      it('align end with vertical orientation', () => {
+        buildOpts.align = 'right';
+        buildOpts.style.align = 1;
+        buildOpts.stepSize = 0.2 * innerRect.height; // 20px
+        tick = createTick(0.2, 0.4);
+        expected.x = 10;
+        expected.y = 30;
+        expected.anchor = 'start';
+        expected.baseline = 'text-before-edge';
+
+        expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
+      });
+
+      it('align start with horizontal orientation', () => {
+        buildOpts.align = 'bottom';
+        buildOpts.style.align = 0;
+        buildOpts.stepSize = 0.4 * innerRect.width; // 20px, i.e. twice as much as textRect.width
+        tick = createTick(0.2, 0.4);
+        expected.x = 10;
+        expected.y = 20;
+        expected.anchor = 'start';
+
+        expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
+      });
+
+      it('align middle with horizontal orientation', () => {
+        buildOpts.align = 'bottom';
+        buildOpts.style.align = 0.5;
+        buildOpts.stepSize = 0.4 * innerRect.width; // 20px, i.e. twice as much as textRect.width
+        tick = createTick(0.2, 0.6);
+        expected.x = 15;
+        expected.y = 20;
+        expected.anchor = 'start';
+
+        expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
+      });
+
+      it('align end with horizontal orientation', () => {
+        buildOpts.align = 'bottom';
+        buildOpts.style.align = 1;
+        buildOpts.stepSize = 0.4 * innerRect.width; // 20px, i.e. twice as much as textRect.width
+        tick = createTick(0.2, 0.6);
+        expected.x = 20;
+        expected.y = 20;
+        expected.anchor = 'start';
+
+        expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
+      });
+
+      it('align end with horizontal orientation and tilted labels', () => {
+        buildOpts.align = 'bottom';
+        buildOpts.tilted = true;
+        buildOpts.angle = 90;
+        buildOpts.style.align = 1;
+        buildOpts.stepSize = 0.4 * innerRect.width; // 20px, i.e. twice as much as textRect.width
+        tick = createTick(0.2, 0.6);
+        expected.x = 35;
+        expected.y = 10;
+        expected.anchor = 'end';
+
+        expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
+      });
+    });
+
     describe('Left align', () => {
       beforeEach(() => {
         buildOpts.align = 'left';
         expected.x = innerRect.width - buildOpts.padding;
-        expected.dy = textRect.height / 3;
-        // expected.baseline = 'central';
+        expected.baseline = 'central';
       });
 
       it('middle label', () => {
@@ -64,34 +165,34 @@ describe('Axis Label Node', () => {
       });
 
       it('end label', () => {
-        tick.position = 1;
+        tick = createTick(1, 1);
         expected.y = 100;
-        expected.dy = 0;
-     //   expected.baseline = 'text-after-edge';
+        expected.baseline = 'text-after-edge';
+
         expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
       });
 
       it('end label with margin', () => {
         outerRect.height = 105;
-        tick.position = 1;
+        tick = createTick(1, 1);
         expected.y = 100;
-       // expected.baseline = 'central';
+
         expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
       });
 
       it('start label', () => {
-        tick.position = 0;
+        tick = createTick(0, 0);
         expected.y = 0;
-        expected.dy = 10;
-      //  expected.baseline = 'text-before-edge';
+        expected.baseline = 'text-before-edge';
+
         expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
       });
 
       it('start label with margin', () => {
         innerRect.y = 5;
-        tick.position = 0;
+        tick = createTick(0, 0);
         expected.y = 5;
-       // expected.baseline = 'central';
+
         expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
       });
     });
@@ -100,9 +201,8 @@ describe('Axis Label Node', () => {
       beforeEach(() => {
         buildOpts.align = 'right';
         expected.x = 10;
-        expected.dy = textRect.height / 3;
         expected.anchor = 'start';
-       // expected.baseline = 'central';
+        expected.baseline = 'central';
       });
 
       it('middle label', () => {
@@ -111,33 +211,32 @@ describe('Axis Label Node', () => {
       });
 
       it('end label', () => {
-        tick.position = 1;
+        tick = createTick(1, 1);
         expected.y = 100;
-        expected.dy = 0;
-      //  expected.baseline = 'text-after-edge';
+        expected.baseline = 'text-after-edge';
         expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
       });
 
       it('end label with margin', () => {
         outerRect.height = 105;
-        tick.position = 1;
+        tick = createTick(1, 1);
         expected.y = 100;
+
         expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
       });
 
       it('start label', () => {
-        tick.position = 0;
+        tick = createTick(0, 0);
         expected.y = 0;
-        expected.dy = 10;
-       // expected.baseline = 'text-before-edge';
+        expected.baseline = 'text-before-edge';
         expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
       });
 
       it('start label with margin', () => {
         innerRect.y = 5;
-        tick.position = 0;
+        tick = createTick(0, 0);
         expected.y = 5;
-       // expected.baseline = 'central';
+
         expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
       });
     });
@@ -155,7 +254,7 @@ describe('Axis Label Node', () => {
       });
 
       it('start label', () => {
-        tick.position = 0;
+        tick = createTick(0, 0);
         expected.x = 0;
         expected.anchor = 'start';
         expected.maxWidth *= 0.75;
@@ -163,14 +262,14 @@ describe('Axis Label Node', () => {
       });
 
       it('start label with margin', () => {
-        tick.position = 0;
+        tick = createTick(0, 0);
         innerRect.x = 5;
         expected.x = 5;
         expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
       });
 
       it('end label', () => {
-        tick.position = 1;
+        tick = createTick(1, 1);
         expected.x = 50;
         expected.anchor = 'end';
         expected.maxWidth *= 0.75;
@@ -178,7 +277,7 @@ describe('Axis Label Node', () => {
       });
 
       it('end label with margin', () => {
-        tick.position = 1;
+        tick = createTick(1, 1);
         outerRect.width = 65;
         expected.x = 50;
         expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
@@ -198,7 +297,7 @@ describe('Axis Label Node', () => {
       });
 
       it('start label', () => {
-        tick.position = 0;
+        tick = createTick(0, 0);
         expected.x = 0;
         expected.anchor = 'start';
         expected.maxWidth *= 0.75;
@@ -206,14 +305,14 @@ describe('Axis Label Node', () => {
       });
 
       it('start label with margin', () => {
-        tick.position = 0;
+        tick = createTick(0, 0);
         innerRect.x = 5;
         expected.x = 5;
         expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
       });
 
       it('end label', () => {
-        tick.position = 1;
+        tick = createTick(1, 1);
         expected.x = 50;
         expected.anchor = 'end';
         expected.maxWidth *= 0.75;
@@ -221,7 +320,7 @@ describe('Axis Label Node', () => {
       });
 
       it('end label with margin', () => {
-        tick.position = 1;
+        tick = createTick(1, 1);
         outerRect.width = 65;
         expected.x = 50;
         expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
@@ -237,7 +336,8 @@ describe('Axis Label Node', () => {
         expected.y = 10 + ((buildOpts.maxHeight * Math.cos(rad45)) / 2); // 10 is top of rect + padding
         expected.x = 25 - ((buildOpts.maxHeight * Math.sin(rad45)) / 2); // 25 is in the middle: width * tick.position
         expected.transform = `rotate(-45, ${expected.x}, ${expected.y})`;
-        tick = { position: 0.5, label: 'mmmmmm' };
+        tick = createTick(0.5, 0.5);
+        tick.label = 'mmmmmm';
         expected.text = tick.label;
       });
       describe('align bottom', () => {
@@ -245,9 +345,11 @@ describe('Axis Label Node', () => {
           buildOpts.align = 'bottom';
           expected.anchor = 'end';
         });
+
         it('45deg', () => {
           expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
         });
+
         it('60deg', () => {
           expected.y = 10 + ((buildOpts.maxHeight * Math.cos(rad60)) / 2);
           expected.x = 25 - ((buildOpts.maxHeight * Math.sin(rad60)) / 2);
@@ -255,6 +357,7 @@ describe('Axis Label Node', () => {
           buildOpts.angle = 60;
           expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
         });
+
         it('-45deg', () => {
           expected.y = 10 + ((buildOpts.maxHeight * Math.cos(-rad45)) / 2);
           expected.x = 25 - ((buildOpts.maxHeight * Math.sin(-rad45)) / 2);
@@ -264,11 +367,13 @@ describe('Axis Label Node', () => {
           expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
         });
       });
+
       describe('align top', () => {
         beforeEach(() => {
           buildOpts.align = 'top';
           expected.anchor = 'start';
         });
+
         it('45deg', () => {
           buildOpts.angle = 45;
           expected.x = 25 - ((buildOpts.maxHeight * Math.sin(rad45)) / 3);
@@ -276,6 +381,7 @@ describe('Axis Label Node', () => {
           expected.transform = `rotate(-45, ${expected.x}, 90)`;
           expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
         });
+
         it('60deg', () => {
           buildOpts.angle = 60;
           expected.x = 25 - ((buildOpts.maxHeight * Math.sin(rad60)) / 3);
@@ -283,6 +389,7 @@ describe('Axis Label Node', () => {
           expected.transform = `rotate(-60, ${expected.x}, ${expected.y})`;
           expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
         });
+
         it('-45deg', () => {
           buildOpts.angle = -45;
           expected.anchor = 'end';
@@ -308,13 +415,14 @@ describe('Axis Label Node', () => {
         });
 
         it('should have a collider', () => {
-          buildOpts.stepSize = 0.2;
+          buildOpts.stepSize = 0.2 * innerRect.height;
+          tick = createTick(0.4, 0.6);
           const label = buildLabel(tick, buildOpts);
 
           expected = {
             type: 'rect',
             x: 0,
-            y: 49.9,
+            y: 40,
             width: buildOpts.innerRect.width,
             height: buildOpts.stepSize
           };
@@ -323,8 +431,8 @@ describe('Axis Label Node', () => {
         });
 
         it('should clip collider at the bottom boundary of outerRect', () => {
-          buildOpts.stepSize = 0.2;
-          tick.position = 0;
+          buildOpts.stepSize = 0.2 * innerRect.height;
+          tick = createTick(0, 0.2);
           const label = buildLabel(tick, buildOpts);
 
           expected = {
@@ -332,23 +440,23 @@ describe('Axis Label Node', () => {
             x: 0,
             y: 0,
             width: buildOpts.innerRect.width,
-            height: buildOpts.stepSize / 2
+            height: buildOpts.stepSize
           };
 
           expect(label.collider).to.deep.equal(expected);
         });
 
         it('should clip collider at the top boundary of outerRect', () => {
-          buildOpts.stepSize = 0.2;
-          tick.position = 1;
+          buildOpts.stepSize = 0.2 * innerRect.height;
+          tick = createTick(0.8, 1);
           const label = buildLabel(tick, buildOpts);
 
           expected = {
             type: 'rect',
             x: 0,
-            y: 99.9,
+            y: 80,
             width: buildOpts.innerRect.width,
-            height: 0.09999999999999148
+            height: 20
           };
 
           expect(label.collider).to.deep.equal(expected);
@@ -361,13 +469,14 @@ describe('Axis Label Node', () => {
         });
 
         it('should have a collider', () => {
-          buildOpts.stepSize = 0.2;
+          buildOpts.stepSize = 0.2 * innerRect.height;
+          tick = createTick(0.4, 0.6);
           const label = buildLabel(tick, buildOpts);
 
           expected = {
             type: 'rect',
             x: 0,
-            y: 49.9,
+            y: 40,
             width: buildOpts.innerRect.width,
             height: buildOpts.stepSize
           };
@@ -376,8 +485,8 @@ describe('Axis Label Node', () => {
         });
 
         it('should clip collider at the bottom boundary of outerRect', () => {
-          buildOpts.stepSize = 0.2;
-          tick.position = 0;
+          buildOpts.stepSize = 0.2 * innerRect.height;
+          tick = createTick(0, 0.2);
           const label = buildLabel(tick, buildOpts);
 
           expected = {
@@ -385,23 +494,23 @@ describe('Axis Label Node', () => {
             x: 0,
             y: 0,
             width: buildOpts.innerRect.width,
-            height: buildOpts.stepSize / 2
+            height: buildOpts.stepSize
           };
 
           expect(label.collider).to.deep.equal(expected);
         });
 
         it('should clip collider at the top boundary of outerRect', () => {
-          buildOpts.stepSize = 0.2;
-          tick.position = 1;
+          buildOpts.stepSize = 0.2 * innerRect.height;
+          tick = createTick(0.8, 1);
           const label = buildLabel(tick, buildOpts);
 
           expected = {
             type: 'rect',
             x: 0,
-            y: 99.9,
+            y: 80,
             width: buildOpts.innerRect.width,
-            height: 0.09999999999999148
+            height: 20
           };
 
           expect(label.collider).to.deep.equal(expected);
@@ -414,12 +523,13 @@ describe('Axis Label Node', () => {
         });
 
         it('should have a collider for horizontal labels', () => {
-          buildOpts.stepSize = 0.2;
+          buildOpts.stepSize = 0.2 * innerRect.width;
+          tick = createTick(0.4, 0.6);
           const label = buildLabel(tick, buildOpts);
 
           expected = {
             type: 'rect',
-            x: 24.9,
+            x: 20,
             y: 0,
             width: buildOpts.stepSize,
             height: buildOpts.innerRect.height
@@ -429,17 +539,18 @@ describe('Axis Label Node', () => {
         });
 
         it('should have a collider for layered labels', () => {
-          buildOpts.stepSize = 0.2;
+          buildOpts.stepSize = 0.2 * innerRect.width;
+          tick = createTick(0.4, 0.6);
           buildOpts.layered = true;
           const label = buildLabel(tick, buildOpts);
 
           expected = {
             type: 'polygon',
             vertices: [
-              { x: 23.5, y: 89.25 },
-              { x: 26.5, y: 89.25 },
-              { x: 26.5, y: 90.25 },
-              { x: 23.5, y: 90.25 }
+              { x: 20, y: 89.25 },
+              { x: 23, y: 89.25 },
+              { x: 23, y: 90.25 },
+              { x: 20, y: 90.25 }
             ]
           };
 
@@ -447,7 +558,8 @@ describe('Axis Label Node', () => {
         });
 
         it('should have a collider for tilted labels', () => {
-          buildOpts.stepSize = 0.2;
+          buildOpts.stepSize = 0.2 * innerRect.width;
+          tick = createTick(0.4, 0.6);
           buildOpts.tilted = true;
           buildOpts.angle = 45;
           const label = buildLabel(tick, buildOpts);
@@ -455,8 +567,8 @@ describe('Axis Label Node', () => {
           expected = {
             type: 'polygon',
             vertices: [
-              { x: 26.826692518065247, y: 89.82322330470336 },
-              { x: 27.533799299251797, y: 90.53033008588991 },
+              { x: 23.644712002725782, y: 86.6412427893639 },
+              { x: 30.715779814591258, y: 93.71231060122938 },
               { x: 40.35702260395516, y: 90.25 },
               { x: 40.35702260395516, y: 89.25 }
             ]
@@ -466,7 +578,8 @@ describe('Axis Label Node', () => {
         });
 
         it('should have a collider for tilted labels with a negative angle', () => {
-          buildOpts.stepSize = 0.2;
+          buildOpts.stepSize = 0.2 * innerRect.width;
+          tick = createTick(0.4, 0.6);
           buildOpts.tilted = true;
           buildOpts.angle = -45;
           const label = buildLabel(tick, buildOpts);
@@ -474,8 +587,8 @@ describe('Axis Label Node', () => {
           expected = {
             type: 'polygon',
             vertices: [
-              { x: 22.466200700748203, y: 90.53033008588991 },
-              { x: 23.173307481934753, y: 89.82322330470336 },
+              { x: 19.284220185408742, y: 93.71231060122938 },
+              { x: 26.355287997274218, y: 86.6412427893639 },
               { x: 9.642977396044841, y: 89.25 },
               { x: 9.642977396044841, y: 90.25 }
             ]
@@ -485,15 +598,15 @@ describe('Axis Label Node', () => {
         });
 
         it('should clip collider at the bottom boundary of outerRect', () => {
-          buildOpts.stepSize = 0.2;
-          tick.position = 0;
+          buildOpts.stepSize = 0.2 * innerRect.width;
+          tick = createTick(0, 0.2);
           const label = buildLabel(tick, buildOpts);
 
           expected = {
             type: 'rect',
             x: 0,
             y: 0,
-            width: buildOpts.stepSize / 2,
+            width: buildOpts.stepSize,
             height: buildOpts.innerRect.height
           };
 
@@ -501,15 +614,15 @@ describe('Axis Label Node', () => {
         });
 
         it('should clip collider at the top boundary of outerRect', () => {
-          buildOpts.stepSize = 0.2;
-          tick.position = 1;
+          buildOpts.stepSize = 0.2 * innerRect.width;
+          tick = createTick(0.8, 1);
           const label = buildLabel(tick, buildOpts);
 
           expected = {
             type: 'rect',
-            x: 49.9,
+            x: 40,
             y: 0,
-            width: 0.09999999999999859,
+            width: 10,
             height: buildOpts.innerRect.height
           };
 
@@ -523,12 +636,13 @@ describe('Axis Label Node', () => {
         });
 
         it('should have a collider for horizontal labels', () => {
-          buildOpts.stepSize = 0.2;
+          buildOpts.stepSize = 0.2 * innerRect.width;
+          tick = createTick(0.4, 0.6);
           const label = buildLabel(tick, buildOpts);
 
           expected = {
             type: 'rect',
-            x: 24.9,
+            x: 20,
             y: 0,
             width: buildOpts.stepSize,
             height: buildOpts.innerRect.height
@@ -538,17 +652,18 @@ describe('Axis Label Node', () => {
         });
 
         it('should have a collider for layered labels', () => {
-          buildOpts.stepSize = 0.2;
+          buildOpts.stepSize = 0.2 * innerRect.width;
+          tick = createTick(0.4, 0.6);
           buildOpts.layered = true;
           const label = buildLabel(tick, buildOpts);
 
           expected = {
             type: 'polygon',
             vertices: [
-              { x: 23.5, y: 19.25 },
-              { x: 26.5, y: 19.25 },
-              { x: 26.5, y: 20.25 },
-              { x: 23.5, y: 20.25 }
+              { x: 20, y: 19.25 },
+              { x: 23, y: 19.25 },
+              { x: 23, y: 20.25 },
+              { x: 20, y: 20.25 }
             ]
           };
 
@@ -556,7 +671,8 @@ describe('Axis Label Node', () => {
         });
 
         it('should have a collider for tilted labels', () => {
-          buildOpts.stepSize = 0.2;
+          buildOpts.stepSize = 0.2 * innerRect.width;
+          tick = createTick(0.4, 0.6);
           buildOpts.tilted = true;
           buildOpts.angle = 45;
           const label = buildLabel(tick, buildOpts);
@@ -564,8 +680,8 @@ describe('Axis Label Node', () => {
           expected = {
             type: 'polygon',
             vertices: [
-              { x: 28.712310601229376, y: 12.651650429449553 },
-              { x: 29.419417382415922, y: 13.358757210636101 },
+              { x: 25.53033008588991, y: 9.469669914110089 },
+              { x: 32.60139789775538, y: 16.540737725975564 },
               { x: 15.535533905932738, y: 13.785533905932738 },
               { x: 15.535533905932738, y: 12.785533905932738 }
             ]
@@ -575,7 +691,8 @@ describe('Axis Label Node', () => {
         });
 
         it('should have a collider for tilted labels with a negative angle', () => {
-          buildOpts.stepSize = 0.2;
+          buildOpts.stepSize = 0.2 * innerRect.width;
+          tick = createTick(0.4, 0.6);
           buildOpts.tilted = true;
           buildOpts.angle = -45;
           const label = buildLabel(tick, buildOpts);
@@ -583,8 +700,8 @@ describe('Axis Label Node', () => {
           expected = {
             type: 'polygon',
             vertices: [
-              { x: 20.580582617584078, y: 13.358757210636101 },
-              { x: 21.287689398770624, y: 12.651650429449553 },
+              { x: 17.398602102244613, y: 16.540737725975564 },
+              { x: 24.46966991411009, y: 9.469669914110089 },
               { x: 34.46446609406726, y: 12.785533905932738 },
               { x: 34.46446609406726, y: 13.785533905932738 }
             ]
@@ -594,15 +711,15 @@ describe('Axis Label Node', () => {
         });
 
         it('should clip collider at the bottom boundary of outerRect', () => {
-          buildOpts.stepSize = 0.2;
-          tick.position = 0;
+          buildOpts.stepSize = 0.2 * innerRect.width;
+          tick = createTick(0, 0.2);
           const label = buildLabel(tick, buildOpts);
 
           expected = {
             type: 'rect',
             x: 0,
             y: 0,
-            width: buildOpts.stepSize / 2,
+            width: buildOpts.stepSize,
             height: buildOpts.innerRect.height
           };
 
@@ -610,15 +727,15 @@ describe('Axis Label Node', () => {
         });
 
         it('should clip collider at the top boundary of outerRect', () => {
-          buildOpts.stepSize = 0.2;
-          tick.position = 1;
+          buildOpts.stepSize = 0.2 * innerRect.width;
+          tick = createTick(0.8, 1);
           const label = buildLabel(tick, buildOpts);
 
           expected = {
             type: 'rect',
-            x: 49.9,
+            x: 40,
             y: 0,
-            width: 0.09999999999999859,
+            width: 10,
             height: buildOpts.innerRect.height
           };
 

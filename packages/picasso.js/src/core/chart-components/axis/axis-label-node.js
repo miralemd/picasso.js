@@ -10,13 +10,12 @@ function appendStyle(struct, buildOpts) {
   });
 }
 
-function adjustForEnds(struct, buildOpts) {
-  const outerBoundaryMultipler = 0.75;
-
-  if (buildOpts.tilted) {
+function clampEnds(struct, buildOpts) {
+  if (buildOpts.tilted || buildOpts.stepSize) {
     return;
   }
 
+  const outerBoundaryMultipler = 0.75;
   if (buildOpts.align === 'top' || buildOpts.align === 'bottom') {
     const leftBoundary = 0;
     const rightBoundary = buildOpts.outerRect.width;
@@ -40,13 +39,10 @@ function adjustForEnds(struct, buildOpts) {
     const bottomTextBoundary = struct.y + textHeight;
     if (topTextBoundary < topBoundary) {
       struct.y = buildOpts.innerRect.y - buildOpts.outerRect.y;
-      struct.dy = buildOpts.textRect.height;
+      struct.baseline = 'text-before-edge';
     } else if (bottomTextBoundary > bottomBoundary) {
       struct.y = buildOpts.innerRect.height + (buildOpts.innerRect.y - buildOpts.outerRect.y);
-      struct.dy = 0;
-    } else {
-      const alphabeticalBaselineDivisor = 3;
-      struct.dy = buildOpts.textRect.height / alphabeticalBaselineDivisor;
+      struct.baseline = 'text-after-edge';
     }
   }
 }
@@ -192,6 +188,19 @@ function appendBounds(struct, buildOpts) {
   struct.boundingRect = buildOpts.textBounds(struct);
 }
 
+function wiggle(buildOpts, isVertical) {
+  const a = isNaN(buildOpts.style.align) ? 0.5 : Math.min(Math.max(buildOpts.style.align, 0), 1);
+  let w = 0;
+  if (buildOpts.tilted) {
+    w = (buildOpts.stepSize * a);
+  } else {
+    const size = isVertical ? buildOpts.textRect.height : buildOpts.textRect.width;
+    w = Math.max(0, buildOpts.stepSize - size) * a;
+  }
+
+  return w;
+}
+
 export default function buildNode(tick, buildOpts) {
   const struct = {
     type: 'text',
@@ -203,17 +212,18 @@ export default function buildNode(tick, buildOpts) {
   };
 
   if (buildOpts.align === 'top' || buildOpts.align === 'bottom') {
-    struct.x = (tick.position * buildOpts.innerRect.width) + (buildOpts.innerRect.x - buildOpts.outerRect.x);
+    struct.x = (tick.start * buildOpts.innerRect.width) + (buildOpts.innerRect.x - buildOpts.outerRect.x) + wiggle(buildOpts, false);
     struct.y = buildOpts.align === 'top' ? buildOpts.innerRect.height : 0;
-    struct.anchor = 'middle';
+    struct.anchor = buildOpts.stepSize ? 'start' : 'middle';
   } else {
-    struct.y = ((tick.position) * buildOpts.innerRect.height) + (buildOpts.innerRect.y - buildOpts.outerRect.y);
+    struct.y = (tick.start * buildOpts.innerRect.height) + (buildOpts.innerRect.y - buildOpts.outerRect.y) + wiggle(buildOpts, true);
     struct.x = buildOpts.align === 'left' ? buildOpts.innerRect.width : 0;
     struct.anchor = buildOpts.align === 'left' ? 'end' : 'start';
+    struct.baseline = buildOpts.stepSize ? 'text-before-edge' : 'central';
   }
 
   appendStyle(struct, buildOpts);
-  adjustForEnds(struct, buildOpts);
+  clampEnds(struct, buildOpts);
   appendPadding(struct, buildOpts);
   appendTilting(struct, buildOpts);
   appendBounds(struct, buildOpts);
