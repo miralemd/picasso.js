@@ -12,12 +12,12 @@
     "url": "ssh://git@github.com:qlik-trial/picasso.js.git"
   },
   "scripts": {
-    "build": "exec-closest rollup -c ../../rollup.config.js --name picassoQ --environment BUILD:production",
-    "build:dev": "exec-closest rollup -c ../../rollup.config.js --name picassoQ",
-    "build:watch": "exec-closest rollup -c ../../rollup.config.js --name picassoQ -w",
-    "lint": "exec-closest eslint src test",
+    "build": "npxc rollup -c ../../rollup.config.js --name picassoQ --environment BUILD:production",
+    "build:dev": "npxc rollup -c ../../rollup.config.js --name picassoQ",
+    "build:watch": "npxc rollup -c ../../rollup.config.js --name picassoQ -w",
+    "lint": "npxc eslint src test",
     "test": "npm run test:unit",
-    "test:unit": "exec-closest aw -c aw.config.js",
+    "test:unit": "npxc aw -c aw.config.js",
     "test:unit:watch": "npm run test:unit -- -w",
     "test:unit:coverage": "npm run test:unit -- --coverage"
   },
@@ -29,7 +29,7 @@
   "devDependencies": {
     "d3-hierarchy": "^1.1.5",
     "d3-scale": "^1.0.7",
-    "exec-closest": "*",
+    "npxc": "*",
     "extend": "^3.0.0",
     "number-format.js": "^1.1.10"
   }
