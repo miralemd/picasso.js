@@ -24,7 +24,7 @@
   "main": "dist/picasso-hammer.min.js",
   "module": "src/index.js",
   "devDependencies": {
-    "npxc": "*",
+    "npxc": "^0.0.3",
     "test-utils": "*"
   }
 }
