@@ -13,9 +13,8 @@
         [
           "istanbul",
           {
-            "include": [
-              "packages/*/src/**/*.js",
-              "plugins/*/src/**/*.js"
+            "exclude": [
+              "**/test/**"
             ]
           }
         ]
