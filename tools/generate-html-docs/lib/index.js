@@ -25,7 +25,7 @@ function walk(dir, root) {
   return results;
 }
 
-const files = walk('../../../docs/dist/').filter(f => /\.md$/.test(f)).map(f => f.replace(/\.md$/, ''));
+const files = walk(path.resolve(__dirname, '../../../docs/dist/')).filter(f => /\.md$/.test(f)).map(f => f.replace(/\.md$/, ''));
 
 const filesToPrint = ['index'].concat(files);
 
