@@ -30,6 +30,7 @@ describe('data-util', () => {
     it('should attach custom accessors', () => {
       const reduceFn = () => ({});
       const valueFn = () => ({});
+      const labelFn = () => ({});
       ds.field.withArgs('f').returns({
         key: () => 'country',
         reduce: 'foo',
@@ -44,16 +45,19 @@ describe('data-util', () => {
         field: 'f',
         value: valueFn,
         reduce: reduceFn,
+        label: labelFn,
         props: {
           x: {
-            field: 'f2', value: 'val', reduce: 'sum'
+            field: 'f2', value: 'val', reduce: 'sum', label: 'etikett'
           }
         }
       }, ds);
 
       expect(p.main.value).to.equal(valueFn);
       expect(p.main.reduce).to.equal(reduceFn);
+      expect(p.main.label).to.equal(labelFn);
       expect(p.props.x.value).to.equal('val');
+      expect(p.props.x.label).to.equal('etikett');
       expect(p.props.x.reduce).to.be.a('function');
     });
 
@@ -65,7 +69,8 @@ describe('data-util', () => {
       const country = {
         key: () => 'country',
         reduce: () => 'red',
-        value: 'foooo'
+        value: 'foooo',
+        label: 'lbl'
       };
       const region = {
         key: () => 'region',
@@ -95,12 +100,14 @@ describe('data-util', () => {
         field: region,
         type: 'field',
         value: 'val',
-        reduce: reduceFn2
+        reduce: reduceFn2,
+        label: undefined
       });
       expect(p.props.x.fields[1]).to.eql({
         field: country,
         value: 'foooo',
-        reduce: country.reduce
+        reduce: country.reduce,
+        label: 'lbl'
       }, 'sdfsdf');
     });
 
@@ -149,7 +156,8 @@ describe('data-util', () => {
       expect(p.props.y).to.eql({
         field: f,
         type: 'function',
-        value: fn
+        value: fn,
+        label: fn
       });
     });
   });

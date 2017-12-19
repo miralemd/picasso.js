@@ -303,7 +303,7 @@ describe('Tick generators', () => {
     });
 
     it('should generate ticks by data', () => {
-      scale = band({ value: d => d }, { items: data });
+      scale = band({ value: d => d, label: d => d }, { items: data });
       scale.range([0, 1]);
       const ticks = scale.ticks();
       const expected = [

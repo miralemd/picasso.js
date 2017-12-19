@@ -13,6 +13,7 @@ const accessors = {
   title: data => data.title,
   values: data => data.values,
   value: v => v,
+  label: v => v,
   formatter: data => ((data.formatter && data.formatter()) || formatterFn('d3-number')(''))
 };
 
@@ -31,6 +32,7 @@ export default function field(data, {
   title = accessors.title,
   values = accessors.values,
   value = accessors.value,
+  label = accessors.label,
   formatter = accessors.formatter
 } = {}) {
   /**
@@ -97,7 +99,8 @@ export default function field(data, {
      */
     formatter: () => formatter(data),
 
-    value
+    value,
+    label
   };
 
   return f;

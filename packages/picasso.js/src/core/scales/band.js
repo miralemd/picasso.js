@@ -48,7 +48,7 @@ export default function scaleBand(settings = {}, data = {}) {
   const band = d3ScaleBand();
 
   const valueFn = typeof settings.value === 'function' ? settings.value : d => d.value;
-  const labelFn = typeof settings.label === 'function' ? settings.label : valueFn;
+  const labelFn = typeof settings.label === 'function' ? settings.label : d => d.label;
   const items = data.items || [];
   const domainToDataMapping = {};
   let values = [];

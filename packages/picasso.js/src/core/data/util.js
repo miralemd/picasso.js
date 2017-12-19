@@ -65,6 +65,7 @@ function normalizeProperties(cfg, dataset, dataProperties, main) {
     } else if (typeof pConfig === 'function') {
       prop.type = 'function';
       prop.value = pConfig;
+      prop.label = pConfig;
       prop.field = mainField;
     } else if (typeof pConfig === 'object') {
       if (pConfig.fields) {
@@ -73,8 +74,10 @@ function normalizeProperties(cfg, dataset, dataProperties, main) {
         prop.type = 'field';
         prop.field = dataset.field(pConfig.field);
         prop.value = prop.field.value;
+        prop.label = prop.field.label;
       } else if (mainField) {
         prop.value = mainField.value;
+        prop.label = mainField.label;
         prop.field = mainField;
       }
 
@@ -83,6 +86,9 @@ function normalizeProperties(cfg, dataset, dataProperties, main) {
       }
       if (typeof pConfig.value !== 'undefined') {
         prop.value = pConfig.value;
+      }
+      if (typeof pConfig.label !== 'undefined') {
+        prop.label = pConfig.label;
       }
       if (typeof pConfig.reduce === 'function') {
         prop.reduce = pConfig.reduce;
@@ -127,7 +133,7 @@ cfg = {
 */
 export function getPropsInfo(cfg, dataset) {
   // console.log('222', cfg);
-  const { main } = normalizeProperties(cfg, dataset, { main: { value: cfg.value, reduce: cfg.reduce, filter: cfg.filter } }, {});
+  const { main } = normalizeProperties(cfg, dataset, { main: { value: cfg.value, label: cfg.label, reduce: cfg.reduce, filter: cfg.filter } }, {});
   const props = normalizeProperties(cfg, dataset, cfg.props || {}, main);
   return { props, main };
 }
@@ -139,6 +145,11 @@ export function collect(trackedItems, {
   props
 }) {
   let dataItems = [];
+  const mainFormatter = main.field.formatter() || (v => v);
+  const propsFormatters = {};
+  propsArr.forEach((prop) => {
+    propsFormatters[prop] = props[prop].field ? props[prop].field.formatter() : v => v;
+  });
   dataItems.push(...trackedItems.map((t) => {
     let mainValues = t.items.map(item => item.value);
     const mainReduce = main.reduce;
@@ -146,26 +157,15 @@ export function collect(trackedItems, {
       value: mainReduce ? mainReduce(mainValues) : mainValues,
       source: t.items[0].source
     };
+    ret.label = mainFormatter(ret.value);
     propsArr.forEach((prop) => {
       let values = [];
-      /*
-      const p = props[prop];
-      if (p.fields && false) {
-        let propItems = t.items.map(item => item[prop]);
-        p.fields.forEach((pp, fidx) => {
-          let fieldValues = propItems.map(fieldItem => fieldItem[fidx].value);
-
-          // reduce values of the field
-          const reduce = pp.reduce;
-          values.push(reduce ? reduce(fieldValues) : fieldValues);
-        });
-      } else { */
       values = t.items.map(item => item[prop].value);
-      // }
       const reduce = props[prop].reduce;
       ret[prop] = {
         value: reduce ? reduce(values) : values
       };
+      ret[prop].label = String(propsFormatters[prop](ret[prop].value));
       if (t.items[0][prop].source) {
         ret[prop].source = t.items[0][prop].source;
       }

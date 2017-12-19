@@ -21,9 +21,9 @@ describe('extract data', () => {
   describe('from config as array', () => {
     it('should normalize values', () => {
       expect(extract(['A', 'B', 'C']).items).to.eql([
-        { value: 'A' },
-        { value: 'B' },
-        { value: 'C' }
+        { value: 'A', label: 'A' },
+        { value: 'B', label: 'B' },
+        { value: 'C', label: 'C' }
       ]);
     });
   });
@@ -33,9 +33,9 @@ describe('extract data', () => {
       expect(extract({
         items: ['A', 'B', 'C']
       }).items).to.eql([
-        { value: 'A' },
-        { value: 'B' },
-        { value: 'C' }
+        { value: 'A', label: 'A' },
+        { value: 'B', label: 'B' },
+        { value: 'C', label: 'C' }
       ]);
     });
   });
@@ -44,11 +44,12 @@ describe('extract data', () => {
     it('should normalize values', () => {
       expect(extract({
         items: [{ v: 3, s: 'A' }, { v: 5, s: 'B' }, { v: 7, s: 'C' }],
-        value: d => d.v
+        value: d => d.v,
+        label: d => d.s
       }).items).to.eql([
-        { value: 3 },
-        { value: 5 },
-        { value: 7 }
+        { value: 3, label: 'A' },
+        { value: 5, label: 'B' },
+        { value: 7, label: 'C' }
       ]);
     });
   });
@@ -63,8 +64,8 @@ describe('extract data', () => {
       }, { dataset });
 
       expect(d.items).to.eql([
-        { value: 3, source: { field: 'dim' } },
-        { value: 4, source: { field: 'dim' } }
+        { value: 3, label: 'A', source: { field: 'dim' } },
+        { value: 4, label: 'B', source: { field: 'dim' } }
       ]);
     });
 
@@ -147,12 +148,13 @@ describe('extract data', () => {
       });
       let d = extract({
         field: 'dim',
-        value: x => x.v + 5
+        value: x => x.v + 5,
+        label: v => `<${v.s}>`
       }, { dataset });
 
       expect(d.items).to.eql([
-        { value: 8, source: { field: 'dim' } },
-        { value: 9, source: { field: 'dim' } }
+        { value: 8, label: '<A>', source: { field: 'dim' } },
+        { value: 9, label: '<B>', source: { field: 'dim' } }
       ]);
     });
 

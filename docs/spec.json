@@ -3679,6 +3679,11 @@
           "optional": true,
           "type": "data-extract-config~valueFn"
         },
+        "label": {
+          "description": "The field label accessor",
+          "optional": true,
+          "type": "data-extract-config~labelFn"
+        },
         "trackBy": {
           "description": "Track by value accessor",
           "optional": true,
@@ -3713,6 +3718,19 @@
           ],
           "returns": {
             "type": "any"
+          }
+        },
+        "labelFn": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "cell",
+              "description": "The field cell",
+              "type": "any"
+            }
+          ],
+          "returns": {
+            "type": "string"
           }
         },
         "filterFn": {
@@ -3762,6 +3780,10 @@
         "value": {
           "description": "The extracted value",
           "type": "any"
+        },
+        "label": {
+          "description": "The extracted value as a string",
+          "type": "string"
         },
         "source": {
           "description": "The data source of the extracted data",

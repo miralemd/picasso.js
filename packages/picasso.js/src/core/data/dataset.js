@@ -36,7 +36,8 @@ function createFields(matrix, { cache }) {
       min,
       max,
       type,
-      value: v => v
+      value: v => v,
+      label: v => v
     }));
   });
 }
@@ -117,6 +118,7 @@ ds.util = {
  * @typedef {object} data-extract-config
  * @property {string} field - The field to extract data from
  * @property {data-extract-config~valueFn} [value] - The field value accessor
+ * @property {data-extract-config~labelFn} [label] - The field label accessor
  * @property {data-extract-config~trackByFn} [trackBy] - Track by value accessor
  * @property {data-extract-config~reduceFn} [reduce] - Reducer function
  * @property {data-extract-config~filterFn} [filter] - Filter function
@@ -127,6 +129,12 @@ ds.util = {
  * @callback data-extract-config~valueFn
  * @param {any} cell The field cell
  * @returns {any}
+ */
+
+/**
+ * @callback data-extract-config~labelFn
+ * @param {any} cell The field cell
+ * @returns {string}
  */
 
 /**
@@ -151,6 +159,7 @@ ds.util = {
  * @inner
  * @typedef {object} datum-extract
  * @property {any} value - The extracted value
+ * @property {string} label - The extracted value as a string
  * @property {object} source - The data source of the extracted data
  * @property {string} source.key - The data-source key
  * @property {string} source.field - The source field

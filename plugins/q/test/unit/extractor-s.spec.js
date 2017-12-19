@@ -32,9 +32,9 @@ describe('extractor-s', () => {
   };
 
   const fields = [
-    { title: () => 'Dim1', value: d => d.qElemNumber, key: () => 'qDimensionInfo/0' },
-    { title: () => 'Dim2', value: d => d.qElemNumber, key: () => 'qDimensionInfo/1' },
-    { title: () => 'Meas1', value: d => d.qValue, key: () => 'qMeasureInfo/0' }
+    { title: () => 'Dim1', value: d => d.qElemNumber, label: d => d.qText, key: () => 'qDimensionInfo/0' },
+    { title: () => 'Dim2', value: d => d.qElemNumber, label: d => d.qText, key: () => 'qDimensionInfo/1' },
+    { title: () => 'Meas1', value: d => d.qValue, label: d => d.qText, key: () => 'qMeasureInfo/0' }
   ];
 
   const dataset = {
@@ -60,7 +60,8 @@ describe('extractor-s', () => {
     deps.normalizeConfig.returns({
       main: {
         field: dataset.field('Dim2'),
-        value: dataset.field('Dim2').value
+        value: dataset.field('Dim2').value,
+        label: dataset.field('Dim2').label
       },
       props: {}
     });
@@ -68,9 +69,9 @@ describe('extractor-s', () => {
       field: 'Dim2'
     }, dataset, { fields }, deps);
     expect(m).to.eql([
-      { value: 1, source: { field: 'qDimensionInfo/1', key: 'hyper' } },
-      { value: 2, source: { field: 'qDimensionInfo/1', key: 'hyper' } },
-      { value: 3, source: { field: 'qDimensionInfo/1', key: 'hyper' } }
+      { value: 1, label: 'tre', source: { field: 'qDimensionInfo/1', key: 'hyper' } },
+      { value: 2, label: 'sju', source: { field: 'qDimensionInfo/1', key: 'hyper' } },
+      { value: 3, label: 'ett', source: { field: 'qDimensionInfo/1', key: 'hyper' } }
     ]);
   });
 
@@ -86,9 +87,9 @@ describe('extractor-s', () => {
       field: 'qMeasureInfo/0'
     }, dataset, { fields }, deps);
     expect(m).to.eql([
-      { value: 53, source: { field: 'qMeasureInfo/0', key: 'hyper' } },
-      { value: 57, source: { field: 'qMeasureInfo/0', key: 'hyper' } },
-      { value: 51, source: { field: 'qMeasureInfo/0', key: 'hyper' } }
+      { value: 53, label: '53', source: { field: 'qMeasureInfo/0', key: 'hyper' } },
+      { value: 57, label: '57', source: { field: 'qMeasureInfo/0', key: 'hyper' } },
+      { value: 51, label: '51', source: { field: 'qMeasureInfo/0', key: 'hyper' } }
     ]);
   });
 
@@ -113,12 +114,12 @@ describe('extractor-s', () => {
       field: 'Dim2'
     }], dataset, { fields }, deps);
     expect(m).to.eql([
-      { value: 53, source: { field: 'qMeasureInfo/0', key: 'hyper' } },
-      { value: 57, source: { field: 'qMeasureInfo/0', key: 'hyper' } },
-      { value: 51, source: { field: 'qMeasureInfo/0', key: 'hyper' } },
-      { value: 1, source: { field: 'qDimensionInfo/1', key: 'hyper' } },
-      { value: 2, source: { field: 'qDimensionInfo/1', key: 'hyper' } },
-      { value: 3, source: { field: 'qDimensionInfo/1', key: 'hyper' } }
+      { value: 53, label: '53', source: { field: 'qMeasureInfo/0', key: 'hyper' } },
+      { value: 57, label: '57', source: { field: 'qMeasureInfo/0', key: 'hyper' } },
+      { value: 51, label: '51', source: { field: 'qMeasureInfo/0', key: 'hyper' } },
+      { value: 1, label: '1', source: { field: 'qDimensionInfo/1', key: 'hyper' } },
+      { value: 2, label: '2', source: { field: 'qDimensionInfo/1', key: 'hyper' } },
+      { value: 3, label: '3', source: { field: 'qDimensionInfo/1', key: 'hyper' } }
     ]);
   });
 
@@ -126,7 +127,8 @@ describe('extractor-s', () => {
     deps.normalizeConfig.returns({
       main: {
         field: dataset.field('Dim2'),
-        value: d => d
+        value: d => d,
+        label: dataset.field('Dim2').label
       },
       props: {}
     });
@@ -134,9 +136,9 @@ describe('extractor-s', () => {
       field: 'Dim2'
     }, dataset, { fields }, deps);
     expect(m).to.eql([
-      { value: { qNum: 3, qText: 'tre', qElemNumber: 1, qRow: 5 }, source: { field: 'qDimensionInfo/1', key: 'hyper' } },
-      { value: { qNum: 7, qText: 'sju', qElemNumber: 2, qRow: 6 }, source: { field: 'qDimensionInfo/1', key: 'hyper' } },
-      { value: { qNum: 1, qText: 'ett', qElemNumber: 3, qRow: 7 }, source: { field: 'qDimensionInfo/1', key: 'hyper' } }
+      { value: { qNum: 3, qText: 'tre', qElemNumber: 1, qRow: 5 }, label: 'tre', source: { field: 'qDimensionInfo/1', key: 'hyper' } },
+      { value: { qNum: 7, qText: 'sju', qElemNumber: 2, qRow: 6 }, label: 'sju', source: { field: 'qDimensionInfo/1', key: 'hyper' } },
+      { value: { qNum: 1, qText: 'ett', qElemNumber: 3, qRow: 7 }, label: 'ett', source: { field: 'qDimensionInfo/1', key: 'hyper' } }
     ]);
   });
 
@@ -144,10 +146,11 @@ describe('extractor-s', () => {
     deps.normalizeConfig.returns({
       main: {
         field: dataset.field('Dim2'),
+        label: dataset.field('Dim2').label,
         value: d => d
       },
       props: {
-        label: {
+        text: {
           value: d => d.qText,
           field: dataset.field('Dim2')
         }
@@ -160,18 +163,21 @@ describe('extractor-s', () => {
     expect(m).to.eql([
       {
         value: { qNum: 3, qText: 'tre', qElemNumber: 1, qRow: 5 },
+        label: 'tre',
         source: { field: 'qDimensionInfo/1', key: 'hyper' },
-        label: { value: 'tre', source: { field: 'qDimensionInfo/1', key: 'hyper' } }
+        text: { value: 'tre', label: 'tre', source: { field: 'qDimensionInfo/1', key: 'hyper' } }
       },
       {
         value: { qNum: 7, qText: 'sju', qElemNumber: 2, qRow: 6 },
+        label: 'sju',
         source: { field: 'qDimensionInfo/1', key: 'hyper' },
-        label: { value: 'sju', source: { field: 'qDimensionInfo/1', key: 'hyper' } }
+        text: { value: 'sju', label: 'sju', source: { field: 'qDimensionInfo/1', key: 'hyper' } }
       },
       {
         value: { qNum: 1, qText: 'ett', qElemNumber: 3, qRow: 7 },
+        label: 'ett',
         source: { field: 'qDimensionInfo/1', key: 'hyper' },
-        label: { value: 'ett', source: { field: 'qDimensionInfo/1', key: 'hyper' } }
+        text: { value: 'ett', label: 'ett', source: { field: 'qDimensionInfo/1', key: 'hyper' } }
       }
     ]);
   });
@@ -193,21 +199,24 @@ describe('extractor-s', () => {
     expect(m).to.eql([
       {
         value: 'foo',
+        label: 'foo',
         source: { field: 'qDimensionInfo/1', key: 'hyper' },
-        num: { value: 0 },
-        bool: { value: false }
+        num: { value: 0, label: '0' },
+        bool: { value: false, label: 'false' }
       },
       {
         value: 'foo',
+        label: 'foo',
         source: { field: 'qDimensionInfo/1', key: 'hyper' },
-        num: { value: 0 },
-        bool: { value: false }
+        num: { value: 0, label: '0' },
+        bool: { value: false, label: 'false' }
       },
       {
         value: 'foo',
+        label: 'foo',
         source: { field: 'qDimensionInfo/1', key: 'hyper' },
-        num: { value: 0 },
-        bool: { value: false }
+        num: { value: 0, label: '0' },
+        bool: { value: false, label: 'false' }
       }
     ]);
   });
@@ -216,10 +225,11 @@ describe('extractor-s', () => {
     deps.normalizeConfig.returns({
       main: {
         field: dataset.field('Dim2'),
+        label: dataset.field('Dim2').label,
         value: v => v
       },
       props: {
-        num: { value: d => d.qText, field: dataset.field('qMeasureInfo/0') }
+        num: { value: d => d.qValue + 1, field: dataset.field('qMeasureInfo/0'), label: v => v.qText }
       }
     });
     const m = extract({
@@ -228,18 +238,21 @@ describe('extractor-s', () => {
     expect(m).to.eql([
       {
         value: { qNum: 3, qText: 'tre', qElemNumber: 1, qRow: 5 },
+        label: 'tre',
         source: { field: 'qDimensionInfo/1', key: 'hyper' },
-        num: { value: '$53', source: { field: 'qMeasureInfo/0', key: 'hyper' } }
+        num: { value: 54, label: '$53', source: { field: 'qMeasureInfo/0', key: 'hyper' } }
       },
       {
         value: { qNum: 7, qText: 'sju', qElemNumber: 2, qRow: 6 },
+        label: 'sju',
         source: { field: 'qDimensionInfo/1', key: 'hyper' },
-        num: { value: '$57', source: { field: 'qMeasureInfo/0', key: 'hyper' } }
+        num: { value: 58, label: '$57', source: { field: 'qMeasureInfo/0', key: 'hyper' } }
       },
       {
         value: { qNum: 1, qText: 'ett', qElemNumber: 3, qRow: 7 },
+        label: 'ett',
         source: { field: 'qDimensionInfo/1', key: 'hyper' },
-        num: { value: '$51', source: { field: 'qMeasureInfo/0', key: 'hyper' } }
+        num: { value: 52, label: '$51', source: { field: 'qMeasureInfo/0', key: 'hyper' } }
       }
     ]);
   });
@@ -247,10 +260,12 @@ describe('extractor-s', () => {
   it('should return collected values', () => {
     const fs = [{
       title: () => 'dim',
-      key: () => 'dimension1'
+      key: () => 'dimension1',
+      formatter: () => (() => '<>')
     }, {
       title: () => 'me',
-      key: () => 'measure1'
+      key: () => 'measure1',
+      formatter: () => (() => '£')
     }];
     const c = {
       qMode: 'S',
@@ -280,10 +295,11 @@ describe('extractor-s', () => {
     deps.normalizeConfig.returns({
       main: {
         field: mainField,
-        value: v => v
+        value: v => v,
+        label: v => v.qText
       },
       props: {
-        item: { value: d => d, field: meField, source: { key: ds.key(), field: meField.key() } }
+        item: { value: d => d, label: v => v.qText, field: meField, source: { key: ds.key(), field: meField.key() } }
       }
     });
     const m = extract({
@@ -296,21 +312,25 @@ describe('extractor-s', () => {
           { qNum: 3, qText: 'tre', qElemNumber: 1, qRow: 5 },
           { qNum: 5, qText: 'fem', qElemNumber: 1, qRow: 6 }
         ],
+        label: '<>',
         source: { field: 'dimension1', key: 'nyckel' },
         item: {
           value: [
             { qNum: 34, qRow: 5 },
             { qNum: 36, qRow: 6 }
           ],
+          label: '£',
           source: { field: 'measure1', key: 'nyckel' } }
       },
       {
         value: [
           { qNum: 1, qText: 'ett', qElemNumber: 3, qRow: 7 }
         ],
+        label: '<>',
         source: { field: 'dimension1', key: 'nyckel' },
         item: {
           value: [{ qNum: 38, qRow: 7 }],
+          label: '£',
           source: { field: 'measure1', key: 'nyckel' } }
       }
     ]);
@@ -319,10 +339,12 @@ describe('extractor-s', () => {
   it('should return reduced values', () => {
     const fs = [{
       title: () => 'reduceMe',
-      key: () => 'reduuuced'
+      key: () => 'reduuuced',
+      formatter: () => (v => v)
     }, {
       title: () => 'minime',
-      key: () => 'measure1'
+      key: () => 'measure1',
+      formatter: () => (v => `£${v}`)
     }];
     const c = {
       qMode: 'S',
@@ -353,6 +375,7 @@ describe('extractor-s', () => {
       main: {
         field: mainField,
         value: v => v,
+        label: v => v.qText,
         reduce: values => values.map(v => v.qText).join(',')
       },
       props: {
@@ -360,6 +383,7 @@ describe('extractor-s', () => {
         min: {
           value: d => d.qNum,
           field: meField,
+          label: v => v.qText,
           source: { key: ds.key(), field: meField.key() },
           reduce: values => Math.min(...values)
         }
@@ -372,15 +396,17 @@ describe('extractor-s', () => {
     expect(m).to.eql([
       {
         value: 'tre,fem',
+        label: 'tre,fem',
         source: { field: 'reduuuced', key: 'nyckel' },
-        item: { value: [1, 1], source: { field: 'reduuuced', key: 'nyckel' } },
-        min: { value: 34, source: { field: 'measure1', key: 'nyckel' } }
+        item: { value: [1, 1], label: '1,1', source: { field: 'reduuuced', key: 'nyckel' } },
+        min: { value: 34, label: '£34', source: { field: 'measure1', key: 'nyckel' } }
       },
       {
         value: 'ett',
+        label: 'ett',
         source: { field: 'reduuuced', key: 'nyckel' },
-        item: { value: [3], source: { field: 'reduuuced', key: 'nyckel' } },
-        min: { value: 38, source: { field: 'measure1', key: 'nyckel' } }
+        item: { value: [3], label: '3', source: { field: 'reduuuced', key: 'nyckel' } },
+        min: { value: 38, label: '£38', source: { field: 'measure1', key: 'nyckel' } }
       }
     ]);
   });
@@ -388,13 +414,16 @@ describe('extractor-s', () => {
   it('should return reduced values from multiple fields when tracking', () => {
     const fs = [{
       title: () => 'reduceMe',
-      key: () => 'reduuuced'
+      key: () => 'reduuuced',
+      formatter: () => (v => `<${v}>`)
     }, {
       title: () => 'minime',
-      key: () => 'measure1'
+      key: () => 'measure1',
+      formatter: () => (v => `£${v}`)
     }, {
       title: () => 'negative',
-      key: () => 'measure2'
+      key: () => 'measure2',
+      formatter: () => (v => `£${v}`)
     }];
     const c = {
       qMode: 'S',
@@ -446,6 +475,7 @@ describe('extractor-s', () => {
             }
           ],
           value: values => values.join('::'),
+          label: values => values.join('---'),
           reduce: values => values.join(', ')
         }
       }
@@ -457,13 +487,15 @@ describe('extractor-s', () => {
     expect(m).to.eql([
       {
         value: 'tre,fem',
+        label: '<tre,fem>',
         source: { field: 'reduuuced', key: 'nyckel' },
-        total: { value: '34::-20, 36::-30' }
+        total: { value: '34::-20, 36::-30', label: '34::-20, 36::-30' }
       },
       {
         value: 'ett',
+        label: '<ett>',
         source: { field: 'reduuuced', key: 'nyckel' },
-        total: { value: '38::-40' }
+        total: { value: '38::-40', label: '38::-40' }
       }
     ]);
   });
@@ -471,13 +503,16 @@ describe('extractor-s', () => {
   it('should return reduced values from multiple fields without tracking', () => {
     const fs = [{
       title: () => 'reduceMe',
-      key: () => 'reduuuced'
+      key: () => 'reduuuced',
+      formatter: () => (v => v.qText)
     }, {
       title: () => 'minime',
-      key: () => 'measure1'
+      key: () => 'measure1',
+      formatter: () => (v => `£${v}`)
     }, {
       title: () => 'negative',
-      key: () => 'measure2'
+      key: () => 'measure2',
+      formatter: () => (v => `£${v}`)
     }];
     const c = {
       qMode: 'S',
@@ -528,7 +563,8 @@ describe('extractor-s', () => {
               reduce: values => Math.min(...values)
             }
           ],
-          value: values => values.join(':')
+          value: values => values.join(':'),
+          label: values => values.join('|')
         }
       }
     });
@@ -538,18 +574,21 @@ describe('extractor-s', () => {
     expect(m).to.eql([
       {
         value: 'tre',
+        label: 'tre',
         source: { field: 'reduuuced', key: 'nyckel' },
-        total: { value: '34:-20' }
+        total: { value: '34:-20', label: '34|-20' }
       },
       {
         value: 'fem',
+        label: 'fem',
         source: { field: 'reduuuced', key: 'nyckel' },
-        total: { value: '36:-30' }
+        total: { value: '36:-30', label: '36|-30' }
       },
       {
         value: 'ett',
+        label: 'ett',
         source: { field: 'reduuuced', key: 'nyckel' },
-        total: { value: '38:-40' }
+        total: { value: '38:-40', label: '38|-40' }
       }
     ]);
   });
@@ -559,6 +598,7 @@ describe('extractor-s', () => {
     deps.normalizeConfig.returns({
       main: {
         field: dataset.field('Dim2'),
+        label: d => d.qText,
         filter: v => v.qNum !== 7
       },
       props: {}
@@ -569,10 +609,12 @@ describe('extractor-s', () => {
     expect(m).to.eql([
       {
         value: { qNum: 3, qText: 'tre', qElemNumber: 1, qRow: 5 },
+        label: 'tre',
         source: { field: 'qDimensionInfo/1', key: 'hyper' }
       },
       {
         value: { qNum: 1, qText: 'ett', qElemNumber: 3, qRow: 7 },
+        label: 'ett',
         source: { field: 'qDimensionInfo/1', key: 'hyper' }
       }
     ]);

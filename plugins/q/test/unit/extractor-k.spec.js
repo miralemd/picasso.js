@@ -61,9 +61,9 @@ describe('q-data-extractor-k', () => {
     };
 
     const fields = [
-      { title: () => 'a', value: d => d.qElemNo, key: () => 'qDimensionInfo/0', reduce: values => values.join(', ') },
-      { title: () => 'b', value: d => d.qElemNo, key: () => 'qDimensionInfo/1', reduce: values => values.join(', ') },
-      { title: () => 'c', value: d => d.qValue, key: () => 'qMeasureInfo/0', reduce: values => values.join(', ') }
+      { title: () => 'a', value: d => d.qElemNo, label: d => d.qText, key: () => 'qDimensionInfo/0', reduce: values => values.join(', '), formatter: () => (v => `<${v}>`) },
+      { title: () => 'b', value: d => d.qElemNo, label: d => d.qText, key: () => 'qDimensionInfo/1', reduce: values => values.join(', '), formatter: () => (v => `<${v}>`) },
+      { title: () => 'c', value: d => d.qValue, label: d => d.qText, key: () => 'qMeasureInfo/0', reduce: values => values.join(', '), formatter: () => (v => `£${v}`) }
     ];
 
     const dataset = {
@@ -79,14 +79,16 @@ describe('q-data-extractor-k', () => {
       title: () => '',
       value: v => `-${v.qText}-`,
       key: () => 'qDimensionInfo/0/qAttrDimInfo/1',
-      reduce: values => values.join(', ')
+      reduce: values => values.join(', '),
+      formatter: () => (() => '')
     };
     dataset.field.withArgs('firstDimSecondAttrDim').returns(attrDimField);
 
     const attrExprField = {
       title: () => '',
       key: () => 'qDimensionInfo/1/qAttrExprInfo/1',
-      reduce: values => values.join(', ')
+      reduce: values => values.join(', '),
+      formatter: () => (() => '')
     };
 
     dataset.field.withArgs('qDimensionInfo/1/qAttrExprInfo/1').returns(attrExprField);
@@ -97,8 +99,8 @@ describe('q-data-extractor-k', () => {
       }, dataset, {}, deps);
 
       expect(m).to.eql([
-        { value: 1, source: { key: 'cube', field: 'qDimensionInfo/0' } },
-        { value: 3, source: { key: 'cube', field: 'qDimensionInfo/0' } }
+        { value: 1, label: 'Alpha', source: { key: 'cube', field: 'qDimensionInfo/0' } },
+        { value: 3, label: 'Beta', source: { key: 'cube', field: 'qDimensionInfo/0' } }
       ]);
     });
 
@@ -108,10 +110,10 @@ describe('q-data-extractor-k', () => {
       }, dataset, {}, deps);
 
       expect(m).to.eql([
-        { value: 45, source: { key: 'cube', field: 'qMeasureInfo/0' } },
-        { value: 32, source: { key: 'cube', field: 'qMeasureInfo/0' } },
-        { value: 13, source: { key: 'cube', field: 'qMeasureInfo/0' } },
-        { value: 17, source: { key: 'cube', field: 'qMeasureInfo/0' } }
+        { value: 45, label: '$45.00', source: { key: 'cube', field: 'qMeasureInfo/0' } },
+        { value: 32, label: '$32.00', source: { key: 'cube', field: 'qMeasureInfo/0' } },
+        { value: 13, label: '$13.00', source: { key: 'cube', field: 'qMeasureInfo/0' } },
+        { value: 17, label: '$17.00', source: { key: 'cube', field: 'qMeasureInfo/0' } }
       ]);
     });
 
@@ -122,10 +124,10 @@ describe('q-data-extractor-k', () => {
       ], dataset, {}, deps);
 
       expect(m).to.eql([
-        { value: 1, source: { key: 'cube', field: 'qDimensionInfo/0' } },
-        { value: 3, source: { key: 'cube', field: 'qDimensionInfo/0' } },
-        { value: 'Alpha', source: { key: 'cube', field: 'qDimensionInfo/0' } },
-        { value: 'Beta', source: { key: 'cube', field: 'qDimensionInfo/0' } }
+        { value: 1, label: 'Alpha', source: { key: 'cube', field: 'qDimensionInfo/0' } },
+        { value: 3, label: 'Beta', source: { key: 'cube', field: 'qDimensionInfo/0' } },
+        { value: 'Alpha', label: 'Alpha', source: { key: 'cube', field: 'qDimensionInfo/0' } },
+        { value: 'Beta', label: 'Beta', source: { key: 'cube', field: 'qDimensionInfo/0' } }
       ]);
     });
 
@@ -135,8 +137,8 @@ describe('q-data-extractor-k', () => {
       }, dataset, {}, deps);
 
       expect(m).to.eql([
-        { value: '-AlphaDimAttr-', source: { key: 'cube', field: 'qDimensionInfo/0/qAttrDimInfo/1' } },
-        { value: '-BetaDimAttr-', source: { key: 'cube', field: 'qDimensionInfo/0/qAttrDimInfo/1' } }
+        { value: '-AlphaDimAttr-', label: '-AlphaDimAttr-', source: { key: 'cube', field: 'qDimensionInfo/0/qAttrDimInfo/1' } },
+        { value: '-BetaDimAttr-', label: '-BetaDimAttr-', source: { key: 'cube', field: 'qDimensionInfo/0/qAttrDimInfo/1' } }
       ]);
     });
 
@@ -153,13 +155,15 @@ describe('q-data-extractor-k', () => {
       expect(m).to.eql([
         {
           value: 1,
+          label: 'Alpha',
           source: { key: 'cube', field: 'qDimensionInfo/0' },
-          descs: { value: '-exp-666-, -exp-a1-, -exp-a2-', source: { key: 'cube', field: 'qDimensionInfo/1/qAttrExprInfo/1' } }
+          descs: { value: '-exp-666-, -exp-a1-, -exp-a2-', label: '-exp-666-, -exp-a1-, -exp-a2-', source: { key: 'cube', field: 'qDimensionInfo/1/qAttrExprInfo/1' } }
         },
         {
           value: 3,
+          label: 'Beta',
           source: { key: 'cube', field: 'qDimensionInfo/0' },
-          descs: { value: '-exp-667-, -exp-b1-, -exp-b2-', source: { key: 'cube', field: 'qDimensionInfo/1/qAttrExprInfo/1' } }
+          descs: { value: '-exp-667-, -exp-b1-, -exp-b2-', label: '-exp-667-, -exp-b1-, -exp-b2-', source: { key: 'cube', field: 'qDimensionInfo/1/qAttrExprInfo/1' } }
         }
       ]);
     });
@@ -169,40 +173,46 @@ describe('q-data-extractor-k', () => {
         field: 'qDimensionInfo/1',
         value: d => d.qElemNo,
         props: {
-          label: d => d.qText
+          text: d => d.qText
         }
       }, dataset, {}, deps);
 
       expect(m).to.eql([
         {
           value: -1,
+          label: '$666',
           source: { key: 'cube', field: 'qDimensionInfo/1' },
-          label: { value: '$666', source: { key: 'cube', field: 'qDimensionInfo/1' } }
+          text: { value: '$666', label: '$666', source: { key: 'cube', field: 'qDimensionInfo/1' } }
         },
         {
           value: 0,
+          label: 'a1',
           source: { key: 'cube', field: 'qDimensionInfo/1' },
-          label: { value: 'a1', source: { key: 'cube', field: 'qDimensionInfo/1' } }
+          text: { value: 'a1', label: 'a1', source: { key: 'cube', field: 'qDimensionInfo/1' } }
         },
         {
           value: 3,
+          label: 'a2',
           source: { key: 'cube', field: 'qDimensionInfo/1' },
-          label: { value: 'a2', source: { key: 'cube', field: 'qDimensionInfo/1' } }
+          text: { value: 'a2', label: 'a2', source: { key: 'cube', field: 'qDimensionInfo/1' } }
         },
         {
           value: -1,
+          label: '$667',
           source: { key: 'cube', field: 'qDimensionInfo/1' },
-          label: { value: '$667', source: { key: 'cube', field: 'qDimensionInfo/1' } }
+          text: { value: '$667', label: '$667', source: { key: 'cube', field: 'qDimensionInfo/1' } }
         },
         {
           value: 7,
+          label: 'b1',
           source: { key: 'cube', field: 'qDimensionInfo/1' },
-          label: { value: 'b1', source: { key: 'cube', field: 'qDimensionInfo/1' } }
+          text: { value: 'b1', label: 'b1', source: { key: 'cube', field: 'qDimensionInfo/1' } }
         },
         {
           value: 9,
+          label: 'b3',
           source: { key: 'cube', field: 'qDimensionInfo/1' },
-          label: { value: 'b3', source: { key: 'cube', field: 'qDimensionInfo/1' } }
+          text: { value: 'b3', label: 'b3', source: { key: 'cube', field: 'qDimensionInfo/1' } }
         }
       ]);
     });
@@ -222,33 +232,39 @@ describe('q-data-extractor-k', () => {
       expect(m).to.eql([
         {
           value: -1,
+          label: '$666',
           source: { key: 'cube', field: 'qDimensionInfo/1' },
-          parent: { value: 'Alpha', source: { key: 'cube', field: 'qDimensionInfo/0' } }
+          parent: { value: 'Alpha', label: 'Alpha', source: { key: 'cube', field: 'qDimensionInfo/0' } }
         },
         {
           value: 0,
+          label: 'a1',
           source: { key: 'cube', field: 'qDimensionInfo/1' },
-          parent: { value: 'Alpha', source: { key: 'cube', field: 'qDimensionInfo/0' } }
+          parent: { value: 'Alpha', label: 'Alpha', source: { key: 'cube', field: 'qDimensionInfo/0' } }
         },
         {
           value: 3,
+          label: 'a2',
           source: { key: 'cube', field: 'qDimensionInfo/1' },
-          parent: { value: 'Alpha', source: { key: 'cube', field: 'qDimensionInfo/0' } }
+          parent: { value: 'Alpha', label: 'Alpha', source: { key: 'cube', field: 'qDimensionInfo/0' } }
         },
         {
           value: -1,
+          label: '$667',
           source: { key: 'cube', field: 'qDimensionInfo/1' },
-          parent: { value: 'Beta', source: { key: 'cube', field: 'qDimensionInfo/0' } }
+          parent: { value: 'Beta', label: 'Beta', source: { key: 'cube', field: 'qDimensionInfo/0' } }
         },
         {
           value: 7,
+          label: 'b1',
           source: { key: 'cube', field: 'qDimensionInfo/1' },
-          parent: { value: 'Beta', source: { key: 'cube', field: 'qDimensionInfo/0' } }
+          parent: { value: 'Beta', label: 'Beta', source: { key: 'cube', field: 'qDimensionInfo/0' } }
         },
         {
           value: 9,
+          label: 'b3',
           source: { key: 'cube', field: 'qDimensionInfo/1' },
-          parent: { value: 'Beta', source: { key: 'cube', field: 'qDimensionInfo/0' } }
+          parent: { value: 'Beta', label: 'Beta', source: { key: 'cube', field: 'qDimensionInfo/0' } }
         }
       ]);
     });
@@ -267,13 +283,15 @@ describe('q-data-extractor-k', () => {
       expect(m).to.eql([
         {
           value: 1,
+          label: 'Alpha',
           source: { key: 'cube', field: 'qDimensionInfo/0' },
-          descs: { value: '$666, a1, a2', source: { key: 'cube', field: 'qDimensionInfo/1' } }
+          descs: { value: '$666, a1, a2', label: '$666, a1, a2', source: { key: 'cube', field: 'qDimensionInfo/1' } }
         },
         {
           value: 3,
+          label: 'Beta',
           source: { key: 'cube', field: 'qDimensionInfo/0' },
-          descs: { value: '$667, b1, b3', source: { key: 'cube', field: 'qDimensionInfo/1' } }
+          descs: { value: '$667, b1, b3', label: '$667, b1, b3', source: { key: 'cube', field: 'qDimensionInfo/1' } }
         }
       ]);
     });
@@ -282,6 +300,7 @@ describe('q-data-extractor-k', () => {
       const m = extract({
         field: 'qDimensionInfo/1',
         value: 'foo',
+        label: 'baz',
         props: {
           num: 0,
           bool: false
@@ -290,9 +309,10 @@ describe('q-data-extractor-k', () => {
 
       const v = {
         value: 'foo',
+        label: 'baz',
         source: { key: 'cube', field: 'qDimensionInfo/1' },
-        num: { value: 0 },
-        bool: { value: false }
+        num: { value: 0, label: '0' },
+        bool: { value: false, label: 'false' }
       };
       expect(m).to.eql([v, v, v, v, v, v]);
     });
@@ -316,9 +336,10 @@ describe('q-data-extractor-k', () => {
       expect(m).to.eql([
         {
           value: '1--3',
+          label: '<1--3>',
           source: { key: 'cube', field: 'qDimensionInfo/0' },
-          descs: { value: '$666, a1, a2, $667, b1, b3', source: { key: 'cube', field: 'qDimensionInfo/1' } },
-          m: { value: '45, 32, 13, 17', source: { key: 'cube', field: 'qMeasureInfo/0' } }
+          descs: { value: '$666, a1, a2, $667, b1, b3', label: '<$666, a1, a2, $667, b1, b3>', source: { key: 'cube', field: 'qDimensionInfo/1' } },
+          m: { value: '45, 32, 13, 17', label: '£45, 32, 13, 17', source: { key: 'cube', field: 'qMeasureInfo/0' } }
         }
       ]);
     });
@@ -341,33 +362,39 @@ describe('q-data-extractor-k', () => {
       expect(m).to.eql([
         {
           value: -1,
+          label: '$666',
           source: { key: 'cube', field: 'qDimensionInfo/1' },
-          id: { value: 'Alpha:$666' }
+          id: { value: 'Alpha:$666', label: 'Alpha:$666' }
         },
         {
           value: 0,
+          label: 'a1',
           source: { key: 'cube', field: 'qDimensionInfo/1' },
-          id: { value: 'Alpha:a1' }
+          id: { value: 'Alpha:a1', label: 'Alpha:a1' }
         },
         {
           value: 3,
+          label: 'a2',
           source: { key: 'cube', field: 'qDimensionInfo/1' },
-          id: { value: 'Alpha:a2' }
+          id: { value: 'Alpha:a2', label: 'Alpha:a2' }
         },
         {
           value: -1,
+          label: '$667',
           source: { key: 'cube', field: 'qDimensionInfo/1' },
-          id: { value: 'Beta:$667' }
+          id: { value: 'Beta:$667', label: 'Beta:$667' }
         },
         {
           value: 7,
+          label: 'b1',
           source: { key: 'cube', field: 'qDimensionInfo/1' },
-          id: { value: 'Beta:b1' }
+          id: { value: 'Beta:b1', label: 'Beta:b1' }
         },
         {
           value: 9,
+          label: 'b3',
           source: { key: 'cube', field: 'qDimensionInfo/1' },
-          id: { value: 'Beta:b3' }
+          id: { value: 'Beta:b3', label: 'Beta:b3' }
         }
       ]);
     });
@@ -390,13 +417,15 @@ describe('q-data-extractor-k', () => {
       expect(m).to.eql([
         {
           value: 1,
+          label: 'Alpha',
           source: { key: 'cube', field: 'qDimensionInfo/0' },
-          id: { value: 'Alpha:77' }
+          id: { value: 'Alpha:77', label: 'Alpha:77' }
         },
         {
           value: 3,
+          label: 'Beta',
           source: { key: 'cube', field: 'qDimensionInfo/0' },
-          id: { value: 'Beta:30' }
+          id: { value: 'Beta:30', label: 'Beta:30' }
         }
       ]);
     });
@@ -411,18 +440,22 @@ describe('q-data-extractor-k', () => {
       expect(m).to.eql([
         {
           value: 0,
+          label: 'a1',
           source: { key: 'cube', field: 'qDimensionInfo/1' }
         },
         {
           value: 3,
+          label: 'a2',
           source: { key: 'cube', field: 'qDimensionInfo/1' }
         },
         {
           value: 7,
+          label: 'b1',
           source: { key: 'cube', field: 'qDimensionInfo/1' }
         },
         {
           value: 9,
+          label: 'b3',
           source: { key: 'cube', field: 'qDimensionInfo/1' }
         }
       ]);
@@ -476,10 +509,10 @@ describe('q-data-extractor-k', () => {
     };
 
     const fields = [
-      { title: () => 'a', value: d => d.qElemNo, key: () => 'qDimensionInfo/0' },
-      { title: () => 'b', value: d => d.qElemNo, key: () => 'qDimensionInfo/1', reduce: values => values.join(', ') },
-      { title: () => 'c', value: d => d.qValue, key: () => 'qMeasureInfo/0' },
-      { title: () => 'd', value: d => d.qValue, key: () => 'qMeasureInfo/1' }
+      { title: () => 'a', value: d => d.qElemNo, key: () => 'qDimensionInfo/0', formatter: () => (v => `<${v}>`) },
+      { title: () => 'b', value: d => d.qElemNo, key: () => 'qDimensionInfo/1', reduce: values => values.join(', '), formatter: () => (v => `<${v}>`) },
+      { title: () => 'c', value: d => d.qValue, label: d => d.qText, key: () => 'qMeasureInfo/0', formatter: () => (v => `£${v}`) },
+      { title: () => 'd', value: d => d.qValue, label: d => d.qText, key: () => 'qMeasureInfo/1', formatter: () => (v => `£${v}`) }
     ];
 
     const dataset = {
@@ -499,8 +532,8 @@ describe('q-data-extractor-k', () => {
       }, dataset, { fields }, deps);
 
       expect(m).to.eql([
-        { value: 0.34, source: { key: 'cube', field: 'qMeasureInfo/1' } },
-        { value: 0.67, source: { key: 'cube', field: 'qMeasureInfo/1' } }
+        { value: 0.34, label: 'Margin', source: { key: 'cube', field: 'qMeasureInfo/1' } },
+        { value: 0.67, label: 'Margin', source: { key: 'cube', field: 'qMeasureInfo/1' } }
       ]);
     });
 
@@ -517,17 +550,21 @@ describe('q-data-extractor-k', () => {
       expect(m).to.eql([
         {
           value: 0.34,
+          label: 'Margin',
           source: { key: 'cube', field: 'qMeasureInfo/1' },
           descs: {
             value: 'Margin-a1, Margin-a2',
+            label: 'Margin-a1, Margin-a2',
             source: { key: 'cube', field: 'qDimensionInfo/1' }
           }
         },
         {
           value: 0.67,
+          label: 'Margin',
           source: { key: 'cube', field: 'qMeasureInfo/1' },
           descs: {
             value: 'Margin-b1, Margin-b2',
+            label: 'Margin-b1, Margin-b2',
             source: { key: 'cube', field: 'qDimensionInfo/1' }
           }
         }
@@ -594,9 +631,9 @@ describe('q-data-extractor-k', () => {
     };
 
     const fields = [
-      { title: () => '=aggr(...)', value: d => d.qElemNo, key: () => 'qDimensionInfo/0' },
-      { title: () => 'Product Group', value: d => d.qElemNo, key: () => 'qDimensionInfo/1' },
-      { title: () => '=aggr(....)', value: d => d.qValue, key: () => 'qMeasureInfo/0' }
+      { title: () => '=aggr(...)', value: d => d.qElemNo, key: () => 'qDimensionInfo/0', formatter: () => (() => '') },
+      { title: () => 'Product Group', value: d => d.qElemNo, key: () => 'qDimensionInfo/1', formatter: () => (() => '') },
+      { title: () => '=aggr(....)', value: d => d.qValue, key: () => 'qMeasureInfo/0', formatter: () => (() => '') }
     ];
 
     const dataset = {

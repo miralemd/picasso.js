@@ -52,13 +52,13 @@ describe('Field', () => {
         meta: {
           taggar: [{ v: 'numeric' }, { v: 'date' }]
         },
-        label: 'custom',
+        t: 'custom',
         values: [{ v: 1 }, { v: 6 }, { v: 6 }]
       }, {
         min: d => d.mm.qMin,
         max: d => d.mm.maximum,
         tags: d => d.meta.taggar.map(x => x.v),
-        title: d => d.label,
+        title: d => d.t,
         values: d => d.values.map(x => x.v)
       });
     });

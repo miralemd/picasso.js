@@ -29,7 +29,7 @@ describe('point marker', () => {
   it('should render points with default settings', () => {
     const config = {
       shapeFn,
-      data: [{}]
+      data: [1]
     };
 
     componentFixture.simulateCreate(pointComponent, config);
@@ -46,14 +46,14 @@ describe('point marker', () => {
       strokeWidth: 0,
       strokeDasharray: '',
       opacity: 1,
-      data: { value: {} }
+      data: { value: 1, label: '1' }
     }]);
   });
 
   it('should render points with default settings when settings properties are invalid', () => {
     const config = {
       shapeFn,
-      data: [{}],
+      data: [1],
       settings: {
         shape: 1,
         label: true,
@@ -79,7 +79,7 @@ describe('point marker', () => {
       strokeWidth: 0,
       strokeDasharray: '',
       opacity: 1,
-      data: { value: {} }
+      data: { value: 1, label: '1' }
     }]);
   });
 
@@ -87,7 +87,7 @@ describe('point marker', () => {
   it('should render points with primitive value settings', () => {
     const config = {
       shapeFn,
-      data: [{}],
+      data: [1],
       settings: {
         shape: 'rect',
         label: 'etikett',
@@ -120,7 +120,7 @@ describe('point marker', () => {
       strokeWidth: 2,
       strokeDasharray: '2 5',
       opacity: 0.7,
-      data: { value: {} }
+      data: { value: 1, label: '1' }
     }]);
   });
 
@@ -162,7 +162,8 @@ describe('point marker', () => {
       strokeDasharray: '3 5',
       opacity: 0.7,
       data: {
-        value: 'a'
+        value: 'a',
+        label: 'a'
       }
     }]);
   });
@@ -171,14 +172,14 @@ describe('point marker', () => {
     const config = {
       shapeFn,
       data: [{
-        label: 'etta',
+        text: 'etta',
         shape: 'circle',
         fill: 'red',
         m1: 5,
         m2: -0.2,
         m3: 0.3
       }, {
-        label: 'tvåa',
+        text: 'tvåa',
         shape: 'rect',
         fill: 'green',
         m1: 4,
@@ -187,11 +188,11 @@ describe('point marker', () => {
       }],
       settings: {
         shape: { ref: 'value', fn: s => s.shape },
-        label: { ref: 'value', fn: s => s.label },
+        label: { ref: 'value', fn: s => s.text },
         fill() { return this.data.value.fill; },
         stroke: { ref: 'value', fn: s => `stroke:${s.fill}` },
         strokeWidth: { ref: 'value', fn: v => v.m1 },
-        strokeDasharray: { ref: 'value', fn: s => s.label },
+        strokeDasharray: { ref: 'value', fn: s => s.text },
         opacity: { ref: 'value', fn: v => v.m1 / 10 },
         x: { fn() { return this.data.value.m2; } },
         y: { ref: 'value', fn: v => v.m3 },
@@ -233,14 +234,17 @@ describe('point marker', () => {
       strokeWidth: 5,
       strokeDasharray: 'etta',
       opacity: 0.5,
-      data: { value: {
-        label: 'etta',
-        shape: 'circle',
-        fill: 'red',
-        m1: 5,
-        m2: -0.2,
-        m3: 0.3
-      } }
+      data: {
+        value: {
+          text: 'etta',
+          shape: 'circle',
+          fill: 'red',
+          m1: 5,
+          m2: -0.2,
+          m3: 0.3
+        },
+        label: '[object Object]'
+      }
     }, {
       type: 'square',
       label: 'tvåa',
@@ -252,14 +256,17 @@ describe('point marker', () => {
       strokeWidth: 4,
       strokeDasharray: 'tvåa',
       opacity: 0.4,
-      data: { value: {
-        label: 'tvåa',
-        shape: 'rect',
-        fill: 'green',
-        m1: 4,
-        m2: 0.7,
-        m3: 1.2
-      } }
+      data: {
+        value: {
+          text: 'tvåa',
+          shape: 'rect',
+          fill: 'green',
+          m1: 4,
+          m2: 0.7,
+          m3: 1.2
+        },
+        label: '[object Object]'
+      }
     }]);
   });
 

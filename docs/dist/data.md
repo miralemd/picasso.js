@@ -32,8 +32,9 @@ data: [1, 2, 3]
 
 // or
 data: {
-  items: [{ num: 1, label: 'one' }, { num: 2, label: 'two' }, { num: 3, label: 'three' }],
-  value: v => v.num
+  items: [{ num: 1, text: 'one' }, { num: 2, text: 'two' }, { num: 3,textlabel: 'three' }],
+  value: v => v.num,
+  label: v => v.text
 }
 ```
 
@@ -41,7 +42,7 @@ The data input is then normalized to ensure the structure consumed by a componen
 
 ```js
 data: {
-  items: [{ value: 1 }, { value: 2 }, { value: 3 }]
+  items: [{ value: 1, label: 'one' }, { value: 2, label: 'two' }, { value: 3, label: 'three' }]
 }
 ```
 
@@ -91,14 +92,14 @@ which would result in the following data struct:
 data: {
   items: [
     {
-      value: 'Shoes', source: { key: 'Products', field: 'Product' },
-      x: { value: 136, source: { key: 'Products', field: 'Sales' } },
-      y: { value: 0.23, source: { key: 'Products', field: 'Margin' } }
+      value: 'Shoes', label: 'Shoes', source: { key: 'Products', field: 'Product' },
+      x: { value: 136, label: '136', source: { key: 'Products', field: 'Sales' } },
+      y: { value: 0.23, label: '0.23', source: { key: 'Products', field: 'Margin' } }
     },
     {
-      value: 'Socks', source: { key: 'Products', field: 'Product' },
-      x: { value: 29, source: { key: 'Products', field: 'Sales' } },
-      y: { value: 0.415, source: { key: 'Products', field: 'Margin' } }
+      value: 'Socks', label: 'Socks', source: { key: 'Products', field: 'Product' },
+      x: { value: 29, label: '29', source: { key: 'Products', field: 'Sales' } },
+      y: { value: 0.415, label: '0.415', source: { key: 'Products', field: 'Margin' } }
     }
   ],
   fields: [{/* a 'field' instance */}]
@@ -131,6 +132,7 @@ data: {
     source: 'Products',
     field: 'Product',
     value: d => d.name,
+    label: d => `<${d.name}>`
     props: {
       year: { field: 'Year' }
       num: { field: 'Sales' }
@@ -145,35 +147,35 @@ data: {
 // output
 [
   {
-    value: 'Boots', source: {}
+    value: 'Boots', label: '<Boots>', source: {}
     year: { value: 2015, source: {} },
     num: { value: 45, source: {} },
     start: { value: 0, source: {} },
     end: { value: 45, source: {} },
   },
   {
-    value: 'Sneakers', source: {}
+    value: 'Sneakers', label: '<Sneakers>', source: {}
     year: { value: 2016, source: {} },
     num: { value: 49, source: {} },
     start: { value: 0, source: {} },
     end: { value: 49, source: {} },
   },
   {
-    value: 'Sandals', source: {}
+    value: 'Sandals', label: '<Sandals>', source: {}
     year: { value: 2017, source: {} },
     num: { value: 42, source: {} },
     start: { value: 0, source: {} },
     end: { value: 42, source: {} },
   },
   {
-    value: 'White socks', source: {}
+    value: 'White socks', label: '<White socks>', source: {}
     year: { value: 2016, source: {} },
     num: { value: 14, source: {} },
     start: { value: 49, source: {} },
     end: { value: 63, source: {} },
   },
   {
-    value: 'Blue socks', source: {}
+    value: 'Blue socks', label: '<Blue socks>', source: {}
     year: { value: 2015, source: {} },
     num: { value: 15, source: {} },
     start: { value: 42, source: {} },

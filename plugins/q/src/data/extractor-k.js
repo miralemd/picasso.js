@@ -84,6 +84,8 @@ function datumExtract(propCfg, cell, {
     value: typeof propCfg.value === 'function' ? propCfg.value(cell) : typeof propCfg.value !== 'undefined' ? propCfg.value : cell  // eslint-disable-line no-nested-ternary
   };
 
+  datum.label = typeof propCfg.label === 'function' ? propCfg.label(cell) : typeof propCfg.label !== 'undefined' ? String(propCfg.label) : String(datum.value);  // eslint-disable-line no-nested-ternary
+
   if (propCfg.field) {
     datum.source = {
       key,
@@ -183,6 +185,7 @@ export default function extract(config, dataset, cache, util) {
               ret[prop] = {
                 value: fn ? fn(value) : value
               };
+              ret[prop].label = String(ret[prop].value);
               if (p.field) {
                 ret[prop].source = { field: p.field.key(), key: sourceKey };
               }
@@ -192,6 +195,7 @@ export default function extract(config, dataset, cache, util) {
             ret[prop] = {
               value: typeof pCfg.value === 'function' ? pCfg.value(coll) : coll
             };
+            ret[prop].label = String(ret[prop].value);
           }
         });
         // collect items based on the trackBy value
