@@ -36,6 +36,14 @@ describe('line marker', () => {
     componentFixture = componentFactoryFixture();
 
     chart = componentFixture.mocks().chart;
+    componentFixture.mocks().theme.style.returns({
+      ticks: {
+        stroke: 'red'
+      },
+      minorTicks: {
+        stroke: 'blue'
+      }
+    });
     // chart.dataset = () => ({
     //   extract: componentFixture.sandbox().stub()
     // });
@@ -67,7 +75,7 @@ describe('line marker', () => {
 
     expect(rendererOutput).to.deep.equal([
       {
-        stroke: '#cccccc',
+        stroke: 'red',
         strokeWidth: 1,
         type: 'line',
         flipXY: false,
@@ -77,7 +85,7 @@ describe('line marker', () => {
         y2: 199.5
       },
       {
-        stroke: '#cccccc',
+        stroke: 'red',
         strokeWidth: 1,
         type: 'line',
         flipXY: true,
@@ -100,7 +108,7 @@ describe('line marker', () => {
 
     expect(rendererOutput).to.deep.equal([
       {
-        stroke: '#cccccc',
+        stroke: 'red',
         strokeWidth: 1,
         type: 'line',
         flipXY: false,
@@ -123,7 +131,7 @@ describe('line marker', () => {
 
     expect(rendererOutput).to.deep.equal([
       {
-        stroke: '#cccccc',
+        stroke: 'red',
         strokeWidth: 1,
         type: 'line',
         flipXY: true,
@@ -153,7 +161,7 @@ describe('line marker', () => {
 
     expect(rendererOutput).to.deep.equal([
       {
-        stroke: '#E6E6E6',
+        stroke: 'blue',
         strokeWidth: 1,
         type: 'line',
         flipXY: false,
@@ -163,7 +171,7 @@ describe('line marker', () => {
         y2: 199.5
       },
       {
-        stroke: '#E6E6E6',
+        stroke: 'blue',
         strokeWidth: 1,
         type: 'line',
         flipXY: true,

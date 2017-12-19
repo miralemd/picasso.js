@@ -1,6 +1,5 @@
 import extend from 'extend';
 import { transposer } from '../../transposer/transposer';
-import { continuousDefaultSettings } from '../axis/axis-default-settings';
 import { updateScaleSize } from '../../scales';
 
 /**
@@ -26,7 +25,10 @@ const gridLineComponent = {
   require: ['chart', 'renderer'],
   defaultSettings: {
     displayOrder: 0,
-    styles: {}
+    style: { // Theming style
+      ticks: '$guide-line',
+      minorTicks: '$minor-guide-line'
+    }
   },
 
   beforeRender(opts) {
@@ -53,10 +55,8 @@ const gridLineComponent = {
       return [];
     }
 
-    // Base the styling upon the axis defaults
-    const axisDefaults = continuousDefaultSettings();
-    this.settings.ticks = extend({}, axisDefaults.ticks, this.settings.ticks || {});
-    this.settings.minorTicks = extend({}, axisDefaults.minorTicks, this.settings.minorTicks || {});
+    this.settings.ticks = extend({ show: true }, this.style.ticks, this.settings.ticks || {});
+    this.settings.minorTicks = extend({ show: false }, this.style.minorTicks, this.settings.minorTicks || {});
 
     // Setup lines for X and Y
     this.lines = {

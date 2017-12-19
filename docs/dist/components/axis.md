@@ -85,49 +85,63 @@ Under the hood - `maxGlyphCount` is a multipler on the size of the character `M`
 }
 ```
 
-## API reference - Table of contents
+## API reference
 
-
+### Discrete settings
 
 ```js
 {
-  settings: { 
-    labels: {  // Optional
-      // Labels settings
-      show: true, // Optional
-      mode: 'auto', // Control how labels arrange themself. Availabe modes are auto, horizontal, layered and tilted. Only horizontal is supported on a continuous axis // Optional
-      tiltAngle: 40, // Angle in degrees, capped between -90 and 90 // Optional
-      maxEdgeBleed: 'Infinity', // Optional
-      fontFamily: 'Arial', // Optional
-      fontSize: '12px', // Optional
-      fill: '#595959', // Optional
-      margin: /* number */, // Space between tick and label. Default to 6 (discrete) or 4 (continuous) // Optional
-      maxLengthPx: 150, // Max length of labels in pixels // Optional
-      minLengthPx: 0, // Min length of labels in pixels. Labels will always at least require this much space // Optional
-      maxGlyphCount: null, // When only a sub-set of data is available, ex. when paging. This property can be used to let the axis estimate how much space the labels will consume, allowing it to give a consistent space estimate over the entire dataset when paging. // Optional
-      align: 0.5, // Align act as a slider for the text bounding rect over the item bandwidth, given that the item have a bandwidth. Except when labels are tilted, then the align is a pure align that shifts the position of the label anchoring point. // Optional
-    },
-    line: {  // Optional
-      show: true, // Optional
-      strokeWidth: 1, // Optional
-      stroke: '#cccccc', // Optional
-    },
-    ticks: {  // Optional
-      show: true, // Optional
-      margin: 0, // Optional
-      tickSize: /* number */, // Default to 4 (discrete) or 8 (continuous) // Optional
-      stroke: '#cccccc', // Optional
-      strokeWidth: 1, // Optional
-    },
-    minorTicks: {  // Optional
-      // Only on a continuous axis
-      show: true, // Optional
-      margin: 0, // Optional
-      tickSize: 3, // Optional
-      stroke: '#e6e6e6', // Optional
-      strokeWidth: 1, // Optional
-    },
+  labels: { 
+    show: true, // Toggle labels on/off // Optional
+    tiltAngle: 40, // Tilting angle in degrees. Capped between -90 and 90. Only applicable when labels are in `tilted` mode. // Optional
+    maxEdgeBleed: /* number */, // Control the amount of space (in pixels) that labes can occupy outside their docking area. Only applicable when labels are in `tilted` mode. // Optional
+    margin: 4, // Space in pixels between the tick and label. // Optional
+    maxLengthPx: 150, // Max length of labels in pixels // Optional
+    minLengthPx: 0, // Min length of labels in pixels. Labels will always at least require this much space // Optional
+    mode: 'auto', // Control how labels arrange themself. Availabe modes are `auto`, `horizontal`, `layered` and `tilted`. When set to `auto` the axis determines the best possible layout in the current context. // Optional
+    maxGlyphCount: /* number */, // When only a sub-set of data is available, ex. when paging. This property can be used to let the axis estimate how much space the labels will consume, allowing it to give a consistent space estimate over the entire dataset when paging. // Optional
+    align: 0.5, // Align act as a slider for the text bounding rect over the item bandwidth, given that the item have a bandwidth. Except when labels are tilted, then the align is a pure align that shifts the position of the label anchoring point. // Optional
   },
+  ticks: { 
+    show: false, // Toggle ticks on/off // Optional
+    margin: 0, // Space in pixels between the ticks and the line. // Optional
+    tickSize: 4, // Size of the ticks in pixels. // Optional
+  },
+  line: { 
+    show: false, // Toggle line on/off // Optional
+  },
+  paddingStart: 0, // Padding in direction perpendicular to the axis // Optional
+  paddingEnd: 10, // Padding in direction perpendicular to the axis // Optional
+}
+```
+
+
+### Continuous settings
+
+```js
+{
+  labels: { 
+    show: true, // Toggle labels on/off // Optional
+    margin: 4, // Space in pixels between the tick and label. // Optional
+    maxLengthPx: 150, // Max length of labels in pixels // Optional
+    minLengthPx: 0, // Min length of labels in pixels. Labels will always at least require this much space // Optional
+    align: 0.5, // Align act as a slider for the text bounding rect over the item bandwidth, given that the item have a bandwidth. // Optional
+  },
+  ticks: { 
+    show: true, // Toggle ticks on/off // Optional
+    margin: 0, // Space in pixels between the ticks and the line. // Optional
+    tickSize: 8, // Size of the ticks in pixels. // Optional
+  },
+  minorTicks: { 
+    show: false, // Toggle minor-ticks on/off // Optional
+    tickSize: 3, // Size of the ticks in pixels. // Optional
+    margin: 0, // Space in pixels between the ticks and the line. // Optional
+  },
+  line: { 
+    show: true, // Toggle line on/off // Optional
+  },
+  paddingStart: 0, // Padding in direction perpendicular to the axis // Optional
+  paddingEnd: 10, // Padding in direction perpendicular to the axis // Optional
 }
 ```
 

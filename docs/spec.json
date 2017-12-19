@@ -7,172 +7,9 @@
     "component--axis": {
       "kind": "struct",
       "entries": {
-        "settings": {
-          "kind": "struct",
-          "entries": {
-            "labels": {
-              "description": "Labels settings",
-              "optional": true,
-              "type": "object",
-              "kind": "struct",
-              "entries": {
-                "show": {
-                  "optional": true,
-                  "defaultValue": true,
-                  "type": "boolean"
-                },
-                "mode": {
-                  "description": "Control how labels arrange themself. Availabe modes are auto, horizontal, layered and tilted. Only horizontal is supported on a continuous axis",
-                  "optional": true,
-                  "defaultValue": "'auto'",
-                  "type": "string"
-                },
-                "tiltAngle": {
-                  "description": "Angle in degrees, capped between -90 and 90",
-                  "optional": true,
-                  "defaultValue": 40,
-                  "type": "number"
-                },
-                "maxEdgeBleed": {
-                  "optional": true,
-                  "defaultValue": "Infinity",
-                  "type": "number"
-                },
-                "fontFamily": {
-                  "optional": true,
-                  "defaultValue": "'Arial'",
-                  "type": "string"
-                },
-                "fontSize": {
-                  "optional": true,
-                  "defaultValue": "'12px'",
-                  "type": "string"
-                },
-                "fill": {
-                  "optional": true,
-                  "defaultValue": "'#595959'",
-                  "type": "string"
-                },
-                "margin": {
-                  "description": "Space between tick and label. Default to 6 (discrete) or 4 (continuous)",
-                  "optional": true,
-                  "type": "number"
-                },
-                "maxLengthPx": {
-                  "description": "Max length of labels in pixels",
-                  "optional": true,
-                  "defaultValue": 150,
-                  "type": "number"
-                },
-                "minLengthPx": {
-                  "description": "Min length of labels in pixels. Labels will always at least require this much space",
-                  "optional": true,
-                  "defaultValue": 0,
-                  "type": "number"
-                },
-                "maxGlyphCount": {
-                  "description": "When only a sub-set of data is available, ex. when paging. This property can be used to let the axis estimate how much space the labels will consume, allowing it to give a consistent space estimate over the entire dataset when paging.",
-                  "optional": true,
-                  "defaultValue": null,
-                  "type": "number"
-                },
-                "align": {
-                  "description": "Align act as a slider for the text bounding rect over the item bandwidth, given that the item have a bandwidth. Except when labels are tilted, then the align is a pure align that shifts the position of the label anchoring point.",
-                  "optional": true,
-                  "defaultValue": 0.5,
-                  "type": "number"
-                }
-              }
-            },
-            "line": {
-              "optional": true,
-              "type": "object",
-              "kind": "struct",
-              "entries": {
-                "show": {
-                  "optional": true,
-                  "defaultValue": true,
-                  "type": "boolean"
-                },
-                "strokeWidth": {
-                  "optional": true,
-                  "defaultValue": 1,
-                  "type": "number"
-                },
-                "stroke": {
-                  "optional": true,
-                  "defaultValue": "'#cccccc'",
-                  "type": "string"
-                }
-              }
-            },
-            "ticks": {
-              "optional": true,
-              "type": "object",
-              "kind": "struct",
-              "entries": {
-                "show": {
-                  "optional": true,
-                  "defaultValue": true,
-                  "type": "boolean"
-                },
-                "margin": {
-                  "optional": true,
-                  "defaultValue": 0,
-                  "type": "number"
-                },
-                "tickSize": {
-                  "description": "Default to 4 (discrete) or 8 (continuous)",
-                  "optional": true,
-                  "type": "number"
-                },
-                "stroke": {
-                  "optional": true,
-                  "defaultValue": "'#cccccc'",
-                  "type": "string"
-                },
-                "strokeWidth": {
-                  "optional": true,
-                  "defaultValue": 1,
-                  "type": "number"
-                }
-              }
-            },
-            "minorTicks": {
-              "description": "Only on a continuous axis",
-              "optional": true,
-              "type": "object",
-              "kind": "struct",
-              "entries": {
-                "show": {
-                  "optional": true,
-                  "defaultValue": true,
-                  "type": "boolean"
-                },
-                "margin": {
-                  "optional": true,
-                  "defaultValue": 0,
-                  "type": "number"
-                },
-                "tickSize": {
-                  "optional": true,
-                  "defaultValue": 3,
-                  "type": "number"
-                },
-                "stroke": {
-                  "optional": true,
-                  "defaultValue": "'#e6e6e6'",
-                  "type": "string"
-                },
-                "strokeWidth": {
-                  "optional": true,
-                  "defaultValue": 1,
-                  "type": "number"
-                }
-              }
-            }
-          },
-          "type": "object"
+        "type": {
+          "defaultValue": "axis",
+          "type": "string"
         }
       },
       "type": "object"
@@ -3317,6 +3154,234 @@
           "params": []
         }
       }
+    },
+    "component--axis-discrete": {
+      "description": "Discrete axis settings",
+      "kind": "struct",
+      "entries": {
+        "labels": {
+          "kind": "struct",
+          "entries": {
+            "show": {
+              "description": "Toggle labels on/off",
+              "optional": true,
+              "defaultValue": true,
+              "type": "boolean"
+            },
+            "tiltAngle": {
+              "description": "Tilting angle in degrees. Capped between -90 and 90. Only applicable when labels are in `tilted` mode.",
+              "optional": true,
+              "defaultValue": 40,
+              "type": "number"
+            },
+            "maxEdgeBleed": {
+              "description": "Control the amount of space (in pixels) that labes can occupy outside their docking area. Only applicable when labels are in `tilted` mode.",
+              "optional": true,
+              "type": "number"
+            },
+            "margin": {
+              "description": "Space in pixels between the tick and label.",
+              "optional": true,
+              "defaultValue": 4,
+              "type": "number"
+            },
+            "maxLengthPx": {
+              "description": "Max length of labels in pixels",
+              "optional": true,
+              "defaultValue": 150,
+              "type": "number"
+            },
+            "minLengthPx": {
+              "description": "Min length of labels in pixels. Labels will always at least require this much space",
+              "optional": true,
+              "defaultValue": 0,
+              "type": "number"
+            },
+            "mode": {
+              "description": "Control how labels arrange themself. Availabe modes are `auto`, `horizontal`, `layered` and `tilted`. When set to `auto` the axis determines the best possible layout in the current context.",
+              "optional": true,
+              "defaultValue": "auto",
+              "type": "string"
+            },
+            "maxGlyphCount": {
+              "description": "When only a sub-set of data is available, ex. when paging. This property can be used to let the axis estimate how much space the labels will consume, allowing it to give a consistent space estimate over the entire dataset when paging.",
+              "optional": true,
+              "type": "number"
+            },
+            "align": {
+              "description": "Align act as a slider for the text bounding rect over the item bandwidth, given that the item have a bandwidth. Except when labels are tilted, then the align is a pure align that shifts the position of the label anchoring point.",
+              "optional": true,
+              "defaultValue": 0.5,
+              "type": "number"
+            }
+          },
+          "type": "object"
+        },
+        "ticks": {
+          "kind": "struct",
+          "entries": {
+            "show": {
+              "description": "Toggle ticks on/off",
+              "optional": true,
+              "defaultValue": false,
+              "type": "boolean"
+            },
+            "margin": {
+              "description": "Space in pixels between the ticks and the line.",
+              "optional": true,
+              "defaultValue": 0,
+              "type": "number"
+            },
+            "tickSize": {
+              "description": "Size of the ticks in pixels.",
+              "optional": true,
+              "defaultValue": 4,
+              "type": "number"
+            }
+          },
+          "type": "object"
+        },
+        "line": {
+          "kind": "struct",
+          "entries": {
+            "show": {
+              "description": "Toggle line on/off",
+              "optional": true,
+              "defaultValue": false,
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
+        "paddingStart": {
+          "description": "Padding in direction perpendicular to the axis",
+          "optional": true,
+          "defaultValue": 0,
+          "type": "number"
+        },
+        "paddingEnd": {
+          "description": "Padding in direction perpendicular to the axis",
+          "optional": true,
+          "defaultValue": 10,
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "component--axis-continuous": {
+      "description": "Continuous axis settings",
+      "kind": "struct",
+      "entries": {
+        "labels": {
+          "kind": "struct",
+          "entries": {
+            "show": {
+              "description": "Toggle labels on/off",
+              "optional": true,
+              "defaultValue": true,
+              "type": "boolean"
+            },
+            "margin": {
+              "description": "Space in pixels between the tick and label.",
+              "optional": true,
+              "defaultValue": 4,
+              "type": "number"
+            },
+            "maxLengthPx": {
+              "description": "Max length of labels in pixels",
+              "optional": true,
+              "defaultValue": 150,
+              "type": "number"
+            },
+            "minLengthPx": {
+              "description": "Min length of labels in pixels. Labels will always at least require this much space",
+              "optional": true,
+              "defaultValue": 0,
+              "type": "number"
+            },
+            "align": {
+              "description": "Align act as a slider for the text bounding rect over the item bandwidth, given that the item have a bandwidth.",
+              "optional": true,
+              "defaultValue": 0.5,
+              "type": "number"
+            }
+          },
+          "type": "object"
+        },
+        "ticks": {
+          "kind": "struct",
+          "entries": {
+            "show": {
+              "description": "Toggle ticks on/off",
+              "optional": true,
+              "defaultValue": true,
+              "type": "boolean"
+            },
+            "margin": {
+              "description": "Space in pixels between the ticks and the line.",
+              "optional": true,
+              "defaultValue": 0,
+              "type": "number"
+            },
+            "tickSize": {
+              "description": "Size of the ticks in pixels.",
+              "optional": true,
+              "defaultValue": 8,
+              "type": "number"
+            }
+          },
+          "type": "object"
+        },
+        "minorTicks": {
+          "kind": "struct",
+          "entries": {
+            "show": {
+              "description": "Toggle minor-ticks on/off",
+              "optional": true,
+              "defaultValue": false,
+              "type": "boolean"
+            },
+            "tickSize": {
+              "description": "Size of the ticks in pixels.",
+              "optional": true,
+              "defaultValue": 3,
+              "type": "number"
+            },
+            "margin": {
+              "description": "Space in pixels between the ticks and the line.",
+              "optional": true,
+              "defaultValue": 0,
+              "type": "number"
+            }
+          },
+          "type": "object"
+        },
+        "line": {
+          "kind": "struct",
+          "entries": {
+            "show": {
+              "description": "Toggle line on/off",
+              "optional": true,
+              "defaultValue": true,
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
+        "paddingStart": {
+          "description": "Padding in direction perpendicular to the axis",
+          "optional": true,
+          "defaultValue": 0,
+          "type": "number"
+        },
+        "paddingEnd": {
+          "description": "Padding in direction perpendicular to the axis",
+          "optional": true,
+          "defaultValue": 10,
+          "type": "number"
+        }
+      },
+      "type": "object"
     },
     "component--line": {
       "kind": "struct",

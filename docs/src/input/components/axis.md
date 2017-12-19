@@ -85,8 +85,12 @@ Under the hood - `maxGlyphCount` is a multipler on the size of the character `M`
 }
 ```
 
-## API reference - Table of contents
+## API reference
 
-{{postprocess 'index'}}
+### Discrete settings
 
-{{> struct entries.component--axis}}
+{{> struct definitions.component--axis-discrete}}
+
+### Continuous settings
+
+{{> struct definitions.component--axis-continuous}}

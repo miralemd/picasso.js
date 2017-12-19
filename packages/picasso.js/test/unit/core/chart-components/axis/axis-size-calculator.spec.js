@@ -1,5 +1,6 @@
+import extend from 'extend';
 import calcRequiredSize from '../../../../../src/core/chart-components/axis/axis-size-calculator';
-import { continuousDefaultSettings } from '../../../../../src/core/chart-components/axis/axis-default-settings';
+import { DEFAULT_CONTINUOUS_SETTINGS } from '../../../../../src/core/chart-components/axis/axis-default-settings';
 
 describe('Axis size calculator', () => {
   let settings;
@@ -11,7 +12,7 @@ describe('Axis size calculator', () => {
   let state;
 
   beforeEach(() => {
-    settings = continuousDefaultSettings();
+    settings = extend(true, {}, DEFAULT_CONTINUOUS_SETTINGS);
     settings.labels.show = false;
     settings.labels.mode = 'horizontal';
     settings.line.show = false;
@@ -93,10 +94,13 @@ describe('Axis size calculator', () => {
   });
 
   describe('hide', () => {
-    it('horizontal discrete axis should be considered to large when labels requires more size then available', () => {
+    beforeEach(() => {
       settings.dock = 'bottom';
       settings.align = 'bottom';
       settings.labels.show = true;
+    });
+
+    it('horizontal discrete axis should be considered to large when labels requires more size then available', () => {
       rect.width = 5;
       isDiscrete = true;
       // available bandWidth is ~1.7, required width from labels is 2
@@ -106,23 +110,17 @@ describe('Axis size calculator', () => {
     });
 
     it('horizontal tilted discrete axis should be considered to large when labels requires more size then available', () => {
-      settings.dock = 'bottom';
-      settings.align = 'bottom';
-      settings.labels.show = true;
       settings.labels.tiltAngle = 45;
+      settings.labels.maxEdgeBleed = Infinity;
       state.labels.activeMode = 'tilted';
       rect.width = 25;
       isDiscrete = true;
-
       const size = sizeFn(rect);
 
       expect(size.size).to.equals(100); // return the width of the container (rect in this test)
     });
 
     it('horizontal tilted discrete axis should be considered to large if angle is set to zero', () => {
-      settings.dock = 'bottom';
-      settings.align = 'bottom';
-      settings.labels.show = true;
       settings.labels.tiltAngle = 0;
       state.labels.activeMode = 'tilted';
       rect.width = 100;
@@ -135,9 +133,6 @@ describe('Axis size calculator', () => {
 
     it('horizontal tilted discrete axis should not be considered to large if there is only one tick', () => {
       ticks.splice(1);
-      settings.dock = 'bottom';
-      settings.align = 'bottom';
-      settings.labels.show = true;
       settings.labels.tiltAngle = 45;
       state.labels.activeMode = 'tilted';
       rect.width = 2; // would be considered to large if there were two ticks
@@ -206,21 +201,22 @@ describe('Axis size calculator', () => {
     });
 
     describe('tilted', () => {
-      it('should return correct size when docked at bottom', () => {
+      beforeEach(() => {
+        settings.labels.maxEdgeBleed = Infinity;
+        settings.labels.tiltAngle = 45;
         settings.dock = 'bottom';
         settings.align = 'bottom';
         settings.labels.show = true;
         state.labels.activeMode = 'tilted';
+        isDiscrete = true;
+      });
+
+      it('should return correct size when docked at bottom', () => {
         const size = sizeFn(rect);
-        expect(size.size).to.approximately(19.1158, 0.0001);
+        expect(size.size).to.approximately(18.9497, 0.0001);
       });
 
       it('should handle when there are no ticks', () => {
-        isDiscrete = true;
-        settings.dock = 'bottom';
-        settings.align = 'bottom';
-        settings.labels.show = true;
-        state.labels.activeMode = 'tilted';
         scale.ticks = sinon.stub().returns([]);
         const size = sizeFn(rect);
         expect(size.size).to.equal(14); // Return the size of padding, ticks, margin but not the label size
@@ -228,45 +224,29 @@ describe('Axis size calculator', () => {
       });
 
       it('maxLengthPx', () => {
-        settings.dock = 'bottom';
-        settings.align = 'bottom';
-        settings.labels.show = true;
         settings.labels.maxLengthPx = 5;
-        state.labels.activeMode = 'tilted';
         ticks[0].label = 'AAAAAAAAAAAAAA';
         const size = sizeFn(rect);
-        expect(size.size).to.approximately(21.0442, 0.0001);
+        expect(size.size).to.approximately(21.07106, 0.0001);
       });
 
       it('minLengthPx', () => {
-        settings.dock = 'bottom';
-        settings.align = 'bottom';
-        settings.labels.show = true;
-        settings.labels.minLengthPx = 150;
-        state.labels.activeMode = 'tilted';
+        settings.labels.minLengthPx = 75;
         ticks[0].label = 'A';
         const size = sizeFn(rect);
-        expect(size.size).to.approximately(114.248363, 0.0001);
+        expect(size.size).to.approximately(70.568542, 0.0001);
       });
 
       it('require edgeBleed', () => {
-        settings.dock = 'bottom';
-        settings.align = 'bottom';
-        settings.labels.show = true;
-        state.labels.activeMode = 'tilted';
         ticks[0] = { label: 'AAAAAAAAAAAAAA', position: 0.1 };
         ticks[1] = { label: 'BBBBBBBBBBBBBB', position: 0.5 };
         ticks[2] = { label: 'CCCCCCCCCCCCCC', position: 0.9 };
         const size = sizeFn(rect);
-        expect(size.edgeBleed.left).to.approximately(15.7246, 0.0001);
+        expect(size.edgeBleed.left).to.approximately(14.89949, 0.0001);
       });
 
       it('maxEdgeBleed', () => {
-        settings.dock = 'bottom';
-        settings.align = 'bottom';
-        settings.labels.show = true;
         settings.labels.maxEdgeBleed = 1;
-        state.labels.activeMode = 'tilted';
         ticks[0] = { label: 'AAAAAAAAAAAAAA', position: 0.1 };
         ticks[1] = { label: 'BBBBBBBBBBBBBB', position: 0.5 };
         ticks[2] = { label: 'CCCCCCCCCCCCCC', position: 0.9 };

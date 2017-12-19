@@ -148,8 +148,8 @@ describe('Axis', () => {
         componentFixture.simulateRender(opts);
         const textNodes = componentFixture.getRenderOutput().filter(n => n.type === 'text');
 
-        expect(textNodes[0].maxWidth).to.approximately(124.7220, 0.0001);
-        expect(textNodes[1].maxWidth).to.approximately(124.7220, 0.0001);
+        expect(textNodes[0].maxWidth).to.approximately(127.83348, 0.0001);
+        expect(textNodes[1].maxWidth).to.approximately(127.83348, 0.0001);
       });
 
       it('should limit text nodes min width in layered mode', () => {

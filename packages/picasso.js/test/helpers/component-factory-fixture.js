@@ -61,7 +61,8 @@ export default function componentFactoryFixture() {
 
   fn.mocks = () => ({
     chart: chartMock,
-    renderer: rendererMock
+    renderer: rendererMock,
+    theme: themeMock
   });
 
   fn.simulateCreate = (componentDef, settings) => {

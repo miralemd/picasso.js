@@ -17,6 +17,29 @@
   }
   ```
 
+- Normalize axis/grid-line setting and support style definition
+
+  ```js
+  {
+    type: 'axis',
+    settings: ...,
+    style: {
+      ticks: '$guide-line',
+      minorTicks: '$minor-guide-line',
+      labels: '$label',
+      line: '$guide-line'
+    }
+  },
+  {
+    type: 'grid-line',
+    settings: ...,
+    style: {
+      ticks: '$guide-line',
+      minorTicks: '$minor-guide-line',
+    }
+  }
+  ```
+
 ## **0.40.0** - *(2017-12-12)* [BREAKING]
 
 ### Added

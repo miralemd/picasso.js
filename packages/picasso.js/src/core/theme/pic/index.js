@@ -35,6 +35,11 @@ const style = {
   '$grey-dark': '#424242',
   '$black': '#212121',
 
+  // SPACING
+  '$spacing-s': 4,
+  '$spacing-m': 8,
+  '$spacing-l': 12,
+
   // MIXINS
   '$shape': {
     fill: '$primary',
@@ -51,6 +56,30 @@ const style = {
     fontSize: '$font-size-m',
     fontFamily: '$font-family',
     fill: '$grey-dark'
+  },
+
+  '$guide-line': {
+    strokeWidth: 1,
+    stroke: '$grey-light'
+  },
+
+  '$minor-guide-line': {
+    strokeWidth: 1,
+    stroke: '#E6E6E6'
+  },
+
+  '$padding-s': {
+    left: '$spacing-s',
+    right: '$spacing-s',
+    top: '$spacing-s',
+    bottom: '$spacing-s'
+  },
+
+  '$padding-m': {
+    left: '$spacing-m',
+    right: '$spacing-m',
+    top: '$spacing-m',
+    bottom: '$spacing-m'
   }
 };
 
