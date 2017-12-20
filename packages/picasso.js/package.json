@@ -15,7 +15,6 @@
     "build": "npxc rollup -c ../../rollup.config.js --environment BUILD:production",
     "build:dev": "npxc rollup -c ../../rollup.config.js",
     "build:watch": "npxc rollup -c ../../rollup.config.js -w",
-    "docs": "cd docs && npm run docs",
     "lint": "npxc eslint src test",
     "lint:fix": "npm run lint -- --fix",
     "lint:recommended": "npm run lint -- --config .eslintrc-recommended.json",

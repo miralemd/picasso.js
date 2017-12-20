@@ -19,7 +19,8 @@
     "test:component:coverage": "aw -c aw.config.comp.coverage.js",
     "test:integration:local": "lerna run test:integration:local",
     "test:unit:coverage": "aw -c aw.config.unit.coverage.js",
-    "test:unit:coverage:publish": "codeclimate-test-reporter < coverage/unit/lcov.info"
+    "test:unit:coverage:publish": "codeclimate-test-reporter < coverage/unit/lcov.info",
+    "docs": "cd docs && npm run docs"
   },
   "devDependencies": {
     "after-work.js": "^4.0.0",
