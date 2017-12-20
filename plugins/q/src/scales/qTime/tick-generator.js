@@ -55,6 +55,7 @@ export default function tickGenerator(scale, settings) {
 
     const ticks = timeScale.ticks(isNaN(distance) ? undefined : distance / 60);
     const formatter = getFormatter(ticks);
+    const interval = ticks.length > 1 ? ticks[1] - ticks[0] : 0; // Assumes uniformly-spaced ticks
 
     return ticks.map((date) => {
       const qtTime = DateToQlikTimestamp(date);
@@ -62,7 +63,7 @@ export default function tickGenerator(scale, settings) {
       return {
         position: start,
         start,
-        end: start,
+        end: timeScale(date.getTime() + interval),
         value: qtTime,
         label: formatter(qtTime),
         isMinor: false

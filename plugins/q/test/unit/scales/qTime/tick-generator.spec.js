@@ -119,7 +119,7 @@ describe('qTime - Tick generator', () => {
       expect(ticks[1]).to.deep.include({
         position: 0.5,
         start: 0.5,
-        end: 0.5,
+        end: 1,
         label: '12:00',
         isMinor: false
       });
