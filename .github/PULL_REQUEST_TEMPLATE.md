@@ -2,5 +2,5 @@
 **Checklist**
 
 - [ ] tests added
-- [ ] linting and tests are green
+- [ ] commits conform to the [commit guidelines](./CONTRIBUTING.md#commit)
 - [ ] documentation updated

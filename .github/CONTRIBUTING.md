@@ -91,7 +91,7 @@ Generally, development should be done directly towards the `master` branch.
     Commit changes to your branch, following the commit message format.
 
     ```sh
-    git commit -m "Properly formatted SET statements."
+    git commit -m "fix: properly formatted SET statements."
     ```
 
 1. Push the changes to your fork
@@ -116,13 +116,26 @@ Generally, development should be done directly towards the `master` branch.
     _WARNING: Squashing or reverting commits and force-pushing thereafter may remove GitHub comments on code that were previously made by you or others in your commits. Avoid any form of rebasing unless necessary._
 
 
-### Commit message format
+### <a name="commit"></a> Commit message guidelines
 
-There are currently no conventions on how to format commit messages. We'd like you to follow some rules on the content however:
+Commit messages should follow the [commit message convention](https://conventionalcommits.org/).
 
-- Use the present form, e.g. _Fix dynamic script generation_
-- Be descriptive and avoid messages like _Minor fix_.
-- If the change is breaking an API, add a _[breaking]_ tag in the message.
+#### Type
+
+Should be one of the following:
+
+- **BREAKING CHANGE:** Changes to production code that breaks existing API
+- **chore:** Changes to build and dev processes/tools
+- **docs:** Changes to documentation
+- **feat:** A new feature
+- **fix:** A bug fix
+- **refactor:** Changes to production code that is neither a new feature nor a bug fix
+- **style:** Changes to code style formatting (white space, commas etc)
+- **test:** Changes in test cases of production code
+
+#### Scope
+
+The `<scope>` of the commit is optional and can be omitted. When used though, it should describe the place or part of the project, e.g. `docs(examples)`, `feat(data)` etc.
 
 ## <a name="cla"></a> Signing the CLA
 
