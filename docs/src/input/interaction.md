@@ -28,19 +28,19 @@ picasso.chart({
 
 ## Bundled interactions
 
-Picasso.js comes with one pre-bundled interaction component:
+picasso.js comes with one pre-bundled interaction component:
 
 - [native](./interactions/native.md)
 
-And together with picasso the following interaction component plugin is shipped
+and together with picasso the following interaction component plugin is shipped:
 
 - [hammer](./interactions/hammer.md)
 
 ## Register a custom interaction
 
-To register a interaction component, use the `picasso.interaction` function.
+To register a interaction component, use the `picasso.interaction` registry.
 
-### `picasso.interaction(name, definition)`
+**`picasso.interaction(name, definition)`**
 
 - `name` *string*. Name of the interaction component to register.
 - `definition` *object*

@@ -1,4 +1,4 @@
-# plugins/q
+# picasso-plugin-q
 
 The `q` plugin registers a `q` dataset type which makes it a bit easier to extract data from a hypercube. It also contains a brush helper which can be used to find appropriate selections in the underlying data engine.
 
@@ -70,14 +70,13 @@ We can extract the unique _Month_ values using:
 ```js
 ds.extract({
   field: 'Month',
-  value: v => v.qText,
   trackBy: v => v.qElemNumber
 });
 
 // output
 [
-  { value: 'Jan', source: { key: 'qHyperCube', field: 'qDimensionInfo/1' } },
-  { value: 'Feb', source: { key: 'qHyperCube', field: 'qDimensionInfo/1' } }
+  { value: 0, label: 'Jan', source: { key: 'qHyperCube', field: 'qDimensionInfo/1' } },
+  { value: 1, label: 'Feb', source: { key: 'qHyperCube', field: 'qDimensionInfo/1' } }
 ]
 ```
 
@@ -86,7 +85,6 @@ and attach aggregated properties on each item using `props`:
 ```js
 ds.extract({
   field: 'Month',
-  value: v => v.qText, // value accessor for the data cell
   trackBy: v => v.qElemNumber
   props: {
     years: { field: 'Year', value: v => v.qText, reduce: values => values.join(' - ') },
@@ -98,13 +96,13 @@ ds.extract({
 // output
 [
   {
-    value: 'Jan', source: { key: 'qHyperCube', field: 'qDimensionInfo/1' },
+    value: 0, label: 'Jan', source: { key: 'qHyperCube', field: 'qDimensionInfo/1' },
     years: { value: '2011 - 2012', source: { key: 'qHyperCube', field: 'qDimensionInfo/0' } }
     color: { value: 'red', source: { key: 'qHyperCube', field: 'qDimensionInfo/0/qAttrExprInfo/0' } }
     products: { value: 149, source: { key: 'qHyperCube', field: 'qMeasureInfo/0' } }
   },
   {
-    value: 'Feb', source: { key: 'qHyperCube', field: 'qDimensionInfo/1' },
+    value: 1, label: 'Feb', source: { key: 'qHyperCube', field: 'qDimensionInfo/1' },
     years: { value: '2011 - 2012', source: { key: 'qHyperCube', field: 'qDimensionInfo/0' } }
     color: { value: 'blue', source: { key: 'qHyperCube', field: 'qDimensionInfo/0/qAttrExprInfo/0' } }
     products: { value: 138, source: { key: 'qHyperCube', field: 'qMeasureInfo/0' } }

@@ -1,6 +1,6 @@
-## Summary
+# Brush
 
-A generic implementation to track brushed values.
+In interface to track brushed values between data source input and visual output.
 
 ## {{anchor 'events'}} Events
 
@@ -19,7 +19,6 @@ brush.on('end', () => {
   console.log('ended')
 });
 ```
-
 
 ## {{anchor 'interceptions' }} Manipulation interceptions
 

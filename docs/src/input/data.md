@@ -1,6 +1,6 @@
 # Data
 
-Data in picasso.js generally flows from top to bottom: one or more datasets of various types are provided to a chart instance, each component can then use those datasets or parts of them.
+Data in picasso.js generally flows from top to bottom: one or more data sources of various types are provided to a chart instance, each component can then use those data sources or parts of them.
 
 ## Providing data to a picasso instance
 
@@ -32,7 +32,7 @@ data: [1, 2, 3]
 
 // or
 data: {
-  items: [{ num: 1, text: 'one' }, { num: 2, text: 'two' }, { num: 3,textlabel: 'three' }],
+  items: [{ num: 1, text: 'one' }, { num: 2, text: 'two' }, { num: 3, text: 'three' }],
   value: v => v.num,
   label: v => v.text
 }

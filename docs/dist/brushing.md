@@ -28,7 +28,7 @@ trigger: [{
 
 ## Observe changes of a brush context
 
- `consume` controls how the component uses active brushes.
+`consume` controls how the component uses active brushes.
 
 * `context`: name of the brush context to observe
 * `data`: the mapped data properties to observe. _Optional_
@@ -51,20 +51,18 @@ consume: [{
   }
 }]
 ```
+
 ## Programmatic changes
 
 Brushes can be controlled programatically by accessing a certain brush from the picasso instance:
 
 ```js
-
 const pic = picasso.chart(...);
 const highlighter = pic.brush('highlight');
 highlighter.addValue('products', 'Bike');
-
 ```
 
 when `addValue` is called, components that are _consuming_ the _highlight_ brushing context will react automatically and apply the specified style.
-
 
 ## Scenarios
 
@@ -93,9 +91,9 @@ when `addValue` is called, components that are _consuming_ the _highlight_ brush
 
 ```
 
-To make the component react to a 'tap', we add a _trigger object_ with an `on` of type 'tap' and set the brush `contexts` we want to affect.
+To make the component react to a _tap_, a `trigger` is added with an `on` of type `'tap'`, and `'highlight'` as brush `contexts` that should be affected.
 
-To have the component listen to brush changes and update itself, we add a _consume object_ with the name of the `context` we want it to observe, and set the `style` of `inactive` points.
+To have the component listen to brush changes and update itself, a `consume` object is added with the name of the `context` to observe.
 
 **Related**
 
