@@ -48,7 +48,10 @@ const DEFAULT_DISCRETE_SETTINGS = {
     maxGlyphCount: NaN,
     /** Align act as a slider for the text bounding rect over the item bandwidth, given that the item have a bandwidth. Except when labels are tilted, then the align is a pure align that shifts the position of the label anchoring point.
     * @type {number=} */
-    align: 0.5
+    align: 0.5,
+    /** Offset in pixels along the axis direction.
+    * @type {number=} */
+    offset: 0
   },
   /**
    * @typedef {object}
@@ -77,7 +80,10 @@ const DEFAULT_DISCRETE_SETTINGS = {
   paddingStart: 0,
   /** Padding in direction perpendicular to the axis
     * @type {number=} */
-  paddingEnd: 10
+  paddingEnd: 10,
+  /** Set the anchoring point of the axis. Avaialable options are `auto/left/right/bottom/top`. In `auto` the axis determines the best option. The options are restricted based on the axis orientation, a vertical axis may only anchor on `left` or `right`
+    * @type {string=} */
+  align: 'auto'
 };
 
 /**
@@ -105,7 +111,10 @@ const DEFAULT_CONTINUOUS_SETTINGS = {
     minLengthPx: 0,
     /** Align act as a slider for the text bounding rect over the item bandwidth, given that the item have a bandwidth.
     * @type {number=} */
-    align: 0.5
+    align: 0.5,
+    /** Offset in pixels along the axis direction.
+    * @type {number=} */
+    offset: 0
   },
   /**
    * @typedef {object}
@@ -148,7 +157,10 @@ const DEFAULT_CONTINUOUS_SETTINGS = {
   paddingStart: 0,
   /** Padding in direction perpendicular to the axis
     * @type {number=} */
-  paddingEnd: 10
+  paddingEnd: 10,
+  /** Set the anchoring point of the axis. Avaialable options are `auto/left/right/bottom/top`. In `auto` the axis determines the best option. The options are restricted based on the axis orientation, a vertical axis may only anchor on `left` or `right`
+    * @type {string=} */
+  align: 'auto'
 };
 
 export {

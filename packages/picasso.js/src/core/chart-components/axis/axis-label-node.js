@@ -215,11 +215,15 @@ export default function buildNode(tick, buildOpts) {
     struct.x = (tick.start * buildOpts.innerRect.width) + (buildOpts.innerRect.x - buildOpts.outerRect.x) + wiggle(buildOpts, false);
     struct.y = buildOpts.align === 'top' ? buildOpts.innerRect.height : 0;
     struct.anchor = buildOpts.stepSize ? 'start' : 'middle';
+
+    struct.x += isNaN(buildOpts.style.offset) ? 0 : +buildOpts.style.offset;
   } else {
     struct.y = (tick.start * buildOpts.innerRect.height) + (buildOpts.innerRect.y - buildOpts.outerRect.y) + wiggle(buildOpts, true);
     struct.x = buildOpts.align === 'left' ? buildOpts.innerRect.width : 0;
     struct.anchor = buildOpts.align === 'left' ? 'end' : 'start';
     struct.baseline = buildOpts.stepSize ? 'text-before-edge' : 'central';
+
+    struct.y += isNaN(buildOpts.style.offset) ? 0 : +buildOpts.style.offset;
   }
 
   appendStyle(struct, buildOpts);

@@ -743,5 +743,29 @@ describe('Axis Label Node', () => {
         });
       });
     });
+
+    describe('Offset', () => {
+      it('should set offset along y-axis', () => {
+        buildOpts.align = 'right';
+        buildOpts.style.offset = 1.337;
+
+        expected.x = 10;
+        expected.y = 51.337;
+        expected.anchor = 'start';
+
+        expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
+      });
+
+      it('should set offset along x-axis', () => {
+        buildOpts.align = 'top';
+        buildOpts.style.offset = 1.337;
+
+        expected.x = 26.337;
+        expected.y = 90;
+        expected.anchor = 'middle';
+
+        expect(buildLabel(tick, buildOpts)).to.deep.include(expected);
+      });
+    });
   });
 });
