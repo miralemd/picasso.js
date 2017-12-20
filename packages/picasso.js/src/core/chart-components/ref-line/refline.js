@@ -20,6 +20,7 @@ function filterUndefinedValue(line) {
 }
 
 /**
+ * @definition
  * @typedef {object} component--ref-line
  * @experimental
  * @property {refline-generic-style} [style=refline-generic-style] - x coordinate

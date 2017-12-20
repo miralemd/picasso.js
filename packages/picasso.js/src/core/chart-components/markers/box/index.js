@@ -39,6 +39,7 @@ export default function boxMarker(picasso) {
  */
 
 /**
+ * @definition
  * @typedef {object} component--box-marker
  * @property {string} type - "box-marker"
  * @property {component--box-marker.data} data - Box data

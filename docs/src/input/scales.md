@@ -20,7 +20,7 @@ To have a tick representing a range, it is possible to define a set of custom ti
 
 ### Settings
 
-{{>struct entries.scale--linear}}
+{{>struct definitions.scale--linear}}
 
 ## Band scale
 

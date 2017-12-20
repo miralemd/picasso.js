@@ -9,6 +9,7 @@ const strategies = {
 /**
  * @typedef {object} component--labels
  * @property {string} [type='labels']
+ * @definition
  */
 
 /**

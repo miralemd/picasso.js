@@ -101,6 +101,7 @@ function teardown(state) {
 }
 
 /**
+ * @definition
  * @typedef {object} component--range
  */
 

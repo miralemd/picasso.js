@@ -68,8 +68,6 @@ chartSettings = {
 }
 ```
 
-## API reference - Table of contents
+## Component settings
 
-{{postprocess 'index'}}
-
-{{>struct entries.component--legend-seq}}
+{{>struct definitions.component--legend-seq}}

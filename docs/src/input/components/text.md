@@ -19,4 +19,4 @@
 
 ## Configuration
 
-{{>struct entries.component--text}}
+{{>struct definitions.component--text}}

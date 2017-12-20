@@ -4,11 +4,11 @@
 
 ### Data definition
 
-{{>struct entries.component--box-marker.entries.data name='data'}}
+{{>struct definitions.component--box-marker.entries.data name='data'}}
 
 ### Settings
 
-{{>struct entries.component--box-marker.entries.settings name='settings'}}
+{{>struct definitions.component--box-marker.entries.settings name='settings'}}
 
 ## Example
 

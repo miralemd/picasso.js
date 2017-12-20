@@ -33,6 +33,7 @@ const DEFAULT_DATA_SETTINGS = {
  */
 
 /**
+ * @definition
  * @typedef {object} component--pie
  * @property {string} [type='pie']
  * @property {component--pie.settings} settings - Pie settings

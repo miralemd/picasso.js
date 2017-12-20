@@ -2,6 +2,7 @@ import axisComponent from './axis';
 
 /**
  * @typedef {object} component--axis
+ * @definition
  */
 
 /**

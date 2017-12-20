@@ -68,9 +68,7 @@ chartSettings = {
 }
 ```
 
-## API reference - Table of contents
-
-
+## Component settings
 
 ```js
 {

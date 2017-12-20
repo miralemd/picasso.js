@@ -179,6 +179,7 @@ function resetState() {
 
 /**
  * @typedef {object} component--brush-lasso
+ * @definition
  */
 
 /**

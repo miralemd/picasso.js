@@ -94,6 +94,7 @@ function generateTitle({
 }
 
 /**
+ * @definition
  * @typedef {object} component--text
  * @property {string} [type='text']
  * @property {string|function} text

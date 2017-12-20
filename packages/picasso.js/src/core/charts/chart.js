@@ -19,13 +19,10 @@ import NarrowPhaseCollision from '../math/narrow-phase-collision';
 import themeFn from '../theme';
 
 /**
+ * @definition
  * @typedef {object} component-settings
- * @description Will also include component specific settings depending on type
- *              ex: [marker-point-settings](./markers.md#marker-point-settings),
- *                  [marker-box-settings](./markers.md#marker-box-settings),
- *                  [axis-settings](./axis.md#axis-settings),
  * @property {string} type - Component type (ex: axis, point-marker, ...)
- * @property {function} [preferredSize] Function returing preferred size
+ * @property {function} [preferredSize] - Function returning the preferred size
  * @property {function} [created]
  * @property {function} [beforeMount]
  * @property {function} [mounted]
@@ -45,6 +42,7 @@ import themeFn from '../theme';
  */
 
 /**
+ * @definition
  * @typedef {object} dock-layout-settings
  * @property {object} [size] Phyiscal size. Default to size of the container
  * @property {number} [size.width]
@@ -100,6 +98,7 @@ function addComponentDelta(shape, containerBounds, componentBounds) {
 
 function chartFn(definition, context) {
   /**
+   * @definition
    * @typedef {object} chart-definition
    */
   let {
@@ -128,6 +127,7 @@ function chartFn(definition, context) {
   const chartMixins = mixins.list();
   const listeners = [];
   /**
+   * @definition
    * @alias chart
    * @type {object}
    */

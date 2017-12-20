@@ -4,7 +4,7 @@ A component that renders a static categorical color legend
 
 ## Component settings
 
-{{>struct entries.component--legend-cat}}
+{{>struct definitions.component--legend-cat}}
 
 ## Events
 

@@ -22,6 +22,7 @@ To have a tick representing a range, it is possible to define a set of custom ti
 
 ```js
 {
+  type: 'linear', // Optional
   expand: /* number */, // Expand the output range // Optional
   invert: false, // Invert the output range // Optional
   include: [  // Optional

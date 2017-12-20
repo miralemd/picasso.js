@@ -18,13 +18,14 @@ function isPrimitive(x) {
 }
 
 /**
+ * @definition
  * @callback datum-accessor
  * @param {datum-extract} d
- * @definition
  * @memberof datum-config
  */
 
 /**
+ * @definition
  * @typedef {object} datum-config
  * @property {string} [scale]
  * @property {datum-accessor} fn
@@ -32,10 +33,12 @@ function isPrimitive(x) {
  */
 
 /**
+ * @definition
  * @typedef {string|datum-config|datum-accessor} datum-string
  */
 
 /**
+ * @definition
  * @typedef {number|datum-config|datum-accessor} datum-number
  */
 

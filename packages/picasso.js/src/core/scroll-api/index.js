@@ -9,6 +9,8 @@ export default function scrollApi() {
 
   /**
    * The scroll api
+   * @definition
+   * @private
    * @alias scroll
    */
   const s = {

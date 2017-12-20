@@ -2,8 +2,949 @@
   "spec": {
     "version": "0.1.0"
   },
-  "info": {},
+  "info": {
+    "name": "@qlik/picasso",
+    "description": "A charting library streamlined for building visualizations for the Qlik Sense Analytics platform.",
+    "version": "0.40.0",
+    "license": "ISC"
+  },
   "entries": {
+    "picassojs": {
+      "description": "picasso.js entry point",
+      "stability": 1,
+      "kind": "function",
+      "params": [
+        {
+          "name": "cfg",
+          "type": "object",
+          "kind": "struct",
+          "entries": {
+            "renderer": {
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "prio": {
+                  "kind": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "logger": {
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "level": {
+                  "type": "number"
+                }
+              }
+            },
+            "style": {
+              "type": "object"
+            },
+            "palettes": {
+              "kind": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ],
+      "returns": {
+        "type": "picassojs"
+      },
+      "entries": {
+        "component": {
+          "description": "Component registry",
+          "type": "registry"
+        },
+        "data": {
+          "description": "Data registry",
+          "type": "registry"
+        },
+        "formatter": {
+          "description": "Formatter registry",
+          "type": "registry"
+        },
+        "interaction": {
+          "description": "Interaction registry",
+          "type": "registry"
+        },
+        "renderer": {
+          "description": "Renderer registry",
+          "type": "registry"
+        },
+        "scale": {
+          "description": "Scale registry",
+          "type": "registry"
+        },
+        "use": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "plugin",
+              "type": "fnPlug"
+            },
+            {
+              "name": "options",
+              "type": "object"
+            }
+          ]
+        },
+        "chart": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "definition",
+              "type": "chart-definition"
+            }
+          ],
+          "returns": {
+            "type": "chart"
+          }
+        },
+        "version": {
+          "description": "picasso.js version",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "brush": {
+      "description": "A brush context",
+      "kind": "object",
+      "entries": {
+        "start": {
+          "description": "Starts this brush context\n\nStarts this brush context and emits a 'start' event if it is not already started.",
+          "kind": "function",
+          "params": [],
+          "emits": [
+            {
+              "type": "brush#event:start"
+            }
+          ]
+        },
+        "end": {
+          "description": "Ends this brush context\n\nEnds this brush context and emits an 'end' event if it is not already ended.",
+          "kind": "function",
+          "params": [],
+          "emits": [
+            {
+              "type": "brush#event:start"
+            }
+          ]
+        },
+        "isActive": {
+          "description": "Checks if this brush is activated\n\nReturns true if started, false otherwise",
+          "kind": "function",
+          "params": [],
+          "returns": {
+            "type": "boolean"
+          }
+        },
+        "clear": {
+          "description": "Clears this brush context",
+          "kind": "function",
+          "params": []
+        },
+        "brushes": {
+          "description": "Returns all brushes within this context",
+          "kind": "function",
+          "params": [],
+          "returns": {
+            "type": "object"
+          }
+        },
+        "addValue": {
+          "description": "Adds a primitive value to this brush context\n\nIf this brush context is not started, a 'start' event is emitted.\nIf the state of the brush changes, ie. if the added value does not already exist, an 'update' event is emitted.",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "An identifier that represents the data source of the value",
+              "type": "string"
+            },
+            {
+              "name": "value",
+              "description": "The value to add",
+              "kind": "union",
+              "union": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            }
+          ],
+          "emits": [
+            {
+              "type": "brush#event:start"
+            },
+            {
+              "type": "brush#event:update"
+            }
+          ],
+          "examples": [
+            "brush.addValue('countries', 'Sweden');\nbrush.addValue('/qHyperCube/qDimensionInfo/0', 3);"
+          ]
+        },
+        "addValues": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "items",
+              "description": "Items to add",
+              "kind": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          ]
+        },
+        "setValues": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "items",
+              "description": "Items to set",
+              "kind": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          ]
+        },
+        "removeValue": {
+          "description": "Removes a primitive values from this brush context\n\nIf the state of the brush changes, ie. if the removed value does exist, an 'update' event is emitted.",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "An identifier that represents the data source of the value",
+              "type": "string"
+            },
+            {
+              "name": "value",
+              "description": "The value to remove",
+              "kind": "union",
+              "union": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            }
+          ],
+          "examples": [
+            "brush.removeValue('countries', 'Sweden');"
+          ]
+        },
+        "removeValues": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "items",
+              "description": "Items to remove",
+              "kind": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          ]
+        },
+        "addAndRemoveValues": {
+          "description": "Add and remove values in a single operation\nalmost the same as calling addValues and removeValues but only triggers one 'update' event\n\nIf the state of the brush changes, an 'update' event is emitted.",
+          "kind": "function",
+          "params": [
+            {
+              "name": "addItems",
+              "description": "Items to add",
+              "kind": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            {
+              "name": "removeItems",
+              "description": "Items to remove",
+              "kind": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          ]
+        },
+        "toggleValue": {
+          "description": "Toggles a primitive value in this brush context\n\nIf the given value exist in this brush context, it will be removed. If it does not exist it will be added.",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "An identifier that represents the data source of the value",
+              "type": "string"
+            },
+            {
+              "name": "value",
+              "description": "The value to toggle",
+              "kind": "union",
+              "union": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            }
+          ],
+          "examples": [
+            "brush.toggleValue('countries', 'Sweden');"
+          ]
+        },
+        "toggleValues": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "items",
+              "description": "Items to toggle",
+              "kind": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          ]
+        },
+        "containsValue": {
+          "description": "Checks if a certain value exists in this brush context\n\nReturns true if the values exists for the provided key, returns false otherwise.",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "An identifier that represents the data source of the value",
+              "type": "string"
+            },
+            {
+              "name": "value",
+              "description": "The value to check for",
+              "kind": "union",
+              "union": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            }
+          ],
+          "returns": {
+            "type": "boolean"
+          },
+          "examples": [
+            "brush.addValue('countries', 'Sweden');\nbrush.containsValue('countries', 'Sweden'); // true\nbrush.toggleValue('countries', 'Sweden'); // remove 'Sweden'\nbrush.containsValue('countries', 'Sweden'); // false"
+          ]
+        },
+        "addRange": {
+          "description": "Adds a numeric range to this brush context",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "An identifier that represents the data source of the range",
+              "type": "string"
+            },
+            {
+              "name": "range",
+              "description": "The range to add to this brush",
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "min": {
+                  "description": "Min value of the range",
+                  "type": "number"
+                },
+                "max": {
+                  "description": "Max value of the range",
+                  "type": "number"
+                }
+              }
+            }
+          ],
+          "examples": [
+            "brush.addRange('Sales', { min: 20, max: 50 });"
+          ]
+        },
+        "addRanges": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "items",
+              "description": "Items containing the ranges to remove",
+              "kind": "array",
+              "items": {
+                "entries": {
+                  "key": {
+                    "type": "string"
+                  },
+                  "range": {
+                    "type": "object"
+                  }
+                },
+                "kind": "struct"
+              }
+            }
+          ]
+        },
+        "removeRange": {
+          "description": "Removes a numeric range from this brush context",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "An identifier that represents the data source of the range",
+              "type": "string"
+            },
+            {
+              "name": "range",
+              "description": "The range to remove from this brush",
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "min": {
+                  "description": "Min value of the range",
+                  "type": "number"
+                },
+                "max": {
+                  "description": "Max value of the range",
+                  "type": "number"
+                }
+              }
+            }
+          ]
+        },
+        "removeRanges": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "items",
+              "description": "Items containing the ranges to remove",
+              "kind": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          ]
+        },
+        "setRange": {
+          "description": "Sets a numeric range to this brush context\n\nOverwrites any active ranges identified by `key`",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "An identifier that represents the data source of the range",
+              "type": "string"
+            },
+            {
+              "name": "range",
+              "description": "The range to set on this brush",
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "min": {
+                  "description": "Min value of the range",
+                  "type": "number"
+                },
+                "max": {
+                  "description": "Max value of the range",
+                  "type": "number"
+                }
+              }
+            }
+          ]
+        },
+        "setRanges": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "items",
+              "description": "Items containing the ranges to set",
+              "kind": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          ]
+        },
+        "toggleRange": {
+          "description": "Toggles a numeric range in this brush context\n\nRemoves the range if it's already contained within the given identifier,\notherwise the given range is added to the brush.",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "An identifier that represents the data source of the range",
+              "type": "string"
+            },
+            {
+              "name": "range",
+              "description": "The range to toggle in this brush",
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "min": {
+                  "description": "Min value of the range",
+                  "type": "number"
+                },
+                "max": {
+                  "description": "Max value of the range",
+                  "type": "number"
+                }
+              }
+            }
+          ]
+        },
+        "toggleRanges": {
+          "kind": "function",
+          "params": [
+            {
+              "name": "items",
+              "description": "Items containing the ranges to toggle",
+              "kind": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          ]
+        },
+        "containsRangeValue": {
+          "description": "Checks if a value is contained within a range in this brush context\n\nReturns true if the values exists for the provided key, returns false otherwise.",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "An identifier that represents the data source of the value",
+              "type": "string"
+            },
+            {
+              "name": "value",
+              "description": "The value to check for",
+              "type": "number"
+            }
+          ],
+          "returns": {
+            "type": "boolean"
+          },
+          "examples": [
+            "brush.addRange('Sales', { min: 10, max: 50 });\nbrush.containsRangeValue('Sales', 30); // true\nbrush.containsRangeValue('Sales', 5); // false"
+          ]
+        },
+        "containsRange": {
+          "description": "Checks if a range segment is contained within this brush context\n\nReturns true if the range segment exists for the provided key, returns false otherwise.",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "An identifier that represents the data source of the value",
+              "type": "string"
+            },
+            {
+              "name": "range",
+              "description": "The range to check for",
+              "type": "object",
+              "kind": "struct",
+              "entries": {
+                "min": {
+                  "description": "Min value of the range",
+                  "type": "number"
+                },
+                "max": {
+                  "description": "Max value of the range",
+                  "type": "number"
+                }
+              }
+            }
+          ],
+          "returns": {
+            "type": "boolean"
+          },
+          "examples": [
+            "brush.addRange('Sales', { min: 10, max: 50 });\nbrush.containsRange('Sales', { min: 15, max: 20 }); // true - the range segment is fully contained within [10, 50]\nbrush.containsRange('Sales', { min: 5, max: 20 }); // false - part of the range segment is outside [10, 50]\nbrush.containsRange('Sales', { min: 30, max: 80 }); // false - part of the range segment is outside [10, 50]"
+          ]
+        },
+        "intercept": {
+          "description": "Adds an event interceptor",
+          "kind": "function",
+          "params": [
+            {
+              "name": "name",
+              "description": "Name of the event to intercept",
+              "type": "string"
+            },
+            {
+              "name": "ic",
+              "description": "Handler to call before event is triggered",
+              "type": "function"
+            }
+          ],
+          "examples": [
+            "brush.intercept('add-values', items => {\n console.log('about to add the following items', items);\n return items;\n});"
+          ]
+        },
+        "removeInterceptor": {
+          "description": "Removes an interceptor",
+          "kind": "function",
+          "params": [
+            {
+              "name": "name",
+              "description": "Name of the event to intercept",
+              "type": "string"
+            },
+            {
+              "name": "ic",
+              "description": "Handler to remove",
+              "type": "function"
+            }
+          ]
+        },
+        "removeAllInterceptors": {
+          "description": "Removes all interceptors",
+          "kind": "function",
+          "params": [
+            {
+              "name": "name",
+              "description": "Name of the event to remove interceptors for. If not provided, removes all interceptors.",
+              "optional": true,
+              "type": "string"
+            }
+          ]
+        },
+        "addKeyAlias": {
+          "description": "Adds an alias to the given key",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "Value to be replaced",
+              "type": "string"
+            },
+            {
+              "name": "alias",
+              "description": "Value to replace key with",
+              "type": "string"
+            }
+          ],
+          "examples": [
+            "brush.addKeyAlias('BadFieldName', 'Region');\nbrush.addValue('BadFieldName', 'Sweden'); // 'BadFieldName' will be stored as 'Region'\nbrush.containsValue('Region', 'Sweden'); // true\nbrush.containsValue('BadFieldName', 'Sweden'); // true"
+          ]
+        },
+        "removeKeyAlias": {
+          "description": "Removes an alias\n\nThis will only remove the key to alias mapping for new manipulations of the brush,\nno changes will be made to the current state of this brush.",
+          "kind": "function",
+          "params": [
+            {
+              "name": "key",
+              "description": "Value to remove as alias",
+              "type": "string"
+            }
+          ],
+          "examples": [
+            "brush.removeKeyAlias('BadFieldName');"
+          ]
+        }
+      },
+      "events": {
+        "start": {
+          "description": "Triggered when this brush is activated",
+          "kind": "event",
+          "params": []
+        },
+        "update": {
+          "description": "Triggered when this brush is updated",
+          "kind": "event",
+          "params": [
+            {
+              "name": "added",
+              "description": "The added items",
+              "kind": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            {
+              "name": "removed",
+              "description": "The removed items",
+              "kind": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          ]
+        },
+        "end": {
+          "description": "Triggered when this brush is deactivated",
+          "kind": "event",
+          "params": []
+        }
+      }
+    },
+    "component--axis-discrete": {
+      "description": "Discrete axis settings",
+      "kind": "struct",
+      "entries": {
+        "labels": {
+          "kind": "struct",
+          "entries": {
+            "show": {
+              "description": "Toggle labels on/off",
+              "optional": true,
+              "defaultValue": true,
+              "type": "boolean"
+            },
+            "tiltAngle": {
+              "description": "Tilting angle in degrees. Capped between -90 and 90. Only applicable when labels are in `tilted` mode.",
+              "optional": true,
+              "defaultValue": 40,
+              "type": "number"
+            },
+            "maxEdgeBleed": {
+              "description": "Control the amount of space (in pixels) that labes can occupy outside their docking area. Only applicable when labels are in `tilted` mode.",
+              "optional": true,
+              "type": "number"
+            },
+            "margin": {
+              "description": "Space in pixels between the tick and label.",
+              "optional": true,
+              "defaultValue": 4,
+              "type": "number"
+            },
+            "maxLengthPx": {
+              "description": "Max length of labels in pixels",
+              "optional": true,
+              "defaultValue": 150,
+              "type": "number"
+            },
+            "minLengthPx": {
+              "description": "Min length of labels in pixels. Labels will always at least require this much space",
+              "optional": true,
+              "defaultValue": 0,
+              "type": "number"
+            },
+            "mode": {
+              "description": "Control how labels arrange themself. Availabe modes are `auto`, `horizontal`, `layered` and `tilted`. When set to `auto` the axis determines the best possible layout in the current context.",
+              "optional": true,
+              "defaultValue": "auto",
+              "type": "string"
+            },
+            "maxGlyphCount": {
+              "description": "When only a sub-set of data is available, ex. when paging. This property can be used to let the axis estimate how much space the labels will consume, allowing it to give a consistent space estimate over the entire dataset when paging.",
+              "optional": true,
+              "type": "number"
+            },
+            "align": {
+              "description": "Align act as a slider for the text bounding rect over the item bandwidth, given that the item have a bandwidth. Except when labels are tilted, then the align is a pure align that shifts the position of the label anchoring point.",
+              "optional": true,
+              "defaultValue": 0.5,
+              "type": "number"
+            },
+            "offset": {
+              "description": "Offset in pixels along the axis direction.",
+              "optional": true,
+              "defaultValue": 0,
+              "type": "number"
+            }
+          },
+          "type": "object"
+        },
+        "ticks": {
+          "kind": "struct",
+          "entries": {
+            "show": {
+              "description": "Toggle ticks on/off",
+              "optional": true,
+              "defaultValue": false,
+              "type": "boolean"
+            },
+            "margin": {
+              "description": "Space in pixels between the ticks and the line.",
+              "optional": true,
+              "defaultValue": 0,
+              "type": "number"
+            },
+            "tickSize": {
+              "description": "Size of the ticks in pixels.",
+              "optional": true,
+              "defaultValue": 4,
+              "type": "number"
+            }
+          },
+          "type": "object"
+        },
+        "line": {
+          "kind": "struct",
+          "entries": {
+            "show": {
+              "description": "Toggle line on/off",
+              "optional": true,
+              "defaultValue": false,
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
+        "paddingStart": {
+          "description": "Padding in direction perpendicular to the axis",
+          "optional": true,
+          "defaultValue": 0,
+          "type": "number"
+        },
+        "paddingEnd": {
+          "description": "Padding in direction perpendicular to the axis",
+          "optional": true,
+          "defaultValue": 10,
+          "type": "number"
+        },
+        "align": {
+          "description": "Set the anchoring point of the axis. Avaialable options are `auto/left/right/bottom/top`. In `auto` the axis determines the best option. The options are restricted based on the axis orientation, a vertical axis may only anchor on `left` or `right`",
+          "optional": true,
+          "defaultValue": "auto",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "component--axis-continuous": {
+      "description": "Continuous axis settings",
+      "kind": "struct",
+      "entries": {
+        "labels": {
+          "kind": "struct",
+          "entries": {
+            "show": {
+              "description": "Toggle labels on/off",
+              "optional": true,
+              "defaultValue": true,
+              "type": "boolean"
+            },
+            "margin": {
+              "description": "Space in pixels between the tick and label.",
+              "optional": true,
+              "defaultValue": 4,
+              "type": "number"
+            },
+            "maxLengthPx": {
+              "description": "Max length of labels in pixels",
+              "optional": true,
+              "defaultValue": 150,
+              "type": "number"
+            },
+            "minLengthPx": {
+              "description": "Min length of labels in pixels. Labels will always at least require this much space",
+              "optional": true,
+              "defaultValue": 0,
+              "type": "number"
+            },
+            "align": {
+              "description": "Align act as a slider for the text bounding rect over the item bandwidth, given that the item have a bandwidth.",
+              "optional": true,
+              "defaultValue": 0.5,
+              "type": "number"
+            },
+            "offset": {
+              "description": "Offset in pixels along the axis direction.",
+              "optional": true,
+              "defaultValue": 0,
+              "type": "number"
+            }
+          },
+          "type": "object"
+        },
+        "ticks": {
+          "kind": "struct",
+          "entries": {
+            "show": {
+              "description": "Toggle ticks on/off",
+              "optional": true,
+              "defaultValue": true,
+              "type": "boolean"
+            },
+            "margin": {
+              "description": "Space in pixels between the ticks and the line.",
+              "optional": true,
+              "defaultValue": 0,
+              "type": "number"
+            },
+            "tickSize": {
+              "description": "Size of the ticks in pixels.",
+              "optional": true,
+              "defaultValue": 8,
+              "type": "number"
+            }
+          },
+          "type": "object"
+        },
+        "minorTicks": {
+          "kind": "struct",
+          "entries": {
+            "show": {
+              "description": "Toggle minor-ticks on/off",
+              "optional": true,
+              "defaultValue": false,
+              "type": "boolean"
+            },
+            "tickSize": {
+              "description": "Size of the ticks in pixels.",
+              "optional": true,
+              "defaultValue": 3,
+              "type": "number"
+            },
+            "margin": {
+              "description": "Space in pixels between the ticks and the line.",
+              "optional": true,
+              "defaultValue": 0,
+              "type": "number"
+            }
+          },
+          "type": "object"
+        },
+        "line": {
+          "kind": "struct",
+          "entries": {
+            "show": {
+              "description": "Toggle line on/off",
+              "optional": true,
+              "defaultValue": true,
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
+        "paddingStart": {
+          "description": "Padding in direction perpendicular to the axis",
+          "optional": true,
+          "defaultValue": 0,
+          "type": "number"
+        },
+        "paddingEnd": {
+          "description": "Padding in direction perpendicular to the axis",
+          "optional": true,
+          "defaultValue": 10,
+          "type": "number"
+        },
+        "align": {
+          "description": "Set the anchoring point of the axis. Avaialable options are `auto/left/right/bottom/top`. In `auto` the axis determines the best option. The options are restricted based on the axis orientation, a vertical axis may only anchor on `left` or `right`",
+          "optional": true,
+          "defaultValue": "auto",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
     "component--axis": {
       "kind": "struct",
       "entries": {
@@ -951,6 +1892,98 @@
       },
       "type": "object"
     },
+    "component--line": {
+      "kind": "struct",
+      "entries": {
+        "type": {
+          "defaultValue": "line",
+          "type": "string"
+        },
+        "settings": {
+          "kind": "struct",
+          "entries": {
+            "coordinates": {
+              "kind": "struct",
+              "entries": {
+                "minor": {
+                  "defaultValue": 0.5,
+                  "type": "number"
+                },
+                "major": {
+                  "defaultValue": 0.5,
+                  "type": "number"
+                },
+                "layerId": {
+                  "defaultValue": 0,
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            },
+            "orientation": {
+              "defaultValue": "horizontal",
+              "type": "string"
+            },
+            "layers": {
+              "kind": "struct",
+              "entries": {
+                "curve": {
+                  "defaultValue": "linear",
+                  "type": "string"
+                },
+                "show": {
+                  "defaultValue": true,
+                  "type": "boolean"
+                },
+                "line": {
+                  "kind": "struct",
+                  "entries": {
+                    "stroke": {
+                      "defaultValue": "#ccc",
+                      "type": "string"
+                    },
+                    "strokeWidth": {
+                      "defaultValue": 1,
+                      "type": "number"
+                    },
+                    "opacity": {
+                      "defaultValue": 1,
+                      "type": "number"
+                    },
+                    "show": {
+                      "defaultValue": true,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                },
+                "area": {
+                  "kind": "struct",
+                  "entries": {
+                    "fill": {
+                      "defaultValue": "#ccc",
+                      "type": "string"
+                    },
+                    "opacity": {
+                      "defaultValue": 0.8,
+                      "type": "number"
+                    },
+                    "show": {
+                      "defaultValue": true,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
     "component--box-marker": {
       "kind": "struct",
       "entries": {
@@ -1269,6 +2302,112 @@
       "examples": [
         "{\n  type: 'pie',\n  data: {\n    field: 'Region',\n    props: {\n      arc: { field: 'Population' }\n    }\n  },\n  settings: {\n    startAngle: Math.PI / 2,\n    endAngle: -Math.PI / 2,\n    slice: {\n      fill: 'green',\n      stroke: 'red',\n      strokeWidth: 2,\n      innerRadius: 0.6,\n      outerRadius 0.8,\n      opacity: 0.8,\n      offset: function(v) {\n        return ix === 1 ? 0.3 : 0;\n      }\n    }\n  }\n}"
       ]
+    },
+    "component--point-marker": {
+      "kind": "struct",
+      "entries": {
+        "type": {
+          "defaultValue": "point-marker",
+          "type": "string"
+        },
+        "settings": {
+          "kind": "struct",
+          "entries": {
+            "shape": {
+              "description": "Type of shape",
+              "optional": true,
+              "defaultValue": "circle",
+              "type": "datum-string"
+            },
+            "fill": {
+              "description": "Fill color",
+              "optional": true,
+              "defaultValue": "#333",
+              "type": "datum-string"
+            },
+            "stroke": {
+              "description": "Stroke color",
+              "optional": true,
+              "defaultValue": "#ccc",
+              "type": "datum-string"
+            },
+            "strokeWidth": {
+              "description": "Stroke width",
+              "optional": true,
+              "defaultValue": 0,
+              "type": "datum-number"
+            },
+            "opacity": {
+              "description": "Opacity of shape",
+              "optional": true,
+              "defaultValue": 1,
+              "type": "datum-number"
+            },
+            "x": {
+              "description": "Normalized x coordinate",
+              "optional": true,
+              "defaultValue": 0.5,
+              "type": "datum-number"
+            },
+            "y": {
+              "description": "Normalized y coordinate",
+              "optional": true,
+              "defaultValue": 0.5,
+              "type": "datum-number"
+            },
+            "size": {
+              "description": "Normalized size of shape",
+              "optional": true,
+              "defaultValue": 1,
+              "type": "datum-number"
+            },
+            "sizeLimits": {
+              "kind": "struct",
+              "entries": {
+                "maxPx": {
+                  "description": "Maximum size of shape, in pixels",
+                  "optional": true,
+                  "defaultValue": 10000,
+                  "type": "number"
+                },
+                "minPx": {
+                  "description": "Minimum size of shape, in pixels",
+                  "optional": true,
+                  "defaultValue": 1,
+                  "type": "number"
+                },
+                "maxRelExtent": {
+                  "description": "Maximum size relative linear scale extent",
+                  "optional": true,
+                  "defaultValue": 0.1,
+                  "type": "number"
+                },
+                "minRelExtent": {
+                  "description": "Minimum size relative linear scale extent",
+                  "optional": true,
+                  "defaultValue": 0.01,
+                  "type": "number"
+                },
+                "maxRelDiscrete": {
+                  "description": "Maximum size relative discrete scale banwidth",
+                  "optional": true,
+                  "defaultValue": 1,
+                  "type": "number"
+                },
+                "minRelDiscrete": {
+                  "description": "Minimum size relative discrete scale banwidth",
+                  "optional": true,
+                  "defaultValue": 0.1,
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
     },
     "datum-config": {
       "kind": "struct",
@@ -1720,33 +2859,6 @@
       },
       "type": "object"
     },
-    "component--scrollbar": {
-      "kind": "struct",
-      "entries": {
-        "settings": {
-          "kind": "struct",
-          "entries": {
-            "backgroundColor": {
-              "optional": true,
-              "defaultValue": "'#eee'",
-              "type": "boolean"
-            },
-            "thumbColor": {
-              "optional": true,
-              "defaultValue": "'#ccc'",
-              "type": "boolean"
-            },
-            "width": {
-              "optional": true,
-              "defaultValue": 16,
-              "type": "boolean"
-            }
-          },
-          "type": "object"
-        }
-      },
-      "type": "object"
-    },
     "component--text": {
       "kind": "struct",
       "entries": {
@@ -1836,7 +2948,6 @@
       ]
     },
     "component-settings": {
-      "description": "Will also include component specific settings depending on type\n             ex: [marker-point-settings](./markers.md#marker-point-settings),\n                 [marker-box-settings](./markers.md#marker-box-settings),\n                 [axis-settings](./axis.md#axis-settings),",
       "kind": "struct",
       "entries": {
         "type": {
@@ -1844,7 +2955,7 @@
           "type": "string"
         },
         "preferredSize": {
-          "description": "Function returing preferred size",
+          "description": "Function returning the preferred size",
           "optional": true,
           "type": "function"
         },
@@ -2343,1268 +3454,6 @@
         }
       }
     },
-    "scale--linear": {
-      "kind": "struct",
-      "entries": {
-        "expand": {
-          "description": "Expand the output range",
-          "optional": true,
-          "type": "number"
-        },
-        "invert": {
-          "description": "Invert the output range",
-          "optional": true,
-          "defaultValue": false,
-          "type": "boolean"
-        },
-        "include": {
-          "description": "Include specified numbers in the output range",
-          "optional": true,
-          "kind": "array",
-          "items": {
-            "type": "number"
-          }
-        },
-        "ticks": {
-          "optional": true,
-          "type": "object",
-          "kind": "struct",
-          "entries": {
-            "tight": {
-              "optional": true,
-              "defaultValue": false,
-              "type": "boolean"
-            },
-            "forceBounds": {
-              "optional": true,
-              "defaultValue": false,
-              "type": "boolean"
-            },
-            "distance": {
-              "description": "Approximate distance between each tick",
-              "optional": true,
-              "defaultValue": 100,
-              "type": "number"
-            },
-            "values": {
-              "description": "If set, ticks are no longer generated but instead equal to this set",
-              "optional": true,
-              "kind": "union",
-              "union": [
-                {
-                  "type": "Array<number>"
-                },
-                {
-                  "type": "Array<object>"
-                }
-              ]
-            },
-            "count": {
-              "optional": true,
-              "type": "number"
-            }
-          }
-        },
-        "minorTicks": {
-          "optional": true,
-          "type": "object",
-          "kind": "struct",
-          "entries": {
-            "count": {
-              "optional": true,
-              "defaultValue": 3,
-              "type": "number"
-            }
-          }
-        }
-      },
-      "type": "object"
-    },
-    "scroll": {
-      "description": "The scroll api",
-      "kind": "object",
-      "entries": {
-        "move": {
-          "description": "Move the current scroll",
-          "kind": "function",
-          "params": [
-            {
-              "name": "value",
-              "type": "number"
-            }
-          ],
-          "emits": [
-            {
-              "type": "event:update"
-            }
-          ]
-        },
-        "moveTo": {
-          "description": "Change the current scroll to a specific value",
-          "kind": "function",
-          "params": [
-            {
-              "name": "value",
-              "type": "number"
-            }
-          ],
-          "emits": [
-            {
-              "type": "event:update"
-            }
-          ]
-        },
-        "update": {
-          "description": "Update scroll settings",
-          "kind": "function",
-          "params": [],
-          "emits": [
-            {
-              "type": "event:update"
-            }
-          ]
-        },
-        "getState": {
-          "description": "Get the current scroll state",
-          "kind": "function",
-          "params": [],
-          "returns": {
-            "description": "with min, max, start & viewSize",
-            "type": "object"
-          }
-        }
-      }
-    },
-    "pic~regis.component": {
-      "description": "Component registry",
-      "type": "registry"
-    },
-    "pic~regis.data": {
-      "description": "Data registry",
-      "type": "registry"
-    },
-    "pic~regis.formatter": {
-      "description": "Formatter registry",
-      "type": "registry"
-    },
-    "pic~regis.interaction": {
-      "description": "Interaction registry",
-      "type": "registry"
-    },
-    "pic~regis.renderer": {
-      "description": "Renderer registry",
-      "type": "registry"
-    },
-    "pic~regis.scale": {
-      "description": "Scale registry",
-      "type": "registry"
-    },
-    "picassojs": {
-      "description": "picasso.js entry point",
-      "stability": 1,
-      "kind": "function",
-      "params": [
-        {
-          "name": "cfg",
-          "type": "object",
-          "kind": "struct",
-          "entries": {
-            "renderer": {
-              "type": "object",
-              "kind": "struct",
-              "entries": {
-                "prio": {
-                  "kind": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            },
-            "logger": {
-              "type": "object",
-              "kind": "struct",
-              "entries": {
-                "level": {
-                  "type": "number"
-                }
-              }
-            },
-            "style": {
-              "type": "object"
-            },
-            "palettes": {
-              "kind": "array",
-              "items": {
-                "type": "object"
-              }
-            }
-          }
-        }
-      ],
-      "returns": {
-        "type": "picassojs"
-      },
-      "entries": {
-        "use": {
-          "kind": "function",
-          "params": [
-            {
-              "name": "plugin",
-              "type": "fnPlug"
-            },
-            {
-              "name": "options",
-              "type": "object"
-            }
-          ]
-        },
-        "chart": {
-          "kind": "function",
-          "params": [
-            {
-              "name": "definition",
-              "type": "chart-definition"
-            }
-          ],
-          "returns": {
-            "type": "chart"
-          }
-        }
-      }
-    }
-  },
-  "definitions": {
-    "brush": {
-      "description": "A brush context",
-      "kind": "object",
-      "entries": {
-        "start": {
-          "description": "Starts this brush context\n\nStarts this brush context and emits a 'start' event if it is not already started.",
-          "kind": "function",
-          "params": [],
-          "emits": [
-            {
-              "type": "brush#event:start"
-            }
-          ]
-        },
-        "end": {
-          "description": "Ends this brush context\n\nEnds this brush context and emits an 'end' event if it is not already ended.",
-          "kind": "function",
-          "params": [],
-          "emits": [
-            {
-              "type": "brush#event:start"
-            }
-          ]
-        },
-        "isActive": {
-          "description": "Checks if this brush is activated\n\nReturns true if started, false otherwise",
-          "kind": "function",
-          "params": [],
-          "returns": {
-            "type": "boolean"
-          }
-        },
-        "clear": {
-          "description": "Clears this brush context",
-          "kind": "function",
-          "params": []
-        },
-        "brushes": {
-          "description": "Returns all brushes within this context",
-          "kind": "function",
-          "params": [],
-          "returns": {
-            "type": "object"
-          }
-        },
-        "addValue": {
-          "description": "Adds a primitive value to this brush context\n\nIf this brush context is not started, a 'start' event is emitted.\nIf the state of the brush changes, ie. if the added value does not already exist, an 'update' event is emitted.",
-          "kind": "function",
-          "params": [
-            {
-              "name": "key",
-              "description": "An identifier that represents the data source of the value",
-              "type": "string"
-            },
-            {
-              "name": "value",
-              "description": "The value to add",
-              "kind": "union",
-              "union": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
-              ]
-            }
-          ],
-          "emits": [
-            {
-              "type": "brush#event:start"
-            },
-            {
-              "type": "brush#event:update"
-            }
-          ],
-          "examples": [
-            "brush.addValue('countries', 'Sweden');\nbrush.addValue('/qHyperCube/qDimensionInfo/0', 3);"
-          ]
-        },
-        "addValues": {
-          "kind": "function",
-          "params": [
-            {
-              "name": "items",
-              "description": "Items to add",
-              "kind": "array",
-              "items": {
-                "type": "object"
-              }
-            }
-          ]
-        },
-        "setValues": {
-          "kind": "function",
-          "params": [
-            {
-              "name": "items",
-              "description": "Items to set",
-              "kind": "array",
-              "items": {
-                "type": "object"
-              }
-            }
-          ]
-        },
-        "removeValue": {
-          "description": "Removes a primitive values from this brush context\n\nIf the state of the brush changes, ie. if the removed value does exist, an 'update' event is emitted.",
-          "kind": "function",
-          "params": [
-            {
-              "name": "key",
-              "description": "An identifier that represents the data source of the value",
-              "type": "string"
-            },
-            {
-              "name": "value",
-              "description": "The value to remove",
-              "kind": "union",
-              "union": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
-              ]
-            }
-          ],
-          "examples": [
-            "brush.removeValue('countries', 'Sweden');"
-          ]
-        },
-        "removeValues": {
-          "kind": "function",
-          "params": [
-            {
-              "name": "items",
-              "description": "Items to remove",
-              "kind": "array",
-              "items": {
-                "type": "object"
-              }
-            }
-          ]
-        },
-        "addAndRemoveValues": {
-          "description": "Add and remove values in a single operation\nalmost the same as calling addValues and removeValues but only triggers one 'update' event\n\nIf the state of the brush changes, an 'update' event is emitted.",
-          "kind": "function",
-          "params": [
-            {
-              "name": "addItems",
-              "description": "Items to add",
-              "kind": "array",
-              "items": {
-                "type": "object"
-              }
-            },
-            {
-              "name": "removeItems",
-              "description": "Items to remove",
-              "kind": "array",
-              "items": {
-                "type": "object"
-              }
-            }
-          ]
-        },
-        "toggleValue": {
-          "description": "Toggles a primitive value in this brush context\n\nIf the given value exist in this brush context, it will be removed. If it does not exist it will be added.",
-          "kind": "function",
-          "params": [
-            {
-              "name": "key",
-              "description": "An identifier that represents the data source of the value",
-              "type": "string"
-            },
-            {
-              "name": "value",
-              "description": "The value to toggle",
-              "kind": "union",
-              "union": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
-              ]
-            }
-          ],
-          "examples": [
-            "brush.toggleValue('countries', 'Sweden');"
-          ]
-        },
-        "toggleValues": {
-          "kind": "function",
-          "params": [
-            {
-              "name": "items",
-              "description": "Items to toggle",
-              "kind": "array",
-              "items": {
-                "type": "object"
-              }
-            }
-          ]
-        },
-        "containsValue": {
-          "description": "Checks if a certain value exists in this brush context\n\nReturns true if the values exists for the provided key, returns false otherwise.",
-          "kind": "function",
-          "params": [
-            {
-              "name": "key",
-              "description": "An identifier that represents the data source of the value",
-              "type": "string"
-            },
-            {
-              "name": "value",
-              "description": "The value to check for",
-              "kind": "union",
-              "union": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
-              ]
-            }
-          ],
-          "returns": {
-            "type": "boolean"
-          },
-          "examples": [
-            "brush.addValue('countries', 'Sweden');\nbrush.containsValue('countries', 'Sweden'); // true\nbrush.toggleValue('countries', 'Sweden'); // remove 'Sweden'\nbrush.containsValue('countries', 'Sweden'); // false"
-          ]
-        },
-        "addRange": {
-          "description": "Adds a numeric range to this brush context",
-          "kind": "function",
-          "params": [
-            {
-              "name": "key",
-              "description": "An identifier that represents the data source of the range",
-              "type": "string"
-            },
-            {
-              "name": "range",
-              "description": "The range to add to this brush",
-              "type": "object",
-              "kind": "struct",
-              "entries": {
-                "min": {
-                  "description": "Min value of the range",
-                  "type": "number"
-                },
-                "max": {
-                  "description": "Max value of the range",
-                  "type": "number"
-                }
-              }
-            }
-          ],
-          "examples": [
-            "brush.addRange('Sales', { min: 20, max: 50 });"
-          ]
-        },
-        "addRanges": {
-          "kind": "function",
-          "params": [
-            {
-              "name": "items",
-              "description": "Items containing the ranges to remove",
-              "kind": "array",
-              "items": {
-                "entries": {
-                  "key": {
-                    "type": "string"
-                  },
-                  "range": {
-                    "type": "object"
-                  }
-                },
-                "kind": "struct"
-              }
-            }
-          ]
-        },
-        "removeRange": {
-          "description": "Removes a numeric range from this brush context",
-          "kind": "function",
-          "params": [
-            {
-              "name": "key",
-              "description": "An identifier that represents the data source of the range",
-              "type": "string"
-            },
-            {
-              "name": "range",
-              "description": "The range to remove from this brush",
-              "type": "object",
-              "kind": "struct",
-              "entries": {
-                "min": {
-                  "description": "Min value of the range",
-                  "type": "number"
-                },
-                "max": {
-                  "description": "Max value of the range",
-                  "type": "number"
-                }
-              }
-            }
-          ]
-        },
-        "removeRanges": {
-          "kind": "function",
-          "params": [
-            {
-              "name": "items",
-              "description": "Items containing the ranges to remove",
-              "kind": "array",
-              "items": {
-                "type": "object"
-              }
-            }
-          ]
-        },
-        "setRange": {
-          "description": "Sets a numeric range to this brush context\n\nOverwrites any active ranges identified by `key`",
-          "kind": "function",
-          "params": [
-            {
-              "name": "key",
-              "description": "An identifier that represents the data source of the range",
-              "type": "string"
-            },
-            {
-              "name": "range",
-              "description": "The range to set on this brush",
-              "type": "object",
-              "kind": "struct",
-              "entries": {
-                "min": {
-                  "description": "Min value of the range",
-                  "type": "number"
-                },
-                "max": {
-                  "description": "Max value of the range",
-                  "type": "number"
-                }
-              }
-            }
-          ]
-        },
-        "setRanges": {
-          "kind": "function",
-          "params": [
-            {
-              "name": "items",
-              "description": "Items containing the ranges to set",
-              "kind": "array",
-              "items": {
-                "type": "object"
-              }
-            }
-          ]
-        },
-        "toggleRange": {
-          "description": "Toggles a numeric range in this brush context\n\nRemoves the range if it's already contained within the given identifier,\notherwise the given range is added to the brush.",
-          "kind": "function",
-          "params": [
-            {
-              "name": "key",
-              "description": "An identifier that represents the data source of the range",
-              "type": "string"
-            },
-            {
-              "name": "range",
-              "description": "The range to toggle in this brush",
-              "type": "object",
-              "kind": "struct",
-              "entries": {
-                "min": {
-                  "description": "Min value of the range",
-                  "type": "number"
-                },
-                "max": {
-                  "description": "Max value of the range",
-                  "type": "number"
-                }
-              }
-            }
-          ]
-        },
-        "toggleRanges": {
-          "kind": "function",
-          "params": [
-            {
-              "name": "items",
-              "description": "Items containing the ranges to toggle",
-              "kind": "array",
-              "items": {
-                "type": "object"
-              }
-            }
-          ]
-        },
-        "containsRangeValue": {
-          "description": "Checks if a value is contained within a range in this brush context\n\nReturns true if the values exists for the provided key, returns false otherwise.",
-          "kind": "function",
-          "params": [
-            {
-              "name": "key",
-              "description": "An identifier that represents the data source of the value",
-              "type": "string"
-            },
-            {
-              "name": "value",
-              "description": "The value to check for",
-              "type": "number"
-            }
-          ],
-          "returns": {
-            "type": "boolean"
-          },
-          "examples": [
-            "brush.addRange('Sales', { min: 10, max: 50 });\nbrush.containsRangeValue('Sales', 30); // true\nbrush.containsRangeValue('Sales', 5); // false"
-          ]
-        },
-        "containsRange": {
-          "description": "Checks if a range segment is contained within this brush context\n\nReturns true if the range segment exists for the provided key, returns false otherwise.",
-          "kind": "function",
-          "params": [
-            {
-              "name": "key",
-              "description": "An identifier that represents the data source of the value",
-              "type": "string"
-            },
-            {
-              "name": "range",
-              "description": "The range to check for",
-              "type": "object",
-              "kind": "struct",
-              "entries": {
-                "min": {
-                  "description": "Min value of the range",
-                  "type": "number"
-                },
-                "max": {
-                  "description": "Max value of the range",
-                  "type": "number"
-                }
-              }
-            }
-          ],
-          "returns": {
-            "type": "boolean"
-          },
-          "examples": [
-            "brush.addRange('Sales', { min: 10, max: 50 });\nbrush.containsRange('Sales', { min: 15, max: 20 }); // true - the range segment is fully contained within [10, 50]\nbrush.containsRange('Sales', { min: 5, max: 20 }); // false - part of the range segment is outside [10, 50]\nbrush.containsRange('Sales', { min: 30, max: 80 }); // false - part of the range segment is outside [10, 50]"
-          ]
-        },
-        "intercept": {
-          "description": "Adds an event interceptor",
-          "kind": "function",
-          "params": [
-            {
-              "name": "name",
-              "description": "Name of the event to intercept",
-              "type": "string"
-            },
-            {
-              "name": "ic",
-              "description": "Handler to call before event is triggered",
-              "type": "function"
-            }
-          ],
-          "examples": [
-            "brush.intercept('add-values', items => {\n console.log('about to add the following items', items);\n return items;\n});"
-          ]
-        },
-        "removeInterceptor": {
-          "description": "Removes an interceptor",
-          "kind": "function",
-          "params": [
-            {
-              "name": "name",
-              "description": "Name of the event to intercept",
-              "type": "string"
-            },
-            {
-              "name": "ic",
-              "description": "Handler to remove",
-              "type": "function"
-            }
-          ]
-        },
-        "removeAllInterceptors": {
-          "description": "Removes all interceptors",
-          "kind": "function",
-          "params": [
-            {
-              "name": "name",
-              "description": "Name of the event to remove interceptors for. If not provided, removes all interceptors.",
-              "optional": true,
-              "type": "string"
-            }
-          ]
-        },
-        "addKeyAlias": {
-          "description": "Adds an alias to the given key",
-          "kind": "function",
-          "params": [
-            {
-              "name": "key",
-              "description": "Value to be replaced",
-              "type": "string"
-            },
-            {
-              "name": "alias",
-              "description": "Value to replace key with",
-              "type": "string"
-            }
-          ],
-          "examples": [
-            "brush.addKeyAlias('BadFieldName', 'Region');\nbrush.addValue('BadFieldName', 'Sweden'); // 'BadFieldName' will be stored as 'Region'\nbrush.containsValue('Region', 'Sweden'); // true\nbrush.containsValue('BadFieldName', 'Sweden'); // true"
-          ]
-        },
-        "removeKeyAlias": {
-          "description": "Removes an alias\n\nThis will only remove the key to alias mapping for new manipulations of the brush,\nno changes will be made to the current state of this brush.",
-          "kind": "function",
-          "params": [
-            {
-              "name": "key",
-              "description": "Value to remove as alias",
-              "type": "string"
-            }
-          ],
-          "examples": [
-            "brush.removeKeyAlias('BadFieldName');"
-          ]
-        }
-      },
-      "events": {
-        "start": {
-          "description": "Triggered when this brush is activated",
-          "kind": "event",
-          "params": []
-        },
-        "update": {
-          "description": "Triggered when this brush is updated",
-          "kind": "event",
-          "params": [
-            {
-              "name": "added",
-              "description": "The added items",
-              "kind": "array",
-              "items": {
-                "type": "object"
-              }
-            },
-            {
-              "name": "removed",
-              "description": "The removed items",
-              "kind": "array",
-              "items": {
-                "type": "object"
-              }
-            }
-          ]
-        },
-        "end": {
-          "description": "Triggered when this brush is deactivated",
-          "kind": "event",
-          "params": []
-        }
-      }
-    },
-    "component--axis-discrete": {
-      "description": "Discrete axis settings",
-      "kind": "struct",
-      "entries": {
-        "labels": {
-          "kind": "struct",
-          "entries": {
-            "show": {
-              "description": "Toggle labels on/off",
-              "optional": true,
-              "defaultValue": true,
-              "type": "boolean"
-            },
-            "tiltAngle": {
-              "description": "Tilting angle in degrees. Capped between -90 and 90. Only applicable when labels are in `tilted` mode.",
-              "optional": true,
-              "defaultValue": 40,
-              "type": "number"
-            },
-            "maxEdgeBleed": {
-              "description": "Control the amount of space (in pixels) that labes can occupy outside their docking area. Only applicable when labels are in `tilted` mode.",
-              "optional": true,
-              "type": "number"
-            },
-            "margin": {
-              "description": "Space in pixels between the tick and label.",
-              "optional": true,
-              "defaultValue": 4,
-              "type": "number"
-            },
-            "maxLengthPx": {
-              "description": "Max length of labels in pixels",
-              "optional": true,
-              "defaultValue": 150,
-              "type": "number"
-            },
-            "minLengthPx": {
-              "description": "Min length of labels in pixels. Labels will always at least require this much space",
-              "optional": true,
-              "defaultValue": 0,
-              "type": "number"
-            },
-            "mode": {
-              "description": "Control how labels arrange themself. Availabe modes are `auto`, `horizontal`, `layered` and `tilted`. When set to `auto` the axis determines the best possible layout in the current context.",
-              "optional": true,
-              "defaultValue": "auto",
-              "type": "string"
-            },
-            "maxGlyphCount": {
-              "description": "When only a sub-set of data is available, ex. when paging. This property can be used to let the axis estimate how much space the labels will consume, allowing it to give a consistent space estimate over the entire dataset when paging.",
-              "optional": true,
-              "type": "number"
-            },
-            "align": {
-              "description": "Align act as a slider for the text bounding rect over the item bandwidth, given that the item have a bandwidth. Except when labels are tilted, then the align is a pure align that shifts the position of the label anchoring point.",
-              "optional": true,
-              "defaultValue": 0.5,
-              "type": "number"
-            },
-            "offset": {
-              "description": "Offset in pixels along the axis direction.",
-              "optional": true,
-              "defaultValue": 0,
-              "type": "number"
-            }
-          },
-          "type": "object"
-        },
-        "ticks": {
-          "kind": "struct",
-          "entries": {
-            "show": {
-              "description": "Toggle ticks on/off",
-              "optional": true,
-              "defaultValue": false,
-              "type": "boolean"
-            },
-            "margin": {
-              "description": "Space in pixels between the ticks and the line.",
-              "optional": true,
-              "defaultValue": 0,
-              "type": "number"
-            },
-            "tickSize": {
-              "description": "Size of the ticks in pixels.",
-              "optional": true,
-              "defaultValue": 4,
-              "type": "number"
-            }
-          },
-          "type": "object"
-        },
-        "line": {
-          "kind": "struct",
-          "entries": {
-            "show": {
-              "description": "Toggle line on/off",
-              "optional": true,
-              "defaultValue": false,
-              "type": "boolean"
-            }
-          },
-          "type": "object"
-        },
-        "paddingStart": {
-          "description": "Padding in direction perpendicular to the axis",
-          "optional": true,
-          "defaultValue": 0,
-          "type": "number"
-        },
-        "paddingEnd": {
-          "description": "Padding in direction perpendicular to the axis",
-          "optional": true,
-          "defaultValue": 10,
-          "type": "number"
-        },
-        "align": {
-          "description": "Set the anchoring point of the axis. Avaialable options are `auto/left/right/bottom/top`. In `auto` the axis determines the best option. The options are restricted based on the axis orientation, a vertical axis may only anchor on `left` or `right`",
-          "optional": true,
-          "defaultValue": "auto",
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "component--axis-continuous": {
-      "description": "Continuous axis settings",
-      "kind": "struct",
-      "entries": {
-        "labels": {
-          "kind": "struct",
-          "entries": {
-            "show": {
-              "description": "Toggle labels on/off",
-              "optional": true,
-              "defaultValue": true,
-              "type": "boolean"
-            },
-            "margin": {
-              "description": "Space in pixels between the tick and label.",
-              "optional": true,
-              "defaultValue": 4,
-              "type": "number"
-            },
-            "maxLengthPx": {
-              "description": "Max length of labels in pixels",
-              "optional": true,
-              "defaultValue": 150,
-              "type": "number"
-            },
-            "minLengthPx": {
-              "description": "Min length of labels in pixels. Labels will always at least require this much space",
-              "optional": true,
-              "defaultValue": 0,
-              "type": "number"
-            },
-            "align": {
-              "description": "Align act as a slider for the text bounding rect over the item bandwidth, given that the item have a bandwidth.",
-              "optional": true,
-              "defaultValue": 0.5,
-              "type": "number"
-            },
-            "offset": {
-              "description": "Offset in pixels along the axis direction.",
-              "optional": true,
-              "defaultValue": 0,
-              "type": "number"
-            }
-          },
-          "type": "object"
-        },
-        "ticks": {
-          "kind": "struct",
-          "entries": {
-            "show": {
-              "description": "Toggle ticks on/off",
-              "optional": true,
-              "defaultValue": true,
-              "type": "boolean"
-            },
-            "margin": {
-              "description": "Space in pixels between the ticks and the line.",
-              "optional": true,
-              "defaultValue": 0,
-              "type": "number"
-            },
-            "tickSize": {
-              "description": "Size of the ticks in pixels.",
-              "optional": true,
-              "defaultValue": 8,
-              "type": "number"
-            }
-          },
-          "type": "object"
-        },
-        "minorTicks": {
-          "kind": "struct",
-          "entries": {
-            "show": {
-              "description": "Toggle minor-ticks on/off",
-              "optional": true,
-              "defaultValue": false,
-              "type": "boolean"
-            },
-            "tickSize": {
-              "description": "Size of the ticks in pixels.",
-              "optional": true,
-              "defaultValue": 3,
-              "type": "number"
-            },
-            "margin": {
-              "description": "Space in pixels between the ticks and the line.",
-              "optional": true,
-              "defaultValue": 0,
-              "type": "number"
-            }
-          },
-          "type": "object"
-        },
-        "line": {
-          "kind": "struct",
-          "entries": {
-            "show": {
-              "description": "Toggle line on/off",
-              "optional": true,
-              "defaultValue": true,
-              "type": "boolean"
-            }
-          },
-          "type": "object"
-        },
-        "paddingStart": {
-          "description": "Padding in direction perpendicular to the axis",
-          "optional": true,
-          "defaultValue": 0,
-          "type": "number"
-        },
-        "paddingEnd": {
-          "description": "Padding in direction perpendicular to the axis",
-          "optional": true,
-          "defaultValue": 10,
-          "type": "number"
-        },
-        "align": {
-          "description": "Set the anchoring point of the axis. Avaialable options are `auto/left/right/bottom/top`. In `auto` the axis determines the best option. The options are restricted based on the axis orientation, a vertical axis may only anchor on `left` or `right`",
-          "optional": true,
-          "defaultValue": "auto",
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "component--line": {
-      "kind": "struct",
-      "entries": {
-        "type": {
-          "defaultValue": "line",
-          "type": "string"
-        },
-        "settings": {
-          "kind": "struct",
-          "entries": {
-            "coordinates": {
-              "kind": "struct",
-              "entries": {
-                "minor": {
-                  "defaultValue": 0.5,
-                  "type": "number"
-                },
-                "major": {
-                  "defaultValue": 0.5,
-                  "type": "number"
-                },
-                "layerId": {
-                  "defaultValue": 0,
-                  "type": "number"
-                }
-              },
-              "type": "object"
-            },
-            "orientation": {
-              "defaultValue": "horizontal",
-              "type": "string"
-            },
-            "layers": {
-              "kind": "struct",
-              "entries": {
-                "curve": {
-                  "defaultValue": "linear",
-                  "type": "string"
-                },
-                "show": {
-                  "defaultValue": true,
-                  "type": "boolean"
-                },
-                "line": {
-                  "kind": "struct",
-                  "entries": {
-                    "stroke": {
-                      "defaultValue": "#ccc",
-                      "type": "string"
-                    },
-                    "strokeWidth": {
-                      "defaultValue": 1,
-                      "type": "number"
-                    },
-                    "opacity": {
-                      "defaultValue": 1,
-                      "type": "number"
-                    },
-                    "show": {
-                      "defaultValue": true,
-                      "type": "boolean"
-                    }
-                  },
-                  "type": "object"
-                },
-                "area": {
-                  "kind": "struct",
-                  "entries": {
-                    "fill": {
-                      "defaultValue": "#ccc",
-                      "type": "string"
-                    },
-                    "opacity": {
-                      "defaultValue": 0.8,
-                      "type": "number"
-                    },
-                    "show": {
-                      "defaultValue": true,
-                      "type": "boolean"
-                    }
-                  },
-                  "type": "object"
-                }
-              },
-              "type": "object"
-            }
-          },
-          "type": "object"
-        }
-      },
-      "type": "object"
-    },
-    "component--point-marker": {
-      "kind": "struct",
-      "entries": {
-        "type": {
-          "defaultValue": "point-marker",
-          "type": "string"
-        },
-        "settings": {
-          "kind": "struct",
-          "entries": {
-            "shape": {
-              "description": "Type of shape",
-              "optional": true,
-              "defaultValue": "circle",
-              "type": "datum-string"
-            },
-            "fill": {
-              "description": "Fill color",
-              "optional": true,
-              "defaultValue": "#333",
-              "type": "datum-string"
-            },
-            "stroke": {
-              "description": "Stroke color",
-              "optional": true,
-              "defaultValue": "#ccc",
-              "type": "datum-string"
-            },
-            "strokeWidth": {
-              "description": "Stroke width",
-              "optional": true,
-              "defaultValue": 0,
-              "type": "datum-number"
-            },
-            "opacity": {
-              "description": "Opacity of shape",
-              "optional": true,
-              "defaultValue": 1,
-              "type": "datum-number"
-            },
-            "x": {
-              "description": "Normalized x coordinate",
-              "optional": true,
-              "defaultValue": 0.5,
-              "type": "datum-number"
-            },
-            "y": {
-              "description": "Normalized y coordinate",
-              "optional": true,
-              "defaultValue": 0.5,
-              "type": "datum-number"
-            },
-            "size": {
-              "description": "Normalized size of shape",
-              "optional": true,
-              "defaultValue": 1,
-              "type": "datum-number"
-            },
-            "sizeLimits": {
-              "kind": "struct",
-              "entries": {
-                "maxPx": {
-                  "description": "Maximum size of shape, in pixels",
-                  "optional": true,
-                  "defaultValue": 10000,
-                  "type": "number"
-                },
-                "minPx": {
-                  "description": "Minimum size of shape, in pixels",
-                  "optional": true,
-                  "defaultValue": 1,
-                  "type": "number"
-                },
-                "maxRelExtent": {
-                  "description": "Maximum size relative linear scale extent",
-                  "optional": true,
-                  "defaultValue": 0.1,
-                  "type": "number"
-                },
-                "minRelExtent": {
-                  "description": "Minimum size relative linear scale extent",
-                  "optional": true,
-                  "defaultValue": 0.01,
-                  "type": "number"
-                },
-                "maxRelDiscrete": {
-                  "description": "Maximum size relative discrete scale banwidth",
-                  "optional": true,
-                  "defaultValue": 1,
-                  "type": "number"
-                },
-                "minRelDiscrete": {
-                  "description": "Minimum size relative discrete scale banwidth",
-                  "optional": true,
-                  "defaultValue": 0.1,
-                  "type": "number"
-                }
-              },
-              "type": "object"
-            }
-          },
-          "type": "object"
-        }
-      },
-      "type": "object"
-    },
     "data-source": {
       "kind": "struct",
       "entries": {
@@ -3914,6 +3763,88 @@
           "params": []
         }
       }
+    },
+    "scale--linear": {
+      "kind": "struct",
+      "entries": {
+        "type": {
+          "optional": true,
+          "defaultValue": "'linear'",
+          "type": "string"
+        },
+        "expand": {
+          "description": "Expand the output range",
+          "optional": true,
+          "type": "number"
+        },
+        "invert": {
+          "description": "Invert the output range",
+          "optional": true,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "include": {
+          "description": "Include specified numbers in the output range",
+          "optional": true,
+          "kind": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "ticks": {
+          "optional": true,
+          "type": "object",
+          "kind": "struct",
+          "entries": {
+            "tight": {
+              "optional": true,
+              "defaultValue": false,
+              "type": "boolean"
+            },
+            "forceBounds": {
+              "optional": true,
+              "defaultValue": false,
+              "type": "boolean"
+            },
+            "distance": {
+              "description": "Approximate distance between each tick",
+              "optional": true,
+              "defaultValue": 100,
+              "type": "number"
+            },
+            "values": {
+              "description": "If set, ticks are no longer generated but instead equal to this set",
+              "optional": true,
+              "kind": "union",
+              "union": [
+                {
+                  "type": "Array<number>"
+                },
+                {
+                  "type": "Array<object>"
+                }
+              ]
+            },
+            "count": {
+              "optional": true,
+              "type": "number"
+            }
+          }
+        },
+        "minorTicks": {
+          "optional": true,
+          "type": "object",
+          "kind": "struct",
+          "entries": {
+            "count": {
+              "optional": true,
+              "defaultValue": 3,
+              "type": "number"
+            }
+          }
+        }
+      },
+      "type": "object"
     }
   }
 }

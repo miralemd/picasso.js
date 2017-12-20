@@ -8,12 +8,9 @@ import { continuousDefaultSettings } from './ticks/default-settings';
 const AVAILABLE_SETTINGS = ['min', 'max', 'expand', 'include', 'invert'];
 
 /**
+ * @definition
  * @typedef {object} scale--linear
- * @property {string} type
- */
-
-/**
- * @typedef {object} scale--linear
+ * @property {string} [type='linear']
  * @property {number} [expand] - Expand the output range
  * @property {boolean} [invert=false] - Invert the output range
  * @property {number[]} [include] - Include specified numbers in the output range

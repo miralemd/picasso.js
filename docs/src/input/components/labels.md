@@ -31,11 +31,11 @@ The label is then justified, aligned and ellipsed if necessary.
 
 #### Settings
 
-{{>struct entries.component--labels}}
+{{>struct definitions.component--labels}}
 
 ##### bar strategy
 
-{{>struct entries.component--labels.definitions.label-strategy}}
+{{>struct definitions.component--labels.definitions.label-strategy}}
 
 #### Example
 

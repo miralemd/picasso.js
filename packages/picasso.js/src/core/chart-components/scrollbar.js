@@ -1,6 +1,7 @@
 /**
+ * @definition
  * @typedef {object} component--scrollbar
- *
+ * @private
  */
 
 /**

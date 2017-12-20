@@ -4,7 +4,7 @@ A component that renders active `brush` ranges.
 
 ## Component settings
 
-{{>struct entries.component--range}}
+{{>struct definitions.component--range}}
 
 The component can be docked to the same area as another component by referencing the `key` value:
 

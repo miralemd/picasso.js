@@ -31,7 +31,11 @@ function usePlugin(plugin, options = {}, api) {
 
 function pic(config = {}, registries = {}) {
   const logger = loggerFn(config.logger);
-  const regis = /** @lends picassojs */ {
+
+  /**
+   * @lends picassojs
+   */
+  const regis = {
     // -- registries --
     /**
      * Component registry
@@ -127,6 +131,10 @@ function pic(config = {}, registries = {}) {
     picassojs[key] = regis[key];
   });
 
+  /**
+   * picasso.js version
+   * @type {string}
+   */
   picassojs.version = about.version;
 
   return picassojs;

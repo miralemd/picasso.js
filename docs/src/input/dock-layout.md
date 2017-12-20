@@ -59,4 +59,4 @@ dockLayout: {
 
 ## Configuration
 
-{{>struct entries.dock-layout-settings}}
+{{>struct definitions.dock-layout-settings}}

@@ -114,7 +114,7 @@ ds.util = {
 };
 
 /**
- * @inner
+ * @definition
  * @typedef {object} data-extract-config
  * @property {string} field - The field to extract data from
  * @property {data-extract-config~valueFn} [value] - The field value accessor
@@ -156,7 +156,7 @@ ds.util = {
  */
 
 /**
- * @inner
+ * @definition
  * @typedef {object} datum-extract
  * @property {any} value - The extracted value
  * @property {string} label - The extracted value as a string

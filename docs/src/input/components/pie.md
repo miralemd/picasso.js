@@ -6,7 +6,7 @@ A component that renders pie slices in a designated area.
 
 ### Settings
 
-{{>struct entries.component--pie}}
+{{>struct definitions.component--pie}}
 
 ## Example
 

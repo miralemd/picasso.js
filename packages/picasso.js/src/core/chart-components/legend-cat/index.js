@@ -5,6 +5,7 @@ export default function categoricalLegend(picasso) {
 }
 
 /**
+ * @definition
  * @typedef {object} component--legend-cat
  * @experimental
  * @property {scale} type='legend-cat' - Required

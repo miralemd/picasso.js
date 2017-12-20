@@ -167,6 +167,7 @@ function initState(ctx) {
 
 /**
  * @typedef {object} component--legend-seq
+ * @definition
  */
 
 /**

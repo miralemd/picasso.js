@@ -14,7 +14,7 @@
     "handlebars-helpers": "0.7.5",
     "jsdoc": "3.4.3",
     "jsdoc-json": "^2.0.0",
-    "jsdoc2spec": "^0.1.1",
+    "jsdoc2spec": "^0.2.0",
     "rimraf": "^2.5.4",
     "striptags": "2.1.1"
   }
