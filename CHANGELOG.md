@@ -1,6 +1,6 @@
 # Changelog
 
-## **{{VERSION}}** - *({{DATE}})*
+## **0.41.0** - *(2017-12-21)*
 
 ### Added
 
@@ -39,6 +39,11 @@
     }
   }
   ```
+
+### Updated
+
+- More examples added
+- jsdoc changes to fix spec output
 
 ## **0.40.0** - *(2017-12-12)* [BREAKING]
 

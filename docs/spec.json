@@ -5,7 +5,7 @@
   "info": {
     "name": "@qlik/picasso",
     "description": "A charting library streamlined for building visualizations for the Qlik Sense Analytics platform.",
-    "version": "0.40.0",
+    "version": "0.41.0",
     "license": "ISC"
   },
   "entries": {
